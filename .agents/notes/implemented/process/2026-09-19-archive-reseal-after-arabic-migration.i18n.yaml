@@ -1,0 +1,6 @@
+# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each
+# side as of the last confirmed-consistent state. Both languages carry equal authority;
+# after editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-19-archive-reseal-after-arabic-migration.md
+2026-09-19-archive-reseal-after-arabic-migration.md: 9de51636090c5f858f9d707af9786cd9749e26ba
+2026-09-19-archive-reseal-after-arabic-migration.ar.md: c5fcbcfd85e38373e9fe993b4b3ce33d797230d6
