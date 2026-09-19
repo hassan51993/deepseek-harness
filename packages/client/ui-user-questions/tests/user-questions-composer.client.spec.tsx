@@ -481,7 +481,6 @@ describe('parseRecommendedLabel', () => {
   it('recognizes English and Arabic suffixes without changing ordinary labels', () => {
     expect(parseRecommendedLabel('Fast (Recommended)')).toEqual({ label: 'Fast', recommended: true })
     expect(parseRecommendedLabel('مستقر ملائم (دفع ترشيح)')).toEqual({ label: 'مستقر ملائم', recommended: true })
-    expect(parseRecommendedLabel('مستقر ملائم (دفع ترشيح)')).toEqual({ label: 'مستقر ملائم', recommended: true })
     expect(parseRecommendedLabel('Plain')).toEqual({ label: 'Plain', recommended: false })
   })
 })

@@ -264,7 +264,7 @@ export type BriefDirection = 'en-to-ar' | 'ar-to-en'
 
 /** Whether a row's source-language term occurs in the given text. */
 function rowOccurs(row: TerminologyRow, direction: BriefDirection, text: string): boolean {
-  const terms = direction === 'en-to-ar' ? [row.english] : [row.first, row.arabic].filter(term => /[واحد-رمز]/.test(term))
+  const terms = direction === 'en-to-ar' ? [row.english] : [row.first, row.arabic].filter(term => /[\u0600-\u06ff]/.test(term))
   return terms.some(term => termOffsets(text, term, direction === 'en-to-ar').length > 0)
 }
 
