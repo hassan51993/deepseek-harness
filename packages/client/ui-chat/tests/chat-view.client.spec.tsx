@@ -1903,26 +1903,26 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     // The usage pill carries the compact total; cache hit stays dialog-only.
     const trigger = view.getByRole('button', { name: /الاستهلاك 10\.1K رمز/ })
-    expect(trigger.textContent).toBe('الاستهلاك 10.1K tok')
+    expect(trigger.textContent).toBe('الاستهلاك 10.1K رمز')
     expect(view.queryByRole('dialog')).toBeNull()
     fireEvent.click(trigger)
     const dialog = view.getByRole('dialog')
     expect(dialog.getAttribute('aria-label')).toBe('استهلاك الجولة')
-    expect(dialog.firstChild?.textContent).toBe('استهلاك الجولة10,100 tok')
-    expect(dialog.textContent).toContain('ذاكرة مؤقتة أمر في49.4%')
-    expect(dialog.textContent).toContain('إدخال غير مخزَّن5,060 tok')
+    expect(dialog.firstChild?.textContent).toBe('استهلاك الجولة10,100 رمز')
+    expect(dialog.textContent).toContain('إصابة الذاكرة المؤقتة49.4%')
+    expect(dialog.textContent).toContain('إدخال غير مخزَّن5,060 رمز')
     fireEvent.keyDown(document, { key: 'Escape' })
     // The time pill carries the run time; first-step ttft (1.2s) and 100
     // tokens over 5s of decode move into its dialog.
-    const timeTrigger = view.getByRole('button', { name: /متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 19 ث1970-1-1 00:00/ })
-    expect(timeTrigger.textContent).toBe('متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 19 ث1970-1-1 00:00')
-    expect(view.queryByText(/سرعة درجة 20 tok\/s|أول token/)).toBeNull()
+    const timeTrigger = view.getByRole('button', { name: 'استغرق 19 ث' })
+    expect(timeTrigger.textContent).toBe('استغرق 19 ث')
+    expect(view.queryByText(/سرعة درجة 20 رمز\/s|أول token/)).toBeNull()
     fireEvent.click(timeTrigger)
     const timeDialog = view.getByRole('dialog')
     expect(timeDialog.getAttribute('aria-label')).toBe('زمن الجولة وسرعتها')
-    expect(timeDialog.textContent).toContain('إجمالي زمن التشغيل19ثانية')
-    expect(timeDialog.textContent).toContain('الرموز في الثانية (TPS)20 tok/s')
-    expect(timeDialog.textContent).toContain('زمن أول رمز (TTFT)1.2ثانية')
+    expect(timeDialog.textContent).toContain('إجمالي زمن التشغيل19 ث')
+    expect(timeDialog.textContent).toContain('الرموز في الثانية (TPS)20 رمز/ث')
+    expect(timeDialog.textContent).toContain('زمن أول رمز (TTFT)1.2 ث')
   })
 
   it('withholds the usage-details trigger when turn usage is outside the window', () => {
@@ -2189,7 +2189,7 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     // Freshly mounted (as after a reload) yet already past the 15s gate.
     const status = view.getByRole('status')
-    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2د0\dث$/)
+    expect(status.textContent).toMatch(/^تعمّق في البحث\.\.\.2 د 0\d ث$/)
     expect(status.querySelector('[aria-hidden="true"]')).not.toBeNull()
     act(() => {
       h.setSession({ testInbox: { 'next-turn': [], 'next-step': [{
@@ -2199,7 +2199,7 @@ describe('ChatView', () => {
         role: 'user', source: { kind: 'user' },
       }] } })
     })
-    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2د0\dث$/)
+    expect(status.textContent).toMatch(/^تعمّق في البحث\.\.\.2 د 0\d ث$/)
   })
 
   it('the running clock reads hours once the turn passes an hour', () => {
@@ -2210,7 +2210,7 @@ describe('ChatView', () => {
       { running: true },
     )
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.getByRole('status').textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.1 س 05 د 0\d ث$/)
+    expect(view.getByRole('status').textContent).toMatch(/^تعمّق في البحث\.\.\.1 س 05 د 0\d ث$/)
   })
 
   it('hands each ordered root call to the keyed business-node slot', () => {
@@ -2874,7 +2874,7 @@ describe('ChatView', () => {
           ...running,
           outcome: {
             kind: 'success',
-            text: 'Compacted 16 history items (~11309 tokens).',
+            text: 'Compacted 16 history items (~11309 رمزens).',
             sourceEventSeq: 7,
           },
         }, compaction()],

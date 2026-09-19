@@ -103,11 +103,11 @@ describe('TeamAction', () => {
       : Promise.resolve({ ok: true as const, value: nextView }))
     const injected = actions({ load })
     const rendered = render(<TeamAction {...props(injected)} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await waitFor(() => { expect(load).toHaveBeenCalledWith(SESSION) })
 
     rendered.rerender(<TeamAction {...props(injected, nextSession)} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     expect(await screen.findByText('Next session task')).toBeTruthy()
     firstLoad.resolve({ ok: true, value: view })
     await Promise.resolve()
@@ -121,7 +121,7 @@ describe('TeamAction', () => {
   it('loads roster/task diagnostics on open and navigates a healthy teammate', async () => {
     const openTeammate = vi.fn(() => Promise.resolve())
     render(<TeamAction {...props(actions({ openTeammate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     const worker = await screen.findByRole('button', { name: /worker/u })
     expect(screen.getByText('write scopes overlap with task-2')).toBeTruthy()
     fireEvent.click(worker)
@@ -140,7 +140,7 @@ describe('TeamAction', () => {
       .mockImplementationOnce(() => older.promise)
       .mockImplementationOnce(() => newer.promise)
     render(<TeamAction {...props(actions({ load }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
 
     const refresh = screen.getByRole('button', { name: ar.refresh })
@@ -166,7 +166,7 @@ describe('TeamAction', () => {
       taskSuccess({ ...task, revision: 2, status: 'completed' }),
     ))
     render(<TeamAction {...props(actions({ load, updateTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
 
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
@@ -190,7 +190,7 @@ describe('TeamAction', () => {
       load,
       createTask: () => Promise.resolve(taskSuccess(createdTask)),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
 
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
@@ -214,7 +214,7 @@ describe('TeamAction', () => {
       load: taskLoad,
       updateTask: () => Promise.resolve(taskRejected('task rejected')),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
@@ -232,7 +232,7 @@ describe('TeamAction', () => {
       load: createLoad,
       createTask: () => Promise.resolve(taskRejected('create rejected')),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
@@ -255,7 +255,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce({ ok: true, value: { ...view, tasks: [completedTask, createdTask] } })
     const createTask = vi.fn(() => create.promise)
     render(<TeamAction {...props(actions({ load, createTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Concurrent task' } })
@@ -296,7 +296,7 @@ describe('TeamAction', () => {
       load,
       updateTask: () => Promise.resolve(taskSuccess(completed)),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('old warning')
     fireEvent.click(screen.getAllByRole('button', { name: /إنهاء/u })[0]!)
 
@@ -308,7 +308,7 @@ describe('TeamAction', () => {
   it('creates a task from normalized blocker and write-scope lists', async () => {
     const createTask = vi.fn(actions().createTask)
     render(<TeamAction {...props(actions({ createTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: ' New task ' } })
@@ -375,7 +375,7 @@ describe('TeamAction', () => {
       value: { ...view, tasks: current.status === 'deleted' ? [] : [current] },
     }))
     render(<TeamAction {...props(actions({ load, updateTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
 
     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'worker' } })
@@ -424,7 +424,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce({ ok: true, value: { ...view, tasks: [{ ...task, revision: 2 }] } })
     const updateTask = vi.fn(() => Promise.resolve(taskConflict('stale')))
     render(<TeamAction {...props(actions({ load, updateTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     expect(await screen.findByText(ar.conflict)).toBeTruthy()
@@ -440,7 +440,7 @@ describe('TeamAction', () => {
       load: taskLoad,
       updateTask: () => Promise.resolve(taskConflict('stale task')),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     expect(await screen.findByText('task reload failed (gateway/internal)')).toBeTruthy()
@@ -455,7 +455,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskSuccess({ ...task, revision: 2, subject: 'Edited' }))
       .mockResolvedValueOnce(taskConflict('stale dependency'))
     render(<TeamAction {...props(actions({ load: dependencyLoad, updateTask: dependencyUpdate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Edited' } })
@@ -496,7 +496,7 @@ describe('TeamAction', () => {
     const load = vi.fn(() => Promise.resolve({ ok: true as const, value: richView }))
     const openTeammate = vi.fn(() => Promise.reject(new Error('navigation failed')))
     render(<TeamAction {...props(actions({ load, openTeammate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     expect(await screen.findByText('provider failed')).toBeTruthy()
     expect(screen.getByText(ar.ready)).toBeTruthy()
     expect(screen.getByText(ar.blocked)).toBeTruthy()
@@ -507,9 +507,9 @@ describe('TeamAction', () => {
     expect(await screen.findByText('Error: navigation failed')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     await waitFor(() => { expect(load).toHaveBeenCalledTimes(2) })
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     expect(screen.queryByRole('dialog')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByRole('dialog')
     fireEvent.click(screen.getByRole('button', { name: ar.close }))
     expect(screen.queryByRole('dialog')).toBeNull()
@@ -520,13 +520,13 @@ describe('TeamAction', () => {
       load: () => Promise.resolve(remoteFailure('load failed')),
     })
     const first = render(<TeamAction {...props(failedLoad)} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     expect(await screen.findByText('load failed (gateway/internal)')).toBeTruthy()
     first.unmount()
 
     const createTask = vi.fn(() => Promise.resolve(remoteFailure('create failed')))
     const second = render(<TeamAction {...props(actions({ createTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Task' } })
@@ -537,7 +537,7 @@ describe('TeamAction', () => {
 
     const pending = Promise.withResolvers<TeamTaskActionResult>()
     const third = render(<TeamAction {...props(actions({ createTask: () => pending.promise }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Late task' } })
@@ -552,7 +552,7 @@ describe('TeamAction', () => {
   it('contains stale-session and ordinary task failures without retrying', async () => {
     const pending = Promise.withResolvers<TeamTaskActionResult>()
     const rendered = render(<TeamAction {...props(actions({ updateTask: () => pending.promise }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     rendered.rerender(<TeamAction {...props(actions(), 'next-session' as SessionId)} />)
@@ -564,7 +564,7 @@ describe('TeamAction', () => {
     render(<TeamAction {...props(actions({
       updateTask: () => Promise.resolve(taskRejected('update failed')),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     expect(await screen.findByText('update failed (team-rejected)')).toBeTruthy()
@@ -579,7 +579,7 @@ describe('TeamAction', () => {
       load,
       updateTask: () => Promise.resolve(taskConflict('stale task')),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     await waitFor(() => { expect(load).toHaveBeenCalledTimes(2) })
@@ -600,7 +600,7 @@ describe('TeamAction', () => {
       load,
       updateTask: () => Promise.resolve(taskSuccess({ ...task, revision: 2, status: 'completed' })),
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إنهاء/u }))
     await waitFor(() => { expect(load).toHaveBeenCalledTimes(2) })
@@ -620,7 +620,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskRejected('dependency failed'))
       .mockResolvedValueOnce(taskSuccess({ ...unownedTask, revision: 2 }))
     render(<TeamAction {...props(actions({ updateTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
 
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
@@ -659,7 +659,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskSuccess({ ...task, revision: 2, subject: 'Edited' }))
       .mockResolvedValueOnce(remoteFailure('dependency transport failed'))
     render(<TeamAction {...props(actions({ updateTask }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Edited' } })
@@ -678,7 +678,7 @@ describe('TeamAction', () => {
       load: () => Promise.resolve({ ok: true, value: { ...view, tasks: [blockedTask] } }),
       updateTask,
     }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Same dependencies' } })
@@ -698,7 +698,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskSuccess({ ...task, revision: 2, subject: 'Conflict edit' }))
       .mockResolvedValueOnce(taskConflict('stale dependency'))
     const first = render(<TeamAction {...props(actions({ load, updateTask: conflictUpdate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Conflict edit' } })
@@ -717,7 +717,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskSuccess({ ...task, revision: 2, subject: 'Late edit' }))
       .mockResolvedValueOnce(taskConflict('stale dependency'))
     const second = render(<TeamAction {...props(actions({ load: dependencyLoad, updateTask: staleUpdate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Late edit' } })
@@ -736,7 +736,7 @@ describe('TeamAction', () => {
       .mockResolvedValueOnce(taskSuccess({ ...task, revision: 2, subject: 'Late edit' }))
       .mockImplementationOnce(() => dependency.promise)
     const third = render(<TeamAction {...props(actions({ updateTask: lateUpdate }))} />)
-    fireEvent.click(screen.getByRole('button', { name: ar.trigger }))
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(ar.trigger, 'u') }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Late edit' } })

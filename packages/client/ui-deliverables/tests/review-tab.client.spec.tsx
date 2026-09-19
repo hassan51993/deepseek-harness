@@ -317,7 +317,7 @@ describe('ReviewTab', () => {
       diffs.state.set({ [url]: { ...text, hunks: [{ oldStart: 1, oldLines: 0, newStart: 1, newLines: long.length, lines: long }] } })
     })
     expect(view.container.querySelectorAll('[data-diff-line]')).toHaveLength(MAX_RENDERED_LINES)
-    expect(view.container.querySelector('[data-diff-truncated]')?.textContent).toBe(`فقط عرض قبل ${MAX_RENDERED_LINES} سطر`)
+    expect(view.container.querySelector('[data-diff-truncated]')?.textContent).toBe(`تُعرض أول ${MAX_RENDERED_LINES} سطر`)
   })
 
   it('falls back to the first file for an index the summary does not list, and forgets its state with the tab', () => {

@@ -178,7 +178,7 @@ describe('matrix row: claimed', () => {
     act(() => { shell.setDraft('/goal إصدار') })
     fireEvent.keyDown(textarea, { key: 'Enter' })
     expect(sink).not.toHaveBeenCalled()
-    await vi.waitFor(() => { expect(submit).toHaveBeenCalledWith('الإصدار', SCTX, []) })
+    await vi.waitFor(() => { expect(submit).toHaveBeenCalledWith('إصدار', SCTX, []) })
     // Commit: draft cleared, notice surfaced, back to plain.
     await vi.waitFor(() => { expect(shell.snapshot.draft).toBe('') })
     expect(view.getByText('إتمام')).toBeTruthy()

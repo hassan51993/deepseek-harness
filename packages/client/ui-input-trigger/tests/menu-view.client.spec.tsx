@@ -127,7 +127,7 @@ describe('MenuView', () => {
       }],
     }))
     const options = screen.getAllByRole('option')
-    expect(options.map(o => o.textContent)).toEqual(['خطةplanالدخول إلى وضع التخطيط أو الخروج منه', 'File'])
+    expect(options.map(o => o.textContent)).toEqual(['الخطةplanالدخول إلى وضع التخطيط أو الخروج منه', 'File'])
     expect(options[0]?.querySelector('[data-glyph="plan"]')?.getAttribute('width')).toBe('16')
     // A label that is the name in another letter case renders no alias.
     expect(options[1]?.querySelectorAll('span')).toHaveLength(1)

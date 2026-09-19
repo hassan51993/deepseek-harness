@@ -14,7 +14,7 @@
   },
   "ar-SA": {
     "menu": [
-      { "label": "صلة في DeepSeek Harness", "role": "about" },
+      { "label": "حول DeepSeek Harness", "role": "about" },
       { "type": "separator" }
     ],
     "options": {

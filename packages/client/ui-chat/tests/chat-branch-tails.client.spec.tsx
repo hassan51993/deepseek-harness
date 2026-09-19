@@ -408,7 +408,7 @@ describe('MessageItem arms', () => {
     )
     fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*new\/AGENTS\.md, old\/AGENTS\.md$/ }))
     const files = [...view.container.querySelectorAll('[data-context-files] li')].map(node => node.textContent)
-    expect(files).toEqual(['new/AGENTS.mdأُضيفت', 'old/AGENTS.mdقد تحديث'])
+    expect(files).toEqual(['new/AGENTS.mdأُضيفت', 'old/AGENTS.mdحُدِّثت'])
   })
 
   it('keeps an interleaved unknown block in the order the model received it', () => {
@@ -553,7 +553,7 @@ describe('MessageItem arms', () => {
     )
     fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*plugin$/ }))
     expect(view.container.querySelector('[data-context-fields] dd')?.textContent)
-      .toMatch(/… اقتُطع عند \d+ حرف$/)
+      .toMatch(/… اقتُطع، \d+ حرف إجمالًا$/)
   })
 
   it('an empty replacement catalog stays a catalog: it retires every earlier name', () => {
@@ -797,7 +797,7 @@ describe('MessageItem arms', () => {
     expect(view.container.querySelector('[data-context-recall-icon]')).not.toBeNull()
     fireEvent.click(view.getByRole('button', { name: /^استرجاع من جلسة\s*إعادة بنية loader, إصلاح CI$/ }))
     const rows = [...view.container.querySelectorAll('[data-context-recalls] li')].map(node => node.textContent)
-    expect(rows).toEqual(['إعادة بنية loaderأُبقي 18 · حُذف 42قد مقتطع', 'إصلاح CIأُبقي 3 · حُذف 0'])
+    expect(rows).toEqual(['إعادة بنية loaderأُبقي 18 · حُذف 42مقتطع', 'إصلاح CIأُبقي 3 · حُذف 0'])
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('recalled material')
   })
 
@@ -894,9 +894,9 @@ describe('MessageItem arms', () => {
     expect(view.getByText('سبب الفشل:').parentElement?.textContent).toBe('سبب الفشل: اتصال يتم إعادة وضع')
 
     act(() => { vi.advanceTimersByTime(1_100) })
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 2s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 2 ث')
     act(() => { vi.advanceTimersByTime(1_000) })
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1 ث')
 
     view.rerender(
       <MessageItem
@@ -919,7 +919,7 @@ describe('MessageItem arms', () => {
         }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 4 ث')
 
     if (summary === null) throw new Error('retry summary missing')
     fireEvent.click(summary)
@@ -945,7 +945,7 @@ describe('MessageItem arms', () => {
       />,
     )
     expect(details?.dataset.active).toBeUndefined()
-    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 4 ث')
 
     view.rerender(
       <MessageItem t={t} node={{
@@ -965,7 +965,7 @@ describe('MessageItem arms', () => {
       }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (3/∞) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (3/∞) · 4 ث')
 
     view.rerender(
       <MessageItem t={t} node={{
@@ -986,7 +986,7 @@ describe('MessageItem arms', () => {
       }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('أُلغيت إعادة محاولة طلب النموذج (1/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُلغيت إعادة محاولة طلب النموذج (1/2) · 4 ث')
   })
 
 })
@@ -1074,11 +1074,11 @@ describe('small branch tails', () => {
     // The untimed counts pill renders static, so the usage pill is the only button.
     const [usagePill] = [...view.getAllByRole('button')] as [HTMLElement]
     expect(view.getByText('1 جولة 1 خطوة').closest('button')).toBeNull()
-    expect(usagePill.textContent).toBe('10 tok')
+    expect(usagePill.textContent).toBe('10 رمز')
     // Pure output accounting still reaches the usage pill's click-open dialog rows.
     fireEvent.click(usagePill)
     const dialog = view.getByRole('dialog')
-    expect(dialog.textContent).toContain('إخراج10 tok')
+    expect(dialog.textContent).toContain('الإخراج10 رمز')
     expect(dialog.textContent).not.toContain('إصابة الذاكرة المؤقتة')
   })
 })

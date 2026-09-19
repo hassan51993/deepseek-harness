@@ -48,10 +48,10 @@ describe('PlanChip', () => {
 
   it('renders the Plan status for active and pending-entry targets', () => {
     setup({ active: true, pending: false })
-    expect(chip().textContent).toBe('Plan')
+    expect(chip().textContent).toBe('خطة')
     cleanup()
     setup({ active: false, pending: true })
-    expect(chip().textContent).toBe('Plan')
+    expect(chip().textContent).toBe('خطة')
   })
 
   it('executes /plan off once and follows the projection down', async () => {

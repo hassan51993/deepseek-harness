@@ -77,7 +77,7 @@ describe('ContextMeter', () => {
     // The reading follows the label in Arabic and leads it in English; both
     // headers read as one sentence rather than a concatenated fragment.
     expect(arView.queryByRole('dialog')!.textContent)
-      .toMatch(/^سياق قد استخدام25%/)
+      .toMatch(/^استُخدم25%من السياق/)
     const enView = meter(values, tEn)
     fireEvent.click(enView.getByRole('button', { name: '25% of context used' }))
     expect(enView.queryByRole('dialog', { name: 'of context used' })!.textContent)
