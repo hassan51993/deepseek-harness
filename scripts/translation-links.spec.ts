@@ -56,7 +56,7 @@ function expectUnchangedLinkInput(root: string, input: string): void {
 }
 
 describe('translation link locale validation', () => {
-  it('rejects a Chinese link to the English sibling with an exact diagnostic', () => {
+  it('rejects an Arabic link to the English sibling with an exact diagnostic', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
       '# إشارة جنوب\n\nمتن.\n\n[عام تصفح](reference.md?view=full#overview)\n',
@@ -228,12 +228,12 @@ describe('translation link rewriting and normalization', () => {
   it('normalizes only paired locale paths and retains other bytes', () => {
     const root = fixture()
     const english = '[Reference](reference.md#overview) [Outside](../packages/outside.md)\n'
-    const chinese = '[Reference](reference.ar.md#overview) [Outside](../packages/outside.md)\n'
+    const arabic = '[Reference](reference.ar.md#overview) [Outside](../packages/outside.md)\n'
     expect(normalizeTranslationMarkdownLinks(
       english,
       linkContext(root, 'docs/guide.md'),
     )).toBe(normalizeTranslationMarkdownLinks(
-      chinese,
+      arabic,
       linkContext(root, 'docs/guide.ar.md'),
     ))
   })

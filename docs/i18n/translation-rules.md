@@ -12,12 +12,12 @@ How to translate between the two sides of a documentation pair in this repo. Bot
 
 ## Voice
 
-- The register is calibrated by [style-samples.md](style-samples.md) — human-approved gold pairs, one per document genre. The counterpart MUST match the target-language side of the nearest sample; where its voice and a prose voice rule disagree, the sample wins. Chinese targets use institutional technical Chinese; English targets use concise professional developer prose.
+- The register is calibrated by [style-samples.md](style-samples.md) — human-approved gold pairs, one per document genre. The counterpart MUST match the target-language side of the nearest sample; where its voice and a prose voice rule disagree, the sample wins. Arabic targets use institutional technical Arabic; English targets use concise professional developer prose.
 - Write as a native technical author restating the content, not as a translator transposing sentences, while preserving every source clause: nothing added, nothing dropped — fluency never justifies losing a clause.
-- Give sentences an explicit actor when the target language would otherwise obscure it; for Chinese, replace vague passives or abstract subjects with the actual actor (نظام، بوابة، مراجعة شخص).
+- Give sentences an explicit actor when the target language would otherwise obscure it; for Arabic, replace vague passives or abstract subjects with the actual actor (نظام، بوابة، مراجعة شخص).
 - Prefer established target-language engineering idiom over calques (خطأ تقرير/تسرب فحص for false positive/negative, تنفيذ أحمر خط for enforcement frontier); localize metaphors instead of transplanting them, and unpack noun chains where the target language requires it.
 - Split long paragraphs by semantic unit — one idea per paragraph. Paragraph boundaries MAY differ from the source; the structural signature does not count paragraphs.
-- When translating into Chinese, category nouns use Chinese with a first-mention English annotation (فعلي تشغيل يد سجل (cookbook)); when translating into English, use the conventional English category name. Literal directory or file references stay code-formatted English.
+- When translating into Arabic, category nouns use Arabic with a first-mention English annotation (فعلي تشغيل يد سجل (cookbook)); when translating into English, use the conventional English category name. Literal directory or file references stay code-formatted English.
 
 ## Structure preservation
 
@@ -34,22 +34,23 @@ The repo's Markdown conventions apply to `.ar.md` files unchanged: one physical 
 
 ## Terminology
 
-- [terminology.md](terminology.md) is the source of truth in both directions. Before translating, load it; every listed term MUST follow its row and its "لا يلزم ترجمة عمل" prohibitions. A Chinese target uses the "العربية" column and its "أول مرة ظهور" annotation; an English target uses the "English" column without adding a Arabic gloss.
-- For a Chinese target, an unlisted technical term MAY use an established rendering from a major Arabic-language OSS or vendor source (K8s/Vue/MDN Chinese docs, دقيق لين بسيط في ريح إطار إشارة جنوب, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «انتظار تحديد فن لغة»(pending terms) with a suggested rendering.
+- [terminology.md](terminology.md) is the source of truth in both directions. Before translating, load it; every listed term MUST follow its row and its "لا يلزم ترجمة عمل" prohibitions. An Arabic target uses the "العربية" column and its "أول مرة ظهور" annotation; an English target uses the "English" column without adding a Arabic gloss.
+- For an Arabic target, an unlisted technical term MAY use an established rendering from a major Arabic-language OSS or vendor source (K8s/Vue/MDN Arabic docs, دقيق لين بسيط في ريح إطار إشارة جنوب, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «انتظار تحديد فن لغة»(pending terms) with a suggested rendering.
 - For an English target, use the established English technical term. If the source term has no unambiguous established equivalent, preserve it with a short explanatory gloss and list it under pending terms. Neither direction may invent a rendering inline; a decided term enters [terminology.md](terminology.md) in the same PR or a follow-up.
 
 ## Typography
 
-These rules govern the Arabic side; the English side follows the repo's normal Markdown conventions (root `AGENTS.md`). The mixed-script rules below follow the cross-project consensus of the [MDN Arabic translation guide](https://github.com/mdn/translated-content/blob/main/docs/ar-sa/translation-guide.md), the [Kubernetes ar-sa localization guide](https://kubernetes.io/ar-sa/docs/contribute/localization_zh/), the [Vue.js Arabic translation conventions](https://github.com/vuejs-translations/docs-ar-sa/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5), and [العربية نص سجل ترتيب إصدار إشارة شمال](https://github.com/sparanoid/chinese-copywriting-guidelines), which in turn ground in [W3C clreq](https://www.w3.org/TR/clreq/) and GB/T 15834—2011:
+These rules govern the Arabic side; the English side follows the repo's normal Markdown conventions (root `AGENTS.md`). The bidirectional and punctuation rules below follow [W3C alreq](https://www.w3.org/TR/alreq/), [Unicode UAX #9](https://www.unicode.org/reports/tr9/), and the [Microsoft Arabic style guide](https://learn.microsoft.com/en-us/globalization/reference/microsoft-style-guides):
 
-- MUST put one half-width space between Chinese text and Latin words, and between Chinese text and numerals: `كل plugin تسجيل 3 عدد tool`.No space between a full-width punctuation mark and anything.
-- MUST use full-width (Chinese) punctuation in Arabic prose: `،.: ؛؟!()«»`. Half-width punctuation stays inside code spans, inside complete English sentences quoted as-is, and in numbers (`3.5`, `1,024`).
+- Arabic prose runs right-to-left while code spans, identifiers, links, and numerals inside it run left-to-right. MUST NOT add Unicode directional control characters to the Markdown source; renderers apply the bidirectional algorithm.
+- MUST put one space between Arabic text and an adjacent Latin word or numeral: `كل plugin يسجل 3 أدوات`. No space separates a punctuation mark from the text it attaches to.
+- MUST use Arabic punctuation in Arabic prose: comma `،`, semicolon `؛`, question mark `؟`. Period, colon, exclamation mark, and parentheses keep their ASCII forms. ASCII punctuation also stays inside code spans, inside complete English sentences quoted as-is, and in numbers (`3.5`, `1,024`).
 - Arabic prose *SHOULD* prefer colons, periods, commas, or parentheses over em dashes. Keep an em dash only when no other punctuation preserves the sentence naturally.
-- Enumeration commas: a Chinese list of parallel items uses توقف رقم (،), not commas.
-- MUST NOT use full-width digits or full-width Latin letters — `123` never, `123` always.
+- Enumeration: a list of parallel items separates them with the Arabic comma `،`, not the ASCII comma.
+- MUST use Western Arabic numerals (`123`), never Eastern Arabic-Indic digits (`١٢٣`), so figures match the English side and the code they describe.
 - Proper nouns keep their canonical casing: GitHub, TypeScript, DeepSeek — never `github`/`Github` unless quoting code.
-- Second person is أنت, not أنت (matches the Vue and Kubernetes Chinese conventions and this repo's direct voice).
-- Emphasis markers (`**bold**`, `*italic*`) stay on the same spans as the source; Chinese has no italics, so the rendered emphasis may look identical — do not substitute quotation marks or other decoration.
+- Second person is the singular أنت, matching this repo's direct voice.
+- Emphasis markers (`**bold**`, `*italic*`) stay on the same spans as the source; Arabic has no italic forms, so the rendered emphasis may look identical — do not substitute quotation marks or other decoration.
 
 ## Quality bar
 
@@ -60,10 +61,7 @@ These rules govern the Arabic side; the English side follows the repo's normal M
 
 Authorities cited by these rules, for humans and agents who want the underlying reasoning:
 
-- [العربية نص سجل ترتيب إصدار إشارة شمال](https://github.com/sparanoid/chinese-copywriting-guidelines) — the de-facto community standard for mixed CJK/Latin spacing and punctuation.
-- [MDN ar-SA translation guide](https://github.com/mdn/translated-content/blob/main/docs/ar-sa/translation-guide.md) — an in-repo translation-rules file of the same shape as this one; spacing, punctuation, and glossary practice.
-- [Kubernetes ar-sa localization guide](https://kubernetes.io/ar-sa/docs/contribute/localization_zh/) — terminology-first-occurrence and punctuation practice from the largest ar localization team.
-- [Vue.js docs-ar-sa قلب ترجمة يجب معرفة](https://github.com/vuejs-translations/docs-ar-sa/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5) — per-term translate/keep decisions and tone.
-- [ar-style-guide](https://ar-style-guide.readthedocs.io) — a community Chinese technical-writing style guide whose rule-level taxonomy (and RFC 2119 keyword levels) this file borrows; aggregates GB/T 15834/15835, clreq, and vendor guides.
-- [W3C clreq](https://www.w3.org/TR/clreq/) and the [Microsoft Arabic style guide](https://learn.microsoft.com/en-us/globalization/reference/microsoft-style-guides) — the formal typographic and vendor-localization baselines.
-- GB/T 19682-2005«قلب ترجمة خدمة ترجمة نص جودة كمية اشتراط» — the national standard whose three base requirements (وفي فعلي أصل نص، فن لغة موحد واحد، سطر نص عبر ترتيب) this file's Faithfulness and Terminology sections operationalize.
+- [W3C alreq](https://www.w3.org/TR/alreq/) — Arabic Layout Requirements: script behaviour, justification, punctuation, and digit conventions.
+- [Unicode UAX #9](https://www.unicode.org/reports/tr9/) — the bidirectional algorithm that decides how Latin identifiers and numerals sit inside Arabic prose.
+- [Microsoft Arabic style guide](https://learn.microsoft.com/en-us/globalization/reference/microsoft-style-guides) — the vendor-localization baseline for register, terminology, and second person.
+- [Unicode CLDR](https://cldr.unicode.org/) — the locale data behind numbering systems, list separators, and date formats for `ar`.

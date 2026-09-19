@@ -17,5 +17,5 @@ function translator(dictionary: Record<string, string>): TrajectoryTranslate {
 /** English trajectory translator for component and pure-layout tests. */
 export const t = translator({ ...commonEn, ...en })
 
-/** Chinese trajectory translator for real-view fixtures that open in Arabic. */
+/** Arabic trajectory translator for real-view fixtures that open in Arabic. */
 export const tAr = translator({ ...commonAr, ...ar })

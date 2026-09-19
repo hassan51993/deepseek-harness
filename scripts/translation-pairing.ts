@@ -107,7 +107,7 @@ export function parsePairMeta(content: string): Map<string, string> | undefined 
  * Render a `foo.i18n.yaml` consistency record.
  * @param source - Repo-relative English path.
  * @param sourceHash - Blob hash of the English side.
- * @param ar - Repo-relative Chinese path.
+ * @param ar - Repo-relative Arabic path.
  * @param arHash - Blob hash of the Arabic side.
  * @returns The exact sidecar file content.
  */

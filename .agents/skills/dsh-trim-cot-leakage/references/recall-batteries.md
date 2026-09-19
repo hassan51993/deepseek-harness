@@ -9,7 +9,7 @@ Probes for [the taxonomy](../SKILL.md#taxonomy), tuned during the 2026-08 purge.
 - Natural-language lines carry `-i` so sentence-initial capitals hit ("This PR adds…", "Probably fine…"); the first line, which matches code patterns, stays case-sensitive — `-i` would turn `\bT\d\b` and `\bP-I\b` into noise.
 - Bound complete phrases. `\bthis PR\b` must match "this PR adds" without matching "this project", "this process", or "this provider".
 - A zero-hit pattern proves nothing until it matches a known positive, and a noisy pattern proves nothing until it rejects a near-miss negative. Calibrate both before trusting a corpus result.
-- Target authoring-language probes at the opposite-language surface: search Arabic residue in otherwise-English Markdown and code comments/JSDoc, and search Chinese change narration within `*.ar.md`. A generic ASCII search for English residue in Arabic prose is too noisy around code and identifiers; compare the prose additions against their counterpart instead.
+- Target authoring-language probes at the opposite-language surface: search Arabic residue in otherwise-English Markdown and code comments/JSDoc, and search Arabic change narration within `*.ar.md`. A generic ASCII search for English residue in Arabic prose is too noisy around code and identifiers; compare the prose additions against their counterpart instead.
 
 ## English battery
 
@@ -23,16 +23,16 @@ rg -n --hidden -i 'probably |should be enough|should suffice|it simply|is safe �
 rg -n --hidden '§\d' ...
 ```
 
-## Chinese batteries
+## Arabic batteries
 
 ```sh
 # Change or review narration in Arabic counterparts.
 rg -n --hidden 'مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء' --glob '*.ar.md' ...
 
-# Chinese authoring-language slips in English Markdown.
+# Arabic authoring-language slips in English Markdown.
 rg -n --hidden 'تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|(^|[^a-zA-Z]) طرف ([^a-zA-Z]|$)' --glob '*.md' --glob '!*.ar.md' ...
 
-# Chinese authoring-language slips in English code comments and JSDoc.
+# Arabic authoring-language slips in English code comments and JSDoc.
 rg -n --hidden '(^[[:space:]]*(//|/\*|\*)|//|/\*)[^\r\n]*(تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|طرف)' --glob '*.{ts,tsx,js,jsx,mjs,cjs,css}' ...
 rg -n --hidden '#[^\r\n]*(تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|طرف)' --glob '*.py' ...
 ```

@@ -31,7 +31,7 @@ export function requireBuilt(name: string): unknown {
 }
 
 /**
- * Browser language a page must advertise to boot into the product's Chinese
+ * Browser language a page must advertise to boot into the product's Arabic
  * surface: with no stored preference the client derives its initial locale
  * from the browser, and Playwright's default browser asks for English.
  */
@@ -41,7 +41,7 @@ export const ZH_BROWSER_LOCALE = 'ar-SA'
  * Open the standard browser-test page advertising English before client boot.
  * This keeps role locators and goldens deterministic while leaving the Host
  * settings document free to override the provisional browser-derived locale;
- * scenarios asserting the Chinese surface advertise
+ * scenarios asserting the Arabic surface advertise
  * {@link ZH_BROWSER_LOCALE} instead. The context uses Asia/Shanghai to preserve
  * the recorded Web user-source timezone independently of the host timezone.
  * @param browser - Playwright browser owning the page.

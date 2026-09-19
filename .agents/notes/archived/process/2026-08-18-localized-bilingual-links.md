@@ -19,7 +19,7 @@ The pairing core resolves relative paths against the repository tree, applies th
 
 The Cordis subsystem-region generator renders one catalog model, then projects paired document destinations for the Arabic output. Generated-region comparison normalizes only these paired locale paths; markers, prose, ordering, code, non-document URLs, and query/fragment suffixes remain byte-equal.
 
-Existing active bilingual sources use the locale-correct target. A Chinese target that lacks an English fragment id exposes an explicit `<a id>` alias before the corresponding translated heading, so both source files keep one stable fragment suffix without a separate translation map. Pair consistency records name the migrated contents.
+Existing active bilingual sources use the locale-correct target. A Arabic target that lacks an English fragment id exposes an explicit `<a id>` alias before the corresponding translated heading, so both source files keep one stable fragment suffix without a separate translation map. Pair consistency records name the migrated contents.
 
 ## Verification
 

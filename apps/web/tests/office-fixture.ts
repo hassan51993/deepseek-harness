@@ -8,7 +8,7 @@ const CONTENT_NS = 'http://schemas.openxmlformats.org/package/2006/content-types
 const TEXT = 'Office preview العربية وثيقة'
 
 /**
- * Create a valid one-page Office document containing Latin and Chinese text.
+ * Create a valid one-page Office document containing Latin and Arabic text.
  * @param extension - Office application and format to exercise.
  * @param font - Latin family requested by generated OOXML documents; binary fixtures retain their stored fonts.
  * @returns Compressed document bytes accepted by the production converter.

@@ -46,12 +46,12 @@ describe('package-group subsystem pages', () => {
     ])
   })
 
-  it('does not treat the subsystem index or a Arabic counterpart as an owning page', () => {
+  it('does not treat the subsystem index or an Arabic counterpart as an owning page', () => {
     const root = fixture()
     write(
       root,
       'packages/wrong/README.md',
-      '[index](../../docs/subsystems/README.md) [Chinese](../../docs/subsystems/wrong.ar.md)\n',
+      '[index](../../docs/subsystems/README.md) [Arabic](../../docs/subsystems/wrong.ar.md)\n',
     )
     write(root, 'docs/subsystems/README.md', '# Subsystems\n')
     write(root, 'docs/subsystems/wrong.ar.md', '# Wrong\n')

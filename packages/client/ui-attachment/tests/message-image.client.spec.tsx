@@ -152,7 +152,7 @@ describe('MessageImage', () => {
   })
 
   it.each([
-    ['Chinese', labels],
+    ['Arabic', labels],
     ['English', { ...labels, loading: 'Loading image…', loadFailed: 'Image failed to load; click to retry' }],
   ] as const)('labels thumbnail status icons and retries a failed read in %s', async (_locale, statusLabels) => {
     const pending = Promise.withResolvers<string>()

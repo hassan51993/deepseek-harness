@@ -90,15 +90,15 @@ function mirroredPages(pages: MirroredPage[]): DocsPage[] {
 
 function pairedPages(pages: PairedPage[]): DocsPage[] {
   return mirroredPages(pages.map((page) => {
-    const chineseSource = page.source.replace(/\.md$/, '.ar.md')
+    const arabicSource = page.source.replace(/\.md$/, '.ar.md')
     const sharedAliases = page.sourceAliases ?? []
     return {
       ...page,
-      source: { root: chineseSource, en: page.source },
+      source: { root: arabicSource, en: page.source },
       contentLocale: { root: 'ar-SA', en: 'en-US' },
       sourceAliases: {
         root: [...sharedAliases, page.source],
-        en: [...sharedAliases, chineseSource],
+        en: [...sharedAliases, arabicSource],
       },
     }
   }))
@@ -289,7 +289,7 @@ const cordisPrimerReference = pairedPages([
 ])
 
 /**
- * Subsystem pages grouped by the concern they document, as `[Chinese section,
+ * Subsystem pages grouped by the concern they document, as `[Arabic section,
  * English section, pages]`. One flat list of every subsystem pushed the rest of
  * the reference sidebar below the fold.
  */

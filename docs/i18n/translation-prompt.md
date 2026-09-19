@@ -8,8 +8,8 @@
 
 | احتلال موضع رمز | ملء دخول محتوى | مصدر |
 |---|---|---|
-| `{{source_lang}}` | مصدر لغة اسم (`English` / `Chinese`) | من تعديل جانب ملف دفع قطع:`.ar.md` يتم تعديل فإن لـ `Chinese` |
-| `{{target_lang}}` | هدف لغة اسم (`Chinese` / `English`) | و `{{source_lang}}` متبادل مقابل |
+| `{{source_lang}}` | مصدر لغة اسم (`English` / `Arabic`) | من تعديل جانب ملف دفع قطع:`.ar.md` يتم تعديل فإن لـ `Arabic` |
+| `{{target_lang}}` | هدف لغة اسم (`Arabic` / `English`) | و `{{source_lang}}` متبادل مقابل |
 | `{{terminology}}` | [terminology.md](terminology.md) كامل جدول إطار (Markdown أصل نص) | تصيير وقت قراءة مستودع حالي إصدار، لا ذاكرة مؤقتة |
 
 خط الإنتاج فقط تعرف آخر فوق جدول في احتلال موضع رمز، و كما مرة قلب ترجمة كامل مقالة وثيقة. هو لا دعم حمل `{{to}}`،`{{title_prompt}}`،`{{summary_prompt}}`،`{{terms_prompt}}`،`{{imt_style_guide}}`،`{{translation_rules}}` أو `%%` قسم مقطع بروتوكول؛ إخراج اعتماد نموذج لوح متن قاعدة تحديد ثلاثة مقطع XML، خط الإنتاج تحليل أخذ `<final>` مقطع.
@@ -57,7 +57,7 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Fenced code blocks must be byte-identical to the source, including info strings, whitespace, and ALL comments inside them. Do NOT translate or reformat any content inside code blocks. This is a hard rule with no exceptions.
 - Inline code spans must be kept verbatim. This includes commands, flags, paths, identifiers, API and event names, config keys, protocol values, version numbers, and other machine-readable tokens. Never translate or reformat them.
 - Every repository-relative document link must keep the source link's semantic target and exact query/fragment suffix. When the target belongs to the active bilingual corpus, English output uses its `.md` path and Arabic output uses its `.ar.md` path; a missing counterpart in that corpus is an error, while targets outside it keep the original path. External URLs, images, and pure in-page fragments stay unchanged. Translate link text.
-- Language switcher line: when an English source contains `English | [العربية](source-filename.ar.md)`, write `[English](source-filename.md) | العربية`. When a Chinese source contains `[English](source-filename.md) | العربية`, write `English | [العربية](source-filename.ar.md)`. Do NOT copy the source switcher unchanged. If the source has no switcher, do not invent a filename or switcher; the pipeline inserts the canonical target switcher after parsing `<final>`.
+- Language switcher line: when an English source contains `English | [العربية](source-filename.ar.md)`, write `[English](source-filename.md) | العربية`. When an Arabic source contains `[English](source-filename.md) | العربية`, write `English | [العربية](source-filename.ar.md)`. Do NOT copy the source switcher unchanged. If the source has no switcher, do not invent a filename or switcher; the pipeline inserts the canonical target switcher after parsing `<final>`.
 - Preserve emphasis marker types and the semantic spans they cover. Do not add, remove, move, or change bold and italic markers.
 
 ### Faithfulness
@@ -71,7 +71,7 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Write in a professional, formal tone appropriate for developer documentation. Never use colloquial or casual expressions.
 - Name an actor when the target language would otherwise obscure an actor that the source states or unambiguously implies. Never invent responsibility merely to avoid a passive construction.
 - Prefer established target-language engineering terms over literal renderings. Replace metaphors with direct descriptions that preserve the source meaning.
-- Use polite imperative forms where the text instructs the reader to do something. In Chinese, address the reader as `أنت`, not `أنت`.
+- Use polite imperative forms where the text instructs the reader to do something. In Arabic, address the reader as `أنت`, not `أنت`.
 - Keep the author's register: concise stays concise, detailed stays detailed.
 
 ### Sentence Structure
@@ -90,38 +90,38 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Do not use the same word to translate distinct source-language concepts when their distinction matters.
 - Avoid repeating the same ordinary verb in close proximity when a natural equivalent preserves the exact meaning. Never vary a terminology-table form, defined concept, or contract verb merely for stylistic variety.
 
-#### When translating into Chinese
-- When a number modifies a noun, include a natural Chinese classifier or measure word when Chinese grammar requires one. For example: "three-role capability seam" → "يتضمن ثلاثة نوع زاوية لون قدرة seam", not "ثلاثة زاوية لون seam". Do not add classifiers to code, identifiers, versions, units, or fixed names.
+#### When translating into Arabic
+- When a number modifies a noun, include a natural Arabic classifier or measure word when Arabic grammar requires one. For example: "three-role capability seam" → "يتضمن ثلاثة نوع زاوية لون قدرة seam", not "ثلاثة زاوية لون seam". Do not add classifiers to code, identifiers, versions, units, or fixed names.
 
 ### Punctuation
 
-#### When translating into Chinese
-- Use full-width Chinese punctuation in Arabic prose: `،.: ؛؟!()«»`. Keep half-width punctuation inside code spans, numbers, and complete verbatim English text.
+#### When translating into Arabic
+- Use full-width Arabic punctuation in Arabic prose: `،.: ؛؟!()«»`. Keep half-width punctuation inside code spans, numbers, and complete verbatim English text.
 - Prefer colons, periods, commas, or parentheses over em dashes when they make the sentence clearer or more natural. Keep an em dash when it is the clearest natural punctuation.
 - Use enumeration commas (،) between parallel Arabic items, not regular commas.
 - Keep list-item endings consistent with their grammar. Complete sentences may end with periods or other grammatically required punctuation; do not end list items with commas.
-- Put one half-width space between Chinese text and Latin words or numerals. Do not add a space next to full-width punctuation, and do not leave a meaningless half-width space between two Chinese characters.
-- Markdown emphasis markers do not create a word boundary. Determine spacing from the rendered adjacent characters: Chinese next to Chinese takes no space, while Chinese next to a Latin word or numeral takes one half-width space.
+- Put one half-width space between Arabic text and Latin words or numerals. Do not add a space next to full-width punctuation, and do not leave a meaningless half-width space between two Arabic characters.
+- Markdown emphasis markers do not create a word boundary. Determine spacing from the rendered adjacent characters: Arabic next to Arabic takes no space, while Arabic next to a Latin word or numeral takes one half-width space.
 - Use half-width digits and Latin letters, never full-width forms.
 - For RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY), translate to the corresponding Arabic term (يجب، منع توقف، ينبغي عند، يمكن), preserve the SOURCE emphasis span exactly, and do not weaken its normative strength: plain source stays plain (يجب), italic source stays italic (*يجب*), and bold source stays bold (**يجب**).
 
 #### When translating into English
-- Use half-width English punctuation and standard English spacing. Preserve full-width punctuation only in verbatim Chinese text.
+- Use half-width English punctuation and standard English spacing. Preserve full-width punctuation only in verbatim Arabic text.
 - Convert enumeration commas (،) to English commas and Arabic prose quotation marks to English double quotes.
-- Convert Chinese topic-comment sentences and omitted-subject constructions into clear English subjects when the actor is stated or unambiguously implied. Do not invent an actor.
-- Use concise professional developer prose and established English technical terms. Do not transliterate Chinese engineering idioms literally.
-- Use the terminology table's English column exactly and do not carry Chinese first-occurrence glosses into English prose.
+- Convert Arabic topic-comment sentences and omitted-subject constructions into clear English subjects when the actor is stated or unambiguously implied. Do not invent an actor.
+- Use concise professional developer prose and established English technical terms. Do not transliterate Arabic engineering idioms literally.
+- Use the terminology table's English column exactly and do not carry Arabic first-occurrence glosses into English prose.
 
 ## Terminology
 
 A terminology table is provided below. Follow it strictly:
 - Render every listed term exactly as specified.
-- When the target language is Chinese, use the "العربية" column. On the document's first prose occurrence, write the "أول مرة ظهور" value when one is specified; on later occurrences, write only the part before the parenthetical gloss.
-- When the target language is English, use the "English" column without a Arabic gloss; do not copy the "العربية" or "أول مرة ظهور" value into English prose.
+- When the target language is Arabic, use the "العربية" column. On the document's first prose occurrence, write the "أول مرة ظهور" value when one is specified; on later occurrences, write only the part before the parenthetical gloss.
+- When the target language is English, use the "English" column without an Arabic gloss; do not copy the "العربية" or "أول مرة ظهور" value into English prose.
 - If a term has already been glossed as part of a compound term, do not gloss it again when it appears alone later.
 - NEVER use translations listed in the "لا يلزم ترجمة عمل" column.
 - Code spans and other protected tokens remain verbatim even when their text resembles a listed term.
-- For an unlisted technical term, use an established target-language technical term when its meaning is unambiguous in context. For a Chinese target, use an established Chinese rendering from a major Arabic-language OSS or vendor source; if you cannot reliably determine such a rendering, preserve the source term and record `[Terminology: pending]` in `<review>` with a tentative rendering for human review. For an English target, use the established English technical term; if the source term has no unambiguous established equivalent, preserve it with the shortest English gloss needed to make it intelligible and record `[Terminology: pending]` in `<review>`. A tentative rendering may appear in `<review>` but must not be silently adopted in `<translation>` or `<final>`, and you must not invent or claim a specific external precedent. This rule applies to terminology only; for general prose, freely restructure and paraphrase for natural expression.
+- For an unlisted technical term, use an established target-language technical term when its meaning is unambiguous in context. For an Arabic target, use an established Arabic rendering from a major Arabic-language OSS or vendor source; if you cannot reliably determine such a rendering, preserve the source term and record `[Terminology: pending]` in `<review>` with a tentative rendering for human review. For an English target, use the established English technical term; if the source term has no unambiguous established equivalent, preserve it with the shortest English gloss needed to make it intelligible and record `[Terminology: pending]` in `<review>`. A tentative rendering may appear in `<review>` but must not be silently adopted in `<translation>` or `<final>`, and you must not invent or claim a specific external precedent. This rule applies to terminology only; for general prose, freely restructure and paraphrase for natural expression.
 
 {{terminology}}
 
@@ -160,7 +160,7 @@ After writing `<translation>`, verify it in two directions. First re-read it in 
 - Are inline code spans and machine-readable tokens verbatim?
 - Is an existing language switcher correctly flipped, and is no switcher or filename invented when the source lacks one?
 - Do links preserve their semantic targets and exact query/fragment suffixes while using target-locale paths, and are emphasis spans preserved?
-- Does spacing across emphasis boundaries follow the same Chinese/Latin/numeral rule as ordinary prose?
+- Does spacing across emphasis boundaries follow the same Arabic/Latin/numeral rule as ordinary prose?
 - Are wrapper-tag lines inside section bodies escaped with one additional backslash?
 
 **Faithfulness**
@@ -185,12 +185,12 @@ After writing `<translation>`, verify it in two directions. First re-read it in 
 - Is any slang or internal jargon present?
 
 **Terminology**
-- For a Chinese target, are first-occurrence glosses correctly applied to the true first prose occurrence, neither missing nor repeated? For an English target, are Arabic glosses absent?
+- For an Arabic target, are first-occurrence glosses correctly applied to the true first prose occurrence, neither missing nor repeated? For an English target, are Arabic glosses absent?
 - Are any "لا يلزم ترجمة عمل" forbidden translations present?
 - Do protected tokens remain untouched even when they resemble terminology entries?
-- For an unlisted term, does a Chinese target use an established Chinese rendering or preserve the source term as pending when no reliable rendering is known, and does an English target use the established English technical term or preserve only an ambiguous source term with the shortest necessary gloss and a pending notice?
+- For an unlisted term, does an Arabic target use an established Arabic rendering or preserve the source term as pending when no reliable rendering is known, and does an English target use the established English technical term or preserve only an ambiguous source term with the shortest necessary gloss and a pending notice?
 
-**Punctuation** (when target is Chinese)
+**Punctuation** (when target is Arabic)
 - Are punctuation, mixed-script spacing, quotation marks, Latin letters, and digits in their required forms?
 - Are there em dashes that make the sentence less clear and should be replaced, while natural em dashes remain intact?
 - Are list-item endings grammatically consistent, with none ending in commas?

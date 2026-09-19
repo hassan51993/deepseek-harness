@@ -203,8 +203,8 @@ export function loadPersistenceReleases(root: string): PersistenceReleases {
   for (const release of manifest.releases) {
     const read = (suffix: string): string => readFileSync(join(directory, release.tag + suffix), 'utf8').replaceAll('\r\n', '\n')
     const english = machineBlock(read('.md'), `${release.tag}.md`)
-    const chinese = machineBlock(read('.ar.md'), `${release.tag}.ar.md`)
-    if (english !== chinese) throw new Error(`${release.tag}: bilingual machine records differ`)
+    const arabic = machineBlock(read('.ar.md'), `${release.tag}.ar.md`)
+    if (english !== arabic) throw new Error(`${release.tag}: bilingual machine records differ`)
     const record = parseRecord(english, release, entries.at(-1)?.release.tag ?? null)
     const snapshot = parseHistoricalPersistenceSnapshot(JSON.parse(read('.schema.json')))
     validateTypes(snapshot, release.tag)

@@ -94,7 +94,7 @@ function pairMeta(content: string): Map<string, string> | undefined {
   return entries
 }
 
-function validateHeader(path: string, content: Buffer, sourceBase: string, chinese: boolean): string[] {
+function validateHeader(path: string, content: Buffer, sourceBase: string, arabic: boolean): string[] {
   const errors: string[] = []
   const lines = content.toString('utf8').split('\n')
   if (!/^# Agent Note: \S/.test(lines[0] ?? '')) errors.push(`${path}: line 1 must be \`# Agent Note: <title>\``)
@@ -107,7 +107,7 @@ function validateHeader(path: string, content: Buffer, sourceBase: string, chine
     errors.push(`${path}: archive date ${archived} predates the note filename`)
   }
   if (lines[4] !== '') errors.push(`${path}: line 5 must be blank`)
-  const switcher = chinese
+  const switcher = arabic
     ? `[English](${sourceBase}.md) | العربية`
     : `English | [العربية](${sourceBase}.ar.md)`
   if (lines[5] !== switcher) errors.push(`${path}: line 6 must be ${JSON.stringify(switcher)}`)

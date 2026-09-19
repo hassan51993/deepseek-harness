@@ -35,9 +35,9 @@ try {
       'scripts/fixtures/translation-prompt/examples/agent-note.ar.md',
     ],
   ] as const
-  const examples: TranslationExample[] = examplePaths.map(([english, chinese]) => ({
+  const examples: TranslationExample[] = examplePaths.map(([english, arabic]) => ({
     english: read(english),
-    chinese: read(chinese),
+    arabic: read(arabic),
   }))
   const sourceDocument = read('scripts/fixtures/translation-prompt/snapshot-note.md')
   const recordedResponse = read('scripts/fixtures/translation-prompt/response.txt')
@@ -48,14 +48,14 @@ try {
 
   const englishInput = { sourceLanguage: 'English' as const, sourceFilename: 'snapshot-note.md', terminology }
   const englishSource = renderTranslationPrompt(document, englishInput)
-  const chineseSource = renderTranslationPrompt(document, {
-    sourceLanguage: 'Chinese',
+  const arabicSource = renderTranslationPrompt(document, {
+    sourceLanguage: 'Arabic',
     sourceFilename: 'snapshot-note.ar.md',
     terminology,
   })
-  if (englishSource.includes('{{') || chineseSource.includes('{{')) throw new Error('rendered prompt contains an unresolved placeholder')
-  if (!englishSource.includes('from English to Chinese')) throw new Error('English-source render does not translate into Chinese')
-  if (!chineseSource.includes('from Arabic to English')) throw new Error('Arabic-source render does not translate into English')
+  if (englishSource.includes('{{') || arabicSource.includes('{{')) throw new Error('rendered prompt contains an unresolved placeholder')
+  if (!englishSource.includes('from English to Arabic')) throw new Error('English-source render does not translate into Arabic')
+  if (!arabicSource.includes('from Arabic to English')) throw new Error('Arabic-source render does not translate into English')
 
   const example = /```xml\n([\s\S]*?)\n```/.exec(englishSource)?.[1]
   if (example === undefined) throw new Error('rendered prompt has no three-section response example')

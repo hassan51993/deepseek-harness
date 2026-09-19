@@ -154,7 +154,7 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
     expect(tripwire.warnings).toEqual([])
   })
 
-  it.skipIf(MODE === 'record')('replays the workspace and the Chinese conversation', async () => {
+  it.skipIf(MODE === 'record')('replays the workspace and the Arabic conversation', async () => {
     await assertFinalWorkspaceSnapshot(DIR, cwd, { ignoredRootEntries: ['.git'] })
     const aria = await captureExpandedTurnProcessAria(page, '[data-chat-flow]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(join(DIR, 'ui.expected.md'), aria, MODE)

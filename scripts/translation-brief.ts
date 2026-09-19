@@ -205,7 +205,7 @@ export function computeMechanicalUpdate(confirmedSource: string, currentSource: 
 /** One parsed terminology-table data row. */
 export interface TerminologyRow {
   english: string
-  chinese: string
+  arabic: string
   /** The أول مرة ظهور cell (first-occurrence rendering), possibly empty. */
   first: string
   /** The verbatim table row. */
@@ -231,7 +231,7 @@ export function parseTerminologyRows(terminology: string): TerminologyRow[] {
     const cells = line.split('|').map(cell => cell.trim())
     const english = plainTerm(cells[1] ?? '')
     if (english === '' || english === 'English') continue
-    rows.push({ english, chinese: plainTerm(cells[2] ?? ''), first: plainTerm(cells[3] ?? ''), line })
+    rows.push({ english, arabic: plainTerm(cells[2] ?? ''), first: plainTerm(cells[3] ?? ''), line })
   }
   return rows
 }
@@ -264,7 +264,7 @@ export type BriefDirection = 'en-to-ar' | 'ar-to-en'
 
 /** Whether a row's source-language term occurs in the given text. */
 function rowOccurs(row: TerminologyRow, direction: BriefDirection, text: string): boolean {
-  const terms = direction === 'en-to-ar' ? [row.english] : [row.first, row.chinese].filter(term => /[واحد-رمز]/.test(term))
+  const terms = direction === 'en-to-ar' ? [row.english] : [row.first, row.arabic].filter(term => /[واحد-رمز]/.test(term))
   return terms.some(term => termOffsets(text, term, direction === 'en-to-ar').length > 0)
 }
 
@@ -291,7 +291,7 @@ function spanIndexAtOffset(text: string, spans: MarkdownSpan[], offset: number |
   return spans.find(span => line >= span.startLine && line <= span.endLine)?.index
 }
 
-/** First-occurrence guidance computed for a Chinese-target update. */
+/** First-occurrence guidance computed for an Arabic-target update. */
 export interface FirstOccurrenceContext {
   /** Human-readable notes for the briefing. */
   notes: string[]
@@ -383,19 +383,19 @@ export interface TranslationBriefInput {
 
 const ZH_TARGET_DIGEST = [
   '- Edit ONLY what the change requires; preserve the reviewed phrasing of everything unchanged.',
-  '- Nothing added, nothing dropped: the Chinese must state exactly what the new English states.',
-  '- Write natural institutional technical Chinese, not word-by-word gloss; terse stays terse.',
+  '- Nothing added, nothing dropped: the Arabic must state exactly what the new English states.',
+  '- Write natural institutional technical Arabic, not word-by-word gloss; terse stays terse.',
   '- Code fences byte-identical to the English side, comments included; inline code spans verbatim.',
-  '- Repository-relative document links keep the same semantic target and exact query/fragment; targets in the active bilingual corpus use `.ar.md` for Chinese, a missing in-scope counterpart is an error, and targets outside the corpus keep the authored path. The switcher remains the cross-locale exception.',
+  '- Repository-relative document links keep the same semantic target and exact query/fragment; targets in the active bilingual corpus use `.ar.md` for Arabic, a missing in-scope counterpart is an error, and targets outside the corpus keep the authored path. The switcher remains the cross-locale exception.',
   '- Structure mirrors the counterpart: heading depths and order, list kinds and item counts, table rows and columns.',
   '- أول مرة ظهور annotations attach to the document-wide first occurrence only; later occurrences use the bare form, and an empty أول مرة ظهور cell means never gloss.',
-  '- Typography: one half-width space between Chinese and Latin or digits; full-width punctuation in Arabic prose; توقف رقم for enumerations; second person is أنت.',
+  '- Typography: one half-width space between Arabic and Latin or digits; full-width punctuation in Arabic prose; توقف رقم for enumerations; second person is أنت.',
   '- One physical line per paragraph; exactly one trailing newline.',
 ]
 
 const EN_TARGET_DIGEST = [
   '- Edit ONLY what the change requires; preserve the reviewed phrasing of everything unchanged.',
-  '- Nothing added, nothing dropped: the English must state exactly what the new Chinese states.',
+  '- Nothing added, nothing dropped: the English must state exactly what the new Arabic states.',
   '- Write concise professional developer prose, not word-by-word gloss; terse stays terse.',
   '- Code fences byte-identical to the Arabic side, comments included; inline code spans verbatim.',
   '- Repository-relative document links keep the same semantic target and exact query/fragment; targets in the active bilingual corpus use `.md` for English, a missing in-scope counterpart is an error, and targets outside the corpus keep the authored path. The switcher remains the cross-locale exception.',
@@ -404,8 +404,8 @@ const EN_TARGET_DIGEST = [
 ]
 
 function renderBundles(out: string[], input: TranslationBriefInput, bundles: BriefBundle[], firstOccurrenceNotes: string[]): void {
-  const sourceLanguage = input.direction === 'en-to-ar' ? 'English' : 'Chinese'
-  const counterpartLanguage = input.direction === 'en-to-ar' ? 'Chinese' : 'English'
+  const sourceLanguage = input.direction === 'en-to-ar' ? 'English' : 'Arabic'
+  const counterpartLanguage = input.direction === 'en-to-ar' ? 'Arabic' : 'English'
   for (const bundle of bundles) {
     out.push('')
     out.push(`### #${bundle.index} ${bundle.label}${bundle.reason === 'first-occurrence' ? ' — unchanged; included for a first-occurrence move' : ''} — counterpart at ${input.counterpartPath}:${bundle.counterpartStartLine}`)
@@ -446,8 +446,8 @@ function renderBundles(out: string[], input: TranslationBriefInput, bundles: Bri
  * @returns Markdown briefing text.
  */
 export function renderTranslationBrief(input: TranslationBriefInput): string {
-  const sourceLanguage = input.direction === 'en-to-ar' ? 'English' : 'Chinese'
-  const counterpartLanguage = input.direction === 'en-to-ar' ? 'Chinese' : 'English'
+  const sourceLanguage = input.direction === 'en-to-ar' ? 'English' : 'Arabic'
+  const counterpartLanguage = input.direction === 'en-to-ar' ? 'Arabic' : 'English'
   const out: string[] = []
   out.push(`# Translation update briefing: ${input.sourcePath}`)
   out.push('')

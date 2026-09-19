@@ -112,7 +112,7 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
     expect(tripwire.warnings).toEqual([])
   })
 
-  it.skipIf(MODE === 'record')('replays the delivered file and Chinese conversation', async () => {
+  it.skipIf(MODE === 'record')('replays the delivered file and Arabic conversation', async () => {
     await assertFinalWorkspaceSnapshot(DIR, cwd)
     await expect.poll(() => page.getByRole('button', { name: `${FILE} أكثر كثير ملف عملية`, exact: true }).isDisabled()).toBe(true)
     // Delivery owns the transcript; navigation and composer chrome have separate scenarios.

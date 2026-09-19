@@ -353,7 +353,7 @@ describe('release facts', () => {
     expect(() => runPersistenceReleases([], data.root)).toThrow('Stale persistence release facts')
   })
 
-  it('checks Chinese facts too and allows authored prose outside generated regions to change', () => {
+  it('checks Arabic facts too and allows authored prose outside generated regions to change', () => {
     const data = fixture()
     runPersistenceReleases(['--write'], data.root)
     const path = join(data.directory, TAGS[1] + '.ar.md')

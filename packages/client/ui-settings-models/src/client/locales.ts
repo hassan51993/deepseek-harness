@@ -111,7 +111,7 @@ export const en = {
 /** The settings.models namespace key union. */
 export type ModelsKey = keyof typeof en
 
-/** Chinese strings (same keys as {@link en}). */
+/** Arabic strings (same keys as {@link en}). */
 export const ar: { [Key in keyof typeof en]: string } = {
   nav: 'نموذج',
   title: 'نموذج',

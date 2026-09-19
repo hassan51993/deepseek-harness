@@ -17,7 +17,7 @@ export const TRANSLATION_PROMPT_PLACEHOLDERS = ['source_lang', 'target_lang', 't
 type TranslationPromptPlaceholder = (typeof TRANSLATION_PROMPT_PLACEHOLDERS)[number]
 
 /** Languages accepted by the bidirectional prompt. */
-type TranslationLanguage = 'English' | 'Chinese'
+type TranslationLanguage = 'English' | 'Arabic'
 
 /** Inputs that vary for one rendered translation request. */
 export interface TranslationPromptInput {
@@ -31,7 +31,7 @@ export interface TranslationPromptInput {
 /** One reviewed whole-document example available in both directions. */
 export interface TranslationExample {
   english: string
-  chinese: string
+  arabic: string
 }
 
 /** Inputs for one complete model request. */
@@ -75,12 +75,12 @@ function translationFiles(input: Pick<TranslationPromptInput, 'sourceFilename' |
   if (basename(input.sourceFilename) !== input.sourceFilename) {
     throw new Error(`translation prompt: sourceFilename must be a basename; got ${JSON.stringify(input.sourceFilename)}`)
   }
-  const sourceIsChinese = input.sourceFilename.endsWith('.ar.md')
-  const sourceIsEnglish = input.sourceFilename.endsWith('.md') && !sourceIsChinese
-  if (input.sourceLanguage === 'Chinese' ? !sourceIsChinese : !sourceIsEnglish) {
+  const sourceIsArabic = input.sourceFilename.endsWith('.ar.md')
+  const sourceIsEnglish = input.sourceFilename.endsWith('.md') && !sourceIsArabic
+  if (input.sourceLanguage === 'Arabic' ? !sourceIsArabic : !sourceIsEnglish) {
     throw new Error(`translation prompt: ${input.sourceFilename} does not match source language ${input.sourceLanguage}`)
   }
-  if (sourceIsChinese) {
+  if (sourceIsArabic) {
     return {
       targetFilename: input.sourceFilename.replace(/\.ar\.md$/, '.md'),
       targetSwitcher: `English | [العربية](${input.sourceFilename})`,
@@ -112,7 +112,7 @@ export function documentedTranslationPromptPlaceholders(document: string): strin
 /** Render one system prompt from the checked-in template. */
 export function renderTranslationPrompt(document: string, input: TranslationPromptInput): string {
   translationFiles(input)
-  const targetLanguage: TranslationLanguage = input.sourceLanguage === 'English' ? 'Chinese' : 'English'
+  const targetLanguage: TranslationLanguage = input.sourceLanguage === 'English' ? 'Arabic' : 'English'
   const values: Record<TranslationPromptPlaceholder, string> = {
     source_lang: input.sourceLanguage,
     target_lang: targetLanguage,
@@ -141,8 +141,8 @@ export function renderTranslationPrompt(document: string, input: TranslationProm
  */
 export function renderTranslationRequest(document: string, input: TranslationRequestInput): TranslationRequest {
   const files = translationFiles(input)
-  const sourceKey = input.sourceLanguage === 'English' ? 'english' : 'chinese'
-  const targetKey = input.sourceLanguage === 'English' ? 'chinese' : 'english'
+  const sourceKey = input.sourceLanguage === 'English' ? 'english' : 'arabic'
+  const targetKey = input.sourceLanguage === 'English' ? 'arabic' : 'english'
   const messages: TranslationMessage[] = [{ role: 'system', content: renderTranslationPrompt(document, input) }]
   for (const example of input.examples) {
     messages.push(

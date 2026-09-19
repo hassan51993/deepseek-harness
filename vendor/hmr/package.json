@@ -37,7 +37,7 @@
     },
     "description": {
       "en": "Hot Module Replacement",
-      "ar": "وحدة حار استبدال"
+      "ar": "الاستبدال الساخن للوحدات"
     }
   },
   "peerDependencies": {

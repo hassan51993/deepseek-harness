@@ -133,7 +133,7 @@ describe('terminology', () => {
   it('parses data rows and skips the header and separator', () => {
     const rows = parseTerminologyRows(TERMINOLOGY)
     expect(rows.map(row => row.english)).toEqual(['agent', 'session log', 'gate', 'registry'])
-    expect(rows[0]).toMatchObject({ chinese: 'agent', first: 'agent(ذكي جسم)' })
+    expect(rows[0]).toMatchObject({ arabic: 'agent', first: 'agent(ذكي جسم)' })
   })
 
   it('matches English terms on word boundaries with plural inflections', () => {
@@ -211,11 +211,11 @@ describe('brief rendering', () => {
     expect(brief).toContain('## Changed units')
     expect(brief).toContain('### #4 paragraph — counterpart at docs/foo.ar.md:9')
     expect(brief).toContain('Last-confirmed English:')
-    expect(brief).toContain('Current Chinese (bring this along):')
+    expect(brief).toContain('Current Arabic (bring this along):')
     expect(brief).toContain('## First-occurrence notes')
     expect(brief).toContain('agent(ذكي جسم)')
     expect(brief).toContain('أول مرة ظهور annotations attach to the document-wide first occurrence only')
-    expect(brief).toContain('targets in the active bilingual corpus use `.ar.md` for Chinese')
+    expect(brief).toContain('targets in the active bilingual corpus use `.ar.md` for Arabic')
     expect(brief).toContain('a missing in-scope counterpart is an error')
     expect(brief).toContain('verify-translation-pairing --write docs/foo.md')
   })
@@ -267,7 +267,7 @@ describe('brief rendering', () => {
       counterpartPath: 'docs/foo.md',
       scope: { kind: 'units', bundles: [bundle], firstOccurrenceNotes: [] },
     })
-    expect(brief).toContain('exactly what the new Chinese states')
+    expect(brief).toContain('exactly what the new Arabic states')
     expect(brief).toContain('targets in the active bilingual corpus use `.md` for English')
     expect(brief).toContain('targets outside the corpus keep the authored path')
     expect(brief).toContain('verify-translation-pairing --write docs/foo.md')

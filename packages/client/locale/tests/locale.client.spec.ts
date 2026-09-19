@@ -28,7 +28,7 @@ const stubLanguages = (...tags: string[]): void => {
 
 describe('LocaleRuntime', () => {
   beforeEach(() => {
-    // A Arabic browser is the baseline these specs assert their ar state on.
+    // An Arabic browser is the baseline these specs assert their ar state on.
     stubLanguages('ar-SA')
   })
 
@@ -160,7 +160,7 @@ describe('LocaleRuntime', () => {
   it('persists an explicit pick of the provisional locale, so a shared DSH home agrees', () => {
     // A browser naming no shipped language opens at FALLBACK_LOCALE with
     // nothing stored. Choosing that same language in the menu must become
-    // durable, or a Arabic browser sharing the home still opens Chinese.
+    // durable, or an Arabic browser sharing the home still opens Arabic.
     stubLanguages('fr-FR')
     const host = stubSettingsScope<LocaleSettings>()
     const { svc } = make(host)

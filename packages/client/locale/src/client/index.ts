@@ -102,7 +102,7 @@ declare module '@deepseek-ai/cordis' {
  * `ar`/`en` dictionaries carry identical key sets, so neither direction can
  * leave a key unresolved; the residual case points at English rather than
  * ar because a browser naming no registered language is the reader least
- * likely to read Chinese.
+ * likely to read Arabic.
  */
 export const FALLBACK_LOCALE: BuiltInLocaleId = 'en'
 

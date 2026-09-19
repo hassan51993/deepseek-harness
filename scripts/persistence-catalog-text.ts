@@ -21,7 +21,7 @@ const english = {
   oneOf: 'One of:', opaque: ' (opaque)', opaqueExplanation: ": the declaration does not expose the stored value's internal fields.",
 }
 
-const chinese: Record<keyof typeof english, string> = {
+const arabic: Record<keyof typeof english, string> = {
   title: 'جلسة حفظ دائم حدث دليل',
   intro: 'هذا دليل صف خروج مستودع إعلان كل حفظ دائم Session حدث و ذلك شفرة المصدر إعلان و تحليل نوع، تغطية منطق و شيء إدارة header، حدث معلومة غلاف و كل إضافة إعلان دمج. إعادة تشغيل قاعدة مشاركة رؤية [Session](subsystems/session.ar.md) ، تخزين قاعدة مشاركة رؤية[حفظ دائم](subsystems/persistence.ar.md).',
   generation: 'تشغيل `pnpm run gen-persistence-catalog` يمكن إعادة توليد دليل اثنان نوع لغة، إعداد مقابل سجل، معروف حدث وحدة و آلة جهاز schema دليل.`pnpm run verify-persistence-catalog` فحص كل توليد ملف. إعلان محيط شريط إبقاء شفرة المصدر JSDoc و نوع مرجع؛ تحليل بعد تعريف توسيع ذلك نقل تمرير مرجع بنية.',
@@ -40,4 +40,4 @@ const chinese: Record<keyof typeof english, string> = {
 }
 
 /** Complete translated prose; adding an English key requires its Arabic counterpart. */
-export const persistenceCatalogText = { en: english, ar: chinese }
+export const persistenceCatalogText = { en: english, ar: arabic }

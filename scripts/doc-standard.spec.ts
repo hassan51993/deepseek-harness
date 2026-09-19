@@ -147,8 +147,8 @@ function packageReadmeMetadataErrors(file: string, metadata: Record<string, unkn
 }
 
 function packageReadmeStructureErrors(file: string, source: string): string[] {
-  const chinese = file.endsWith('.ar.md')
-  const required = chinese
+  const arabic = file.endsWith('.ar.md')
+  const required = arabic
     ? [[/^## عام وصف$/m, 'عام وصف'], [/^## دليل$/m, 'دليل'], [/^#{2,3} ملاحظة تطوير$/m, 'ملاحظة تطوير']] as const
     : [[/^## Summary$/m, 'Summary'], [/^## Table of Contents$/m, 'Table of Contents'], [/^#{2,3} Dev Note$/m, 'Dev Note']] as const
   return required.flatMap(([pattern, label]) => pattern.test(source) ? [] : [`missing ${label}`])

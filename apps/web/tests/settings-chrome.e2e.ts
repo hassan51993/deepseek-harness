@@ -613,7 +613,7 @@ describe('web e2e: settings modal and General preferences', () => {
     const enTrigger = page.getByRole('button', { name: 'Settings' })
     await enTrigger.waitFor({ timeout: 10_000 })
 
-    // A Arabic browser on another port still receives the explicit English
+    // An Arabic browser on another port still receives the explicit English
     // preference from the shared Host settings document.
     const second = await launchWebScaffold({ harnessHome: scaffold.harnessHome })
     const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
@@ -648,7 +648,7 @@ describe('web e2e: settings modal and General preferences', () => {
     // A fresh Host home has no locale preference, so its surface follows the
     // browser. English is also FALLBACK_LOCALE, so this scenario alone cannot
     // distinguish detection from the default — the ar scenarios above supply
-    // the discriminating half (a Arabic browser must NOT land on the default).
+    // the discriminating half (an Arabic browser must NOT land on the default).
     const fresh = await launchWebScaffold({})
     const enPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: 'en-US' })
     const enTripwire = watchConsole(enPage)
@@ -662,7 +662,7 @@ describe('web e2e: settings modal and General preferences', () => {
       await dialog.waitFor({ timeout: 10_000 })
       await dialog.getByRole('button', { name: 'English' }).waitFor({ timeout: 10_000 })
       // The plugin list resolves shipped preset names through the en
-      // dictionaries instead of echoing the preset files' Chinese metadata.
+      // dictionaries instead of echoing the preset files' Arabic metadata.
       await dialog.getByRole('button', { name: 'Built-in plugins', exact: true }).click()
       const presetSwitcher = dialog.getByRole('button', { name: 'Choose the agent preset to inspect' })
       await presetSwitcher.waitFor({ timeout: 10_000 })
@@ -687,7 +687,7 @@ describe('web e2e: settings modal and General preferences', () => {
   it('opens a browser asking for no shipped language in English', async () => {
     // The product default for "no usable signal": a French browser ships
     // neither ar nor en, so resolution falls to FALLBACK_LOCALE (en) rather
-    // than to Chinese.
+    // than to Arabic.
     const fresh = await launchWebScaffold({})
     const frPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: 'fr-FR' })
     const frTripwire = watchConsole(frPage)

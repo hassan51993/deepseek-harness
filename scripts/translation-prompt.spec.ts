@@ -32,15 +32,15 @@ const retainedExamples = [
 describe('translation prompt rendering', () => {
   it('renders both directions with every placeholder resolved', () => {
     const en = renderTranslationPrompt(document, { sourceLanguage: 'English', sourceFilename: 'guide.md', terminology })
-    expect(en).toContain('from English to Chinese')
+    expect(en).toContain('from English to Arabic')
     expect(en).toContain(terminology)
     expect(en).not.toContain('{{')
     expect(en).toContain('plain source stays plain (يجب)')
     expect(en).toContain('For an English target, use the established English technical term')
-    expect(en).toContain('does a Chinese target use an established Chinese rendering')
+    expect(en).toContain('does an Arabic target use an established Arabic rendering')
     expect(en).toContain('does an English target use the established English technical term')
     expect(en).toContain('The parser removes exactly one framing escape')
-    const ar = renderTranslationPrompt(document, { sourceLanguage: 'Chinese', sourceFilename: 'guide.ar.md', terminology })
+    const ar = renderTranslationPrompt(document, { sourceLanguage: 'Arabic', sourceFilename: 'guide.ar.md', terminology })
     expect(ar).toContain('from Arabic to English')
   })
 
@@ -89,7 +89,7 @@ describe('translation prompt rendering', () => {
       sourceFilename: 'guide.md',
       sourceDocument: '# Guide\n\nNew source.',
       terminology,
-      examples: [{ english: '# Example\n\nEnglish.', chinese: '# عرض مثال\n\nالعربية.' }],
+      examples: [{ english: '# Example\n\nEnglish.', arabic: '# عرض مثال\n\nالعربية.' }],
     })
     expect(request.targetFilename).toBe('guide.ar.md')
     expect(request.messages.map(message => message.role)).toEqual(['system', 'user', 'assistant', 'user'])
@@ -100,11 +100,11 @@ describe('translation prompt rendering', () => {
     ])
 
     const reverse = renderTranslationRequest(document, {
-      sourceLanguage: 'Chinese',
+      sourceLanguage: 'Arabic',
       sourceFilename: 'guide.ar.md',
       sourceDocument: '# إشارة جنوب\n\nجديد مصدر نص.',
       terminology,
-      examples: [{ english: '# Example\n\nEnglish.', chinese: '# عرض مثال\n\nالعربية.' }],
+      examples: [{ english: '# Example\n\nEnglish.', arabic: '# عرض مثال\n\nالعربية.' }],
     })
     expect(reverse.targetFilename).toBe('guide.md')
     expect(reverse.messages.slice(1).map(message => message.content)).toEqual([
@@ -214,20 +214,20 @@ describe('translation response sections', () => {
 
   it('rejects a source filename that contradicts the translation direction', () => {
     expect(() => renderTranslationPrompt(document, {
-      sourceLanguage: 'Chinese',
+      sourceLanguage: 'Arabic',
       sourceFilename: 'guide.md',
       terminology,
-    })).toThrow(/does not match source language Chinese/)
+    })).toThrow(/does not match source language Arabic/)
   })
 
-  it('inserts the English target switcher for a Chinese source', () => {
+  it('inserts the English target switcher for an Arabic source', () => {
     const response = renderTranslationResponse({
       translation: '# Guide\n\nDraft.',
       review: '- [None] No corrections.',
       final: '# Guide\n\nFinal.',
     })
     expect(consumeTranslationResponse(response, {
-      sourceLanguage: 'Chinese',
+      sourceLanguage: 'Arabic',
       sourceFilename: 'guide.ar.md',
     }).final).toContain('\n\nEnglish | [العربية](guide.ar.md)\n\n')
   })

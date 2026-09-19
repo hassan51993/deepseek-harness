@@ -6,7 +6,7 @@ Status: proposed
 
 ## مشكلة
 
-`dsh-tool-owned-render` أصل نوع (`Chinesezjc/dsh-tool-owned-render`) حمل لديه `read`،`bash`،`write`/`edit`،`grep`/`glob`،`web_search`/`web_fetch` tool-owned render تسجيل بند، أساس في قديم API تحرير كتابة:`ToolCallBlock` كشف `callView` / `resultView`، عميل قدرة أخذ إلى host `presentResult` إخراج. حالي master من أصلي `block.call` / `block.content` / `block.meta` دفع توجيه عميل بطاقة،`ctx.slots` أيضا حاجة `@deepseek-ai/dsh-client-ui-renderer/client` وحدة زيادة قوي. مباشر دمج أصل نوع لا يستطيع عبر نوع فحص، لذلك هذه تسجيل بند لا مرور نقل غرس لا يمكن إصدار.
+`dsh-tool-owned-render` أصل نوع (`Arabiczjc/dsh-tool-owned-render`) حمل لديه `read`،`bash`،`write`/`edit`،`grep`/`glob`،`web_search`/`web_fetch` tool-owned render تسجيل بند، أساس في قديم API تحرير كتابة:`ToolCallBlock` كشف `callView` / `resultView`، عميل قدرة أخذ إلى host `presentResult` إخراج. حالي master من أصلي `block.call` / `block.content` / `block.meta` دفع توجيه عميل بطاقة،`ctx.slots` أيضا حاجة `@deepseek-ai/dsh-client-ui-renderer/client` وحدة زيادة قوي. مباشر دمج أصل نوع لا يستطيع عبر نوع فحص، لذلك هذه تسجيل بند لا مرور نقل غرس لا يمكن إصدار.
 
 ## رفع سجل
 

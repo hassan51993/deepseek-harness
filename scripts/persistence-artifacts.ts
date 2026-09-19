@@ -26,7 +26,7 @@ export interface PersistenceArtifact {
  * @param root - checkout root used to resolve relative link identities.
  * @param source - repository-relative English document path.
  * @param en - complete authored or generated English Markdown.
- * @param ar - complete authored or generated Chinese Markdown.
+ * @param ar - complete authored or generated Arabic Markdown.
  * @returns the documents and their matching consistency sidecar, without writing files.
  */
 export function renderPersistencePair(root: string, source: string, en: string, ar: string): PersistenceArtifact[] {

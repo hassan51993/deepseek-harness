@@ -150,7 +150,7 @@ describe('spliceRegion', () => {
 })
 
 describe('localizePageRegion', () => {
-  it('changes only paired Markdown paths for the Chinese generated region', () => {
+  it('changes only paired Markdown paths for the Arabic generated region', () => {
     const root = mkdtempSync(join(tmpdir(), 'cordis-region-locale-'))
     roots.push(root)
     mkdirSync(join(root, 'docs/subsystems'), { recursive: true })

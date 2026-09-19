@@ -15,7 +15,7 @@
 //
 // Copy is asserted in English because this page advertises English, which is
 // itself the point: every string in this column now comes from the dictionary,
-// so an English page renders English. The Chinese draft the product ships is
+// so an English page renders English. The Arabic draft the product ships is
 // asserted, and captured for review, on its own page at the end.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -1074,12 +1074,12 @@ describe('web e2e: shipped right Sidebar', () => {
       expect(tripwire.warnings).toEqual([])
     })
 
-    // The product ships Chinese; the cases above advertise English so their role
+    // The product ships Arabic; the cases above advertise English so their role
     // locators stay stable. This is the other half of the same seam, and the
     // screenshot it takes is what the copy draft gets reviewed from. It lives in
     // this block because a settled session is its precondition too — a case that
     // depends on a sibling block's setup passes only in the right order.
-    it('renders the shipped Arabic copy on a Chinese page', async () => {
+    it('renders the shipped Arabic copy on an Arabic page', async () => {
       const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
       const arTripwire = watchConsole(arPage)
       onTestFailed(() => saveFailureShot(arPage, 'web-e2e-sidebar-right-ar'))

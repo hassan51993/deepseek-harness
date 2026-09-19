@@ -30,7 +30,7 @@ Intentionally **not** vendored (verified unused by this set): `reggol`, `@cordis
 
 Keep this log exhaustive — every divergence from upstream must be listed.
 
-1. **`hmr/src/index.ts`**: removed the `./locales/en-US.yml` / `./locales/ar-SA.yml` imports, the `.i18n({...})` call on the `Config` schema, and the `src/locales/` directory. Rationale: those imports require a runtime YAML loader hook (`@cordisjs/unyaml`) that we do not vendor; the i18n texts only localize config descriptions.
+1. **`hmr/src/index.ts`**: removed the `./locales/en-US.yml` / `./locales/zh-CN.yml` imports, the `.i18n({...})` call on the `Config` schema, and the `src/locales/` directory. Rationale: those imports require a runtime YAML loader hook (`@cordisjs/unyaml`) that we do not vendor; the i18n texts only localize config descriptions.
 2. **All `package.json` files**: regenerated for Harness releases with scoped names, release versions, publication metadata, precise bundled-runtime and `lib/types/**/*.d.ts` / `.d.ts.map` file entries, source exports where applicable, and declaration metadata pointing at `lib/types`. Repository-owned dependencies use the workspace protocol. HMR declares `esbuild` as a direct dev dependency for its imported `BuildFailure` type, and Loader requires `node-addon-require-builtin@^0.1.4` to match published app runtimes.
 3. **All `tsconfig.json` files**: regenerated to extend the repo-root `tsconfig.base.json`, emit TypeScript intermediates to `lib/types`, and declare project references.
 4. **Vendored TypeScript source internal specifiers**: changed local relative imports/exports from upstream's specifier shape to explicit `.ts` specifiers so TypeScript rewrites emitted JS to `.js` while declarations keep explicit, NodeNext-safe `.ts` specifiers. This includes `loader/src/config/isolate.ts` using `declare module './entry.ts'`. Type-only dependencies use `import type` or inline `type` modifiers so ESM output does not retain erased interfaces.
@@ -53,6 +53,7 @@ Keep this log exhaustive — every divergence from upstream must be listed.
 20. **`loader/src/config/entry.ts` fiber identity**: stores the original fiber from the registry result’s context instead of its PromiseLike wrapper. Configuration updates and service notifications therefore mutate the same lifecycle state; updating a provider and consumer together cannot strand the consumer in `PENDING`. Covered by `packages/boot/hmr/tests/modules.spec.ts` and the built profile reload regression in `apps/cli/tests/built-bin.e2e.ts`.
 
 21. **`cordis/src/logger.ts` exporter disposal**: each disposer retains its registration id, so removing an earlier exporter cannot delete a later console or telemetry exporter. Covered by startup collector cleanup in `packages/boot/app-boot/tests/app-boot.spec.ts` and disabled-feedback output in `packages/session/session-telemetry-otel/tests/loader-composition.e2e.ts`.
+22. **`hmr/package.json` localized description**: replaced the upstream `zh` description key with an `ar` key carrying the Arabic wording, so the vendored manifest matches this repository's Arabic localization. Text-only. The upstream `zh-CN` locale filenames quoted in entry 1 and in `hmr/src/index.ts` are upstream identifiers and keep their spelling. Retire this entry if upstream ships an Arabic description.
 
 ## Sync procedure
 

@@ -141,8 +141,8 @@ describe('ui-settings-general apply', () => {
   it('the nav label thunk follows the active locale without re-registration', async ({ mock, start }) => {
     const { c, settings } = await client(mock, start)
     const english = localeView('en', 1)
-    const chinese = localeView('ar', 2)
-    settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(chinese))
+    const arabic = localeView('ar', 2)
+    settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(arabic))
     const arVersions = SEATS.map(([name]) => c.ctx.slots.getVersion(name))
     c.ctx.locale.setLocale('en')
     // No ledger churn: freshness rides the thunk (and the renderer's locale
@@ -162,7 +162,7 @@ describe('ui-settings-general apply', () => {
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'ar' }], 1],
       ])
-      expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([chinese])
+      expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([arabic])
     })
   })
 
@@ -208,8 +208,8 @@ describe('ui-settings-general apply', () => {
     expect(c.ctx.slots.entries('settings.general.item').filter(row => row.locale === NS)).toEqual([])
     // The recovered registrations still ride the locale path.
     const english = localeView('en', 1)
-    const chinese = localeView('ar', 2)
-    settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(chinese))
+    const arabic = localeView('ar', 2)
+    settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(arabic))
     c.ctx.locale.setLocale('en')
     expect(generalLabel(c)).toBe('General')
     c.ctx.locale.setLocale('ar')
@@ -219,7 +219,7 @@ describe('ui-settings-general apply', () => {
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'ar' }], 1],
       ])
-      expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([chinese])
+      expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([arabic])
     })
   })
 

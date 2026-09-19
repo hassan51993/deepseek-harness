@@ -336,7 +336,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     ).arContent.toString('utf8')).toBe(ar)
   })
 
-  it('rejects a clean merge whose Chinese link uses the English sibling', () => {
+  it('rejects a clean merge whose Arabic link uses the English sibling', () => {
     const fixture = createFixture(false)
     write(fixture.root, 'docs/reference.md', '# Overview\n')
     write(fixture.root, 'docs/reference.ar.md', '# عام تصفح\n')
@@ -392,7 +392,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     )).toThrow('docs/guide.md clean merge lost its language-switcher link to guide.ar.md')
   })
 
-  it('rejects generated Chinese content without its English backlink', () => {
+  it('rejects generated Arabic content without its English backlink', () => {
     const fixture = createFixture(false)
     const ar = generatedBaseAr.replace('[English](module-graph.md) | العربية\n\n', '')
     const ancestor = record(fixture.root, 'docs/module-graph.md', generatedBaseSource, ar)

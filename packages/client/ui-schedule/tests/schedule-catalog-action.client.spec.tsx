@@ -192,10 +192,10 @@ describe('ScheduleCatalogAction rows', () => {
       [300, 'Every 5 minutes', '5قسم ساعة مرة'],
       [301, 'Every 301 seconds', '301ثانية مرة'],
     ] as const
-    for (const [seconds, english, chinese] of samples) {
+    for (const [seconds, english, arabic] of samples) {
       const item = record(String(seconds), 'every', START + 1_000, { everySeconds: seconds })
       expect(formatScheduleFrequency(item, tEn)).toBe(english)
-      expect(formatScheduleFrequency(item, tAr)).toBe(chinese)
+      expect(formatScheduleFrequency(item, tAr)).toBe(arabic)
     }
     expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tAr)).toBe('مفرد مرة')
     expect(tAr('status.scheduled')).toBe('انتظار في')

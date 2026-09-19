@@ -8,7 +8,7 @@ English | [العربية](2026-09-03-semantic-issue-templates-and-policy.ar.md)
 
 Issue and pull-request templates mixed intake questions with review evidence and hid their complete contents in `details` elements. Unused frontmatter and separate Idea and Research templates added choices without changing how the repository planned the work.
 
-Issue policy also treated Markdown presentation as repository metadata. Requirements for `details` elements, a 50-unit visible body, Chinese titles, title metadata prefixes, and an `Owner:` body line produced failures without identifying a missing semantic decision.
+Issue policy also treated Markdown presentation as repository metadata. Requirements for `details` elements, a 50-unit visible body, Arabic titles, title metadata prefixes, and an `Owner:` body line produced failures without identifying a missing semantic decision.
 
 ## Decision
 

@@ -379,10 +379,10 @@ describe('docsPages locale routes', () => {
       } else {
         expect(counterpart?.source).toBe(page.source)
         expect(counterpart?.contentLocale).toBe(page.contentLocale)
-        const chineseSource = page.source.replace(/\.md$/, '.ar.md')
+        const arabicSource = page.source.replace(/\.md$/, '.ar.md')
         expect(
-          existsSync(resolve(repositoryRoot, chineseSource)),
-          `${page.route} has a Arabic counterpart but projects English`,
+          existsSync(resolve(repositoryRoot, arabicSource)),
+          `${page.route} has an Arabic counterpart but projects English`,
         ).toBe(false)
       }
     }
