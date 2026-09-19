@@ -43,7 +43,7 @@ describe('TodoPanel', () => {
     render(<TodoPanel todos={LIST} t={t} />)
     expect(screen.getByTestId('todo-panel')).toBeTruthy()
     expect(screen.getByText('المهام')).toBeTruthy()
-    expect(screen.getByText('1 اكتمل · 1 إجراء في · 1 معلّقة')).toBeTruthy()
+    expect(screen.getByText('1 مكتملة · 1 قيد التنفيذ · 1 معلّقة')).toBeTruthy()
     expect(screen.getByRole('button', { expanded: false })).toBeTruthy()
     expect(screen.queryByRole('list')).toBeNull()
   })
@@ -53,7 +53,7 @@ describe('TodoPanel', () => {
       { content: 'كتابة مكون', status: 'in_progress' },
       { content: 'تكملة اختبار', status: 'pending' },
     ]} t={t} />)
-    expect(screen.getByText('1 إجراء في · 1 معلّقة')).toBeTruthy()
+    expect(screen.getByText('1 قيد التنفيذ · 1 معلّقة')).toBeTruthy()
     expect(screen.queryByText(/تم/)).toBeNull()
   })
 
@@ -75,7 +75,7 @@ describe('TodoPanel', () => {
     fireEvent.click(header)
     expect(screen.queryByRole('list')).toBeNull()
     // Collapsed header is title + progress only (no in-progress content hint).
-    expect(screen.getByText('1 اكتمل · 1 إجراء في · 1 معلّقة')).toBeTruthy()
+    expect(screen.getByText('1 مكتملة · 1 قيد التنفيذ · 1 معلّقة')).toBeTruthy()
     expect(screen.queryByText('كتابة مكون')).toBeNull()
     fireEvent.click(screen.getByRole('button', { expanded: false }))
     expect(screen.getAllByRole('listitem')).toHaveLength(3)
@@ -90,7 +90,7 @@ describe('TodoPanel', () => {
     expect(statuses.filter(s => s === 'in_progress')).toHaveLength(3)
     expect(screen.getByText('ركض خلفية بناء')).toBeTruthy()
     expect(screen.getByText('قراءة شفرة المصدر')).toBeTruthy()
-    expect(screen.getByText('1 اكتمل · 3 إجراء في · 1 معلّقة')).toBeTruthy()
+    expect(screen.getByText('1 مكتملة · 3 قيد التنفيذ · 1 معلّقة')).toBeTruthy()
   })
 
   it('an all-completed list collapses the summary to the done count alone', () => {
@@ -116,7 +116,7 @@ describe('TodoDock', () => {
     // Capability absent (no baseline/frame yet) renders nothing.
     expect(screen.queryByTestId('todo-panel')).toBeNull()
     act(() => { store.set({ value: LIST }) })
-    expect(screen.getByText('1 اكتمل · 1 إجراء في · 1 معلّقة')).toBeTruthy()
+    expect(screen.getByText('1 مكتملة · 1 قيد التنفيذ · 1 معلّقة')).toBeTruthy()
     // The pre-first-write whole value (null) retires the strip (the panel owns no data).
     act(() => { store.set({ value: null }) })
     expect(screen.queryByTestId('todo-panel')).toBeNull()

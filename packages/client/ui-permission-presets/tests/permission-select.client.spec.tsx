@@ -56,7 +56,7 @@ function setup(options: {
 }
 
 function trigger(): HTMLButtonElement {
-  return screen.getByRole('button', { name: /^وصول نمط/ }) as HTMLButtonElement
+  return screen.getByRole('button', { name: /^وضع الوصول/ }) as HTMLButtonElement
 }
 
 describe('PermissionSelect', () => {
@@ -144,8 +144,8 @@ describe('PermissionSelect', () => {
     fireEvent.click(screen.getByRole('menuitem', { name: 'Auto review EXP' }))
 
     const dialog = screen.getByRole('dialog', { name: 'تفعيل Auto review (تجريبي)؟' })
-    expect(dialog.textContent).toContain('لا استخدام صندوق رملي')
-    expect(dialog.textContent).toContain('خطأ وضع سطر أو خطأ رفض')
+    expect(dialog.textContent).toContain('تفعيل Auto review (تجريبي)؟يعمل Auto review بلا عزل. قبل كل استدعاء أداة أصلي وكل استدعاء داخلي في PTC، يراجع النموذج نفسه المستخدَم في الوكيل الحالي ما إذا كان يُسمح به. هذه الميزة تجريبية، وقد تسمح أو تمنع عن خطأ، وتستهلك رموزًا إضافية.أدرك هذه المخاطر وأريد المتابعةإلغاءتفعيل Auto review')
+    expect(dialog.textContent).toContain('تفعيل Auto review (تجريبي)؟يعمل Auto review بلا عزل. قبل كل استدعاء أداة أصلي وكل استدعاء داخلي في PTC، يراجع النموذج نفسه المستخدَم في الوكيل الحالي ما إذا كان يُسمح به. هذه الميزة تجريبية، وقد تسمح أو تمنع عن خطأ، وتستهلك رموزًا إضافية.أدرك هذه المخاطر وأريد المتابعةإلغاءتفعيل Auto review')
     fireEvent.click(screen.getByRole('checkbox', { name: 'أدرك هذه المخاطر وأريد المتابعة' }))
     fireEvent.click(screen.getByRole('button', { name: 'تفعيل Auto review' }))
     expect(select).toHaveBeenCalledExactlyOnceWith('auto')

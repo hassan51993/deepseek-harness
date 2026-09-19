@@ -125,7 +125,7 @@ describe('apply', () => {
     expect(presentation.dictionaries).toEqual([{
       namespace: 'skill', dictionaries: {
         ar: {
-          'row.title': 'Skill',
+          'row.title': 'مهارة',
           'row.running': 'جارٍ تحميل المهارة',
           'row.failed': 'تعذّر تحميل المهارة',
           'row.stopped': 'توقّف تحميل المهارة',

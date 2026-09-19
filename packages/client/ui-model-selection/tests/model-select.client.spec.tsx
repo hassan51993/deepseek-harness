@@ -113,11 +113,11 @@ describe('ModelSelect reasoning effort', () => {
     />)
 
     fireEvent.click(screen.getByRole('button', {
-      name: 'اختيار نموذج، الحالي Model، جهد الاستدلال Default',
+      name: 'اختيار نموذج، الحالي Model، جهد الاستدلال الافتراضي',
     }))
     fireEvent.click(screen.getByRole('menuitem', { name: /جهد الاستدلال/ }))
     expect(screen.getAllByRole('menuitemradio').map(item => item.textContent))
-      .toEqual(['Default', 'Standard'])
+      .toEqual(['الافتراضي', 'Standard'])
   })
 
   it('shows the durable model id when the catalog has no matching display name', () => {
@@ -381,7 +381,7 @@ describe('ModelSelect keyboard walk', () => {
     // A real click focuses the trigger first; jsdom's does not.
     trigger.focus()
     fireEvent.click(trigger)
-    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
     // No rows to hand the keyboard to: the trigger keeps it, so the card's
     // keys still reach the menu.
     expect(document.activeElement).toBe(trigger)
@@ -400,7 +400,7 @@ describe('ModelSelect keyboard walk', () => {
 
   it('drills into the model list on the selected model', () => {
     mountOpen()
-    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
     const rows = screen.getAllByRole('menuitemradio')
     expect(rows[0]!.getAttribute('aria-checked')).toBe('true')
     expect(document.activeElement).toBe(rows[0])
@@ -423,7 +423,7 @@ describe('ModelSelect keyboard walk', () => {
 
   it('Escape from the model list lands back on the model cell', () => {
     mountOpen()
-    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
     fireEvent.keyDown(screen.getAllByRole('menuitemradio')[0]!, { key: 'Escape' })
     const cells = screen.getAllByRole('menuitem')
     expect(document.activeElement).toBe(cells[0])
@@ -440,7 +440,7 @@ describe('ModelSelect keyboard walk', () => {
       t={t}
     />)
     fireEvent.click(screen.getByRole('button', { name: /اختيار نموذج/ }))
-    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
     const rows = screen.getAllByRole('menuitemradio')
     expect(rows.every(row => row.getAttribute('aria-checked') === 'false')).toBe(true)
     expect(document.activeElement).toBe(rows[0])

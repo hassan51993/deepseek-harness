@@ -548,14 +548,14 @@ describe('workspace browser rows', () => {
       act(() => { vi.advanceTimersByTime(500) })
       // Card body: full title + relative time + running status.
       expect(screen.getAllByText('Hovered')).toHaveLength(2)
-      expect(screen.getByText('1دقيقة قبل')).toBeTruthy()
+      expect(screen.getByText('قبل 1 دقيقة')).toBeTruthy()
       expect(screen.getAllByText('قيد التشغيل')).toHaveLength(2)
       fireEvent.pointerLeave(wrapper)
       // Menu open (disabled=true) suppresses the card for the same hover.
       fireEvent.click(screen.getByRole('button', { name: 'إجراءات الجلسة «Hovered»' }))
       fireEvent.pointerEnter(wrapper)
       act(() => { vi.advanceTimersByTime(1000) })
-      expect(screen.queryByText('1دقيقة قبل')).toBeNull()
+      expect(screen.queryByText('قبل 1 دقيقة')).toBeNull()
     } finally {
       vi.useRealTimers()
     }

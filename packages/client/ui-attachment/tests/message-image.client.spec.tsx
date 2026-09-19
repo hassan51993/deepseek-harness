@@ -19,7 +19,7 @@ afterEach(cleanup)
 const labels: MessageImageLabels = {
   image: 'صورة',
   open: 'عرض الصورة الأصلية',
-  openNamed: label => `${label}، نقر عرض أصل رسم`,
+  openNamed: label => `${label}، انقر لعرض الصورة الأصلية`,
   loading: 'جارٍ تحميل الصورة…',
   loadFailed: 'تعذّر تحميل الصورة، انقر لإعادة المحاولة',
   lightbox: { dialog: 'معاينة الصورة الأصلية', close: 'إغلاق معاينة الصورة الأصلية' },
@@ -297,7 +297,7 @@ describe('ImageGallery', () => {
       }
       if (key === 'image.openOriginalLabel') {
         const label = params?.label
-        return `${typeof label === 'string' ? label : ''}، نقر عرض أصل رسم`
+        return `${typeof label === 'string' ? label : ''}، انقر لعرض الصورة الأصلية`
       }
       return translated[key] ?? key
     }) as MessageImagesProps['t']

@@ -638,7 +638,7 @@ describe('tab switching in ConversationRoot', () => {
     fireEvent.click(firstRequest)
     expect(firstSection?.className).toMatch(/turnLabelActive/)
     expect(secondSection?.className).not.toMatch(/turnLabelActive/)
-    expect(screen.getByText('طلب #2')).toBeTruthy()
+    expect(screen.getByText('الطلب #2')).toBeTruthy()
     expect(screen.getByText('ضغط · بين الجولات')).toBeTruthy()
 
     fireEvent.click(secondRequest)
@@ -1391,9 +1391,9 @@ describe('TrajectoryView state', () => {
       />,
     )
 
-    await waitFor(() => { expect(screen.getByRole('button', { name: 'طلب #1' })).toBeTruthy() })
-    await waitFor(() => { expect(screen.getByRole('button', { name: 'طلب #11' })).toBeTruthy() })
-    fireEvent.click(screen.getByRole('button', { name: 'طلب #11' }))
+    await waitFor(() => { expect(screen.getByRole('button', { name: 'الطلب #1' })).toBeTruthy() })
+    await waitFor(() => { expect(screen.getByRole('button', { name: 'الطلب #11' })).toBeTruthy() })
+    fireEvent.click(screen.getByRole('button', { name: 'الطلب #11' }))
     fireEvent.click(screen.getByRole('tab', { name: 'الاستهلاك' }))
     expect(screen.getByText('إجمالي الجلسة').closest('section')?.textContent).toContain('11 tok')
   })

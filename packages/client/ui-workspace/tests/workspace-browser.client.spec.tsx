@@ -754,7 +754,7 @@ describe('WorkspaceBrowser', () => {
     // The loose session's group is UNGROUPED_KEY: expanded by the effect.
     expect(screen.getByText('loose')).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'إجراءات مساحة العمل «لم قسم مجموعة»' })).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة في «لم قسم مجموعة»' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الجلسات جديدة في «لم قسم مجموعة»' }))
     expect(startSession).not.toHaveBeenCalled()
   })
 
@@ -1617,9 +1617,9 @@ describe('WorkspaceBrowser', () => {
     fireEvent.click(screen.getByRole('button', { name: 'إجراءات مساحة العمل «Alpha»' }))
     fireEvent.click(screen.getByRole('menuitem', { name: 'حذف مساحة العمل' }))
     const dialog = screen.getByRole('dialog', { name: 'حذف مساحة العمل' })
-    expect(dialog.textContent).toContain('سوف يأخذ “Alpha” من مساحة العمل قائمة في إزالة')
-    expect(dialog.textContent).toContain('ملف مشبك و جلسة سجل سوف إبقاء')
-    expect(dialog.textContent).toContain('ذلك جلسة سوف عرض في “لم قسم مجموعة” تحت')
+    expect(dialog.textContent).toContain('حذف مساحة العمليؤدي هذا إلى إزالة «Alpha» من قائمة مساحات العمل. يبقى المجلد وسجلات الجلسات كما هي، وتظهر جلساتها ضمن «بلا مجموعة».إلغاءحذف مساحة العمل')
+    expect(dialog.textContent).toContain('حذف مساحة العمليؤدي هذا إلى إزالة «Alpha» من قائمة مساحات العمل. يبقى المجلد وسجلات الجلسات كما هي، وتظهر جلساتها ضمن «بلا مجموعة».إلغاءحذف مساحة العمل')
+    expect(dialog.textContent).toContain('حذف مساحة العمليؤدي هذا إلى إزالة «Alpha» من قائمة مساحات العمل. يبقى المجلد وسجلات الجلسات كما هي، وتظهر جلساتها ضمن «بلا مجموعة».إلغاءحذف مساحة العمل')
 
     const confirm = screen.getByRole<HTMLButtonElement>('button', { name: 'حذف مساحة العمل' })
     fireEvent.click(confirm)

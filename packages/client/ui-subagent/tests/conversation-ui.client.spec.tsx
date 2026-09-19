@@ -157,8 +157,8 @@ describe('SubagentHeaderLineage', () => {
 
     expect(input.setCatalogOpen).toHaveBeenCalledWith(PARENT, true)
     expect(screen.getAllByRole('treeitem')).toHaveLength(3)
-    expect(screen.getByText('جارٍ مسح مشروع ملف · يمكن متابعة · جارٍ تشغيل')).toBeTruthy()
-    expect(screen.getByText('مرة صفة · متوقف')).toBeTruthy()
+    expect(screen.getByText('جارٍ مسح مشروع ملف · قابل للمتابعة · قيد التشغيل')).toBeTruthy()
+    expect(screen.getByText('لمرة واحدة · متوقف')).toBeTruthy()
     const diagnostic = screen.getByRole('treeitem', { name: /سجل جلسة تالف/ })
     expect(diagnostic.getAttribute('aria-disabled')).toBe('true')
     expect(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' })).toBeTruthy()
@@ -831,11 +831,11 @@ describe('SubagentHeaderLineage', () => {
 describe('SubagentReadOnlyComposer', () => {
   it('explains the exact missing-parent recovery path', () => {
     render(<SubagentReadOnlyComposer matched={{ reason: 'parent-unavailable' }} t={t} />)
-    expect(screen.getByRole('status').textContent).toContain('أب جلسة حالي لا في خط')
+    expect(screen.getByRole('status').textContent).toContain('هذا الوكيل الفرعي للقراءة فقط حاليًاالجلسة الأم غير متصلة؛ أعد فتحها لمواصلة إرسال الرسائل.')
   })
 
   it('explains that one-shot histories never accept follow-ups', () => {
     render(<SubagentReadOnlyComposer matched={{ reason: 'one-shot' }} t={t} />)
-    expect(screen.getByRole('status').textContent).toContain('مرة صفة مهمة لا دعم حمل لاحق رسالة')
+    expect(screen.getByRole('status').textContent).toContain('سجل وكيل فرعي لمرة واحدةمهام المرة الواحدة لا تقبل رسائل متابعة؛ راجِع سجل التنفيذ كاملًا هنا.')
   })
 })

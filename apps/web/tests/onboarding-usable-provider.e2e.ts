@@ -19,7 +19,7 @@ import { AR_BROWSER_LOCALE, saveFailureShot } from './support.ts'
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/onboarding-usable-provider', import.meta.url))
 const DISMISSED_EXPECTED = join(SNAPSHOT_DIR, 'dismissed.expected.md')
 const MODE = webSnapshotMode()
-const CREDENTIAL_STEP = 'إضافة واحد API Key بدء استخدام'
+const CREDENTIAL_STEP = 'أضِف مفتاح API للبدء'
 
 describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-run onboarding', () => {
   let scaffold: WebScaffold
@@ -46,7 +46,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-setup-card-cancel'))
     const credentialStep = page.getByRole('dialog', { name: CREDENTIAL_STEP })
     await credentialStep.waitFor({ timeout: 15_000 })
-    await credentialStep.getByRole('button', { name: 'قليلا بعد إعداد' }).click()
+    await credentialStep.getByRole('button', { name: 'الإعداد لاحقًا' }).click()
     await credentialStep.waitFor({ state: 'detached', timeout: 15_000 })
 
     await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
@@ -55,17 +55,17 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     // Dismissing the onboarding step leaves Settings closed, so enter the
     // Models section explicitly before exercising its normal cards.
     await settings.getByRole('button', { name: 'النموذج' }).click()
-    const setupKey = settings.getByRole('textbox', { name: 'API مفتاح', exact: true })
+    const setupKey = settings.getByRole('textbox', { name: 'مفتاح API', exact: true })
     await setupKey.waitFor({ timeout: 10_000 })
 
-    const add = settings.getByRole('button', { name: 'إضافة مزود' })
+    const add = settings.getByRole('button', { name: 'إضافة مزوّد' })
     await expect.poll(async () => add.isEnabled(), { timeout: 10_000 }).toBe(true)
     await add.click()
     const pick = settings.getByLabel('المزوّد')
     await pick.waitFor({ timeout: 10_000 })
     await pick.selectOption('minimax-cn')
     await expect.poll(
-      async () => settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).count(),
+      async () => settings.getByRole('textbox', { name: 'مفتاح API', exact: true }).count(),
       { timeout: 10_000 },
     ).toBe(2)
 
@@ -74,7 +74,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     await settings.getByRole('button', { name: 'إلغاء', exact: true }).first().click()
     expect(await settings.getByLabel('المزوّد').count()).toBe(1)
     await expect.poll(
-      async () => settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).count(),
+      async () => settings.getByRole('textbox', { name: 'مفتاح API', exact: true }).count(),
       { timeout: 10_000 },
     ).toBe(1)
     await settings.getByRole('button', { name: 'تحرير DeepSeek (deepseek-official)' }).waitFor({ timeout: 10_000 })
@@ -88,9 +88,9 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
   it('stops prompting for DeepSeek once the other provider can serve requests', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-other-provider'))
     const settings = page.getByRole('dialog', { name: 'الإعدادات' })
-    await settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).fill('sk-e2e-minimax')
+    await settings.getByRole('textbox', { name: 'مفتاح API', exact: true }).fill('sk-e2e-minimax')
     await settings.getByRole('button', { name: 'حفظ', exact: true }).click()
-    await settings.getByText('قد حفظ minimax-cn.', { exact: true }).waitFor({ timeout: 15_000 })
+    await settings.getByText('تم حفظ minimax-cn.', { exact: true }).waitFor({ timeout: 15_000 })
 
     // Only minimax-cn is reachable; DeepSeek still holds no credential.
     const document = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
@@ -117,7 +117,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     await settings.waitFor({ timeout: 10_000 })
     await settings.getByRole('button', { name: 'النموذج' }).click()
     await settings.getByRole('button', { name: 'تحرير DeepSeek (deepseek-official)' }).waitFor({ timeout: 10_000 })
-    expect(await settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).count()).toBe(0)
+    expect(await settings.getByRole('textbox', { name: 'مفتاح API', exact: true }).count()).toBe(0)
 
     expect((await page.content()).includes('sk-e2e-minimax')).toBe(false)
     expect(tripwire.pageErrors).toEqual([])

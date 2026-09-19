@@ -96,10 +96,10 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells()).toEqual([
-      ['bash', 'earlier live', 'قيد التشغيل', '0ثانية'],
-      ['bash', 'later live', 'قيد التشغيل', '0ثانية'],
-      ['bash', 'new done', 'فاشلة', '9ثانية'],
-      ['bash', 'old done', 'مكتملة', '1ثانية'],
+      ['bash', 'earlier live', 'قيد التشغيل', '0 ث'],
+      ['bash', 'later live', 'قيد التشغيل', '0 ث'],
+      ['bash', 'new done', 'فاشلة', '9 ث'],
+      ['bash', 'old done', 'مكتملة', '1 ث'],
     ])
   })
 
@@ -142,12 +142,12 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-2' as JobView['id'], label: 'done', status: 'completed', finishedAt: START + 4_000 }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells()[0]).toContain('1ثانية')
-    expect(rowCells()[1]).toContain('4ثانية')
+    expect(rowCells()[0]).toContain('1 ث')
+    expect(rowCells()[1]).toContain('4 ث')
 
     act(() => { vi.advanceTimersByTime(2_000) })
-    expect(rowCells()[0]).toContain('3ثانية')
-    expect(rowCells()[1]).toContain('4ثانية')
+    expect(rowCells()[0]).toContain('3 ث')
+    expect(rowCells()[1]).toContain('4 ث')
   })
 
   it('widens to minutes and then hours, and never shows a negative figure', () => {
@@ -158,7 +158,7 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-3' as JobView['id'], label: 'skew', status: 'completed', startedAt: START + 5_000, finishedAt: START }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells().map(cells => cells[3])).toEqual(['2 س 3 د', '2 د 5 ث', '0ثانية'])
+    expect(rowCells().map(cells => cells[3])).toEqual(['2 س 3 د', '2 د 5 ث', '0 ث'])
   })
 
   it('runs no clock while the list is closed', () => {
@@ -223,8 +223,8 @@ describe('JobListAction wire tolerance', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells().map(cells => [cells[1], cells[3]])).toEqual([
-      ['finished', '3ثانية'],
-      ['no finish', '0ثانية'],
+      ['finished', '3 ث'],
+      ['no finish', '0 ث'],
     ])
   })
 

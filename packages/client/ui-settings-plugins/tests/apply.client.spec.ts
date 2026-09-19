@@ -86,7 +86,7 @@ describe('ui-settings-plugins apply', () => {
     const section = slots.entries('settings.section')[0]!
     expect(section.options).toMatchObject({ id: 'plugins', order: 15 })
     // The nav label is a locale-following thunk; owners resolve it at read time.
-    expect(resolveSlotLabel(section.options.label)).toBe('داخل وضع إضافة')
+    expect(resolveSlotLabel(section.options.label)).toBe('الإضافات المدمجة')
     expect(slots.spec('settings.plugins.tab')).toMatchObject({ kind: 'list', scope: 'root' })
     expect(slots.entries('settings.plugins.tab')).toHaveLength(0)
   })
@@ -129,7 +129,7 @@ describe('ui-settings-plugins apply', () => {
     await vi.waitFor(() => { expect(slots.entries('plugins.item')).toHaveLength(4) })
     const entries = slots.entries('plugins.item')
     expect(entries.map(entry => entry.options.id)).toEqual(['bash', 'agent-loop', 'subagent', 'web-search'])
-    expect(entries.map(entry => resolveSlotLabel(entry.options.label))).toEqual(['طرفية', 'Agent حلقة', 'Subagent', 'بحث في الويب'])
+    expect(entries.map(entry => resolveSlotLabel(entry.options.label))).toEqual(['الصدفة', 'حلقة الوكيل', 'Subagent', 'بحث في الويب'])
     expect(entries.every(entry => entry.locale === 'settings.plugins')).toBe(true)
   })
 

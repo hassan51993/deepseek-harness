@@ -48,7 +48,7 @@ const SNAPSHOT = {
     {
       id: 'standard',
       trust: 'system',
-      name: 'النمط المعياري',
+      name: 'الوضع المعياري',
       isDefault: true,
       rows: [
         { entryId: 'bash', moduleName: '@deepseek-ai/dsh-tool-bash', enabled: true, fiberPhase: 'active' },
@@ -128,7 +128,7 @@ describe('PluginInventorySettingsTab', () => {
     // A preset row expands into its source facts.
     fireEvent.click(screen.getByRole('button', { name: 'pwsh, pwsh, Conditional' }))
     expect(screen.getByText(en.fromPreset)).toBeTruthy()
-    expect(screen.getByText('النمط المعياري')).toBeTruthy()
+    expect(screen.getByText('الوضع المعياري')).toBeTruthy()
     expect(screen.getByText(en.condition)).toBeTruthy()
     expect(screen.getByText('process.platform === \'win32\'')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'pwsh, pwsh, Conditional' }))

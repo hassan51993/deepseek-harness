@@ -106,7 +106,7 @@ describe('ComposerAttachments', () => {
     const dataTransfer = { types: ['Files'], files: [image], dropEffect: 'none' }
     expect(fireEvent.dragEnter(document.body, { dataTransfer })).toBe(false)
     expect(view.getByRole('status').textContent).toContain('اسحب الملفات أو الصور إلى هنا لإضافتها')
-    expect(view.getByRole('status').textContent).toContain('حد الصور: حتى 20 صورة، 5MB لكل واحدة')
+    expect(view.getByRole('status').textContent).toContain('اسحب الملفات أو الصور إلى هنا لإضافتهاصورة حد: الأكثر كثير 20 ورقة، كل ورقة 5MB')
     expect(fireEvent.dragOver(document.body, { dataTransfer })).toBe(false)
     expect(dataTransfer.dropEffect).toBe('copy')
     expect(fireEvent.drop(document.body, { dataTransfer })).toBe(false)
@@ -160,7 +160,7 @@ describe('ComposerAttachments', () => {
     const initial = props({ attachments: [image], onRemoveAttachment })
     const view = render(<ComposerAttachments {...initial} />)
 
-    fireEvent.click(view.getByRole('button', { name: 'إزالة الصورة pixel.png' }))
+    fireEvent.click(view.getByRole('button', { name: 'إلغاء تثبيت الصورة pixel.png' }))
     expect(onRemoveAttachment).toHaveBeenCalledWith(image.id)
     fireEvent.click(view.getByTitle('عرض الصورة الأصلية'))
     expect(view.getByRole('dialog', { name: 'معاينة الصورة الأصلية' })).toBeTruthy()
@@ -225,7 +225,7 @@ describe('ComposerAttachments file drafts', () => {
     expect(group.textContent).toContain('فشل الرفع، انقر لإعادة المحاولة')
     fireEvent.click(view.getByRole('button', { name: 'إعادة محاولة رفع bad.pdf' }))
     expect(onRetryFile).toHaveBeenCalledWith('bad')
-    fireEvent.click(view.getByRole('button', { name: 'إزالة الملف ok.pdf' }))
+    fireEvent.click(view.getByRole('button', { name: 'إلغاء تثبيت الملف ok.pdf' }))
     expect(onRemoveAttachment).toHaveBeenCalledWith('ok')
   })
 
@@ -240,7 +240,7 @@ describe('ComposerAttachments file drafts', () => {
     })} />)
     expect(view.getByRole('group', { name: 'مرفقات معلّقة' }).textContent).toContain('جارٍ الرفع…')
     const retry = view.getByRole('button', { name: 'إعادة محاولة رفع bad.pdf' })
-    const remove = view.getByRole('button', { name: 'إزالة الملف bad.pdf' })
+    const remove = view.getByRole('button', { name: 'إلغاء تثبيت الملف bad.pdf' })
     expect(retry.contains(remove)).toBe(false)
     fireEvent.click(remove)
     expect(onRemoveAttachment).toHaveBeenCalledWith('bad')

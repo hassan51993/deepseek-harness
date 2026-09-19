@@ -25,7 +25,7 @@ const READY: AgentPresetSectionState = {
   showPicker: true,
   policySaving: false,
   rows: [
-    { id: 'standard', trust: 'system', isDefault: true, name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' },
+    { id: 'standard', trust: 'system', isDefault: true, name: 'الوضع المعياري', description: 'كامل تحرير رمز agent.' },
     { id: 'mine', trust: 'user', isDefault: false },
   ],
   copy: null,
@@ -116,7 +116,7 @@ describe('the preset list', () => {
       error: 'settings write disconnected',
       rows: [
         ...READY.rows,
-        { id: 'cordis', trust: 'system', isDefault: false, name: 'إنشاء صنع نمط' },
+        { id: 'cordis', trust: 'system', isDefault: false, name: 'وضع الإنشاء' },
       ],
     })
 
@@ -251,7 +251,7 @@ describe('the preset list', () => {
 
   it('withholds the viewer on a broken shipped preset', () => {
     renderSection({
-      rows: [{ id: 'standard', trust: 'system', isDefault: false, name: 'النمط المعياري', broken: 'the composition is not valid YAML' }],
+      rows: [{ id: 'standard', trust: 'system', isDefault: false, name: 'الوضع المعياري', broken: 'the composition is not valid YAML' }],
     })
 
     // There is no readable composition to offer; the reason on the card is
@@ -294,7 +294,7 @@ describe('the preset list', () => {
 
   it('starts a creator-mode draft session and leaves settings', () => {
     const actions = renderSection({
-      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'إنشاء صنع نمط' }],
+      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'وضع الإنشاء' }],
     })
 
     fireEvent.click(screen.getByRole('button', { name: en.creatorDraft }))
@@ -308,8 +308,8 @@ describe('the preset list', () => {
   it('keeps the empty custom group on screen: heading plus the creator entry', () => {
     renderSection({
       rows: [
-        { id: 'standard', trust: 'system', isDefault: true, name: 'النمط المعياري' },
-        { id: 'cordis', trust: 'system', isDefault: false, name: 'إنشاء صنع نمط' },
+        { id: 'standard', trust: 'system', isDefault: true, name: 'الوضع المعياري' },
+        { id: 'cordis', trust: 'system', isDefault: false, name: 'وضع الإنشاء' },
       ],
     })
 
@@ -325,14 +325,14 @@ describe('the preset list', () => {
     cleanup()
 
     renderSection({
-      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'إنشاء صنع نمط' }],
+      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'وضع الإنشاء' }],
     }, { creator: false })
     expect(screen.queryByRole('button', { name: en.creatorDraft })).toBeNull()
     cleanup()
 
     const actions = renderSection({
       authorable: false,
-      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'إنشاء صنع نمط' }],
+      rows: [...READY.rows, { id: 'cordis', trust: 'system', isDefault: false, name: 'وضع الإنشاء' }],
     })
     const disabled = screen.getByRole('button', { name: en.creatorDraft })
     expect(disabled).toHaveProperty('disabled', true)
@@ -370,7 +370,7 @@ describe('the preset list', () => {
 
 describe('the copy dialog', () => {
   const draft: CopyDraft = {
-    from: 'standard', fromTitle: 'النمط المعياري', id: '', name: '', saving: false, error: null,
+    from: 'standard', fromTitle: 'الوضع المعياري', id: '', name: '', saving: false, error: null,
   }
 
   it('names its source and collects only an id and a display name', () => {
@@ -437,7 +437,7 @@ describe('the copy dialog', () => {
 
 describe('the read-only viewer', () => {
   it('shows the composition text under the preset\'s name', () => {
-    renderSection({ view: { id: 'standard', title: 'النمط المعياري', content: '- id: tool-bash\n' } })
+    renderSection({ view: { id: 'standard', title: 'الوضع المعياري', content: '- id: tool-bash\n' } })
 
     const dialog = screen.getByRole('dialog')
     expect(dialog.getAttribute('aria-label')).toBe(`${en.view} · ${en.presetStandardName}`)
@@ -452,7 +452,7 @@ describe('the read-only viewer', () => {
   })
 
   it('closes through the controller', () => {
-    const actions = renderSection({ view: { id: 'standard', title: 'النمط المعياري', content: '- id: x\n' } })
+    const actions = renderSection({ view: { id: 'standard', title: 'الوضع المعياري', content: '- id: x\n' } })
 
     fireEvent.click(within(screen.getByRole('dialog')).getByText(en.close))
 
@@ -460,7 +460,7 @@ describe('the read-only viewer', () => {
   })
 
   it('dismisses on Escape', () => {
-    const actions = renderSection({ view: { id: 'standard', title: 'النمط المعياري', content: '- id: x\n' } })
+    const actions = renderSection({ view: { id: 'standard', title: 'الوضع المعياري', content: '- id: x\n' } })
 
     fireEvent.keyDown(document, { key: 'Escape' })
 

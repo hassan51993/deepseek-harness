@@ -15,7 +15,7 @@ async function openInventory(page: Page, url: string) {
   await page.goto(url, { waitUntil: 'load' })
   await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
   const dialog = page.getByRole('dialog', { name: 'الإعدادات' })
-  await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).click()
+  await dialog.getByRole('button', { name: 'الإضافات المدمجة', exact: true }).click()
   await dialog.getByRole('searchbox', { name: 'بحث في الإضافات' }).waitFor()
   return dialog
 }

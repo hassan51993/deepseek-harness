@@ -12,7 +12,7 @@
     #text "."
   <section class="footnotes" data-footnotes="true">
     <h2 class="sr-only" id="footnote-label">
-      #text "Footnotes"
+      #text "الحواشي"
     <ol>
       <li id="user-content-fn-a">
         <p>

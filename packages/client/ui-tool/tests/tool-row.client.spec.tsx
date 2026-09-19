@@ -70,15 +70,15 @@ describe('tool-call-model', () => {
     // title here would be a second answer to what the card already renders.
     const model = toolRowModel('cordis_define', running({ name: 'cordis_define', argsRaw: '{"name":"clock"}' }))
     expect(model.variant).toBe('others')
-    expect(t(model.titleKey)).toBe('استدعاء الأداة')
+    expect(t(model.titleKey)).toBe('استدعاء أداة')
   })
 
   it('renders cordis mount verbs no shipped tool implements as generic calls', () => {
     // No shipped tool implements these cordis mount verbs, so a mapping would
     // be unreachable.
     expect(classifyTool('cordis_mount')).toBe('others')
-    expect(t(toolRowModel('cordis_mount', running({ name: 'cordis_mount', argsRaw: '{}' })).titleKey)).toBe('استدعاء الأداة')
-    expect(t(toolRowModel('cordis_unmount', running({ name: 'cordis_unmount', argsRaw: '{}' })).titleKey)).toBe('استدعاء الأداة')
+    expect(t(toolRowModel('cordis_mount', running({ name: 'cordis_mount', argsRaw: '{}' })).titleKey)).toBe('استدعاء أداة')
+    expect(t(toolRowModel('cordis_unmount', running({ name: 'cordis_unmount', argsRaw: '{}' })).titleKey)).toBe('استدعاء أداة')
   })
 
   it('gives the pwsh shell row the bash family treatment with its own title', () => {
@@ -509,7 +509,7 @@ describe('GenericToolCard', () => {
     const view = render(
       <GenericToolCard {...props('todo_write', running({ name: 'todo_write', argsRaw: '{"note":"x"}' }))} />,
     )
-    expect(view.getByText('استدعاء الأداة')).toBeTruthy()
+    expect(view.getByText('استدعاء أداة')).toBeTruthy()
     expect(view.container.querySelector('[data-variant="others"]')).not.toBeNull()
     expect(view.container.querySelector('[data-state="running"]')).not.toBeNull()
   })

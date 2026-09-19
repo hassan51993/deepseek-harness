@@ -553,12 +553,12 @@ describe('Chat node rendering', () => {
 
   it('formatRunDuration localizes units and floors partial seconds', () => {
     const t = makeTranslate(ar, commonAr)
-    expect(formatRunDuration(0, t)).toBe('0ثانية')
-    expect(formatRunDuration(-500, t)).toBe('0ثانية')
-    expect(formatRunDuration(15_999, t)).toBe('15ثانية')
-    expect(formatRunDuration(125_000, t)).toBe('2د05ث')
+    expect(formatRunDuration(0, t)).toBe('0 ث')
+    expect(formatRunDuration(-500, t)).toBe('0 ث')
+    expect(formatRunDuration(15_999, t)).toBe('15 ث')
+    expect(formatRunDuration(125_000, t)).toBe('2 د 05 ث')
     // The hour rolls at exactly 3600s, never at 60 displayed minutes.
-    expect(formatRunDuration(3_599_999, t)).toBe('59د59ث')
+    expect(formatRunDuration(3_599_999, t)).toBe('59 د 59 ث')
     expect(formatRunDuration(3_600_000, t)).toBe('1 س 00 د 00 ث')
     expect(formatRunDuration(3_903_000, t)).toBe('1 س 05 د 03 ث')
     expect(formatRunDuration(7_261_000, t)).toBe('2 س 01 د 01 ث')
@@ -1268,14 +1268,14 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const disclosure = view.container.querySelector('details') as HTMLDetailsElement
     expect(disclosure.dataset.active).toBe('true')
-    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1 ث')
 
     act(() => {
       h.setChat({ nodes: [user(1, 'try'), nextRetry] })
     })
     expect(within(disclosure).getAllByRole('status')).toHaveLength(1)
     expect(view.container.querySelector('details')).toBe(disclosure)
-    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 1 ث')
 
     act(() => {
       h.setChat({
@@ -1289,7 +1289,7 @@ describe('ChatView', () => {
       h.setSession({ running: false })
     })
     expect(disclosure.dataset.active).toBeUndefined()
-    expect(within(disclosure).getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 1 ث')
 
     act(() => {
       h.setChat({ nodes: [user(1, 'try'), { ...retry(6), retryState: 'cancelled' }] })
@@ -1297,7 +1297,7 @@ describe('ChatView', () => {
     })
     const cancelledDisclosure = view.container.querySelector('details') as HTMLDetailsElement
     expect(cancelledDisclosure.dataset.active).toBeUndefined()
-    expect(within(cancelledDisclosure).getByRole('status').textContent).toContain('إعادة محاولة قد إلغاء')
+    expect(within(cancelledDisclosure).getByRole('status').textContent).toContain('أُلغيت إعادة محاولة طلب النموذج (1/2) · 1 ث')
   })
 
   it('renders terminal turn failures inline with their durable message and optional code', () => {
@@ -1370,7 +1370,7 @@ describe('ChatView', () => {
       turnEnds: new Map([[1, 6]]),
     })
     const view = render(<h.ChatView {...h.props} />)
-    const toggle = view.getByRole('button', { name: '1 مرة استدعاء الأداة · 1 بند رسالة · 1 وكيل فرعي' })
+    const toggle = view.getByRole('button', { name: '1 استدعاء أداة · 1 رسالة · 1 وكيل فرعي' })
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
     expect(toggle.getAttribute('data-turn-process-tool-calls')).toBe('1')
     expect(toggle.getAttribute('data-turn-process-messages')).toBe('1')
@@ -1401,7 +1401,7 @@ describe('ChatView', () => {
     act(() => { h.set({
       nodes: [user(1, 'question'), first, toolResult(3, 'a'), toolResult(4, 'b', 'subagent'), second],
     }) })
-    const renewedToggle = view.getByRole('button', { name: '1 مرة استدعاء الأداة · 1 بند رسالة · 1 وكيل فرعي' })
+    const renewedToggle = view.getByRole('button', { name: '1 استدعاء أداة · 1 رسالة · 1 وكيل فرعي' })
     expect(renewedToggle.getAttribute('aria-expanded')).toBe('true')
     expect(members[0]?.getAttribute('hidden')).toBeNull()
   })
@@ -1859,7 +1859,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     // The exact turn/end includes trailing tool activity after the final text.
-    expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent).toContain('استغرق 19ثانية')
+    expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent).toContain('متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 19 ث1970-1-1 00:00')
   })
 
   it('the actions-owning assistant footer shows an hour-scale run time', () => {
@@ -1875,7 +1875,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent)
-      .toContain('استخدام وقت 1 س 05 د 03 ث')
+      .toContain('متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 1 س 05 د 03 ث1970-1-1 00:00')
   })
 
   it('the settled footer exposes ttft, decode throughput, and usage as the details trigger', () => {
@@ -1914,8 +1914,8 @@ describe('ChatView', () => {
     fireEvent.keyDown(document, { key: 'Escape' })
     // The time pill carries the run time; first-step ttft (1.2s) and 100
     // tokens over 5s of decode move into its dialog.
-    const timeTrigger = view.getByRole('button', { name: /استغرق 19ثانية/ })
-    expect(timeTrigger.textContent).toBe('استغرق 19ثانية')
+    const timeTrigger = view.getByRole('button', { name: /متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 19 ث1970-1-1 00:00/ })
+    expect(timeTrigger.textContent).toBe('متاح فقط عند آخر رسالة في جولة مكتملةاستغرق 19 ث1970-1-1 00:00')
     expect(view.queryByText(/سرعة درجة 20 tok\/s|أول token/)).toBeNull()
     fireEvent.click(timeTrigger)
     const timeDialog = view.getByRole('dialog')

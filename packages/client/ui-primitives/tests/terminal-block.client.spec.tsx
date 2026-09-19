@@ -215,12 +215,12 @@ describe('TerminalBlock run-state dot', () => {
 
   it('shows the done dot for a clean settled exit', () => {
     const view = render(<TerminalBlock command="true" output="a" exitCode={0} />)
-    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'اكتمل' })
+    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'تم' })
   })
 
   it('counts a settled command with no exit status as a clean settle', () => {
     const view = render(<TerminalBlock command="ls" output="a" />)
-    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'اكتمل' })
+    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'تم' })
   })
 
   it('shows the error dot for a non-zero exit', () => {

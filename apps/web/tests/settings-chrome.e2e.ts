@@ -103,8 +103,8 @@ describe('web e2e: settings modal and General preferences', () => {
     // drive that page over a profile runtime). Capture one stable shipped row
     // rather than the whole inventory so adding an unrelated plugin does not
     // rewrite this surface's golden.
-    await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).click()
-    await dialog.getByRole('heading', { name: 'داخل وضع إضافة', exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'الإضافات المدمجة', exact: true }).click()
+    await dialog.getByRole('heading', { name: 'الإضافات المدمجة', exact: true }).waitFor({ timeout: 10_000 })
     // Both groups start collapsed; the preset group's header still carries its display-only switcher.
     const presetSwitcher = dialog.getByRole('button', { name: 'اختر الإعداد المسبق للوكيل المراد فحصه' })
     await presetSwitcher.waitFor({ timeout: 10_000 })
@@ -134,7 +134,7 @@ describe('web e2e: settings modal and General preferences', () => {
     expect(await dialog.locator('[data-plugin-scope="global"] [role="img"][aria-label="تشغيل في"]').count()).toBe(0)
     expect(await dialog.locator('[data-plugin-count]').getAttribute('data-plugin-count'))
       .toBe(String(expectedPluginCount))
-    expect(await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).getAttribute('aria-current')).toBe('true')
+    expect(await dialog.getByRole('button', { name: 'الإضافات المدمجة', exact: true }).getAttribute('aria-current')).toBe('true')
     // One contribution shows as the page itself, without a tab row.
     expect(await dialog.getByRole('tab').count()).toBe(0)
     expect(await dialog.getByRole('button', { name: 'النموذج' }).getAttribute('aria-current')).toBeNull()

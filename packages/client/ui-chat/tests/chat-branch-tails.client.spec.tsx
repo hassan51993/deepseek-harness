@@ -889,7 +889,7 @@ describe('MessageItem arms', () => {
     const summary = view.container.querySelector('summary')
     expect(details?.open).toBe(false)
     expect(details?.dataset.active).toBe('true')
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 3s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 3 ث')
     expect(view.getByText('إعادة محاولة تأخير متأخر:').parentElement?.textContent).toBe('إعادة محاولة تأخير متأخر: 2500 م.ث')
     expect(view.getByText('سبب الفشل:').parentElement?.textContent).toBe('سبب الفشل: اتصال يتم إعادة وضع')
 

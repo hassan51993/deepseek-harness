@@ -91,11 +91,11 @@ describe('web e2e: plugin configuration pages', () => {
     const official = panel.locator('[data-plugin-group="official"]')
     expect(await official.locator('[data-plugin-package]').count()).toBe(2)
     expect(await official.locator('[data-plugin-item]').count()).toBe(4)
-    for (const title of ['طرفية', 'Agent حلقة', 'Subagent', 'بحث في الويب']) {
+    for (const title of ['طرفية', 'حلقة الوكيل', 'Subagent', 'بحث في الويب']) {
       expect(await official.getByRole('button', { name: `عرض ${title}`, exact: true }).count()).toBe(1)
     }
     // A card carries the one-liner; the fields wait for the page.
-    expect(await official.getByText('حد agent تشغيل كل واحد بند أمر.', { exact: true }).count()).toBe(1)
+    expect(await official.getByText('يحدّ كل أمر يشغّله الوكيل.', { exact: true }).count()).toBe(1)
     expect(await panel.getByLabel('أمر مهلة (مللي ث)').count()).toBe(0)
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
@@ -106,8 +106,8 @@ describe('web e2e: plugin configuration pages', () => {
   it('saves subagent limits and resets them to the deployment defaults', async () => {
     const panel = await openPlugins()
     await openPage(panel, 'Subagent')
-    const depth = panel.getByLabel('الأكثر كبير تمرير عودة عميق درجة', { exact: true })
-    const capacity = panel.getByLabel('Subagent و سطر عدد كمية حد أعلى', { exact: true })
+    const depth = panel.getByLabel('أقصى عمق للتداخل', { exact: true })
+    const capacity = panel.getByLabel('حد التوازي للوكلاء الفرعيين', { exact: true })
     expect(await depth.inputValue()).toBe('1')
     expect(await capacity.inputValue()).toBe('8')
     await depth.fill('2')
@@ -125,8 +125,8 @@ describe('web e2e: plugin configuration pages', () => {
     expect(await depth.evaluate(element => element.getBoundingClientRect().height)).toBe(controlHeight)
     expect(await panel.getByRole('button', { name: 'حفظ', exact: true }).isDisabled()).toBe(true)
     await depth.fill('2')
-    await panel.getByRole('button', { name: 'استعادة افتراضي', exact: true }).first().click()
-    await panel.getByRole('button', { name: 'استعادة افتراضي', exact: true }).first().click()
+    await panel.getByRole('button', { name: 'إعادة التعيين إلى الافتراضي', exact: true }).first().click()
+    await panel.getByRole('button', { name: 'إعادة التعيين إلى الافتراضي', exact: true }).first().click()
     await panel.getByRole('button', { name: 'حفظ', exact: true }).click()
     await expect.poll(() => panel.getByRole('button', { name: 'حفظ', exact: true }).isDisabled()).toBe(true)
     await openPlugins()
@@ -139,24 +139,24 @@ describe('web e2e: plugin configuration pages', () => {
   it('opens field explanations with the keyboard and retains unsaved edits', async () => {
     const panel = await openPlugins()
     await openPage(panel, 'Subagent')
-    const depth = panel.getByLabel('الأكثر كبير تمرير عودة عميق درجة', { exact: true })
+    const depth = panel.getByLabel('أقصى عمق للتداخل', { exact: true })
     await depth.fill('2')
-    const depthHelp = panel.getByRole('button', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true })
-    expect(await panel.getByRole('region', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true }).count()).toBe(0)
+    const depthHelp = panel.getByRole('button', { name: 'عن أقصى عمق للتداخل', exact: true })
+    expect(await panel.getByRole('region', { name: 'عن أقصى عمق للتداخل', exact: true }).count()).toBe(0)
     await depthHelp.press('Enter')
-    const depthRules = panel.getByRole('region', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true })
+    const depthRules = panel.getByRole('region', { name: 'عن أقصى عمق للتداخل', exact: true })
     await depthRules.waitFor()
-    expect(await depthRules.getByText('حد Agent إنشاء Subagent تمرير عودة طبقة درجة.', { exact: true }).count()).toBe(1)
-    const depthTable = depthRules.getByRole('table', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true })
-    expect(await depthTable.getByRole('row', { name: '0 منع استخدام Subagent', exact: true }).count()).toBe(1)
-    expect(await depthTable.getByRole('row', { name: '1 فقط سماح رئيسي Agent إنشاء Subagent', exact: true }).count()).toBe(1)
-    expect(await depthRules.getByText('إذا بعض عدد أداة مفرد وحيد ضبط الأكثر كبير تمرير عودة عميق درجة، بـ هذا أداة ضبط لـ دقيق.', { exact: true }).count()).toBe(1)
+    expect(await depthRules.getByText('يحدّ عدد المستويات التي يمكن للوكيل أن ينشئ فيها وكلاء فرعيين.', { exact: true }).count()).toBe(1)
+    const depthTable = depthRules.getByRole('table', { name: 'عن أقصى عمق للتداخل', exact: true })
+    expect(await depthTable.getByRole('row', { name: '0 تعطيل الوكلاء الفرعيين', exact: true }).count()).toBe(1)
+    expect(await depthTable.getByRole('row', { name: '1 الوكيل الرئيسي وحده ينشئ وكلاء فرعيين', exact: true }).count()).toBe(1)
+    expect(await depthRules.getByText('إذا حدّدت أداةٌ أقصى عمق تداخل خاصًّا بها، فإعداد الأداة هو الذي يسري.', { exact: true }).count()).toBe(1)
     await depthHelp.press('Enter')
     expect(await depthRules.count()).toBe(0)
     expect(await depth.inputValue()).toBe('2')
-    await panel.getByRole('button', { name: 'Subagent و سطر عدد كمية حد أعلى شرح', exact: true }).click()
-    const capacityRules = panel.getByRole('region', { name: 'Subagent و سطر عدد كمية حد أعلى شرح', exact: true })
-    expect(await capacityRules.getByText('نفس رئيسي Agent تحت، كل تمرير عودة طبقة درجة معا تخزين نشط Subagent مجموع عدد، رئيسي Agent لا حساب دخول. بلوغ إلى حد أعلى وقت، جديد بدء طلب سوف يتم رفض.', { exact: true }).count()).toBe(1)
+    await panel.getByRole('button', { name: 'عن حد التوازي للوكلاء الفرعيين', exact: true }).click()
+    const capacityRules = panel.getByRole('region', { name: 'عن حد التوازي للوكلاء الفرعيين', exact: true })
+    expect(await capacityRules.getByText('إجمالي الوكلاء الفرعيين العاملين تحت الوكيل الرئيسي نفسه، عبر كل مستويات التداخل، دون احتساب الوكيل الرئيسي. عند بلوغ الحد تُرفض طلبات البدء الجديدة.', { exact: true }).count()).toBe(1)
     await panel.getByRole('button', { name: 'العودة إلى الإضافات', exact: true }).click()
     await openPage(panel, 'Subagent')
     expect(await depth.inputValue()).toBe('1')
@@ -166,11 +166,11 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-subagent-model-selection'))
     const panel = await openPlugins()
     await openPage(panel, 'Subagent')
-    const toggle = panel.getByRole('switch', { name: 'سماح Agent لـ Subagent اختيار نموذج' })
+    const toggle = panel.getByRole('switch', { name: 'السماح للوكلاء باختيار نماذج للوكلاء الفرعيين' })
 
-    await panel.getByLabel('الأكثر كبير تمرير عودة عميق درجة', { exact: true }).fill('2')
+    await panel.getByLabel('أقصى عمق للتداخل', { exact: true }).fill('2')
     await toggle.click()
-    const models = panel.getByRole('group', { name: 'Agent اختياري اختيار نموذج' })
+    const models = panel.getByRole('group', { name: 'النماذج التي يمكن للوكلاء اختيارها' })
     await models.waitFor({ timeout: 10_000 })
     const firstModel = models.getByRole('checkbox').first()
     await firstModel.check()
@@ -199,7 +199,7 @@ describe('web e2e: plugin configuration pages', () => {
   it('stages an edit and writes it only when saved', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-write'))
     const panel = await openPlugins()
-    await openPage(panel, 'طرفية')
+    await openPage(panel, 'الصدفة')
 
     const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
@@ -219,8 +219,8 @@ describe('web e2e: plugin configuration pages', () => {
       .toBe(true)
     // Presence in the user layer is what the badge reports, and the reset is
     // offered only for a field that has one.
-    await expect.poll(() => panel.getByText('قد تغطية').count(), { timeout: 5_000 }).toBe(1)
-    expect(await panel.getByRole('button', { name: 'استعادة افتراضي' }).count()).toBe(1)
+    await expect.poll(() => panel.getByText('متجاوَز').count(), { timeout: 5_000 }).toBe(1)
+    expect(await panel.getByRole('button', { name: 'إعادة التعيين إلى الافتراضي' }).count()).toBe(1)
     // A settled form offers no save to repeat.
     await expect.poll(() => save.isDisabled(), { timeout: 5_000 }).toBe(true)
     expect(tripwire.pageErrors).toEqual([])
@@ -229,14 +229,14 @@ describe('web e2e: plugin configuration pages', () => {
   it('drops a staged edit when the page is left, without touching the document', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-leave'))
     const panel = await openPlugins()
-    await openPage(panel, 'طرفية')
+    await openPage(panel, 'الصدفة')
     const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
 
     await timeout.fill('7000')
     await panel.getByRole('button', { name: 'العودة إلى الإضافات' }).click()
     await panel.getByRole('heading', { name: 'رسمية', exact: true }).waitFor({ timeout: 10_000 })
-    await openPage(panel, 'طرفية')
+    await openPage(panel, 'الصدفة')
 
     await expect.poll(() => panel.getByLabel('أمر مهلة (مللي ث)').inputValue(), { timeout: 5_000 }).toBe('12000')
     expect(await settingsDocument()).toContain('timeoutMs: 12000')
@@ -246,7 +246,7 @@ describe('web e2e: plugin configuration pages', () => {
   it('refuses to save a draft that is not a number', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-invalid'))
     const panel = await openPlugins()
-    await openPage(panel, 'طرفية')
+    await openPage(panel, 'الصدفة')
     const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
 
@@ -254,21 +254,21 @@ describe('web e2e: plugin configuration pages', () => {
 
     const save = panel.getByRole('button', { name: 'حفظ', exact: true })
     await expect.poll(() => save.isDisabled(), { timeout: 5_000 }).toBe(true)
-    expect(await panel.getByText('طلب ملء عدد حرف؛ إبقاء فارغ يمثل استخدام قيمة افتراضية.').count()).toBe(1)
+    expect(await panel.getByText('أدخل رقمًا، أو اترك الحقل فارغًا لاستخدام القيمة الافتراضية.').count()).toBe(1)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('clears the field back to the composed default on reset', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-reset'))
     const panel = await openPlugins()
-    await openPage(panel, 'طرفية')
+    await openPage(panel, 'الصدفة')
     const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
     expect(await timeout.inputValue()).toBe('12000')
 
     // The reset stages the composed default; the document still carries the
     // override until the save lands.
-    await panel.getByRole('button', { name: 'استعادة افتراضي' }).click()
+    await panel.getByRole('button', { name: 'إعادة التعيين إلى الافتراضي' }).click()
     await expect.poll(() => timeout.inputValue(), { timeout: 5_000 }).toBe('60000')
     expect(await settingsDocument()).toContain('timeoutMs: 12000')
 
@@ -277,7 +277,7 @@ describe('web e2e: plugin configuration pages', () => {
     await expect.poll(async () => (await settingsDocument()).includes('timeoutMs'), { timeout: 10_000 })
       .toBe(false)
     expect(await timeout.inputValue()).toBe('60000')
-    expect(await panel.getByText('قد تغطية').count()).toBe(0)
+    expect(await panel.getByText('متجاوَز').count()).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 

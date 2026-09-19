@@ -56,7 +56,7 @@ describe('ContextMeter', () => {
     const panel = view.queryByRole('dialog')!
     expect(panel.textContent).toContain('~32K / 128K')
     expect(panel.textContent).toContain('25%')
-    expect(panel.textContent).toContain('من السياق مستخدم')
+    expect(panel.textContent).toContain('استُخدم25%من السياق~32K / 128Kتوجيه النظام~120تعريفات الأدوات~21.5Kالرسائل~477K')
     expect(panel.textContent).toContain('توجيه النظام~120')
     expect(panel.textContent).toContain('تعريفات الأدوات~21.5K')
     expect(panel.textContent).toContain('الرسائل~477K')

@@ -611,7 +611,7 @@ describe('ChangedFiles card', () => {
     expect(view.getByText('حُرِّر 11 ملف')).toBeTruthy()
     fireEvent.click(view.getByRole('button', { name: 'مراجعة تغييرات هذه الجولة في الشريط الجانبي' }))
     expect(props.openChangesReview).toHaveBeenLastCalledWith({ sessionId: 'child-session', seq: 5, turn: 1 }, 0)
-    fireEvent.click(view.getByRole('button', { name: 'عرض config/design-token تعديل' }))
+    fireEvent.click(view.getByRole('button', { name: 'عرض تغييرات config/design-token' }))
     expect(props.openChangesReview).toHaveBeenLastCalledWith({ sessionId: 'child-session', seq: 5, turn: 1 }, 0)
     expect(openFile).not.toHaveBeenCalled()
     expect(props.openChanged).not.toHaveBeenCalled()

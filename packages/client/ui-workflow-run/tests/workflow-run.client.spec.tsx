@@ -591,7 +591,7 @@ describe('WorkflowRunPanel', () => {
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
     expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
-    expect(screen.getByText('فشل 1 · ملغى 1')).toBeTruthy()
+    expect(screen.getByText('فاشل 1 · ملغى 1')).toBeTruthy()
   })
 
   it('keeps clean sibling phases independent and preserves empty versus absent names', () => {
@@ -639,7 +639,7 @@ describe('WorkflowRunPanel', () => {
       })],
     }
     const mixedView = render(<WorkflowRunPanel {...panelProps(mixed)} />)
-    expect(screen.getByText('فشل 1 · ملغى 1')).toBeTruthy()
+    expect(screen.getByText('فاشل 1 · ملغى 1')).toBeTruthy()
     expect([...mixedView.container.querySelectorAll('[data-member-status]')]
       .map(row => row.getAttribute('data-member-status'))).toEqual(['failed', 'cancelled'])
     expect(mixedView.container.querySelectorAll('[data-state="error"]')).toHaveLength(2)
@@ -655,7 +655,7 @@ describe('WorkflowRunPanel', () => {
         ],
       })],
     })} />)
-    expect(screen.getByText('مكتمل 1 · قد في قطع 1')).toBeTruthy()
+    expect(screen.getByText('مكتمل 1 · مقطوع 1')).toBeTruthy()
     expect(interruptedView.container.querySelector('[data-run-status="interrupted"]')).toBeTruthy()
     expect(interruptedView.container.querySelectorAll('[data-state="warning"]')).toHaveLength(2)
   })
