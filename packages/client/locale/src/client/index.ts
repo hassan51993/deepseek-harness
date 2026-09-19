@@ -142,9 +142,6 @@ function normalizeLanguage(input: LanguageRegistration): Readonly<LanguageRegist
   if (!LOCALE_ID_PATTERN.test(input.fallback)) {
     throw new Error(`locale fallback "${input.fallback}" is not a BCP 47-style tag`)
   }
-  if (input.direction !== undefined && input.direction !== 'ltr' && input.direction !== 'rtl') {
-    throw new Error(`locale direction "${String(input.direction)}" is neither "ltr" nor "rtl"`)
-  }
   return Object.freeze({
     id: input.id,
     label: input.label,

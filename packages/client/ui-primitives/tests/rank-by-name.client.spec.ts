@@ -43,7 +43,7 @@ describe('rankByName', () => {
     expect(names(rankByName(items, 'هدف'))).toEqual(['goal'])
     expect(names(rankByName(items, 'goal'))).toEqual(['goal'])
     expect(names(rankByName(items, 'p'))).toEqual(['plan', 'permission'])
-    expect(names(rankByName(items, 'تخطيط'))).toEqual(['plan'])
+    expect(names(rankByName(items, 'طة'))).toEqual(['plan'])
     // A label prefix hit ranks like a name prefix hit.
     expect(names(rankByName([{ name: 'xplan', label: 'plan' }, { name: 'plant' }], 'pla'))).toEqual(['xplan', 'plant'])
   })
