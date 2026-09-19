@@ -1440,7 +1440,7 @@ describe('decorations', () => {
         expect($replaceDetectSpanWithText({ start: 2, end: 3 }, '')).toBe(true)
       }, { discrete: true })
     })
-    expect(shell.snapshot).toMatchObject({ draft: 'قبل بعد', occurrences: [] })
+    expect(shell.snapshot).toMatchObject({ draft: 'قبل  بعد', occurrences: [] })
   })
 
   it('copy and cut expand a selected chip to its clipboard projection natively', async () => {

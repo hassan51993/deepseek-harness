@@ -601,9 +601,9 @@ describe('rename', () => {
   it('settles the title projection cell from the unary response (higher-seq-wins vs the push frame)', async ({ mock, start }) => {
     const session = await sessionBench(mock, start, SID)
     mock.remote.session.rename.mockResolvedValue(ok({ title: 'صحيح اسم', seq: 7 }))
-    const result = await session.rename(' صحيح اسم ')
+    const result = await session.rename('  صحيح اسم  ')
     expect(result).toMatchObject({ ok: true, value: { title: 'صحيح اسم', seq: 7 } })
-    expect(mock.log.requests('session/rename')).toMatchObject([{ sessionId: SID, title: ' صحيح اسم ' }])
+    expect(mock.log.requests('session/rename')).toMatchObject([{ sessionId: SID, title: '  صحيح اسم  ' }])
     expect(session.projections.faceOf('title').getSnapshot()).toBe('صحيح اسم')
     // A stale lower-seq apply (the push-frame path routes into this same
     // store) must not roll the settled value back.

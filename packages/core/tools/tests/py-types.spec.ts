@@ -447,11 +447,11 @@ describe('renderToolsSdkPy', () => {
       output: { type: 'string' },
     }
     const text = renderToolsSdkPy([tool])
-    expect(text).toContain('async def بحث (self, args: بحثArgs) -> str:')
+    expect(text).toContain('async def بحث(self, args: بحثArgs) -> str:')
     expect(text).toContain('class بحثArgs(TypedDict):')
-    expect(text).toContain(' مسار: str')
+    expect(text).toContain('    مسار: str')
     expect(text).toContain('class بحثArgsOpts(TypedDict):')
-    expect(text).toContain(' عمق: NotRequired[float]')
+    expect(text).toContain('    عمق: NotRequired[float]')
     expect(text).not.toContain('dict[str, Any]')
   })
 

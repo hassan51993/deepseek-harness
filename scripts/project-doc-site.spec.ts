@@ -480,8 +480,8 @@ describe('docsPages locale routes', () => {
     const pages = docsPages.filter(page => page.route.endsWith('reference/persistence-catalog.md'))
     expect(pages).toHaveLength(2)
     expect(pages.map(page => page.source).sort()).toEqual([
-      'docs/persistence-catalog.md',
       'docs/persistence-catalog.ar.md',
+      'docs/persistence-catalog.md',
     ])
     expect(pages.map(page => page.outline)).toEqual(['deep', 'deep'])
   })
@@ -603,7 +603,7 @@ describe('projectedPageContent', () => {
 
   it('omits the source-only body from locale home pages', () => {
     expect(projectedPageContent(
-      '---\nlayout: false\nhead:\n - - meta\n - http-equiv: refresh\n content: 0; url=./guide/quickstart\n---\n\n# Harness\n\n[English](index.md) | العربية\n',
+      '---\nlayout: false\nhead:\n  - - meta\n    - http-equiv: refresh\n      content: 0; url=./guide/quickstart\n---\n\n# Harness\n\n[English](index.md) | العربية\n',
       page(null),
     )).toBe('---\nlayout: false\nhead:\n  - - meta\n    - http-equiv: refresh\n      content: 0; url=./guide/quickstart\n---\n')
   })
@@ -641,7 +641,7 @@ describe('projectedPageContent', () => {
 describe('rawMarkdownPageContent', () => {
   it('keeps the home body the rendered site omits and drops the VitePress frontmatter', () => {
     expect(rawMarkdownPageContent(
-      '---\nlayout: false\nhead:\n - - meta\n - http-equiv: refresh\n content: 0; url=./guide/quickstart\n---\n\n# Harness\n\nEnglish | [العربية](./index.md)\n\nBody.\n',
+      '---\nlayout: false\nhead:\n  - - meta\n    - http-equiv: refresh\n      content: 0; url=./guide/quickstart\n---\n\n# Harness\n\nEnglish | [العربية](./index.md)\n\nBody.\n',
       'docs/user/index.ar.md',
     )).toBe('# Harness\n\nBody.\n')
   })

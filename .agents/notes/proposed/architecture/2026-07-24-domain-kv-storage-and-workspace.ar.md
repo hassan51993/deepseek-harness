@@ -199,7 +199,7 @@ export type WorkspaceId = Branded<'WorkspaceId'>
 export function WorkspaceId(id: string): WorkspaceId
 
 const workspaceRecord = z.object({
-  path: z.string(), // realpath، رؤية تحت
+  path: z.string(),                              // realpath، رؤية تحت
   title: z.string(),
   sessionIds: z.array(z.string().transform(SessionId)),
   createdAt: z.string(),                         // ISO
@@ -218,7 +218,7 @@ export interface Workspace {
   readonly id: WorkspaceId
   readonly path: string
   readonly title: string
-  readonly sessionIds: readonly SessionId[] // وحيد حق متبادل كما لديه ترتيب: عدد مجموعة ترتيب أي عرض ترتيب
+  readonly sessionIds: readonly SessionId[]      // وحيد حق متبادل كما لديه ترتيب: عدد مجموعة ترتيب أي عرض ترتيب
   setTitle(title: string): Promise<void>
   /** Record a session under this workspace (idempotent). Rejects when the session
    *  header's cwd (realpath) differs from this workspace's path. */
@@ -231,12 +231,12 @@ export interface Workspace {
 export class WorkspaceRegistry extends Service {
   constructor(ctx: Context)                      // super(ctx, 'workspaceRegistry')
   // start(): this.domain = await ctx.storage.domain.open(workspaceDomainSpec)
-  // فعلي جسم ذاكرة مؤقتة Map<WorkspaceId, WorkspaceEntity> إعادة بناء
-  create(path: string, title?: string): Promise<Workspace> // realpath بعد اصطدام قد لديه → reject
+  //          فعلي جسم ذاكرة مؤقتة Map<WorkspaceId, WorkspaceEntity> إعادة بناء
+  create(path: string, title?: string): Promise<Workspace>   // realpath بعد اصطدام قد لديه → reject
   get(id: WorkspaceId): Workspace | undefined
   list(): Workspace[]
   resolveByPath(path: string): Promise<Workspace | undefined> // نفس realpath فتحة مسار، لذا async
-  delete(id: WorkspaceId): Promise<boolean> // فقط حذف تسجيل سجل؛ دليل و session سجل إبقاء
+  delete(id: WorkspaceId): Promise<boolean>      // فقط حذف تسجيل سجل؛ دليل و session سجل إبقاء
 }
 ```
 
