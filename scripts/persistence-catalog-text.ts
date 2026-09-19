@@ -22,21 +22,21 @@ const english = {
 }
 
 const chinese: Record<keyof typeof english, string> = {
-  title: '会话持久化事件目录',
-  intro: '本目录列出仓库声明的每个持久化 Session 事件及其源码声明和解析类型，覆盖逻辑与物理 header、事件信封以及各插件的声明合并。回放规则参见 [Session](subsystems/session.zh.md)，存储规则参见[持久化](subsystems/persistence.zh.md)。',
-  generation: '运行 `pnpm run gen-persistence-catalog` 可重新生成目录的两种语言、配对记录、已知事件模块和机器 schema 目录。`pnpm run verify-persistence-catalog` 检查所有生成文件。声明围栏保留源码 JSDoc 和类型引用；解析后的定义展开其传递引用结构。',
-  envelopeIntro: '信封包含 `type`、`seq`、`time`、`data`、可选的 `ignorable` 以及条件字段 `surfaceOp` / `sourceEventSeqs`。**surface** 事件产生模型历史，**log-only** 事件不产生模型历史。目录覆盖本仓库；外部插件类型需要独立声明，不属于本目录。',
-  envelope: '事件信封', events: '事件', sources: '来源：', source: '来源：', types: '类型：',
-  fingerprints: '持久化类型指纹',
-  fingerprintsIntro: '[机器可读目录](persistence-schema.json)包含所有可达的规范化类型及其 SHA-256 摘要。根类型的摘要涵盖引用类型。注释、源码位置、别名、擦除的品牌标记、readonly 标记以及无语义变化的字段、联合类型或交叉类型重排不影响摘要；元组顺序、属性名称、值类型和可选性会影响摘要。摘要不变时，目录文本和源码位置仍可能产生 diff。',
-  historyIntro: '[格式参考](persistence-changes/historical-formats/README.zh.md)覆盖每个历史 Session 格式。[变更记录](persistence-changes/README.zh.md)通过保存在本源码树中的快照确认精确的类型转换。按照[评审流程](cookbook/reviewing-persistence-type-changes.zh.md)分类并记录变更。这些检查覆盖已声明的类型结构；不透明载荷的内部内容和未改变类型的行为变更不在检查范围内。',
-  rootColumns: '| 根类型 | 类别 | SHA-256 | 已解析类型 |',
-  definitions: '已解析的持久化类型',
-  definitionsIntro: '每个类型定义仅列出一次。引用保留共享和递归关系；定义旁的摘要涵盖其完整可达结构。源码名称和位置标识声明来源，但不参与摘要计算。',
-  propertyColumns: '| 属性 | 存在性 | 类型 |', positionColumns: '| 位置 | 存在性 | 类型 |',
-  optional: '可选', required: '必需', rest: '剩余项', index: '索引签名',
-  emptyObject: '无已声明属性的对象。', arrayPrefix: '', arraySuffix: ' 的数组。',
-  oneOf: '以下类型之一：', opaque: '（不透明）', opaqueExplanation: '：此声明未暴露存储值的内部字段。',
+  title: 'جلسة حفظ دائم حدث دليل',
+  intro: 'هذا دليل صف خروج مستودع إعلان كل حفظ دائم Session حدث و ذلك شفرة المصدر إعلان و تحليل نوع، تغطية منطق و شيء إدارة header، حدث معلومة غلاف و كل إضافة إعلان دمج. إعادة تشغيل قاعدة مشاركة رؤية [Session](subsystems/session.zh.md) ، تخزين قاعدة مشاركة رؤية[حفظ دائم](subsystems/persistence.zh.md).',
+  generation: 'تشغيل `pnpm run gen-persistence-catalog` يمكن إعادة توليد دليل اثنان نوع لغة، إعداد مقابل سجل، معروف حدث وحدة و آلة جهاز schema دليل.`pnpm run verify-persistence-catalog` فحص كل توليد ملف. إعلان محيط شريط إبقاء شفرة المصدر JSDoc و نوع مرجع؛ تحليل بعد تعريف توسيع ذلك نقل تمرير مرجع بنية.',
+  envelopeIntro: 'معلومة غلاف يتضمن `type`،`seq`،`time`،`data`، اختياري `ignorable` و شرط حقل `surfaceOp` / `sourceEventSeqs`.**surface** حدث إنتاج نموذج تاريخ،**log-only** حدث لا إنتاج نموذج تاريخ. دليل تغطية هذا مستودع؛ خارجي إضافة نوع حاجة مستقل إعلان، لا يخص هذا دليل.',
+  envelope: 'حدث معلومة غلاف', events: 'حدث', sources: 'مصدر:', source: 'مصدر:', types: 'نوع:',
+  fingerprints: 'حفظ دائم نوع إشارة نقش',
+  fingerprintsIntro: '[آلة جهاز يمكن قراءة دليل](persistence-schema.json) يتضمن كل يمكن بلوغ مواصفة تحويل نوع و ذلك SHA-256 ملخص. أصل نوع ملخص شمول غطاء مرجع نوع. ملاحظة تفسير، شفرة المصدر موضع، آخر اسم، مسح حذف صنف لوحة علامة،readonly علامة و بلا دلالة تغير حقل، ربط دمج نوع أو تسليم تقاطع نوع إعادة ترتيب لا أثر ملخص؛ عنصر مجموعة ترتيب، خاصية اسم، قيمة نوع و اختياري صفة سوف أثر ملخص. ملخص ثابت وقت، دليل نص و شفرة المصدر موضع ما زال ممكن إنتاج diff.',
+  historyIntro: '[صيغة مشاركة اعتبار](persistence-changes/historical-formats/README.zh.md) تغطية كل تاريخ Session صيغة.[تغيير سجل](persistence-changes/README.zh.md) عبر حفظ في هذا شفرة المصدر شجرة في لقطة تأكيد دقيق نوع تحويل. حسب وفق[مراجعة مسار](cookbook/reviewing-persistence-type-changes.zh.md) تصنيف و سجل تغيير. هذه فحص تغطية قد إعلان نوع بنية؛ لا نفاذ واضح تحميل حمل داخلي محتوى و لم تغيير نوع سلوك تغيير لا في فحص نطاق داخل.',
+  rootColumns: '| أصل نوع | صنف آخر | SHA-256 | قد تحليل نوع |',
+  definitions: 'قد تحليل حفظ دائم نوع',
+  definitionsIntro: 'كل نوع تعريف فقط صف خروج مرة. مرجع إبقاء مشترك و تمرير عودة علاقة؛ تعريف جانب ملخص شمول غطاء ذلك كامل يمكن بلوغ بنية. شفرة المصدر اسم و موضع معرف إعلان مصدر، لكن لا مشاركة و ملخص حساب حساب.',
+  propertyColumns: '| خاصية | وجود | نوع |', positionColumns: '| موضع | وجود | نوع |',
+  optional: 'اختياري', required: 'مطلوب', rest: 'باق بقية بند', index: 'بحث جذب توقيع',
+  emptyObject: 'بلا قد إعلان خاصية كائن.', arrayPrefix: '', arraySuffix: ' عدد مجموعة.',
+  oneOf: 'التالي نوع لـ واحد:', opaque: '(لا نفاذ واضح)', opaqueExplanation: ': هذا إعلان لم كشف تخزين قيمة داخلي حقل.',
 }
 
 /** Complete translated prose; adding an English key requires its Chinese counterpart. */

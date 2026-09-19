@@ -1,102 +1,102 @@
 ---
-description: "Web GUI 的 plan 模式状态徽章：显示 plan 模式已开启并可将其关闭的 composer 控件；供 plan 模式的用户与维护者阅读。"
+description: "Web GUI plan نمط حالة شعار فصل: عرض plan نمط قد فتح بدء و يمكن سوف ذلك إغلاق composer تحكم عنصر؛ توفير plan نمط مستخدم و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-plan
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-计划模式让你在实施前审阅计划。通过 `/plan` 进入，通过编辑器中的状态按钮退出。提交的计划自动在右侧边栏打开供审阅；批准、拒绝或关闭审批后，仍可通过已完成回合末尾的产物卡片查看。重新打开同一计划会聚焦已有标签页，刷新浏览器后会从会话历史恢复正文。
+حساب تخطيط نمط يجعل أنت في فعلي تطبيق قبل مراجعة قراءة حساب تخطيط. عبر `/plan` دخول، عبر تحرير جهاز في حالة حسب زر خروج. إيداع حساب تخطيط تلقائي في يمين جانب حافة شريط فتح توفير مراجعة قراءة؛ دفعة دقيق، رفض أو إغلاق مراجعة دفعة بعد، ما زال يمكن عبر قد إتمام عودة دمج نهاية ذيل ناتج بطاقة فحص نظر. إعادة فتح نفس حساب تخطيط سوف تجمع تركيز قد لديه وسم صفحة، تحديث جديد متصفح بعد سوف من جلسة تاريخ استعادة متن.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-与 `ui-conversation` 及 `dsh-plan-mode` 一起挂载本插件；plan 模式激活时，徽章随即占据 composer 的 plan 座位（访问模式控件右侧）。经 `/plan` 命令路径进入 plan 模式——从 composer 的 `+` Command 菜单选择 Plan，或键入 `/plan`——再用徽章将其关闭。
+و `ui-conversation` و `dsh-plan-mode` واحد بدء تركيب هذا إضافة؛plan نمط تنشيط وقت، شعار فصل مع أي احتلال حسب composer plan مقعد موضع (وصول نمط تحكم عنصر يمين جانب). مرور `/plan` أمر مسار دخول plan نمط——من composer `+` Command قائمة مفرد اختيار Plan، أو مفتاح دخول `/plan`——مجددا استخدام شعار فصل سوف ذلك إغلاق.
 
-### 徽章显示什么
+### شعار فصل عرض ماذا
 
-当有效目标为 plan 模式时，该座位渲染 warn 色「Plan ×」状态按钮，执行 `/plan off`。否则座位保持为空：未组合 plan-mode 的宿主，或尚无会话的 Draft，都不显示任何内容。plan 模式为有效目标期间，composer 文本框的 placeholder 切换为 plan 任务提示——「describe your task to generate plan」——除非所属 surface 提供自己的 placeholder。
+عند صالح هدف لـ plan نمط وقت، هذا مقعد موضع تصيير warn لون «Plan ×» حالة حسب زر، تنفيذ `/plan off`. لا فإن مقعد موضع إبقاء لـ فارغ: لم تركيب plan-mode مضيف، أو بعد بلا جلسة Draft، كل لا عرض أي محتوى.plan نمط لـ صالح هدف خلال،composer نص إطار placeholder تبديل لـ plan مهمة تلميح——«describe your task to generate plan»——حذف غير الذي تابع surface توفير ذاتي ذات placeholder.
 
-### 查看已提交的计划
+### فحص نظر قد إيداع حساب تخطيط
 
-回合结束后，每次提交的计划都会显示在该回合末尾的产物区域，并采用文件产物卡片的样式，包含 Markdown 图标、标题和“打开”操作。在当前浏览器会话中，每份待审计划自动打开一次；关闭后，重新挂载审批组件不会再次展开，新提交会打开其对应计划。历史卡片仅在点击后打开。通过卡片或审批条带上的“查看全文”链接可阅读和复制完整 Markdown。计划标签页显示文档加笔的图标。不同提交保留独立标签页；是否开始实施仍由审批按钮决定。
+عودة دمج انتهاء بعد، كل مرة إيداع حساب تخطيط كل سوف عرض في هذا عودة دمج نهاية ذيل ناتج منطقة مجال، و اعتماد ملف ناتج بطاقة مثال صيغة، يتضمن Markdown رسم علامة، عنوان و “فتح” عملية. في حالي متصفح جلسة في، كل نسخة انتظار مراجعة حساب تخطيط تلقائي فتح مرة؛ إغلاق بعد، إعادة تركيب مراجعة دفعة مكون لن مجددا مرة توسيع، جديد إيداع سوف فتح ذلك مقابل حساب تخطيط. تاريخ بطاقة فقط في نقر بعد فتح. عبر بطاقة أو مراجعة دفعة بند حمل فوق “فحص نظر كل نص” رابط يمكن قراءة قراءة و نسخ كامل Markdown. حساب تخطيط وسم صفحة عرض وثيقة إضافة قلم رسم علامة. مختلف إيداع إبقاء مستقل وسم صفحة؛ هل بدء فعلي تطبيق ما زال من مراجعة دفعة حسب زر قرار.
 
-没有已记录调用标识的审批也会自动打开。完整正文只保存在标签页的导航内存中，待处理审批卡片可以重新打开它。刷新页面会丢失该正文；失效的预览会提示用户返回待处理审批。
+لا يوجد قد سجل استدعاء معرف مراجعة دفعة أيضا سوف تلقائي فتح. كامل متن فقط حفظ في وسم صفحة تنقل داخل تخزين في، انتظار معالجة مراجعة دفعة بطاقة يمكن إعادة فتح هو. تحديث جديد صفحة سوف فقد فقد هذا متن؛ بطلان معاينة سوف تلميح مستخدم إرجاع انتظار معالجة مراجعة دفعة.
 
-### 失败
+### فشل
 
-准入失败（`matched: false`、业务错误、传输故障）以内联错误呈现，徽章保持显示直至投影确认退出。
+دقيق دخول فشل (`matched: false`، عمل خدمة خطأ، نقل لذا عائق) بـ داخل ربط خطأ عرض، شعار فصل إبقاء عرض مباشر حتى إسقاط تأكيد خروج.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-徽章占据 conversation 声明的 `conversation.input.plan` 单实例座位；node 半部是空 apply（roster 行）。读取经 standard-kit 的 `useProjection` 走通用投影对：有效目标是 `pending ? !active : active`——折叠的宿主值而非客户端乐观态，因此到达的帧无论哪个方向都会纠正徽章。座位注入面携带一个动词 `exitPlanMode`，经 `ctx.remote.commands.execute` 执行 `/plan off`，并把准入失败映射为一行内联错误。placeholder 与提示文案位于 ui-conversation 的 `conversation` locale 命名空间，与已认领 `/plan` 命令的提示逐字共用。无障碍描述是「Plan mode on, press to turn off」。
+شعار فصل احتلال حسب conversation إعلان `conversation.input.plan` مفرد نسخة مقعد موضع؛node نصف جزء هو فارغ apply(roster سطر). قراءة مرور standard-kit `useProjection` مشي عام إسقاط مقابل: صالح هدف هو `pending ? !active : active`——طي مضيف قيمة بينما غير عميل مرح مراقبة حالة، لذلك وصول لقطة بلا نقاش أي عدد جهة نحو كل سوف تصحيح صحيح شعار فصل. مقعد موضع حقن وجه يحمل واحد حركة كلمة `exitPlanMode`، مرور `ctx.remote.commands.execute` تنفيذ `/plan off`، و يأخذ دقيق دخول فشل خريطة لـ واحد سطر داخل ربط خطأ.placeholder و تلميح نص سجل يقع في ui-conversation `conversation` locale نطاق الأسماء، و قد إقرار قيادة `/plan` أمر تلميح تدريجي حرف مشترك استخدام. بلا عائق عائق وصف هو «Plan mode on, press to turn off».
 
-计划卡片通过 Conversation Definition 从原生 `tool/call` 或 PTC dispatch 参数派生，并使用每次调用已解析的回合位置。它们与文件产物一起贡献到可追加的 `conversation.chat.turnTail` 列表。计划资源地址标识调用及完整的普通会话地址或子会话直接父级地址；provider 读取已有会话历史及较早分页，不把正文存入侧边栏布局。提问插件拥有审批操作插槽，并提供请求键、完整正文和可选的调用标识。[决策记录](../../../.agents/notes/implemented/feature/2026-09-17-persistent-plan-cards.zh.md)说明审批与文档为何保持独立生命周期。
+حساب تخطيط بطاقة عبر Conversation Definition من أصلي `tool/call` أو PTC dispatch معامل إرسال توليد، و استخدام كل مرة استدعاء قد تحليل عودة دمج موضع. هو جمع و ملف ناتج واحد بدء مساهمة إلى يمكن إلحاق `conversation.chat.turnTail` قائمة. حساب تخطيط مورد عنوان معرف استدعاء و كامل عادي جلسة عنوان أو فرعي جلسة مباشر أب درجة عنوان؛provider قراءة قد لديه جلسة تاريخ و مقارنة مبكر قسم صفحة، لا يأخذ متن تخزين دخول جانب حافة شريط تخطيط. رفع سؤال إضافة يملك مراجعة دفعة عملية إدراج مجرى، و توفير طلب مفتاح، كامل متن و اختياري استدعاء معرف.[قرار سجل](../../../.agents/notes/implemented/feature/2026-09-17-persistent-plan-cards.zh.md) شرح مراجعة دفعة و وثيقة لـ أي إبقاء مستقل دورة الحياة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当 plan surface 不够用时阅读以下页面。它们从徽章进入 plan 模式领域与 composer 外壳。
+عند plan surface لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من شعار فصل دخول plan نمط مجال و composer خارج قشرة.
 
-- [dsh-plan-mode](../../plan/plan-mode/README.zh.md)——拥有 plan 模式、`/plan` 命令、投影与 policy 段。
-- [ui-conversation](../ui-conversation/README.zh.md)——声明 composer 的 `conversation.input.plan` 座位与 placeholder locale 键。
-- [工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-plan-mode)——模型退出 plan 模式所用的 `exit_plan_mode` 工具 schema。
-- [客户端包映射](../README.zh.md)——相邻的浏览器 UI 包。
+- [dsh-plan-mode](../../plan/plan-mode/README.zh.md)——يملك plan نمط،`/plan` أمر، إسقاط و policy مقطع.
+- [ui-conversation](../ui-conversation/README.zh.md)——إعلان composer `conversation.input.plan` مقعد موضع و placeholder locale مفتاح.
+- [أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-plan-mode)——نموذج خروج plan نمط الذي استخدام `exit_plan_mode` أداة schema.
+- [عميل حزمة خريطة](../README.zh.md)——متبادل مجاور متصفح UI حزمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-间接地，通过 chip 派发的 `/plan off` 命令行：`dsh-plan-mode` 拥有该命令行驱动的模型可见 policy 段、退出工具 schema 与已记录状态。
+بين وصل أرض، عبر chip إرسال إرسال `/plan off` أمر سطر:`dsh-plan-mode` يملك هذا أمر سطر قيادة نموذج مرئي policy مقطع، خروج أداة schema و قد سجل حالة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-进入或离开 plan mode 会改变活跃的 `plan:policy` 系统提示词段，因此改变请求前缀；chip 本身不添加任何提示词内容。
+دخول أو مغادرة فتح plan mode سوف تغيير نشط وثب `plan:policy` توجيه النظام مقطع، لذلك تغيير طلب بادئة؛chip ذاته لا إضافة أي نص التوجيه محتوى.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制界定了当前 plan 徽章。它们是当前包约束，不是 plan 模式对比或任务积压。
+هذه حد حد تحديد حالي plan شعار فصل. هو جمع هو حالي حزمة قيد، لا هو plan نمط مقابل مقارنة أو مهمة تراكم ضغط.
 
-- **Plan 模式是引导而非执行沙箱**——需要强制只读规划的部署必须组合独立的沙箱与审批策略。
-- **徽章属于默认 composer**——待处理的涉及整个 composer 的交互（如 plan 评审）会临时取代 InputBar 及其徽章。
-- **未激活时无 plan 控件**——入口使用共享 Command source；有能力但模式未激活的会话在工具行不显示 plan 入口。
+- **Plan نمط هو جذب توجيه بينما غير تنفيذ صندوق رملي**——حاجة قوي صنع فقط قراءة قاعدة تخطيط نشر يجب تركيب مستقل صندوق رملي و مراجعة دفعة سياسة.
+- **شعار فصل يخص افتراضي composer**——انتظار معالجة تعلق و كامل composer تفاعل (مثل plan مراجعة) سوف مؤقت يحل محل InputBar و ذلك شعار فصل.
+- **لم تنشيط وقت بلا plan تحكم عنصر**——مدخل استخدام مشترك Command source؛ لديه قدرة لكن نمط لم تنشيط جلسة في أداة سطر لا عرض plan مدخل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。plan state 与 boundary 的所有权由 dsh-plan-mode 审计；本包的 control 是一种 slot effect，其声明、注册与清理由本包执行。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.plan state و boundary كل حق من dsh-plan-mode مراجعة حساب؛ هذه الحزمة control هو واحد نوع slot effect، ذلك إعلان، تسجيل و تنظيف من هذه الحزمة تنفيذ.

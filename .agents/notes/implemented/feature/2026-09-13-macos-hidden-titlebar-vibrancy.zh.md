@@ -2,48 +2,48 @@
 
 Status: implemented
 
-[English](2026-09-13-macos-hidden-titlebar-vibrancy.md) | 中文
+[English](2026-09-13-macos-hidden-titlebar-vibrancy.md) | العربية
 
 ## Problem
 
-桌面应用此前使用 macOS 原生标题栏：Web UI 上方一条不透明的横条，重复页面已有的窗口装饰、占用纵向空间，并让侧边栏无法触及窗口顶边。窗口看起来像浏览器标签页而非 macOS 应用，且不存在任何按平台差异化呈现的机制——macOS、Windows 与纯 Web 上每个像素都完全一致。
+طاولة وجه تطبيق هذا قبل استخدام macOS أصلي عنوان شريط:Web UI فوق جهة واحد بند لا نفاذ واضح أفقي بند، تكرار صفحة قد لديه نافذة تركيب زينة، احتلال استخدام رأسي نحو فضاء، و يجعل جانب حافة شريط لا يمكن لمس و نافذة قمة حافة. نافذة نظر بدء قدوم مثل متصفح وسم صفحة بينما غير macOS تطبيق، كما لا وجود أي حسب منصة فرق مختلف تحويل عرض آلية——macOS،Windows و صاف Web فوق كل مثل عنصر كل تماما متسق.
 
 ## Decision
 
-Electron 主进程在 darwin 上以 `titleBarStyle: 'hiddenInset'`、`trafficLightPosition: { x: 16, y: 18 }`、`vibrancy: 'sidebar'`、`visualEffectState: 'active'` 与透明 `backgroundColor` 打开主窗口。`'active'` 让窗口失焦时材质保持稳定；`'followWindow'` 会在失焦时把侧边栏冲淡。
+Electron رئيسي عملية في darwin فوق بـ `titleBarStyle: 'hiddenInset'`،`trafficLightPosition: { x: 16, y: 18 }`،`vibrancy: 'sidebar'`،`visualEffectState: 'active'` و نفاذ واضح `backgroundColor` فتح رئيسي نافذة.`'active'` يجعل نافذة فقد تركيز وقت مادة جودة إبقاء مستقر؛`'followWindow'` سوف في فقد تركيز وقت يأخذ جانب حافة شريط اندفاع باهت.
 
-所有 macOS Web 侧调整均以 `html[data-platform='darwin']` 为开关，该属性仅由桌面 preload 设置（`document.documentElement.dataset.platform = process.platform`）。这些规则不适用于纯 Web 或其他桌面平台。[Windows 顶栏决策](2026-09-16-windows-desktop-titlebar.zh.md)负责其独立呈现。
+كل macOS Web جانب ضبط كامل متساو بـ `html[data-platform='darwin']` لـ فتح صلة، هذا خاصية فقط من طاولة وجه preload ضبط (`document.documentElement.dataset.platform = process.platform`). هذه قاعدة لا ملائم لأجل صاف Web أو أخرى طاولة وجه منصة.[Windows قمة شريط قرار](2026-09-16-windows-desktop-titlebar.zh.md) مسؤول ذلك مستقل عرض.
 
-**透明链。** 毛玻璃只透过透明像素显现：darwin 上 `html`/`body`（ui-web base.css）与 AppFrame 透明，中间列铺不透明的 `--dsw-alias-bg-base`，侧边栏列铺侧边栏底色的半透明 `color-mix`，让材质透出。SidebarRoot 自身的不透明底色出于同一原因移到框架列。
+**نفاذ واضح سلسلة.** شعر زجاج بلور فقط نفاذ مرور نفاذ واضح مثل عنصر إظهار الآن:darwin فوق `html`/`body`(ui-web base.css) و AppFrame نفاذ واضح، في بين صف فرش لا نفاذ واضح `--dsw-alias-bg-base`، جانب حافة شريط صف فرش جانب حافة شريط قاع لون نصف نفاذ واضح `color-mix`، يجعل مادة جودة نفاذ خروج.SidebarRoot ذاته لا نفاذ واضح قاع لون خروج في نفس سبب نقل إلى إطار هيكل صف.
 
-**原生主题同步。** 毛玻璃材质跟随 `nativeTheme.themeSource`，后者默认跟踪系统外观，会与应用自身的主题偏好背离。ui-theme 引导脚本与 ui-layout 的 `ThemePresenter` 发布 `html[data-ds-theme-source]`（`light`、`dark` 或 `system`；固定偏好——包括注册主题 id——发布其解析后的配色）。应用 preload 观察该属性并经 `dsh-desktop:native-theme-set` 转发；主进程校验取值与发送者（主窗口的 WebContents，包括其本地静态 Web 文档）后赋给 `nativeTheme.themeSource`。发布偏好而非解析值，可在偏好为 `system` 时保留跟随系统。
+**أصلي رئيسي عنوان تزامن.** شعر زجاج بلور مادة جودة تتبع مع `nativeTheme.themeSource`، بعد من افتراضي تتبع أثر نظام خارج مراقبة، سوف و تطبيق ذاته رئيسي عنوان انحراف جيد خلف مغادرة.ui-theme جذب توجيه نص برمجي و ui-layout `ThemePresenter` إصدار `html[data-ds-theme-source]`(`light`،`dark` أو `system`؛ ثابت انحراف جيد——يشمل تسجيل رئيسي عنوان id——إصدار ذلك تحليل بعد إعداد لون). تطبيق preload مراقبة هذا خاصية و مرور `dsh-desktop:native-theme-set` تحويل إرسال؛ رئيسي عملية تحقق أخذ قيمة و إرسال من (رئيسي نافذة WebContents، يشمل ذلك محلي ساكن حالة Web وثيقة) بعد منح إعطاء `nativeTheme.themeSource`. إصدار انحراف جيد بينما غير تحليل قيمة، يمكن في انحراف جيد لـ `system` وقت إبقاء تتبع مع نظام.
 
-**侧边栏顶部条与完全隐藏。** darwin 上侧边栏展开时有一条 52px 的顶部条，避开红绿灯、承载收起按钮，并作为窗口拖拽区（`-webkit-app-region: drag`；按钮退出拖拽）。收起侧边栏时整列隐藏——`computeColumns` 接受显式 `collapsedWidth`，AppFrame 在 darwin 桌面传 0——而非其他平台保留的 56px rail。重新打开的入口移入会话头部：新增 single、session 作用域的 slot `conversation.session.header.leading` 位于面包屑之前，ui-sidebar 向其注册 `HeaderLeadingControls`（打开侧边栏 + 新会话，复用 shell 的 inject face 与 locale）。显隐纯由 CSS 依据 AppFrame 发布的 `data-sidebar-collapsed` 属性控制；不新增收起状态管道。darwin 上空白会话的头部保持 leading 座挂载，确保侧边栏隐藏时屏幕上始终有重新打开的控件。
+**جانب حافة شريط قمة جزء بند و تماما إخفاء.** darwin فوق جانب حافة شريط توسيع وقت لديه واحد بند 52px قمة جزء بند، تجنب فتح أحمر أخضر مصباح، تحمل تحميل استلام بدء حسب زر، و بصفة نافذة سحب جر منطقة (`-webkit-app-region: drag`؛ حسب زر خروج سحب جر). استلام بدء جانب حافة شريط وقت كامل صف إخفاء——`computeColumns` قبول صريح `collapsedWidth`،AppFrame في darwin طاولة وجه نقل 0——بينما غير أخرى منصة إبقاء 56px rail. إعادة فتح مدخل نقل دخول جلسة رأس جزء: إضافة جديدة single،session أثر مجال slot `conversation.session.header.leading` يقع في وجه حزمة فتات قبل،ui-sidebar نحو ذلك تسجيل `HeaderLeadingControls`(فتح جانب حافة شريط + جديد جلسة، إعادة استخدام shell inject face و locale). إظهار خفي صاف من CSS اعتماد حسب AppFrame إصدار `data-sidebar-collapsed` خاصية تحكم؛ لا إضافة جديدة استلام بدء حالة إدارة طريق.darwin فوق فارغ أبيض جلسة رأس جزء إبقاء leading مقعد تركيب، تأكيد حفظ جانب حافة شريط إخفاء وقت شاشة ستار فوق بداية نهاية لديه إعادة فتح تحكم عنصر.
 
-**拖拽区。** darwin 上会话标题行是拖拽区，所有可交互后代退出。Electron 按 DOM 顺序以窗口几何计算拖拽区，不看层叠：覆盖标题带的浮层必须自行减除，否则下层区域仍会截获指针。因此右侧边栏的全屏面板对整个盒子设 `-webkit-app-region: no-drag`，再在其 tab 条空白处恢复拖拽。
+**سحب جر منطقة.** darwin فوق جلسة عنوان سطر هو سحب جر منطقة، كل يمكن تفاعل بعد بديل خروج.Electron حسب DOM ترتيب بـ نافذة بضعة أي حساب حساب سحب جر منطقة، لا نظر طبقة تراكم: تغطية عنوان حمل طفو طبقة يجب ذاتي سطر نقص حذف، لا فإن تحت طبقة منطقة مجال ما زال سوف قطع نيل إشارة إبرة. لذلك يمين جانب حافة شريط كل شاشة وجه لوح مقابل كامل صندوق فرعي ضبط `-webkit-app-region: no-drag`، مجددا في ذلك tab بند فارغ أبيض موضع استعادة سحب جر.
 
-**全屏避开红绿灯。** ui-dockkit 把 tab 条起始内边距发布为 `--dsh-dockkit-strip-inline-start`（回退为设计自身的 10px）。右侧边栏全屏形态在 darwin 上对面板主体设 88px，并对每个非首格 split 单元的子树重置为 10px，使得任意分屏深度下恰好只有触及窗口左上角的 pane 避开红绿灯。
+**كل شاشة تجنب فتح أحمر أخضر مصباح.** ui-dockkit يأخذ tab بند بدء بداية داخل حافة مسافة إصدار لـ `--dsh-dockkit-strip-inline-start`(رجوع لـ تصميم ذاته 10px). يمين جانب حافة شريط كل شاشة شكل في darwin فوق مقابل وجه لوح رئيسي جسم ضبط 88px، و مقابل كل غير أول إطار split وحدة فرعي شجرة إعادة وضع لـ 10px، جعل نيل مهمة معنى قسم شاشة عميق درجة تحت تماما جيد فقط لديه لمس و نافذة يسار فوق زاوية pane تجنب فتح أحمر أخضر مصباح.
 
 ## Alternatives considered
 
-**`titleBarStyle: 'hidden'` + 自绘窗口控件。** 重造红绿灯会失去原生行为（悬停图形、全屏过渡）且无收益；`hiddenInset` 保留原生控件，只要求页面绕行。
+**`titleBarStyle: 'hidden'` + ذاتي رسم نافذة تحكم عنصر.** إعادة صنع أحمر أخضر مصباح سوف فقد ذهاب أصلي سلوك (معلق توقف رسم شكل، كل شاشة مرور عبور) كما بلا استلام فائدة؛`hiddenInset` إبقاء أصلي تحكم عنصر، فقط اشتراط صفحة التفاف سطر.
 
-**darwin 上保留 56px rail。** 浮动红绿灯下的 rail 让窗口角落装饰翻倍，也浪费了收起本要回收的宽度；完全隐藏 + 头部承载重开控件符合 macOS 侧边栏惯例。
+**darwin فوق إبقاء 56px rail.** طفو حركة أحمر أخضر مصباح تحت rail يجعل نافذة زاوية سقوط تركيب زينة قلب ضعف، أيضا موجة استهلاك استلام بدء هذا يلزم عودة استلام عرض درجة؛ تماما إخفاء + رأس جزء تحمل تحميل إعادة فتح تحكم عنصر رمز دمج macOS جانب حافة شريط معتاد مثال.
 
-**同步解析后的主题而非偏好。** 偏好为 `system` 时转发 `light`/`dark` 会把窗口材质冻结在发送时刻的解析值；转发 `system` 让 macOS 原生持续跟随系统外观。
+**تزامن تحليل بعد رئيسي عنوان بينما غير انحراف جيد.** انحراف جيد لـ `system` وقت تحويل إرسال `light`/`dark` سوف يأخذ نافذة مادة جودة تجميد ربط في إرسال وقت لحظة تحليل قيمة؛ تحويل إرسال `system` يجعل macOS أصلي حمل متابعة تتبع مع نظام خارج مراقبة.
 
-**在 ui-dockkit 内部处理红绿灯避让。** kit 与宿主无关，不可能知道哪个宿主角落贴着窗口装饰；发布内边距变量把策略留在拥有布局位置的宿主（ui-sidebar-right），kit 只付出一个自定义属性。
+**في ui-dockkit داخلي معالجة أحمر أخضر مصباح تجنب يجعل.** kit و مضيف غير متصل، غير ممكن قدرة معرفة طريق أي عدد مضيف زاوية سقوط لصق حال نافذة تركيب زينة؛ إصدار داخل حافة مسافة متغير يأخذ سياسة إبقاء في يملك تخطيط موضع مضيف (ui-sidebar-right) ،kit فقط دفع خروج واحد ذاتي تعريف خاصية.
 
-**向头部控件加收起状态 prop 管道。** AppFrame 已发布 `data-sidebar-collapsed`；用 CSS 对其判断显隐，避免了可能与框架过渡时间线不一致的第二条状态路径。
+**نحو رأس جزء تحكم عنصر إضافة استلام بدء حالة prop إدارة طريق.** AppFrame قد إصدار `data-sidebar-collapsed`؛ استخدام CSS مقابل ذلك حكم قطع إظهار خفي، تجنب تجنب ممكن و إطار هيكل مرور عبور وقت خط لا متسق ثاني بند حالة مسار.
 
 ## Consequences
 
-- macOS 窗口获得半透明侧边栏与隐藏标题栏，对其他平台零成本：所有规则限定在 `[data-platform='darwin']` 下，该属性仅由 Electron preload 设置。
-- 毛玻璃材质跟随应用主题，含第三方注册主题（取其解析配色）。截图与录屏与纯 Web 的平面渲染不同。
-- `conversation.session.header.leading` 是客户端 catalog 中的公开 slot；任何包都可占用该座位，ui-sidebar 的占用者假定平台匹配时随时可能渲染。
-- 拖拽区几何是窗口级全局不变量：今后任何在 darwin 上覆盖标题带的浮层必须用 `-webkit-app-region: no-drag` 自行减除，否则其控件不可点击。
-- 接受透明窗口 + 毛玻璃在屏幕共享中呈现不同、启动可能闪烁；透明 `backgroundColor` 缓解闪烁。
+- macOS نافذة نيل نيل نصف نفاذ واضح جانب حافة شريط و إخفاء عنوان شريط، مقابل أخرى منصة صفر صار هذا: كل قاعدة حد تحديد في `[data-platform='darwin']` تحت، هذا خاصية فقط من Electron preload ضبط.
+- شعر زجاج بلور مادة جودة تتبع مع تطبيق رئيسي عنوان، يحتوي رقم ثلاثة جهة تسجيل رئيسي عنوان (أخذ ذلك تحليل إعداد لون). قطع رسم و تسجيل شاشة و صاف Web مستو وجه تصيير مختلف.
+- `conversation.session.header.leading` هو عميل catalog في عام slot؛ أي حزمة كل يمكن احتلال استخدام هذا مقعد موضع،ui-sidebar احتلال استخدام من زائف تحديد منصة مطابقة وقت مع وقت ممكن تصيير.
+- سحب جر منطقة بضعة أي هو نافذة درجة عام ثابت كمية: اليوم بعد أي في darwin فوق تغطية عنوان حمل طفو طبقة يجب استخدام `-webkit-app-region: no-drag` ذاتي سطر نقص حذف، لا فإن ذلك تحكم عنصر غير ممكن نقر.
+- قبول نفاذ واضح نافذة + شعر زجاج بلور في شاشة ستار مشترك في عرض مختلف، بدء ممكن وميض وميض؛ نفاذ واضح `backgroundColor` مؤقت حل وميض وميض.
 
 ## Testing
 
-ui-theme 引导与 ui-layout presenter 测试钉住 `data-ds-theme-source` 的发布与清除。ui-sidebar apply 测试钉住 leading 座注册（组件、locale、共享 inject face）及 teardown 移除。ui-conversation skeleton 测试钉住 active 阶段头部对 leading slot 的渲染调用。ui-theme 的 corner-shape 与 full-round 样式门覆盖新样式表。
+ui-theme جذب توجيه و ui-layout presenter اختبار تثبيت إقامة `data-ds-theme-source` إصدار و صاف حذف.ui-sidebar apply اختبار تثبيت إقامة leading مقعد تسجيل (مكون،locale، مشترك inject face) و teardown إزالة.ui-conversation skeleton اختبار تثبيت إقامة active مرحلة مقطع رأس جزء مقابل leading slot تصيير استدعاء.ui-theme corner-shape و full-round مثال صيغة باب تغطية جديد مثال صيغة جدول.

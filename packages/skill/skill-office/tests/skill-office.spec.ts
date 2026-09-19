@@ -39,7 +39,7 @@ describe('bundled Office skills', () => {
     const root = await mkdtemp(join(tmpdir(), 'dsh-office-skills-'))
     const ctx = new Context()
     try {
-      const external = join(root, '中文 assets')
+      const external = join(root, 'العربية assets')
       await cp(assets, external, { recursive: true })
       const configPath = join(root, 'cordis.yml')
       await writeFile(configPath, [

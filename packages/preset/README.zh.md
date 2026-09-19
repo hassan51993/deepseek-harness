@@ -1,52 +1,52 @@
 ---
-description: "preset 组地图：按会话从 preset 文件组装 agent，供浏览本组的用户与维护者阅读。"
+description: "preset مجموعة أرض رسم: حسب جلسة من preset ملف تجميع agent، توفير تصفح تصفح هذا مجموعة مستخدم و صيانة من قراءة قراءة."
 kind: "package-group"
 ---
 
 # packages/preset
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-preset 组提供按会话的 agent（智能体）组装：agent preset 是一个目录，内含一份 `agent.cordis.yml`；从 preset 组装的会话会使用该 preset 的工具、提示词段落与 skill（技能），而其他会话仍各自使用自己的工具、提示词段落与 skill。`agent-presets` 拥有名单——对已配置根目录与 harness home 的发现、受防护的按 agent 挂载，以及仅通过复制创建 preset 的方式——`persona` 则提供可组装的行，让 preset 不止能改变 agent 的工具，也能改变它的身份。两者合起来让一个进程可以同时运行多个组装方式不同的 agent。
+preset مجموعة توفير حسب جلسة agent(ذكي جسم) تجميع:agent preset هو واحد دليل، داخل يحتوي واحد نسخة `agent.cordis.yml`؛ من preset تجميع جلسة سوف استخدام هذا preset أداة، نص التوجيه مقطع سقوط و skill(تقنية قدرة) ، بينما أخرى جلسة ما زال كل منها استخدام ذاتي ذات أداة، نص التوجيه مقطع سقوط و skill.`agent-presets` يملك اسم مفرد——مقابل قد إعداد أصل دليل و harness home اكتشاف، تلقي منع حماية حسب agent تركيب، و فقط عبر نسخ إنشاء preset طريقة——`persona` فإن توفير يمكن تجميع سطر، يجعل preset لا توقف قدرة تغيير agent أداة، أيضا قدرة تغيير هو هوية. اثنان من دمج بدء قدوم يجعل واحد عملية يمكن معا تشغيل كثير عدد تجميع طريقة مختلف agent.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`agent-presets`](agent-presets/README.zh.md) | preset 名单、对受信任根目录与用户根目录的发现、按 agent 组装、仅通过复制创建 preset | `ctx.agentPresets` |
-| [`persona`](persona/README.zh.md) | preset 挂载的可组装人设行，用于遮蔽或替换部署级人设 | — |
+| [`agent-presets`](agent-presets/README.zh.md) | preset اسم مفرد، مقابل تلقي معلومة مهمة أصل دليل و مستخدم أصل دليل اكتشاف، حسب agent تجميع، فقط عبر نسخ إنشاء preset | `ctx.agentPresets` |
+| [`persona`](persona/README.zh.md) | preset تركيب يمكن تجميع شخص ضبط سطر، لأجل حجب حجب أو استبدال نشر درجة شخص ضبط | — |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [`AgentPresets` 参考](../../docs/subsystems/core.zh.md#ctxagentpresets--agentpresets)——发现、挂载、继承与重组。
-- [Scope 子系统](../../docs/subsystems/scope.zh.md)——scope key，以及挂载接入 agent 时所用的父链。
-- [系统提示词子系统](../../docs/subsystems/system-prompt.zh.md)——preset 提示词段落如何注册与组装。
-- [按会话组装 agent preset 的 Agent Note](../../.agents/notes/implemented/architecture/2026-08-03-per-session-agent-presets.zh.md)——设计理由与备选方案。
+- [`AgentPresets` مشاركة اعتبار](../../docs/subsystems/core.zh.md#ctxagentpresets--agentpresets)——اكتشاف، تركيب، وراثة و إعادة مجموعة.
+- [Scope فرعي نظام](../../docs/subsystems/scope.zh.md)——scope key، و تركيب وصل دخول agent وقت الذي استخدام أب سلسلة.
+- [توجيه النظام فرعي نظام](../../docs/subsystems/system-prompt.zh.md)——preset نص التوجيه مقطع سقوط مثل أي تسجيل و تجميع.
+- [حسب جلسة تجميع agent preset Agent Note](../../.agents/notes/implemented/architecture/2026-08-03-per-session-agent-presets.zh.md)——تصميم إدارة من و تجهيز اختيار خطة.
 
-部署交付的 preset 位于 [`agent-presets/presets/`](agent-presets/presets)——一个 preset 一个目录，那份目录列表就是名单；在这里再列一遍只会多出一份需要同步的名单。
+نشر تسليم preset يقع في [`agent-presets/presets/`](agent-presets/presets)——واحد preset واحد دليل، ذلك نسخة دليل قائمة حينئذ هو اسم مفرد؛ في هذا داخل مجددا صف واحد مرة فقط سوف كثير خروج واحد نسخة حاجة تزامن اسم مفرد.
 
 -----
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

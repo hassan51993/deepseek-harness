@@ -1,95 +1,95 @@
-# Agent Note: 系统提示词是 surface 的第 0 号节点
+# Agent Note: توجيه النظام هو surface رقم 0 رقم عقدة
 
 Status: implemented
 
-[English](2026-09-02-system-prompt-as-surface-node.md) | 中文
+[English](2026-09-02-system-prompt-as-surface-node.md) | العربية
 
 ## Problem
 
-放在 surface 之外的系统提示词，其持久化表示与模型读到的其他所有消息都不同。对话消息是 surface 事件（`user/message`、`assistant/message`、`tool/result`），由 `Session.deriveMessages()` 按 seq 顺序折叠；而存放在仅记日志的 `request/header` 快照 `system` 字段中的提示词，必须由每个序列化器前置为协议消息 0。[可重建请求 Agent Note](2026-07-05-reconstructable-requests.zh.md) 让两半都成为持久数据，但这种布局让一个模型可见的事实拥有两个归属：surface 拥有消息，header 拥有排在这些消息之前的那条消息。
+وضع في surface خارج توجيه النظام، ذلك حفظ دائم يمثل و نموذج قراءة إلى أخرى كل رسالة كل مختلف. محادثة رسالة هو surface حدث (`user/message`،`assistant/message`،`tool/result`) ، من `Session.deriveMessages()` حسب seq ترتيب طي؛ بينما تخزين وضع في فقط تسجيل سجل `request/header` لقطة `system` حقل في نص التوجيه، يجب من كل تسلسل تحويل جهاز قبل وضع لـ بروتوكول رسالة 0.[يمكن إعادة بناء طلب Agent Note](2026-07-05-reconstructable-requests.zh.md) يجعل اثنان نصف كل يصبح حمل دائم بيانات، لكن هذا نوع تخطيط يجعل واحد نموذج مرئي واقع يملك اثنان عدد ملكية:surface يملك رسالة،header يملك ترتيب في هذه رسالة قبل ذلك بند رسالة.
 
-这种拆分迫使每个想知道「模型看到了什么」的读取方都要合并两个来源：压缩（compaction）摘要器把 header 中的提示词复制到区域派生消息之前，`dsh-token-meter` 从 header 估算系统提示词却从 surface 为其他每条消息计价，Web 请求提示词卡片、轨迹视图和快照归一化器的 `{{system}}` 占位符各自单独读取 header。变更检测同样被拆开：在 `config` 和 `tools` 旁边逐字节比较 `system` 的 `headerEquals`，让提示词变更与工具变更在日志中无法区分（`request/header` 的 reason 都是 `change`），尽管它们是对对话的两种不同操作。
+هذا نوع تفكيك قسم إجبار جعل كل تفكير معرفة طريق «نموذج يرى ماذا» قراءة جهة كل يلزم دمج اثنان عدد مصدر: ضغط (compaction) ملخص جهاز يأخذ header في نص التوجيه نسخ إلى منطقة مجال إرسال توليد رسالة قبل،`dsh-token-meter` من header تقدير حساب توجيه النظام لكن من surface لـ أخرى كل بند رسالة حساب قيمة،Web طلب نص التوجيه بطاقة، مسار أثر عرض و لقطة عودة واحد تحويل جهاز `{{system}}` احتلال موضع رمز كل منها مفرد وحيد قراءة header. تغيير فحص قياس نفس مثال يتم تفكيك فتح: في `config` و `tools` جانب حافة تدريجي بايت مقارنة مقارنة `system` `headerEquals`، يجعل نص التوجيه تغيير و أداة تغيير في سجل في لا يمكن منطقة قسم (`request/header` reason كل هو `change`) ، كل إدارة هو جمع هو مقابل محادثة اثنان نوع مختلف عملية.
 
-这种拆分还阻塞了下一步。一个把对话中途的 `system` 消息当作提示词替换来接受的模型，需要 harness 向历史追加一条 system 角色消息；当提示词住在 header 里时，没有可追加的 surface 表示，header 也只能靠特例被冻结。[历史内替换决定](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md) 依赖本 Agent Note。
+هذا نوع تفكيك قسم أيضا منع سد تحت واحد خطوة. واحد يأخذ محادثة في طريق `system` رسالة عند عمل نص التوجيه استبدال قدوم قبول نموذج، حاجة harness نحو تاريخ إلحاق واحد بند system زاوية لون رسالة؛ عند نص التوجيه إقامة في header داخل وقت، لا يوجد يمكن إلحاق surface يمثل،header أيضا فقط قدرة اعتماد خاص مثال يتم تجميد ربط.[تاريخ داخل استبدال قرار](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md) اعتماد هذا Agent Note.
 
 ## Decision
 
-系统提示词住在 surface 上。它是一个普通的 surface 事件 `system/message`，提示词生命周期中的每个操作都是对该事件类型施加现有两种 `SurfaceOp` 变体之一。协议请求不变：surface 折叠产出的就是序列化器发送的消息列表，系统消息在最前面。
+توجيه النظام إقامة في surface فوق. هو هو واحد عادي surface حدث `system/message`، نص التوجيه دورة الحياة في كل عملية كل هو مقابل هذا حدث نوع تطبيق إضافة قائم اثنان نوع `SurfaceOp` تغيير جسم لـ واحد. بروتوكول طلب ثابت:surface طي إنتاج خروج حينئذ هو تسلسل تحويل جهاز إرسال رسالة قائمة، نظام رسالة في الأكثر قبل وجه.
 
-### 事件
+### حدث
 
-`system/message` 是 `SurfaceEventType` 的成员，与 `user/message`、`assistant/message`、`tool/result` 并列（`packages/core/session/src/types.ts`）。它的载荷与 `tool/result` 对称：`{ turn, step, message }`，其中 `message` 是 `role: 'system'` 的 `SystemMessage`，一个文本块承载渲染后的提示词，source 为 `{ kind: 'plugin', plugin: '@deepseek-ai/dsh-system-prompt' }`。空的 `content` 记录「没有系统提示词」：该节点保持其 surface 位置，`deriveEventMessage` 把它投影为 `null`，因此不贡献任何协议消息。非空节点逐字投影，因此 `deriveMessages()` 在其 surface 位置返回系统消息，而原样透传 `role: 'system'` 历史消息的 DeepSeek 序列化器把它作为协议消息 0 发出。`EpochHeader` 是 `{ config, adapterDefaults?, tools? }`；`packages/core/session/src/request-header.ts` 中的 `canonicalHeader` 与 `headerEquals` 只比较 config、适配器默认值和工具。
+`system/message` هو `SurfaceEventType` عضو، و `user/message`،`assistant/message`،`tool/result` و صف (`packages/core/session/src/types.ts`). هو تحميل حمل و `tool/result` مقابل تسمية:`{ turn, step, message }`، منها `message` هو `role: 'system'` `SystemMessage`، واحد نص كتلة تحمل تحميل تصيير بعد نص التوجيه،source لـ `{ kind: 'plugin', plugin: '@deepseek-ai/dsh-system-prompt' }`. فارغ `content` سجل «لا يوجد توجيه النظام»: هذا عقدة إبقاء ذلك surface موضع،`deriveEventMessage` يأخذ هو إسقاط لـ `null`، لذلك لا مساهمة أي بروتوكول رسالة. غير فارغ عقدة تدريجي حرف إسقاط، لذلك `deriveMessages()` في ذلك surface موضع إرجاع نظام رسالة، بينما أصل مثال نفاذ نقل `role: 'system'` تاريخ رسالة DeepSeek تسلسل تحويل جهاز يأخذ هو بصفة بروتوكول رسالة 0 إرسال خروج.`EpochHeader` هو `{ config, adapterDefaults?, tools? }`؛`packages/core/session/src/request-header.ts` في `canonicalHeader` و `headerEquals` فقط مقارنة مقارنة config، مهايئ قيمة افتراضية و أداة.
 
-### 操作
+### عملية
 
-| 情形 | surface 操作 |
+| حال شكل | surface عملية |
 |---|---|
-| surface 上没有存活的 `system/message`（包括渲染后的提示词为空时） | 追加 `system/message`；在会话的首个步骤中它是 surface 第 0 号节点，位于该步骤首条 `user/message` 之前 |
-| 有存活的 `system/message` 且渲染后的提示词与其文本不同（包括提示词变为空） | 恰好替换该节点：`surfaceOp: { op: 'replace', startSeq: <该节点的 seq>, endSeq: <同一值> }`，`sourceEventSeqs: [<该节点的 seq>]`；空提示词产生一个投影为无消息的空内容节点 |
-| 渲染后的提示词与存活节点的文本相同 | 无操作 |
+| surface فوق لا يوجد تخزين نشط `system/message`(يشمل تصيير بعد نص التوجيه لـ فارغ وقت) | إلحاق `system/message`؛ في جلسة أول عدد خطوة في هو هو surface رقم 0 رقم عقدة، يقع في هذا خطوة أول بند `user/message` قبل |
+| لديه تخزين نشط `system/message` كما تصيير بعد نص التوجيه و ذلك نص مختلف (يشمل نص التوجيه تغيير لـ فارغ) | تماما جيد استبدال هذا عقدة:`surfaceOp: { op: 'replace', startSeq: <هذا عقدة seq>, endSeq: <نفس قيمة> }`،`sourceEventSeqs: [<هذا عقدة seq>]`؛ فارغ نص التوجيه إنتاج واحد إسقاط لـ بلا رسالة فارغ محتوى عقدة |
+| تصيير بعد نص التوجيه و تخزين نشط عقدة نص نفسه | بلا عملية |
 
-当初始渲染的提示词为空时，循环在初始接纳的用户消息之前预留空系统头部，使稍后首次变为非空的提示词仍替换第 0 号节点。省略该空节点会让后来的提示词追加在用户历史之后，pi-ai 会将其转换为用户消息，而不是 `systemPrompt`。替换第 0 号节点是头部重写在 surface 上的表达：提供方前缀从第一个 token 起改变，日志通过 `sourceEventSeqs` 记录被遮蔽的节点，`replaceGeneration` 与压缩替换时一样推进。因此循环的 `startsSeries` 检测（`requestSurfaceGeneration !== surfaceGeneration`）无需在 `headerEquals` 中比较 `system` 即可覆盖提示词变更。`request/header` 保留 `initial`、`resume`、`change`、`series` 四种 reason；`change` 表示 config 或 tools 变更，提示词替换之后跟随的未变 header 记为 `series`。
+عند ابتدائي تصيير نص التوجيه لـ فارغ وقت، حلقة في ابتدائي وصل قبول مستخدم رسالة قبل مسبق إبقاء فارغ نظام رأس جزء، جعل قليلا بعد أول مرة تغيير لـ غير فارغ نص التوجيه ما زال استبدال رقم 0 رقم عقدة. حذف هذا فارغ عقدة سوف يجعل بعد قدوم نص التوجيه إلحاق في مستخدم تاريخ بعد،pi-ai سوف سوف ذلك تحويل لـ مستخدم رسالة، بينما لا هو `systemPrompt`. استبدال رقم 0 رقم عقدة هو رأس جزء إعادة كتابة في surface فوق جدول بلوغ: مزود بادئة من رقم واحد token بدء تغيير، سجل عبر `sourceEventSeqs` سجل يتم حجب حجب عقدة،`replaceGeneration` و ضغط استبدال وقت واحد مثال دفع دخول. لذلك حلقة `startsSeries` فحص قياس (`requestSurfaceGeneration !== surfaceGeneration`) بلا حاجة في `headerEquals` في مقارنة مقارنة `system` يكفي تغطية نص التوجيه تغيير.`request/header` إبقاء `initial`،`resume`،`change`،`series` أربعة نوع reason؛`change` يمثل config أو tools تغيير، نص التوجيه استبدال بعد تتبع مع لم تغيير header تسجيل لـ `series`.
 
-`packages/core/session/src/surface.ts` 在 `assertSystemHeadRewrite` 中强制头部不变量：当第 0 号节点是 `system/message` 时，范围覆盖第 0 号节点的替换会被拒绝，除非替换事件本身是恰好覆盖该节点的 `system/message`。位于更后位置的系统节点没有此类保护；压缩范围可以遮蔽它们。
+`packages/core/session/src/surface.ts` في `assertSystemHeadRewrite` في قوي صنع رأس جزء ثابت كمية: عند رقم 0 رقم عقدة هو `system/message` وقت، نطاق تغطية رقم 0 رقم عقدة استبدال سوف يتم رفض، حذف غير استبدال حدث ذاته هو تماما جيد تغطية هذا عقدة `system/message`. يقع في أكثر بعد موضع نظام عقدة لا يوجد هذا صنف حفظ حماية؛ ضغط نطاق يمكن حجب حجب هو جمع.
 
-### 循环中的归属
+### حلقة في ملكية
 
-`dsh-agent-loop` 在 `packages/core/agent-loop/src/runtime-context.ts` 中与 `RuntimeContextProjection` 并列拥有 `SystemPromptProjection`。它在每次投影时从当前 surface 读取存活的 `system/message` 节点，因此同一步骤中更早运行的压缩或替换已经反映在内。`project(rendered, { inHistory, startsSeries })` 返回 `{ message, intent }`——没有系统节点存活或[历史内规则](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md)适用时 `intent` 为 `{ surfaceOp: 'append' }`，否则是对最新存活系统节点的精确替换——最新节点已持有渲染文本时返回 `undefined`。
+`dsh-agent-loop` في `packages/core/agent-loop/src/runtime-context.ts` في و `RuntimeContextProjection` و صف يملك `SystemPromptProjection`. هو في كل مرة إسقاط وقت من حالي surface قراءة تخزين نشط `system/message` عقدة، لذلك نفس خطوة في أكثر مبكر تشغيل ضغط أو استبدال قد عكس عكس في داخل.`project(rendered, { inHistory, startsSeries })` إرجاع `{ message, intent }`——لا يوجد نظام عقدة تخزين نشط أو[تاريخ داخل قاعدة](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md) ملائم استخدام وقت `intent` لـ `{ surfaceOp: 'append' }`، لا فإن هو مقابل الأكثر جديد تخزين نشط نظام عقدة دقيق استبدال——الأكثر جديد عقدة قد يحتفظ تصيير نص وقت إرجاع `undefined`.
 
-在 `packages/core/agent-loop/src/agent.ts` 中，`preStep` 用 `renderPrompt(assembly)` 渲染提示词，并在 `agent/pre-step` waterfall 之后投影它，因此压缩提供者在该 waterfall 内做出的替换对决定可见；`turn()` 紧接在 `step/start` 之后、该步骤的 `user/message` 事件之前提交 `system/message`，因此日志顺序即协议顺序。`buildRequest` 不在请求上设置 `system`：请求由 `header.config`、`session.deriveMessages()`（系统消息在先）和 `header.tools` 构成。循环步骤顺序为：领取收件箱 → `systemPrompt.assemble()` → 投影运行时上下文 → `agent/pre-step` waterfall → 投影系统提示词 → `step/start` → 提交 `system/message`（有变化时） → 提交各条 `user/message` → `agent/request` waterfall → `request/header` → `request/context` → 流式请求。`dsh-agent-loop/invariant` 伴随组件（`packages/core/agent-loop/src/invariant.ts`）断言循环构建的请求满足 `system === undefined` 且 `messages` 等于 `deriveMessages()`。
+في `packages/core/agent-loop/src/agent.ts` في،`preStep` استخدام `renderPrompt(assembly)` تصيير نص التوجيه، و في `agent/pre-step` waterfall بعد إسقاط هو، لذلك ضغط توفير من في هذا waterfall داخل فعل خروج استبدال مقابل قرار مرئي؛`turn()` ضيق وصل في `step/start` بعد، هذا خطوة `user/message` حدث قبل إيداع `system/message`، لذلك سجل ترتيب أي بروتوكول ترتيب.`buildRequest` لا في طلب فوق ضبط `system`: طلب من `header.config`،`session.deriveMessages()`(نظام رسالة في أولا) و `header.tools` بنية صار. حلقة خطوة ترتيب لـ: قيادة أخذ استلام عنصر صندوق → `systemPrompt.assemble()` → إسقاط وقت التشغيل سياق → `agent/pre-step` waterfall → إسقاط توجيه النظام → `step/start` → إيداع `system/message`(لديه تغير وقت) → إيداع كل بند `user/message` → `agent/request` waterfall → `request/header` → `request/context` → تدفق صيغة طلب.`dsh-agent-loop/invariant` مرافق مع مكون (`packages/core/agent-loop/src/invariant.ts`) تأكيد حلقة بناء طلب ممتلئ كاف `system === undefined` كما `messages` انتظار في `deriveMessages()`.
 
-`dsh-token-meter` 把用量锚定到成功的 `assistant/message` 之前的已计价 surface，而不是 `step/start`。循环在步骤开始之后接纳系统提示词与用户消息，重试恢复还可能在重建请求之前替换节点。捕获当前 surface 会让每个已接纳输入恰好计入一次；内嵌的提供方输出仍单独计价，因此持久 assistant 改写保留其带符号增量。开放步骤只保存 turn 与 step 以验证生命周期，不保存第二份节点快照。
+`dsh-token-meter` يأخذ استخدام كمية مرساة تحديد إلى نجاح `assistant/message` قبل قد حساب قيمة surface، بينما لا هو `step/start`. حلقة في خطوة بدء بعد وصل قبول توجيه النظام و مستخدم رسالة، إعادة محاولة استعادة أيضا ممكن في إعادة بناء طلب قبل استبدال عقدة. التقاط حالي surface سوف يجعل كل قد وصل قبول إدخال تماما جيد حساب دخول مرة؛ داخل تضمين مزود إخراج ما زال مفرد وحيد حساب قيمة، لذلك حمل دائم assistant تعديل كتابة إبقاء ذلك حمل رمز رقم زيادة كمية. فتح وضع خطوة فقط حفظ turn و step بـ تحقق دورة الحياة، لا حفظ ثاني نسخة عقدة لقطة.
 
-### 消费方
+### مستهلك
 
-| 消费方 | 读取内容 |
+| مستهلك | قراءة محتوى |
 |---|---|
-| DeepSeek 序列化器（`serializeRequest`、`serializeRequestWithImages`） | `options.messages`，把 `role: 'system'` 的历史消息作为协议消息 0 透传；`GenerateOptions.system` 为标题提供方等直接单次调用方保留 |
-| `dsh-llm-pi-ai` | 开头的 system 历史消息映射为 pi-ai 的 `systemPrompt` |
-| `compaction-basic` 的 `buildSummarizationInput` | 第 0 号节点的派生消息前置于 `SummarizationInput.messages` 中的区域消息，无单独的 `system` 字段；空内容头节点不投影为消息，但仍受保护而不能被压缩 |
-| `compaction-basic` 的 `selectCompactableRange` | 锚定在首个非系统节点；第 0 号节点永不落入压缩范围 |
-| `dsh-token-meter` | 系统节点作为 surface 节点计价，归入 `systemTokens` 明细 |
-| Web 请求提示词卡片、轨迹请求节点、请求检视 | `system/message` 节点；被替换的第 0 号节点显示为提示词变更，追加的历史内节点显示为提示词更新，各自以折叠可检视的卡片呈现，永不作为聊天气泡 |
-| 快照归一化器的 `{{system}}` 占位符、plan-mode 测试 | 系统节点的文本 |
-| TypeScript 与 Python SDK 预期输出 | 包含 `system/message` 事件 |
-| 人类 transcript（文本记录）投影 | 跳过 `system/message`；它是模型历史，不是对话 |
+| DeepSeek تسلسل تحويل جهاز (`serializeRequest`،`serializeRequestWithImages`) | `options.messages`، يأخذ `role: 'system'` تاريخ رسالة بصفة بروتوكول رسالة 0 نفاذ نقل؛`GenerateOptions.system` لـ عنوان مزود انتظار مباشر مفرد مرة استدعاء جهة إبقاء |
+| `dsh-llm-pi-ai` | فتح رأس system تاريخ رسالة خريطة لـ pi-ai `systemPrompt` |
+| `compaction-basic` `buildSummarizationInput` | رقم 0 رقم عقدة إرسال توليد رسالة قبل وضع في `SummarizationInput.messages` في منطقة مجال رسالة، بلا مفرد وحيد `system` حقل؛ فارغ محتوى رأس عقدة لا إسقاط لـ رسالة، لكن ما زال تلقي حفظ حماية بينما لا يستطيع يتم ضغط |
+| `compaction-basic` `selectCompactableRange` | مرساة تحديد في أول عدد غير نظام عقدة؛ رقم 0 رقم عقدة دائم لا سقوط دخول ضغط نطاق |
+| `dsh-token-meter` | نظام عقدة بصفة surface عقدة حساب قيمة، عودة دخول `systemTokens` واضح دقيق |
+| Web طلب نص التوجيه بطاقة، مسار أثر طلب عقدة، طلب فحص نظر | `system/message` عقدة؛ يتم استبدال رقم 0 رقم عقدة عرض لـ نص التوجيه تغيير، إلحاق تاريخ داخل عقدة عرض لـ نص التوجيه تحديث، كل منها بـ طي يمكن فحص نظر بطاقة عرض، دائم لا بصفة حديث يوم هواء فقاعة |
+| لقطة عودة واحد تحويل جهاز `{{system}}` احتلال موضع رمز،plan-mode اختبار | نظام عقدة نص |
+| TypeScript و Python SDK مسبق مدة إخراج | يتضمن `system/message` حدث |
+| شخص صنف transcript(نص سجل) إسقاط | قفز مرور `system/message`؛ هو هو نموذج تاريخ، لا هو محادثة |
 
-`RuntimeContextProjection` 与 `SystemPromptProjection` 都把一条未提交的消息交给循环由 `turn()` 提交。两者在观察 surface 的方式与操作集上不同：运行时上下文跟随 `session/event` 观察自己拥有的 user 角色快照且只做追加，而系统提示词在每次投影时扫描当前 surface 上的系统节点，因为它的决定取决于有多少节点存活，并按路由追加或替换。
+`RuntimeContextProjection` و `SystemPromptProjection` كل يأخذ واحد بند لم إيداع رسالة تسليم إعطاء حلقة من `turn()` إيداع. اثنان من في مراقبة surface طريقة و عملية تجميع فوق مختلف: وقت التشغيل سياق تتبع مع `session/event` مراقبة ذاتي ذات يملك user زاوية لون لقطة كما فقط فعل إلحاق، بينما توجيه النظام في كل مرة إسقاط وقت مسح حالي surface فوق نظام عقدة، لأن هو قرار أخذ قرار في لديه كثير قليل عقدة تخزين نشط، و حسب توجيه إلحاق أو استبدال.
 
-### V2-to-V3 结构转换
+### V2-to-V3 بنية تحويل
 
-[V2 到 V3 规范](../../../../packages/session/session-format-v2-to-v3/README.zh.md#system-head)负责系统头节点转换与消息身份；其[引用规则](../../../../packages/session/session-format-v2-to-v3/README.zh.md#sequence-references)和[源拒绝](../../../../packages/session/session-format-v2-to-v3/README.zh.md#source-audit)定义保留内容与不支持的输入。迁移布局与原生请求语义等价，而非与原生录制逐字节相同。有效 V2 源在当前步骤不变量下可能没有保持顺序的转换方式；拒绝它优于移动历史或放宽归属。历史接收坐标不得变为对转换后日志的确认。
+[V2 إلى V3 مواصفة](../../../../packages/session/session-format-v2-to-v3/README.zh.md#system-head) مسؤول نظام رأس عقدة تحويل و رسالة هوية؛ ذلك[مرجع قاعدة](../../../../packages/session/session-format-v2-to-v3/README.zh.md#sequence-references) و[مصدر رفض](../../../../packages/session/session-format-v2-to-v3/README.zh.md#source-audit) تعريف إبقاء محتوى و لا دعم حمل إدخال. ترحيل تخطيط و أصلي طلب دلالة انتظار قيمة، بينما غير و أصلي تسجيل صنع تدريجي بايت نفسه. صالح V2 مصدر في حالي خطوة ثابت كمية تحت ممكن لا يوجد إبقاء ترتيب تحويل طريقة؛ رفض هو أفضل في نقل حركة تاريخ أو وضع عرض ملكية. تاريخ استقبال جلوس علامة لا نيل تغيير لـ مقابل تحويل بعد سجل تأكيد.
 
-[已发布格式策略](2026-08-31-released-session-format-migrations.zh.md)保留每条已发布转换的语义；已有目标格式代际不会重跑其入边。投影缓存版本独立于 Session 格式版本。
+[قد إصدار صيغة سياسة](2026-08-31-released-session-format-migrations.zh.md) إبقاء كل بند قد إصدار تحويل دلالة؛ قد لديه هدف صيغة بديل حد لن إعادة ركض ذلك دخول حافة. إسقاط ذاكرة مؤقتة إصدار مستقل في Session صيغة إصدار.
 
-[规范信封规范](../../../../packages/session/session-format-v2-to-v3/README.zh.md#canonical-envelopes)定义与结构转换的组合；[规范信封决策](2026-09-06-v3-canonical-session-envelopes.zh.md)负责严格准入的依据。
+[مواصفة معلومة غلاف مواصفة](../../../../packages/session/session-format-v2-to-v3/README.zh.md#canonical-envelopes) تعريف و بنية تحويل تركيب؛[مواصفة معلومة غلاف قرار](2026-09-06-v3-canonical-session-envelopes.zh.md) مسؤول صارم إطار دقيق دخول اعتماد حسب.
 
 ## Alternatives considered
 
-**保留 `header.system`，只为更新添加 `system/message`。** 一个事实两个归属：上述每个消费方都要从 header 读消息 0、从 surface 读后续消息，循环还需要一个在 surface 存在系统节点时让 `headerEquals` 忽略 `system` 的特例。被否决，因为本次变更的目的就是单一表示。
+**إبقاء `header.system`، فقط لـ تحديث إضافة `system/message`.** واحد واقع اثنان عدد ملكية: فوق وصف كل مستهلك كل يلزم من header قراءة رسالة 0، من surface قراءة لاحق رسالة، حلقة أيضا حاجة واحد في surface وجود نظام عقدة وقت يجعل `headerEquals` تجاهل اختصار `system` خاص مثال. يتم مرفوض، لأن هذا مرة تغيير هدف حينئذ هو مفرد واحد يمثل.
 
-**用专门的仅记日志事件 `system-prompt/change` 重写 header。** 保留 header 作为提示词归属，并把变更记录为独立事件种类，但仍无法表达历史内部的系统消息，历史内替换提案还是需要第二套机制。被否决。
+**استخدام مخصص باب فقط تسجيل سجل حدث `system-prompt/change` إعادة كتابة header.** إبقاء header بصفة نص التوجيه ملكية، و يأخذ تغيير سجل لـ مستقل حدث نوع صنف، لكن ما زال لا يمكن جدول بلوغ تاريخ داخلي نظام رسالة، تاريخ داخل استبدال رفع سجل أيضا هو حاجة ثاني طقم آلية. يتم مرفوض.
 
-**在适配器内根据相邻 header 合成系统消息。** 适配器逐请求无状态且从不接触日志；依赖适配器状态的协议历史无法从 surface 折叠重建。被否决。
+**في مهايئ داخل أصل حسب متبادل مجاور header دمج صار نظام رسالة.** مهايئ تدريجي طلب بلا حالة كما من لا وصل لمس سجل؛ اعتماد مهايئ حالة بروتوكول تاريخ لا يمكن من surface طي إعادة بناء. يتم مرفوض.
 
-**像运行时上下文那样用 `user/message` 快照表达提示词。** 复用了现有事件类型，却发送了错误的角色，因此把系统消息视为权威的模型不会这样对待它。被否决。
+**مثل وقت التشغيل سياق ذلك مثال استخدام `user/message` لقطة جدول بلوغ نص التوجيه.** إعادة استخدام قائم حدث نوع، لكن إرسال خطأ زاوية لون، لذلك يأخذ نظام رسالة نظر لـ مرجعي نموذج لن هذا مثال مقابل انتظار هو. يتم مرفوض.
 
 ## Consequences
 
-- 单一表示：每个想知道「模型看到了什么」的读取方都折叠 surface；没有消费方需要把 header 与消息列表合并。`EpochHeader` 没有 `system` 字段，因此期望该字段的读取方在编译期失败。
-- 提示词变更与工具或 config 变更在日志中可以区分：前者是对第 0 号节点的 `system/message` 替换加随后的 `series` header，后者是 reason 为 `change` 的 `request/header`。
-- 压缩带有一条不变量：第 0 号节点永不被压缩。`dsh-session` 的 surface 管理器在替换操作本身中强制它，因此除 `compaction-basic` 以外的压缩提供方无法通过锚定在 `surfaceNodes[0]` 来遮蔽提示词。更后位置的系统节点按设计不受保护。
-- `replaceGeneration` 在提示词替换时和压缩时一样推进；需要区分两者的读取方检查替换事件的类型。
-- 历史中途的系统节点拥有 surface 表示，这正是[历史内替换决定](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md)所依赖的基础。
-- 初始空提示词占据受保护的头部，但不贡献协议消息；在替换模式下，后来的非空提示词替换它，并保持为开头的系统消息。
-- 录制的快照 fixture 携带 `system/message` 事件而非 header 的 `system` 字段。快照归一化器把该事件的文本标记化为 `{{system}}`，提示词伴随文件从 `system/message` 序列采集（每个提示词版本一节，以 `header.promptChanges` 声明），`request/header` 的 pin 只比较 config 与 tools。
+- مفرد واحد يمثل: كل تفكير معرفة طريق «نموذج يرى ماذا» قراءة جهة كل طي surface؛ لا يوجد مستهلك حاجة يأخذ header و رسالة قائمة دمج.`EpochHeader` لا يوجد `system` حقل، لذلك مدة نظر هذا حقل قراءة جهة في تحرير ترجمة مدة فشل.
+- نص التوجيه تغيير و أداة أو config تغيير في سجل في يمكن منطقة قسم: قبل من هو مقابل رقم 0 رقم عقدة `system/message` استبدال إضافة مع بعد `series` header، بعد من هو reason لـ `change` `request/header`.
+- ضغط حمل لديه واحد بند ثابت كمية: رقم 0 رقم عقدة دائم لا يتم ضغط.`dsh-session` surface إدارة جهاز في استبدال عملية ذاته في قوي صنع هو، لذلك حذف `compaction-basic` بـ خارج ضغط مزود لا يمكن عبر مرساة تحديد في `surfaceNodes[0]` قدوم حجب حجب نص التوجيه. أكثر بعد موضع نظام عقدة حسب تصميم لا تلقي حفظ حماية.
+- `replaceGeneration` في نص التوجيه استبدال وقت و ضغط وقت واحد مثال دفع دخول؛ حاجة منطقة قسم اثنان من قراءة جهة فحص استبدال حدث نوع.
+- تاريخ في طريق نظام عقدة يملك surface يمثل، هذا صحيح هو[تاريخ داخل استبدال قرار](../feature/2026-09-02-in-history-system-prompt-replacement.zh.md) الذي اعتماد أساس أساس.
+- ابتدائي فارغ نص التوجيه احتلال حسب تلقي حفظ حماية رأس جزء، لكن لا مساهمة بروتوكول رسالة؛ في استبدال نمط تحت، بعد قدوم غير فارغ نص التوجيه استبدال هو، و إبقاء لـ فتح رأس نظام رسالة.
+- تسجيل صنع لقطة fixture يحمل `system/message` حدث بينما غير header `system` حقل. لقطة عودة واحد تحويل جهاز يأخذ هذا حدث نص علامة تحويل لـ `{{system}}`، نص التوجيه مرافق مع ملف من `system/message` تسلسل أخذ تجميع (كل نص التوجيه إصدار واحد عقدة، بـ `header.promptChanges` إعلان) ،`request/header` pin فقط مقارنة مقارنة config و tools.
 
 ## Testing
 
-- `packages/compaction/compaction-basic/tests/compaction-loop-repro.spec.ts` 钉住提供方用量下调用后的表面增量为零，覆盖初始、增长、缩短与空提示词、同一步骤中的重试替换、请求中间件和全新回放。
-- `packages/core/session/tests/surface.spec.ts`（`system/message surface node` 块）钉住开头 system 角色的投影、空内容的 `null` 投影、`assertSystemHeadRewrite` 的接受与拒绝路径、更后位置系统节点不受保护，以及对 seed 中非 system 角色或非插件 source 的 `system/message` 的拒绝。
-- `packages/core/agent-loop/tests/system-prompt-projection.spec.ts` 钉住首次渲染时的追加（包括空提示词）、替换模式下后来非空提示词位于派生历史头部、提示词未变时的无操作、变更时对最新存活节点的替换、替换遮蔽了非头部系统节点之后的尾部追加，以及历史内追加与重新基线规则。
-- `packages/core/agent-loop/tests/request-reconstruction.spec.ts`（`a system-prompt change replaces surface node 0 and starts a new series under the same header`）钉住提示词替换之后跟随的 `series` header。
-- `packages/core/agent-loop/tests/invariant.spec.ts` 钉住伴随组件对携带 `system` 字段的循环请求的拒绝，以及其 `messages` 与边界派生结果的相等性检查。
-- `packages/llm/llm-deepseek/tests/serialize.spec.ts`（`serializes a leading system message byte-for-byte like the same prompt passed as options.system`）钉住协议一致性。 `packages/llm/llm-pi-ai/tests/context.spec.ts` 在文本与图片路径上比较两种系统提示词来源。`packages/compaction/compaction-basic/tests/compaction-basic.spec.ts` 通过区域事务与默认摘要器钉住派生前缀、已路由工具、不携带单独 `system` 选项，以及非空或空头节点的保护。
-- `snapshots/` 下的录制快照钉住每个随发 profile 的模型可见协议请求；渲染了提示词的录制会话在其 `session.jsonl` 中于 surface 第 0 号节点携带 `system/message` 事件，会话中途发生提示词变更的会话则携带对第 0 号节点的替换，或在历史内路由上携带追加的节点。
+- `packages/compaction/compaction-basic/tests/compaction-loop-repro.spec.ts` تثبيت إقامة مزود استخدام كمية تحت استدعاء بعد جدول وجه زيادة كمية لـ صفر، تغطية ابتدائي، زيادة طويل، تقليص قصير و فارغ نص التوجيه، نفس خطوة في إعادة محاولة استبدال، طلب في بين عنصر و كل جديد إعادة تشغيل.
+- `packages/core/session/tests/surface.spec.ts`(`system/message surface node` كتلة) تثبيت إقامة فتح رأس system زاوية لون إسقاط، فارغ محتوى `null` إسقاط،`assertSystemHeadRewrite` قبول و رفض مسار، أكثر بعد موضع نظام عقدة لا تلقي حفظ حماية، و مقابل seed في غير system زاوية لون أو غير إضافة source `system/message` رفض.
+- `packages/core/agent-loop/tests/system-prompt-projection.spec.ts` تثبيت إقامة أول مرة تصيير وقت إلحاق (يشمل فارغ نص التوجيه) ، استبدال نمط تحت بعد قدوم غير فارغ نص التوجيه يقع في إرسال توليد تاريخ رأس جزء، نص التوجيه لم تغيير وقت بلا عملية، تغيير وقت مقابل الأكثر جديد تخزين نشط عقدة استبدال، استبدال حجب حجب غير رأس جزء نظام عقدة بعد ذيل جزء إلحاق، و تاريخ داخل إلحاق و إعادة أساس خط قاعدة.
+- `packages/core/agent-loop/tests/request-reconstruction.spec.ts`(`a system-prompt change replaces surface node 0 and starts a new series under the same header`) تثبيت إقامة نص التوجيه استبدال بعد تتبع مع `series` header.
+- `packages/core/agent-loop/tests/invariant.spec.ts` تثبيت إقامة مرافق مع مكون مقابل يحمل `system` حقل حلقة طلب رفض، و ذلك `messages` و حد إرسال توليد نتيجة متبادل انتظار صفة فحص.
+- `packages/llm/llm-deepseek/tests/serialize.spec.ts`(`serializes a leading system message byte-for-byte like the same prompt passed as options.system`) تثبيت إقامة بروتوكول متسق صفة. `packages/llm/llm-pi-ai/tests/context.spec.ts` في نص و صورة مسار فوق مقارنة مقارنة اثنان نوع توجيه النظام مصدر.`packages/compaction/compaction-basic/tests/compaction-basic.spec.ts` عبر منطقة مجال أمر خدمة و افتراضي ملخص جهاز تثبيت إقامة إرسال توليد بادئة، قد توجيه أداة، لا يحمل مفرد وحيد `system` خيار، و غير فارغ أو فارغ رأس عقدة حفظ حماية.
+- `snapshots/` تحت تسجيل صنع لقطة تثبيت إقامة كل مع إرسال profile نموذج مرئي بروتوكول طلب؛ تصيير نص التوجيه تسجيل صنع جلسة في ذلك `session.jsonl` في في surface رقم 0 رقم عقدة يحمل `system/message` حدث، جلسة في طريق حدوث نص التوجيه تغيير جلسة فإن يحمل مقابل رقم 0 رقم عقدة استبدال، أو في تاريخ داخل توجيه فوق يحمل إلحاق عقدة.

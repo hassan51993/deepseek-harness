@@ -57,9 +57,9 @@ function setup(options: {
 
 describe('maybeRecordPair', () => {
   const beforeEn = page('prose.', 'old region')
-  const beforeZh = page('散文。', 'old region')
+  const beforeZh = page('تفرق نص.', 'old region')
   const currentEn = page('prose.', 'new region')
-  const currentZh = page('散文。', 'new region')
+  const currentZh = page('تفرق نص.', 'new region')
 
   it('re-records a region-confined write over a consistent record', () => {
     const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh })
@@ -157,11 +157,11 @@ describe('localizePageRegion', () => {
     mkdirSync(join(root, 'packages'), { recursive: true })
     mkdirSync(join(root, 'scripts'), { recursive: true })
     writeFileSync(join(root, 'docs/subsystems/target.md'), '# Target\n')
-    writeFileSync(join(root, 'docs/subsystems/target.zh.md'), '# 目标\n')
+    writeFileSync(join(root, 'docs/subsystems/target.zh.md'), '# هدف\n')
     writeFileSync(join(root, 'docs/subsystems/excluded.md'), '# Excluded\n')
-    writeFileSync(join(root, 'docs/subsystems/excluded.zh.md'), '# 排除\n')
+    writeFileSync(join(root, 'docs/subsystems/excluded.zh.md'), '# ترتيب حذف\n')
     writeFileSync(join(root, 'packages/outside.md'), '# Outside\n')
-    writeFileSync(join(root, 'packages/outside.zh.md'), '# 范围外\n')
+    writeFileSync(join(root, 'packages/outside.zh.md'), '# نطاق خارج\n')
     writeFileSync(join(root, 'scripts/translation-pairing.manifest.json'), JSON.stringify({
       excluded: ['docs/subsystems/excluded.md'],
     }))

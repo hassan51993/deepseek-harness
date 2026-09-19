@@ -1,12 +1,12 @@
-# 服务与依赖
+# خدمة و اعتماد
 
-[English](service.md) | 中文
+[English](service.md) | العربية
 
-服务是一个插件向其他插件公开的能力。inject 声明插件需要哪些服务。
+خدمة هو واحد إضافة نحو أخرى إضافة عام قدرة.inject إعلان إضافة حاجة أي بعض خدمة.
 
-## 什么是服务
+## ماذا هو خدمة
 
-在 Harness 中，`tools`、`llm`、`agents` 都是服务。服务是挂载在 `ctx` 上的命名能力：
+في Harness في،`tools`،`llm`،`agents` كل هو خدمة. خدمة هو تركيب في `ctx` فوق تسمية قدرة:
 
 ```ts ignore-check
 ctx.tools    // ToolRuntime service
@@ -14,11 +14,11 @@ ctx.llm      // LLM service
 ctx.agents   // Agent service
 ```
 
-任何插件都可以提供服务，供其他插件使用。
+أي إضافة كل يمكن توفير خدمة، توفير أخرى إضافة استخدام.
 
-## 使用服务
+## استخدام خدمة
 
-声明 `inject` 来使用已有服务：
+إعلان `inject` قدوم استخدام قد لديه خدمة:
 
 ```ts ignore-check
 export const inject = ['tools']
@@ -29,11 +29,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-框架保证：在 `apply` 执行时，`inject` 声明的服务已经全部就绪。如果服务还没准备好，你的插件会等着，不会执行。
+إطار هيكل حفظ إثبات: في `apply` تنفيذ وقت،`inject` إعلان خدمة قد الكل حينئذ خيط. إذا خدمة أيضا لا دقيق تجهيز جيد، أنت إضافة سوف انتظار حال، لن تنفيذ.
 
-## 提供服务
+## توفير خدمة
 
-### 使用 Service 基类
+### استخدام Service أساس صنف
 
 ```ts
 import { Service, type Context } from '@deepseek-ai/cordis'
@@ -52,7 +52,7 @@ export default class MetricsService extends Service {
 }
 ```
 
-加载这个插件后，消费方就可以通过 `ctx.metrics` 访问它：
+تحميل هذا عدد إضافة بعد، مستهلك حينئذ يمكن عبر `ctx.metrics` وصول هو:
 
 ```ts ignore-check
 export const inject = ['metrics']
@@ -62,9 +62,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-### 类型声明
+### نوع إعلان
 
-使用 TypeScript 声明合并让 `ctx.metrics` 有正确类型：
+استخدام TypeScript إعلان دمج يجعل `ctx.metrics` لديه صحيح تأكيد نوع:
 
 ```ts
 import { Service, type Context } from '@deepseek-ai/cordis'
@@ -84,9 +84,9 @@ export default class MetricsService extends Service {
 }
 ```
 
-## 依赖的行为
+## اعتماد سلوك
 
-### 必需依赖与可选依赖
+### مطلوب اعتماد و اختياري اعتماد
 
 ```ts ignore-check
 // Required: the plugin does not load while the service is absent.
@@ -99,20 +99,20 @@ export function apply(ctx: Context) {
 }
 ```
 
-### 服务消失时的行为
+### خدمة إزالة فقد وقت سلوك
 
-如果应用运行期间某项必需服务消失（例如其提供方卸载）：
+إذا تطبيق تشغيل خلال بعض بند مطلوب خدمة إزالة فقد (مثال مثل ذلك مزود إزالة):
 
-1. 依赖它的插件会自动 dispose（资源释放）
-2. 当服务重新出现时，插件自动重新加载
+1. اعتماد هو إضافة سوف تلقائي dispose(مورد تحرير)
+2. عند خدمة إعادة ظهور وقت، إضافة تلقائي إعادة تحميل
 
-这可以防止插件调用已不存在的服务。
+هذا يمكن منع توقف إضافة استدعاء قد لا وجود خدمة.
 
 <a id="service-isolation"></a>
 
-## 服务隔离
+## خدمة عزل
 
-`cordis.yml` 支持服务隔离——同一个服务可以有多个实例，不同插件组看到不同实例：
+`cordis.yml` دعم حمل خدمة عزل——نفس عدد خدمة يمكن لديه كثير عدد نسخة، مختلف إضافة مجموعة يرى مختلف نسخة:
 
 ```yaml
 - id: group-a
@@ -138,13 +138,13 @@ export function apply(ctx: Context) {
     - name: './src/plugin-b.ts'
 ```
 
-`plugin-a` 和 `plugin-b` 各自看到自己组内的 Bash 实例，互不影响。
+`plugin-a` و `plugin-b` كل منها يرى ذاتي ذات مجموعة داخل Bash نسخة، متبادل لا أثر.
 
-## Harness 内置服务
+## Harness داخل وضع خدمة
 
-服务名、公开方法和源码位置由仓库自动生成到各服务的[子系统页面](../../../subsystems/core.zh.md)。开发插件时应以这些生成区块和服务的 TypeScript 接口为准，不要维护另一份静态清单。
+خدمة اسم، عام طريقة و شفرة المصدر موضع من مستودع تلقائي توليد إلى كل خدمة[فرعي نظام صفحة](../../../subsystems/core.zh.md). تطوير إضافة وقت ينبغي بـ هذه توليد منطقة كتلة و خدمة TypeScript واجهة لـ دقيق، لا يلزم صيانة آخر نسخة ساكن حالة بيان.
 
-## 下一步
+## تحت واحد خطوة
 
-- [事件系统](./events.zh.md) — 插件间松耦合通信
-- [能力分层](../practice/index.zh.md) — 将服务用作能力接口
+- [حدث نظام](./events.zh.md) — إضافة بين رخو اقتران دمج عبر معلومة
+- [قدرة قسم طبقة](../practice/index.zh.md) — سوف خدمة استخدام عمل قدرة واجهة

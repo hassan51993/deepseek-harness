@@ -1,34 +1,34 @@
-# Agent Note: 裁剪无生产者的词汇变体（块缓存提示、`agent` 消息来源、`continuation` 轮次触发器）
+# Agent Note: قطع قص بلا إنتاج من مفردات تغيير جسم (كتلة ذاكرة مؤقتة تلميح،`agent` رسالة مصدر،`continuation` جولة إطلاق جهاز)
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-07-04-prune-producerless-vocabulary-variants.md) | 中文
+[English](2026-07-04-prune-producerless-vocabulary-variants.md) | العربية
 
-## 问题
+## مشكلة
 
-可合并扩展的词汇映射表设计上通过声明合并来增长，代码库已在 `TurnEndReasonMap`（`packages/core/session/src/types.ts`）上明确了准入策略：像 `refusal` 这样的变体「在适配器或循环首次发出它之前，有意不纳入」。三个已声明的词汇项违反了该策略——每个都既无生产者也无消费方，其中两个甚至没有测试：
+يمكن دمج توسيع مفردات خريطة جدول تصميم فوق عبر إعلان دمج قدوم زيادة طويل، شفرة مكتبة قد في `TurnEndReasonMap`(`packages/core/session/src/types.ts`) فوق واضح دقيق دخول سياسة: مثل `refusal` هذا مثال تغيير جسم «في مهايئ أو حلقة أول مرة إرسال خروج هو قبل، متعمد لا قبول دخول». ثلاثة عدد قد إعلان مفردات بند مخالفة عكس هذا سياسة——كل كل حيث بلا إنتاج من أيضا بلا مستهلك، منها اثنان عدد جدا حتى لا يوجد اختبار:
 
-- **`TextBlock`/`ToolResultBlock` 上的 `CacheHint` 及其 `cache?: CacheHint` 块字段**（`packages/llm/llm/src/types.ts`；图像块曾有第三个此类字段，已随图像块一同移除——参见[删除图像 Agent Note（agent 决策记录）](2026-07-04-drop-image-content-block.md)）。任何地方都没有构造带 `cache:` 的块——src、测试和文档粘贴均为空——两个适配器也都不读取 `.cache`：DeepSeek 的提示词缓存是自动的，因此适配器会从响应中映射出 `prompt_cache_hit_tokens`，却从不向请求中发送 hint。这是没有任何提供方能够遵守的 Anthropic 风格 `cache_control` 表面。
-- **`MessageSourceMap.agent`**（`{ kind: 'agent'; agentId: string }`，同一文件）。零个构造点，包括测试在内。它预期的生产者在实现时并未使用它：subagent 后端将父级的提示词发送给子级时不带 `source`，因此记录为 `{ kind: 'user' }`，通用信封渲染器在插值 `source.kind` 时也从未对其做路由。
-- **`TurnTriggerMap.continuation`**（`packages/core/session/src/types.ts`）。agent loop（智能体循环）在结构上不可能发出它——continuation 发生在一个轮次*内部*作为后续步骤，而非作为新轮次——循环只构造 `message` 和 `injection` 触发器。唯一的写入者是一个手工构建的测试 fixture（测试前置数据），它只需要一个任意的非消息触发器（`packages/support/llm-replay/tests/llm-replay.spec.ts`），`injection` 触发器同样满足需求；唯一的生产环境触发器读取方 ACP（Agent Client Protocol）桥接层只过滤 `kind === 'message'`。
+- **`TextBlock`/`ToolResultBlock` فوق `CacheHint` و ذلك `cache?: CacheHint` كتلة حقل**(`packages/llm/llm/src/types.ts`؛ رسم مثل كتلة سبق لديه رقم ثلاثة عدد هذا صنف حقل، قد مع رسم مثل كتلة واحد نفس إزالة——مشاركة رؤية[حذف رسم مثل Agent Note(agent قرار سجل)](2026-07-04-drop-image-content-block.md)). أي أرض جهة كل لا يوجد بنية صنع حمل `cache:` كتلة——src، اختبار و وثيقة لصق لصق متساو لـ فارغ——اثنان عدد مهايئ أيضا كل لا قراءة `.cache`:DeepSeek نص التوجيه ذاكرة مؤقتة هو تلقائي، لذلك مهايئ سوف من استجابة في خريطة خروج `prompt_cache_hit_tokens`، لكن من لا نحو طلب في إرسال hint. هذا هو لا يوجد أي مزود قدرة كاف التزام حراسة Anthropic ريح إطار `cache_control` جدول وجه.
+- **`MessageSourceMap.agent`**(`{ kind: 'agent'; agentId: string }`، نفس ملف). صفر عدد بنية صنع نقطة، يشمل اختبار في داخل. هو مسبق مدة إنتاج من في تنفيذ وقت و لم استخدام هو:subagent خلفية سوف أب درجة نص التوجيه إرسال إعطاء فرعي درجة وقت لا حمل `source`، لذلك سجل لـ `{ kind: 'user' }`، عام معلومة غلاف مصير في إدراج قيمة `source.kind` وقت أيضا من لم مقابل ذلك فعل توجيه.
+- **`TurnTriggerMap.continuation`**(`packages/core/session/src/types.ts`).agent loop(ذكي جسم حلقة) في بنية فوق غير ممكن قدرة إرسال خروج هو——continuation حدوث في واحد جولة*داخلي*بصفة لاحق خطوة، بينما غير بصفة جديد جولة——حلقة فقط بنية صنع `message` و `injection` إطلاق جهاز. وحيد كتابة من هو واحد يد عمل بناء اختبار fixture(اختبار قبل وضع بيانات) ، هو فقط حاجة واحد مهمة معنى غير رسالة إطلاق جهاز (`packages/support/llm-replay/tests/llm-replay.spec.ts`) ،`injection` إطلاق جهاز نفس مثال ممتلئ كاف يحتاج طلب؛ وحيد إنتاج بيئة إطلاق جهاز قراءة جهة ACP(Agent Client Protocol) جسر وصل طبقة فقط مرور ترشيح `kind === 'message'`.
 
-## 决策
+## قرار
 
-`CacheHint`、其 `cache?` 块字段、`agent` 消息来源变体和 `continuation` 轮次触发器变体均已删除：已发布词汇不再携带它们。llm-replay fixture 使用 `injection` 触发器（任何非 `message` 触发器都能满足其用途）。[core.md](../../../../docs/core-data-structures/core.md) 和 [session.md](../../../../docs/core-data-structures/session.md) 中的 type-equiv 粘贴与裁剪后的 map 匹配——两个符号仍保留在 `scripts/type-equiv.manifest.json` 中的行，因为每个 map 都只是少了一个成员而继续存在——并且[内容块词汇 Agent Note](../architecture/2026-06-11-content-block-vocabulary.md)的后果按照 [implemented/AGENTS.md](../AGENTS.md)，将 cache hint 记录为由生产者门控，而不是已有归属。
+`CacheHint`، ذلك `cache?` كتلة حقل،`agent` رسالة مصدر تغيير جسم و `continuation` جولة إطلاق جهاز تغيير جسم متساو قد حذف: قد إصدار مفردات لم يعد يحمل هو جمع.llm-replay fixture استخدام `injection` إطلاق جهاز (أي غير `message` إطلاق جهاز كل قدرة ممتلئ كاف ذلك استخدام طريق).[core.md](../../../../docs/core-data-structures/core.md) و [session.md](../../../../docs/core-data-structures/session.md) في type-equiv لصق لصق و قطع قص بعد map مطابقة——اثنان عدد رمز رقم ما زال إبقاء في `scripts/type-equiv.manifest.json` في سطر، لأن كل map كل فقط هو قليل واحد عضو بينما متابعة وجود——و كما[محتوى كتلة مفردات Agent Note](../architecture/2026-06-11-content-block-vocabulary.md) عاقبة حسب وفق [implemented/AGENTS.md](../AGENTS.md) ، سوف cache hint سجل لـ من إنتاج من باب تحكم، بينما لا هو قد لديه ملكية.
 
-每个变体在获得真正的生产者之日回归，这正是映射表设计的增长方式：缓存功能连同传输它的适配器一起重新添加 `cache`；subagent 归属连同打标的后端和路由它的消费方一起重新添加 `agent`；真正启动新轮次的自动续行功能连同发出它的插件一起重新添加 `continuation`。
+كل تغيير جسم في نيل نيل حق صحيح إنتاج من لـ يوم ارتداد، هذا صحيح هو خريطة جدول تصميم زيادة طويل طريقة: ذاكرة مؤقتة وظيفة وصل نفس نقل هو مهايئ واحد بدء إعادة إضافة `cache`؛subagent ملكية وصل نفس ضرب علامة خلفية و توجيه هو مستهلك واحد بدء إعادة إضافة `agent`؛ حق صحيح بدء جديد جولة تلقائي متابعة سطر وظيفة وصل نفس إرسال خروج هو إضافة واحد بدء إعادة إضافة `continuation`.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-### 为什么不保留它们？
+### لـ ماذا لا إبقاء هو جمع؟
 
-[内容块词汇 Agent Note](../architecture/2026-06-11-content-block-vocabulary.md)曾把“cache hint……有了归属”列为设计后果，预留槽位也确实能表明意图。但空槽位是每个实现和消费方都必须考虑的契约表面（我的适配器是否必须遵守 `cache`？我的 renderer 是否必须路由 `agent` 来源？），而相邻 map 自身的 JSDoc 已经拒绝“无 emitter 先预留”——`refusal` 和 `max_turn_requests` 被点名为*首次有内容发出它们时*再添加的变体，而不是提前声明。让已经声明但无用的变体遵守同一标准，才能使词汇真正有意义：只要它位于 map 中，就必须有内容生产它。
+[محتوى كتلة مفردات Agent Note](../architecture/2026-06-11-content-block-vocabulary.md) سبق يأخذ “cache hint……لديه ملكية” صف لـ تصميم عاقبة، مسبق إبقاء مجرى موضع أيضا تأكيد فعلي قدرة جدول واضح معنى رسم. لكن فارغ مجرى موضع هو كل تنفيذ و مستهلك كل يجب اعتبار عقد نحو جدول وجه (أنا مهايئ هل يجب التزام حراسة `cache`؟ أنا renderer هل يجب توجيه `agent` مصدر؟) ، بينما متبادل مجاور map ذاته JSDoc قد رفض “بلا emitter أولا مسبق إبقاء”——`refusal` و `max_turn_requests` يتم نقطة اسم لـ*أول مرة لديه محتوى إرسال خروج هو جمع وقت*مجددا إضافة تغيير جسم، بينما لا هو رفع قبل إعلان. يجعل قد إعلان لكن بلا استخدام تغيير جسم التزام حراسة نفس معيار، عندئذ قدرة جعل مفردات حق صحيح متعمد معنى: فقط يلزم هو يقع في map في، حينئذ يجب لديه محتوى إنتاج هو.
 
-## 验证
+## تحقق
 
-对 `CacheHint`、`agent` 消息来源拼写和 `continuation` 触发器拼写运行 `rg`，只会返回 Agent Note 记录（本文，以及[删除图像 Agent Note](2026-07-04-drop-image-content-block.md)对图像块自身 `cache` 字段的说明）；llm-replay fixture 使用 `injection` 触发器断言相同的重放行为；核心数据结构粘贴和 type-equiv 清单保持同步。
+مقابل `CacheHint`،`agent` رسالة مصدر تجميع كتابة و `continuation` إطلاق جهاز تجميع كتابة تشغيل `rg`، فقط سوف إرجاع Agent Note سجل (هذا نص، و[حذف رسم مثل Agent Note](2026-07-04-drop-image-content-block.md) مقابل رسم مثل كتلة ذاته `cache` حقل شرح) ؛llm-replay fixture استخدام `injection` إطلاق جهاز تأكيد نفسه إعادة وضع سلوك؛ نواة قلب بيانات بنية لصق لصق و type-equiv بيان إبقاء تزامن.
 
-## 后果
+## عاقبة
 
-操作行为没有变化——原本就没有内容能够构造这些值。镜像事件移除（[边界镜像 Agent Note](2026-06-20-remove-agent-boundary-mirror-events.md)、[流分片 Agent Note](2026-07-02-remove-stream-chunk-mirror.md)）只触及瞬态 `agent/*` 事件，从不触及持久词汇，因此不存在冲突。其他位置已经遵守准入策略：`rejected`、`prompt/blocked` 和 `hook/invoked`/`hook/result` 都有实时生产者——本 Agent Note 将同一门槛扩展到缺少生产者的三个变体。图像块自身的 `cache?` 字段归属[删除图像 Agent Note](2026-07-04-drop-image-content-block.md)，后者将其与该块一同移除；本 Agent Note 覆盖剩余块类型上的两个字段。
+عملية سلوك لا يوجد تغير——أصل هذا حينئذ لا يوجد محتوى قدرة كاف بنية صنع هذه قيمة. مرآة مثل حدث إزالة ([حد مرآة مثل Agent Note](2026-06-20-remove-agent-boundary-mirror-events.md) ،[تدفق قسم قطعة Agent Note](2026-07-02-remove-stream-chunk-mirror.md)) فقط لمس و لحظة حالة `agent/*` حدث، من لا لمس و حمل دائم مفردات، لذلك لا وجود اندفاع مفاجئ. أخرى موضع قد التزام حراسة دقيق دخول سياسة:`rejected`،`prompt/blocked` و `hook/invoked`/`hook/result` كل لديه فوري إنتاج من——هذا Agent Note سوف نفس باب عتبة توسيع إلى نقص قليل إنتاج من ثلاثة عدد تغيير جسم. رسم مثل كتلة ذاته `cache?` حقل ملكية[حذف رسم مثل Agent Note](2026-07-04-drop-image-content-block.md) ، بعد من سوف ذلك و هذا كتلة واحد نفس إزالة؛ هذا Agent Note تغطية باق بقية كتلة نوع فوق اثنان عدد حقل.

@@ -1,12 +1,12 @@
-# 5. 配置
+# 5. إعداد
 
-[English](05-config.md) | 中文
+[English](05-config.md) | العربية
 
-`cordis.yml` 中的每个 Cordis 配置项都可以携带 `config` 块，插件则声明一个 schema，在运行 `apply` 前验证该块。错误配置会导致加载失败，并给出准确的错误：插件绝不会在配置不完整时启动。
+`cordis.yml` في كل Cordis بند إعداد كل يمكن يحمل `config` كتلة، إضافة فإن إعلان واحد schema، في تشغيل `apply` قبل تحقق هذا كتلة. خطأ إعداد سوف توجيه يؤدي تحميل فشل، و إعطاء خروج دقيق تأكيد خطأ: إضافة أبدا سوف في إعداد لا كامل وقت بدء.
 
-## 可配置插件
+## يمكن إعداد إضافة
 
-创建 `config-demo.ts`，并将其放在 `tmp/cordis-tutorial` 中：
+إنشاء `config-demo.ts`، و سوف ذلك وضع في `tmp/cordis-tutorial` في:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -31,9 +31,9 @@ export function apply(ctx: Context, config: Config) {
 }
 ```
 
-导出的 `Config` 既是 TypeScript 接口，也是同名的运行时 schema：消费方获得类型，Cordis 获得验证器。本仓库使用 [Schemastery](https://github.com/shigma/schemastery) 定义 schema；Cordis 本身接受任意 [Standard Schema](https://standardschema.dev/) 验证器，因此将普通对象导出为 `Config` 无法工作。
+توجيه خروج `Config` حيث هو TypeScript واجهة، أيضا هو نفس اسم وقت التشغيل schema: مستهلك نيل نيل نوع،Cordis نيل نيل تحقق جهاز. هذا مستودع استخدام [Schemastery](https://github.com/shigma/schemastery) تعريف schema؛Cordis ذاته قبول مهمة معنى [Standard Schema](https://standardschema.dev/) تحقق جهاز، لذلك سوف عادي كائن توجيه خروج لـ `Config` لا يمكن عمل.
 
-对其进行配置：
+مقابل ذلك إجراء إعداد:
 
 ```yaml
 - name: './config-demo.ts'
@@ -41,18 +41,18 @@ export function apply(ctx: Context, config: Config) {
     targets: ['alpha', 'beta']
 ```
 
-运行：
+تشغيل:
 
 ```
 Hello, alpha!
 Hello, beta!
 ```
 
-未提供 `greeting`，因此 schema 默认值会将其补齐：`apply` 始终会收到完整且经过验证的配置。
+لم توفير `greeting`، لذلك schema قيمة افتراضية سوف سوف ذلك تكملة متساو:`apply` بداية نهاية سوف استلام إلى كامل كما مرور مرور تحقق إعداد.
 
-## 明确报错
+## واضح تقرير خطأ
 
-现在向它传入无效内容：
+الآن نحو هو نقل دخول بلا فاعلية محتوى:
 
 ```yaml
 - name: './config-demo.ts'
@@ -65,11 +65,11 @@ ValidationError: invalid config:
   - $.targets expected array but got not-an-array (at targets)
 ```
 
-插件的 fiber 进入 FAILED 状态，本教程的启动器打印错误后以状态码 1 退出。如果某个插件的配置通过了 schema 验证，但其中指定的资源或提供方不可用，该插件也应当在能解析该引用时立即拒绝。
+إضافة fiber دخول FAILED حالة، هذا تعليم مسار بدء جهاز ضرب طبع خطأ بعد بـ حالة رمز 1 خروج. إذا بعض عدد إضافة إعداد عبر schema تحقق، لكن منها إشارة تحديد مورد أو مزود غير ممكن استخدام، هذا إضافة أيضا ينبغي عند في قدرة تحليل هذا مرجع وقت قيام أي رفض.
 
-## 计算得到的配置值
+## حساب حساب نيل إلى إعداد قيمة
 
-本仓库使用的 loader 支持 `!!js` 标签，用于必须在加载时计算的配置值：
+هذا مستودع استخدام loader دعم حمل `!!js` وسم، لأجل يجب في تحميل وقت حساب حساب إعداد قيمة:
 
 ```yaml
 - name: './config-demo.ts'
@@ -77,8 +77,8 @@ ValidationError: invalid config:
     greeting: !!js process.env.DEMO_GREETING ?? 'Hello'
 ```
 
-`!!js` 仅在 `config` 与条目 `disabled` 字段内有效。`disabled: !!js ...` 在每次挂载决策时基于 loader 上下文求值（本仓库的扩展），可以按平台或环境门控一行；其余元数据（`name`、`id`、`inject` 等）保持静态，其中的表达式是普通真值数据。详见 [loader 配置](../cordis-primer.zh.md#loader-configuration)。
+`!!js` فقط في `config` و بند `disabled` حقل داخل صالح.`disabled: !!js ...` في كل مرة تركيب قرار وقت أساس في loader سياق طلب قيمة (هذا مستودع توسيع) ، يمكن حسب منصة أو بيئة باب تحكم واحد سطر؛ ذلك بقية بيانات وصفية (`name`،`id`،`inject` انتظار) إبقاء ساكن حالة، منها جدول بلوغ صيغة هو عادي حق قيمة بيانات. تفصيل رؤية [loader إعداد](../cordis-primer.zh.md#loader-configuration).
 
-下一章：[组合与 HMR（热模块替换）](06-composition-and-hmr.zh.md)：将 `cordis.yml` 视为应用。
+تحت واحد فصل:[تركيب و HMR(حار وحدة استبدال)](06-composition-and-hmr.zh.md): سوف `cordis.yml` نظر لـ تطبيق.
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

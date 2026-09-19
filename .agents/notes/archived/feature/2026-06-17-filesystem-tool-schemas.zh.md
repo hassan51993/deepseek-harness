@@ -1,113 +1,113 @@
-# Agent Note: 文件系统工具 schema——面向模型的读/写/编辑接口形状
+# Agent Note: نظام الملفات أداة schema——موجه إلى نموذج قراءة/كتابة/تحرير واجهة شكل حالة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-06-17-filesystem-tool-schemas.md) | 中文
+[English](2026-06-17-filesystem-tool-schemas.md) | العربية
 
-## 问题
+## مشكلة
 
-[文件系统能力 seam Agent Note](../architecture/2026-06-17-filesystem-capability-seam.zh.md) 定义了文件系统能力 seam（`ctx.fs`）、包拆分（`dsh-fs`、`dsh-fs-local`、`dsh-tool-fs`，加上 `dsh-fs-observation-policy` 策略插件），以及针对 read-before-write/edit 检查的已观测文件／陈旧版本策略——[拆分文件系统 seam](../simplification/2026-06-26-fsspec-style-fs-seam.zh.md)和[事件门](../architecture/2026-06-26-file-context-as-event-gate.zh.md) Agent Note 后来将其从 `ctx.fs` 移至 `dsh-fs-observation-policy` 插件的 `fs/*` 事件门上。首次文件系统工具交付剩余的决策是面向模型的 schema：模型在 `read`、`write` 和 `edit` 中看到哪些参数。
+[نظام الملفات قدرة seam Agent Note](../architecture/2026-06-17-filesystem-capability-seam.zh.md) تعريف نظام الملفات قدرة seam(`ctx.fs`) ، حزمة تفكيك قسم (`dsh-fs`،`dsh-fs-local`،`dsh-tool-fs`، إضافة فوق `dsh-fs-observation-policy` سياسة إضافة) ، و إبرة مقابل read-before-write/edit فحص قد مراقبة قياس ملف/قديم قديم إصدار سياسة——[تفكيك قسم نظام الملفات seam](../simplification/2026-06-26-fsspec-style-fs-seam.zh.md) و[حدث باب](../architecture/2026-06-26-file-context-as-event-gate.zh.md) Agent Note بعد قدوم سوف ذلك من `ctx.fs` نقل حتى `dsh-fs-observation-policy` إضافة `fs/*` حدث باب فوق. أول مرة نظام الملفات أداة تسليم باق بقية قرار هو موجه إلى نموذج schema: نموذج في `read`،`write` و `edit` في يرى أي بعض معامل.
 
-该 schema 必须足够小，但又要足够稳定，使本地、远程、沙箱文件系统后端不需要改动面向模型的接口，并且必须避免从参考系统中照搬所有选项。Claude Code 和 OpenCode 暴露了类似的核心文件工具，但在命名风格和额外 flag 上有所不同；本决策选择最小的共有接口。
+هذا schema يجب كاف كاف صغير، لكن أيضا يلزم كاف كاف مستقر، جعل محلي، بعيد مسار، صندوق رملي نظام الملفات خلفية لا حاجة تعديل موجه إلى نموذج واجهة، و كما يجب تجنب تجنب من مشاركة اعتبار نظام في وفق نقل كل خيار.Claude Code و OpenCode كشف صنف يشبه نواة قلب ملف أداة، لكن في تسمية ريح إطار و مقدار خارج flag فوق لديه الذي مختلف؛ هذا قرار اختيار الأكثر صغير مشترك لديه واجهة.
 
-## 决策
+## قرار
 
-`@deepseek-ai/dsh-tool-fs` 在首个文件系统工具套件中暴露以下三个面向模型的工具：
+`@deepseek-ai/dsh-tool-fs` في أول عدد نظام الملفات أداة طقم عنصر في كشف التالي ثلاثة عدد موجه إلى نموذج أداة:
 
-| 工具 | 我们的 schema | Claude Code | OpenCode | 说明 |
+| أداة | أنا جمع schema | Claude Code | OpenCode | شرح |
 |---|---|---|---|---|
-| `read` | `read(file_path, offset?, limit?)` | `Read(file_path, offset?, limit?, pages?)` | `read(filePath, offset?, limit?)` | 仅支持文件；`offset` 从 1 开始；首版不支持图片、PDF 或多模态内容。 |
-| `write` | `write(file_path, content)` | `Write(file_path, content)` | `write(content, filePath)` | 创建或覆盖 UTF-8 文本。在默认 fs-observation-policy 下，更新现有文件前必须先观测；创建新文件则不需要。 |
-| `edit` | `edit(file_path, old_string, new_string, replace_all?)` | `Edit(file_path, old_string, new_string, replace_all?)` | `edit(filePath, oldString, newString, replaceAll?)` | 字面字符串替换；默认要求唯一匹配；在默认 fs-observation-policy 下必须先观测（任意窗口读取均算作观测）。 |
+| `read` | `read(file_path, offset?, limit?)` | `Read(file_path, offset?, limit?, pages?)` | `read(filePath, offset?, limit?)` | فقط دعم حمل ملف؛`offset` من 1 بدء؛ أول إصدار لا دعم حمل صورة،PDF أو كثير نموذج حالة محتوى. |
+| `write` | `write(file_path, content)` | `Write(file_path, content)` | `write(content, filePath)` | إنشاء أو تغطية UTF-8 نص. في افتراضي fs-observation-policy تحت، تحديث قائم ملف قبل يجب أولا مراقبة قياس؛ إنشاء جديد ملف فإن لا حاجة. |
+| `edit` | `edit(file_path, old_string, new_string, replace_all?)` | `Edit(file_path, old_string, new_string, replace_all?)` | `edit(filePath, oldString, newString, replaceAll?)` | حرف وجه نص استبدال؛ افتراضي اشتراط وحيد مطابقة؛ في افتراضي fs-observation-policy تحت يجب أولا مراقبة قياس (مهمة معنى نافذة قراءة متساو حساب عمل مراقبة قياس). |
 
-schema 使用 snake_case 字段名（`file_path`、`old_string`、`new_string`、`replace_all`），与 Claude Code 及现有 DeepSeek Harness 工具 schema 示例保持一致。消费方包将这些面向模型的名称转换为 `ctx.fs` 调用和 `fs/*` 事件分发。
+schema استخدام snake_case حقل اسم (`file_path`،`old_string`،`new_string`،`replace_all`) ، و Claude Code و قائم DeepSeek Harness أداة schema عرض مثال إبقاء متسق. مستهلك حزمة سوف هذه موجه إلى نموذج اسم تحويل لـ `ctx.fs` استدعاء و `fs/*` حدث توزيع.
 
-## 工具 schema
+## أداة schema
 
 ### `read`
 
-`read` 检视一个 UTF-8 文本文件并返回带行号的内容。
+`read` فحص نظر واحد UTF-8 نص ملف و إرجاع حمل سطر رقم محتوى.
 
-参数：
+معامل:
 
-- `file_path: string`——必填。要读取的路径，由 `ctx.fs` 解析。
-- `offset?: number`——可选。返回的第一行，从 1 开始。默认为第一行。
-- `limit?: number`——可选。返回的最大行数。默认值与上限是 `dsh-tool-fs` / `ctx.fs` 的实现细节。
+- `file_path: string`——لا بد ملء. يلزم قراءة مسار، من `ctx.fs` تحليل.
+- `offset?: number`——اختياري. إرجاع رقم واحد سطر، من 1 بدء. افتراضي لـ رقم واحد سطر.
+- `limit?: number`——اختياري. إرجاع الأكثر كبير سطر عدد. قيمة افتراضية و حد أعلى هو `dsh-tool-fs` / `ctx.fs` تنفيذ دقيق عقدة.
 
-首次实现不涉及的内容：
+أول مرة تنفيذ لا تعلق و محتوى:
 
-- 无 PDF `pages` 参数。
-- 无图片或多模态文件读取。
-- 不通过 `read` 列出目录；如有需要，目录列表将作为单独的后续工具。
+- بلا PDF `pages` معامل.
+- بلا صورة أو كثير نموذج حالة ملف قراءة.
+- لا عبر `read` صف خروج دليل؛ مثل لديه حاجة، دليل قائمة سوف بصفة مفرد وحيد لاحق أداة.
 
 ### `write`
 
-`write` 创建或完整替换一个 UTF-8 文本文件。
+`write` إنشاء أو كامل استبدال واحد UTF-8 نص ملف.
 
-参数：
+معامل:
 
-- `file_path: string`——必填。要写入的路径，由 `ctx.fs` 解析。
-- `content: string`——必填。要写入的完整 UTF-8 文本内容。
+- `file_path: string`——لا بد ملء. يلزم كتابة مسار، من `ctx.fs` تحليل.
+- `content: string`——لا بد ملء. يلزم كتابة كامل UTF-8 نص محتوى.
 
-在默认 fs-observation-policy 下，使用 `write` 更新已有文件需要同一执行上下文先前对该文件有过一次观测（read/write/edit）；`dsh-fs-observation-policy` 插件将观测到的版本作为 `fs/write-intent` 上的陈旧版本防护提供。创建新文件不需要先前观测。如果策略插件不存在，`write` 是由裸提供方无条件执行的创建或覆盖操作。
+في افتراضي fs-observation-policy تحت، استخدام `write` تحديث قد لديه ملف حاجة نفس تنفيذ سياق أولا قبل مقابل هذا ملف لديه مرور مرة مراقبة قياس (read/write/edit) ؛`dsh-fs-observation-policy` إضافة سوف مراقبة قياس إلى إصدار بصفة `fs/write-intent` فوق قديم قديم إصدار منع حماية توفير. إنشاء جديد ملف لا حاجة أولا قبل مراقبة قياس. إذا سياسة إضافة لا وجود،`write` هو من عار مزود بلا شرط تنفيذ إنشاء أو تغطية عملية.
 
-schema 不将 `expected_hash`、`expected_version` 或 `create_only` 作为面向模型的参数暴露。陈旧版本检查由后端产生的版本和策略插件的观测状态驱动，而非要求模型通过 schema 复制版本令牌。
+schema لا سوف `expected_hash`،`expected_version` أو `create_only` بصفة موجه إلى نموذج معامل كشف. قديم قديم إصدار فحص من خلفية إنتاج إصدار و سياسة إضافة مراقبة قياس حالة قيادة، بينما غير اشتراط نموذج عبر schema نسخ إصدار أمر لوحة.
 
 ### `edit`
 
-`edit` 通过替换字面文本来更新已有的 UTF-8 文本文件。
+`edit` عبر استبدال حرف وجه نص قدوم تحديث قد لديه UTF-8 نص ملف.
 
-参数：
+معامل:
 
-- `file_path: string`——必填。要编辑的路径，由 `ctx.fs` 解析。
-- `old_string: string`——必填。要替换的字面文本。首次实现中空字符串无效。
-- `new_string: string`——必填。字面替换文本；空字符串表示删除匹配内容。
-- `replace_all?: boolean`——可选。默认为 false。为 false 时，`old_string` 必须恰好匹配一处。
+- `file_path: string`——لا بد ملء. يلزم تحرير مسار، من `ctx.fs` تحليل.
+- `old_string: string`——لا بد ملء. يلزم استبدال حرف وجه نص. أول مرة تنفيذ في فارغ نص بلا فاعلية.
+- `new_string: string`——لا بد ملء. حرف وجه استبدال نص؛ فارغ نص يمثل حذف مطابقة محتوى.
+- `replace_all?: boolean`——اختياري. افتراضي لـ false. لـ false وقت،`old_string` يجب تماما جيد مطابقة واحد موضع.
 
-`edit` 要求同一执行上下文先前观测过该文件（任何窗口化的 read 都算——授权取决于观测到的版本是否仍为最新，而不要求查看全文），或该上下文先前对该文件执行过 write/edit。`dsh-fs-observation-policy` 策略插件推导所有者，并将记录的版本作为陈旧版本防护提供；提供方的变更锁会强制执行该防护。
+`edit` اشتراط نفس تنفيذ سياق أولا قبل مراقبة قياس مرور هذا ملف (أي نافذة تحويل read كل حساب——تخويل أخذ قرار في مراقبة قياس إلى إصدار هل ما زال لـ الأكثر جديد، بينما لا اشتراط فحص نظر كل نص) ، أو هذا سياق أولا قبل مقابل هذا ملف تنفيذ مرور write/edit.`dsh-fs-observation-policy` سياسة إضافة دفع توجيه كل من، و سوف سجل إصدار بصفة قديم قديم إصدار منع حماية توفير؛ مزود تغيير قفل سوف قوي صنع تنفيذ هذا منع حماية.
 
-首次实现拒绝 Codex 风格的 patch 语法和多模式 edit API。它使用一种严格的字面替换模式，使面向模型的约定保持简单，并让后端掌控精确匹配、重复匹配、行尾和陈旧版本的语义。
+أول مرة تنفيذ رفض Codex ريح إطار patch لغة قاعدة و كثير نمط edit API. هو استخدام واحد نوع صارم إطار حرف وجه استبدال نمط، جعل موجه إلى نموذج اتفاق إبقاء بسيط مفرد، و يجعل خلفية كف تحكم دقيق مطابقة، تكرار مطابقة، سطر ذيل و قديم قديم إصدار دلالة.
 
-## 结果形状
+## نتيجة شكل حالة
 
-首次实现曾将 `ContentBlock[]` 格式化逻辑放在 `execute` 中。[规范工具输出约定](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)如今将 `ctx.fs` 的结果事实保留为工具经校验的值，并通过 `output.render` 派生相同的模型文本；文件状态的记录/刷新仍归 `ctx.fs` 所有。
+أول مرة تنفيذ سبق سوف `ContentBlock[]` صيغة تحويل منطق وضع في `execute` في.[مواصفة أداة إخراج اتفاق](../architecture/2026-07-20-canonical-tool-output-contract.zh.md) مثل اليوم سوف `ctx.fs` نتيجة واقع إبقاء لـ أداة مرور تحقق قيمة، و عبر `output.render` إرسال توليد نفسه نموذج نص؛ ملف حالة سجل/تحديث جديد ما زال عودة `ctx.fs` كل.
 
-默认原生投影：
+افتراضي أصلي إسقاط:
 
-| 工具 | `tool-fs` 使用的结构化 `ctx.fs` 结果 | 默认模型投影 |
+| أداة | `tool-fs` استخدام بنية تحويل `ctx.fs` نتيجة | افتراضي نموذج إسقاط |
 |---|---|---|
-| `read` | 返回的行、返回行数、总行数、目标显示路径、文件版本、部分视图标记 | 带行号的文本及分页页脚 |
-| `write` | 创建/更新操作、目标显示路径、新文件版本 | 简洁的创建/更新成功文本 |
-| `edit` | 替换次数、全量替换标记、目标显示路径、新文件版本 | 简洁的编辑成功文本 |
+| `read` | إرجاع سطر، إرجاع سطر عدد، مجموع سطر عدد، هدف عرض مسار، ملف إصدار، جزء عرض علامة | حمل سطر رقم نص و قسم صفحة صفحة قدم |
+| `write` | إنشاء/تحديث عملية، هدف عرض مسار، جديد ملف إصدار | بسيط نظيف إنشاء/تحديث نجاح نص |
+| `edit` | استبدال مرة عدد، كل كمية استبدال علامة، هدف عرض مسار، جديد ملف إصدار | بسيط نظيف تحرير نجاح نص |
 
-结构化结果不会重复模型参数（如 `file_path`、`old_string` 或 `content`），除非后端已将其解析为新信息（如 `displayPath`、`targetKey` 或新版本）。以节省 token 为目的的截断属于模型投影的职责，而非后端规范结果的一部分。
+بنية تحويل نتيجة لن تكرار نموذج معامل (مثل `file_path`،`old_string` أو `content`) ، حذف غير خلفية قد سوف ذلك تحليل لـ جديد معلومة (مثل `displayPath`،`targetKey` أو جديد إصدار). بـ عقدة حذف token لـ هدف قطع قطع يخص نموذج إسقاط مسؤولية، بينما غير خلفية مواصفة نتيجة واحد جزء.
 
-## 延后事项
+## تأخير بعد أمر بند
 
-以下内容被明确排除在首次文件系统 schema 实现之外：
+التالي محتوى يتم واضح ترتيب حذف في أول مرة نظام الملفات schema تنفيذ خارج:
 
-- 面向模型的 `expected_hash`、`expected_version` 或 `create_only` 参数。
-- 目录列表、glob、grep 和搜索工具。
-- 二进制安全的读/写操作。
-- PDF/图片/多模态 `read`。
-- 文件系统工具的 PTC mode 投影值。
-- 规范的 edit diff 格式。
+- موجه إلى نموذج `expected_hash`،`expected_version` أو `create_only` معامل.
+- دليل قائمة،glob،grep و بحث أداة.
+- اثنان دخول صنع أمان قراءة/كتابة عملية.
+- PDF/صورة/كثير نموذج حالة `read`.
+- نظام الملفات أداة PTC mode إسقاط قيمة.
+- مواصفة edit diff صيغة.
 
-## 测试
+## اختبار
 
-schema 测试固定每个工具的必填/可选参数集、空 `old_string` 拒绝、`replace_all` 默认值、snake_case 字段名、描述文字中对观测策略的说明，以及根插件套件注册；集成测试通过 `ctx.tools.execute()` 对真实的 `dsh-fs-local` 提供方执行全部三个工具，并验证模型参数被正确转换为预期的 `ctx.fs` 调用和 `fs/*` 分发。
+schema اختبار ثابت كل أداة لا بد ملء/اختياري معامل تجميع، فارغ `old_string` رفض،`replace_all` قيمة افتراضية،snake_case حقل اسم، وصف نص حرف في مقابل مراقبة قياس سياسة شرح، و أصل إضافة طقم عنصر تسجيل؛ اختبار تكامل عبر `ctx.tools.execute()` مقابل حقيقي `dsh-fs-local` مزود تنفيذ الكل ثلاثة عدد أداة، و تحقق نموذج معامل يتم صحيح تأكيد تحويل لـ مسبق مدة `ctx.fs` استدعاء و `fs/*` توزيع.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **Codex 风格的 patch 语法或多模式 edit API**：否决。一种严格的字面替换模式使面向模型的约定保持简单，并让后端掌控精确匹配、重复匹配、行尾和陈旧版本的语义。
-- **camelCase 参数名（OpenCode 风格）**：snake_case 与 Claude Code 及现有 harness 工具 schema 示例一致，且命名一旦发布即成为公开 API。
-- **面向模型的 `expected_hash` / `expected_version` / `create_only` 参数**：否决。陈旧检查由后端产生的版本和策略插件的观测状态驱动，从不依赖模型复制的脆弱令牌。
+- **Codex ريح إطار patch لغة قاعدة أو كثير نمط edit API**: مرفوض. واحد نوع صارم إطار حرف وجه استبدال نمط جعل موجه إلى نموذج اتفاق إبقاء بسيط مفرد، و يجعل خلفية كف تحكم دقيق مطابقة، تكرار مطابقة، سطر ذيل و قديم قديم إصدار دلالة.
+- **camelCase معامل اسم (OpenCode ريح إطار)**:snake_case و Claude Code و قائم harness أداة schema عرض مثال متسق، كما تسمية واحد حالما إصدار أي يصبح عام API.
+- **موجه إلى نموذج `expected_hash` / `expected_version` / `create_only` معامل**: مرفوض. قديم قديم فحص من خلفية إنتاج إصدار و سياسة إضافة مراقبة قياس حالة قيادة، من لا اعتماد نموذج نسخ هش ضعيف أمر لوحة.
 
-## 后果
+## عاقبة
 
-**首版 schema 有意小于 Claude Code 的。** 去掉 PDF pages、多模态 read、丰富的 grep/list flag 和 expected hash 字段使实现保持聚焦，但用户可能很快就会提出这些需求。这些功能将通过独立 Agent Note 或聚焦的后续工作引入，而不是让初始 schema 承载过多内容。
+**أول إصدار schema متعمد صغير في Claude Code .** ذهاب إسقاط PDF pages، كثير نموذج حالة read، وفير غني grep/list flag و expected hash حقل جعل تنفيذ إبقاء تجمع تركيز، لكن مستخدم ممكن جدا سريع حينئذ سوف رفع خروج هذه يحتاج طلب. هذه وظيفة سوف عبر مستقل Agent Note أو تجمع تركيز لاحق عمل جذب دخول، بينما لا هو يجعل ابتدائي schema تحمل تحميل مرور كثير محتوى.
 
-**没有显式的面向模型的陈旧版本防护。**schema 不要求模型提供 expected hash/version。这是有意为之：陈旧检查来自后端产生的版本和 `dsh-fs-observation-policy` 插件的观测状态，而非模型复制的脆弱令牌。文件系统安全失败通过 `dsh-fs` 拥有的结构化 `FsError` 代码暴露，而非模型提供的版本字段。
+**لا يوجد صريح موجه إلى نموذج قديم قديم إصدار منع حماية.**schema لا اشتراط نموذج توفير expected hash/version. هذا هو متعمد لـ لـ: قديم قديم فحص قدوم ذاتي خلفية إنتاج إصدار و `dsh-fs-observation-policy` إضافة مراقبة قياس حالة، بينما غير نموذج نسخ هش ضعيف أمر لوحة. نظام الملفات أمان فشل عبر `dsh-fs` يملك بنية تحويل `FsError` شفرة كشف، بينما غير نموذج توفير إصدار حقل.
 
-**命名成为公开 API。** 一旦发布，将 `file_path` 改为 `filePath` 或 `old_string` 改为 `oldString` 会导致提示词、示例和下游客户端随之改动。本 Agent Note 预先选择 snake_case，并将其视为稳定的面向模型的约定。
+**تسمية يصبح عام API.** واحد حالما إصدار، سوف `file_path` تعديل لـ `filePath` أو `old_string` تعديل لـ `oldString` سوف توجيه يؤدي نص التوجيه، عرض مثال و تحت تنقل عميل مع لـ تعديل. هذا Agent Note مسبق أولا اختيار snake_case، و سوف ذلك نظر لـ مستقر موجه إلى نموذج اتفاق.

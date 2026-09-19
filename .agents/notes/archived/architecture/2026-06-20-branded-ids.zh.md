@@ -1,31 +1,31 @@
-# Agent Note: 在所有应有之处使用 branded ID
+# Agent Note: في كل ينبغي لديه لـ موضع استخدام branded ID
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-06-20-branded-ids.md) | 中文
+[English](2026-06-20-branded-ids.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 使用 `Branded<B> = string & { readonly [BRAND]: B }` 以及 `@deepseek-ai/dsh-brand` 中的无状态 `brandString<T>()` 构造函数，为 `ToolCallId`（`packages/llm/llm/src/brand.ts`）和 agent（智能体）/会话共享的 `SessionId`（`packages/core/session/src/types.ts`）做 brand 处理；该包位于 `packages/util/brand/`，见其 [README](../../../../packages/util/brand/README.zh.md)。`dsh-brand` 还声明了治理策略：*「Branding 用于跨包边界且可能被混淆的 id；不是每个 string 都需要 brand。」* 这条策略是正确的；问题在于它只落实了一半。两处缺口使得结构相同但语义错误的 string 仍能通过类型检查器。
+harness استخدام `Branded<B> = string & { readonly [BRAND]: B }` و `@deepseek-ai/dsh-brand` في بلا حالة `brandString<T>()` بنية صنع دالة، لـ `ToolCallId`(`packages/llm/llm/src/brand.ts`) و agent(ذكي جسم)/جلسة مشترك `SessionId`(`packages/core/session/src/types.ts`) فعل brand معالجة؛ هذا حزمة يقع في `packages/util/brand/`، رؤية ذلك [README](../../../../packages/util/brand/README.zh.md).`dsh-brand` أيضا إعلان معالجة إدارة سياسة:*«Branding لأجل عبر حزمة حد كما ممكن يتم خلط خلط id؛ لا هو كل string كل حاجة brand.»* هذا بند سياسة هو صحيح تأكيد؛ مشكلة في في هو فقط سقوط فعلي واحد نصف. اثنان موضع نقص فتحة جعل نيل بنية نفسه لكن دلالة خطأ string ما زال قدرة عبر نوع فحص جهاز.
 
-**缺口 1：bash seam 中未 brand 的跨边界 ID。** 后台 job id 是普通 `string`：`BashTask.id: string`（`packages/shell/shell/src/types.ts`），作为 `string` 贯穿整个执行器 seam（`packages/shell/shell/src/index.ts` 中的 `ShellExecutor.get`/`ownerOf`/`readOutput`/`kill(id: string)`），再由面向模型的工具以 `string` 校验并传递（`validateJobId`、`assertTaskAccess`、`packages/shell/tool-bash/src/index.ts` 中 `job_id` 的 schema 参数）。它由每执行器计数器生成——`packages/shell/bash-local/src/index.ts` 中的 `` `bash-${this.nextTaskId++}` ``——其形状与 `SessionId` 的默认值**完全相同，都是 `name-N`**（`packages/core/session/src/index.ts` 中的 `` `session-${++counter}` ``）。bash job id 和会话 id 在调用点轻易就能互换，而编译器毫无反应。它是面向模型的 id（模型会把 `job_id` 传回 `bash_output`/`bash_kill`），所以该混淆可由不受信任的输入触达。
+**نقص فتحة 1:bash seam في لم brand عبر حد ID.** خلفية job id هو عادي `string`:`BashTask.id: string`(`packages/shell/shell/src/types.ts`) ، بصفة `string` اختراق اختراق كامل منفذ seam(`packages/shell/shell/src/index.ts` في `ShellExecutor.get`/`ownerOf`/`readOutput`/`kill(id: string)`) ، مجددا من موجه إلى نموذج أداة بـ `string` تحقق و نقل تمرير (`validateJobId`،`assertTaskAccess`،`packages/shell/tool-bash/src/index.ts` في `job_id` schema معامل). هو من كل منفذ حساب عدد جهاز توليد——`packages/shell/bash-local/src/index.ts` في `` `bash-${this.nextTaskId++}` ``——ذلك شكل حالة و `SessionId` قيمة افتراضية**تماما نفسه، كل هو `name-N`**(`packages/core/session/src/index.ts` في `` `session-${++counter}` ``).bash job id و جلسة id في استدعاء نقطة خفيف سهل حينئذ قدرة متبادل تبديل، بينما تحرير ترجمة جهاز جزء بلا عكس ينبغي. هو هو موجه إلى نموذج id(نموذج سوف يأخذ `job_id` نقل عودة `bash_output`/`bash_kill`) ، الذي بـ هذا خلط خلط يمكن من لا تلقي معلومة مهمة إدخال لمس بلوغ.
 
-bash **owner token** 是相关的子情形：`ShellExecRequest.owner?: string` 和 `ShellExecSpec.owner: string | undefined`（`packages/shell/shell/src/types.ts`）被文档描述为刻意*不透明*的隔离键，但在所有实际调用方中，该值就是所属 agent 共享的 `Agent.id`/`SessionId`（`callerToken = (exec) => exec.agent?.id`，位于 `packages/shell/tool-bash/src/index.ts`），只是披着另一个 seam 本地名称。它被用于访问控制比较（`owner !== callerToken(exec)`），因此一个不匹配但类型正确的 string 在此处就是跨会话隔离 bug，而当前类型系统无法捕获。这正是[统一 agent/session 标识决策](../simplification/2026-06-20-unify-agent-and-session-id.zh.md)覆盖的共享 id 别名。
+bash **owner token** هو متبادل صلة فرعي حال شكل:`ShellExecRequest.owner?: string` و `ShellExecSpec.owner: string | undefined`(`packages/shell/shell/src/types.ts`) يتم وثيقة وصف لـ لحظة معنى*لا نفاذ واضح*عزل مفتاح، لكن في كل فعلي استدعاء جهة في، هذا قيمة حينئذ هو الذي تابع agent مشترك `Agent.id`/`SessionId`(`callerToken = (exec) => exec.agent?.id`، يقع في `packages/shell/tool-bash/src/index.ts`) ، فقط هو كشف حال آخر عدد seam محلي اسم. هو يتم لأجل وصول تحكم مقارنة مقارنة (`owner !== callerToken(exec)`) ، لذلك واحد لا مطابقة لكن نوع صحيح تأكيد string في هذا موضع حينئذ هو عبر جلسة عزل bug، بينما حالي نوع نظام لا يمكن التقاط. هذا صحيح هو[موحد واحد agent/session معرف قرار](../simplification/2026-06-20-unify-agent-and-session-id.zh.md) تغطية مشترك id آخر اسم.
 
-**缺口 2：*已经 brand* 的 ID 在边界处被侵蚀。** 就连 `ToolCallId` 和 `SessionId` 也恰好在最容易混淆的地方退化为裸 `string`：注册表/store 键类型和公开方法参数。代表性位置包括会话存储、agent 注册表（二者都以共享的 `SessionId` 为键）、工具展示层的 call-id map、ACP（Agent Client Protocol）的会话记录，以及持久化协调器。在集合键处丢弃 brand，会让既有 brand 在查找时毫无价值；它们的价值只实现了一部分。
+**نقص فتحة 2:*قد brand* ID في حد موضع يتم اعتداء تآكل.** حينئذ وصل `ToolCallId` و `SessionId` أيضا تماما جيد في الأكثر سعة سهل خلط خلط أرض جهة تراجع تحويل لـ عار `string`: سجل التسجيل/store مفتاح نوع و عام طريقة معامل. بديل جدول صفة موضع يشمل جلسة تخزين،agent سجل التسجيل (اثنان من كل بـ مشترك `SessionId` لـ مفتاح) ، أداة عرض طبقة call-id map،ACP(Agent Client Protocol) جلسة سجل، و حفظ دائم تنسيق ضبط جهاز. في تجميع دمج مفتاح موضع إسقاط brand، سوف يجعل قائم brand في فحص بحث وقت جزء بلا قيمة قيمة؛ هو جمع قيمة قيمة فقط تنفيذ واحد جزء.
 
-## 决策
+## قرار
 
-Brand 仍是普通字符串；`brandString<T>()` 原样返回输入，因此序列化、比较与协议格式（wire format）均不改变。该决策分三部分，全部遵循既有的「不是每个 string 都需要」策略。
+Brand ما زال هو عادي نص؛`brandString<T>()` أصل مثال إرجاع إدخال، لذلك تسلسل تحويل، مقارنة مقارنة و بروتوكول صيغة (wire format) متساو لا تغيير. هذا قرار قسم ثلاثة جزء، الكل التزام دوران قائم «لا هو كل string كل حاجة» سياسة.
 
-- **为 bash job id 加 brand。** 在 `packages/shell/shell/src/types.ts`（*拥有*该 id 的包）中添加 `BashTaskId = Branded<'BashTaskId'>`，从 `@deepseek-ai/dsh-brand` 导入 `Branded` 并用 `brandString<BashTaskId>()` 构造值。brand 工具包让 `dsh-shell` 只依赖它就能为自己的 id 加 brand，而无需为了原语引入 `dsh-llm` 或 `dsh-session`。将该类型贯穿 `BashTask.id`、`ShellExecutor` Service Definition 方法（`get`/`ownerOf`/`readOutput`/`kill`）、`dsh-bash-local` 中的生成点，以及 `dsh-tool-bash` 的校验/访问面。
+- **لـ bash job id إضافة brand.** في `packages/shell/shell/src/types.ts`(*يملك*هذا id حزمة) في إضافة `BashTaskId = Branded<'BashTaskId'>`، من `@deepseek-ai/dsh-brand` استيراد `Branded` و استخدام `brandString<BashTaskId>()` بنية صنع قيمة.brand أداة حزمة يجعل `dsh-shell` فقط اعتماد هو حينئذ قدرة لـ ذاتي ذات id إضافة brand، بينما بلا حاجة لـ أصل لغة جذب دخول `dsh-llm` أو `dsh-session`. سوف هذا نوع اختراق اختراق `BashTask.id`،`ShellExecutor` Service Definition طريقة (`get`/`ownerOf`/`readOutput`/`kill`) ،`dsh-bash-local` في توليد نقطة، و `dsh-tool-bash` تحقق/وصول وجه.
 
-- **铸造独立的 `OwnerToken` brand。** 在 `packages/shell/shell/src/types.ts` 中添加 `OwnerToken = Branded<'OwnerToken'>`；将 `ShellExecRequest.owner` / `ShellExecSpec.owner` / `ShellExecutor.ownerOf` 的类型标注为 `OwnerToken | undefined`。`dsh-tool-bash` 消费方在两套词汇唯一交汇的位置，对 agent 共享的 `id`（`SessionId`）应用 `brandString<OwnerToken>()`。bash Service Definition 从不导入 `dsh-session`。（理由见下一节。）
+- **صب صنع مستقل `OwnerToken` brand.** في `packages/shell/shell/src/types.ts` في إضافة `OwnerToken = Branded<'OwnerToken'>`؛ سوف `ShellExecRequest.owner` / `ShellExecSpec.owner` / `ShellExecutor.ownerOf` نوع علامة ملاحظة لـ `OwnerToken | undefined`.`dsh-tool-bash` مستهلك في اثنان طقم مفردات وحيد تسليم تجميع موضع، مقابل agent مشترك `id`(`SessionId`) تطبيق `brandString<OwnerToken>()`.bash Service Definition من لا استيراد `dsh-session`.(إدارة من رؤية تحت واحد عقدة.)
 
-- **阻止 brand 侵蚀。** 将既有 brand 传播到缺口 2 列出的 `Map` 键类型和公开方法参数中：`Map<SessionId, Session>`、`Map<SessionId, Agent>`、`get(id: SessionId)`、`Map<ToolCallId, …>`、ACP 的 `SessionId` surface、协调器的 `Map<SessionId, …>`。这是变更中机械量最大的部分，也是让*既有* brand 在查找处真正发挥作用（而不仅仅标注在结构体字段上）的关键。
+- **منع توقف brand اعتداء تآكل.** سوف قائم brand نقل بث إلى نقص فتحة 2 صف خروج `Map` مفتاح نوع و عام طريقة معامل في:`Map<SessionId, Session>`،`Map<SessionId, Agent>`،`get(id: SessionId)`،`Map<ToolCallId, …>`،ACP `SessionId` surface، تنسيق ضبط جهاز `Map<SessionId, …>`. هذا هو تغيير في آلة آلة كمية الأكثر كبير جزء، أيضا هو يجعل*قائم* brand في فحص بحث موضع حق صحيح إرسال تلويح أثر (بينما لا فقط فقط علامة ملاحظة في بنية جسم حقل فوق) صلة مفتاح.
 
-示意形状：
+عرض معنى شكل حالة:
 
 ```ts ignore-check
 import { brandString, type Branded } from '@deepseek-ai/dsh-brand'
@@ -39,28 +39,28 @@ export type OwnerToken = Branded<'OwnerToken'>
 const owner = brandString<OwnerToken>('session-1')
 ```
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-### 为什么不把 `owner` 类型标注为 `SessionId`？
+### لـ ماذا لا يأخذ `owner` نوع علامة ملاحظة لـ `SessionId`؟
 
-显而易见的捷径是直接把 `owner` 类型标注为 `SessionId`——它确实*总是*一个会话 id。我们否决这个方案。bash 执行器 seam 是能力 seam（Service Definition `dsh-shell`、Service Provider `dsh-bash-local`、Consumer `dsh-tool-bash`），其 owner token 被*明确记录为刻意不透明*：执行器「从不解释它（seam 中没有访问策略——那是消费方的职责）」（`packages/shell/shell/src/types.ts`）。把 Service Definition 的字段类型标注为 `SessionId`，会把 `dsh-session` 的词汇引入一个不应知道 owner token *含义*的包——这会让通用执行后端耦合会话模型，并违背不透明 token 的设计。取代 `dsh-bash-local` 的沙箱化执行器或远程执行器不应继承会话依赖。独立的 `OwnerToken` brand 使 seam 保持解耦：`dsh-shell` 只知道「owner 是某种带 brand 的不透明 token」，而已经决定访问策略的 `dsh-tool-bash` 消费方，是把 `brandString<OwnerToken>()` 应用于其 `SessionId` 的唯一边界。该 brand 仍带来安全收益（不能把 `BashTaskId` 或裸 string 传到 owner 位置），且不引入耦合。
+إظهار بينما سهل رؤية سريع مسار هو مباشر يأخذ `owner` نوع علامة ملاحظة لـ `SessionId`——هو تأكيد فعلي*مجموع هو*واحد جلسة id. أنا جمع مرفوض هذا عدد خطة.bash منفذ seam هو قدرة seam(Service Definition `dsh-shell`،Service Provider `dsh-bash-local`،Consumer `dsh-tool-bash`) ، ذلك owner token يتم*واضح سجل لـ لحظة معنى لا نفاذ واضح*: منفذ «من لا حل تفسير هو (seam في لا يوجد وصول سياسة——ذلك هو مستهلك مسؤولية)»(`packages/shell/shell/src/types.ts`). يأخذ Service Definition حقل نوع علامة ملاحظة لـ `SessionId`، سوف يأخذ `dsh-session` مفردات جذب دخول واحد لا ينبغي معرفة طريق owner token *يحتوي معنى*حزمة——هذا سوف يجعل عام تنفيذ خلفية اقتران دمج جلسة نموذج، و مخالفة خلف لا نفاذ واضح token تصميم. يحل محل `dsh-bash-local` صندوق رملي تحويل منفذ أو بعيد مسار منفذ لا ينبغي وراثة جلسة اعتماد. مستقل `OwnerToken` brand جعل seam إبقاء حل اقتران:`dsh-shell` فقط معرفة طريق «owner هو بعض نوع حمل brand لا نفاذ واضح token» ، بينما قد قرار وصول سياسة `dsh-tool-bash` مستهلك، هو يأخذ `brandString<OwnerToken>()` تطبيق في ذلك `SessionId` وحيد حد. هذا brand ما زال حمل قدوم أمان استلام فائدة (لا يستطيع يأخذ `BashTaskId` أو عار string نقل إلى owner موضع) ، كما لا جذب دخول اقتران دمج.
 
-## 不在范围内 / 可能的扩展
+## لا في نطاق داخل / ممكن توسيع
 
-遵循「不是每个 string 都需要 brand」的策略，刻意保持窄范围。以下每项都是合理的未来 brand 候选，附带推迟理由而非承诺：
+التزام دوران «لا هو كل string كل حاجة brand» سياسة، لحظة معنى إبقاء ضيق نطاق. التالي كل بند كل هو دمج إدارة لم قدوم brand مرشح، مرفق حمل دفع متأخر إدارة من بينما غير تحمل وعد:
 
-- **`ModelId`**（`GenerateOptions.model`，`LlmRuntime` 适配器注册表的键）：一个真正的跨包查找键（config → agent → llm → 适配器）；合理的下一个 brand，仅为控制本决策的影响范围而暂不纳入。
-- **`ToolName`**（`ToolRuntime` 的键）：由作者定义、人类可读，且很少与其他 id 混淆；最弱的候选，可能不值得加 brand。
-- **`ErrorCode`**（`HarnessError.code`）：一个封闭词汇（`ABORTED`、`NO_ADAPTER`……），不是逐实例的 id；如果要做，string 字面量联合类型比 brand 更合适。
-- **其他数值序号**：[Session 序列号与日志偏移决策](2026-08-31-session-sequence-and-log-offset-brands.zh.md)会为事件身份与日志间隙加 brand，因为它们跨越 persistence 与引用 seam。turn 与 step number 保持普通 number：它们是 payload-local ordinal，不会与 Session 事件位置互换。
-- **带校验的构造**：`brandString<T>()` 不执行运行时检查，且每个边界（ACP `sessionId`、提供方签发的 `call.id`、`dsh-llm-deepseek` 中的空字符串回退）都信任裸 string。一个在边界处对格式错误的输入抛异常的 `SessionId.parse()` / `isValid()` 配套工具确实是缺口，但它属于运行时行为变更，有自己的设计问题（什么算「格式错误」？失败时会怎样？），应在独立决策中处理。
+- **`ModelId`**(`GenerateOptions.model`،`LlmRuntime` مهايئ سجل التسجيل مفتاح): واحد حق صحيح عبر حزمة فحص بحث مفتاح (config → agent → llm → مهايئ) ؛ دمج إدارة تحت واحد brand، فقط لـ تحكم هذا قرار أثر نطاق بينما مؤقت لا قبول دخول.
+- **`ToolName`**(`ToolRuntime` مفتاح): من عمل من تعريف، شخص صنف يمكن قراءة، كما جدا قليل و أخرى id خلط خلط؛ الأكثر ضعيف مرشح، ممكن لا قيمة نيل إضافة brand.
+- **`ErrorCode`**(`HarnessError.code`): واحد غلاف إغلاق مفردات (`ABORTED`،`NO_ADAPTER`……) ، لا هو تدريجي نسخة id؛ إذا يلزم فعل،string حرف وجه كمية ربط دمج نوع مقارنة brand أكثر دمج ملائم.
+- **أخرى عدد قيمة ترتيب رقم**:[Session تسلسل رقم و سجل انحراف نقل قرار](2026-08-31-session-sequence-and-log-offset-brands.zh.md) سوف لـ حدث هوية و سجل بين فجوة إضافة brand، لأن هو جمع عبر تجاوز persistence و مرجع seam.turn و step number إبقاء عادي number: هو جمع هو payload-local ordinal، لن و Session حدث موضع متبادل تبديل.
+- **حمل تحقق بنية صنع**:`brandString<T>()` لا تنفيذ وقت التشغيل فحص، كما كل حد (ACP `sessionId`، مزود توقيع إرسال `call.id`،`dsh-llm-deepseek` في فارغ نص رجوع) كل معلومة مهمة عار string. واحد في حد موضع مقابل صيغة خطأ إدخال رمي استثناء `SessionId.parse()` / `isValid()` إعداد طقم أداة تأكيد فعلي هو نقص فتحة، لكن هو يخص وقت التشغيل سلوك تغيير، لديه ذاتي ذات تصميم مشكلة (ماذا حساب «صيغة خطأ» ؟ فشل وقت سوف كيف مثال؟) ، ينبغي في مستقل قرار في معالجة.
 
-## 验证
+## تحقق
 
-已落地的不变式如下：`BashTaskId` 和 `OwnerToken` 定义在 `dsh-shell` 中，并端到端贯穿 Service Definition、`dsh-bash-local` 生成点与 `dsh-tool-bash` 面向模型的工具，且 `dsh-shell` 未添加对 `dsh-session` 的依赖；没有任何以范围内 brand id（`ToolCallId`/`SessionId`/`BashTaskId`）为键的集合使用裸 `string`；公开方法参数和导出签名保留 brand；每个原始 string 进入的边界都使用 `brandString<T>()`，而不是散落的 `as` cast。
+قد سقوط أرض ثابت صيغة مثل تحت:`BashTaskId` و `OwnerToken` تعريف في `dsh-shell` في، و طرف إلى طرف اختراق اختراق Service Definition،`dsh-bash-local` توليد نقطة و `dsh-tool-bash` موجه إلى نموذج أداة، كما `dsh-shell` لم إضافة مقابل `dsh-session` اعتماد؛ لا يوجد أي بـ نطاق داخل brand id(`ToolCallId`/`SessionId`/`BashTaskId`) لـ مفتاح تجميع دمج استخدام عار `string`؛ عام طريقة معامل و توجيه خروج توقيع إبقاء brand؛ كل أصلي string دخول حد كل استخدام `brandString<T>()`، بينما لا هو تفرق سقوط `as` cast.
 
-## 后果
+## عاقبة
 
-- **两个接口面的机械性改动。** 传播 brand 涉及 bash seam（Service Definition + Service Provider + Consumer）以及 ACP 会话 id 接口和持久化协调器。改动面广但严重度低：遗漏的位置是编译错误而非静默 bug。构造返回同一个运行时字符串，因此不会产生 snapshot 或 e2e 行为差异。它与[统一 agent/会话标识决策](../simplification/2026-06-20-unify-agent-and-session-id.zh.md)相邻，因为二者都触及会话 id / owner-token 边界；`OwnerToken` 出于上述解耦理由仍与统一后的 id 保持独立。
-- **Brand 不做校验。** Brand 是混淆防护，不是正确性证明：一个*错误的*会话 id 只要仍是格式正确的 string，就和以前一样能通过类型检查器。本决策不关闭这个缺口（见「不在范围内」）——它只阻止这类*类别*错误：传入错误*种类*的 id。
-- **「在哪里停下」仍是判断题。** 为 `BashTaskId` 加 brand 但不为 `ToolName` 加，为 `OwnerToken` 加但不为 `ModelId` 加，是对哪些 string「可能被混淆」的品味判断。合理的评审者可能想要更多或更少；`brand.ts` 中的策略是裁决依据，本决策倾向于面向模型或用于访问控制的 id。
+- **اثنان عدد واجهة وجه آلة آلة صفة تعديل.** نقل بث brand تعلق و bash seam(Service Definition + Service Provider + Consumer) و ACP جلسة id واجهة و حفظ دائم تنسيق ضبط جهاز. تعديل وجه واسع لكن صارم إعادة درجة منخفض: متروك تسرب موضع هو تحرير ترجمة خطأ بينما غير ساكن صامت bug. بنية صنع إرجاع نفس عدد وقت التشغيل نص، لذلك لن إنتاج snapshot أو e2e سلوك فرق مختلف. هو و[موحد واحد agent/جلسة معرف قرار](../simplification/2026-06-20-unify-agent-and-session-id.zh.md) متبادل مجاور، لأن اثنان من كل لمس و جلسة id / owner-token حد؛`OwnerToken` خروج في فوق وصف حل اقتران إدارة من ما زال و موحد واحد بعد id إبقاء مستقل.
+- **Brand لا فعل تحقق.** Brand هو خلط خلط منع حماية، لا هو صحيح تأكيد صفة إثبات: واحد*خطأ*جلسة id فقط يلزم ما زال هو صيغة صحيح تأكيد string، حينئذ و بـ قبل واحد مثال قدرة عبر نوع فحص جهاز. هذا قرار لا إغلاق هذا عدد نقص فتحة (رؤية «لا في نطاق داخل»)——هو فقط منع توقف هذا صنف*صنف آخر*خطأ: نقل دخول خطأ*نوع صنف* id.
+- **«في أي داخل توقف تحت» ما زال هو حكم قطع عنوان.** لـ `BashTaskId` إضافة brand لكن لا لـ `ToolName` إضافة، لـ `OwnerToken` إضافة لكن لا لـ `ModelId` إضافة، هو مقابل أي بعض string«ممكن يتم خلط خلط» صنف طعم حكم قطع. دمج إدارة مراجعة من ممكن تفكير يلزم أكثر كثير أو أكثر قليل؛`brand.ts` في سياسة هو قطع قرار اعتماد حسب، هذا قرار ميل نحو في موجه إلى نموذج أو لأجل وصول تحكم id.

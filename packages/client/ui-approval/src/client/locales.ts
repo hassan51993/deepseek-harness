@@ -2,11 +2,11 @@
 
 /** Simplified Chinese dictionary and key-set source of truth. */
 export const zh = {
-  waiting: '等待审批',
-  'detail.aria': '审批详情',
-  escalation: '工具 {toolName} 请求越权执行',
-  reject: '拒绝',
-  allowOnce: '允许一次',
+  waiting: 'انتظار مراجعة دفعة',
+  'detail.aria': 'مراجعة دفعة تفصيل حال',
+  escalation: 'أداة {toolName} طلب تجاوز حق تنفيذ',
+  reject: 'رفض',
+  allowOnce: 'سماح مرة',
 } satisfies Record<string, string>
 
 /** Approval dictionary key union. */

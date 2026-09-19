@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-11
 
-English | [中文](2026-09-11-wasm-preview-font-and-image-budgets.zh.md)
+English | [العربية](2026-09-11-wasm-preview-font-and-image-budgets.zh.md)
 
 ## Problem
 

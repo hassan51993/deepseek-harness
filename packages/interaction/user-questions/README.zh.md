@@ -1,81 +1,81 @@
 ---
-description: "基于 waterfall 的问答服务，用于工具、权限插件、本地 answerer 与 Agent-scoped Web 交互。"
+description: "أساس في waterfall سؤال جواب خدمة، لأجل أداة، إذن إضافة، محلي answerer و Agent-scoped Web تفاعل."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-user-questions
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-用户交互 Service Definition。它定义 `ctx.userQuestions`，供面向模型的工具或权限插件在需要暂停工作并询问人类决定时使用。当消费方必须暂停操作并等待用户回答时，请使用它。
+مستخدم تفاعل Service Definition. هو تعريف `ctx.userQuestions`، توفير موجه إلى نموذج أداة أو إذن إضافة في حاجة مؤقت توقف عمل و استفسار سؤال شخص صنف قرار وقت استخدام. عند مستهلك يجب مؤقت توقف عملية و انتظار مستخدم عودة جواب وقت، طلب استخدام هو.
 
-## 目录
+## دليل
 
-- [服务：`UserQuestionService`（ctx 键：`userQuestions`）](#service-userquestionservice-ctx-key-userquestions)
-- [职责](#role)
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [خدمة:`UserQuestionService`(ctx مفتاح:`userQuestions`)](#service-userquestionservice-ctx-key-userquestions)
+- [مسؤولية](#role)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="service-userquestionservice-ctx-key-userquestions"></a>
-## 服务：`UserQuestionService`（ctx 键：`userQuestions`）
+## خدمة:`UserQuestionService`(ctx مفتاح:`userQuestions`)
 
-### 公开 API
+### عام API
 
-- `ctx.userQuestions.ask(request): Promise<AskUserQuestionAnswer>` 派发回答者 waterfall，并等待首个被接受的回答。
+- `ctx.userQuestions.ask(request): Promise<AskUserQuestionAnswer>` إرسال إرسال عودة جواب من waterfall، و انتظار أول عدد يتم قبول عودة جواب.
 
-### 关键类型
+### صلة مفتاح نوع
 
-- `AskUserQuestionRequest`：`{ questions: [{ id, question, detail?, header?, options?, multiSelect?, intent? }], agent?, signal? }`；`detail` 提供辅助文本，提供方会将其随问题一起渲染，而不会将其变成选项标签。如提供 `agent`，它必须与注册表中的存活运行时根 agent（智能体）是同一对象。
-- `AskUserQuestionOption`：`{ label, description? }`。
-- `AskUserQuestionIntent`：`{ kind: 'plan-review', approve }`；即下文的带标签呈现意图。
-- `AskUserQuestionAnswer`：`{ answers: [{ id, selected, custom? }] }`。
-- `UserQuestionError`：`HarnessError` 的子类，包含 `EMPTY_QUESTIONS`、`BAD_INTENT`、`NO_PROVIDER`、`ASK_ABORTED`、`CALLER_NOT_LIVE` 和 `DELEGATED_CALLER` 等代码。
+- `AskUserQuestionRequest`:`{ questions: [{ id, question, detail?, header?, options?, multiSelect?, intent? }], agent?, signal? }`؛`detail` توفير مساعد مساعدة نص، مزود سوف سوف ذلك مع مشكلة واحد بدء تصيير، بينما لن سوف ذلك تغيير صار خيار وسم. مثل توفير `agent`، هو يجب و سجل التسجيل في تخزين نشط وقت التشغيل أصل agent(ذكي جسم) هو نفس كائن.
+- `AskUserQuestionOption`:`{ label, description? }`.
+- `AskUserQuestionIntent`:`{ kind: 'plan-review', approve }`؛ أي تحت نص حمل وسم عرض معنى رسم.
+- `AskUserQuestionAnswer`:`{ answers: [{ id, selected, custom? }] }`.
+- `UserQuestionError`:`HarnessError` فرعي صنف، يتضمن `EMPTY_QUESTIONS`،`BAD_INTENT`،`NO_PROVIDER`،`ASK_ABORTED`،`CALLER_NOT_LIVE` و `DELEGATED_CALLER` انتظار شفرة.
 
-对于单选题，`custom` 会覆盖选中的选项，且 `selected` 为空。对于多选题，`custom` 可以补充 `selected` 中的标签。UI 可以把跳过的条目保留为 `{ id, selected: [] }`，既维持现有回答形态，也保留该批次中的其他回答。
+مقابل في مفرد اختيار عنوان،`custom` سوف تغطية اختيار في خيار، كما `selected` لـ فارغ. مقابل في كثير اختيار عنوان،`custom` يمكن تكملة ملء `selected` في وسم.UI يمكن يأخذ قفز مرور بند إبقاء لـ `{ id, selected: [] }`، حيث صيانة حمل قائم عودة جواب شكل، أيضا إبقاء هذا دفعة مرة في أخرى عودة جواب.
 
-请求包含 agent 时，`ask()` 会通过当前 `AgentRegistry` 验证该 agent 与注册表中的存活实例是同一对象，并且只允许运行时根调用。持久谱系不构成权限依据：带有历史委托深度的会话恢复为新的运行时根后可以提问；归属于另一个 agent 的存活子级即使持久化记录的委托深度为零也会被拒绝。Web 回答者只接收带 Agent scope 的请求；不含 agent 的程序化请求仍会交给本地未限定 scope 的 waterfall listener，若无人接受则以 `NO_PROVIDER` 失败。
+طلب يتضمن agent وقت،`ask()` سوف عبر حالي `AgentRegistry` تحقق هذا agent و سجل التسجيل في تخزين نشط نسخة هو نفس كائن، و كما فقط سماح وقت التشغيل أصل استدعاء. حمل دائم جدول نظام لا بنية صار إذن اعتماد حسب: حمل لديه تاريخ تفويض حمل عميق درجة جلسة استعادة لـ جديد وقت التشغيل أصل بعد يمكن رفع سؤال؛ ملكية في آخر عدد agent تخزين نشط فرعي درجة أي جعل حفظ دائم سجل تفويض حمل عميق درجة لـ صفر أيضا سوف يتم رفض.Web عودة جواب من فقط استقبال حمل Agent scope طلب؛ لا يحتوي agent برنامج تحويل طلب ما زال سوف تسليم إعطاء محلي لم حد تحديد scope waterfall listener، إذا بلا شخص قبول فإن بـ `NO_PROVIDER` فشل.
 
-### 呈现意图
+### عرض معنى رسم
 
-`intent` 声明某个问题本身就是一种已知决策，因此认识该标签的 UI 可以照此呈现——`plan-review` 表示 `detail` 是一份待审阅的计划，`dsh-plan-mode` 会在 `exit_plan_mode` 的问题上设置它。意图只改变呈现：遵循它的 UI 回答的仍是通用 UI 会发送的那些选项标签，不认识该标签的 UI 渲染通用选项列表，因此调用方两种情况下读到的回答字段相同。`approve` 指名表示批准的标签，而不依赖选项顺序。有两项断言无法通过类型表达，`ask()` 会以 `BAD_INTENT` 拒绝它们：`approve` 未命中该问题自身的任一选项，以及意图落在没有 `detail` 的问题上——而 `detail` 正是它自称在审阅的东西。
+`intent` إعلان بعض عدد مشكلة ذاته حينئذ هو واحد نوع معروف قرار، لذلك إقرار تعرف هذا وسم UI يمكن وفق هذا عرض——`plan-review` يمثل `detail` هو واحد نسخة انتظار مراجعة قراءة حساب تخطيط،`dsh-plan-mode` سوف في `exit_plan_mode` مشكلة فوق ضبط هو. معنى رسم فقط تغيير عرض: التزام دوران هو UI عودة جواب ما زال هو عام UI سوف إرسال ذلك بعض خيار وسم، لا إقرار تعرف هذا وسم UI تصيير عام خيار قائمة، لذلك استدعاء جهة اثنان نوع حال حال تحت قراءة إلى عودة جواب حقل نفسه.`approve` إشارة اسم يمثل دفعة دقيق وسم، بينما لا اعتماد خيار ترتيب. لديه اثنان بند تأكيد لا يمكن عبر نوع جدول بلوغ،`ask()` سوف بـ `BAD_INTENT` رفض هو جمع:`approve` لم أمر في هذا مشكلة ذاته مهمة واحد خيار، و معنى رسم سقوط في لا يوجد `detail` مشكلة فوق——بينما `detail` صحيح هو هو ذاتي تسمية في مراجعة قراءة شرق غرب.
 
 <a id="role"></a>
-## 职责
+## مسؤولية
 
-这是 Service Definition 包。`@deepseek-ai/dsh-tool-ask-user` 等 Consumer 依赖此服务；Web Client 通过 Remote Events 贡献带 Agent scope 的回答者。循环保持不变：工具调用等待 waterfall 结果，该结果随后恢复正常的 agent loop（智能体循环）。
+هذا هو Service Definition حزمة.`@deepseek-ai/dsh-tool-ask-user` انتظار Consumer اعتماد هذا خدمة؛Web Client عبر Remote Events مساهمة حمل Agent scope عودة جواب من. حلقة إبقاء ثابت: أداة استدعاء انتظار waterfall نتيجة، هذا نتيجة مع بعد استعادة صحيح معتاد agent loop(ذكي جسم حلقة).
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-间接地，通过 `dsh-tool-ask-user`：它会将成功回答保留为紧凑 JSON，或返回以下失败之一：`Error: ask_user_question was aborted before the user answered`、`Error: ask_user_question requires at least one question`、`Error: human interaction requires the exact live calling agent when an agent is supplied`、`Error: human interaction is unavailable while the calling agent is owned by another live agent; include the unresolved question or decision in the child agent's final result`、`Error: no user-questions answerer accepted the request` 或 `Error: <message>`。等待人类回答不会增加 token。
+بين وصل أرض، عبر `dsh-tool-ask-user`: هو سوف سوف نجاح عودة جواب إبقاء لـ ضيق تجميع JSON، أو إرجاع التالي فشل لـ واحد:`Error: ask_user_question was aborted before the user answered`،`Error: ask_user_question requires at least one question`،`Error: human interaction requires the exact live calling agent when an agent is supplied`،`Error: human interaction is unavailable while the calling agent is owned by another live agent; include the unresolved question or decision in the child agent's final result`،`Error: no user-questions answerer accepted the request` أو `Error: <message>`. انتظار شخص صنف عودة جواب لن زيادة token.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-不会直接使 KV Cache 失效；请求前缀的任何变更均由上述消费方负责。
+لن مباشر جعل KV Cache بطلان؛ طلب بادئة أي تغيير متساو من فوق وصف مستهلك مسؤول.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **带 Agent scope 的 Web 回答**：Remote Events 仅在请求带有存活 Agent scope 时路由随产品交付的 Web 回答者；agentless 调用方需要本地未限定 scope 的 waterfall listener。
-- **词汇仅包含问题表单形态**：可供选择的选项加可选的自定义文本；更丰富的交互形态（文件选择器、diff 预览确认）尚无 seam 词汇。
+- **حمل Agent scope Web عودة جواب**:Remote Events فقط في طلب حمل لديه تخزين نشط Agent scope وقت توجيه مع منتج تسليم Web عودة جواب من؛agentless استدعاء جهة حاجة محلي لم حد تحديد scope waterfall listener.
+- **مفردات فقط يتضمن مشكلة جدول مفرد شكل**: يمكن توفير اختيار خيار إضافة اختياري ذاتي تعريف نص؛ أكثر وفير غني تفاعل شكل (ملف اختيار جهاز،diff معاينة تأكيد) بعد بلا seam مفردات.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
-计划审批中可选的 `callId` 标识已记录的工具调用，供文档导航使用，不改变回答及其校验。
+حساب تخطيط مراجعة دفعة في اختياري `callId` معرف قد سجل أداة استدعاء، توفير وثيقة تنقل استخدام، لا تغيير عودة جواب و ذلك تحقق.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。answerer waterfall 按请求解析并把结果直接返回调用方；该 seam 不发布独立的请求／回答审计流。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.answerer waterfall حسب طلب تحليل و يأخذ نتيجة مباشر إرجاع استدعاء جهة؛ هذا seam لا إصدار مستقل طلب/عودة جواب مراجعة حساب تدفق.

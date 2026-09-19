@@ -1,117 +1,117 @@
 ---
-description: "右侧 Sidebar 浏览器 tab：在 sandbox 中访问 HTTP(S) 页面，包括 loopback 服务。"
+description: "يمين جانب Sidebar متصفح tab: في sandbox في وصول HTTP(S) صفحة، يشمل loopback خدمة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-sidebar-browser
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-在独立的右侧 Sidebar tab 中浏览 HTTP(S) 页面，包括 loopback 服务。当前 Web 与 Desktop 都使用 iframe 和应用维护的 history。本包不会向被访问内容注入 Electron 或 Node 能力。
+في مستقل يمين جانب Sidebar tab في تصفح تصفح HTTP(S) صفحة، يشمل loopback خدمة. حالي Web و Desktop كل استخدام iframe و تطبيق صيانة history. هذه الحزمة لن نحو يتم وصول محتوى حقن Electron أو Node قدرة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [了解实现](#understand-the-implementation)
-- [延伸阅读](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [حل تنفيذ](#understand-the-implementation)
+- [تأخير امتداد قراءة قراءة](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-随附的 Web 与 Desktop composition 已挂载本包。可以从右侧 Sidebar guide 打开 **浏览器**、输入 HTTP(S) URL，或点击 Assistant Markdown 中的 HTTP(S) 链接。不带 scheme 的主机名会补全为 HTTPS。公共目标与 loopback 目标使用相同的默认 sandbox。每次 guide 操作或消息链接操作都会创建一个新的 Browser tab。
+مع مرفق Web و Desktop composition قد تركيب هذه الحزمة. يمكن من يمين جانب Sidebar guide فتح **متصفح**، إدخال HTTP(S) URL، أو نقر Assistant Markdown في HTTP(S) رابط. لا حمل scheme رئيسي آلة اسم سوف تكملة كل لـ HTTPS. عام مشترك هدف و loopback هدف استخدام نفسه افتراضي sandbox. كل مرة guide عملية أو رسالة رابط عملية كل سوف إنشاء واحد جديد Browser tab.
 
-### 何时选择
+### أي وقت اختيار
 
-当 Web 页面需要保留在当前 Session 旁时，选择 Browser。本地文件使用 [Document Preview](../ui-sidebar-documentpreview/README.zh.md)；站点拒绝 iframe 嵌入或需要本包不授予的浏览器 capability 时，使用明确的外部浏览器操作。
+عند Web صفحة حاجة إبقاء في حالي Session جانب وقت، اختيار Browser. محلي ملف استخدام [Document Preview](../ui-sidebar-documentpreview/README.zh.md) ؛ محطة نقطة رفض iframe تضمين دخول أو حاجة هذه الحزمة لا منح إعطاء متصفح capability وقت، استخدام واضح خارجي متصفح عملية.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-本包没有配置字段。自定义 Web composition 挂载 Host companion；随后 Client loader 会发现 package manifest 声明的浏览器入口：
+هذه الحزمة لا يوجد إعداد حقل. ذاتي تعريف Web composition تركيب Host companion؛ مع بعد Client loader سوف اكتشاف package manifest إعلان متصفح مدخل:
 
 ```yaml
 - id: ui-sidebar-browser
   name: '@deepseek-ai/dsh-client-ui-sidebar-browser'
 ```
 
-Client 插件可以调用 `ctx.sidebarRight.openTab('browser', { params: { url } })` 打开 tab。可选 URL 会在导航前接受与地址栏输入相同的校验。
+Client إضافة يمكن استدعاء `ctx.sidebarRight.openTab('browser', { params: { url } })` فتح tab. اختياري URL سوف في تنقل قبل قبول و عنوان شريط إدخال نفسه تحقق.
 
-工具栏提供后退、前进、刷新、前往、在系统浏览器中打开，以及最右侧的逐 tab sandbox 开关。关闭 sandbox 是临时选择，并会显示警告。外部打开接受已知的 HTTP(S) 目标。tab 标题显示 Web 主机名。
+أداة شريط توفير بعد تراجع، قبل دخول، تحديث جديد، قبل نحو، في نظام متصفح في فتح، و الأكثر يمين جانب تدريجي tab sandbox فتح صلة. إغلاق sandbox هو مؤقت اختيار، و سوف عرض تحذير إبلاغ. خارجي فتح قبول معروف HTTP(S) هدف.tab عنوان عرض Web رئيسي آلة اسم.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 了解实现
+## حل تنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-### 协议策略
+### بروتوكول سياسة
 
-地址解析器接受 HTTP 与 HTTPS，包括 loopback 目标。`file:` URL、脚本/data/blob 输入、内嵌凭据、DSH 应用自身 origin 和畸形地址会被拒绝。本地文件由 Document Preview 负责渲染。
+عنوان محلل قبول HTTP و HTTPS، يشمل loopback هدف.`file:` URL، نص برمجي/data/blob إدخال، داخل تضمين اعتماد،DSH تطبيق ذاته origin و شاذ شكل عنوان سوف يتم رفض. محلي ملف من Document Preview مسؤول تصيير.
 
-### Iframe 载体
+### Iframe تحميل جسم
 
-Web 与 Desktop 默认使用 `sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"`。frame 没有直接的下载或顶层导航 flag。popup 会脱离 sandbox；在 Web 中，逃逸的 popup 会保留 opener，并可以导航顶层应用。被访问的 origin 可以使用自身 Cookie 与 Web storage，但跨域目标无法读取 DSH DOM、storage 或 API 响应。iframe 不发送 referrer，也不添加包自有的 Permissions Policy，因此浏览器默认策略与用户授权生效。toolbar 可以为当前 tab occurrence 移除 sandbox；该选择不持久化。未受 sandbox 约束的页面可以按浏览器 activation 规则导航顶层应用，并使用下载、模态对话框和输入锁定。本包不代理或探测远程页面。
+Web و Desktop افتراضي استخدام `sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"`.frame لا يوجد مباشر تحت تحميل أو قمة طبقة تنقل flag.popup سوف انفصال مغادرة sandbox؛ في Web في، هروب هروب popup سوف إبقاء opener، و يمكن تنقل قمة طبقة تطبيق. يتم وصول origin يمكن استخدام ذاته Cookie و Web storage، لكن عبر مجال هدف لا يمكن قراءة DSH DOM،storage أو API استجابة.iframe لا إرسال referrer، أيضا لا إضافة حزمة ذاتي لديه Permissions Policy، لذلك متصفح افتراضي سياسة و مستخدم تخويل توليد فاعلية.toolbar يمكن لـ حالي tab occurrence إزالة sandbox؛ هذا اختيار لا حفظ دائم. لم تلقي sandbox قيد صفحة يمكن حسب متصفح activation قاعدة تنقل قمة طبقة تطبيق، و استخدام تحت تحميل، نموذج حالة محادثة إطار و إدخال قفل تحديد. هذه الحزمة لا بديل إدارة أو استكشاف قياس بعيد مسار صفحة.
 
-Web 记录 toolbar 提交和 typed tab 打开。导航状态机把每个受控 revision 的第一次 iframe load 视为已知，把后续 load 视为页面已经变化到不可读取 URL 的证据。进入 unknown 状态后，地址会显示标记，后退、前进和外部打开会禁用，刷新则返回最后一个受控 URL。body 重挂载时会重新加载应用最后已知的 URL，并且仅在尚无受控目标时使用可选初始 URL。不产生 iframe load 的 History API 与 fragment 变化仍不可见。iframe `error` event 会显示临时加载失败 notice，直到下一个受控加载，但不会改变 URL history。
+Web سجل toolbar إيداع و typed tab فتح. تنقل حالة آلة يأخذ كل تلقي تحكم revision رقم مرة iframe load نظر لـ معروف، يأخذ لاحق load نظر لـ صفحة قد تغير إلى غير ممكن قراءة URL دليل. دخول unknown حالة بعد، عنوان سوف عرض علامة، بعد تراجع، قبل دخول و خارجي فتح سوف منع استخدام، تحديث جديد فإن إرجاع الأكثر بعد واحد تلقي تحكم URL.body إعادة تركيب وقت سوف إعادة تحميل تطبيق الأكثر بعد معروف URL، و كما فقط في بعد بلا تلقي تحكم هدف وقت استخدام اختياري ابتدائي URL. لا إنتاج iframe load History API و fragment تغير ما زال غير ممكن رؤية.iframe `error` event سوف عرض مؤقت تحميل فشل notice، مباشر إلى تحت واحد تلقي تحكم تحميل، لكن لن تغيير URL history.
 
 ### Controller
 
-每个 tab 获得一个 `BrowserController` class。它的公开命令只有 `loadUrl`、`goBack`、`goForward` 与 `reload`；地址校验与 history 变更均由该对象封装。它的 `BrowserNavigation` class 拥有可序列化的 URL 状态机。`BrowserFrame` 接口负责临时 sandbox 与 document 状态以及载体操作，`IframeImpl` 为当前 iframe 载体实现该接口。Slot injection 通过 `useBrowserFrame` 提供按 key 索引的 frame 状态，并提供普通 callback，因此 React body 不接收 controller 或 observable source；它只保留可编辑草稿与 iframe DOM。
+كل tab نيل نيل واحد `BrowserController` class. هو عام أمر فقط لديه `loadUrl`،`goBack`،`goForward` و `reload`؛ عنوان تحقق و history تغيير متساو من هذا كائن غلاف تركيب. هو `BrowserNavigation` class يملك يمكن تسلسل تحويل URL حالة آلة.`BrowserFrame` واجهة مسؤول مؤقت sandbox و document حالة و تحميل جسم عملية،`IframeImpl` لـ حالي iframe تحميل جسم تنفيذ هذا واجهة.Slot injection عبر `useBrowserFrame` توفير حسب key بحث جذب frame حالة، و توفير عادي callback، لذلك React body لا استقبال controller أو observable source؛ هو فقط إبقاء يمكن تحرير مسودة مسودة و iframe DOM.
 
-Controller 接口不依赖 iframe API。未来的 `ElectronWebViewImpl` 可以实现 `BrowserFrame`，并持有 `<webview>` attachment 与 target identity。该延期载体记录在同一份 Sidebar Browser 决策中，当前不注册也不测试。
+Controller واجهة لا اعتماد iframe API. لم قدوم `ElectronWebViewImpl` يمكن تنفيذ `BrowserFrame`، و يحتفظ `<webview>` attachment و target identity. هذا تأجيل تحميل جسم سجل في نفس نسخة Sidebar Browser قرار في، حالي لا تسجيل أيضا لا اختبار.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 延伸阅读
+## تأخير امتداد قراءة قراءة
 
-- [右侧 Sidebar](../../../docs/subsystems/sidebar-right.zh.md)——tab composition、导航与生命周期。
-- [Document Preview](../ui-sidebar-documentpreview/README.zh.md)——本地源码、Markdown、图片、HTML 与 PDF 渲染。
-- [Sidebar Browser 决策](../../../.agents/notes/implemented/feature/2026-09-16-sidebar-browser.zh.md)——当前 iframe 行为、controller 所有权与延期 Electron 载体。
+- [يمين جانب Sidebar](../../../docs/subsystems/sidebar-right.zh.md)——tab composition، تنقل و دورة الحياة.
+- [Document Preview](../ui-sidebar-documentpreview/README.zh.md)——محلي شفرة المصدر،Markdown، صورة،HTML و PDF تصيير.
+- [Sidebar Browser قرار](../../../.agents/notes/implemented/feature/2026-09-16-sidebar-browser.zh.md)——حالي iframe سلوك،controller كل حق و تأجيل Electron تحميل جسم.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。Browser tab 是用户侧呈现状态，不注册工具、prompt section 或 Session event。
+بلا.Browser tab هو مستخدم جانب عرض حالة، لا تسجيل أداة،prompt section أو Session event.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；浏览内容不进入模型请求。
+بلا؛ تصفح تصفح محتوى لا دخول نموذج طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-隔离策略有意放弃部分浏览器兼容性：
+عزل سياسة متعمد وضع ترك جزء متصفح توافق صفة:
 
-- 很多站点拒绝 iframe 嵌入，或需要默认 sandbox 不向 frame 授予的下载与顶层导航。HTTPS 应用还可能按 mixed-content 策略阻止公共 HTTP 页面。关闭 sandbox 会用自身限制换取兼容性，但不会绕过 mixed-content 或 private-network 策略。未受 sandbox 约束的 frame 可以按浏览器 activation 规则导航顶层应用，并使用下载、模态对话框和输入锁定。该模式不会按 Browser tab 隔离被访问 origin 的 Cookie，也无法阻止 iframe 内页面自行选择后续 URL。
-- 在 Web 中，逃逸出 sandbox 的 popup 会保留 opener，并可以通过该链导航顶层应用。Desktop 会单独处理 popup 创建。
-- 后续 iframe load 能表明发生了导航，但无法给出新的跨域 URL。History API 与 fragment 变化可能仍不可见；状态变成 unknown 后，Web 的后退与前进不可用。
-- 出于安全原因，浏览器会隐藏很多 iframe 失败：DNS、TLS、mixed-content、CSP 与 `X-Frame-Options` 失败可能触发 `load`，也可能不提供可操作 event，而不是触发 `error`。加载失败 notice 只能作为 best-effort 提示。
-- Browser history 会跨 body 重挂载与普通页面刷新保留，但关闭 tab 或卸载 `ui-sidebar-right` 会中止其 occurrence 并删除已存储的 history bucket。
-- 本地文件会被拒绝，并继续由 Document Preview 负责。
-- 拟议的 Electron `<webview>` 载体、per-tab Cookie partition、原生 history 和 target-specific CDP 连接尚未实现。
+- جدا كثير محطة نقطة رفض iframe تضمين دخول، أو حاجة افتراضي sandbox لا نحو frame منح إعطاء تحت تحميل و قمة طبقة تنقل.HTTPS تطبيق أيضا ممكن حسب mixed-content سياسة منع توقف عام مشترك HTTP صفحة. إغلاق sandbox سوف استخدام ذاته حد تبديل أخذ توافق صفة، لكن لن التفاف مرور mixed-content أو private-network سياسة. لم تلقي sandbox قيد frame يمكن حسب متصفح activation قاعدة تنقل قمة طبقة تطبيق، و استخدام تحت تحميل، نموذج حالة محادثة إطار و إدخال قفل تحديد. هذا نمط لن حسب Browser tab عزل يتم وصول origin Cookie، أيضا لا يمكن منع توقف iframe داخل صفحة ذاتي سطر اختيار لاحق URL.
+- في Web في، هروب هروب خروج sandbox popup سوف إبقاء opener، و يمكن عبر هذا سلسلة تنقل قمة طبقة تطبيق.Desktop سوف مفرد وحيد معالجة popup إنشاء.
+- لاحق iframe load قدرة جدول واضح حدوث تنقل، لكن لا يمكن إعطاء خروج جديد عبر مجال URL.History API و fragment تغير ممكن ما زال غير ممكن رؤية؛ حالة تغيير صار unknown بعد،Web بعد تراجع و قبل دخول غير ممكن استخدام.
+- خروج في أمان سبب، متصفح سوف إخفاء جدا كثير iframe فشل:DNS،TLS،mixed-content،CSP و `X-Frame-Options` فشل ممكن إطلاق `load`، أيضا ممكن لا توفير يمكن عملية event، بينما لا هو إطلاق `error`. تحميل فشل notice فقط قدرة بصفة best-effort تلميح.
+- Browser history سوف عبر body إعادة تركيب و عادي صفحة تحديث جديد إبقاء، لكن إغلاق tab أو إزالة `ui-sidebar-right` سوف في توقف ذلك occurrence و حذف قد تخزين history bucket.
+- محلي ملف سوف يتم رفض، و متابعة من Document Preview مسؤول.
+- محاكاة اقتراح Electron `<webview>` تحميل جسم،per-tab Cookie partition، أصلي history و target-specific CDP اتصال بعد لم تنفيذ.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变量：** 不发布 companion。`BrowserNavigation` 是唯一的 URL 状态写入方；store 接收它的 immutable snapshot，controller 与组件的聚焦测试直接覆盖发布与清理。
+**وقت التشغيل ثابت كمية:** لا إصدار companion.`BrowserNavigation` هو وحيد URL حالة كتابة جهة؛store استقبال هو immutable snapshot،controller و مكون تجمع تركيز اختبار مباشر تغطية إصدار و تنظيف.

@@ -1,37 +1,37 @@
 ---
-description: "Typert Remote 流量的端点具名 mock：一元应答与流脚本的表、活流控制、日志与 Connection 载体面，供测试作者在没有 Host 的情况下启动真实浏览器客户端。"
+description: "Typert Remote تدفق كمية طرف نقطة أداة اسم mock: واحد عنصر ينبغي جواب و تدفق نص برمجي جدول، نشط تدفق تحكم، سجل و Connection تحميل جسم وجه، توفير اختبار عمل من في لا يوجد Host حال حال تحت بدء حقيقي متصفح عميل."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-remote-mock
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-remote-mock` 让测试通过 `mock.remote.<namespace>.<method>`，使用原生 Vitest mock 方法配置 Host 响应。同一组函数应答直接调用与真实 Connection 流量；可复用的表提供默认响应，显式声明的流支持测试驱动的推帧与取消。缺少响应时调用失败，`assertNoUnmatched()` 会在收尾时再次报告。本包无需业务 Host 即可在 Node 或浏览器页面中运行，不导入 DOM、React 或 Node 模块，只从 `devDependencies` 消费。
+`dsh-remote-mock` يجعل اختبار عبر `mock.remote.<namespace>.<method>`، استخدام أصلي Vitest mock طريقة إعداد Host استجابة. نفس مجموعة دالة ينبغي جواب مباشر استدعاء و حقيقي Connection تدفق كمية؛ يمكن إعادة استخدام جدول توفير افتراضي استجابة، صريح إعلان تدفق دعم حمل اختبار قيادة دفع لقطة و إلغاء. نقص قليل استجابة وقت استدعاء فشل،`assertNoUnmatched()` سوف في استلام ذيل وقت مجددا مرة تقرير إبلاغ. هذه الحزمة بلا حاجة عمل خدمة Host يكفي في Node أو متصفح صفحة في تشغيل، لا استيراد DOM،React أو Node وحدة، فقط من `devDependencies` إزالة استهلاك.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 何时使用
+### أي وقت استخدام
 
-当测试要启动与 `ctx.remote` 对话的真实客户端插件、并想按端点名脚本化 Host 侧时使用它：整体客户端测试把 `mock.rpc` 绑定到各自的 Connection 实例，单元测试也可以直接调用 `mock.remote`、`dispatch` 或 `open`。端点是 Gateway 的 wire 名（`session/page`、`settings/describe`）；`args` 是调用方的位置参数列表，末尾的 `AbortSignal` 已剥掉；值就是测试登记的东西，原样应答。唯一的声明是端点是一元（`unary`）还是流（`stream`）。
+عند اختبار يلزم بدء و `ctx.remote` محادثة حقيقي عميل إضافة، و تفكير حسب طرف نقطة اسم نص برمجي تحويل Host جانب وقت استخدام هو: كامل جسم عميل اختبار يأخذ `mock.rpc` ربط إلى كل منها Connection نسخة، اختبار وحدة أيضا يمكن مباشر استدعاء `mock.remote`،`dispatch` أو `open`. طرف نقطة هو Gateway wire اسم (`session/page`،`settings/describe`) ؛`args` هو استدعاء جهة موضع معامل قائمة، نهاية ذيل `AbortSignal` قد تقشير إسقاط؛ قيمة حينئذ هو اختبار تسجيل تسجيل شرق غرب، أصل مثال ينبغي جواب. وحيد إعلان هو طرف نقطة هو واحد عنصر (`unary`) أيضا هو تدفق (`stream`).
 
 <a id="remote-proxy"></a>
-### 使用 Remote Proxy
+### استخدام Remote Proxy
 
-`mock.remote` 无需方法清单或领域专属 Helper 即可提供每个命名空间和方法。每个访问过的端点使用缓存的原生 Vitest mock；`@vitest/spy.fn` 就是 `vi.fn` 背后的实现，也能在没有 Vitest runner 的浏览器页面中运行。同一个 mock 应答直接调用与 Connection 流量，因此返回值覆盖和调用断言观察的是客户端实际调用的函数：
+`mock.remote` بلا حاجة طريقة بيان أو مجال مخصص تابع Helper يكفي توفير كل نطاق الأسماء و طريقة. كل وصول مرور طرف نقطة استخدام ذاكرة مؤقتة أصلي Vitest mock؛`@vitest/spy.fn` حينئذ هو `vi.fn` خلف بعد تنفيذ، أيضا قدرة في لا يوجد Vitest runner متصفح صفحة في تشغيل. نفس عدد mock ينبغي جواب مباشر استدعاء و Connection تدفق كمية، لذلك قيمة راجعة تغطية و استدعاء تأكيد مراقبة هو عميل فعلي استدعاء دالة:
 
 ```text
 const mock = RemoteMock.create().load(remoteDefaultResponses)
@@ -43,15 +43,15 @@ mock.remote.settings.mutate.mockResolvedValueOnce(ok(updatedNamespace))
 expect(mock.remote.settings.mutate).toHaveBeenCalledWith('locale', operations, revision)
 ```
 
-使用 `mockResolvedValue` 设置持续响应，使用 `mockResolvedValueOnce` 或 `mockReturnValueOnce` 排队设置响应，使用 `mockImplementation` 按参数决定行为。原生队列按登记顺序消费响应，耗尽后由 mock 的当前实现应答；初始实现读取已登记的默认响应。`mockClear()` 保留响应与队列；`mockReset()` 清除覆盖并恢复初始实现，由它读取最新默认响应。若未配置默认响应，排队响应耗尽后仍会失败，包括可能同步抛错的直接调用。
+استخدام `mockResolvedValue` ضبط حمل متابعة استجابة، استخدام `mockResolvedValueOnce` أو `mockReturnValueOnce` ترتيب طابور ضبط استجابة، استخدام `mockImplementation` حسب معامل قرار سلوك. أصلي طابور صف حسب تسجيل تسجيل ترتيب إزالة استهلاك استجابة، استهلاك كل بعد من mock حالي تنفيذ ينبغي جواب؛ ابتدائي تنفيذ قراءة قد تسجيل تسجيل افتراضي استجابة.`mockClear()` إبقاء استجابة و طابور صف؛`mockReset()` صاف حذف تغطية و استعادة ابتدائي تنفيذ، من هو قراءة الأكثر جديد افتراضي استجابة. إذا لم إعداد افتراضي استجابة، ترتيب طابور استجابة استهلاك كل بعد ما زال سوف فشل، يشمل ممكن تزامن رمي خطأ مباشر استدعاء.
 
-只有显式 `stream()` 或响应表中的流声明才选择流方法；其余均使用一元 mock。访问方法不会凭空构造成功的业务结果。保存方法引用前先声明流模式：每个端点/模式拥有各自的 mock。命名空间和方法的 `then` 探测及 symbol 读取均无副作用。
+فقط لديه صريح `stream()` أو استجابة جدول في تدفق إعلان عندئذ اختيار تدفق طريقة؛ ذلك بقية متساو استخدام واحد عنصر mock. وصول طريقة لن سند فارغ بنية صنع نجاح عمل خدمة نتيجة. حفظ طريقة مرجع قبل أولا إعلان تدفق نمط: كل طرف نقطة/نمط يملك كل منها mock. نطاق الأسماء و طريقة `then` استكشاف قياس و symbol قراءة متساو بلا فرعي أثر.
 
-`MockedRemote` 使用 Vitest 的深层 mock 类型转换，覆盖完整生成的 `TypertRemoteNamespaceMap`。非空映射保留命名空间与方法名、参数、返回值和原生 spy 类型。映射为空时只有这个测试 Proxy 变成 `any`，允许任意命名空间和方法；它不增补或弱化生产 Remote 声明。不需要复制方法签名、抑制可选生成模块错误或开启编译器级全局 Flag。交付 Remote/mock 改动前运行 `pnpm run typecheck`，生成并检查真实 Client 类型；声明缺失、陈旧或不完整时先重新构建。无构建测试通过或推断为 `any` 都不是严格类型证据。
+`MockedRemote` استخدام Vitest عميق طبقة mock نوع تحويل، تغطية كامل توليد `TypertRemoteNamespaceMap`. غير فارغ خريطة إبقاء نطاق الأسماء و طريقة اسم، معامل، قيمة راجعة و أصلي spy نوع. خريطة لـ فارغ وقت فقط لديه هذا عدد اختبار Proxy تغيير صار `any`، سماح مهمة معنى نطاق الأسماء و طريقة؛ هو لا زيادة تكملة أو ضعيف تحويل إنتاج Remote إعلان. لا حاجة نسخ طريقة توقيع، كبح صنع اختياري توليد وحدة خطأ أو فتح بدء تحرير ترجمة جهاز درجة عام Flag. تسليم Remote/mock تعديل قبل تشغيل `pnpm run typecheck`، توليد و فحص حقيقي Client نوع؛ إعلان ناقص، قديم قديم أو لا كامل وقت أولا إعادة بناء. بلا بناء اختبار عبر أو دفع قطع لـ `any` كل لا هو صارم إطار نوع دليل.
 
-### 登记默认响应
+### تسجيل تسجيل افتراضي استجابة
 
-`load(table)` 安装可复用的 `unary` 值或 handler、`stream` 脚本以及无脚本的 `streams` 声明。`unary(endpoint, value)` 与 `unary(endpoint, fn)` 登记单个默认响应；handler 接收调用方的位置参数，并使用现有请求类型。每个端点仅保存最新默认响应，包括显式 `undefined`；更新默认响应不会清除原生覆盖。`ok(value)` 构造 `{ ok: true, value }`；失败使用 `{ ok: false, error: { code, message, details } }`。有状态 handler、promise 与原生队列均由各测试独立持有：
+`load(table)` تثبيت يمكن إعادة استخدام `unary` قيمة أو handler،`stream` نص برمجي و بلا نص برمجي `streams` إعلان.`unary(endpoint, value)` و `unary(endpoint, fn)` تسجيل تسجيل مفرد عدد افتراضي استجابة؛handler استقبال استدعاء جهة موضع معامل، و استخدام قائم طلب نوع. كل طرف نقطة فقط حفظ الأكثر جديد افتراضي استجابة، يشمل صريح `undefined`؛ تحديث افتراضي استجابة لن صاف حذف أصلي تغطية.`ok(value)` بنية صنع `{ ok: true, value }`؛ فشل استخدام `{ ok: false, error: { code, message, details } }`. لديه حالة handler،promise و أصلي طابور صف متساو من كل اختبار مستقل يحتفظ:
 
 ```text
 const initial = { writable: true, hasDocument: false, namespaces: [] }
@@ -61,9 +61,9 @@ const mock = RemoteMock.create().load({
 mock.remote.settings.describe.mockResolvedValueOnce(ok({ ...initial, hasDocument: true }))
 ```
 
-### 驾驭流
+### قيادة قيادة تدفق
 
-流脚本是一个接收打开时的 `args` 与 `StreamHandle`（`push`、`end`、`fail(error)`、`signal`）的函数；脚本返回后流保持打开，直到句柄结束或失败。`frames(items)` 构造吐完即结束的脚本，`openStream(initial)` 构造吐完后保持打开的脚本。`mock.streams` 控制客户端当前打开着的流，可按打开时的参数过滤；`opened(endpoint, count)` 在该端点被打开达到该次数时 resolve，`drained(endpoint)` 在每条匹配流的消费方都拉完了迄今推入的全部内容时 resolve——打开的流要其消费方再次等待，已定局的流要队列已空（拉完指从队列取走；只有在读循环内处理项的消费方才等于处理完）：
+تدفق نص برمجي هو واحد استقبال فتح وقت `args` و `StreamHandle`(`push`،`end`،`fail(error)`،`signal`) دالة؛ نص برمجي إرجاع بعد تدفق إبقاء فتح، مباشر إلى جملة مقبض انتهاء أو فشل.`frames(items)` بنية صنع إخراج تمام أي انتهاء نص برمجي،`openStream(initial)` بنية صنع إخراج تمام بعد إبقاء فتح نص برمجي.`mock.streams` تحكم عميل حالي فتح حال تدفق، يمكن حسب فتح وقت معامل مرور ترشيح؛`opened(endpoint, count)` في هذا طرف نقطة يتم فتح بلوغ إلى هذا مرة عدد وقت resolve،`drained(endpoint)` في كل بند مطابقة تدفق مستهلك كل سحب تمام حتى اليوم دفع دخول الكل محتوى وقت resolve——فتح تدفق يلزم ذلك مستهلك مجددا مرة انتظار، قد تحديد نطاق تدفق يلزم طابور صف قد فارغ (سحب تمام إشارة من طابور صف أخذ مشي؛ فقط لديه في قراءة حلقة داخل معالجة بند مستهلك عندئذ انتظار في معالجة تمام):
 
 ```text
 mock.stream('session/follow', openStream([snapshotFrame]))
@@ -73,74 +73,74 @@ mock.streams.fail('session/follow', new Error('gone'))
 await mock.streams.drained('session/follow')
 ```
 
-失败的流让消费方的下一次读取以给定的 `Error` reject。消费方取消（打开时的 signal 或 iterator 提前 `return()`）会中止 `StreamHandle.signal`、结束迭代而不抛错，并把该流记为 `cancelled`。
+فشل تدفق يجعل مستهلك تحت مرة قراءة بـ إعطاء تحديد `Error` reject. مستهلك إلغاء (فتح وقت signal أو iterator رفع قبل `return()`) سوف في توقف `StreamHandle.signal`، انتهاء تكرار بديل بينما لا رمي خطأ، و يأخذ هذا تدفق تسجيل لـ `cancelled`.
 
-### 接上客户端
+### وصل فوق عميل
 
-`mock.rpc` 是 `ClientConnectionRpc` 面。把它作为 `{ transport: { rpc: mock.rpc } }` 传给 Connection 安装函数，或让 `TestClient` 将其绑定到自身实例，每次 Remote 调用就会直达 `dispatch`、每条流直达 `open`，中间没有信封。payload 携带 `{ args }`——整机代理发数组、Gateway 自身端点发一个对象（到达时是一个位置参数）；signal 中止的调用以中止原因 reject。`RemoteMock.create()` 登记一条流 `$events`，用 `{ type: 'ready', clientId, host: { home } }`（host 来自 `RemoteMockOptions.host`，默认 `/home/mock`）应答 Gateway 客户端的打开并保持打开——这正是整机能达到 `connected` 的原因；测试可以像任何流一样覆盖或让它失败。
+`mock.rpc` هو `ClientConnectionRpc` وجه. يأخذ هو بصفة `{ transport: { rpc: mock.rpc } }` نقل إعطاء Connection تثبيت دالة، أو يجعل `TestClient` سوف ذلك ربط إلى ذاته نسخة، كل مرة Remote استدعاء حينئذ سوف مباشر بلوغ `dispatch`، كل بند تدفق مباشر بلوغ `open`، في بين لا يوجد معلومة غلاف.payload يحمل `{ args }`——كامل آلة بديل إدارة إرسال عدد مجموعة،Gateway ذاته طرف نقطة إرسال واحد كائن (وصول وقت هو واحد موضع معامل) ؛signal في توقف استدعاء بـ في توقف سبب reject.`RemoteMock.create()` تسجيل تسجيل واحد بند تدفق `$events`، استخدام `{ type: 'ready', clientId, host: { home } }`(host قدوم ذاتي `RemoteMockOptions.host`، افتراضي `/home/mock`) ينبغي جواب Gateway عميل فتح و إبقاء فتح——هذا صحيح هو كامل آلة قدرة بلوغ إلى `connected` سبب؛ اختبار يمكن مثل أي تدفق واحد مثال تغطية أو يجعل هو فشل.
 
-### 观察与断言
+### مراقبة و تأكيد
 
-`mock.log.calls(endpoint?)` 列出经 `dispatch` 或 `rpc.call` 的一元调用（`args`、`seq`、实时 `state` 为 `pending` / `answered` / `failed`，以及作为 `result` 的应答值或抛出的错误），`streams(endpoint?)` 列出脚本流的打开记录及其实时 `state` 与 `pushed` 计数，`requests(endpoint?)` 按顺序列出调用与打开的首个位置参数（不带端点时去掉 Gateway 自己带 `$` 前缀的端点），`unmatched()` 列出没找到规则的请求。原生 `.mock.calls` 还包含直接 Proxy 调用；载体的流 mock 会收到末尾的取消信号。`assertNoUnmatched()` 在收尾时报告漏配。`modeOf(endpoint)` 报告显式登记；`endpoints()` 还包含访问过的 Proxy 方法，使装配能够提供它们的命名空间。
+`mock.log.calls(endpoint?)` صف خروج مرور `dispatch` أو `rpc.call` واحد عنصر استدعاء (`args`،`seq`، فوري `state` لـ `pending` / `answered` / `failed`، و بصفة `result` ينبغي جواب قيمة أو رمي خروج خطأ) ،`streams(endpoint?)` صف خروج نص برمجي تدفق فتح سجل و ذلك فوري `state` و `pushed` حساب عدد،`requests(endpoint?)` حسب ترتيب صف خروج استدعاء و فتح أول عدد موضع معامل (لا حمل طرف نقطة وقت ذهاب إسقاط Gateway ذاتي ذات حمل `$` بادئة طرف نقطة) ،`unmatched()` صف خروج لا بحث إلى قاعدة طلب. أصلي `.mock.calls` أيضا يتضمن مباشر Proxy استدعاء؛ تحميل جسم تدفق mock سوف استلام إلى نهاية ذيل إلغاء إشارة.`assertNoUnmatched()` في استلام ذيل وقت تقرير إبلاغ تسرب إعداد.`modeOf(endpoint)` تقرير إبلاغ صريح تسجيل تسجيل؛`endpoints()` أيضا يتضمن وصول مرور Proxy طريقة، جعل تركيب إعداد قدرة كاف توفير هو جمع نطاق الأسماء.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-- **请求没有规则**——`dispatch` reject、`open` 抛出 `remote-mock: no rule for <endpoint>; registered: …`，日志记下这次漏配；请登记该端点。
-- **payload 不是 `{ args: unknown[] | object }`**——`rpc.call` reject、`rpc.open` 抛 `TypeError`；整机代理发数组形式、Gateway 自身端点发对象形式，所以问题出在手写调用。
-- **同一条流上有第二个并发读取**——该读取 reject；Gateway 顺序读取流，因此这指向测试侧误用。
+- **طلب لا يوجد قاعدة**——`dispatch` reject،`open` رمي خروج `remote-mock: no rule for <endpoint>; registered: …`، سجل تسجيل تحت هذا مرة تسرب إعداد؛ طلب تسجيل تسجيل هذا طرف نقطة.
+- **payload لا هو `{ args: unknown[] | object }`**——`rpc.call` reject،`rpc.open` رمي `TypeError`؛ كامل آلة بديل إدارة إرسال عدد مجموعة شكل صيغة،Gateway ذاته طرف نقطة إرسال كائن شكل صيغة، الذي بـ مشكلة خروج في يد كتابة استدعاء.
+- **نفس بند تدفق فوق لديه ثاني عدد تزامن قراءة**——هذا قراءة reject؛Gateway ترتيب قراءة تدفق، لذلك هذا إشارة نحو اختبار جانب خطأ استخدام.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-### 设计
+### تصميم
 
-`dispatch` 与 `open` 接收端点与位置参数；`rpc` 通过 Connection 的已解码载体接口暴露同一个核心。每个 mock 独立持有原生函数及排队覆盖；共享表提供默认响应，不复制 handler 或应答对象。每条脚本流拥有自己的队列、唯一挂起读取和日志条目；`end`、`fail`、消费方取消三者中最先发生者定局。
+`dispatch` و `open` استقبال طرف نقطة و موضع معامل؛`rpc` عبر Connection قد حل رمز تحميل جسم واجهة كشف نفس عدد نواة قلب. كل mock مستقل يحتفظ أصلي دالة و ترتيب طابور تغطية؛ مشترك جدول توفير افتراضي استجابة، لا نسخ handler أو ينبغي جواب كائن. كل بند نص برمجي تدفق يملك ذاتي ذات طابور صف، وحيد تعليق بدء قراءة و سجل بند؛`end`،`fail`، مستهلك إلغاء ثلاثة من في الأكثر أولا حدوث من تحديد نطاق.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 公开面转出 |
-| [`src/remote-mock.ts`](src/remote-mock.ts) | `RemoteMock`：默认响应、原生 mock、Connection 分发、受控流与缺失响应检查；`ok` |
-| [`src/remote-proxy.ts`](src/remote-proxy.ts) | 命名空间／方法查找与生成映射的 mock 类型 |
-| [`src/streams.ts`](src/streams.ts) | `frames` / `openStream` 脚本与 `MockStream`（句柄 + `AsyncIterable`） |
-| [`src/log.ts`](src/log.ts) | 带共享 `seq` 计数器的日志 |
-| — | 不发布运行时不变量伴生件；本测试支持库不拥有任何生产事件流或可变进程状态，其行为由本包测试覆盖。 |
+| [`src/index.ts`](src/index.ts) | عام وجه تحويل خروج |
+| [`src/remote-mock.ts`](src/remote-mock.ts) | `RemoteMock`: افتراضي استجابة، أصلي mock،Connection توزيع، تلقي تحكم تدفق و ناقص استجابة فحص؛`ok` |
+| [`src/remote-proxy.ts`](src/remote-proxy.ts) | نطاق الأسماء/طريقة فحص بحث و توليد خريطة mock نوع |
+| [`src/streams.ts`](src/streams.ts) | `frames` / `openStream` نص برمجي و `MockStream`(جملة مقبض + `AsyncIterable`) |
+| [`src/log.ts`](src/log.ts) | حمل مشترك `seq` حساب عدد جهاز سجل |
+| — | لا إصدار وقت التشغيل ثابت كمية مرافق توليد عنصر؛ هذا اختبار دعم حمل مكتبة لا يملك أي إنتاج حدث تدفق أو متغير عملية حالة، ذلك سلوك من هذه الحزمة اختبار تغطية. |
 
 </details>
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无；本包是浏览器侧测试基础设施，无一物到达模型请求。
+بلا؛ هذه الحزمة هو متصفح جانب اختبار أساس أساس ضبط تطبيق، بلا واحد شيء وصول نموذج طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包既不组装也不发送提供方请求。
+بلا؛ هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **仅进程内载体**——`rpc` 服务同一 realm 中的 Connection 实例；不提供给浏览器车道测试用的 HTTP 或 WebSocket 载体。
-- **值按引用传递**——应答与流项都未经序列化就到达客户端，真实线路会拒绝的非 JSON 值在这里原样通过。
-- **不校验值**——一元应答必须是调用方读取的结果（`{ ok, value }` 或 `{ ok: false, error }`）；mock 原样传递它，不检查这些字段。
-- **不做 payload 匹配**——规则只按端点匹配；在 handler 内按业务参数判别。
-- **原生流覆盖自行管理 iterable**——覆盖返回自有 iterable 时，不参与脚本流日志、`requests`、`opened`、`drained` 以及 `push` / `end` / `fail`；调用方也负责取消。原生调用断言仍然有效。需要这些控制能力的场景应使用已登记的流脚本。
+- **فقط عملية داخل تحميل جسم**——`rpc` خدمة نفس realm في Connection نسخة؛ لا توفير إعطاء متصفح عربة طريق اختبار استخدام HTTP أو WebSocket تحميل جسم.
+- **قيمة حسب مرجع نقل تمرير**——ينبغي جواب و تدفق بند كل لم مرور تسلسل تحويل حينئذ وصول عميل، حقيقي خط مسار سوف رفض غير JSON قيمة في هذا داخل أصل مثال عبر.
+- **لا تحقق قيمة**——واحد عنصر ينبغي جواب يجب هو استدعاء جهة قراءة نتيجة (`{ ok, value }` أو `{ ok: false, error }`) ؛mock أصل مثال نقل تمرير هو، لا فحص هذه حقل.
+- **لا فعل payload مطابقة**——قاعدة فقط حسب طرف نقطة مطابقة؛ في handler داخل حسب عمل خدمة معامل حكم آخر.
+- **أصلي تدفق تغطية ذاتي سطر إدارة iterable**——تغطية إرجاع ذاتي لديه iterable وقت، لا مشاركة و نص برمجي تدفق سجل،`requests`،`opened`،`drained` و `push` / `end` / `fail`؛ استدعاء جهة أيضا مسؤول إلغاء. أصلي استدعاء تأكيد ما زال صالح. حاجة هذه تحكم قدرة مشهد ينبغي استخدام قد تسجيل تسجيل تدفق نص برمجي.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

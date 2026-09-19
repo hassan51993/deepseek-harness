@@ -1,36 +1,36 @@
-# Agent Note: 从扁平化的消息文本中分类 pi-ai 传输层截断
+# Agent Note: من مسطح مستو تحويل رسالة نص في تصنيف pi-ai نقل طبقة قطع قطع
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-22-pi-ai-transport-truncation-classification.md) | 中文
+[English](2026-07-22-pi-ai-transport-truncation-classification.md) | العربية
 
-## 问题
+## مشكلة
 
-一次 TUI 运行的模型连接在流式输出中途断开，只浮现出一条 `terminated` 通知，而一个被截断的 Anthropic 响应则浮现出 `Anthropic stream ended before message_stop`。两者都是传输层截断——连接在提供方的终止 SSE（Server-Sent Events）事件之前就已断开——然而 `dsh-llm-pi-ai` 中的 `classifyPiAiError` 对两者都不匹配，最终落入兜底的 `PI_AI_ERROR`。由于 `PI_AI_ERROR` 不在 `llm-retry` 的 `DEFAULT_RETRYABLE_CODES`（`RATE_LIMIT`、`SERVER`、`TIMEOUT`、`TRANSPORT`）中，一次可恢复的断开被当作永久性失败处理，从未被重试。
+مرة TUI تشغيل نموذج اتصال في تدفق صيغة إخراج في طريق قطع فتح، فقط طفو الآن خروج واحد بند `terminated` إشعار، بينما واحد يتم قطع قطع Anthropic استجابة فإن طفو الآن خروج `Anthropic stream ended before message_stop`. اثنان من كل هو نقل طبقة قطع قطع——اتصال في مزود إنهاء SSE(Server-Sent Events) حدث قبل حينئذ قد قطع فتح——لكن بينما `dsh-llm-pi-ai` في `classifyPiAiError` مقابل اثنان من كل لا مطابقة، نهائي سقوط دخول التقاط قاع `PI_AI_ERROR`. من في `PI_AI_ERROR` لا في `llm-retry` `DEFAULT_RETRYABLE_CODES`(`RATE_LIMIT`،`SERVER`،`TIMEOUT`،`TRANSPORT`) في، مرة يمكن استعادة قطع فتح يتم عند عمل دائم دائم صفة فشل معالجة، من لم يتم إعادة محاولة.
 
-细节丢失发生在上游，且在适配器内无法恢复：pi-ai 在推送终止 `error` 事件之前，把捕获到的错误缩减为 `error.message`（`api/anthropic-messages.js`：`errorMessage = error instanceof Error ? error.message : JSON.stringify(error)`），丢弃了原始的 `Error` 及其 `cause` 链。undici 将可据以采取行动的 `SocketError` 放在 `cause` 上，却只交给 fetch 包装层一个裸的 `terminated`；pi-ai 只保留了这个词。pi-ai 的 `SimpleStreamOptions` 没有暴露任何 fetch/dispatcher/client 钩子，让我们能在细节被扁平化之前自行捕获 `cause`。
+دقيق عقدة فقد فقد حدوث في فوق تنقل، كما في مهايئ داخل لا يمكن استعادة:pi-ai في دفع إرسال إنهاء `error` حدث قبل، يأخذ التقاط إلى خطأ تقليص نقص لـ `error.message`(`api/anthropic-messages.js`:`errorMessage = error instanceof Error ? error.message : JSON.stringify(error)`) ، إسقاط أصلي `Error` و ذلك `cause` سلسلة.undici سوف يمكن حسب بـ أخذ أخذ سطر حركة `SocketError` وضع في `cause` فوق، لكن فقط تسليم إعطاء fetch حزمة تركيب طبقة واحد عار `terminated`؛pi-ai فقط إبقاء هذا عدد كلمة.pi-ai `SimpleStreamOptions` لا يوجد كشف أي fetch/dispatcher/client خطاف، يجعل أنا جمع قدرة في دقيق عقدة يتم مسطح مستو تحويل قبل ذاتي سطر التقاط `cause`.
 
-## 决策
+## قرار
 
-- `classifyPiAiError` 识别另外两种传输层措辞，并将两者都映射为 `TRANSPORT`：
-  - 流式输出中途的套接字断开，呈现为裸的 `terminated`（undici）或 `Premature close`（Node 流层）；
-  - 在终止事件之前被截断的流，每个 pi-ai 提供方各自抛出不同措辞（`Anthropic stream ended before message_stop`、`… before a terminal response event`、`… ended without a terminal event`、`Stream ended without finish_reason`），统一按 `stream ended before/without` 匹配。
-- 该分类器带有一条 `XXX(pi-ai upstream)` 注记，点名扁平化发生的位置并说明期望的修复方式：如果 pi-ai 有朝一日转发原始的 `Error` 或提供一个让我们捕获 `cause` 的钩子，就改为基于 `code`/`cause` 分类。在此之前分类仍是尽力而为的文本匹配。
-- `llm-pi-ai/README.md` 新增一条 Known-Limitations 条目，记录 pi-ai 会扁平化 cause 链，因此 harness code 是从消息文本中分类出来的。
+- `classifyPiAiError` تعرف آخر آخر خارج اثنان نوع نقل طبقة إجراء لفظ، و سوف اثنان من كل خريطة لـ `TRANSPORT`:
+  - تدفق صيغة إخراج في طريق طقم وصل حرف قطع فتح، عرض لـ عار `terminated`(undici) أو `Premature close`(Node تدفق طبقة) ؛
+  - في إنهاء حدث قبل يتم قطع قطع تدفق، كل pi-ai مزود كل منها رمي خروج مختلف إجراء لفظ (`Anthropic stream ended before message_stop`،`… before a terminal response event`،`… ended without a terminal event`،`Stream ended without finish_reason`) ، موحد واحد حسب `stream ended before/without` مطابقة.
+- هذا تصنيف جهاز حمل لديه واحد بند `XXX(pi-ai upstream)` ملاحظة تسجيل، نقطة اسم مسطح مستو تحويل حدوث موضع و شرح مدة نظر إصلاح طريقة: إذا pi-ai لديه نحو واحد يوم تحويل إرسال أصلي `Error` أو توفير واحد يجعل أنا جمع التقاط `cause` خطاف، حينئذ تعديل لـ أساس في `code`/`cause` تصنيف. في هذا قبل تصنيف ما زال هو كل قوة بينما لـ نص مطابقة.
+- `llm-pi-ai/README.md` إضافة جديدة واحد بند Known-Limitations بند، سجل pi-ai سوف مسطح مستو تحويل cause سلسلة، لذلك harness code هو من رسالة نص في تصنيف خروج قدوم.
 
-分类仍然基于消息文本，因为那是 pi-ai 唯一交付的信号；`XXX` 标明它是一个权宜之计，而非期望的最终状态。
+تصنيف ما زال أساس في رسالة نص، لأن ذلك هو pi-ai وحيد تسليم إشارة؛`XXX` علامة واضح هو هو واحد حق مناسب لـ حساب، بينما غير مدة نظر نهائي حالة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**通过 pi-ai 的 fetch/dispatcher/client 钩子捕获 `cause`。** 否决：pi-ai 0.81.1 一个都没暴露。`StreamOptions` 只提供 `onPayload`/`onResponse`；`onResponse` 在响应体流被消费之前触发，因此无法观察到流式输出中途的断开。Anthropic 路径接受一个 `client` 对象，但为拦截传输错误而为每个请求构造并注入一个提供方 SDK client，只为一个诊断字符串就越过了适配器的服务边界。
+**عبر pi-ai fetch/dispatcher/client خطاف التقاط `cause`.** مرفوض:pi-ai 0.81.1 واحد كل لا كشف.`StreamOptions` فقط توفير `onPayload`/`onResponse`؛`onResponse` في استجابة جسم تدفق يتم إزالة استهلاك قبل إطلاق، لذلك لا يمكن مراقبة إلى تدفق صيغة إخراج في طريق قطع فتح.Anthropic مسار قبول واحد `client` كائن، لكن لـ اعتراض قطع نقل خطأ بينما لـ كل طلب بنية صنع و حقن واحد مزود SDK client، فقط لـ واحد تشخيص نص حينئذ تجاوز مرور مهايئ خدمة حد.
 
-**把两者都保留为 `PI_AI_ERROR`，并放宽 `llm-retry` 的可重试集合。** 否决：`PI_AI_ERROR` 是真正未分类失败的兜底，其中包括不可重试的失败（畸形的提供方响应、意料之外的 SDK bug）。让兜底可重试会重试那些永远不会成功的失败；修复之道是分类出可恢复的那种情况，而不是模糊这个类别。
+**يأخذ اثنان من كل إبقاء لـ `PI_AI_ERROR`، و وضع عرض `llm-retry` يمكن إعادة محاولة تجميع دمج.** مرفوض:`PI_AI_ERROR` هو حق صحيح لم تصنيف فشل التقاط قاع، منها يشمل غير ممكن إعادة محاولة فشل (شاذ شكل مزود استجابة، معنى مادة خارج SDK bug). يجعل التقاط قاع يمكن إعادة محاولة سوف إعادة محاولة ذلك بعض دائم بعيد لن نجاح فشل؛ إصلاح لـ طريق هو تصنيف خروج يمكن استعادة ذلك نوع حال حال، بينما لا هو نموذج غامض هذا عدد صنف آخر.
 
-**在适配器里把扁平化后的错误包装成 `LlmError('TRANSPORT', { cause })`，仿照 DeepSeek 适配器。** 在此否决：DeepSeek 适配器包装的是拿到响应之前的 `fetch` 拒绝，其 `cause` 仍然完好，因此链式包装保留了真实细节。而在 pi-ai 路径中，终止事件的 `errorMessage` 已经是一个没有 `cause` 可链的扁平化字符串，因此包装只会加一层却恢复不了任何东西；分类出 code 是唯一还能增加的价值。
+**في مهايئ داخل يأخذ مسطح مستو تحويل بعد خطأ حزمة تركيب صار `LlmError('TRANSPORT', { cause })`، محاكاة وفق DeepSeek مهايئ.** في هذا مرفوض:DeepSeek مهايئ حزمة تركيب هو أخذ إلى استجابة قبل `fetch` رفض، ذلك `cause` ما زال تمام جيد، لذلك سلسلة صيغة حزمة تركيب إبقاء حقيقي دقيق عقدة. بينما في pi-ai مسار في، إنهاء حدث `errorMessage` قد هو واحد لا يوجد `cause` يمكن سلسلة مسطح مستو تحويل نص، لذلك حزمة تركيب فقط سوف إضافة واحد طبقة لكن استعادة لا أي شرق غرب؛ تصنيف خروج code هو وحيد أيضا قدرة زيادة قيمة قيمة.
 
-## 后果
+## عاقبة
 
-- 流式输出中途的传输层断开和终止前的流截断现在都携带 `TRANSPORT`，因此组合出的 `llm-retry` 策略会默认重试它们，而不是让该轮次失败。
-- 通知文本不变（`terminated` / `Anthropic stream ended before message_stop`）：cause 细节在适配器看到之前就已丢失，因此 `errorChain` 没有更多内容可渲染。只有被路由的 `code` 得到了改善。
-- 分类仍然依赖字符串匹配且依赖提供方的措辞：未来某个 pi-ai 版本若改写这些错误的措辞，就会静默回退到 `PI_AI_ERROR`，直到模式被更新。`XXX` 注记指向那个持久的修复方式（基于转发的 `code`/`cause` 路由）。
+- تدفق صيغة إخراج في طريق نقل طبقة قطع فتح و إنهاء قبل تدفق قطع قطع الآن كل يحمل `TRANSPORT`، لذلك تركيب خروج `llm-retry` سياسة سوف افتراضي إعادة محاولة هو جمع، بينما لا هو يجعل هذا جولة فشل.
+- إشعار نص ثابت (`terminated` / `Anthropic stream ended before message_stop`):cause دقيق عقدة في مهايئ يرى قبل حينئذ قد فقد فقد، لذلك `errorChain` لا يوجد أكثر كثير محتوى يمكن تصيير. فقط لديه يتم توجيه `code` نيل إلى تعديل حسن.
+- تصنيف ما زال اعتماد نص مطابقة كما اعتماد مزود إجراء لفظ: لم قدوم بعض عدد pi-ai إصدار إذا تعديل كتابة هذه خطأ إجراء لفظ، حينئذ سوف ساكن صامت رجوع إلى `PI_AI_ERROR`، مباشر إلى نمط يتم تحديث.`XXX` ملاحظة تسجيل إشارة نحو ذلك عدد حمل دائم إصلاح طريقة (أساس في تحويل إرسال `code`/`cause` توجيه).

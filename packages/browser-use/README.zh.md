@@ -1,40 +1,40 @@
 ---
-description: "浏览器操作能力包，用于选择与注册一个浏览器后端。"
+description: "متصفح عملية قدرة حزمة، لأجل اختيار و تسجيل واحد متصفح خلفية."
 kind: "package-group"
 ---
 
 # packages/browser-use
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-浏览器操作 提供方 让模型检查与操作网页。本组拥有独占 提供方 注册。实验性 提供方 提供浏览器工具，并管理各 Session 的浏览器资源。
+متصفح عملية مزود يجعل نموذج فحص و عملية شبكة صفحة. هذا مجموعة يملك وحيد احتلال مزود تسجيل. فعلي تحقق صفة مزود توفير متصفح أداة، و إدارة كل Session متصفح مورد.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-选择一个 提供方 并挂载共享注册服务。
+اختيار واحد مزود و تركيب مشترك تسجيل خدمة.
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`browser-use`](browser-use/README.zh.md) | 独占具名 提供方 注册 | `ctx.browserUse` |
+| [`browser-use`](browser-use/README.zh.md) | وحيد احتلال أداة اسم مزود تسجيل | `ctx.browserUse` |
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [浏览器操作](../../docs/subsystems/browser-use.zh.md) — 能力所有权与 提供方 选择。
-- [实验包](../experimental/README.zh.md) — Playwright MCP、Chrome DevTools MCP 与 Stagehand 提供方。
+- [متصفح عملية](../../docs/subsystems/browser-use.zh.md) — قدرة كل حق و مزود اختيار.
+- [فعلي تحقق حزمة](../experimental/README.zh.md) — Playwright MCP،Chrome DevTools MCP و Stagehand مزود.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

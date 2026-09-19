@@ -1,35 +1,35 @@
 ---
-description: "面向无密钥 profile 测试的会话日志快照支持：manifest（元数据清单）、身份脱敏、规范化、workspace 检查与协议适配器。"
+description: "موجه إلى بلا مفتاح profile اختبار جلسة سجل لقطة دعم حمل:manifest(بيانات وصفية بيان) ، هوية انفصال حساس، مواصفة تحويل،workspace فحص و بروتوكول مهايئ."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-session-snapshot
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-session-snapshot` 提供无密钥已记录会话测试（`pnpm run test:snapshot`）背后的共享支持：封闭 manifest、类型化身份脱敏、规范化、workspace 比较、fixture（测试前置数据）保护，以及 headless、SDK、ACP（Agent Client Protocol）与 Web owner 使用的协议适配器。ACP 适配器以真实子进程启动被测 profile，驱动确定性输入脚本，并注册完整的录制、回放与刷新套件。每个场景都提交足够证据来证明模型可见输出与文件系统效果，不依赖 agent（智能体）自述。包入口会导入 vitest，因此只能在 vitest 运行中使用。
+`dsh-session-snapshot` توفير بلا مفتاح قد سجل جلسة اختبار (`pnpm run test:snapshot`) خلف بعد مشترك دعم حمل: غلاف إغلاق manifest، نوع تحويل هوية انفصال حساس، مواصفة تحويل،workspace مقارنة مقارنة،fixture(اختبار قبل وضع بيانات) حفظ حماية، و headless،SDK،ACP(Agent Client Protocol) و Web owner استخدام بروتوكول مهايئ.ACP مهايئ بـ حقيقي عملية فرعية بدء يتم قياس profile، قيادة تحديد صفة إدخال نص برمجي، و تسجيل كامل تسجيل صنع، إعادة تشغيل و تحديث جديد طقم عنصر. كل مشهد كل إيداع كاف كاف دليل قدوم إثبات نموذج مرئي إخراج و نظام الملفات فاعلية نتيجة، لا اعتماد agent(ذكي جسم) ذاتي وصف. حزمة مدخل سوف استيراد vitest، لذلك فقط قدرة في vitest تشغيل في استخدام.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-本包把随附 profile 场景变成无密钥快照套件：写一张场景表和一个 fixture 目录，调用一次匹配的适配器，工具包就负责启动或组合 profile、驱动场景、比较规范化输出并守护已提交的 fixture。
+هذه الحزمة يأخذ مع مرفق profile مشهد تغيير صار بلا مفتاح لقطة طقم عنصر: كتابة واحد ورقة مشهد جدول و واحد fixture دليل، استدعاء مرة مطابقة مهايئ، أداة حزمة حينئذ مسؤول بدء أو تركيب profile، قيادة مشهد، مقارنة مقارنة مواصفة تحويل إخراج و حراسة حماية قد إيداع fixture.
 
-### 编写快照套件
+### تحرير كتابة لقطة طقم عنصر
 
-消费方 `*.snapshot.ts` 就是场景表加一次工厂调用。`AgentUnderTest` 提供绝对 `binScript`、可选 `libBinScript`、`configPath` 与 `tsconfigPath` 路径，因为子进程 cwd 位于仓库之外：
+مستهلك `*.snapshot.ts` حينئذ هو مشهد جدول إضافة مرة عمل مصنع استدعاء.`AgentUnderTest` توفير قطعا مقابل `binScript`، اختياري `libBinScript`،`configPath` و `tsconfigPath` مسار، لأن عملية فرعية cwd يقع في مستودع خارج:
 
 ```ts
 import { dirname, join } from 'node:path'
@@ -68,108 +68,108 @@ defineAcpSnapshotSuite({
 })
 ```
 
-每个已记录 Session 目录携带封闭的 `snapshot.yml` manifest，以及规范 parent 与连续 child 角色。parent 文件名是 `session[.vN].jsonl`；child 是 `session.<ordinal>[.vN].jsonl`；v0 省略 `.v0`，正版本使用小写 `.vN`，且每个文件名与其 header 一致。一个角色可以保留旧 generation，但 harness 会选择数值最高的一项。拥有 fixture 的 manifest 可以声明 `sessionFormat.version` 与一个或多个封闭 `coverage` 名称，把该历史 generation 保留为显式迁移 fixture；省略此字段时跟随当前 writer。manifest 还会指名场景、随附 profile、组合／header 类别、录制来源，以及已完成 Session 无法重建的 replay、平台、权限、环境、workspace 或输入事实。存储保护检查每个选定 parent 与 child 角色的工具结果和可移植路径。提示词／schema 擦除、消息身份及提示词先于请求的顺序检查适用于当前 generation；保留的前代维持其历史表示。适配器注册预期输出、Session 日志与可选 `workspace.expected/` 比较；保护会拒绝遗留目录、缺失角色、非规范名称、绝对路径、格式错误的 manifest 与平台专用分隔符。
+كل قد سجل Session دليل يحمل غلاف إغلاق `snapshot.yml` manifest، و مواصفة parent و وصل متابعة child زاوية لون.parent ملف اسم هو `session[.vN].jsonl`؛child هو `session.<ordinal>[.vN].jsonl`؛v0 حذف `.v0`، صحيح إصدار استخدام صغير كتابة `.vN`، كما كل ملف اسم و ذلك header متسق. واحد زاوية لون يمكن إبقاء قديم generation، لكن harness سوف اختيار عدد قيمة الأكثر عال واحد بند. يملك fixture manifest يمكن إعلان `sessionFormat.version` و واحد أو كثير عدد غلاف إغلاق `coverage` اسم، يأخذ هذا تاريخ generation إبقاء لـ صريح ترحيل fixture؛ حذف هذا حقل وقت تتبع مع حالي writer.manifest أيضا سوف إشارة اسم مشهد، مع مرفق profile، تركيب/header صنف آخر، تسجيل صنع مصدر، و قد إتمام Session لا يمكن إعادة بناء replay، منصة، إذن، بيئة،workspace أو إدخال واقع. تخزين حفظ حماية فحص كل اختيار تحديد parent و child زاوية لون أداة نتيجة و يمكن نقل غرس مسار. نص التوجيه/schema مسح حذف، رسالة هوية و نص التوجيه أولا في طلب ترتيب فحص ملائم لأجل حالي generation؛ إبقاء قبل بديل صيانة حمل ذلك تاريخ يمثل. مهايئ تسجيل مسبق مدة إخراج،Session سجل و اختياري `workspace.expected/` مقارنة مقارنة؛ حفظ حماية سوف رفض متروك إبقاء دليل، ناقص زاوية لون، غير مواصفة اسم، قطعا مقابل مسار، صيغة خطأ manifest و منصة مخصص استخدام قسم فصل رمز.
 
-`normalizeSessionSnapshot` 在规范化路径并擦除系统提示文本与工具 schema 后，会保留完整 Session header 与事件 payload，但从已提交 fixture 中省略顶层 `seq`/`time` envelope；它还会规范化嵌入式 stream clock 与历史 packed-row 的 `seq0`/`time0` envelope 与 catalog child 创建时钟。事件顺序与来源事件引用保持不变。Replay 只在内存中合成顶层 envelope，而运行时持久化仍写入完整日志。多 Session 比较会先通过严格的构建期静态 Session 格式目录校验预期日志与收集日志，再进行身份脱敏与规范化；来源文件名不能改变格式校验。保留的历史 replay 输入不是原生当前格式 writer 输出的比较基准：结构迁移保留请求含义，但可以产生不同的事件布局。归一化保留意外的 request-header 字段（包括 `system`），使回归保持可见。无版本的协议适配器单元测试 fixture 不属于已发布 Session 格式语料。[当前写入器格式](../../../docs/session-format-status.zh.md)的 fixture 每个事件占一行；保留的 v0/v1 fixture 可以使用规范 packed row。[临时仓库迁移器](../../../scripts/migrate-packed-session-fixtures.ts)（`pnpm run migrate:packed-session-fixtures`）会改写更旧的历史布局，由其[移除提案](../../../.agents/notes/proposed/process/2026-07-26-remove-packed-session-fixture-migrator.zh.md)负责删除该迁移器。
+`normalizeSessionSnapshot` في مواصفة تحويل مسار و مسح حذف نظام تلميح نص و أداة schema بعد، سوف إبقاء كامل Session header و حدث payload، لكن من قد إيداع fixture في حذف قمة طبقة `seq`/`time` envelope؛ هو أيضا سوف مواصفة تحويل تضمين دخول صيغة stream clock و تاريخ packed-row `seq0`/`time0` envelope و catalog child إنشاء وقت ساعة. حدث ترتيب و مصدر حدث مرجع إبقاء ثابت.Replay فقط في داخل تخزين في دمج صار قمة طبقة envelope، بينما وقت التشغيل حفظ دائم ما زال كتابة كامل سجل. كثير Session مقارنة مقارنة سوف أولا عبر صارم إطار بناء مدة ساكن حالة Session صيغة دليل تحقق مسبق مدة سجل و استلام تجميع سجل، مجددا إجراء هوية انفصال حساس و مواصفة تحويل؛ مصدر ملف اسم لا يستطيع تغيير صيغة تحقق. إبقاء تاريخ replay إدخال لا هو أصلي حالي صيغة writer إخراج مقارنة مقارنة أساس دقيق: بنية ترحيل إبقاء طلب يحتوي معنى، لكن يمكن إنتاج مختلف حدث تخطيط. عودة واحد تحويل إبقاء معنى خارج request-header حقل (يشمل `system`) ، جعل ارتداد إبقاء مرئي. بلا إصدار بروتوكول مهايئ اختبار وحدة fixture لا يخص قد إصدار Session صيغة لغة مادة.[حالي كتابة جهاز صيغة](../../../docs/session-format-status.zh.md) fixture كل حدث احتلال واحد سطر؛ إبقاء v0/v1 fixture يمكن استخدام مواصفة packed row.[مؤقت مستودع ترحيل جهاز](../../../scripts/migrate-packed-session-fixtures.ts)(`pnpm run migrate:packed-session-fixtures`) سوف تعديل كتابة أكثر قديم تاريخ تخطيط، من ذلك[إزالة رفع سجل](../../../.agents/notes/proposed/process/2026-07-26-remove-packed-session-fixture-migrator.zh.md) مسؤول حذف هذا ترحيل جهاز.
 
-spill 场景通过真实本地提供方保存到私有临时根目录。fixture 适配器提供固定长度的逻辑定位符，并仅将本次运行已保存的定位符映射回实际文件以供检索，在不写入共享逻辑路径的情况下保留预览预算。已知的快照 spill 路径会规范化为稳定的定位符 token，包括 JSON 省略通知中带引号、使用 JSON 转义 Windows 分隔符的路径。刷新提取会保留匹配路径的序列化写法，以便进行字面替换。规范化只改变定位符：保存字节数与省略计数仍作为比较证据。
+spill مشهد عبر حقيقي محلي مزود حفظ إلى خاص مؤقت أصل دليل.fixture مهايئ توفير ثابت طويل درجة منطق تحديد موضع رمز، و فقط سوف هذا مرة تشغيل قد حفظ تحديد موضع رمز خريطة عودة فعلي ملف بـ توفير فحص بحث، في لا كتابة مشترك منطق مسار حال حال تحت إبقاء معاينة ميزانية. معروف لقطة spill مسار سوف مواصفة تحويل لـ مستقر تحديد موضع رمز token، يشمل JSON حذف إشعار في حمل جذب رقم، استخدام JSON تحويل معنى Windows قسم فصل رمز مسار. تحديث جديد رفع أخذ سوف إبقاء مطابقة مسار تسلسل تحويل كتابة قاعدة، بـ سهل إجراء حرف وجه استبدال. مواصفة تحويل فقط تغيير تحديد موضع رمز: حفظ بايت عدد و حذف حساب عدد ما زال بصفة مقارنة مقارنة دليل.
 
-保留历史输入的场景保持规范 Session 文件不变，并继续选择它们进行回放；固定历史版本的目录中没有更新的规范同角色文件。其精确的规范化原生当前格式输出单独记录在父会话的 `writer.expected.jsonl` 和子会话的 `writer.<ordinal>.expected.jsonl` 中；这些是输出比较基准，而非 replay 代际。保留历史输入的 SDK 场景使用 `notifications.current.expected.jsonl` 记录当前协议输出。比较既不将当前事件反向投影为历史格式，也不剥除结构差异。独立迁移测试验证正式转换，而不把原生 writer 布局当作其预期事件序列。
+إبقاء تاريخ إدخال مشهد إبقاء مواصفة Session ملف ثابت، و متابعة اختيار هو جمع إجراء إعادة تشغيل؛ ثابت تاريخ إصدار دليل في لا يوجد تحديث مواصفة نفس زاوية لون ملف. ذلك دقيق مواصفة تحويل أصلي حالي صيغة إخراج مفرد وحيد سجل في أب جلسة `writer.expected.jsonl` و فرعي جلسة `writer.<ordinal>.expected.jsonl` في؛ هذه هو إخراج مقارنة مقارنة أساس دقيق، بينما غير replay بديل حد. إبقاء تاريخ إدخال SDK مشهد استخدام `notifications.current.expected.jsonl` سجل حالي بروتوكول إخراج. مقارنة مقارنة حيث لا سوف حالي حدث عكس نحو إسقاط لـ تاريخ صيغة، أيضا لا تقشير حذف بنية فرق مختلف. مستقل ترحيل اختبار تحقق صحيح صيغة تحويل، بينما لا يأخذ أصلي writer تخطيط عند عمل ذلك مسبق مدة حدث تسلسل.
 
-### 录制、回放与刷新
+### تسجيل صنع، إعادة تشغيل و تحديث جديد
 
-`pnpm run test:snapshot:record` 调用在线 LLM（大语言模型），并在规范具名版本文件下写入收集到的当前 generation。record 与 refresh 绝不重命名或删除已完成的 generation，即使后续运行不再产生某个 child 角色也一样；受审阅的源树整理只有在同角色存在已验证的当前替代文件后才移除前代。显式声明 `sessionFormat` 的场景在录制模式下保持只读。`pnpm run test:snapshot:refresh` 保持无密钥，运行选定的最高 replay 输入，并写入 stdout、各 pin 自有的提示词与工具 schema 伴随文件，以及新鲜当前 generation 的可比较 Session 输出；保留历史输入的场景写入单独的 writer 输出比较基准，而非规范当前格式 replay 代际。每个组合 owner 把 replay patch 放在 live patch 旁；顶层 `snapshots/` 拥有 Session 驱动场景，其他预期输出留在其 package owner 旁。[`dsh-llm-replay`](../llm-replay/README.zh.md) 提供通过 `DSH_SNAPSHOT_*` 环境值选择的已记录流。
+`pnpm run test:snapshot:record` استدعاء في خط LLM(كبير لغة نموذج) ، و في مواصفة أداة اسم إصدار ملف تحت كتابة استلام تجميع إلى حالي generation.record و refresh أبدا إعادة تسمية أو حذف قد إتمام generation، أي جعل لاحق تشغيل لم يعد إنتاج بعض عدد child زاوية لون أيضا واحد مثال؛ تلقي مراجعة قراءة مصدر شجرة كامل إدارة فقط لديه في نفس زاوية لون وجود قد تحقق حالي بديل ملف بعد عندئذ إزالة قبل بديل. صريح إعلان `sessionFormat` مشهد في تسجيل صنع نمط تحت إبقاء فقط قراءة.`pnpm run test:snapshot:refresh` إبقاء بلا مفتاح، تشغيل اختيار تحديد الأكثر عال replay إدخال، و كتابة stdout، كل pin ذاتي لديه نص التوجيه و أداة schema مرافق مع ملف، و جديد طازج حالي generation يمكن مقارنة مقارنة Session إخراج؛ إبقاء تاريخ إدخال مشهد كتابة مفرد وحيد writer إخراج مقارنة مقارنة أساس دقيق، بينما غير مواصفة حالي صيغة replay بديل حد. كل تركيب owner يأخذ replay patch وضع في live patch جانب؛ قمة طبقة `snapshots/` يملك Session قيادة مشهد، أخرى مسبق مدة إخراج إبقاء في ذلك package owner جانب.[`dsh-llm-replay`](../llm-replay/README.zh.md) توفير عبر `DSH_SNAPSHOT_*` بيئة قيمة اختيار قد سجل تدفق.
 
-### 固定请求 header 与系统提示
+### ثابت طلب header و نظام تلميح
 
-每个 pin 默认拥有其生成的 `system-prompt.expected.md` 或 `tool-schemas.expected.json` 伴随文件；当完整的对应序列相同时，`systemPromptSource` 与 `toolSchemasSource` 指定另一个 pin 作为来源，因此每个不同版本只提交一次。系统提示是 surface 节点 0，作为 `system/message` 事件记录在该步骤第一个 `request/header` 之前；每个 fixture 把其文本块存储为 `"text":"{{system}}"`，提示词伴随文件保留完整文本。该 pin 的 `request/header` 事件存储 `"tools":"{{tools}}"`，同时保留配置与原因，结构化 schema 伴随文件保留完整目录。自身作用域组合出不同请求的 child Session 按 fixture 索引以 `pinsChildToolSchemas` 与 `pinsChildSystemPrompts` 单独声明。运行中改变请求 header 的场景声明 `expectedHeaderChanges`；运行中提示词发生变化的场景——替换节点 0，或在 `in-history` 路由上追加到已缓存历史之后——声明 `expectedPromptChanges`，每次变化在提示词伴随文件中增加一个 `<!-- system/message change N -->` 小节。manifest 中对应字段为 `header.changes` 与 `header.promptChanges`。
+كل pin افتراضي يملك ذلك توليد `system-prompt.expected.md` أو `tool-schemas.expected.json` مرافق مع ملف؛ عند كامل مقابل تسلسل نفسه وقت،`systemPromptSource` و `toolSchemasSource` إشارة تحديد آخر عدد pin بصفة مصدر، لذلك كل مختلف إصدار فقط إيداع مرة. نظام تلميح هو surface عقدة 0، بصفة `system/message` حدث سجل في هذا خطوة رقم واحد `request/header` قبل؛ كل fixture يأخذ ذلك نص كتلة تخزين لـ `"text":"{{system}}"`، نص التوجيه مرافق مع ملف إبقاء كامل نص. هذا pin `request/header` حدث تخزين `"tools":"{{tools}}"`، معا إبقاء إعداد و سبب، بنية تحويل schema مرافق مع ملف إبقاء كامل دليل. ذاته أثر مجال تركيب خروج مختلف طلب child Session حسب fixture بحث جذب بـ `pinsChildToolSchemas` و `pinsChildSystemPrompts` مفرد وحيد إعلان. تشغيل في تغيير طلب header مشهد إعلان `expectedHeaderChanges`؛ تشغيل في نص التوجيه حدوث تغير مشهد——استبدال عقدة 0، أو في `in-history` توجيه فوق إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد——إعلان `expectedPromptChanges`، كل مرة تغير في نص التوجيه مرافق مع ملف في زيادة واحد `<!-- system/message change N -->` صغير عقدة.manifest في مقابل حقل لـ `header.changes` و `header.promptChanges`.
 
-### 平台与组合变体
+### منصة و تركيب تغيير جسم
 
-需要非 Windows 主机的场景声明 `posixOnly`，在 Windows 上跳过运行测试，但 fixture 保护仍在所有平台覆盖其已提交文件；组合需要可用 `pwsh` 的场景声明 `pwshOnly`。当临时目录授权自身待测时，`workspaceParent` 将生成子级 cwd 移出平台临时区域；场景签入的 `workspace/` 会先复制到该子级，随后 `prepareWorkspace` 在 agent 启动前针对生成 cwd 运行。默认生成的 workspace 在会话 fixture 中存储为 `{{cwd}}`，使平台临时根目录与随机 basename 不影响录制。headless manifest 在测试 Session workspace 授权本身时使用 `workspace.parent: outside-temp`。适配器在父目录可写且位于系统临时授权之外时，于平台临时根目录旁分配目录，否则使用 home，并拒绝已被自动临时写授权覆盖的生成 cwd。
+حاجة غير Windows رئيسي آلة مشهد إعلان `posixOnly`، في Windows فوق قفز مرور تشغيل اختبار، لكن fixture حفظ حماية ما زال في كل منصة تغطية ذلك قد إيداع ملف؛ تركيب حاجة متاح `pwsh` مشهد إعلان `pwshOnly`. عند مؤقت دليل تخويل ذاته انتظار قياس وقت،`workspaceParent` سوف توليد فرعي درجة cwd نقل خروج منصة مؤقت منطقة مجال؛ مشهد توقيع دخول `workspace/` سوف أولا نسخ إلى هذا فرعي درجة، مع بعد `prepareWorkspace` في agent بدء قبل إبرة مقابل توليد cwd تشغيل. افتراضي توليد workspace في جلسة fixture في تخزين لـ `{{cwd}}`، جعل منصة مؤقت أصل دليل و مع آلة basename لا أثر تسجيل صنع.headless manifest في اختبار Session workspace تخويل ذاته وقت استخدام `workspace.parent: outside-temp`. مهايئ في أب دليل يمكن كتابة كما يقع في نظام مؤقت تخويل خارج وقت، في منصة مؤقت أصل دليل جانب قسم إعداد دليل، لا فإن استخدام home، و رفض قد يتم تلقائي مؤقت كتابة تخويل تغطية توليد cwd.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-- **子会话轮次等待失败**——即使首次日志收集就超过期限，`waitForSubagentTurnEnd` 也会指出子会话、目标轮次与等待期限，并通过错误的 cause 保留底层失败。
-- **fixture 保护拒绝已提交文件**——遗留场景目录、缺失文件、一个 header 类别包含多个 pin、重复的伴随文件内容、未擦除的提示文本或工具 schema、没有前置 `system/message` 的 `request/header`，以及格式错误的 pin header 都会在比较运行前使套件失败。
-- **会话收集需要原始 JSONL mode**——快照配置使用 JSONL 后端的 `compression: 'none'`；压缩 JSONL 没有快照收集路径。
-- **构建 mode 需要当前产物**——选择 `DSH_EXAMPLE_MODE=lib` 前先运行 `pnpm run build`；源 mode 仍是零构建路径。
+- **فرعي جلسة جولة انتظار فشل**——أي جعل أول مرة سجل استلام تجميع حينئذ تجاوز مرور مدة حد،`waitForSubagentTurnEnd` أيضا سوف إشارة خروج فرعي جلسة، هدف جولة و انتظار مدة حد، و عبر خطأ cause إبقاء قاع طبقة فشل.
+- **fixture حفظ حماية رفض قد إيداع ملف**——متروك إبقاء مشهد دليل، ناقص ملف، واحد header صنف آخر يتضمن كثير عدد pin، تكرار مرافق مع ملف محتوى، لم مسح حذف تلميح نص أو أداة schema، لا يوجد قبل وضع `system/message` `request/header`، و صيغة خطأ pin header كل سوف في مقارنة مقارنة تشغيل قبل جعل طقم عنصر فشل.
+- **جلسة استلام تجميع حاجة أصلي JSONL mode**——لقطة إعداد استخدام JSONL خلفية `compression: 'none'`؛ ضغط JSONL لا يوجد لقطة استلام تجميع مسار.
+- **بناء mode حاجة حالي ناتج**——اختيار `DSH_EXAMPLE_MODE=lib` قبل أولا تشغيل `pnpm run build`؛ مصدر mode ما زال هو صفر بناء مسار.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释工具包的设计；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير أداة حزمة تصميم؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计
+### تصميم
 
-共享核心拥有 manifest、generation 限定角色选择、workspace 设置／比较、类型化身份映射、normalizer 与 fixture 不变式。ACP 适配器增加四个可组合层：launcher、场景 harness、normalizer 与 suite factory。`launchAcpTestAgent` 在 tsx 下启动源码 profile，或在普通 Node 下启动已构建 `lib` profile，通过原始字节 stdout tee 连接 SDK client，收集 Session update 与 stderr，默认拒绝未处理的权限请求，并负责关闭。`runScenario` 驱动 ACP JSON-RPC stdio，并收集每个 Session 目录中数值最高的持久原始 JSONL generation。纯 normalizer 把 cwd 路径与类型化身份变为稳定 token，将时间归零、展开物理来源区间，并擦除系统提示词文本与工具 schema bulk。`defineAcpSnapshotSuite` 注册比较、generation 限定 fixture 回写与实时一致性保护。
+مشترك نواة قلب يملك manifest،generation حد تحديد زاوية لون اختيار،workspace ضبط/مقارنة مقارنة، نوع تحويل هوية خريطة،normalizer و fixture ثابت صيغة.ACP مهايئ زيادة أربعة عدد يمكن تركيب طبقة:launcher، مشهد harness،normalizer و suite factory.`launchAcpTestAgent` في tsx تحت بدء شفرة المصدر profile، أو في عادي Node تحت بدء قد بناء `lib` profile، عبر أصلي بايت stdout tee اتصال SDK client، استلام تجميع Session update و stderr، افتراضي رفض لم معالجة إذن طلب، و مسؤول إغلاق.`runScenario` قيادة ACP JSON-RPC stdio، و استلام تجميع كل Session دليل في عدد قيمة الأكثر عال حمل دائم أصلي JSONL generation. صاف normalizer يأخذ cwd مسار و نوع تحويل هوية تغيير لـ مستقر token، سوف وقت عودة صفر، توسيع شيء إدارة مصدر منطقة بين، و مسح حذف توجيه النظام نص و أداة schema bulk.`defineAcpSnapshotSuite` تسجيل مقارنة مقارنة،generation حد تحديد fixture عودة كتابة و فوري متسق صفة حفظ حماية.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/launcher.ts`](src/launcher.ts) | 子进程/客户端启动器与关闭所有权 |
-| [`src/harness.ts`](src/harness.ts) | 脚本化场景驱动与会话日志收集 |
-| [`src/manifest.ts`](src/manifest.ts) | 封闭 `snapshot.yml` schema、收集与归属规则 |
-| [`src/session-files.ts`](src/session-files.ts) | 规范 parent/child generation grammar、header 一致性与最高角色选择 |
-| [`src/identity.ts`](src/identity.ts) | 跨父子日志的类型化首次出现身份 token 化 |
-| [`src/normalize.ts`](src/normalize.ts) | 纯规范化器与擦除辅助 |
-| [`src/workspace.ts`](src/workspace.ts) | 场景 workspace 设置与完整预期状态比较 |
-| [`src/suite.ts`](src/suite.ts) | 场景表套件工厂、fixture 保护、录制/刷新回写 |
-| [`src/index.ts`](src/index.ts) | 再导出四个层的包入口 |
-| — | 不发布运行时不变式伴生入口；该测试支持包不拥有任何生产事件流或可变数据；消费它的测试套件会检验该工具包。 |
+| [`src/launcher.ts`](src/launcher.ts) | عملية فرعية/عميل بدء جهاز و إغلاق كل حق |
+| [`src/harness.ts`](src/harness.ts) | نص برمجي تحويل مشهد قيادة و جلسة سجل استلام تجميع |
+| [`src/manifest.ts`](src/manifest.ts) | غلاف إغلاق `snapshot.yml` schema، استلام تجميع و ملكية قاعدة |
+| [`src/session-files.ts`](src/session-files.ts) | مواصفة parent/child generation grammar،header متسق صفة و الأكثر عال زاوية لون اختيار |
+| [`src/identity.ts`](src/identity.ts) | عبر أب فرعي سجل نوع تحويل أول مرة ظهور هوية token تحويل |
+| [`src/normalize.ts`](src/normalize.ts) | صاف مواصفة تحويل جهاز و مسح حذف مساعد مساعدة |
+| [`src/workspace.ts`](src/workspace.ts) | مشهد workspace ضبط و كامل مسبق مدة حالة مقارنة مقارنة |
+| [`src/suite.ts`](src/suite.ts) | مشهد جدول طقم عنصر عمل مصنع،fixture حفظ حماية، تسجيل صنع/تحديث جديد عودة كتابة |
+| [`src/index.ts`](src/index.ts) | مجددا توجيه خروج أربعة عدد طبقة حزمة مدخل |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذا اختبار دعم حمل حزمة لا يملك أي إنتاج حدث تدفق أو متغير بيانات؛ إزالة استهلاك هو اختبار طقم عنصر سوف فحص تحقق هذا أداة حزمة. |
 
-### 数据流
+### بيانات تدفق
 
-场景在启动器下运行 agent，通过 harness 向它喂入输入脚本，并捕获 stdout 与持久化日志。规范化器把捕获内容规范化——id 转为首次出现序列、生成 cwd 转为 `{{cwd}}`、`system/message` 文本转为 `{{system}}`、header 工具 schema 转为 `{{tools}}`——使已录制与本次运行可以结构化比较。随后工厂把规范化 stdout 与重新持久化日志同已提交 fixture 比较，或在录制/刷新模式下回写它们；其保护在任何比较结果被采信之前就拒绝畸形或漂移的 fixture。
+مشهد في بدء جهاز تحت تشغيل agent، عبر harness نحو هو تغذية دخول إدخال نص برمجي، و التقاط stdout و حفظ دائم سجل. مواصفة تحويل جهاز يأخذ التقاط محتوى مواصفة تحويل——id تحويل لـ أول مرة ظهور تسلسل، توليد cwd تحويل لـ `{{cwd}}`،`system/message` نص تحويل لـ `{{system}}`،header أداة schema تحويل لـ `{{tools}}`——جعل قد تسجيل صنع و هذا مرة تشغيل يمكن بنية تحويل مقارنة مقارنة. مع بعد عمل مصنع يأخذ مواصفة تحويل stdout و إعادة حفظ دائم سجل نفس قد إيداع fixture مقارنة مقارنة، أو في تسجيل صنع/تحديث جديد نمط تحت عودة كتابة هو جمع؛ ذلك حفظ حماية في أي مقارنة مقارنة نتيجة يتم أخذ معلومة قبل حينئذ رفض شاذ شكل أو عائم نقل fixture.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从快照工具包逐步进入模型 fixture 来源、启动机制与要求该层级存在的策略。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من لقطة أداة حزمة تدريجي خطوة دخول نموذج fixture مصدر، بدء آلية و اشتراط هذا طبقة درجة وجود سياسة.
 
-- [llm-replay](../llm-replay/README.zh.md)——回放模式消费的无密钥模型 fixture 来源。
-- [loader-smoke](../loader-smoke/README.zh.md)——启动器所依赖的模式感知子进程启动机制。
-- [测试策略](../../../docs/testing.zh.md)——无密钥快照层、其适用时机与 fixture 归属规则。
-- [test-support 组地图](../README.zh.md)——兄弟 harness 与支持包。
+- [llm-replay](../llm-replay/README.zh.md)——إعادة تشغيل نمط إزالة استهلاك بلا مفتاح نموذج fixture مصدر.
+- [loader-smoke](../loader-smoke/README.zh.md)——بدء جهاز الذي اعتماد نمط شعور معرفة عملية فرعية بدء آلية.
+- [اختبار سياسة](../../../docs/testing.zh.md)——بلا مفتاح لقطة طبقة، ذلك ملائم استخدام وقت آلة و fixture ملكية قاعدة.
+- [test-support مجموعة أرض رسم](../README.zh.md)——أخ أخ harness و دعم حمل حزمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该测试专用支持会记录、规范化并比较 profile 会话，不会改变 agent 组装的模型请求。
+بلا. هذا اختبار مخصص استخدام دعم حمل سوف سجل، مواصفة تحويل و مقارنة مقارنة profile جلسة، لن تغيير agent تجميع نموذج طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包既不组装也不发送提供方请求。
+بلا؛ هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明何时需要对该工具包特别小心。它们是当前包约束，不是任务积压。
+هذه حد شرح أي وقت حاجة مقابل هذا أداة حزمة خاص آخر صغير قلب. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **会话收集需要原始 JSONL mode**——`runScenario` 收集持久化 `.jsonl` 日志，因此快照配置使用 JSONL 后端的 `compression: 'none'`；压缩 JSONL 没有快照收集路径。
-- **构建 mode 需要当前产物**——选择 `DSH_EXAMPLE_MODE=lib` 前先运行 `pnpm run build`；源 mode 仍是零构建路径。
-- **ACP 继续覆盖协议行为**——刺激来自 ACP 客户端的取消与权限往返留在该适配器；组装式一次性行为与持久控制行为使用 headless 与 SDK 适配器。
+- **جلسة استلام تجميع حاجة أصلي JSONL mode**——`runScenario` استلام تجميع حفظ دائم `.jsonl` سجل، لذلك لقطة إعداد استخدام JSONL خلفية `compression: 'none'`؛ ضغط JSONL لا يوجد لقطة استلام تجميع مسار.
+- **بناء mode حاجة حالي ناتج**——اختيار `DSH_EXAMPLE_MODE=lib` قبل أولا تشغيل `pnpm run build`؛ مصدر mode ما زال هو صفر بناء مسار.
+- **ACP متابعة تغطية بروتوكول سلوك**——وخز تنشيط قدوم ذاتي ACP عميل إلغاء و إذن نحو إرجاع إبقاء في هذا مهايئ؛ تجميع صيغة مرة صفة سلوك و حمل دائم تحكم سلوك استخدام headless و SDK مهايئ.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

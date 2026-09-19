@@ -1,31 +1,31 @@
-# Agent Note: serial-windows 的 notices 超时预算与 generator store 扫描成本
+# Agent Note: serial-windows notices مهلة ميزانية و generator store مسح صار هذا
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-31-serial-windows-notices-timeout-budget.md) | 中文
+[English](2026-08-31-serial-windows-notices-timeout-budget.md) | العربية
 
 ## Problem
 
-`serial / windows (self-hosted standby)` master lane 一周内四次失败在 `test:coverage` gate（run 33333033178、33311481884、33352293522、33353113100），失败用例每次都相同：`scripts/gen-third-party-notices.spec.ts > THIRD_PARTY_NOTICES.md > matches what the generator produces from the current manifests`，报 `Error: Test timed out in 5000ms`。共享 Windows 主机上该用例实测 4149–8853 ms，超出 Vitest 默认的 5000 ms 单测预算。文件其余 26 个用例全部 0–3 ms 通过，两小时后的 passing run（33360033028）用同一份代码全绿。
+`serial / windows (self-hosted standby)` master lane واحد دورة داخل أربعة مرة فشل في `test:coverage` gate(run 33333033178،33311481884،33352293522،33353113100) ، فشل حالة استخدام كل مرة كل نفسه:`scripts/gen-third-party-notices.spec.ts > THIRD_PARTY_NOTICES.md > matches what the generator produces from the current manifests`، تقرير `Error: Test timed out in 5000ms`. مشترك Windows رئيسي آلة فوق هذا حالة استخدام فعلي قياس 4149–8853 ms، تجاوز خروج Vitest افتراضي 5000 ms مفرد قياس ميزانية. ملف ذلك بقية 26 عدد حالة استخدام الكل 0–3 ms عبر، اثنان صغير وقت بعد passing run(33360033028) استخدام نفس نسخة شفرة كل أخضر.
 
-该 lane 以 `DSH_COVERAGE_MAX_WORKERS=1` 串行跑完整的无分片 Windows gate 清单，`render()` 要从 workspace manifest 和已安装的 pnpm store 全量重生成 `THIRD_PARTY_NOTICES.md`，而主机被 32 个 runner 共享。冷路径的代价集中在 `workspaceLinkedManifest`：它对每个未缓存的外部依赖名重跑一遍 `loadWorkspaceManifests()`——glob 并读取、解析全部 workspace `package.json`——即 130 名 × 270 manifest ≈ 3.5 万次文件操作，另加每个名字一次 `.pnpm` store 扫描。叠加 v8 覆盖率插桩与共享主机 I/O 争抢后越过 5 秒默认值。
+هذا lane بـ `DSH_COVERAGE_MAX_WORKERS=1` سلسلة سطر ركض كامل بلا قسم قطعة Windows gate بيان،`render()` يلزم من workspace manifest و قد تثبيت pnpm store كل كمية إعادة توليد `THIRD_PARTY_NOTICES.md`، بينما رئيسي آلة يتم 32 عدد runner مشترك. بارد مسار بديل قيمة تجميع في في `workspaceLinkedManifest`: هو مقابل كل لم ذاكرة مؤقتة خارجي اعتماد اسم إعادة ركض واحد مرة `loadWorkspaceManifests()`——glob و قراءة، تحليل الكل workspace `package.json`——أي 130 اسم × 270 manifest ≈ 3.5 ألف مرة ملف عملية، آخر إضافة كل اسم حرف مرة `.pnpm` store مسح. تراكم إضافة v8 نسبة التغطية إدراج وتد و مشترك رئيسي آلة I/O تنازع انتزاع بعد تجاوز مرور 5 ثانية قيمة افتراضية.
 
-该 lane 还没有 `DSH_COVERAGE_TEST_TIMEOUT_MS`，而 pull-request 的 `windows-coverage` lane（[ci.yml](../../../../.github/workflows/ci.yml)）给的是 90000 ms——于是这条 serial 参考 lane 用全仓库最紧的预算跑同一份 coverage 清单。
+هذا lane أيضا لا يوجد `DSH_COVERAGE_TEST_TIMEOUT_MS`، بينما pull-request `windows-coverage` lane([ci.yml](../../../../.github/workflows/ci.yml)) إعطاء هو 90000 ms——في هو هذا بند serial مشاركة اعتبار lane استخدام كل مستودع الأكثر ضيق ميزانية ركض نفس نسخة coverage بيان.
 
 ## Decision
 
-两处改动：
+اثنان موضع تعديل:
 
-1. [scripts/gen-third-party-notices.ts](../../../../scripts/gen-third-party-notices.ts) 在 `render()` 里只加载一次 workspace manifest，把 map 沿 `collectNpmDeps` → `installedMetadata` → `installedManifest` → `workspaceLinkedManifest` 显式传递，不再按外部依赖名逐个重载。同一 checkout 下冷 `render()` 墙钟从约 893 ms 降到约 86 ms，输出逐字节一致（改动前后渲染结果 diff 验证）。
+1. [scripts/gen-third-party-notices.ts](../../../../scripts/gen-third-party-notices.ts) في `render()` داخل فقط تحميل مرة workspace manifest، يأخذ map امتداد `collectNpmDeps` → `installedMetadata` → `installedManifest` → `workspaceLinkedManifest` صريح نقل تمرير، لم يعد حسب خارجي اعتماد اسم تدريجي عدد إعادة تحميل. نفس checkout تحت بارد `render()` جدار ساعة من نحو 893 ms خفض إلى نحو 86 ms، إخراج تدريجي بايت متسق (تعديل قبل بعد تصيير نتيجة diff تحقق).
 
-2. [ci-master.yml](../../../../.github/workflows/ci-master.yml) `serial-windows` 的 "Run complete unsharded Windows gate inventory serially" 步骤增加 `DSH_COVERAGE_TEST_TIMEOUT_MS: '90000'`，与 pull-request `windows-coverage` lane 对齐。这是把 [Windows 覆盖率 lane 的 hook 预算与 Lefthook 套件预算 note](../testing/2026-08-29-windows-lane-hook-and-lefthook-budget.zh.md) 定义的 per-test、expect.poll 与 hook 预算机制扩展到第二个 lane；该 note 记录了哪些 lane 设置此 env。`scripts/ci-workflow.spec.ts` 用 `toMatchObject` 断言钉住该 env；删掉 env 会让 spec 变红（已做负例验证）。
+2. [ci-master.yml](../../../../.github/workflows/ci-master.yml) `serial-windows` "Run complete unsharded Windows gate inventory serially" خطوة زيادة `DSH_COVERAGE_TEST_TIMEOUT_MS: '90000'`، و pull-request `windows-coverage` lane مقابل متساو. هذا هو يأخذ [Windows نسبة التغطية lane hook ميزانية و Lefthook طقم عنصر ميزانية note](../testing/2026-08-29-windows-lane-hook-and-lefthook-budget.zh.md) تعريف per-test،expect.poll و hook ميزانية آلية توسيع إلى ثاني عدد lane؛ هذا note سجل أي بعض lane ضبط هذا env.`scripts/ci-workflow.spec.ts` استخدام `toMatchObject` تأكيد تثبيت إقامة هذا env؛ حذف إسقاط env سوف يجعل spec تغيير أحمر (قد فعل سالب مثال تحقق).
 
 ## Alternatives considered
 
-- **只放宽 lane 预算** - 否决作为唯一修复：会掩盖所有运行 generator 的 lane 上的 O(名×manifest) 重载成本，包括 pre-commit hook 与独立 `--check` 路径。
-- **给 `loadWorkspaceManifests()` 加模块级缓存** - 否决，改用显式传递：把「单次加载」契约留在调用点可见，避免在 `workspaceLinkedManifestCache` 之外再加一层隐藏缓存。
+- **فقط وضع عرض lane ميزانية** - مرفوض بصفة وحيد إصلاح: سوف إخفاء غطاء كل تشغيل generator lane فوق O(اسم×manifest) إعادة تحميل صار هذا، يشمل pre-commit hook و مستقل `--check` مسار.
+- **إعطاء `loadWorkspaceManifests()` إضافة وحدة درجة ذاكرة مؤقتة** - مرفوض، تعديل استخدام صريح نقل تمرير: يأخذ «مفرد مرة تحميل» عقد نحو إبقاء في استدعاء نقطة مرئي، تجنب تجنب في `workspaceLinkedManifestCache` خارج مجددا إضافة واحد طبقة إخفاء ذاكرة مؤقتة.
 
 ## Consequences
 
-generator 每次 `render()` 调用只加载一次 manifest 来解析已安装元数据，并在调用开头清空按名字作键的 linked-manifest 缓存，使缓存不会活过它解析自的那份 map。serial-windows lane 与 pull-request coverage lane 一样按 90000 ms 单测预算跑 coverage 清单。`THIRD_PARTY_NOTICES.md` 字节不变；新鲜度 spec 仍把 `render()` 与已提交文档逐字节比较。
+generator كل مرة `render()` استدعاء فقط تحميل مرة manifest قدوم تحليل قد تثبيت بيانات وصفية، و في استدعاء فتح رأس صاف فارغ حسب اسم حرف عمل مفتاح linked-manifest ذاكرة مؤقتة، جعل ذاكرة مؤقتة لن نشط مرور هو تحليل ذاتي ذلك نسخة map.serial-windows lane و pull-request coverage lane واحد مثال حسب 90000 ms مفرد قياس ميزانية ركض coverage بيان.`THIRD_PARTY_NOTICES.md` بايت ثابت؛ جديد طازج درجة spec ما زال يأخذ `render()` و قد إيداع وثيقة تدريجي بايت مقارنة مقارنة.

@@ -1,16 +1,16 @@
-# 工作流
+# سير العمل
 
-[English](workflow.md) | 中文
+[English](workflow.md) | العربية
 
-工作流 seam 允许 agent（智能体）运行由模型编写、会启动 subagent 的编排脚本。与 [subagent](subagent.zh.md) 一样，它是**一项可选能力**，不属于 agent loop，因此其类型和操作记录在此处，而非 [core.md](core.zh.md)。与 bash 一样，每个上下文只允许一个引擎实现提供 `ctx.workflowEngine`；没有命名提供方注册表（第二个引擎通过插件配置替换第一个，而不与它同时运行）。
+سير العمل seam سماح agent(ذكي جسم) تشغيل من نموذج تحرير كتابة، سوف بدء subagent تحرير ترتيب نص برمجي. و [subagent](subagent.zh.md) واحد مثال، هو هو**واحد بند اختياري قدرة**، لا يخص agent loop، لذلك ذلك نوع و عملية سجل في هذا موضع، بينما غير [core.md](core.zh.md). و bash واحد مثال، كل سياق فقط سماح واحد جذب محرك تنفيذ توفير `ctx.workflowEngine`؛ لا يوجد تسمية مزود سجل التسجيل (ثاني عدد جذب محرك عبر إضافة إعداد استبدال رقم واحد، بينما لا و هو معا تشغيل).
 
-Service Definition：[dsh-workflow](../../packages/workflow/workflow)（`ctx.workflowEngine` 和下文词汇）。[dsh-workflow-ptc](../../packages/workflow/workflow-ptc)通过共享 Node PTC 进程运行时按调用 Session 的文件策略执行 VM 与辅助函数。消费方为 [dsh-tool-workflow](../../packages/workflow/tool-workflow) 和需显式启用的 [dsh-tool-ralph](../../packages/workflow/tool-ralph)。[工作流沙箱复用](../../.agents/notes/implemented/architecture/2026-09-13-workflow-ptc-sandbox-reuse.zh.md)负责执行选择；[动态工作流决策](../../.agents/notes/implemented/feature/2026-07-05-dynamic-workflows.zh.md)负责脚本语义。
+Service Definition:[dsh-workflow](../../packages/workflow/workflow)(`ctx.workflowEngine` و تحت نص مفردات).[dsh-workflow-ptc](../../packages/workflow/workflow-ptc) عبر مشترك Node PTC عملية وقت التشغيل حسب استدعاء Session ملف سياسة تنفيذ VM و مساعد مساعدة دالة. مستهلك لـ [dsh-tool-workflow](../../packages/workflow/tool-workflow) و يحتاج صريح تفعيل [dsh-tool-ralph](../../packages/workflow/tool-ralph).[سير العمل صندوق رملي إعادة استخدام](../../.agents/notes/implemented/architecture/2026-09-13-workflow-ptc-sandbox-reuse.zh.md) مسؤول تنفيذ اختيار؛[حركة حالة سير العمل قرار](../../.agents/notes/implemented/feature/2026-07-05-dynamic-workflows.zh.md) مسؤول نص برمجي دلالة.
 
-源码：浏览器安全词汇位于 [`packages/workflow/workflow/src/types.ts`](../../packages/workflow/workflow/src/types.ts)，Host 请求与活跃运行句柄位于 [`runtime-types.ts`](../../packages/workflow/workflow/src/runtime-types.ts)。
+شفرة المصدر: متصفح أمان مفردات يقع في [`packages/workflow/workflow/src/types.ts`](../../packages/workflow/workflow/src/types.ts) ،Host طلب و نشط وثب تشغيل جملة مقبض يقع في [`runtime-types.ts`](../../packages/workflow/workflow/src/runtime-types.ts).
 
-## 启动请求
+## بدء طلب
 
-本节定义调用方启动一次运行时提交的请求。普通工作流工具会根据模型的 `{ script, meta, args }` 调用和发起调用的 agent 构建该请求；专用消费方还可以为本次运行选择引擎级 `subagentProvider`，并将 `maxTotalAgents` 调低，但脚本无法观察或替换这两项策略。`meta` 与 `args` 是普通 JSON 数据；引擎会用 schema 校验 `meta`，并在任何工作开始前明确报错并拒绝无效数据。引擎绝不会通过对脚本文本求值来获取它们。`parent` 是必填字段——脚本启动的每个子 agent 都归属于它，cwd、谱系与深度通过 [subagent seam](subagent.zh.md) 传递。
+هذا عقدة تعريف استدعاء جهة بدء مرة وقت التشغيل إيداع طلب. عادي سير العمل أداة سوف أصل حسب نموذج `{ script, meta, args }` استدعاء و إرسال بدء استدعاء agent بناء هذا طلب؛ مخصص استخدام مستهلك أيضا يمكن لـ هذا مرة تشغيل اختيار جذب محرك درجة `subagentProvider`، و سوف `maxTotalAgents` ضبط منخفض، لكن نص برمجي لا يمكن مراقبة أو استبدال هذا اثنان بند سياسة.`meta` و `args` هو عادي JSON بيانات؛ جذب محرك سوف استخدام schema تحقق `meta`، و في أي عمل بدء قبل واضح تقرير خطأ و رفض بلا فاعلية بيانات. جذب محرك أبدا سوف عبر مقابل نص برمجي نص طلب قيمة قدوم نيل أخذ هو جمع.`parent` هو لا بد ملء حقل——نص برمجي بدء كل فرعي agent كل ملكية في هو،cwd، جدول نظام و عميق درجة عبر [subagent seam](subagent.zh.md) نقل تمرير.
 
 ```ts type-equiv
 /**
@@ -36,9 +36,9 @@ interface WorkflowStartRequest {
 }
 ```
 
-## 工作流的身份标识：`WorkflowMeta`
+## سير العمل هوية معرف:`WorkflowMeta`
 
-作为数据附在启动请求上的身份块（工具的 `meta` 参数；字段词汇与 Claude Code 动态工作流的 meta 块一致）。`phases` 仅用于进度展示：`phase()` 调用与标题匹配，供观察者使用；不暗示任何执行结构。
+بصفة بيانات مرفق في بدء طلب فوق هوية كتلة (أداة `meta` معامل؛ حقل مفردات و Claude Code حركة حالة سير العمل meta كتلة متسق).`phases` فقط لأجل دخول درجة عرض:`phase()` استدعاء و عنوان مطابقة، توفير مراقبة من استخدام؛ لا داكن عرض أي تنفيذ بنية.
 
 ```ts type-equiv
 /**
@@ -60,9 +60,9 @@ interface WorkflowMeta {
 }
 ```
 
-## 终态结果：`WorkflowResult`
+## نهاية حالة نتيجة:`WorkflowResult`
 
-`WorkflowRun.result` 会兑现为一次运行的结果。`value` 是脚本的物化返回值——纯宿主域 JSON 数据（脚本无返回值时为 `null`）——仅在 `completed` 时有意义。`stopReason` 是封闭联合类型（由引擎定义；消费方可穷举）：`completed` | `cancelled` | `error`。非 `completed` 的原因在 `error` 中携带失败信息，消费方将其映射为 `isError` 工具结果，而非把部分输出当作成功上报。
+`WorkflowRun.result` سوف صرف الآن لـ مرة تشغيل نتيجة.`value` هو نص برمجي شيء تحويل قيمة راجعة——صاف مضيف مجال JSON بيانات (نص برمجي بلا قيمة راجعة وقت لـ `null`)——فقط في `completed` وقت متعمد معنى.`stopReason` هو غلاف إغلاق ربط دمج نوع (من جذب محرك تعريف؛ مستهلك يمكن نفاد رفع):`completed` | `cancelled` | `error`. غير `completed` سبب في `error` في يحمل فشل معلومة، مستهلك سوف ذلك خريطة لـ `isError` أداة نتيجة، بينما غير يأخذ جزء إخراج عند عمل نجاح فوق تقرير.
 
 ```ts type-equiv
 /**
@@ -90,9 +90,9 @@ interface WorkflowResult {
 }
 ```
 
-## 活跃运行：`WorkflowRun`
+## نشط وثب تشغيل:`WorkflowRun`
 
-消费方等待 `result`，可以在执行期间调用 `cancel`，且必须在每条路径上调用 `dispose`（资源释放）。`result` 绝不拒绝：脚本失败以 `stopReason: 'error'` 兑现，取消以 `'cancelled'` 兑现。PTC 引擎没有整体经过时间截止；取消时立即中止受管进程。资源释放按照各提供方约定等待进程与子 agent 清理，不另设工作流清理截止。
+مستهلك انتظار `result`، يمكن في تنفيذ خلال استدعاء `cancel`، كما يجب في كل بند مسار فوق استدعاء `dispose`(مورد تحرير).`result` أبدا رفض: نص برمجي فشل بـ `stopReason: 'error'` صرف الآن، إلغاء بـ `'cancelled'` صرف الآن.PTC جذب محرك لا يوجد كامل جسم مرور مرور وقت قطع توقف؛ إلغاء وقت قيام أي في توقف تلقي إدارة عملية. مورد تحرير حسب وفق كل مزود اتفاق انتظار عملية و فرعي agent تنظيف، لا آخر ضبط سير العمل تنظيف قطع توقف.
 
 ```ts type-equiv
 /**
@@ -111,21 +111,21 @@ interface WorkflowRun {
 }
 ```
 
-## 失败纪律：`WorkflowError.fatal`
+## فشل سجل قاعدة:`WorkflowError.fatal`
 
-脚本内部的钩子误用：错误参数、未知或延迟的 `agent()` 选项、超出[结构化输出子集](../../packages/core/tools/README.zh.md)的 schema、超出上限、seam 启动失败、取消，都会抛出 `fatal: true` 的 `WorkflowError`。`parallel()`/`pipeline()` 组合器对 fatal 错误直接重新抛出，而非将该项映射为 `null`：一个拼写错误的选项必须明确报错并终止脚本，绝不能消融为看似普通子 agent 失败的结果。逐项的 `null` 保留给子运行失败（非 `completed` 的 stop reason）和阶段内的普通脚本错误。
+نص برمجي داخلي خطاف خطأ استخدام: خطأ معامل، لم معرفة أو تأخير متأخر `agent()` خيار، تجاوز خروج[بنية تحويل إخراج فرعي تجميع](../../packages/core/tools/README.zh.md) schema، تجاوز خروج حد أعلى،seam بدء فشل، إلغاء، كل سوف رمي خروج `fatal: true` `WorkflowError`.`parallel()`/`pipeline()` تركيب جهاز مقابل fatal خطأ مباشر إعادة رمي خروج، بينما غير سوف هذا بند خريطة لـ `null`: واحد تجميع كتابة خطأ خيار يجب واضح تقرير خطأ و إنهاء نص برمجي، أبدا قدرة إزالة دمج لـ نظر يشبه عادي فرعي agent فشل نتيجة. تدريجي بند `null` إبقاء إعطاء فرعي تشغيل فشل (غير `completed` stop reason) و مرحلة مقطع داخل عادي نص برمجي خطأ.
 
-## 事件
+## حدث
 
-`workflow/*` 事件（`workflow/start`、`workflow/phase`、`workflow/log`、`workflow/agent-start`、`workflow/agent-end`、`workflow/end`，见[事件目录](#cordis-surface)）是**仅供观察**的 emit，携带数据快照：每个 payload 以 `WorkflowRunInfo`（id + meta）开头，而非活跃的 `WorkflowRun`，因此订阅者无法获得 `cancel`/`dispose`；`workflow/end` 刻意省略 result value（观察结果的监听器不得收到调用方 result 的可变别名）。每次 emit 对每个监听器隔离：订阅者抛出的异常会被记录到日志中而不会传播，也不会阻止后续注册的监听器收到事件；每个监听器收到自己的 payload 克隆，因此修改它既不会损坏引擎也不会影响其他监听器。这种隔离方式与 `subagent/start`/`subagent/end` 一致。
+`workflow/*` حدث (`workflow/start`،`workflow/phase`،`workflow/log`،`workflow/agent-start`،`workflow/agent-end`،`workflow/end`، رؤية[حدث دليل](#cordis-surface)) هو**فقط توفير مراقبة** emit، يحمل بيانات لقطة: كل payload بـ `WorkflowRunInfo`(id + meta) فتح رأس، بينما غير نشط وثب `WorkflowRun`، لذلك حجز قراءة من لا يمكن نيل نيل `cancel`/`dispose`؛`workflow/end` لحظة معنى حذف result value(مراقبة نتيجة مستمع لا نيل استلام إلى استدعاء جهة result متغير آخر اسم). كل مرة emit مقابل كل مستمع عزل: حجز قراءة من رمي خروج استثناء سوف يتم سجل إلى سجل في بينما لن نقل بث، أيضا لن منع توقف لاحق تسجيل مستمع استلام إلى حدث؛ كل مستمع استلام إلى ذاتي ذات payload تغلب ضخم، لذلك تعديل هو حيث لن ضرر تالف جذب محرك أيضا لن أثر أخرى مستمع. هذا نوع عزل طريقة و `subagent/start`/`subagent/end` متسق.
 
-## 持久 Chat 记录
+## حمل دائم Chat سجل
 
-顶层 `dsh-tool-workflow` 消费方把展示事实投影到调用它的父 Session，同时不改变执行所有权。运行接受后写 `tool-workflow/run-start`，以 `runId + seq` 配对成员开始与结束，并且只在结果已取得且 dispose 完全停稳后写 `tool-workflow/run-end`。嵌套 transport 调用不写记录。第一次 append 失败会禁用本运行后续写入，因此日志保持为空或合法连续前缀，工具结果不变。
+قمة طبقة `dsh-tool-workflow` مستهلك يأخذ عرض واقع إسقاط إلى استدعاء هو أب Session، معا لا تغيير تنفيذ كل حق. تشغيل قبول بعد كتابة `tool-workflow/run-start`، بـ `runId + seq` إعداد مقابل عضو بدء و انتهاء، و كما فقط في نتيجة قد أخذ نيل كما dispose تماما توقف مستقر بعد كتابة `tool-workflow/run-end`. تضمين طقم transport استدعاء لا كتابة سجل. رقم مرة append فشل سوف منع استخدام هذا تشغيل لاحق كتابة، لذلك سجل إبقاء لـ فارغ أو دمج قاعدة وصل متابعة بادئة، أداة نتيجة ثابت.
 
-`dsh-tool-workflow/invariant` 会在实时提交前和 Session 加载时校验同一协议：每个运行只有一个 start，成员序号为正且唯一，成员 end 必须配对，仍有开放成员时不能结束运行，运行结束后不能继续更新。日志尾部缺少成员 end 或 run end 是有效的中断证据，不是损坏。
+`dsh-tool-workflow/invariant` سوف في فوري إيداع قبل و Session تحميل وقت تحقق نفس بروتوكول: كل تشغيل فقط لديه واحد start، عضو ترتيب رقم لـ صحيح كما وحيد، عضو end يجب إعداد مقابل، ما زال لديه فتح وضع عضو وقت لا يستطيع انتهاء تشغيل، تشغيل انتهاء بعد لا يستطيع متابعة تحديث. سجل ذيل جزء نقص قليل عضو end أو run end هو صالح في قطع دليل، لا هو ضرر تالف.
 
-`dsh-client-ui-workflow-run` 通过 Conversation Node 引擎把四类事件折叠为一个 `workflow-run` Chat 节点，以 run-start 序号锚定在原工作流工具节点之后。阶段组只来自真正开始过的成员，并保留精确字符串，包括字段缺省与 `''` 的区别。Location 关闭时，缺失终点会显示为已中断。[界面包 README](../../packages/client/ui-workflow-run/README.zh.md)负责定义 disclosure、状态与同父本地导航行为。
+`dsh-client-ui-workflow-run` عبر Conversation Node جذب محرك يأخذ أربعة صنف حدث طي لـ واحد `workflow-run` Chat عقدة، بـ run-start ترتيب رقم مرساة تحديد في أصل سير العمل أداة عقدة بعد. مرحلة مقطع مجموعة فقط قدوم ذاتي حق صحيح بدء مرور عضو، و إبقاء دقيق نص، يشمل حقل نقص حذف و `''` منطقة آخر.Location إغلاق وقت، ناقص نهاية نقطة سوف عرض لـ قد في قطع.[واجهة حزمة README](../../packages/client/ui-workflow-run/README.zh.md) مسؤول تعريف disclosure، حالة و نفس أب محلي تنقل سلوك.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

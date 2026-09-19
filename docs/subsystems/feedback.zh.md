@@ -1,12 +1,12 @@
-# 消息反馈
+# رسالة عكس تغذية
 
-[English](feedback.md) | 中文
+[English](feedback.md) | العربية
 
-[`@deepseek-ai/dsh-message-feedback`](../../packages/feedback/message-feedback)拥有针对单条 assistant 消息的可编辑反馈。权威 Session 日志保存 `feedback/message-put` 和 `feedback/message-delete`；不可变的 Session 级备注仍使用 `feedback/record`，由 [`@deepseek-ai/dsh-command-feedback`](../../packages/feedback/command-feedback) 连同两种反馈共用的 `FeedbackCategory` 分类表一起拥有。三者都是仅写日志的事件，绝不进入模型上下文。
+[`@deepseek-ai/dsh-message-feedback`](../../packages/feedback/message-feedback) يملك إبرة مقابل مفرد بند assistant رسالة يمكن تحرير عكس تغذية. مرجعي Session سجل حفظ `feedback/message-put` و `feedback/message-delete`؛ غير ممكن تغيير Session درجة ملاحظة ما زال استخدام `feedback/record`، من [`@deepseek-ai/dsh-command-feedback`](../../packages/feedback/command-feedback) وصل نفس اثنان نوع عكس تغذية مشترك استخدام `FeedbackCategory` تصنيف جدول واحد بدء يملك. ثلاثة من كل هو فقط كتابة سجل حدث، أبدا دخول نموذج سياق.
 
-来源：[`packages/feedback/message-feedback/src/types.ts`](../../packages/feedback/message-feedback/src/types.ts)
+مصدر:[`packages/feedback/message-feedback/src/types.ts`](../../packages/feedback/message-feedback/src/types.ts)
 
-## 公开类型
+## عام نوع
 
 ```ts type-equiv
 /** Opaque compare-and-set token for one exact feedback item revision. */
@@ -207,9 +207,9 @@ type MessageFeedbackDeleteResult =
   | MessageFeedbackRejected<MessageFeedbackSessionNotFound | MessageFeedbackVersionConflict>
 ```
 
-## Session 反馈类型
+## Session عكس تغذية نوع
 
-来源：[`packages/feedback/command-feedback/src/types.ts`](../../packages/feedback/command-feedback/src/types.ts)
+مصدر:[`packages/feedback/command-feedback/src/types.ts`](../../packages/feedback/command-feedback/src/types.ts)
 
 ```ts type-equiv
 /** One of the fixed feedback categories; the ids are durable log vocabulary. */
@@ -272,47 +272,47 @@ type SessionFeedbackRecordResult =
   | { readonly ok: false; readonly error: SessionFeedbackSessionNotFound }
 ```
 
-## 数据与并发
+## بيانات و تزامن
 
-当前条目由 payload 中 `sessionId` 与所属 Session 匹配的权威反馈事件归约得到。每个条目携带好评或差评、可选备注、可选分类、Host 分配的 `createdAt`/`updatedAt` 时间戳及自己的 opaque version。version 只能用于相等比较，且只与目标消息比较；调用方不能排序或自行合成它。
+حالي بند من payload في `sessionId` و الذي تابع Session مطابقة مرجعي عكس تغذية حدث عودة نحو نيل إلى. كل بند يحمل جيد تقييم أو فرق تقييم، اختياري ملاحظة، اختياري تصنيف،Host قسم إعداد `createdAt`/`updatedAt` ختم الوقت و ذاتي ذات opaque version.version فقط قدرة لأجل متبادل انتظار مقارنة مقارنة، كما فقط و هدف رسالة مقارنة مقارنة؛ استدعاء جهة لا يستطيع ترتيب ترتيب أو ذاتي سطر دمج صار هو.
 
-`put` 采用严格乐观并发：已有条目的每次请求都必须匹配当前 `ifVersion`，即使请求不会改变目标值（重复已存评分、备注与分类的 put）。冲突会返回权威当前条目（不存在时为 `null`），因此调用方无需额外读取，即可协调丢失响应或并发编辑。删除已经不存在的条目同样成功。按 Session 划分的队列串行执行读取与变更；cold 变更在读取、比较、追加和 flush 期间持有持久化写句柄。匹配版本的无变更操作不追加事件。
+`put` اعتماد صارم إطار مرح مراقبة تزامن: قد لديه بند كل مرة طلب كل يجب مطابقة حالي `ifVersion`، أي جعل طلب لن تغيير هدف قيمة (تكرار قد تخزين تقييم قسم، ملاحظة و تصنيف put). اندفاع مفاجئ سوف إرجاع مرجعي حالي بند (لا وجود وقت لـ `null`) ، لذلك استدعاء جهة بلا حاجة مقدار خارج قراءة، يكفي تنسيق ضبط فقد فقد استجابة أو تزامن تحرير. حذف قد لا وجود بند نفس مثال نجاح. حسب Session تخطيط قسم طابور صف سلسلة سطر تنفيذ قراءة و تغيير؛cold تغيير في قراءة، مقارنة مقارنة، إلحاق و flush خلال يحتفظ حفظ دائم كتابة جملة مقبض. مطابقة إصدار بلا تغيير عملية لا إلحاق حدث.
 
-## 目标与生命周期权威
+## هدف و دورة الحياة مرجعي
 
-live 持有者的内存日志直接提供目标 Session 的观测；cold 读取使用 `SessionPersistence.open(id, 'read')` 句柄，变更则使用写句柄。两条路径都不构造 Session 或 Agent。先由 `stat(id)` 预检明确不存在；`stat` 已确认存在的 Session 若读取失败，会按基础设施故障原样传播。`put` 只接受具有指定 `MessageId` 的非空、append-origin `assistant/message`；replacement-origin、仅承载 usage 的空记录和非 assistant 记录都不是反馈目标。
+live يحتفظ من داخل تخزين سجل مباشر توفير هدف Session مراقبة قياس؛cold قراءة استخدام `SessionPersistence.open(id, 'read')` جملة مقبض، تغيير فإن استخدام كتابة جملة مقبض. اثنان بند مسار كل لا بنية صنع Session أو Agent. أولا من `stat(id)` مسبق فحص واضح لا وجود؛`stat` قد تأكيد وجود Session إذا قراءة فشل، سوف حسب أساس أساس ضبط تطبيق لذا عائق أصل مثال نقل بث.`put` فقط قبول أداة لديه إشارة تحديد `MessageId` غير فارغ،append-origin `assistant/message`؛replacement-origin، فقط تحمل تحميل usage فارغ سجل و غير assistant سجل كل لا هو عكس تغذية هدف.
 
-fork 种子可以包含父 Session 的反馈事件，但 payload 保留父级 `sessionId`，因此不会成为子 Session 的当前反馈。删除条目会追加删除标记；早先的评分与备注仍保留在日志中。
+fork نوع فرعي يمكن يتضمن أب Session عكس تغذية حدث، لكن payload إبقاء أب درجة `sessionId`، لذلك لن يصبح فرعي Session حالي عكس تغذية. حذف بند سوف إلحاق حذف علامة؛ مبكر أولا تقييم قسم و ملاحظة ما زال إبقاء في سجل في.
 
-## 持久化与 Remote 约定
+## حفظ دائم و Remote اتفاق
 
-成功的消息反馈变更会等待权威持久化完成：live 操作通过所属 Session 追加，并要求有 `ctx.sessions.flush` 监听器参与；cold 操作通过写句柄追加并 flush。持久化故障会原样传播，不会报告成功。`maxNoteBytes` 为必填项，按 UTF-8 字节限制备注文本；Web Host 组合将其设为 `8192`。该包通过 `TypertRemoteService` 与 `@Remote` 发布 Host `messageFeedback.list`、`messageFeedback.put` 和 `messageFeedback.delete` 一元 Remote 约定；`command-feedback` 以同样方式发布面向 live Session 的 Session 级备注 `sessionFeedback.record`。下方生成的 Cordis API 是方法级权威。
+نجاح رسالة عكس تغذية تغيير سوف انتظار مرجعي حفظ دائم إتمام:live عملية عبر الذي تابع Session إلحاق، و اشتراط لديه `ctx.sessions.flush` مستمع مشاركة و؛cold عملية عبر كتابة جملة مقبض إلحاق و flush. حفظ دائم لذا عائق سوف أصل مثال نقل بث، لن تقرير إبلاغ نجاح.`maxNoteBytes` لـ لا بد ملء بند، حسب UTF-8 بايت حد ملاحظة نص؛Web Host تركيب سوف ذلك ضبط لـ `8192`. هذا حزمة عبر `TypertRemoteService` و `@Remote` إصدار Host `messageFeedback.list`،`messageFeedback.put` و `messageFeedback.delete` واحد عنصر Remote اتفاق؛`command-feedback` بـ نفس مثال طريقة إصدار موجه إلى live Session Session درجة ملاحظة `sessionFeedback.record`. تحت جهة توليد Cordis API هو طريقة درجة مرجعي.
 
-插件释放会关闭操作接纳，并排空已进入各 Session 队列的工作。
+إضافة تحرير سوف إغلاق عملية وصل قبول، و ترتيب فارغ قد دخول كل Session طابور صف عمل.
 
-默认情况下，[`session-log-deepseek`](../../packages/session/session-log-deepseek/README.zh.md) 会在后续符合条件的 DeepSeek 请求中，把反馈作为普通 `dsh_session_log` 后缀的一部分传送；组合可用 `enabled: false` 禁用它。记录反馈不会触发 LLM 请求，也不会单独上传 `dsh_feedback`。对于非 DeepSeek 路由，[OTel 后端](../../packages/session/session-telemetry-otel/README.zh.md)可以将权威日志前缀释放至已记录的反馈。命令确认文本确认记录并标识 Session 与匿名用户，不报告遥测策略或投递结果。
+افتراضي حال حال تحت،[`session-log-deepseek`](../../packages/session/session-log-deepseek/README.zh.md) سوف في لاحق رمز دمج شرط DeepSeek طلب في، يأخذ عكس تغذية بصفة عادي `dsh_session_log` بعد لاحقة واحد جزء نقل إرسال؛ تركيب متاح `enabled: false` منع استخدام هو. سجل عكس تغذية لن إطلاق LLM طلب، أيضا لن مفرد وحيد فوق نقل `dsh_feedback`. مقابل في غير DeepSeek توجيه،[OTel خلفية](../../packages/session/session-telemetry-otel/README.zh.md) يمكن سوف مرجعي سجل بادئة تحرير حتى قد سجل عكس تغذية. أمر تأكيد نص تأكيد سجل و معرف Session و مجهول اسم مستخدم، لا تقرير إبلاغ بعيد قياس سياسة أو إلقاء تمرير نتيجة.
 
-## Web 界面
+## Web واجهة
 
-[`@deepseek-ai/dsh-client-ui-message-feedback`](../../packages/client/ui-message-feedback) 是浏览器侧消费方。`@deepseek-ai/dsh-api-remotes` 挂载生成的 `messageFeedback` 与 `sessionFeedback` 贡献，因此该插件调用 `ctx.remote.messageFeedback` 与 `ctx.remote.sessionFeedback`，不接触传输层。
+[`@deepseek-ai/dsh-client-ui-message-feedback`](../../packages/client/ui-message-feedback) هو متصفح جانب مستهلك.`@deepseek-ai/dsh-api-remotes` تركيب توليد `messageFeedback` و `sessionFeedback` مساهمة، لذلك هذا إضافة استدعاء `ctx.remote.messageFeedback` و `ctx.remote.sessionFeedback`، لا وصل لمس نقل طبقة.
 
-控件是 `conversation.chat.assistant-actions` list slot 的 `feedback` 条目（order 10），该 slot 由 `ui-conversation` 声明，并渲染在已定稿助手消息的 IconActions 行内。`AssistantMessageNode` 携带来自 `assistant/message` 事件的可选 `messageId`。被中断冻结的部分输出没有该字段，渲染点在字段缺失时跳过该 slot。该操作栏每个 Turn 渲染一次，位于收尾的助手消息上：Host 接受每条 append-origin 步骤消息作为目标，但多步骤 Turn 中较早的步骤渲染的是工具行而非可评分正文，因此 UI 暴露的范围比 Host 约定允许的更窄。
+تحكم عنصر هو `conversation.chat.assistant-actions` list slot `feedback` بند (order 10) ، هذا slot من `ui-conversation` إعلان، و تصيير في قد تحديد مسودة مساعدة يد رسالة IconActions سطر داخل.`AssistantMessageNode` يحمل قدوم ذاتي `assistant/message` حدث اختياري `messageId`. يتم في قطع تجميد ربط جزء إخراج لا يوجد هذا حقل، تصيير نقطة في حقل ناقص وقت قفز مرور هذا slot. هذا عملية شريط كل Turn تصيير مرة، يقع في استلام ذيل مساعدة يد رسالة فوق:Host قبول كل بند append-origin خطوة رسالة بصفة هدف، لكن كثير خطوة Turn في مقارنة مبكر خطوة تصيير هو أداة سطر بينما غير يمكن تقييم قسم متن، لذلك UI كشف نطاق مقارنة Host اتفاق سماح أكثر ضيق.
 
-每个 Session 一个 `MessageFeedbackController`，支撑该 Session 内所有消息的控件：一次 `list` 读取即填充整段对话，且延迟到首次 hover 或 focus 才发起，而非挂载时触发。每次变更把该 controller 最后观察到的版本作为 `ifVersion` 发送；`version-conflict` 响应携带权威条目，controller 据此对账而不重新拉取。变更按 Session 串行，排队操作与已提交版本比较。注入的 `retract` 操作会在该队列内重新检查已提交评分，并在并发变更后变为无操作，因此陈旧 UI 无法绕过弹窗记录裸评分。`connection/reset` 只刷新已读取过的 Session。
+كل Session واحد `MessageFeedbackController`، دعم دعم هذا Session داخل كل رسالة تحكم عنصر: مرة `list` قراءة أي ملء ملء كامل مقطع محادثة، كما تأخير متأخر إلى أول مرة hover أو focus عندئذ إرسال بدء، بينما غير تركيب وقت إطلاق. كل مرة تغيير يأخذ هذا controller الأكثر بعد مراقبة إلى إصدار بصفة `ifVersion` إرسال؛`version-conflict` استجابة يحمل مرجعي بند،controller حسب هذا مقابل حساب بينما لا إعادة سحب أخذ. تغيير حسب Session سلسلة سطر، ترتيب طابور عملية و قد إيداع إصدار مقارنة مقارنة. حقن `retract` عملية سوف في هذا طابور صف داخل إعادة فحص قد إيداع تقييم قسم، و في تزامن تغيير بعد تغيير لـ بلا عملية، لذلك قديم قديم UI لا يمكن التفاف مرور نابض نافذة سجل عار تقييم قسم.`connection/reset` فقط تحديث جديد قد قراءة مرور Session.
 
-任一未记录的评分都会打开该 Session 的反馈弹窗，即 `conversation.input.overlay` 的 `feedback-dialog` 条目：共用的 Modal 卡片，里面是七个分类标签和一个详情框。提交会 put 所选评分，带上所选分类与去除首尾空白的描述，两者也可都不带；成功会关闭弹窗并显示确认 toast，失败则保留弹窗与草稿并显示警告 toast。不带文本的 `/feedback`（`ui-commands` 以 `action` 路由的一个装饰）为 Session 打开同一个弹窗，随后通过 `sessionFeedback.record` 记录；`/feedback <text>` 仍走宿主命令路径。再次点击已记录的评分会直接撤回，不打开弹窗。
+مهمة واحد لم سجل تقييم قسم كل سوف فتح هذا Session عكس تغذية نابض نافذة، أي `conversation.input.overlay` `feedback-dialog` بند: مشترك استخدام Modal بطاقة، داخل وجه هو سبعة عدد تصنيف وسم و واحد تفصيل حال إطار. إيداع سوف put الذي اختيار تقييم قسم، حمل فوق الذي اختيار تصنيف و ذهاب حذف أول ذيل فارغ أبيض وصف، اثنان من أيضا يمكن كل لا حمل؛ نجاح سوف إغلاق نابض نافذة و عرض تأكيد toast، فشل فإن إبقاء نابض نافذة و مسودة مسودة و عرض تحذير إبلاغ toast. لا حمل نص `/feedback`(`ui-commands` بـ `action` توجيه واحد تركيب زينة) لـ Session فتح نفس عدد نابض نافذة، مع بعد عبر `sessionFeedback.record` سجل؛`/feedback <text>` ما زال مشي مضيف أمر مسار. مجددا مرة نقر قد سجل تقييم قسم سوف مباشر سحب عودة، لا فتح نابض نافذة.
 
-## 边界与限制
+## حد و حد
 
-- 操作队列仅在进程内生效；cold 写入排他性依赖所选持久化提供方。
-- 删除只移除当前条目，不会抹除 append-only 日志或已投递后缀中的早先备注。
-- 请求若恰好落在 live detach 之后、persistence catalog 物化 header 之前的极短窗口，可能收到 `session-not-found`；调用方应在 retirement materialization 后重试。
-- cold 请求读取完整日志；服务没有条目数或聚合字节上限。`maxNoteBytes` 只限制每条备注。
-- Host 约定不记录已认证的 actor 或审计身份，因此假设调用方边界可信。
-- Web 控件只出现在对话视图。trajectory 与 waterfall 视图不渲染反馈条目，尽管它们的助手节点携带相同的 `messageId`。
-- Web 控制器不消费反馈日志事件，因此另一个标签页的评分要等到重连或下一次冲突响应才可见，不会立即出现。
-- 弹窗不预先校验 `maxNoteBytes`；针对消息的超长描述在提交时以 `note-too-large` 失败，而不是在输入过程中。Session 级备注没有大小上限，`/feedback` 命令从来也没有。
-- `sessionFeedback.record` 只服务 live Session，否则回答 `session-not-found`；弹窗打开期间 Session 退役时，弹窗会报告该失败。
+- عملية طابور صف فقط في عملية داخل توليد فاعلية؛cold كتابة ترتيب هو صفة اعتماد الذي اختيار حفظ دائم مزود.
+- حذف فقط إزالة حالي بند، لن مسح حذف append-only سجل أو قد إلقاء تمرير بعد لاحقة في مبكر أولا ملاحظة.
+- طلب إذا تماما جيد سقوط في live detach بعد،persistence catalog شيء تحويل header قبل أقصى قصير نافذة، ممكن استلام إلى `session-not-found`؛ استدعاء جهة ينبغي في retirement materialization بعد إعادة محاولة.
+- cold طلب قراءة كامل سجل؛ خدمة لا يوجد بند عدد أو تجمع دمج بايت حد أعلى.`maxNoteBytes` فقط حد كل بند ملاحظة.
+- Host اتفاق لا سجل قد إقرار إثبات actor أو مراجعة حساب هوية، لذلك زائف ضبط استدعاء جهة حد يمكن معلومة.
+- Web تحكم عنصر فقط ظهور في محادثة عرض.trajectory و waterfall عرض لا تصيير عكس تغذية بند، كل إدارة هو جمع مساعدة يد عقدة يحمل نفسه `messageId`.
+- Web تحكم جهاز لا إزالة استهلاك عكس تغذية سجل حدث، لذلك آخر عدد وسم صفحة تقييم قسم يلزم انتظار إلى إعادة وصل أو تحت مرة اندفاع مفاجئ استجابة عندئذ مرئي، لن قيام أي ظهور.
+- نابض نافذة لا مسبق أولا تحقق `maxNoteBytes`؛ إبرة مقابل رسالة تجاوز طويل وصف في إيداع وقت بـ `note-too-large` فشل، بينما لا هو في إدخال مرور مسار في.Session درجة ملاحظة لا يوجد كبير صغير حد أعلى،`/feedback` أمر من قدوم أيضا لا يوجد.
+- `sessionFeedback.record` فقط خدمة live Session، لا فإن عودة جواب `session-not-found`؛ نابض نافذة فتح خلال Session تراجع دور وقت، نابض نافذة سوف تقرير إبلاغ هذا فشل.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

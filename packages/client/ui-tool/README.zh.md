@@ -1,35 +1,35 @@
 ---
-description: "dsh Web 客户端的 Client 工具展示插件：完整调用树的组合、按工具名称键控的视图 slot，以及内置原子工具卡片。"
+description: "dsh Web عميل Client أداة عرض إضافة: كامل استدعاء شجرة تركيب، حسب أداة اسم مفتاح تحكم عرض slot، و داخل وضع أصل فرعي أداة بطاقة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-tool
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-client-ui-tool` 是 dsh Web 客户端的 Client 工具展示插件：它渲染对话中的每一次工具调用。`ui-conversation` 通过 `conversation.chat.node` 的匹配 key 分发每个已排序的 `tool-call` Conversation Node；本包渲染其中的 root 及其 PTC dispatch 子调用，并把每个原子调用通过 keyed slot `tool.call.toolview` 分发。没有注册的工具名称使用通用卡片。业务 UI 包只注册 wire 工具名称和原子视图——它们不配对会话事件、不重建 transcript（文本记录），也不拥有 root/subcall 拓扑，因为运行时仍对 call/result 配对、生命周期与递归 `subCalls` 投影拥有最终决定权。
+`dsh-client-ui-tool` هو dsh Web عميل Client أداة عرض إضافة: هو تصيير محادثة في كل مرة أداة استدعاء.`ui-conversation` عبر `conversation.chat.node` مطابقة key توزيع كل قد ترتيب ترتيب `tool-call` Conversation Node؛ هذه الحزمة تصيير منها root و ذلك PTC dispatch فرعي استدعاء، و يأخذ كل أصل فرعي استدعاء عبر keyed slot `tool.call.toolview` توزيع. لا يوجد تسجيل أداة اسم استخدام عام بطاقة. عمل خدمة UI حزمة فقط تسجيل wire أداة اسم و أصل فرعي عرض——هو جمع لا إعداد مقابل جلسة حدث، لا إعادة بناء transcript(نص سجل) ، أيضا لا يملك root/subcall توسيع اندفاع، لأن وقت التشغيل ما زال مقابل call/result إعداد مقابل، دورة الحياة و تمرير عودة `subCalls` إسقاط يملك نهائي قرار حق.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-工具调用在对话中显示为卡片：一个根调用树带其嵌套子调用，每个原子调用由所属视图渲染。用户看到运行中、成功、失败与中断状态，这些状态只来自冻结的调用/结果切片，并可通过宿主回调打开文件或检查调用。
+أداة استدعاء في محادثة في عرض لـ بطاقة: واحد أصل استدعاء شجرة حمل ذلك تضمين طقم فرعي استدعاء، كل أصل فرعي استدعاء من الذي تابع عرض تصيير. مستخدم يرى تشغيل في، نجاح، فشل و في قطع حالة، هذه حالة فقط قدوم ذاتي تجميد ربط استدعاء/نتيجة قطع قطعة، و يمكن عبر مضيف عودة ضبط فتح ملف أو فحص استدعاء.
 
-### 注册业务工具视图
+### تسجيل عمل خدمة أداة عرض
 
-拥有该视图的业务包将其 wire 工具名称注册进 `tool.call.toolview`：
+يملك هذا عرض عمل خدمة حزمة سوف ذلك wire أداة اسم تسجيل دخول `tool.call.toolview`:
 
 ```text
 ctx.slots.inject('tool.call.toolview', () =>
@@ -39,82 +39,82 @@ ctx.slots.inject('tool.call.toolview', () =>
   }, BusinessToolRow))
 ```
 
-owner 载荷为 `ToolCallOwnerProps`：`callId`、`toolName`、冻结的 `block`、可选 `cwd` 与 `home`、会话授权的 `loadImage` loader（供结果携带持久图像的视图使用），以及普通的 `openFile`/`inspect` 回调。PTC dispatch 块保留事件的 `parentCallId`；根会话调用没有该字段，因此后代调用都走同一条按 key 分发路径：已注册视图的调用（如 `read_image`）也会在嵌套处渲染对应卡片，未注册的后代调用则保持通用压平形式。路径摘要先相对会话 cwd 缩短，再把剩余的 POSIX Host home 写成 `~`；`filePath` 与 Host 打开仍使用作者给出的文件系统路径。注册项会收到常规的会话 slot 运行时共享数据，但不会收到 React 节点或运行时服务。
+owner تحميل حمل لـ `ToolCallOwnerProps`:`callId`،`toolName`، تجميد ربط `block`، اختياري `cwd` و `home`، جلسة تخويل `loadImage` loader(توفير نتيجة يحمل حمل دائم رسم مثل عرض استخدام) ، و عادي `openFile`/`inspect` عودة ضبط.PTC dispatch كتلة إبقاء حدث `parentCallId`؛ أصل جلسة استدعاء لا يوجد هذا حقل، لذلك بعد بديل استدعاء كل مشي نفس بند حسب key توزيع مسار: قد تسجيل عرض استدعاء (مثل `read_image`) أيضا سوف في تضمين طقم موضع تصيير مقابل بطاقة، لم تسجيل بعد بديل استدعاء فإن إبقاء عام ضغط مستو شكل صيغة. مسار ملخص أولا متبادل مقابل جلسة cwd تقليص قصير، مجددا يأخذ باق بقية POSIX Host home كتابة صار `~`؛`filePath` و Host فتح ما زال استخدام عمل من إعطاء خروج نظام الملفات مسار. تسجيل بند سوف استلام إلى معتاد قاعدة جلسة slot وقت التشغيل مشترك بيانات، لكن لن استلام إلى React عقدة أو وقت التشغيل خدمة.
 
-### 内置视图
+### داخل وضع عرض
 
-本包拥有 generic fallback，以及 shell/pwsh、read、read_image、write/edit、运行中的 `str_replace_editor` `create`／`str_replace`、grep/glob、web、todo、question 与 PTC dispatch 的内置展示。结构化卡片直接从第一方原始 event 字段派生；Host `presentCall` 与 `presentResult` 值不会进入 Client。运行中与已完成的前台标准 `bash`/`pwsh` 和 `terminal_send` 调用，无论位于根还是 PTC dispatch 子调用中，都在通过相同的参数、结果和错误检查后使用 terminal 卡片。持久 `bash`/`pwsh` 调用仅在运行中使用 terminal 卡片。以已识别的 spill 策略提示结尾的 shell 输出，在 shell 行中使用可展开的 generic 输出，在 Details 中使用 generic 输出；位置被改变或被省略的退出标记无法证明成功。已完成的持久 shell 结果保持 generic 展示，因为 reset 与部分输出诊断不一定描述单个进程的退出状态；根调用的持久 shell 结果可展开，后台启动回执则保持折叠。带有 `AUTO_REVIEW_DENIED` 的原生或 PTC dispatch 失败会在折叠行显示 Auto review 裁决，展开时显示一行归一化后的“未执行”原因；原因缺失或只有空白时使用本地化 fallback 文案。成功的问题行按稳定 id 配对调用中的问题与结果中的回答，展开后显示可读的问答行。已取消或已中断的问题行显示其裁决与原始问题，不虚构回答。不受支持、格式错误或含糊的输入回退为压平的工具输入／结果文本。`ui-skill` 展示了业务包自行拥有的 `skill` 注册项。
+هذه الحزمة يملك generic fallback، و shell/pwsh،read،read_image،write/edit، تشغيل في `str_replace_editor` `create`/`str_replace`،grep/glob،web،todo،question و PTC dispatch داخل وضع عرض. بنية تحويل بطاقة مباشر من رقم واحد جهة أصلي event حقل إرسال توليد؛Host `presentCall` و `presentResult` قيمة لن دخول Client. تشغيل في و قد إتمام قبل منصة معيار `bash`/`pwsh` و `terminal_send` استدعاء، بلا نقاش يقع في أصل أيضا هو PTC dispatch فرعي استدعاء في، كل في عبر نفسه معامل، نتيجة و خطأ فحص بعد استخدام terminal بطاقة. حمل دائم `bash`/`pwsh` استدعاء فقط في تشغيل في استخدام terminal بطاقة. بـ قد تعرف آخر spill سياسة تلميح ربط ذيل shell إخراج، في shell سطر في استخدام يمكن توسيع generic إخراج، في Details في استخدام generic إخراج؛ موضع يتم تغيير أو يتم حذف خروج علامة لا يمكن إثبات نجاح. قد إتمام حمل دائم shell نتيجة إبقاء generic عرض، لأن reset و جزء إخراج تشخيص لا واحد تحديد وصف مفرد عدد عملية خروج حالة؛ أصل استدعاء حمل دائم shell نتيجة يمكن توسيع، خلفية بدء عودة تنفيذ فإن إبقاء طي. حمل لديه `AUTO_REVIEW_DENIED` أصلي أو PTC dispatch فشل سوف في طي سطر عرض Auto review قطع قرار، توسيع وقت عرض واحد سطر عودة واحد تحويل بعد “لم تنفيذ” سبب؛ سبب ناقص أو فقط لديه فارغ أبيض وقت استخدام محلي تحويل fallback نص سجل. نجاح مشكلة سطر حسب مستقر id إعداد مقابل استدعاء في مشكلة و نتيجة في عودة جواب، توسيع بعد عرض يمكن قراءة سؤال جواب سطر. قد إلغاء أو قد في قطع مشكلة سطر عرض ذلك قطع قرار و أصلي مشكلة، لا وهمي بنية عودة جواب. لا تلقي دعم حمل، صيغة خطأ أو يحتوي غامض إدخال رجوع لـ ضغط مستو أداة إدخال/نتيجة نص.`ui-skill` عرض عمل خدمة حزمة ذاتي سطر يملك `skill` تسجيل بند.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本包实现一条分派规则：原子工具视图按 wire 工具名称键控、由所属业务包注册；本包只渲染树与回退。
+هذه الحزمة تنفيذ واحد بند قسم إرسال قاعدة: أصل فرعي أداة عرض حسب wire أداة اسم مفتاح تحكم، من الذي تابع عمل خدمة حزمة تسجيل؛ هذه الحزمة فقط تصيير شجرة و رجوع.
 
-### 渲染约定
+### تصيير اتفاق
 
-`ToolCallTree` 接收一个已经包含递归 `subCalls` 的 root `ToolCallBlock`、会话 `cwd`，以及属主用于打开文件和检查调用的回调。它递归遍历标准调用块，让 root 与任意深度的 child 经过同一条原子分发路径，不订阅独立的 parent-to-children map。每个 root 和 child 包装层都保留 `data-chat-anchor-key="call:<id>"` 与 `data-chat-call-id` DOM 约定，供分页和 selection 使用。
+`ToolCallTree` استقبال واحد قد يتضمن تمرير عودة `subCalls` root `ToolCallBlock`، جلسة `cwd`، و تابع رئيسي لأجل فتح ملف و فحص استدعاء عودة ضبط. هو تمرير عودة مرة تاريخ معيار استدعاء كتلة، يجعل root و مهمة معنى عميق درجة child مرور مرور نفس بند أصل فرعي توزيع مسار، لا حجز قراءة مستقل parent-to-children map. كل root و child حزمة تركيب طبقة كل إبقاء `data-chat-anchor-key="call:<id>"` و `data-chat-call-id` DOM اتفاق، توفير قسم صفحة و selection استخدام.
 
-### 卡片
+### بطاقة
 
 
-每张卡片都直接在调用树中查看；选中调用后不会再显示第二个全高视图。行 renderer 为 terminal、read、diff、search 和 web 卡片各复用同一个纯 card model，image 卡片的图库经由工具自有 `tool.call.images` slot 渲染。这些 model 校验原始调用参数、结果内容、失败状态、持久 metadata、PTC dispatch 的 `parentCallId` 与会话路径信息。不受支持或格式错误的输入使用压平的工具结果文本。文件路径摘要经属主的 `openFile` 打开文件，chat 视图把它路由到右侧 Sidebar 的文本预览；`inspect` 打开轨迹视图。terminal、diff、read、search 与 web 卡片的上限与 fallback 规则仍由 [ui-primitives README](../ui-primitives/README.zh.md) 负责；image 卡片的 fallback 规则由本包内的 card model 自行承载。
+كل ورقة بطاقة كل مباشر في استدعاء شجرة في فحص نظر؛ اختيار في استدعاء بعد لن مجددا عرض ثاني عدد كل عال عرض. سطر renderer لـ terminal،read،diff،search و web بطاقة كل إعادة استخدام نفس عدد صاف card model،image بطاقة رسم مكتبة مرور من أداة ذاتي لديه `tool.call.images` slot تصيير. هذه model تحقق أصلي استدعاء معامل، نتيجة محتوى، فشل حالة، حمل دائم metadata،PTC dispatch `parentCallId` و جلسة مسار معلومة. لا تلقي دعم حمل أو صيغة خطأ إدخال استخدام ضغط مستو أداة نتيجة نص. ملف مسار ملخص مرور تابع رئيسي `openFile` فتح ملف،chat عرض يأخذ هو توجيه إلى يمين جانب Sidebar نص معاينة؛`inspect` فتح مسار أثر عرض.terminal،diff،read،search و web بطاقة حد أعلى و fallback قاعدة ما زال من [ui-primitives README](../ui-primitives/README.zh.md) مسؤول؛image بطاقة fallback قاعدة من هذه الحزمة داخل card model ذاتي سطر تحمل تحميل.
 
-Chat diff 卡片在折叠前保留九行，足以容纳文件标题、一对删除与新增行及两侧各三行上下文。折叠工具行与展开卡片底部采用原语一致的精确或粗粒度替换统计。
+Chat diff بطاقة في طي قبل إبقاء تسعة سطر، كاف بـ سعة قبول ملف عنوان، واحد مقابل حذف و إضافة جديدة سطر و اثنان جانب كل ثلاثة سطر سياق. طي أداة سطر و توسيع بطاقة قاع جزء اعتماد أصل لغة متسق دقيق أو خشن حبة درجة استبدال موحد حساب.
 
-Auto 拒绝优先于按工具名选择的专门视图。其通用行保留调用身份、省略原始参数，并且只在显示时归一化存储的理由：去除首尾空白，把行分隔符折叠为空格，结果为空时使用本地化通用理由。Session 与 SDK 错误详情保留原始理由。
+Auto رفض أولوية في حسب أداة اسم اختيار مخصص باب عرض. ذلك عام سطر إبقاء استدعاء هوية، حذف أصلي معامل، و كما فقط في عرض وقت عودة واحد تحويل تخزين إدارة من: ذهاب حذف أول ذيل فارغ أبيض، يأخذ سطر قسم فصل رمز طي لـ فارغ إطار، نتيجة لـ فارغ وقت استخدام محلي تحويل عام إدارة من.Session و SDK خطأ تفصيل حال إبقاء أصلي إدارة من.
 
-terminal model 使用浏览器安全入口 `@deepseek-ai/dsh-spill-policy/notice` 的 `hasSpillNotice`，而非独立的 UI 匹配规则。[spill-policy README](../../spill/spill-policy/README.zh.md#shared-notice-ownership) 负责提示文本的格式化与识别。该检查保守地选择通用输出；匹配的文本无法证明其来源，回放也不改变已记录的结果字节。
+terminal model استخدام متصفح أمان مدخل `@deepseek-ai/dsh-spill-policy/notice` `hasSpillNotice`، بينما غير مستقل UI مطابقة قاعدة.[spill-policy README](../../spill/spill-policy/README.zh.md#shared-notice-ownership) مسؤول تلميح نص صيغة تحويل و تعرف آخر. هذا فحص حفظ حراسة أرض اختيار عام إخراج؛ مطابقة نص لا يمكن إثبات ذلك مصدر، إعادة تشغيل أيضا لا تغيير قد سجل نتيجة بايت.
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-以下页面覆盖对话宿主、视图 slot 与卡片模型。
+التالي صفحة تغطية محادثة مضيف، عرض slot و بطاقة نموذج.
 
-- [ui-conversation](../ui-conversation/README.zh.md)——把 `tool-call` 节点分派给本包的聊天界面。
-- [ui-primitives](../ui-primitives/README.zh.md)——内置视图所拼装的输出卡片原子组件。
-- [ui-skill](../ui-skill/README.zh.md)——`skill` 工具的业务自有注册。
-- [Auto review](../../experimental/auto-review/README.zh.md)——结构化拒绝身份与用户可见原因的 owner。
-- [Conversation 子系统](../../../docs/subsystems/conversation.zh.md)——业务自有功能如何注册 Conversation node。
-- [slot 系统标准](../../../.agents/notes/implemented/architecture/2026-07-22-slot-type-chain-implementation.zh.md)——keyed slot 背后的组合模型。
+- [ui-conversation](../ui-conversation/README.zh.md)——يأخذ `tool-call` عقدة قسم إرسال إعطاء هذه الحزمة حديث يوم واجهة.
+- [ui-primitives](../ui-primitives/README.zh.md)——داخل وضع عرض الذي تجميع تركيب إخراج بطاقة أصل فرعي مكون.
+- [ui-skill](../ui-skill/README.zh.md)——`skill` أداة عمل خدمة ذاتي لديه تسجيل.
+- [Auto review](../../experimental/auto-review/README.zh.md)——بنية تحويل رفض هوية و مستخدم مرئي سبب owner.
+- [Conversation فرعي نظام](../../../docs/subsystems/conversation.zh.md)——عمل خدمة ذاتي لديه وظيفة مثل أي تسجيل Conversation node.
+- [slot نظام معيار](../../../.agents/notes/implemented/architecture/2026-07-22-slot-type-chain-implementation.zh.md)——keyed slot خلف بعد تركيب نموذج.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该包是浏览器端工具展示层，只渲染已记录的工具调用，不改变模型上下文。
+بلا. هذا حزمة هو متصفح طرف أداة عرض طبقة، فقط تصيير قد سجل أداة استدعاء، لا تغيير نموذج سياق.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；该包既不组装也不发送提供方请求。
+بلا؛ هذا حزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制定义分派深度与视图归属；它们是当前包约束。
+هذه حد تعريف قسم إرسال عميق درجة و عرض ملكية؛ هو جمع هو حالي حزمة قيد.
 
-- **Host 不把 `run_code` 暴露为 PTC mode 程序 binding**：生产事件只产生一层分发；递归的运行时/UI 约定支持嵌套。
-- **第一方工具视图集中在本包**：它们可以通过 keyed slot 独立迁移到各自所属的业务包。
-- **工具文案复用 `ui-conversation` locale namespace**：工具标题、行 chrome 与无 Cordis 的 primitive label 使用该字典；展示转换器模型保留 locale key 或数据，而不是已渲染文案。
+- **Host لا يأخذ `run_code` كشف لـ PTC mode برنامج binding**: إنتاج حدث فقط إنتاج واحد طبقة توزيع؛ تمرير عودة وقت التشغيل/UI اتفاق دعم حمل تضمين طقم.
+- **رقم واحد جهة أداة عرض تجميع في في هذه الحزمة**: هو جمع يمكن عبر keyed slot مستقل ترحيل إلى كل منها الذي تابع عمل خدمة حزمة.
+- **أداة نص سجل إعادة استخدام `ui-conversation` locale namespace**: أداة عنوان، سطر chrome و بلا Cordis primitive label استخدام هذا حرف قاموس؛ عرض تحويل جهاز نموذج إبقاء locale key أو بيانات، بينما لا هو قد تصيير نص سجل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。工具组合只存在于浏览器，不贡献事件或跨插件可变状态；slot 所有权由 ui-slots 校验。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. أداة تركيب فقط وجود في متصفح، لا مساهمة حدث أو عبر إضافة متغير حالة؛slot كل حق من ui-slots تحقق.

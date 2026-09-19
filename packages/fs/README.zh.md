@@ -1,58 +1,58 @@
 ---
-description: "文件系统包组：`ctx.fs` 提供方约定、本地与沙箱强制后端、编辑前读取策略插件，以及面向模型的文件与搜索工具。"
+description: "نظام الملفات حزمة مجموعة:`ctx.fs` مزود اتفاق، محلي و صندوق رملي قوي صنع خلفية، تحرير قبل قراءة سياسة إضافة، و موجه إلى نموذج ملف و بحث أداة."
 kind: "package-group"
 ---
 
 # packages/fs
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`fs/` 组为 agent（智能体）提供持久、受策略约束的文件访问：`fs/` 定义 `ctx.fs` 服务约定，`fs-local/` 与 `fs-sandbox/` 提供宿主文件系统与沙箱强制后端，`fs-observation-policy/` 提供编辑前读取策略，`tool-fs/`（`read`、`read_image`、`write`、`edit`）与 `tool-fs-search/`（`glob`、`grep`）提供面向模型的工具。部署挂载一个后端，加载策略以获得新鲜度防护的变更，并注册模型应看到的工具包；后端可以更换，无需改动工具或策略。文件 I/O 有意不设超时：deadline 只会杀掉操作系统仍会完成的工作，因此取消只是系统调用边界的尽力而为信号。
+`fs/` مجموعة لـ agent(ذكي جسم) توفير حمل دائم، تلقي سياسة قيد ملف وصول:`fs/` تعريف `ctx.fs` خدمة اتفاق،`fs-local/` و `fs-sandbox/` توفير مضيف نظام الملفات و صندوق رملي قوي صنع خلفية،`fs-observation-policy/` توفير تحرير قبل قراءة سياسة،`tool-fs/`(`read`،`read_image`،`write`،`edit`) و `tool-fs-search/`(`glob`،`grep`) توفير موجه إلى نموذج أداة. نشر تركيب واحد خلفية، تحميل سياسة بـ نيل نيل جديد طازج درجة منع حماية تغيير، و تسجيل نموذج ينبغي يرى أداة حزمة؛ خلفية يمكن أكثر تبديل، بلا حاجة تعديل أداة أو سياسة. ملف I/O متعمد لا ضبط مهلة:deadline فقط سوف قتل إسقاط عملية نظام ما زال سوف إتمام عمل، لذلك إلغاء فقط هو نظام استدعاء حد كل قوة بينما لـ إشارة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-七个包承担文件系统角色；子系统参考文档完整收录各项约定与错误分类体系。
+سبعة عدد حزمة تحمل تحمل نظام الملفات زاوية لون؛ فرعي نظام مشاركة اعتبار وثيقة كامل استلام تسجيل كل بند اتفاق و خطأ تصنيف جسم نظام.
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`fs/`](fs/README.zh.md) | `ctx.fs` 服务约定：执行世界路径、有界文本 I/O，以及带可选版本防护的原子变更 | `ctx.fs` |
-| [`fs-local/`](fs-local/README.zh.md) | 宿主文件系统后端：读取、写入并编辑本机上的真实文件 | 注册到 `ctx.fs` |
-| [`fs-sandbox/`](fs-sandbox/README.zh.md) | 沙箱强制后端：按每次调用的沙箱模式约束写入与编辑，读取直接通过 | 注册到 `ctx.fs` |
-| [`fs-observation-policy/`](fs-observation-policy/README.zh.md) | 编辑前读取策略：记录观测到的存在或缺失，并通过 `fs/*` 事件防护写入/编辑 | `fs/*` 监听器 |
-| [`tool-fs/`](tool-fs/README.zh.md) | 面向模型的 `read`、`read_image`、`write` 与 `edit` 工具及其执行器 | 注册到 `ctx.tools` |
-| [`tool-fs-search/`](tool-fs-search/README.zh.md) | 由打包 ripgrep 二进制支持的面向模型 `glob` 与 `grep` 发现工具 | 注册到 `ctx.tools` |
-| [`tool-str-replace-editor/`](tool-str-replace-editor/README.zh.md) | 独立的 `str_replace_editor` 工具：基于 `ctx.fs` 的 `view`、`create`、`str_replace` 与 `insert` | 注册到 `ctx.tools` |
+| [`fs/`](fs/README.zh.md) | `ctx.fs` خدمة اتفاق: تنفيذ عالم حد مسار، محدود نص I/O، و حمل اختياري إصدار منع حماية أصل فرعي تغيير | `ctx.fs` |
+| [`fs-local/`](fs-local/README.zh.md) | مضيف نظام الملفات خلفية: قراءة، كتابة و تحرير هذا آلة فوق حقيقي ملف | تسجيل إلى `ctx.fs` |
+| [`fs-sandbox/`](fs-sandbox/README.zh.md) | صندوق رملي قوي صنع خلفية: حسب كل مرة استدعاء صندوق رملي نمط قيد كتابة و تحرير، قراءة مباشر عبر | تسجيل إلى `ctx.fs` |
+| [`fs-observation-policy/`](fs-observation-policy/README.zh.md) | تحرير قبل قراءة سياسة: سجل مراقبة قياس إلى وجود أو ناقص، و عبر `fs/*` حدث منع حماية كتابة/تحرير | `fs/*` مستمع |
+| [`tool-fs/`](tool-fs/README.zh.md) | موجه إلى نموذج `read`،`read_image`،`write` و `edit` أداة و ذلك منفذ | تسجيل إلى `ctx.tools` |
+| [`tool-fs-search/`](tool-fs-search/README.zh.md) | من تحزيم ripgrep اثنان دخول صنع دعم حمل موجه إلى نموذج `glob` و `grep` اكتشاف أداة | تسجيل إلى `ctx.tools` |
+| [`tool-str-replace-editor/`](tool-str-replace-editor/README.zh.md) | مستقل `str_replace_editor` أداة: أساس في `ctx.fs` `view`،`create`،`str_replace` و `insert` | تسجيل إلى `ctx.tools` |
 
-策略是插件，不是工具注入的服务：移除它会留下裸提供方的无条件变更行为，而不会破坏工具。`fs-sandbox` 的模式围栏与编辑前读取门禁可以组合。`tool-fs-search` 有意不扩展提供方约定——搜索是由进程支持的 ripgrep 工作流，因此文件系统后端无需承担通用搜索 API。
+سياسة هو إضافة، لا هو أداة حقن خدمة: إزالة هو سوف إبقاء تحت عار مزود بلا شرط تغيير سلوك، بينما لن كسر تالف أداة.`fs-sandbox` نمط محيط شريط و تحرير قبل قراءة بوابة يمكن تركيب.`tool-fs-search` متعمد لا توسيع مزود اتفاق——بحث هو من عملية دعم حمل ripgrep سير العمل، لذلك نظام الملفات خلفية بلا حاجة تحمل تحمل عام بحث API.
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考文档了解共享词汇与错误分类体系，再看塑造该家族的设计决策。
+أولا من فرعي نظام مشاركة اعتبار وثيقة حل مشترك مفردات و خطأ تصنيف جسم نظام، مجددا نظر تشكيل صنع هذا بيت عائلة تصميم قرار.
 
-- [文件系统子系统](../../docs/subsystems/filesystem.zh.md)——目标、结果、防护、策略事件与错误分类体系。
-- [跨能力族 fs 沙箱决策](../../.agents/notes/implemented/feature/2026-07-14-cross-family-fs-sandbox.zh.md)——文件系统 seam 上共享的沙箱模式围栏。
-- [可移植执行世界消费方决策](../../.agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.zh.md)——文件系统与子进程提供方为何共享一个执行世界。
+- [نظام الملفات فرعي نظام](../../docs/subsystems/filesystem.zh.md)——هدف، نتيجة، منع حماية، سياسة حدث و خطأ تصنيف جسم نظام.
+- [عبر قدرة عائلة fs صندوق رملي قرار](../../.agents/notes/implemented/feature/2026-07-14-cross-family-fs-sandbox.zh.md)——نظام الملفات seam فوق مشترك صندوق رملي نمط محيط شريط.
+- [يمكن نقل غرس تنفيذ عالم حد مستهلك قرار](../../.agents/notes/implemented/architecture/2026-07-28-portable-execution-world-consumers.zh.md)——نظام الملفات و عملية فرعية مزود لـ أي مشترك واحد تنفيذ عالم حد.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

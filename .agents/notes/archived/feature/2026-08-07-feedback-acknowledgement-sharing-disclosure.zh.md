@@ -1,28 +1,28 @@
-# Agent Note: 反馈确认中的会话共享披露
+# Agent Note: عكس تغذية تأكيد في جلسة مشترك كشف كشف
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-07-feedback-acknowledgement-sharing-disclosure.md) | 中文
+[English](2026-08-07-feedback-acknowledgement-sharing-disclosure.md) | العربية
 
-## 问题
+## مشكلة
 
-`/feedback` 命令会记录一个仅写入日志的 `feedback/record` 事件并确认用户，但确认文本没有携带关于会话去向的持久信息：挂载了会话遥测（`FULL`、`FEEDBACK_ONLY` 或 `DISABLED`）的部署无法告知用户其反馈和会话是否离开了进程，确认文本也没有回显接收会话的 id。命令插件无法读取共享策略，因为遥测 seam 只暴露采集能力，而 OTel 模式枚举位于可选的后端包中。
+`/feedback` أمر سوف سجل واحد فقط كتابة سجل `feedback/record` حدث و تأكيد مستخدم، لكن تأكيد نص لا يوجد يحمل صلة في جلسة ذهاب نحو حمل دائم معلومة: تركيب جلسة بعيد قياس (`FULL`،`FEEDBACK_ONLY` أو `DISABLED`) نشر لا يمكن إبلاغ معرفة مستخدم ذلك عكس تغذية و جلسة هل مغادرة فتح عملية، تأكيد نص أيضا لا يوجد عودة إظهار استقبال جلسة id. أمر إضافة لا يمكن قراءة مشترك سياسة، لأن بعيد قياس seam فقط كشف أخذ تجميع قدرة، بينما OTel نمط قطعة رفع يقع في اختياري خلفية حزمة في.
 
-## 决策
+## قرار
 
-遥测 seam（`@deepseek-ai/dsh-session-telemetry`）现在拥有与后端无关的共享词汇：`SessionTelemetrySharingStatus`（`full` | `feedback-only` | `disabled`），并在 `SessionTelemetryBackend` 服务类上增加一个必需的抽象 `sharing` 成员——每个后端都必须披露其策略，因此消费方只有在未挂载任何遥测服务时才渲染「未配置」。`@deepseek-ai/dsh-session-telemetry-otel` 在构造函数中把序列化的 `SessionTelemetryMode`（模式语义由[反馈门控投递决策](2026-08-05-feedback-gated-session-telemetry.zh.md)负责）映射到该状态并披露，包括 `DISABLED` 模式。`/feedback` 处理器通过插件上下文读取已挂载的服务（`ctx.get('telemetry')`，绝不是声明的注入，因此命令在无遥测时也能加载和运行），并在确认文本后追加一句共享披露：`Feedback recorded for session {id}. <句子>`。无服务 → `Session sharing is not configured.`；`disabled` → `Session sharing is disabled.`；`feedback-only` → `Session sharing is feedback-gated; recording feedback releases the session prefix for sharing.`；`full` → `Session sharing is enabled.`
+بعيد قياس seam(`@deepseek-ai/dsh-session-telemetry`) الآن يملك و خلفية غير متصل مشترك مفردات:`SessionTelemetrySharingStatus`(`full` | `feedback-only` | `disabled`) ، و في `SessionTelemetryBackend` خدمة صنف فوق زيادة واحد مطلوب سحب كائن `sharing` عضو——كل خلفية كل يجب كشف كشف ذلك سياسة، لذلك مستهلك فقط لديه في لم تركيب أي بعيد قياس خدمة وقت عندئذ تصيير «لم إعداد».`@deepseek-ai/dsh-session-telemetry-otel` في بنية صنع دالة في يأخذ تسلسل تحويل `SessionTelemetryMode`(نمط دلالة من[عكس تغذية باب تحكم إلقاء تمرير قرار](2026-08-05-feedback-gated-session-telemetry.zh.md) مسؤول) خريطة إلى هذا حالة و كشف كشف، يشمل `DISABLED` نمط.`/feedback` معالج عبر إضافة سياق قراءة قد تركيب خدمة (`ctx.get('telemetry')`، أبدا هو إعلان حقن، لذلك أمر في بلا بعيد قياس وقت أيضا قدرة تحميل و تشغيل) ، و في تأكيد نص بعد إلحاق واحد جملة مشترك كشف كشف:`Feedback recorded for session {id}. <جملة فرعي>`. بلا خدمة → `Session sharing is not configured.`؛`disabled` → `Session sharing is disabled.`؛`feedback-only` → `Session sharing is feedback-gated; recording feedback releases the session prefix for sharing.`؛`full` → `Session sharing is enabled.`
 
-披露只陈述当前的共享策略，绝不承诺投递或留存：交接是后端的非阻塞入队，批处理、重试与丢失策略仍归后端 SDK，且后续重新配置可能改变已共享的内容，因此句子不声称任何内容已到达采集端，也不声称未来的留存。披露不新增任何会话事件，也绝不会进入模型 surface；Web 客户端通过现有的命令行（`CommandNode` 的结果文本）原样渲染，无需客户端改动。
+كشف كشف فقط قديم وصف حالي مشترك سياسة، أبدا تحمل وعد إلقاء تمرير أو إبقاء تخزين: تسليم وصل هو خلفية غير منع سد دخول طابور، دفعة معالجة، إعادة محاولة و فقد فقد سياسة ما زال عودة خلفية SDK، كما لاحق إعادة إعداد ممكن تغيير قد مشترك محتوى، لذلك جملة فرعي لا صوت تسمية أي محتوى قد وصول أخذ تجميع طرف، أيضا لا صوت تسمية لم قدوم إبقاء تخزين. كشف كشف لا إضافة جديدة أي جلسة حدث، أيضا أبدا سوف دخول نموذج surface؛Web عميل عبر قائم أمر سطر (`CommandNode` نتيجة نص) أصل مثال تصيير، بلا حاجة عميل تعديل.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**客户端新增状态 RPC 与徽标。** 拒绝，因为确认文本由宿主生成，Web 客户端已经在命令行中原样渲染命令结果文本；单独的 RPC 会在第二个 surface 重复该状态，并为一句文案新增线上契约。
+**عميل إضافة جديدة حالة RPC و شعار علامة.** رفض، لأن تأكيد نص من مضيف توليد،Web عميل قد في أمر سطر في أصل مثال تصيير أمر نتيجة نص؛ مفرد وحيد RPC سوف في ثاني عدد surface تكرار هذا حالة، و لـ واحد جملة نص سجل إضافة جديدة خط فوق عقد نحو.
 
-**在 `command-feedback` 中声明 `telemetry` 注入。** 拒绝，因为遥测是可选的：服务缺失时声明注入会导致插件加载失败，而命令必须在无遥测时可用。插件改为在处理器执行时用 `ctx.get('telemetry')` 读取服务。
+**في `command-feedback` في إعلان `telemetry` حقن.** رفض، لأن بعيد قياس هو اختياري: خدمة ناقص وقت إعلان حقن سوف توجيه يؤدي إضافة تحميل فشل، بينما أمر يجب في بلا بعيد قياس وقت متاح. إضافة تعديل لـ في معالج تنفيذ وقت استخدام `ctx.get('telemetry')` قراءة خدمة.
 
-**由 OTel 包拥有词汇。** 拒绝，因为 `command-feedback` 不能依赖可选的 OTel 后端包。seam 拥有 `SessionTelemetrySharingStatus`，任何后端都能披露策略。
+**من OTel حزمة يملك مفردات.** رفض، لأن `command-feedback` لا يستطيع اعتماد اختياري OTel خلفية حزمة.seam يملك `SessionTelemetrySharingStatus`، أي خلفية كل قدرة كشف كشف سياسة.
 
-## 后果
+## عاقبة
 
-确认文本对用户可见：它点名接收会话并报告当前的共享策略，如实说明 fire-and-forget 交接。包级测试为每种状态以及无服务场景固定句子；组装浏览器 e2e 以 FULL 模式挂载随附的遥测行（指向本地 dead 端点），并以 golden 固定随附默认句子（`Session sharing is enabled.`）。seam 成员是必需的，因此已挂载的后端总会披露策略，「未配置」句子如实地表示没有遥测服务；`/feedback` 命令在未挂载遥测时仍能正常工作。仍为空白的新 Web 会话不渲染命令行，因此首条消息之前记录的反馈没有可见确认（已在包 README 的限制中记录）。
+تأكيد نص مقابل مستخدم مرئي: هو نقطة اسم استقبال جلسة و تقرير إبلاغ حالي مشترك سياسة، مثل فعلي شرح fire-and-forget تسليم وصل. حزمة درجة اختبار لـ كل نوع حالة و بلا خدمة مشهد ثابت جملة فرعي؛ تجميع متصفح e2e بـ FULL نمط تركيب مع مرفق بعيد قياس سطر (إشارة نحو محلي dead طرف نقطة) ، و بـ golden ثابت مع مرفق افتراضي جملة فرعي (`Session sharing is enabled.`).seam عضو هو مطلوب، لذلك قد تركيب خلفية مجموع سوف كشف كشف سياسة، «لم إعداد» جملة فرعي مثل فعلي أرض يمثل لا يوجد بعيد قياس خدمة؛`/feedback` أمر في لم تركيب بعيد قياس وقت ما زال قدرة صحيح معتاد عمل. ما زال لـ فارغ أبيض جديد Web جلسة لا تصيير أمر سطر، لذلك أول بند رسالة قبل سجل عكس تغذية لا يوجد مرئي تأكيد (قد في حزمة README حد في سجل).

@@ -1,53 +1,53 @@
-# 右侧 Sidebar
+# يمين جانب Sidebar
 
-[English](sidebar-right.md) | 中文
+[English](sidebar-right.md) | العربية
 
-右侧 Sidebar 是 Web Client 里每个会话一份的停靠面：会话区旁的一列 pane 与 tab，按地址寻址的内容——工作区文件、目录树、产品自带页面——在这里打开、分栏、浮出、关闭。[`dsh-client-ui-sidebar-right`](../../packages/client/ui-sidebar-right/README.zh.md) 拥有这个面、tab 类型注册表与导航服务；[`dsh-client-ui-dockkit`](../../packages/client/ui-dockkit/README.zh.md) 是它内部的布局引擎；[`dsh-client-resources`](../../packages/client/resources/README.zh.md) 把地址变成任何组件都能读的活数据；[`dsh-api-workspace-files`](../../packages/api/workspace-files/README.zh.md) 同时提供 Host 工作区文件服务与 Client `file` 资源提供者。
+يمين جانب Sidebar هو Web Client داخل كل جلسة واحد نسخة توقف اعتماد وجه: جلسة منطقة جانب واحد صف pane و tab، حسب عنوان بحث عنوان محتوى——مساحة العمل ملف، دليل شجرة، منتج ذاتي حمل صفحة——في هذا داخل فتح، قسم شريط، طفو خروج، إغلاق.[`dsh-client-ui-sidebar-right`](../../packages/client/ui-sidebar-right/README.zh.md) يملك هذا عدد وجه،tab نوع سجل التسجيل و تنقل خدمة؛[`dsh-client-ui-dockkit`](../../packages/client/ui-dockkit/README.zh.md) هو هو داخلي تخطيط جذب محرك؛[`dsh-client-resources`](../../packages/client/resources/README.zh.md) يأخذ عنوان تغيير صار أي مكون كل قدرة قراءة نشط بيانات؛[`dsh-api-workspace-files`](../../packages/api/workspace-files/README.zh.md) معا توفير Host مساحة العمل ملف خدمة و Client `file` مورد توفير من.
 
-本页是该子系统契约的参考：地址、tab 类型注册、导航服务、扩展 slot 与其 owner props、资源模型、Workspace Files 服务、内置类型，以及明确不做的事。布局引擎、frame 与停靠面如何拼在一起见 [Agent Note](../../.agents/notes/implemented/feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md)；slot 机制见 [Slots 参考](slots.zh.md)。
+هذا صفحة هو هذا فرعي نظام عقد نحو مشاركة اعتبار: عنوان،tab نوع تسجيل، تنقل خدمة، توسيع slot و ذلك owner props، مورد نموذج،Workspace Files خدمة، داخل وضع نوع، و واضح لا فعل أمر. تخطيط جذب محرك،frame و توقف اعتماد وجه مثل أي تجميع في واحد بدء رؤية [Agent Note](../../.agents/notes/implemented/feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md) ؛slot آلية رؤية [Slots مشاركة اعتبار](slots.zh.md).
 
-## 定位与归属
+## تحديد موضع و ملكية
 
-每个会话恰有一个停靠面，保存在会话作用域的 slot store 里、由 `rightbar.session` 绘制。root 作用域的 `rightbar` 控制器仅在选中 Conversation 时挂载该席位；刷新页面后每个会话回到折叠的默认态，切换会话时各自的面保持原状（[状态](../../packages/client/ui-sidebar-right/README.zh.md#state)）。面的每一次变化都是 kit 纯规划器算出的一条历史记录；停靠的 pane 从不空着，根 pane 为空时会加入根据已注册引导入口选出的默认页。
+كل جلسة تماما لديه واحد توقف اعتماد وجه، حفظ في جلسة أثر مجال slot store داخل، من `rightbar.session` رسم صنع.root أثر مجال `rightbar` تحكم جهاز فقط في اختيار في Conversation وقت تركيب هذا مقعد موضع؛ تحديث جديد صفحة بعد كل جلسة عودة إلى طي افتراضي حالة، تبديل جلسة وقت كل منها وجه إبقاء أصل حالة ([حالة](../../packages/client/ui-sidebar-right/README.zh.md#state)). وجه كل مرة تغير كل هو kit صاف قاعدة تخطيط جهاز حساب خروج واحد بند تاريخ سجل؛ توقف اعتماد pane من لا فارغ حال، أصل pane لـ فارغ وقت سوف إضافة دخول أصل حسب قد تسجيل جذب استيراد فتحة اختيار خروج افتراضي صفحة.
 
-一个 tab 类型是共用定义 `id` 的两次注册：在 `ctx.sidebarRightTabs` 里的静态定义说明其 `kind` 打开哪些地址，一次 keyed slot 注册提供它的正文。框架注入 `useTabInfo()` 以读取 Sidebar、窗格和标签的实时信息；各类型把自身状态放在 slot store 里。各包之间只以类型形式引用彼此的声明。
+واحد tab نوع هو مشترك استخدام تعريف `id` اثنان مرة تسجيل: في `ctx.sidebarRightTabs` داخل ساكن حالة تعريف شرح ذلك `kind` فتح أي بعض عنوان، مرة keyed slot تسجيل توفير هو متن. إطار هيكل حقن `useTabInfo()` بـ قراءة Sidebar، نافذة إطار و وسم فوري معلومة؛ كل نوع يأخذ ذاته حالة وضع في slot store داخل. كل حزمة بين فقط بـ نوع شكل صيغة مرجع ذاك هذا إعلان.
 
-| 包 | 职责 |
+| حزمة | مسؤولية |
 |---|---|
-| [`client/ui-sidebar-right`](../../packages/client/ui-sidebar-right/README.zh.md) | 面板与栏席位、布局 store、`ctx.sidebarRightTabs`、`ctx.sidebarRight`、Tab 域、引导类型 |
-| [`client/ui-dockkit`](../../packages/client/ui-dockkit/README.zh.md) | 纯布局引擎与 React 面；`ui-sidebar-right` 的内部依赖，不是稳定接口 |
-| [`client/resources`](../../packages/client/resources/README.zh.md) | `ctx.resources`、`useResource`、协议 → 值类型的花名册 `ResourceProtocolMap` |
-| [`api/workspace-files`](../../packages/api/workspace-files/README.zh.md) | Host `ctx.workspaceFiles`、`workspaceFiles` Remote 命名空间与 Client `file` 资源提供者 |
-| [`util/workspace-path`](../../packages/util/workspace-path/README.zh.md) | 文件地址语法：`fileAddressFor`、`parseFileAddress` |
-| [`client/ui-sidebar-documentpreview`](../../packages/client/ui-sidebar-documentpreview/README.zh.md)、[`client/ui-sidebar-files`](../../packages/client/ui-sidebar-files/README.zh.md)、[`client/ui-sidebar-browser`](../../packages/client/ui-sidebar-browser/README.zh.md) | 内置的 `text`、`files` 与 `browser` 类型 |
+| [`client/ui-sidebar-right`](../../packages/client/ui-sidebar-right/README.zh.md) | وجه لوح و شريط مقعد موضع، تخطيط store،`ctx.sidebarRightTabs`،`ctx.sidebarRight`،Tab مجال، جذب توجيه نوع |
+| [`client/ui-dockkit`](../../packages/client/ui-dockkit/README.zh.md) | صاف تخطيط جذب محرك و React وجه؛`ui-sidebar-right` داخلي اعتماد، لا هو مستقر واجهة |
+| [`client/resources`](../../packages/client/resources/README.zh.md) | `ctx.resources`،`useResource`، بروتوكول → قيمة نوع زهرة اسم سجل `ResourceProtocolMap` |
+| [`api/workspace-files`](../../packages/api/workspace-files/README.zh.md) | Host `ctx.workspaceFiles`،`workspaceFiles` Remote نطاق الأسماء و Client `file` مورد توفير من |
+| [`util/workspace-path`](../../packages/util/workspace-path/README.zh.md) | ملف عنوان لغة قاعدة:`fileAddressFor`،`parseFileAddress` |
+| [`client/ui-sidebar-documentpreview`](../../packages/client/ui-sidebar-documentpreview/README.zh.md) ،[`client/ui-sidebar-files`](../../packages/client/ui-sidebar-files/README.zh.md) ،[`client/ui-sidebar-browser`](../../packages/client/ui-sidebar-browser/README.zh.md) | داخل وضع `text`،`files` و `browser` نوع |
 
-## 地址
+## عنوان
 
-每个 tab 都由一个地址字串打开，地址就是 tab 的内容身份。地址分两族。
+كل tab كل من واحد عنوان حرف سلسلة فتح، عنوان حينئذ هو tab محتوى هوية. عنوان قسم اثنان عائلة.
 
-**资源地址**是 `dsh-resource://<type>/…` 形式的 URL。host 命名资源协议——即 `ResourceProtocolMap` 的键——其后是该协议自己的路径；所有协议共用一个 scheme，新增协议只新增 host、不新增 scheme。`file` 协议的路径以其作用域开头：`session/<sessionId>` 后接相对该会话工作区根的路径（`dsh-resource://file/session/abc/src/notes.txt`），或 `absolute` 后接去掉前导 `/` 的绝对路径（`dsh-resource://file/absolute/home/ys/notes.txt`，Windows 上为 `dsh-resource://file/absolute/C:/x/y.txt`）。id 与每一段路径都做组件编码，盘符的 `:` 保留原样。`fileAddressFor(sessionId, cwd, path)` 构造地址——相对路径或工作区内的绝对路径成为 `session` 相对地址，其他绝对路径成为 `absolute` 地址——`parseFileAddress(address)` 读回各部分或返回 `undefined`（[语法](../../packages/util/workspace-path/README.zh.md)）。
+**مورد عنوان**هو `dsh-resource://<type>/…` شكل صيغة URL.host تسمية مورد بروتوكول——أي `ResourceProtocolMap` مفتاح——ذلك بعد هو هذا بروتوكول ذاتي ذات مسار؛ كل بروتوكول مشترك استخدام واحد scheme، إضافة جديدة بروتوكول فقط إضافة جديدة host، لا إضافة جديدة scheme.`file` بروتوكول مسار بـ ذلك أثر مجال فتح رأس:`session/<sessionId>` بعد وصل متبادل مقابل هذا جلسة مساحة العمل أصل مسار (`dsh-resource://file/session/abc/src/notes.txt`) ، أو `absolute` بعد وصل ذهاب إسقاط قبل توجيه `/` قطعا مقابل مسار (`dsh-resource://file/absolute/home/ys/notes.txt`،Windows فوق لـ `dsh-resource://file/absolute/C:/x/y.txt`).id و كل واحد مقطع مسار كل فعل مكون تحرير رمز، قرص رمز `:` إبقاء أصل مثال.`fileAddressFor(sessionId, cwd, path)` بنية صنع عنوان——متبادل مقابل مسار أو مساحة العمل داخل قطعا مقابل مسار يصبح `session` متبادل مقابل عنوان، أخرى قطعا مقابل مسار يصبح `absolute` عنوان——`parseFileAddress(address)` قراءة عودة كل جزء أو إرجاع `undefined`([لغة قاعدة](../../packages/util/workspace-path/README.zh.md)).
 
-**页面地址**是 Sidebar 为按 kind（而非按资源）打开的 tab 记下的地址：`sidebar://<kind>`，由 Sidebar 自己在 `openTab(kind)` 运行时写入。调用方从不拼它——引导页与文件树以 `openTab('guide')`、`openTab('files')` 打开——此外不存在任何导航地址（[不做](#not-built)）。
+**صفحة عنوان**هو Sidebar لـ حسب kind(بينما غير حسب مورد) فتح tab تسجيل تحت عنوان:`sidebar://<kind>`، من Sidebar ذاتي ذات في `openTab(kind)` وقت التشغيل كتابة. استدعاء جهة من لا تجميع هو——جذب توجيه صفحة و ملف شجرة بـ `openTab('guide')`،`openTab('files')` فتح——هذا خارج لا وجود أي تنقل عنوان ([لا فعل](#not-built)).
 
-tab 身份是 `(kind, address)` 二元组：注册表的认领把地址原文用作记录的 `contentId`，因此同一地址经同一类型再次打开会找到已有 tab，同一地址经两个类型打开则是两个 tab。
+tab هوية هو `(kind, address)` اثنان عنصر مجموعة: سجل التسجيل إقرار قيادة يأخذ عنوان أصل نص استخدام عمل سجل `contentId`، لذلك نفس عنوان مرور نفس نوع مجددا مرة فتح سوف بحث إلى قد لديه tab، نفس عنوان مرور اثنان عدد نوع فتح فإن هو اثنان عدد tab.
 
-## Tab 类型注册
+## Tab نوع تسجيل
 
-`ctx.sidebarRightTabs.register(definition)` 在调用方的生命周期内注册一个类型的一份实现并返回注销器；调用方把它放在自己的 `ctx.effect` 里，因此实现与贡献它的插件同寿，同一 `id` 的第二次注册抛错（[扩展席位](../../packages/client/ui-sidebar-right/README.zh.md#extension-seats)）。定义是静态的：没有运行时 hook，没有按 tab 或按会话的东西。
+`ctx.sidebarRightTabs.register(definition)` في استدعاء جهة دورة الحياة داخل تسجيل واحد نوع واحد نسخة تنفيذ و إرجاع ملاحظة إلغاء جهاز؛ استدعاء جهة يأخذ هو وضع في ذاتي ذات `ctx.effect` داخل، لذلك تنفيذ و مساهمة هو إضافة نفس عمر، نفس `id` ثاني مرة تسجيل رمي خطأ ([توسيع مقعد موضع](../../packages/client/ui-sidebar-right/README.zh.md#extension-seats)). تعريف هو ساكن حالة: لا يوجد وقت التشغيل hook، لا يوجد حسب tab أو حسب جلسة شرق غرب.
 
-| 字段 | 含义 |
+| حقل | يحتوي معنى |
 |---|---|
-| `id` | 该实现的身份，在所有注册中唯一；包名是自然取值（`@deepseek-ai/dsh-client-ui-sidebar-files`）。正文与标题坑位按它注册。 |
-| `kind` | 类型的判别名：它的 tab 是什么，也是 `openTab` 点名的对象。不唯一——extension 可以接管 builtin 的 kind。内置 kind 为 `guide`、`text`、`files`。 |
-| `patterns` | 可选的资源地址 glob；按 kind 打开的页面类型省略。含 `:` 的模式匹配整个地址（`dsh-resource://file/**`）；不含的匹配 URL 的路径部分且任意深度都中（`*.md`），不是 URL 的地址不会命中此类模式。匹配不分大小写、不隐藏 dotfile；语法为 picomatch 的 POSIX 方言。 |
-| `priority` | 三档字面量之一：`extension`（缺省且最高：产品之外的类型压过所有内置查看器）、`builtin`（随产品发布的类型）、`fallback`（任何更具体的类型都应压过的纯内容查看器）。 |
-| `canOpen(address)` | 可选的同步否决，对 glob 命中生效；每次路由决策都会调用。 |
-| `title(address)` | chip 文本，在 tab 打开时捕获进布局记录，之后不再改写。 |
-| `guide` | 可选的引导页入口框：`{ order, title(), description?(), icon? }`。点一框即把贡献它的类型作为页面打开；省略即不上引导页。 |
+| `id` | هذا تنفيذ هوية، في كل تسجيل في وحيد؛ حزمة اسم هو ذاتي لكن أخذ قيمة (`@deepseek-ai/dsh-client-ui-sidebar-files`). متن و عنوان حفرة موضع حسب هو تسجيل. |
+| `kind` | نوع حكم آخر اسم: هو tab هو ماذا، أيضا هو `openTab` نقطة اسم كائن. لا وحيد——extension يمكن وصل إدارة builtin kind. داخل وضع kind لـ `guide`،`text`،`files`. |
+| `patterns` | اختياري مورد عنوان glob؛ حسب kind فتح صفحة نوع حذف. يحتوي `:` نمط مطابقة كامل عنوان (`dsh-resource://file/**`) ؛ لا يحتوي مطابقة URL مسار جزء كما مهمة معنى عميق درجة كل في (`*.md`) ، لا هو URL عنوان لن أمر في هذا صنف نمط. مطابقة لا قسم كبير صغير كتابة، لا إخفاء dotfile؛ لغة قاعدة لـ picomatch POSIX جهة قول. |
+| `priority` | ثلاثة ملف حرف وجه كمية لـ واحد:`extension`(نقص حذف كما الأكثر عال: منتج خارج نوع ضغط مرور كل داخل وضع فحص نظر جهاز) ،`builtin`(مع منتج إصدار نوع) ،`fallback`(أي أكثر أداة جسم نوع كل ينبغي ضغط مرور صاف محتوى فحص نظر جهاز). |
+| `canOpen(address)` | اختياري تزامن مرفوض، مقابل glob أمر في توليد فاعلية؛ كل مرة توجيه قرار كل سوف استدعاء. |
+| `title(address)` | chip نص، في tab فتح وقت التقاط دخول تخطيط سجل، بعد لم يعد تعديل كتابة. |
+| `guide` | اختياري جذب توجيه صفحة مدخل إطار:`{ order, title(), description?(), icon? }`. نقطة واحد إطار أي يأخذ مساهمة هو نوع بصفة صفحة فتح؛ حذف أي لا فوق جذب توجيه صفحة. |
 
-路由是一次排序认领。`candidates(address)` 对模式命中且未被 `canOpen` 否决的类型排序：先按档，再按最长命中模式的长度，最后按注册顺序。`claim(address, kind?)` 取第一个候选，或直接用点名的 `kind`——跳过它的 glob，但 `canOpen` 仍生效——返回 `{ kind, contentId: address, title }`。没有任何类型认领的地址会抛错：这是接线错误，不是用户错误。
+توجيه هو مرة ترتيب ترتيب إقرار قيادة.`candidates(address)` مقابل نمط أمر في كما لم يتم `canOpen` مرفوض نوع ترتيب ترتيب: أولا حسب ملف، مجددا حسب الأكثر طويل أمر في نمط طويل درجة، الأكثر بعد حسب تسجيل ترتيب.`claim(address, kind?)` أخذ رقم واحد مرشح، أو مباشر استخدام نقطة اسم `kind`——قفز مرور هو glob، لكن `canOpen` ما زال توليد فاعلية——إرجاع `{ kind, contentId: address, title }`. لا يوجد أي نوع إقرار قيادة عنوان سوف رمي خطأ: هذا هو وصل خط خطأ، لا هو مستخدم خطأ.
 
-同一个 `kind` 可同时携带一个 `builtin` 与一个 `extension` 注册。extension 在认领、`get(kind)`、`openTab(kind)` 与引导页上生效，席位按生效定义的 `id` 找 tab 的正文与标题，不涉及任何 slot 优先级；extension 注销后 builtin 恢复。kind 上的其它任何撞名以及任何重复的 `id` 都抛错。
+نفس عدد `kind` يمكن معا يحمل واحد `builtin` و واحد `extension` تسجيل.extension في إقرار قيادة،`get(kind)`،`openTab(kind)` و جذب توجيه صفحة فوق توليد فاعلية، مقعد موضع حسب توليد فاعلية تعريف `id` بحث tab متن و عنوان، لا تعلق و أي slot أولوية درجة؛extension ملاحظة إلغاء بعد builtin استعادة.kind فوق ذلك هو أي اصطدام اسم و أي تكرار `id` كل رمي خطأ.
 
 ```ts ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -70,84 +70,84 @@ export function apply(ctx: Context): void {
 }
 ```
 
-## 导航：`ctx.sidebarRight`
+## تنقل:`ctx.sidebarRight`
 
-两种打开构成导航控制器，进入这一列的每条路都调用其一：`openResource(address, options?)` 打开 `dsh-resource://` 地址——会话区的文件链接、工具行的行号引用、文件树的行；`openTab(kind, options?)` 打开页面——tab 条的新增控件、引导页入口框或 Assistant Markdown 中的 HTTP(S) 链接。两者都以一条历史记录走完四步——认领（注册表为资源排候选，或点名 `kind` 的生效实现应答）；聚焦已显示同一 `(kind, address)` 的 tab；否则落一个新 tab；展开这一列——然后把导航记入 Tab 域（[服务](../../packages/client/ui-sidebar-right/README.zh.md#ctxsidebarright)）。用户看不见的内容不算打开，所以折叠的列会在同一步展开。`openResource` 对 `dsh-resource://` 之外的地址或无人认领的地址抛错；`openTab` 对无人注册的 kind 抛错：二者都是接线错误，不是用户错误。
+اثنان نوع فتح بنية صار تنقل تحكم جهاز، دخول هذا واحد صف كل بند مسار كل استدعاء ذلك واحد:`openResource(address, options?)` فتح `dsh-resource://` عنوان——جلسة منطقة ملف رابط، أداة سطر سطر رقم مرجع، ملف شجرة سطر؛`openTab(kind, options?)` فتح صفحة——tab بند إضافة جديدة تحكم عنصر، جذب توجيه صفحة مدخل إطار أو Assistant Markdown في HTTP(S) رابط. اثنان من كل بـ واحد بند تاريخ سجل مشي تمام أربعة خطوة——إقرار قيادة (سجل التسجيل لـ مورد ترتيب مرشح، أو نقطة اسم `kind` توليد فاعلية تنفيذ ينبغي جواب) ؛ تجمع تركيز قد عرض نفس `(kind, address)` tab؛ لا فإن سقوط واحد جديد tab؛ توسيع هذا واحد صف——لكن بعد يأخذ تنقل تسجيل دخول Tab مجال ([خدمة](../../packages/client/ui-sidebar-right/README.zh.md#ctxsidebarright)). مستخدم نظر لا رؤية محتوى لا حساب فتح، الذي بـ طي صف سوف في نفس خطوة توسيع.`openResource` مقابل `dsh-resource://` خارج عنوان أو بلا شخص إقرار قيادة عنوان رمي خطأ؛`openTab` مقابل بلا شخص تسجيل kind رمي خطأ: اثنان من كل هو وصل خط خطأ، لا هو مستخدم خطأ.
 
-| 选项 | 含义 |
+| خيار | يحتوي معنى |
 |---|---|
-| `paneId` | 新 tab 落到这个 pane；缺省为活动的停靠 pane（活动的是浮窗时取第一个停靠 pane）。 |
-| `replaceTab` | 占用这个 tab 的 pane 与条上位置，并在同一步关闭它；浮窗里的 tab 让不出位置，新 tab 按未指定位置落位。 |
-| `revealIfOpened` | 缺省 `true`：已显示同一 `(kind, address)` 的 tab 被聚焦并收到 `params`。`false` 则无论如何再开一个。 |
-| `preferNewPane` | 在普通格数预算与空间规则下优先新建停靠格；不能分栏时回退到目标格。与 `replaceTab` 一起使用时忽略。 |
-| `kind`（仅 `openResource`） | 点名打开类型而不排候选；该 kind 的生效实现打开地址，它的 `canOpen` 仍生效。 |
-| `params` | 给正文的导航参数，作为 `navigation.params` 送达。`openResource` 按资源类型经声明合并表 `SidebarRightResourceParamsMap` 定型（文本预览声明 `{ line?: number }`）；`openTab<K>` 按 kind 经 `SidebarRightTabParamsMap` 定型，未声明的 kind 为 `undefined`；正文读到的是二者联合 `SidebarRightNavigationParams`。值按约定为 JSON 形状，运行时不校验。 |
+| `paneId` | جديد tab سقوط إلى هذا عدد pane؛ نقص حذف لـ نشط حركة توقف اعتماد pane(نشط حركة هو طفو نافذة وقت أخذ رقم واحد توقف اعتماد pane). |
+| `replaceTab` | احتلال استخدام هذا عدد tab pane و بند فوق موضع، و في نفس خطوة إغلاق هو؛ طفو نافذة داخل tab يجعل لا خروج موضع، جديد tab حسب لم إشارة تحديد موضع سقوط موضع. |
+| `revealIfOpened` | نقص حذف `true`: قد عرض نفس `(kind, address)` tab يتم تجمع تركيز و استلام إلى `params`.`false` فإن بلا نقاش مثل أي مجددا فتح واحد. |
+| `preferNewPane` | في عادي إطار عدد ميزانية و فضاء قاعدة تحت أولوية جديد بناء توقف اعتماد إطار؛ لا يستطيع قسم شريط وقت رجوع إلى هدف إطار. و `replaceTab` واحد بدء استخدام وقت تجاهل اختصار. |
+| `kind`(فقط `openResource`) | نقطة اسم فتح نوع بينما لا ترتيب مرشح؛ هذا kind توليد فاعلية تنفيذ فتح عنوان، هو `canOpen` ما زال توليد فاعلية. |
+| `params` | إعطاء متن تنقل معامل، بصفة `navigation.params` إرسال بلوغ.`openResource` حسب مورد نوع مرور إعلان دمج جدول `SidebarRightResourceParamsMap` تحديد نوع (نص معاينة إعلان `{ line?: number }`) ؛`openTab<K>` حسب kind مرور `SidebarRightTabParamsMap` تحديد نوع، لم إعلان kind لـ `undefined`؛ متن قراءة إلى هو اثنان من ربط دمج `SidebarRightNavigationParams`. قيمة حسب اتفاق لـ JSON شكل حالة، وقت التشغيل لا تحقق. |
 
-落位是调用方的选项，从不是类型的属性。会话区调 `openResource(fileAddressFor(sessionId, cwd, path))`，`read` 工具行另加 `{ params: { line } }`（来自调用的 1 起 `offset`）；引导页入口框调 `tab.actions.openTab(entry.kind, { replaceTab: true })`；文件树的行调 `tab.actions.openResource(address)`；tab 条的新增控件调 `openTab('guide', { paneId, revealIfOpened: false })`。
+سقوط موضع هو استدعاء جهة خيار، من لا هو نوع خاصية. جلسة منطقة ضبط `openResource(fileAddressFor(sessionId, cwd, path))`،`read` أداة سطر آخر إضافة `{ params: { line } }`(قدوم ذاتي استدعاء 1 بدء `offset`) ؛ جذب توجيه صفحة مدخل إطار ضبط `tab.actions.openTab(entry.kind, { replaceTab: true })`؛ ملف شجرة سطر ضبط `tab.actions.openResource(address)`؛tab بند إضافة جديدة تحكم عنصر ضبط `openTab('guide', { paneId, revealIfOpened: false })`.
 
-`close(tabId)` 关闭一个 tab；`active()` 返回活动 pane 的活动 tab；`isExpanded()` 与 `toggleExpanded()` 读取与翻转这一列，翻转记入序列。无会话时读操作返回 `undefined` 或 `false`；写操作需要已挂载的会话面，没有时抛错而不是写进没人绘制的面。
+`close(tabId)` إغلاق واحد tab؛`active()` إرجاع نشط حركة pane نشط حركة tab؛`isExpanded()` و `toggleExpanded()` قراءة و قلب تحويل هذا واحد صف، قلب تحويل تسجيل دخول تسلسل. بلا جلسة وقت قراءة عملية إرجاع `undefined` أو `false`؛ كتابة عملية حاجة قد تركيب جلسة وجه، لا يوجد وقت رمي خطأ بينما لا هو كتابة دخول لا شخص رسم صنع وجه.
 
-`focus(tabId)` 让一个 tab 成为其 pane 的活动 tab；`split(paneId?)` 分割活动的停靠 pane 或点名的 pane，返回新 pane 的 id——pane 数预算或列宽不允许时返回 `undefined` 且不记账；`float(tabId, rect?)` 把一个 tab 浮出为浮窗 pane；`dock(paneId)` 把浮窗 pane 收回停靠区。四者都走 store 既有动作、各记一条历史；目标不存在或已处于目标状态时是空操作，与 `open` 一样在没有已挂载会话面时抛错。`TabId`、`PaneId`、`TabRecord`、`FloatRect` 自本包 `/client` 入口再导出，调用方无需引 dockkit。
+`focus(tabId)` يجعل واحد tab يصبح ذلك pane نشط حركة tab؛`split(paneId?)` قسم قطع نشط حركة توقف اعتماد pane أو نقطة اسم pane، إرجاع جديد pane id——pane عدد ميزانية أو صف عرض لا سماح وقت إرجاع `undefined` كما لا تسجيل حساب؛`float(tabId, rect?)` يأخذ واحد tab طفو خروج لـ طفو نافذة pane؛`dock(paneId)` يأخذ طفو نافذة pane استلام عودة توقف اعتماد منطقة. أربعة من كل مشي store قائم حركة عمل، كل تسجيل واحد بند تاريخ؛ هدف لا وجود أو قد موضع في هدف حالة وقت هو فارغ عملية، و `open` واحد مثال في لا يوجد قد تركيب جلسة وجه وقت رمي خطأ.`TabId`،`PaneId`،`TabRecord`،`FloatRect` ذاتي هذه الحزمة `/client` مدخل مجددا توجيه خروج، استدعاء جهة بلا حاجة جذب dockkit.
 
-## Slot 与 owner props
+## Slot و owner props
 
-Sidebar 声明四个扩展 slot；其文档 tab 另行声明下表中的 keyed 文档正文 slot（[层级](slots.zh.md)）。
+Sidebar إعلان أربعة عدد توسيع slot؛ ذلك وثيقة tab آخر سطر إعلان تحت جدول في keyed وثيقة متن slot([طبقة درجة](slots.zh.md)).
 
-| Slot | Cardinality | 用途 |
+| Slot | Cardinality | استخدام طريق |
 |---|---|---|
-| `sidebar.right.pane.tab` | 按定义的 `id` keyed，会话作用域 | 一个 tab 的正文。席位把 tab 分发到其 kind 生效实现的 `id`，因此注册者收到该 kind 的每个 tab，停靠或浮窗。实现没有注册正文的 kind 渲染 owner 的「无法查看此内容」提示。 |
-| `sidebar.right.pane.tab.title` | 按定义的 `id` keyed，会话作用域 | chip 的标题，owner share 与正文相同。可选：没有条目时 chip 显示打开时捕获的 `title(address)` 文本；有活标题的类型在此读自己的 store。 |
-| `sidebar.right.tab.guide` | chain，会话作用域 | 替换引导 tab 的内容而不替换 tab；第一个不拒绝的条目接管正文，否则渲染自带引导。 |
-| `sidebar.right.tab.menu.item` | list，会话作用域 | 追加在 kit 自身布局动作之后的内容级动作。执行了动作的条目必须调用 owner 的 `dismiss()`。 |
-| `sidebar.right.tab.document` | 按文档实现的 `id` keyed，会话作用域 | 文档 tab 内选中的文件渲染器；父组件拥有共享加载与工具栏控件。 |
+| `sidebar.right.pane.tab` | حسب تعريف `id` keyed، جلسة أثر مجال | واحد tab متن. مقعد موضع يأخذ tab توزيع إلى ذلك kind توليد فاعلية تنفيذ `id`، لذلك تسجيل من استلام إلى هذا kind كل tab، توقف اعتماد أو طفو نافذة. تنفيذ لا يوجد تسجيل متن kind تصيير owner «لا يمكن فحص نظر هذا محتوى» تلميح. |
+| `sidebar.right.pane.tab.title` | حسب تعريف `id` keyed، جلسة أثر مجال | chip عنوان،owner share و متن نفسه. اختياري: لا يوجد بند وقت chip عرض فتح وقت التقاط `title(address)` نص؛ لديه نشط عنوان نوع في هذا قراءة ذاتي ذات store. |
+| `sidebar.right.tab.guide` | chain، جلسة أثر مجال | استبدال جذب توجيه tab محتوى بينما لا استبدال tab؛ رقم واحد لا رفض بند وصل إدارة متن، لا فإن تصيير ذاتي حمل جذب توجيه. |
+| `sidebar.right.tab.menu.item` | list، جلسة أثر مجال | إلحاق في kit ذاته تخطيط حركة عمل بعد محتوى درجة حركة عمل. تنفيذ حركة عمل بند يجب استدعاء owner `dismiss()`. |
+| `sidebar.right.tab.document` | حسب وثيقة تنفيذ `id` keyed، جلسة أثر مجال | وثيقة tab داخل اختيار في ملف مصير؛ أب مكون يملك مشترك تحميل و أداة شريط تحكم عنصر. |
 
-正文、标题与引导页替换项接收框架注入的 `useTabInfo()`。它返回 `{ sidebar, panel, tab }`：`sidebar` 包含 `expanded` 与 `fullscreen`，`panel.id` 标识所属窗格，`tab` 包含记录字段以及 `visible`、`navigation`、`signal` 和 `actions`。停靠正文仅在展开且活跃时可见；停靠标题只要求展开；浮窗保持可见。`signal` 在记录消失或插件卸载时中止，不因隐藏或切换 Session 而中止。`tab.actions` 提供绑定到标签所属 Session 的 `openResource`、`openTab` 与 `close`。打开位置缺省为当前所属窗格；`revealIfOpened` 缺省为 `true`，`replaceTab: true` 在同一历史项中替换本记录。菜单项保留普通的 `tab` 与 `dismiss` owner 参数。
+متن، عنوان و جذب توجيه صفحة استبدال بند استقبال إطار هيكل حقن `useTabInfo()`. هو إرجاع `{ sidebar, panel, tab }`:`sidebar` يتضمن `expanded` و `fullscreen`،`panel.id` معرف الذي تابع نافذة إطار،`tab` يتضمن سجل حقل و `visible`،`navigation`،`signal` و `actions`. توقف اعتماد متن فقط في توسيع كما نشط وثب وقت مرئي؛ توقف اعتماد عنوان فقط اشتراط توسيع؛ طفو نافذة إبقاء مرئي.`signal` في سجل إزالة فقد أو إضافة إزالة وقت في توقف، لا بسبب إخفاء أو تبديل Session بينما في توقف.`tab.actions` توفير ربط إلى وسم الذي تابع Session `openResource`،`openTab` و `close`. فتح موضع نقص حذف لـ حالي الذي تابع نافذة إطار؛`revealIfOpened` نقص حذف لـ `true`،`replaceTab: true` في نفس تاريخ بند في استبدال هذا سجل. قائمة مفرد بند إبقاء عادي `tab` و `dismiss` owner معامل.
 
-`navigation.revision` 在每次导航到该 tab 时递增，`params` 不变也递增，正文可仅凭「又被导航了」行动；按地址打开的 tab 为 `1`，没有人按地址打开的记录——种入的引导、撤销恢复的 tab——为 `0`。Tab 域为每条打开的记录保有一个 occurrence：记录出现即在资源模型里钉住，因此切换 tab 卸载正文也不丢内容；记录消失即中止并丢弃；撤销恢复的记录是新的 occurrence（[Tab 域](../../packages/client/ui-sidebar-right/README.zh.md#the-tab-domain)）。
+`navigation.revision` في كل مرة تنقل إلى هذا tab وقت تمرير زيادة،`params` ثابت أيضا تمرير زيادة، متن يمكن فقط سند «أيضا يتم تنقل» سطر حركة؛ حسب عنوان فتح tab لـ `1`، لا يوجد شخص حسب عنوان فتح سجل——نوع دخول جذب توجيه، سحب إلغاء استعادة tab——لـ `0`.Tab مجال لـ كل بند فتح سجل حفظ لديه واحد occurrence: سجل ظهور أي في مورد نموذج داخل تثبيت إقامة، لذلك تبديل tab إزالة متن أيضا لا فقد محتوى؛ سجل إزالة فقد أي في توقف و إسقاط؛ سحب إلغاء استعادة سجل هو جديد occurrence([Tab مجال](../../packages/client/ui-sidebar-right/README.zh.md#the-tab-domain)).
 
-## 文档渲染器
+## وثيقة مصير
 
-`text` tab 是共享的 Document Preview 所有者。其[根注册](../../packages/client/ui-sidebar-documentpreview/src/client/index.ts)声明 `sidebar.right.tab.document` 并提供 `ctx.documentPreviews`。渲染器在自己的 effect 中注册 `DocumentPreviewDefinition` 元数据，再通过 `ctx.slots.inject('sidebar.right.tab.document', ...)` 等待 slot，以 `key: definition.id` 和自己的 locale 命名空间注册组件。渲染器注册自己的正文，并可通过子 slot 复用共享展示组件。切换渲染器不改变 tab 或资源地址；[扩展决议](../../.agents/notes/implemented/architecture/2026-09-08-document-preview-operations.zh.md)将预览策略与资源归属分开。
+`text` tab هو مشترك Document Preview كل من. ذلك[أصل تسجيل](../../packages/client/ui-sidebar-documentpreview/src/client/index.ts) إعلان `sidebar.right.tab.document` و توفير `ctx.documentPreviews`. مصير في ذاتي ذات effect في تسجيل `DocumentPreviewDefinition` بيانات وصفية، مجددا عبر `ctx.slots.inject('sidebar.right.tab.document', ...)` انتظار slot، بـ `key: definition.id` و ذاتي ذات locale نطاق الأسماء تسجيل مكون. مصير تسجيل ذاتي ذات متن، و يمكن عبر فرعي slot إعادة استخدام مشترك عرض مكون. تبديل مصير لا تغيير tab أو مورد عنوان؛[توسيع قرار اقتراح](../../.agents/notes/implemented/architecture/2026-09-08-document-preview-operations.zh.md) سوف معاينة سياسة و مورد ملكية قسم فتح.
 
-[注册表](../../packages/client/ui-sidebar-documentpreview/src/client/document/registry.ts)记录唯一的 `id`、`extensions`、本地化 `title()`、`loading`，以及可选的 `priority` 和 `wrap`。后缀匹配不区分大小写，先排 `extension`（缺省值）、再排 `builtin`，随后比较后缀长度（长者优先）与注册顺序。与 tab kind 替换不同，注册表保留所有实现；工具栏列出匹配的候选，按 tab 记住选择。未知扩展名使用纯文本。`binaryExtensions` 声明的后缀不提供纯文本备选，见[包 README](../../packages/client/ui-sidebar-documentpreview/README.zh.md#what-it-registers)。`loading` 为 `text-pages`、`bytes-complete` 或 `renderer`；`wrap` 声明是否支持共享的源码换行控件。
+[سجل التسجيل](../../packages/client/ui-sidebar-documentpreview/src/client/document/registry.ts) سجل وحيد `id`،`extensions`، محلي تحويل `title()`،`loading`، و اختياري `priority` و `wrap`. بعد لاحقة مطابقة لا منطقة قسم كبير صغير كتابة، أولا ترتيب `extension`(نقص حذف قيمة) ، مجددا ترتيب `builtin`، مع بعد مقارنة مقارنة بعد لاحقة طويل درجة (طويل من أولوية) و تسجيل ترتيب. و tab kind استبدال مختلف، سجل التسجيل إبقاء كل تنفيذ؛ أداة شريط صف خروج مطابقة مرشح، حسب tab تسجيل إقامة اختيار. لم معرفة توسيع اسم استخدام صاف نص.`binaryExtensions` إعلان بعد لاحقة لا توفير صاف نص تجهيز اختيار، رؤية[حزمة README](../../packages/client/ui-sidebar-documentpreview/README.zh.md#what-it-registers).`loading` لـ `text-pages`،`bytes-complete` أو `renderer`؛`wrap` إعلان هل دعم حمل مشترك شفرة المصدر تبديل سطر تحكم عنصر.
 
-[`DocumentPreviewProps`](../../packages/client/ui-sidebar-documentpreview/src/client/document/contract.ts) 派生自 `PropsRuntime<'sidebar.right.tab.document'>`。owner 提供原始 `resourceAddress`、`content` 与当前 `wrap`：文本内容为 `{ kind: 'text', text, pages: [{ offset, text, lines }], eof }`，其中 `text` 为累积文本；完整字节为 `{ kind: 'bytes', data }`，其中 `data` 为 `Uint8Array<ArrayBuffer>`。这些瞬时缓冲区按只读方式借用，不得进入持久布局或 Session JSON。PDF 在转移到 Worker 前复制字节，以保留 owner 的缓冲区。子组件收到同一个框架绑定的 `useTabInfo`，以及全局共享、仅提供元数据的 `useResource`。父组件通过普通 inject 回调调用 `remote.workspaceFiles.read`/`readAll`，拥有追加分页、逐 tab 刷新与加载状态。HTML 自己的 inject 回调使用 `readRelated`；路径由 Host 代码解析。Markdown 和代码在追加期间保留同一个增量渲染器，到 EOF 完成最终解析；HTML 和 PDF 接收完整字节。
+[`DocumentPreviewProps`](../../packages/client/ui-sidebar-documentpreview/src/client/document/contract.ts) إرسال توليد ذاتي `PropsRuntime<'sidebar.right.tab.document'>`.owner توفير أصلي `resourceAddress`،`content` و حالي `wrap`: نص محتوى لـ `{ kind: 'text', text, pages: [{ offset, text, lines }], eof }`، منها `text` لـ تراكم تراكم نص؛ كامل بايت لـ `{ kind: 'bytes', data }`، منها `data` لـ `Uint8Array<ArrayBuffer>`. هذه لحظة وقت مؤقت اندفاع منطقة حسب فقط قراءة طريقة استعارة استخدام، لا نيل دخول حمل دائم تخطيط أو Session JSON.PDF في تحويل نقل إلى Worker قبل نسخ بايت، بـ إبقاء owner مؤقت اندفاع منطقة. فرعي مكون استلام إلى نفس عدد إطار هيكل ربط `useTabInfo`، و عام مشترك، فقط توفير بيانات وصفية `useResource`. أب مكون عبر عادي inject عودة ضبط استدعاء `remote.workspaceFiles.read`/`readAll`، يملك إلحاق قسم صفحة، تدريجي tab تحديث جديد و تحميل حالة.HTML ذاتي ذات inject عودة ضبط استخدام `readRelated`؛ مسار من Host شفرة تحليل.Markdown و شفرة في إلحاق خلال إبقاء نفس عدد زيادة كمية مصير، إلى EOF إتمام نهائي تحليل؛HTML و PDF استقبال كامل بايت.
 
-Preview 记录已载入版本和读取开始时的观察版本。刷新只重读当前 tab，不改变共享元数据或其他 tab 的内容。读取不具备事务性；版本是不透明的相等性令牌，不是可排序的时间戳（[资源观察与 Preview RPC](../../.agents/notes/implemented/architecture/2026-09-08-document-preview-operations.zh.md)）。
+Preview سجل قد تحميل دخول إصدار و قراءة بدء وقت مراقبة إصدار. تحديث جديد فقط إعادة قراءة حالي tab، لا تغيير مشترك بيانات وصفية أو أخرى tab محتوى. قراءة لا أداة تجهيز أمر خدمة صفة؛ إصدار هو لا نفاذ واضح متبادل انتظار صفة أمر لوحة، لا هو يمكن ترتيب ترتيب ختم الوقت ([مورد مراقبة و Preview RPC](../../.agents/notes/implemented/architecture/2026-09-08-document-preview-operations.zh.md)).
 
-自行加载的渲染器接收 `{ kind: 'renderer', revision, loaded, reload }`，而不是文件字节。正文通过自己的注入回调加载，在 revision 变化和卸载时取消请求，并通过 `loaded(version)` 报告已展示的源版本。父组件忽略过期报告，保留共享的重新加载与源文件变更控件。Office 使用此模式请求 [Host 渲染的 PDF](office-to-pdf.zh.md)；自己的 store 和有界缓存保留转换字节，正文在嵌套 PDF 视图上方管理字体提示。[包 README](../../packages/client/ui-sidebar-documentpreview/README.zh.md#what-it-registers)定义加载生命周期。
+ذاتي سطر تحميل مصير استقبال `{ kind: 'renderer', revision, loaded, reload }`، بينما لا هو ملف بايت. متن عبر ذاتي ذات حقن عودة ضبط تحميل، في revision تغير و إزالة وقت إلغاء طلب، و عبر `loaded(version)` تقرير إبلاغ قد عرض مصدر إصدار. أب مكون تجاهل اختصار مرور مدة تقرير إبلاغ، إبقاء مشترك إعادة تحميل و مصدر ملف تغيير تحكم عنصر.Office استخدام هذا نمط طلب [Host تصيير PDF](office-to-pdf.zh.md) ؛ ذاتي ذات store و محدود ذاكرة مؤقتة إبقاء تحويل بايت، متن في تضمين طقم PDF عرض فوق جهة إدارة حرف جسم تلميح.[حزمة README](../../packages/client/ui-sidebar-documentpreview/README.zh.md#what-it-registers) تعريف تحميل دورة الحياة.
 
-## 资源模型
+## مورد نموذج
 
-模型本身见[客户端资源](client-resources.zh.md)；本节只写 Sidebar 依赖的部分。一份资源是一个地址，资源地址是 `dsh-resource://<type>/…` 形式的 URL，小写 host 即协议键。协议所属的客户端包用 `ctx.resources.register(provider)` 在自身生命周期内注册唯一的提供方；同一协议的第二个提供方抛错（[提供协议](../../packages/client/resources/README.zh.md#provide-a-protocol)）。提供方是 `{ protocol, open(address, { signal }) }`：`open` 产出 `RemoteResult` 帧——首帧是当前状态，之后每次变化一帧——并在 `signal` 中止时停下；失败是 `{ ok: false, error }` 帧而不是抛错，流里抛出的东西是编程错误，模型不捕获。
+نموذج ذاته رؤية[عميل مورد](client-resources.zh.md) ؛ هذا عقدة فقط كتابة Sidebar اعتماد جزء. واحد نسخة مورد هو واحد عنوان، مورد عنوان هو `dsh-resource://<type>/…` شكل صيغة URL، صغير كتابة host أي بروتوكول مفتاح. بروتوكول الذي تابع عميل حزمة استخدام `ctx.resources.register(provider)` في ذاته دورة الحياة داخل تسجيل وحيد مزود؛ نفس بروتوكول ثاني عدد مزود رمي خطأ ([توفير بروتوكول](../../packages/client/resources/README.zh.md#provide-a-protocol)). مزود هو `{ protocol, open(address, { signal }) }`:`open` إنتاج خروج `RemoteResult` لقطة——أول لقطة هو حالي حالة، بعد كل مرة تغير واحد لقطة——و في `signal` في توقف وقت توقف تحت؛ فشل هو `{ ok: false, error }` لقطة بينما لا هو رمي خطأ، تدفق داخل رمي خروج شرق غرب هو تحرير مسار خطأ، نموذج لا التقاط.
 
-`useResource<P>(address)` 是每个 slot 组件都有的全局标准 prop，不论作用域。它返回 `{ status, value, failure }`：地址协议没有提供方或地址不是资源地址（`sidebar://guide` 不指向资源）时为 `none`，首帧之前为 `loading`，`live` 携带最新 `ok` 值，`failed` 在最后一个值旁携带最新帧的失败。（[读取资源](../../packages/client/resources/README.zh.md#read-a-resource)）。
+`useResource<P>(address)` هو كل slot مكون كل لديه عام معيار prop، لا نقاش أثر مجال. هو إرجاع `{ status, value, failure }`: عنوان بروتوكول لا يوجد مزود أو عنوان لا هو مورد عنوان (`sidebar://guide` لا إشارة نحو مورد) وقت لـ `none`، أول لقطة قبل لـ `loading`،`live` يحمل الأكثر جديد `ok` قيمة،`failed` في الأكثر بعد واحد قيمة جانب يحمل الأكثر جديد لقطة فشل.([قراءة مورد](../../packages/client/resources/README.zh.md#read-a-resource)).
 
-资源有持有者就保持打开——订阅中的 `useResource` 或一次 `ctx.resources.pin(address, signal)`；第一个持有者打开提供方的流，之后的持有者共享它并立刻读到最新值，最后一个释放时中止流并丢弃值。流只推元数据不推内容：`file` 的值是 `{ absolutePath, version, bytes? }`，消费方自己经 Workspace Files 服务按页读文件文本（[生命周期](../../packages/client/resources/README.zh.md#lifecycle)）。
+مورد لديه يحتفظ من حينئذ إبقاء فتح——حجز قراءة في `useResource` أو مرة `ctx.resources.pin(address, signal)`؛ رقم واحد يحتفظ من فتح مزود تدفق، بعد يحتفظ من مشترك هو و قيام لحظة قراءة إلى الأكثر جديد قيمة، الأكثر بعد واحد تحرير وقت في توقف تدفق و إسقاط قيمة. تدفق فقط دفع بيانات وصفية لا دفع محتوى:`file` قيمة هو `{ absolutePath, version, bytes? }`، مستهلك ذاتي ذات مرور Workspace Files خدمة حسب صفحة قراءة ملف نص ([دورة الحياة](../../packages/client/resources/README.zh.md#lifecycle)).
 
 ## Workspace Files
 
-Host 的 `ctx.workspaceFiles` 服务与生成的 `workspaceFiles` Remote 命名空间读取 Session 文件系统后端允许的文件：`stat(path)` 返回 `{ absolutePath, version, bytes? }`；`read(path, { offset?, limit? })` 返回一页行（`offset` 1 起，`limit` 受配置页长限制），形如 `{ …stat, offset, text, eof }`；`readBytes(path, { offset?, length? })` 返回一个原始字节窗口（`offset` 0 起，`length` 受配置字节上限限制），形如 base64 的 `{ …stat, offset, data, eof }`、不做文本解码。`list(path)` 仍限定在工作区根内，返回目录的直接子项（`name`、`type: 'file' | 'directory' | 'other'`、`size?`），按配置上限截断并置 `truncated`。`changes()` 同样限定于工作区，订阅就绪后产出 `{ kind: 'ready' }`，随后产出 `{ kind: 'change', change }` 帧，其载荷为 `{ absolutePath, version }` 或 `{ absolutePath, absent: true }`（[README](../../packages/api/workspace-files/README.zh.md#use-this-package)）。文件操作拒绝末端符号链接并执行传输上限；`read` 还要求 UTF-8 文本。失败使用 `workspace-file/*` 错误码（[失败](../../packages/api/workspace-files/README.zh.md)）。
+Host `ctx.workspaceFiles` خدمة و توليد `workspaceFiles` Remote نطاق الأسماء قراءة Session نظام الملفات خلفية سماح ملف:`stat(path)` إرجاع `{ absolutePath, version, bytes? }`؛`read(path, { offset?, limit? })` إرجاع واحد صفحة سطر (`offset` 1 بدء،`limit` تلقي إعداد صفحة طويل حد) ، شكل مثل `{ …stat, offset, text, eof }`؛`readBytes(path, { offset?, length? })` إرجاع واحد أصلي بايت نافذة (`offset` 0 بدء،`length` تلقي إعداد بايت حد أعلى حد) ، شكل مثل base64 `{ …stat, offset, data, eof }`، لا فعل نص حل رمز.`list(path)` ما زال حد تحديد في مساحة العمل أصل داخل، إرجاع دليل مباشر فرعي بند (`name`،`type: 'file' | 'directory' | 'other'`،`size?`) ، حسب إعداد حد أعلى قطع قطع و وضع `truncated`.`changes()` نفس مثال حد تحديد في مساحة العمل، حجز قراءة حينئذ خيط بعد إنتاج خروج `{ kind: 'ready' }`، مع بعد إنتاج خروج `{ kind: 'change', change }` لقطة، ذلك تحميل حمل لـ `{ absolutePath, version }` أو `{ absolutePath, absent: true }`([README](../../packages/api/workspace-files/README.zh.md#use-this-package)). ملف عملية رفض نهاية طرف رمز رقم رابط و تنفيذ نقل حد أعلى؛`read` أيضا اشتراط UTF-8 نص. فشل استخدام `workspace-file/*` رمز خطأ ([فشل](../../packages/api/workspace-files/README.zh.md)).
 
-[`dsh-api-workspace-files`](../../packages/api/workspace-files/README.zh.md) 注册 `file` 提供方，`ResourceProtocolMap.file` 直接是 `WorkspaceFileStat`。Session 地址携带授权 Session 与相对或绝对路径，Host 原样接收并解析。提供方在 stat 前等待 Host 的 `ready` 帧，并按 `stat.absolutePath` 过滤变更。裸 `absolute` 地址没有授权 Session，以 `workspace-file/unknown-workspace` 失败，不借用当前或 Tab Session。任何 UI（包括 Global）访问同一完整地址都共享观察。Preview 的普通 Remote 回调使用地址中的 Session；Host `readAll` 和 `readRelated` 保留，字节结果由 Preview 的 `rpc.ts` 解码。
+[`dsh-api-workspace-files`](../../packages/api/workspace-files/README.zh.md) تسجيل `file` مزود،`ResourceProtocolMap.file` مباشر هو `WorkspaceFileStat`.Session عنوان يحمل تخويل Session و متبادل مقابل أو قطعا مقابل مسار،Host أصل مثال استقبال و تحليل. مزود في stat قبل انتظار Host `ready` لقطة، و حسب `stat.absolutePath` مرور ترشيح تغيير. عار `absolute` عنوان لا يوجد تخويل Session، بـ `workspace-file/unknown-workspace` فشل، لا استعارة استخدام حالي أو Tab Session. أي UI(يشمل Global) وصول نفس كامل عنوان كل مشترك مراقبة.Preview عادي Remote عودة ضبط استخدام عنوان في Session؛Host `readAll` و `readRelated` إبقاء، بايت نتيجة من Preview `rpc.ts` حل رمز.
 
-## 内置类型
+## داخل وضع نوع
 
-- **`guide`**——`builtin`，以 `openTab('guide')` 打开。一枚弱化的罗盘位于各类型按 `order` 贡献的入口胶囊上方；入口较少时显示已注册的描述，未提供图标的入口统一使用内置占位符。点选胶囊即在引导 tab 的位置把贡献它的类型作为页面打开。每个 pane 最多一个引导 tab，tab 条的新增控件只在本 pane 没有引导时出现。新 pane 使用已注册的默认页：只有一个引导入口时直接使用该入口，否则使用引导页（[引导](../../packages/client/ui-sidebar-right/README.zh.md#the-guide)）。
-- **`text`**——`fallback`，`dsh-resource://file/**`，只认领 Session 地址。Document Preview 通过 `useResource<'file'>` 观察元数据，经 Remote 回调加载内容，并拥有渲染器选择、工具栏、逐 tab 刷新、滚动与源码定位；未知扩展名按纯文本渲染（[README](../../packages/client/ui-sidebar-documentpreview/README.zh.md)）。
-- **`files`**——`builtin`，以 `openTab('files')` 打开。工作区目录树，经 `list` 懒加载，用 `tab.actions.openResource(fileAddressFor(sessionId, root, path))` 在自己所在 pane 打开文件（[README](../../packages/client/ui-sidebar-files/README.zh.md)）。
-- **`browser`**——可多开的 `builtin`，以 `openTab('browser', { params: { url? } })` 打开。Assistant Markdown 会把 HTTP(S) 链接委托给该页面类型。它在默认 sandbox 下接受公共与 loopback HTTP(S) 目标，本地文件改用 Document Preview，并使用应用已知的 iframe history（[README](../../packages/client/ui-sidebar-browser/README.zh.md)）。
-- **`subagentchat`**——`builtin`，`dsh-resource://subagentchat/session/<child>?parent=<parent>&mode=<mode>`。资源提供方保留一个显式寻址的 subagent Conversation，并通过共享 Conversation Factory 渲染（[README](../../packages/client/ui-subagent/README.zh.md)）。
+- **`guide`**——`builtin`، بـ `openTab('guide')` فتح. واحد قطعة ضعيف تحويل روا قرص يقع في كل نوع حسب `order` مساهمة مدخل لاصق كيس فوق جهة؛ مدخل مقارنة قليل وقت عرض قد تسجيل وصف، لم توفير رسم علامة مدخل موحد واحد استخدام داخل وضع احتلال موضع رمز. نقطة اختيار لاصق كيس أي في جذب توجيه tab موضع يأخذ مساهمة هو نوع بصفة صفحة فتح. كل pane الأكثر كثير واحد جذب توجيه tab،tab بند إضافة جديدة تحكم عنصر فقط في هذا pane لا يوجد جذب توجيه وقت ظهور. جديد pane استخدام قد تسجيل افتراضي صفحة: فقط لديه واحد جذب استيراد فتحة وقت مباشر استخدام هذا مدخل، لا فإن استخدام جذب توجيه صفحة ([جذب توجيه](../../packages/client/ui-sidebar-right/README.zh.md#the-guide)).
+- **`text`**——`fallback`،`dsh-resource://file/**`، فقط إقرار قيادة Session عنوان.Document Preview عبر `useResource<'file'>` مراقبة بيانات وصفية، مرور Remote عودة ضبط تحميل محتوى، و يملك مصير اختيار، أداة شريط، تدريجي tab تحديث جديد، تمرير و شفرة المصدر تحديد موضع؛ لم معرفة توسيع اسم حسب صاف نص تصيير ([README](../../packages/client/ui-sidebar-documentpreview/README.zh.md)).
+- **`files`**——`builtin`، بـ `openTab('files')` فتح. مساحة العمل دليل شجرة، مرور `list` كسول تحميل، استخدام `tab.actions.openResource(fileAddressFor(sessionId, root, path))` في ذاتي ذات الذي في pane فتح ملف ([README](../../packages/client/ui-sidebar-files/README.zh.md)).
+- **`browser`**——يمكن كثير فتح `builtin`، بـ `openTab('browser', { params: { url? } })` فتح.Assistant Markdown سوف يأخذ HTTP(S) رابط تفويض حمل إعطاء هذا صفحة نوع. هو في افتراضي sandbox تحت قبول عام مشترك و loopback HTTP(S) هدف، محلي ملف تعديل استخدام Document Preview، و استخدام تطبيق معروف iframe history([README](../../packages/client/ui-sidebar-browser/README.zh.md)).
+- **`subagentchat`**——`builtin`،`dsh-resource://subagentchat/session/<child>?parent=<parent>&mode=<mode>`. مورد مزود إبقاء واحد صريح بحث عنوان subagent Conversation، و عبر مشترك Conversation Factory تصيير ([README](../../packages/client/ui-subagent/README.zh.md)).
 
 <a id="not-built"></a>
-## 不做
+## لا فعل
 
-- 持久化：布局状态只在内存里；刷新后每个会话从折叠开始，任何会话的 tab 都不会出现在另一个会话里。
-- `ctx.sidebarRight` 上的只读布局快照或订阅：服务只暴露操作，dockkit 的 `LayoutState`/`LayoutOp` 是内部的。
-- 服务上的能力探测数组（`features`）。
-- tab 类型的 `option` 优先级档：没有「只列出、不许认领」的 tab 类型。
-- 改写记录的标题：`title(address)` 只捕获一次；活的 chip 来自标题 slot，而不是记录。
-- 打开时点名某个 tab 实现：`openResource` 最多点名一个 kind；文档渲染器由文件 tab 的工具栏选择。
-- 服务上的地址查找（`find`）：调用方用 `revealIfOpened` 打开，由停靠面去重。
-- Sidebar 自身 `sidebar://<kind>` 记账之外的导航地址；其语法等导航控制器整体做时再定。
-- 面向用户的撤销与跨类型通用内容导航栈（[暂缓](../../.agents/notes/implemented/feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md#deferred)）；Browser 只拥有自身页面历史。
+- حفظ دائم: تخطيط حالة فقط في داخل تخزين داخل؛ تحديث جديد بعد كل جلسة من طي بدء، أي جلسة tab كل لن ظهور في آخر عدد جلسة داخل.
+- `ctx.sidebarRight` فوق فقط قراءة تخطيط لقطة أو حجز قراءة: خدمة فقط كشف عملية،dockkit `LayoutState`/`LayoutOp` هو داخلي.
+- خدمة فوق قدرة استكشاف قياس عدد مجموعة (`features`).
+- tab نوع `option` أولوية درجة ملف: لا يوجد «فقط صف خروج، لا سماح إقرار قيادة» tab نوع.
+- تعديل كتابة سجل عنوان:`title(address)` فقط التقاط مرة؛ نشط chip قدوم ذاتي عنوان slot، بينما لا هو سجل.
+- فتح وقت نقطة اسم بعض عدد tab تنفيذ:`openResource` الأكثر كثير نقطة اسم واحد kind؛ وثيقة مصير من ملف tab أداة شريط اختيار.
+- خدمة فوق عنوان فحص بحث (`find`): استدعاء جهة استخدام `revealIfOpened` فتح، من توقف اعتماد وجه ذهاب إعادة.
+- Sidebar ذاته `sidebar://<kind>` تسجيل حساب خارج تنقل عنوان؛ ذلك لغة قاعدة انتظار تنقل تحكم جهاز كامل جسم فعل وقت مجددا تحديد.
+- موجه إلى مستخدم سحب إلغاء و عبر نوع عام محتوى تنقل مكدس ([مؤقت مؤقت](../../.agents/notes/implemented/feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md#deferred)) ؛Browser فقط يملك ذاته صفحة تاريخ.

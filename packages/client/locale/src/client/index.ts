@@ -114,7 +114,7 @@ export const SETTINGS_NS = 'settings.locale'
 
 /** The two locales and dictionaries shipped by this package. */
 const BUILT_IN_LOCALE_METADATA = {
-  zh: { label: '中文', fallback: 'en' },
+  zh: { label: 'العربية', fallback: 'en' },
   en: { label: 'English' },
 } as const satisfies Record<BuiltInLocaleId, Omit<LocaleDefinition, 'id'>>
 const BUILT_IN_LOCALES: readonly LocaleDefinition[] = Object.freeze(

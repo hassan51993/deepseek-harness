@@ -1,14 +1,14 @@
-# LLM 适配器
+# LLM مهايئ
 
-[English](llm-adapter.md) | 中文
+[English](llm-adapter.md) | العربية
 
-本文介绍如何为 Harness 接入新的模型提供方。
+هذا نص وسيط تعريف مثل أي لـ Harness وصل دخول جديد نموذج مزود.
 
-## 概述
+## عام وصف
 
-LLM 适配器是一个继承 `LlmAdapter` 并实现 `stream()` 方法的类，它会将 Harness 的提供方无关请求转换为具体提供方的 API 调用，并将响应转换回 Harness 分片。
+LLM مهايئ هو واحد وراثة `LlmAdapter` و تنفيذ `stream()` طريقة صنف، هو سوف سوف Harness مزود غير متصل طلب تحويل لـ أداة جسم مزود API استدعاء، و سوف استجابة تحويل عودة Harness قسم قطعة.
 
-## 最小实现
+## الأكثر صغير تنفيذ
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -49,9 +49,9 @@ export function apply(ctx: Context, config: Config) {
 }
 ```
 
-## StreamChunk 协议
+## StreamChunk بروتوكول
 
-`stream()` 必须按以下协议生成分片：
+`stream()` يجب حسب التالي بروتوكول توليد قسم قطعة:
 
 ```ts
 import { brandString } from '@deepseek-ai/dsh-brand'
@@ -101,29 +101,29 @@ async function* exampleChunks(): AsyncIterable<StreamChunk> {
 }
 ```
 
-### 关键规则
+### صلة مفتاح قاعدة
 
-- 每个 `block-start` 都必须有与之对应的 `block-end`。
-- `index` 从 0 开始递增，用于标识内容块的顺序。
-- `tool-call-delta` 的 `argumentsDelta` 是原始 JSON 文本的增量，可以在一个分片中完整生成，也可以分多个分片生成。
-- `finish` 必须是最后一个分片。
-- `usage` 必须在 `finish` 之前生成。
+- كل `block-start` كل يجب لديه و لـ مقابل `block-end`.
+- `index` من 0 بدء تمرير زيادة، لأجل معرف محتوى كتلة ترتيب.
+- `tool-call-delta` `argumentsDelta` هو أصلي JSON نص زيادة كمية، يمكن في واحد قسم قطعة في كامل توليد، أيضا يمكن قسم كثير عدد قسم قطعة توليد.
+- `finish` يجب هو الأكثر بعد واحد قسم قطعة.
+- `usage` يجب في `finish` قبل توليد.
 
 ## GenerateOptions
 
-`stream()` 接收仓库导出的 `GenerateOptions`。它包含模型、适配器拥有的推理强度 ID、对话历史、系统提示词、工具 schema、生成参数、停止序列和中止信号；完整字段以 `@deepseek-ai/dsh-llm` 导出的 TypeScript 类型为准。适配器必须将支持的字段映射到具体 API；如果无法支持某个字段，应抛出带稳定 code 的 `LlmError`，不得静默丢弃。
+`stream()` استقبال مستودع توجيه خروج `GenerateOptions`. هو يتضمن نموذج، مهايئ يملك دفع إدارة قوي درجة ID، محادثة تاريخ، توجيه النظام، أداة schema، توليد معامل، إيقاف تسلسل و في توقف إشارة؛ كامل حقل بـ `@deepseek-ai/dsh-llm` توجيه خروج TypeScript نوع لـ دقيق. مهايئ يجب سوف دعم حمل حقل خريطة إلى أداة جسم API؛ إذا لا يمكن دعم حمل بعض عدد حقل، ينبغي رمي خروج حمل مستقر code `LlmError`، لا نيل ساكن صامت إسقاط.
 
-请覆写 `resolveModel(provider, model, signal?)`，在一次查询中返回确切的提供方／模型身份以及可选的 `context` 和 `reasoning` 元数据。推理元数据包含有序的不透明 ID、展示名称，以及可选的配置默认值；请保留适配器给出的权威可选列表，包括其上游能力 API 返回的 `off`，不要将这些值提升为核心枚举。异步查询必须响应该可选信号，使取消和资源释放过程完全停稳。服务会校验聚合结果，并在调用 `stream()` 前拒绝显式指定但不受支持的推理强度；省略 `reasoning` 表示该模型没有可选的推理强度能力。
+طلب تغطية كتابة `resolveModel(provider, model, signal?)`، في مرة استعلام في إرجاع تأكيد قطع مزود/نموذج هوية و اختياري `context` و `reasoning` بيانات وصفية. دفع إدارة بيانات وصفية يتضمن لديه ترتيب لا نفاذ واضح ID، عرض اسم، و اختياري إعداد قيمة افتراضية؛ طلب إبقاء مهايئ إعطاء خروج مرجعي اختياري قائمة، يشمل ذلك فوق تنقل قدرة API إرجاع `off`، لا يلزم سوف هذه قيمة رفع رفع لـ نواة قلب قطعة رفع. مختلف خطوة استعلام يجب استجابة هذا اختياري إشارة، جعل إلغاء و مورد تحرير مرور مسار تماما توقف مستقر. خدمة سوف تحقق تجمع دمج نتيجة، و في استدعاء `stream()` قبل رفض صريح إشارة تحديد لكن لا تلقي دعم حمل دفع إدارة قوي درجة؛ حذف `reasoning` يمثل هذا نموذج لا يوجد اختياري دفع إدارة قوي درجة قدرة.
 
-## 注册适配器
+## تسجيل مهايئ
 
 ```ts ignore-check
 ctx.llm.registerAdapter(['my-provider'], adapter)
 ```
 
-第一个参数是该适配器处理的提供方路由列表。`GenerateOptions.provider` 选择已注册的适配器，`GenerateOptions.model` 则传入由适配器拥有、无需在生命周期启动时注册的模型 id。适配器能够向选择器公布模型选项时，请覆写 `listModels()`。
+رقم واحد معامل هو هذا مهايئ معالجة مزود توجيه قائمة.`GenerateOptions.provider` اختيار قد تسجيل مهايئ،`GenerateOptions.model` فإن نقل دخول من مهايئ يملك، بلا حاجة في دورة الحياة بدء وقت تسجيل نموذج id. مهايئ قدرة كاف نحو اختيار جهاز عام نشر نموذج خيار وقت، طلب تغطية كتابة `listModels()`.
 
-## 在 cordis.yml 中使用
+## في cordis.yml في استخدام
 
 ```yaml
 - id: my-llm
@@ -142,18 +142,18 @@ ctx.llm.registerAdapter(['my-provider'], adapter)
         model: my-model-v1
 ```
 
-## 实战参考
+## فعلي حرب مشاركة اعتبار
 
-仓库中包含以下两个完整实现：
+مستودع في يتضمن التالي اثنان عدد كامل تنفيذ:
 
-- `packages/llm/llm-deepseek/` — DeepSeek API 适配器（OpenAI 兼容格式）
-- `packages/llm/llm-pi-ai/` — Pi AI 适配器（不同的 API 格式）
+- `packages/llm/llm-deepseek/` — DeepSeek API مهايئ (OpenAI توافق صيغة)
+- `packages/llm/llm-pi-ai/` — Pi AI مهايئ (مختلف API صيغة)
 
-对比这两个已交付的适配器，可以看到同一套 harness 契约如何在不同提供方 SDK 之上实现。
+مقابل مقارنة هذا اثنان عدد قد تسليم مهايئ، يمكن يرى نفس طقم harness عقد نحو مثل أي في مختلف مزود SDK لـ فوق تنفيذ.
 
-## 错误处理
+## خطأ معالجة
 
-适配器应通过带稳定 code 的 `LlmError` 抛出传输和协议故障；agent loop（智能体循环）会保留该错误及其 code，用于诊断和策略处理。不要依赖普通 `Error` 被自动转换。每个提供方 HTTP 请求还必须合并 `attributionHeaders()`，并传递 `options.signal`。
+مهايئ ينبغي عبر حمل مستقر code `LlmError` رمي خروج نقل و بروتوكول لذا عائق؛agent loop(ذكي جسم حلقة) سوف إبقاء هذا خطأ و ذلك code، لأجل تشخيص و سياسة معالجة. لا يلزم اعتماد عادي `Error` يتم تلقائي تحويل. كل مزود HTTP طلب أيضا يجب دمج `attributionHeaders()`، و نقل تمرير `options.signal`.
 
 ```ts
 import {

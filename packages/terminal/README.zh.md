@@ -1,52 +1,52 @@
 ---
-description: "持久终端能力家族的包映射：限定所有者范围的 ctx.terminals 服务、启动交互式 bash 或 pwsh 的 shell 后端，以及 6 个面向模型的工具。"
+description: "حمل دائم طرفية قدرة بيت عائلة حزمة خريطة: حد تحديد كل من نطاق ctx.terminals خدمة، بدء تفاعل صيغة bash أو pwsh shell خلفية، و 6 عدد موجه إلى نموذج أداة."
 kind: "package-group"
 ---
 
-# terminal/：持久 PTY 能力家族
+# terminal/: حمل دائم PTY قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`terminal/` 家族让 agent（智能体）的交互式 shell 和 REPL 会话跨工具调用持续存在，包括工作目录、环境变量和运行中的子进程。使用 `terminal/` 管理所有者隔离的会话，使用 `terminal-bash/` 启动受沙箱约束的交互式 bash 或 pwsh 会话，使用 `tool-terminal/` 获得 6 个结果有界的面向模型终端操作。任务需要交互式输入或需要保留单次 bash 命令无法保存的状态时，选择这个家族。会话仅存在于一个 harness 进程中，重启后不会恢复。
+`terminal/` بيت عائلة يجعل agent(ذكي جسم) تفاعل صيغة shell و REPL جلسة عبر أداة استدعاء حمل متابعة وجود، يشمل عمل دليل، بيئة متغير و تشغيل في عملية فرعية. استخدام `terminal/` إدارة كل من عزل جلسة، استخدام `terminal-bash/` بدء تلقي صندوق رملي قيد تفاعل صيغة bash أو pwsh جلسة، استخدام `tool-terminal/` نيل نيل 6 عدد نتيجة محدود موجه إلى نموذج طرفية عملية. مهمة حاجة تفاعل صيغة إدخال أو حاجة إبقاء مفرد مرة bash أمر لا يمكن حفظ حالة وقت، اختيار هذا عدد بيت عائلة. جلسة فقط وجود في واحد harness عملية في، إعادة بدء بعد لن استعادة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-该家族包含一个会话服务、一个 shell 后端与一组面向模型的工具。完整约定由各子级 README 负责；共享词汇与生成的服务接口面由子系统参考负责。
+هذا بيت عائلة يتضمن واحد جلسة خدمة، واحد shell خلفية و واحد مجموعة موجه إلى نموذج أداة. كامل اتفاق من كل فرعي درجة README مسؤول؛ مشترك مفردات و توليد خدمة واجهة وجه من فرعي نظام مشاركة اعتبار مسؤول.
 
-| 包 | 角色 | ctx 键 |
+| حزمة | زاوية لون | ctx مفتاح |
 |---|---|---|
-| [`terminal/`](terminal/README.zh.md) | 会话服务：限定所有者范围的会话、不透明 id、精确到所有者的限制与等待完成的清理 | `ctx.terminals` |
-| [`terminal-bash/`](terminal-bash/README.zh.md) | shell 后端：在共享沙箱策略下启动交互式 bash 或 pwsh，带就绪检测与有界输出 | 注册后端到 `ctx.terminals` |
-| [`tool-terminal/`](tool-terminal/README.zh.md) | 6 个面向模型的工具，带所有者隔离与可选后台发送 | 注册到 `ctx.tools` |
+| [`terminal/`](terminal/README.zh.md) | جلسة خدمة: حد تحديد كل من نطاق جلسة، لا نفاذ واضح id، دقيق إلى كل من حد و انتظار إتمام تنظيف | `ctx.terminals` |
+| [`terminal-bash/`](terminal-bash/README.zh.md) | shell خلفية: في مشترك صندوق رملي سياسة تحت بدء تفاعل صيغة bash أو pwsh، حمل حينئذ خيط فحص قياس و محدود إخراج | تسجيل خلفية إلى `ctx.terminals` |
+| [`tool-terminal/`](tool-terminal/README.zh.md) | 6 عدد موجه إلى نموذج أداة، حمل كل من عزل و اختياري خلفية إرسال | تسجيل إلى `ctx.tools` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解共享类型与服务接口面，再从 Agent Note 了解设计理由与暂缓边界。
+أولا من فرعي نظام مشاركة اعتبار حل مشترك نوع و خدمة واجهة وجه، مجددا من Agent Note حل تصميم إدارة من و مؤقت مؤقت حد.
 
-- [终端子系统参考](../../docs/subsystems/terminal.zh.md)——id、后端与会话约定、发送就绪、有界读取，以及生成的 `ctx.terminals` API。
-- [持久 PTY Agent Note](../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——设计决策、备选方案与延期工作。
-- [能力 seam](../../docs/capability-seams.zh.md)——本家族遵循的 Service Definition / Service Provider / Consumer 拆分。
+- [طرفية فرعي نظام مشاركة اعتبار](../../docs/subsystems/terminal.zh.md)——id، خلفية و جلسة اتفاق، إرسال حينئذ خيط، محدود قراءة، و توليد `ctx.terminals` API.
+- [حمل دائم PTY Agent Note](../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——تصميم قرار، تجهيز اختيار خطة و تأجيل عمل.
+- [قدرة seam](../../docs/capability-seams.zh.md)——هذا بيت عائلة التزام دوران Service Definition / Service Provider / Consumer تفكيك قسم.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

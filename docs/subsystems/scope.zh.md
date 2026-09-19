@@ -1,21 +1,21 @@
-# 作用域注册
+# أثر مجال تسجيل
 
-[English](scope.md) | 中文
+[English](scope.md) | العربية
 
-[scope 包](../../packages/core/scope)提供身份、载体与作用域层词汇，使同一注册上下文同时表达每个 agent（智能体）的可见性和共享生命周期所有权。它是库原语，而不是 Cordis 服务；生命周期设计理由由 [agent-scope 运行时设计 Agent Note](../../.agents/notes/implemented/architecture/2026-07-12-agent-scope-runtime-design.zh.md#scope-routing-one-opaque-key-selects-one-layer)规定，可调用 API 与过滤语义则由包 [README](../../packages/core/scope/README.zh.md)规定。
+[scope حزمة](../../packages/core/scope) توفير هوية، تحميل جسم و أثر مجال طبقة مفردات، جعل نفس تسجيل سياق معا جدول بلوغ كل agent(ذكي جسم) مرئي صفة و مشترك دورة الحياة كل حق. هو هو مكتبة أصل لغة، بينما لا هو Cordis خدمة؛ دورة الحياة تصميم إدارة من من [agent-scope وقت التشغيل تصميم Agent Note](../../.agents/notes/implemented/architecture/2026-07-12-agent-scope-runtime-design.zh.md#scope-routing-one-opaque-key-selects-one-layer) قاعدة تحديد، يمكن استدعاء API و مرور ترشيح دلالة فإن من حزمة [README](../../packages/core/scope/README.zh.md) قاعدة تحديد.
 
-源码：[`packages/core/scope/src/index.ts`](../../packages/core/scope/src/index.ts) 与 [`packages/core/scope/src/store.ts`](../../packages/core/scope/src/store.ts)。
+شفرة المصدر:[`packages/core/scope/src/index.ts`](../../packages/core/scope/src/index.ts) و [`packages/core/scope/src/store.ts`](../../packages/core/scope/src/store.ts).
 
-## 身份标识与分发载体
+## هوية معرف و توزيع تحميل جسم
 
-`ScopeKey` 是一个不透明的对象身份标识。已交付的 agent loop（智能体循环）使用活跃的 `Agent` 对象作为自身的 key，但该原语从不检视该对象。
+`ScopeKey` هو واحد لا نفاذ واضح كائن هوية معرف. قد تسليم agent loop(ذكي جسم حلقة) استخدام نشط وثب `Agent` كائن بصفة ذاته key، لكن هذا أصل لغة من لا فحص نظر هذا كائن.
 
 ```ts type-equiv
 /** An opaque, identity-compared scope key. */
 type ScopeKey = object
 ```
 
-`Scoped<T>` 是编译期品牌标记，标注在 `scopeTarget(base, key)` 返回的不透明路由接收器上。作用域过滤的事件声明要求以此载体作为 `this` 类型，而真正的事件主体仍作为显式参数传入。
+`Scoped<T>` هو تحرير ترجمة مدة صنف لوحة علامة، علامة ملاحظة في `scopeTarget(base, key)` إرجاع لا نفاذ واضح توجيه استقبال جهاز فوق. أثر مجال مرور ترشيح حدث إعلان اشتراط بـ هذا تحميل جسم بصفة `this` نوع، بينما حق صحيح حدث رئيسي جسم ما زال بصفة صريح معامل نقل دخول.
 
 ```ts type-equiv
 /**
@@ -26,9 +26,9 @@ type ScopeKey = object
 type Scoped<T extends object> = object & { readonly [ScopedBrand]: T }
 ```
 
-## 拥有所有权的注册上下文
+## يملك كل حق تسجيل سياق
 
-`Scope` 将带标签的注册上下文与两个拆卸接口配对。`rawDispose` 保留有序复合 effect 所需的 Cordis disposer 的确切身份；`dispose()` 是面向直接调用方和竞态调用方的公共完全停稳边界。
+`Scope` سوف حمل وسم تسجيل سياق و اثنان عدد تفكيك إزالة واجهة إعداد مقابل.`rawDispose` إبقاء لديه ترتيب تكرار دمج effect الذي يحتاج Cordis disposer تأكيد قطع هوية؛`dispose()` هو موجه إلى مباشر استدعاء جهة و تنافس حالة استدعاء جهة عام مشترك تماما توقف مستقر حد.
 
 ```ts type-equiv
 /** A minted registration scope and its quiescent disposal boundaries. */
@@ -42,9 +42,9 @@ interface Scope {
 }
 ```
 
-## 带作用域的注册表层
+## حمل أثر مجال سجل التسجيل طبقة
 
-`ScopeLayer` 表示一个注册表在全局或确切作用域层级的完整贡献。具体 layer 可以聚合多个具名与匿名 table；整个 layer 为空时，`ScopedLayers` 可以回收带作用域状态，而不会丢弃兄弟 table。
+`ScopeLayer` يمثل واحد سجل التسجيل في عام أو تأكيد قطع أثر مجال طبقة درجة كامل مساهمة. أداة جسم layer يمكن تجمع دمج كثير عدد أداة اسم و مجهول اسم table؛ كامل layer لـ فارغ وقت،`ScopedLayers` يمكن عودة استلام حمل أثر مجال حالة، بينما لن إسقاط أخ أخ table.
 
 ```ts type-equiv
 /** One scope's aggregate contribution to a registry. */
@@ -54,6 +54,6 @@ interface ScopeLayer {
 }
 ```
 
-`ScopedLayers<L>` 拥有立即创建的全局 layer，以及惰性创建的确切作用域 layer。读取不会创建 layer：`peek(undefined)` 表示不存在作用域覆盖层，而 `merge()` 会依次物化按插入顺序排列的全局具名条目和带作用域的遮蔽项。注册使用同一个上下文表示可见性与 Cordis effect 所有权，在可选通知前取得一个同步撤销函数，返回 Cordis 的原始 disposer，并且只在带作用域 layer 的完整 `ScopeLayer` 为空时回收它。
+`ScopedLayers<L>` يملك قيام أي إنشاء عام layer، و كسول صفة إنشاء تأكيد قطع أثر مجال layer. قراءة لن إنشاء layer:`peek(undefined)` يمثل لا وجود أثر مجال تغطية طبقة، بينما `merge()` سوف اعتماد مرة شيء تحويل حسب إدراج دخول ترتيب ترتيب صف عام أداة اسم بند و حمل أثر مجال حجب حجب بند. تسجيل استخدام نفس عدد سياق يمثل مرئي صفة و Cordis effect كل حق، في اختياري إشعار قبل أخذ نيل واحد تزامن سحب إلغاء دالة، إرجاع Cordis أصلي disposer، و كما فقط في حمل أثر مجال layer كامل `ScopeLayer` لـ فارغ وقت عودة استلام هو.
 
-`NamedEntries<V>` 提供按插入顺序的查找和动态迭代，重复项错误由调用方处理。`AnonymousEntries<V>` 为每次 append 分配唯一标识，因此值相等的条目仍彼此独立。在同一轮非空 table 生命周期内，迭代器可以观察后续变化；table 被清空后，现有迭代器不会再观察后续插入。两者都返回幂等、精确对应相应条目的撤销函数；共享实现接口 `EntryValues` 不对外公开。
+`NamedEntries<V>` توفير حسب إدراج دخول ترتيب فحص بحث و حركة حالة تكرار بديل، تكرار بند خطأ من استدعاء جهة معالجة.`AnonymousEntries<V>` لـ كل مرة append قسم إعداد وحيد معرف، لذلك قيمة متبادل انتظار بند ما زال ذاك هذا مستقل. في نفس جولة غير فارغ table دورة الحياة داخل، مكرر يمكن مراقبة لاحق تغير؛table يتم صاف فارغ بعد، قائم مكرر لن مجددا مراقبة لاحق إدراج دخول. اثنان من كل إرجاع قوة انتظار، دقيق مقابل متبادل ينبغي بند سحب إلغاء دالة؛ مشترك تنفيذ واجهة `EntryValues` لا مقابل خارج عام.

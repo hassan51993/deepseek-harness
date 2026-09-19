@@ -1,20 +1,20 @@
-# 能力的三种角色设计
+# قدرة ثلاثة نوع زاوية لون تصميم
 
-[English](index.md) | 中文
+[English](index.md) | العربية
 
-本文分为两部分：先参考三种角色能力模式的概念，再通过高级教程构建一项能力。请先完成[基础插件路径](../basic/index.zh.md)和[服务教程](../framework/service.zh.md)。
+هذا نص قسم لـ اثنان جزء: أولا مشاركة اعتبار ثلاثة نوع زاوية لون قدرة نمط عام فكرة، مجددا عبر عال درجة تعليم مسار بناء واحد بند قدرة. طلب أولا إتمام[أساس أساس إضافة مسار](../basic/index.zh.md) و[خدمة تعليم مسار](../framework/service.zh.md).
 
-## 概念参考
+## عام فكرة مشاركة اعتبار
 
-当一项能力足够通用，需要支持可替换的提供方时（例如 Bash 执行），harness 会区分三种角色：**Service Definition**、**Service Provider** 和 **Consumer**。角色需要独立演进或替换时，将它们放入不同包；否则一个包可以承担多个角色。完整能力构成其 seam。任何单一角色都不是 seam。
+عند واحد بند قدرة كاف كاف عام، حاجة دعم حمل يمكن استبدال مزود وقت (مثال مثل Bash تنفيذ) ،harness سوف منطقة قسم ثلاثة نوع زاوية لون:**Service Definition**،**Service Provider** و **Consumer**. زاوية لون حاجة مستقل عرض دخول أو استبدال وقت، سوف هو جمع وضع دخول مختلف حزمة؛ لا فإن واحد حزمة يمكن تحمل تحمل كثير عدد زاوية لون. كامل قدرة بنية صار ذلك seam. أي مفرد واحد زاوية لون كل لا هو seam.
 
-## 以 Bash 为例
+## بـ Bash لـ مثال
 
-以 Bash 执行能力为例：
+بـ Bash تنفيذ قدرة لـ مثال:
 
-- **Service Definition** (`dsh-shell`)：定义 Cordis 服务以及 Bash 请求和结果类型
-- **Service Provider** (`dsh-bash-local`)：在本地计算机上执行命令
-- **Consumer** (`dsh-tool-bash`)：将该能力公开为模型可调用的工具
+- **Service Definition** (`dsh-shell`): تعريف Cordis خدمة و Bash طلب و نتيجة نوع
+- **Service Provider** (`dsh-bash-local`): في محلي حساب حساب آلة فوق تنفيذ أمر
+- **Consumer** (`dsh-tool-bash`): سوف هذا قدرة عام لـ نموذج يمكن استدعاء أداة
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌──────────────┐
@@ -26,11 +26,11 @@
                     inject: ['shell']
 ```
 
-## 拆分的好处
+## تفكيك قسم جيد موضع
 
-### 提供方可替换
+### مزود يمكن استبدال
 
-同一个 Service Definition 可以有多个提供方，可通过 `cordis.yml` 选择：
+نفس عدد Service Definition يمكن لديه كثير عدد مزود، يمكن عبر `cordis.yml` اختيار:
 
 ```yaml
 # Local execution
@@ -39,25 +39,25 @@
 # Replace this row with another package that provides the same service.
 ```
 
-更换提供方时，Service Definition 和工具均保持不变。
+أكثر تبديل مزود وقت،Service Definition و أداة متساو إبقاء ثابت.
 
-### 独立演进
+### مستقل عرض دخول
 
-- 调用方开始依赖 Service Definition 的约定后，Service Definition 很少改动。
-- Service Provider 可以独立优化性能和安全性。
-- Consumer 可以调整能力向模型呈现的方式。
+- استدعاء جهة بدء اعتماد Service Definition اتفاق بعد،Service Definition جدا قليل تعديل.
+- Service Provider يمكن مستقل أفضل تحويل صفة قدرة و أمان صفة.
+- Consumer يمكن ضبط كامل قدرة نحو نموذج عرض طريقة.
 
-### 依赖解耦
+### اعتماد حل اقتران
 
-- Service Provider 依赖 Service Definition。
-- Consumer 依赖 Service Definition。
-- Service Provider 和 Consumer **互不依赖**。
+- Service Provider اعتماد Service Definition.
+- Consumer اعتماد Service Definition.
+- Service Provider و Consumer **متبادل لا اعتماد**.
 
-当前内置系列及其包链接由[能力 seam 参考](../../../capability-seams.zh.md)负责。
+حالي داخل وضع نظام صف و ذلك حزمة رابط من[قدرة seam مشاركة اعتبار](../../../capability-seams.zh.md) مسؤول.
 
-## 教程：开发三种角色的能力
+## تعليم مسار: تطوير ثلاثة نوع زاوية لون قدرة
 
-### 第一步：编写 Service Definition
+### رقم واحد خطوة: تحرير كتابة Service Definition
 
 ```ts ignore-check
 // packages/my-cap/my-cap/src/index.ts
@@ -87,7 +87,7 @@ export interface MyCapResult {
 }
 ```
 
-### 第二步：编写 Service Provider
+### ثاني خطوة: تحرير كتابة Service Provider
 
 ```ts ignore-check
 // packages/my-cap/my-cap-local/src/index.ts
@@ -108,7 +108,7 @@ export function apply(ctx: Context) {
 }
 ```
 
-### 第三步：编写消费方
+### رقم ثلاثة خطوة: تحرير كتابة مستهلك
 
 ```ts ignore-check
 // packages/my-cap/tool-my-cap/src/index.ts
@@ -137,19 +137,19 @@ export function apply(ctx: Context) {
 }
 ```
 
-### 在 cordis.yml 中组合
+### في cordis.yml في تركيب
 
 ```yaml
 - name: '@deepseek-ai/dsh-my-cap-local'
 - name: '@deepseek-ai/dsh-tool-my-cap'
 ```
 
-## 设计要点
+## تصميم يلزم نقطة
 
-- **不要预防性拆分**：只有角色需要独立演进时，才使用不同包。简单的工具插件无需拆分。
-- **Service Definition 拥有 Request/Result 类型**：Service Provider 和 Consumer 只依赖 Service Definition 包。
-- **显式优于隐式**：实现应通过显式的 `resolve(request): Spec` 步骤处理默认值，而不是在 `run()` 中隐藏 `?? default`。
+- **لا يلزم مسبق منع صفة تفكيك قسم**: فقط لديه زاوية لون حاجة مستقل عرض دخول وقت، عندئذ استخدام مختلف حزمة. بسيط مفرد أداة إضافة بلا حاجة تفكيك قسم.
+- **Service Definition يملك Request/Result نوع**:Service Provider و Consumer فقط اعتماد Service Definition حزمة.
+- **صريح أفضل في خفي صيغة**: تنفيذ ينبغي عبر صريح `resolve(request): Spec` خطوة معالجة قيمة افتراضية، بينما لا هو في `run()` في إخفاء `?? default`.
 
-## 下一步
+## تحت واحد خطوة
 
-- [LLM（大语言模型）适配器](./llm-adapter.zh.md)：实现一个 LLM 提供方
+- [LLM(كبير لغة نموذج) مهايئ](./llm-adapter.zh.md): تنفيذ واحد LLM مزود

@@ -1,36 +1,36 @@
-# Agent Note: 有界验证冷空白会话
+# Agent Note: محدود تحقق بارد فارغ أبيض جلسة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-13-bounded-cold-blank-verification.md) | 中文
+[English](2026-08-13-bounded-cold-blank-verification.md) | العربية
 
 ## Problem
 
-Web 会话树会隐藏空白 Session，并把当前选中的空白项复用为 New Session。已附加 Session 可以从内存事件日志派生空白状态，但 `session.list` 通常不会加载每一份冷日志。把所有已物化的冷 Session 都视为非空，会暴露旧版本留下的空 Session；反过来，把 projection cache 中的 `blank: true` 当成当前事实，则可能在日志已经前进而 fail-soft cache 仍然陈旧时隐藏真实对话。
+Web جلسة شجرة سوف إخفاء فارغ أبيض Session، و يأخذ حالي اختيار في فارغ أبيض بند إعادة استخدام لـ New Session. قد مرفق إضافة Session يمكن من داخل تخزين حدث سجل إرسال توليد فارغ أبيض حالة، لكن `session.list` عبر معتاد لن تحميل كل واحد نسخة بارد سجل. يأخذ كل قد شيء تحويل بارد Session كل نظر لـ غير فارغ، سوف كشف قديم إصدار إبقاء تحت فارغ Session؛ عكس مرور قدوم، يأخذ projection cache في `blank: true` عند صار حالي واقع، فإن ممكن في سجل قد قبل دخول بينما fail-soft cache ما زال قديم قديم وقت إخفاء حقيقي محادثة.
 
-同一份冷列表还曾用 JSONL 工件的 mtime 作为 `updatedAt`。打开 Session 会追加 `session/end-seed`，因此即使没有真人 prompt，单纯拾起也会刷新 mtime，并把该 Session 提升到最近使用的对话之前。
+نفس نسخة بارد قائمة أيضا سبق استخدام JSONL عمل عنصر mtime بصفة `updatedAt`. فتح Session سوف إلحاق `session/end-seed`، لذلك أي جعل لا يوجد حق شخص prompt، مفرد صاف التقاط بدء أيضا سوف تحديث جديد mtime، و يأخذ هذا Session رفع رفع إلى الأكثر قريب استخدام محادثة قبل.
 
 ## Decision
 
-`dsh-api-session-controller` 注册 `sessionListMetadata` 投影，其中包含 `blank` 与 `lastPromptAt`。已附加摘要直接用同一组函数折叠实时日志。`blank` 只在 `turn/start` 时从 true 单调变为 false；`lastPromptAt` 只在来源 kind 为 `user` 的 `user/message` 上更新。
+`dsh-api-session-controller` تسجيل `sessionListMetadata` إسقاط، منها يتضمن `blank` و `lastPromptAt`. قد مرفق إضافة ملخص مباشر استخدام نفس مجموعة دالة طي فوري سجل.`blank` فقط في `turn/start` وقت من true مفرد ضبط تغيير لـ false؛`lastPromptAt` فقط في مصدر kind لـ `user` `user/message` فوق تحديث.
 
-冷摘要信任缓存的 `blank: false`，因为已包含 `turn/start` 的 checkpoint 前缀会始终保持非空。cache miss 无法证明当前日志为空，因而按 `blank: false` 提供，让 Session 保持可见。早先的物理大小探测——`locate()` 路径加上门控一次精确 `readFrom(id, 0)` 折叠的 `coldBlankProbeMaxBytes` 资格阈值——随该 seam 的路径查询一并移除（[导出与预发布裁剪](../simplification/2026-08-27-persistence-export-and-pre-release-trims.zh.md)）。Persistence 快照提示不会重新引入它：listing 保持 metadata/cache-only，绝不打开冷正文。
+بارد ملخص معلومة مهمة ذاكرة مؤقتة `blank: false`، لأن قد يتضمن `turn/start` checkpoint بادئة سوف بداية نهاية إبقاء غير فارغ.cache miss لا يمكن إثبات حالي سجل لـ فارغ، بسبب بينما حسب `blank: false` توفير، يجعل Session إبقاء مرئي. مبكر أولا شيء إدارة كبير صغير استكشاف قياس——`locate()` مسار إضافة فوق باب تحكم مرة دقيق `readFrom(id, 0)` طي `coldBlankProbeMaxBytes` مورد إطار عتبة قيمة——مع هذا seam مسار استعلام واحد و إزالة ([توجيه خروج و مسبق إصدار قطع قص](../simplification/2026-08-27-persistence-export-and-pre-release-trims.zh.md)).Persistence لقطة تلميح لن إعادة جذب دخول هو:listing إبقاء metadata/cache-only، أبدا فتح بارد متن.
 
-`updatedAt` 取 `createdAt` 与 `lastPromptAt` 中较晚者。cache miss 或陈旧 checkpoint 只会让 Session 排得偏旧，而不会因无关的文件写入被提升。
+`updatedAt` أخذ `createdAt` و `lastPromptAt` في مقارنة متأخر من.cache miss أو قديم قديم checkpoint فقط سوف يجعل Session ترتيب نيل انحراف قديم، بينما لن بسبب غير متصل ملف كتابة يتم رفع رفع.
 
 ## Alternatives considered
 
-**信任缓存的 `blank: true`。** 拒绝，因为 projection cache 有意允许持久日志前进到 checkpoint 之后。首个 `turn/start` 之后若发生崩溃或 fail-soft 写入失败，真实对话就会被隐藏，客户端还可能把它复用为 New Session。
+**معلومة مهمة ذاكرة مؤقتة `blank: true`.** رفض، لأن projection cache متعمد سماح حمل دائم سجل قبل دخول إلى checkpoint بعد. أول عدد `turn/start` بعد إذا حدوث انهيار انهيار أو fail-soft كتابة فشل، حقيقي محادثة حينئذ سوف يتم إخفاء، عميل أيضا ممكن يأخذ هو إعادة استخدام لـ New Session.
 
-**读取每一份冷日志。** 拒绝，因为列表延迟与 I/O 会随所有已存对话的总字节数增长；未经核验的冷条目转而向保持可见降级。
+**قراءة كل واحد نسخة بارد سجل.** رفض، لأن قائمة تأخير متأخر و I/O سوف مع كل قد تخزين محادثة مجموع بايت عدد زيادة طويل؛ لم مرور نواة تحقق بارد بند تحويل بينما نحو إبقاء مرئي تخفيض.
 
-**把空白状态与最近时间存入权威 persistence index。** 暂缓，因为交付的 JSONL provider 首行不可变，需要增加带有顺序写入要求的第二份持久工件。仓库外 provider 只有定义更新原子性、版本与恢复语义后才可使用自己的索引。更广泛的精确索引设计仍由[最后活动提案](../../proposed/architecture/2026-07-29-durable-last-activity-index.zh.md)负责。
+**يأخذ فارغ أبيض حالة و الأكثر قريب وقت تخزين دخول مرجعي persistence index.** مؤقت مؤقت، لأن تسليم JSONL provider أول سطر غير ممكن تغيير، حاجة زيادة حمل لديه ترتيب كتابة اشتراط ثاني نسخة حمل دائم عمل عنصر. مستودع خارج provider فقط لديه تعريف تحديث أصل فرعي صفة، إصدار و استعادة دلالة بعد عندئذ يمكن استخدام ذاتي ذات بحث جذب. أكثر واسع عام دقيق بحث جذب تصميم ما زال من[الأكثر بعد نشط حركة رفع سجل](../../proposed/architecture/2026-07-29-durable-last-activity-index.zh.md) مسؤول.
 
-**继续按 mtime 排序 JSONL。** 拒绝，因为 mtime 记录包括拾起边界在内的每一次工件写入，而非最近真人 prompt；其错误方向会把未经操作的 Session 提升到列表开头。
+**متابعة حسب mtime ترتيب ترتيب JSONL.** رفض، لأن mtime سجل يشمل التقاط بدء حد في داخل كل مرة عمل عنصر كتابة، بينما غير الأكثر قريب حق شخص prompt؛ ذلك خطأ جهة نحو سوف يأخذ لم مرور عملية Session رفع رفع إلى قائمة فتح رأس.
 
 ## Consequences
 
-陈旧 cache 无法隐藏已存的 `turn/start`，且冷列表不做任何工件 I/O：冷行只从缓存投影提供。没有缓存非空投影的空白冷 Session 保持可见，缺失或延迟的最近时间 cache 条目回退到 `createdAt`。这些都是保守降级：UI 可能多显示一条空记录，或把 Session 排得偏低，但不会隐藏真实对话，也不会因为单纯打开而把会话提升到前面。
+قديم قديم cache لا يمكن إخفاء قد تخزين `turn/start`، كما بارد قائمة لا فعل أي عمل عنصر I/O: بارد سطر فقط من ذاكرة مؤقتة إسقاط توفير. لا يوجد ذاكرة مؤقتة غير فارغ إسقاط فارغ أبيض بارد Session إبقاء مرئي، ناقص أو تأخير متأخر الأكثر قريب وقت cache بند رجوع إلى `createdAt`. هذه كل هو حفظ حراسة تخفيض:UI ممكن كثير عرض واحد بند فارغ سجل، أو يأخذ Session ترتيب نيل انحراف منخفض، لكن لن إخفاء حقيقي محادثة، أيضا لن لأن مفرد صاف فتح بينما يأخذ جلسة رفع رفع إلى قبل وجه.
 
-网关自有投影是网关 fiber 的 effect；卸载网关会移除该 key。单元覆盖固定了拒绝陈旧 true、复用单调 false、cache miss 保持可见、真人 prompt 最近时间和 fiber 销毁。
+شبكة صلة ذاتي لديه إسقاط هو شبكة صلة fiber effect؛ إزالة شبكة صلة سوف إزالة هذا key. وحدة تغطية ثابت رفض قديم قديم true، إعادة استخدام مفرد ضبط false،cache miss إبقاء مرئي، حق شخص prompt الأكثر قريب وقت و fiber إلغاء تدمير.

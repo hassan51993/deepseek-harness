@@ -1,82 +1,82 @@
-# Agent Note: 按实测聚类重新划分 packages/ 分组
+# Agent Note: حسب فعلي قياس تجمع صنف إعادة تخطيط قسم packages/ قسم مجموعة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-29-package-regrouping.md) | 中文
+[English](2026-07-29-package-regrouping.md) | العربية
 
-## 问题
+## مشكلة
 
-两级 `packages/<group>/<pkg>` 层级结构（[原始决策](../../archived/architecture/2026-06-20-package-hierarchy.md)）自 6 月以来已经漂移：167 个包彼时坐落在 42 个组里，若干组边界已经对不上这些包的实际聚类。
+اثنان درجة `packages/<group>/<pkg>` طبقة درجة بنية ([أصلي قرار](../../archived/architecture/2026-06-20-package-hierarchy.md)) ذاتي 6 شهر بـ قدوم قد عائم نقل:167 عدد حزمة ذاك وقت جلوس سقوط في 42 عدد مجموعة داخل، إذا جاف مجموعة حد قد مقابل لا فوق هذه حزمة فعلي تجمع صنف.
 
-- `ui/` 混杂了四个互不相关的平面：人类终端通道（`tui`）、SDK 的 JSON-RPC 服务端一半（`jsonrpc`，它对 `dsh-sdk-protocol` 的对等依赖（peer dependency）把它绑在 SDK 通信栈上）、人机交互 seam（`user-questions`、`user-approval`、`permission`、`tool-ask-user`、`commands`），以及与通道无关的 boot 胶水（`app-boot`）。它自己的 README 只能逐一叙述这堆混杂，说不出一个统一职责。
-- 会话家族被割裂在五个组里——`session-persistence/`、`session-projection/`、`session-query/`、`session-title/` 与 `telemetry/`——而实测依赖边明明把它们连成一体（query → persistence、title → projection、projection → persistence；见 [docs/module-graph.md](../../../../docs/module-graph.zh.md)）。
-- 用于工具调用守卫的 `timeout/` 组与通用 promise 工具 `util/timeout` 撞名。
-- `cordis/` 拿所有包共同依托的框架给自己的组命名，这个名字因此毫无区分度；组里唯一的包 `tool-cordis` 是运行时自我修改工具集。
+- `ui/` خلط مختلط أربعة عدد متبادل لا متبادل صلة مستو وجه: شخص صنف طرفية عبر طريق (`tui`) ،SDK JSON-RPC خدمة طرف واحد نصف (`jsonrpc`، هو مقابل `dsh-sdk-protocol` مقابل انتظار اعتماد (peer dependency) يأخذ هو ربط في SDK عبر معلومة مكدس فوق) ، شخص آلة تفاعل seam(`user-questions`،`user-approval`،`permission`،`tool-ask-user`،`commands`) ، و و عبر طريق غير متصل boot لاصق ماء (`app-boot`). هو ذاتي ذات README فقط قدرة تدريجي واحد سرد وصف هذا كومة خلط مختلط، قول لا خروج واحد موحد واحد مسؤولية.
+- جلسة بيت عائلة يتم قطع شق في خمسة عدد مجموعة داخل——`session-persistence/`،`session-projection/`،`session-query/`،`session-title/` و `telemetry/`——بينما فعلي قياس اعتماد حافة واضح واضح يأخذ هو جمع وصل صار واحد جسم (query → persistence،title → projection،projection → persistence؛ رؤية [docs/module-graph.md](../../../../docs/module-graph.zh.md)).
+- لأجل أداة استدعاء حراسة حماية `timeout/` مجموعة و عام promise أداة `util/timeout` اصطدام اسم.
+- `cordis/` أخذ كل حزمة مشترك نفس اعتماد حمل إطار هيكل إعطاء ذاتي ذات مجموعة تسمية، هذا عدد اسم حرف لذلك جزء بلا منطقة قسم درجة؛ مجموعة داخل وحيد حزمة `tool-cordis` هو وقت التشغيل ذاتي أنا تعديل أداة تجميع.
 
-这次重新分组的指导准则：**聚类紧密的包同处一组。**聚类以实测为准（对等依赖边与 co-change），而非按主题归类。孤立的 seam 家族可以自成一个小组；要避免的失败形态，是名字概括不出单一职责的大杂烩组。
+هذا مرة إعادة قسم مجموعة إشارة توجيه دقيق فإن:**تجمع صنف ضيق سري حزمة نفس موضع واحد مجموعة.**تجمع صنف بـ فعلي قياس لـ دقيق (مقابل انتظار اعتماد حافة و co-change) ، بينما غير حسب رئيسي عنوان عودة صنف. منعزل قيام seam بيت عائلة يمكن ذاتي صار واحد صغير مجموعة؛ يلزم تجنب تجنب فشل شكل، هو اسم حرف عام تضمين لا خروج مفرد واحد مسؤولية كبير مختلط خليط مجموعة.
 
-## 决策
+## قرار
 
-五项重组决策仍然有效；其余每个组都保持先前的边界与内容不变（依赖分析确认各能力家族——`shell/`、`terminal/`、`code-runtime/`、`sandbox/`、`subprocess/`、`fs/`、`lsp/`、`web/`、`skill/` 及其余——本来就划得正确）。原本的第六项决策把 SDK 项目初始化器、启动器工具与运行时 JSON-RPC 包汇集到 `scaffold/`；[移除这套未发布工具链](../simplification/2026-08-11-remove-sdk-project-toolchain.zh.md)的决策删除了项目工具，并将存留的运行时三包移到 `sdk/`。后续的[仓库命名约定](2026-08-11-repository-naming-contract-and-rename-ledger.zh.md)负责 `shell/`、`terminal/` 与 `extensions/` 组名，以及本决策曾推迟的两个包名。
+خمسة بند إعادة مجموعة قرار ما زال صالح؛ ذلك بقية كل مجموعة كل إبقاء أولا قبل حد و محتوى ثابت (اعتماد قسم تحليل تأكيد كل قدرة بيت عائلة——`shell/`،`terminal/`،`code-runtime/`،`sandbox/`،`subprocess/`،`fs/`،`lsp/`،`web/`،`skill/` و ذلك بقية——هذا قدوم حينئذ تخطيط نيل صحيح تأكيد). أصل هذا رقم ستة بند قرار يأخذ SDK مشروع ابتدائي تحويل جهاز، بدء جهاز أداة و وقت التشغيل JSON-RPC حزمة تجميع تجميع إلى `scaffold/`؛[إزالة هذا طقم لم إصدار أداة سلسلة](../simplification/2026-08-11-remove-sdk-project-toolchain.zh.md) قرار حذف مشروع أداة، و سوف تخزين إبقاء وقت التشغيل ثلاثة حزمة نقل إلى `sdk/`. لاحق[مستودع تسمية اتفاق](2026-08-11-repository-naming-contract-and-rename-ledger.zh.md) مسؤول `shell/`،`terminal/` و `extensions/` مجموعة اسم، و هذا قرار سبق دفع متأخر اثنان عدد حزمة اسم.
 
-| 组 | 成员（目录名） | 来源 |
+| مجموعة | عضو (دليل اسم) | مصدر |
 |---|---|---|
-| `session/` | session-persistence、session-persistence-jsonl、session-checkpoint-policy、session-projection、session-projection-cache、session-title、session-title-llm、session-title-first-prompt-llm、session-title-all-prompts-llm、session-telemetry、session-telemetry-otel | `session-persistence/` + `session-projection/` + `session-title/` + `telemetry/` |
-| `interaction/` | user-questions、user-approval、permission-presets、tool-ask-user、commands、tui | `ui/` |
+| `session/` | session-persistence،session-persistence-jsonl،session-checkpoint-policy،session-projection،session-projection-cache،session-title،session-title-llm،session-title-first-prompt-llm،session-title-all-prompts-llm،session-telemetry،session-telemetry-otel | `session-persistence/` + `session-projection/` + `session-title/` + `telemetry/` |
+| `interaction/` | user-questions،user-approval،permission-presets،tool-ask-user،commands،tui | `ui/` |
 | `boot/` | app-boot | `ui/` |
-| `guard/` | repeat-tool-reminder、timeout-policy | `guard/` + `timeout/` |
+| `guard/` | repeat-tool-reminder،timeout-policy | `guard/` + `timeout/` |
 | `extensions/` | tool-cordis | `cordis/` |
 
-- **`session/`** 是持久会话数据平面：持久化 seam 连同其 JSONL provider 与检查点策略、从该日志折叠（fold）出全量值并对外提供的投影、基于日志的标题，以及 OTel 上报。标题折叠本身就是读取侧的承重构件（`session-query` 对 `dsh-session-title` 声明对等依赖），所以标题属于数据平面，而非某个「派生服务」附属区。用这个朴素的名字是有意为之（名字要像人起的）；旁边的 `core/session` 包仍是常驻内存的实时服务，本组则是围绕它的持久家族。`session-query/` 保持独立成组：这个读取／工具面自带模型工具和 SQLite FTS 后端，其消费不依赖持久化内部实现。
-- **`interaction/`** 是人机协作平面加上应答它的终端通道：提问／批准 seam、权限预设、面向模型的 `ask_user_question` 工具、人类命令注册表（`plan-mode` 与 `command-goal` 已经把 `commands` 和各交互 seam 放在一起消费），以及 `tui`——这个交互通道是该平面功能最丰富的提供方与消费方（对 `commands` 与 `user-questions` 均有对等依赖边），而一个单包 `tui/` 组会把一个顶层名字花在一个插件上。
-- **`boot/`** 是角色完备的单包组：不归属任何通道也不归属任何组装的共享 boot 胶水（被 `apps/cli` 与仅限测试的 Loader driver 消费）。
-- **`guard/`** 保留其文档记载的角色（循环卫生守卫），并新纳入强制执行工具调用超时的包；那个与 `util/timeout` 撞名的单包组 `timeout/` 随之解散。
-- **`extensions/`** 把 `cordis/` 遮蔽掉的角色说了出来：它是供 agent（智能体）在自身当前运行时中检查和挂载插件的工具集，也是未来自我修改类包的落点。
+- **`session/`** هو حمل دائم جلسة بيانات مستو وجه: حفظ دائم seam وصل نفس ذلك JSONL provider و فحص نقطة سياسة، من هذا سجل طي (fold) خروج كل كمية قيمة و مقابل خارج توفير إسقاط، أساس في سجل عنوان، و OTel فوق تقرير. عنوان طي ذاته حينئذ هو قراءة جانب تحمل إعادة بنية عنصر (`session-query` مقابل `dsh-session-title` إعلان مقابل انتظار اعتماد) ، الذي بـ عنوان يخص بيانات مستو وجه، بينما غير بعض عدد «إرسال توليد خدمة» مرفق تابع منطقة. استخدام هذا عدد بسيط عنصر اسم حرف هو متعمد لـ لـ (اسم حرف يلزم مثل شخص بدء) ؛ جانب حافة `core/session` حزمة ما زال هو معتاد إقامة داخل تخزين فوري خدمة، هذا مجموعة فإن هو محيط التفاف هو حمل دائم بيت عائلة.`session-query/` إبقاء مستقل صار مجموعة: هذا عدد قراءة/أداة وجه ذاتي حمل نموذج أداة و SQLite FTS خلفية، ذلك إزالة استهلاك لا اعتماد حفظ دائم داخلي تنفيذ.
+- **`interaction/`** هو شخص آلة تنسيق عمل مستو وجه إضافة فوق ينبغي جواب هو طرفية عبر طريق: رفع سؤال/دفعة دقيق seam، إذن مسبق ضبط، موجه إلى نموذج `ask_user_question` أداة، شخص صنف أمر سجل التسجيل (`plan-mode` و `command-goal` قد يأخذ `commands` و كل تفاعل seam وضع في واحد بدء إزالة استهلاك) ، و `tui`——هذا عدد تفاعل عبر طريق هو هذا مستو وجه وظيفة الأكثر وفير غني مزود و مستهلك (مقابل `commands` و `user-questions` متساو لديه مقابل انتظار اعتماد حافة) ، بينما واحد مفرد حزمة `tui/` مجموعة سوف يأخذ واحد قمة طبقة اسم حرف زهرة في واحد إضافة فوق.
+- **`boot/`** هو زاوية لون تمام تجهيز مفرد حزمة مجموعة: لا ملكية أي عبر طريق أيضا لا ملكية أي تجميع مشترك boot لاصق ماء (يتم `apps/cli` و فقط حد اختبار Loader driver إزالة استهلاك).
+- **`guard/`** إبقاء ذلك وثيقة تسجيل تحميل زاوية لون (حلقة حماية توليد حراسة حماية) ، و جديد قبول دخول قوي صنع تنفيذ أداة استدعاء مهلة حزمة؛ ذلك عدد و `util/timeout` اصطدام اسم مفرد حزمة مجموعة `timeout/` مع لـ حل تفرق.
+- **`extensions/`** يأخذ `cordis/` حجب حجب إسقاط زاوية لون قول خروج قدوم: هو هو توفير agent(ذكي جسم) في ذاته حالي وقت التشغيل في فحص و تركيب إضافة أداة تجميع، أيضا هو لم قدوم ذاتي أنا تعديل صنف حزمة سقوط نقطة.
 
-42 个组变为 39 个；收益在聚类正确与名实相符，不在数量增减。
+42 عدد مجموعة تغيير لـ 39 عدد؛ استلام فائدة في تجمع صنف صحيح تأكيد و اسم فعلي متبادل رمز، لا في عدد كمية زيادة نقص.
 
-## 后续命名决策
+## لاحق تسمية قرار
 
-[仓库命名约定](2026-08-11-repository-naming-contract-and-rename-ledger.zh.md)解决了本次移动有意推迟的两个名称。`@deepseek-ai/dsh-sdk-jsonrpc-server` 表示运行时 SDK 协议的 JSON-RPC 服务器一侧。`@deepseek-ai/dsh-tool-call-timeout-policy` 准确表示策略所限制的操作，同时保留其 `guard/timeout-policy/` 归属。这些重命名会一并移除阻塞发布的 `FIXME` 标记。
+[مستودع تسمية اتفاق](2026-08-11-repository-naming-contract-and-rename-ledger.zh.md) حل قرار هذا مرة نقل حركة متعمد دفع متأخر اثنان عدد اسم.`@deepseek-ai/dsh-sdk-jsonrpc-server` يمثل وقت التشغيل SDK بروتوكول JSON-RPC خادم واحد جانب.`@deepseek-ai/dsh-tool-call-timeout-policy` دقيق تأكيد يمثل سياسة الذي حد عملية، معا إبقاء ذلك `guard/timeout-policy/` ملكية. هذه إعادة تسمية سوف واحد و إزالة منع سد إصدار `FIXME` علامة.
 
-## 移动触及了什么
+## نقل حركة لمس و ماذا
 
-移动以纯 `git mv` 形式落地，历史由重命名检测承载。组移动触及了：被移动包的 `tsconfig.json` 相对 `references` 及每个依赖方的对应条目（含 `apps/cli` 的 project references）；tsconfig 聚合与路径映射；各组 README；[packages/README.md](../../../../packages/README.zh.md) 的层级结构表；根 `AGENTS.md` 的布局图；重新生成的产物（`docs/module-graph.md`、内嵌路径的目录以及锁文件的 importer 键）；以及散文与门禁脚本中以仓库根为基准的 `packages/...` 引用。其余每一处组路径引用（workspace 配置、测试 glob、lint 键）都由验收门禁的响亮失败机械地找了出来——这正是本仓库自己的「配置错误必须响亮失败」规则。
+نقل حركة بـ صاف `git mv` شكل صيغة سقوط أرض، تاريخ من إعادة تسمية فحص قياس تحمل تحميل. مجموعة نقل حركة لمس و: يتم نقل حركة حزمة `tsconfig.json` متبادل مقابل `references` و كل اعتماد جهة مقابل بند (يحتوي `apps/cli` project references) ؛tsconfig تجمع دمج و مسار خريطة؛ كل مجموعة README؛[packages/README.md](../../../../packages/README.zh.md) طبقة درجة بنية جدول؛ أصل `AGENTS.md` تخطيط رسم؛ إعادة توليد ناتج (`docs/module-graph.md`، داخل تضمين مسار دليل و قفل ملف importer مفتاح) ؛ و تفرق نص و بوابة نص برمجي في بـ مستودع أصل لـ أساس دقيق `packages/...` مرجع. ذلك بقية كل واحد موضع مجموعة مسار مرجع (workspace إعداد، اختبار glob،lint مفتاح) كل من تحقق استلام بوابة صدى مضيء فشل آلة آلة أرض بحث خروج قدوم——هذا صحيح هو هذا مستودع ذاتي ذات «إعداد خطأ يجب صدى مضيء فشل» قاعدة.
 
-组移动未触及：npm 包名、import、`cordis.yml` 配置、快照 fixture（测试前置数据）、`pnpm-workspace.yaml` 与 `tsdown` 的 glob（都是 `packages/*/*`），以及 Python 运行时 manifest（元数据清单）——它们全部按 npm 包名引用包。
+مجموعة نقل حركة لم لمس و:npm حزمة اسم،import،`cordis.yml` إعداد، لقطة fixture(اختبار قبل وضع بيانات) ،`pnpm-workspace.yaml` و `tsdown` glob(كل هو `packages/*/*`) ، و Python وقت التشغيل manifest(بيانات وصفية بيان)——هو جمع الكل حسب npm حزمة اسم مرجع حزمة.
 
-`client/` 与 `host/` 不在本次范围内，保持不变。
+`client/` و `host/` لا في هذا مرة نطاق داخل، إبقاء ثابت.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**粗粒度领域桶**（`exec/` = subprocess+sandbox+bash+pty+code-runtime，`workspace/` = fs+lsp+workspace，`orchestration/` = subagent+workflow+tasks，`knowledge/` = web+skill，`collab/` = plan+todo+goal；约 16 个组）。不予采纳：实测依赖图与这些合并相矛盾。`sandbox` 和 `subprocess` 是被各家族跨界消费的共享基础设施（与 bash ×5、fs ×5、pty、lsp、mcp 及 subagent 均有依赖边），`web` ↔ `skill` 之间零依赖边，而大桶只会在更大尺度上复现 `ui/` 式大杂烩。
+**خشن حبة درجة مجال دلو**(`exec/` = subprocess+sandbox+bash+pty+code-runtime،`workspace/` = fs+lsp+workspace،`orchestration/` = subagent+workflow+tasks،`knowledge/` = web+skill،`collab/` = plan+todo+goal؛ نحو 16 عدد مجموعة). غير مقبول: فعلي قياس اعتماد رسم و هذه دمج متبادل تناقض درع.`sandbox` و `subprocess` هو يتم كل بيت عائلة عبر حد إزالة استهلاك مشترك أساس أساس ضبط تطبيق (و bash ×5،fs ×5،pty،lsp،mcp و subagent متساو لديه اعتماد حافة) ،`web` ↔ `skill` بين صفر اعتماد حافة، بينما كبير دلو فقط سوف في أكثر كبير مقياس درجة فوق تكرار الآن `ui/` صيغة كبير مختلط خليط.
 
-**抽象分层名**（`capability/`、`policy/`、`extension/`、`provider/`）。不予采纳：这些名字对每个插件都同样地不达意，而且一个 `capability/` 桶会装下约 50 个包。
+**سحب كائن قسم طبقة اسم**(`capability/`،`policy/`،`extension/`،`provider/`). غير مقبول: هذه اسم حرف مقابل كل إضافة كل نفس مثال أرض لا بلوغ معنى، بينما كما واحد `capability/` دلو سوف تركيب تحت نحو 50 عدد حزمة.
 
-**一轮全量 npm 重命名**（每个包都改为 `dsh-<group>-<pkg>`）。不予采纳：npm 包名是扁平的，加组前缀只会在 import、配置和 fixture 之间制造改动，却换不来任何消歧收益；用 FIXME 跟踪的定点改名足以覆盖真正的撞名。
+**واحد جولة كل كمية npm إعادة تسمية**(كل حزمة كل تعديل لـ `dsh-<group>-<pkg>`). غير مقبول:npm حزمة اسم هو مسطح مستو، إضافة مجموعة بادئة فقط سوف في import، إعداد و fixture بين صنع صنع تعديل، لكن تبديل لا قدوم أي إزالة اختلاف استلام فائدة؛ استخدام FIXME تتبع أثر تحديد نقطة تعديل اسم كاف بـ تغطية حق صحيح اصطدام اسم.
 
-**在重组内部一并完成推迟的改名。** 不予采纳：改名会成倍放大开放 PR 的冲突，并破坏纯移动的评审属性。剩余的 FIXME 标记让这些改名保持为可见的发布阻塞项，留待以小型后续 PR 逐一解决。
+**في إعادة مجموعة داخلي واحد و إتمام دفع متأخر تعديل اسم.** غير مقبول: تعديل اسم سوف صار ضعف وضع كبير فتح وضع PR اندفاع مفاجئ، و كسر تالف صاف نقل حركة مراجعة خاصية. باق بقية FIXME علامة يجعل هذه تعديل اسم إبقاء لـ مرئي إصدار منع سد بند، إبقاء انتظار بـ صغير نوع لاحق PR تدريجي واحد حل قرار.
 
-**会话两分法**（`session-core/` + `session-utils/`）。不予采纳：query 放哪一侧都不干净，而且 `session-core` 容易与 `core/session` 混淆（后者是 `dsh-session`，常驻内存的实时服务，留在 `core/` 不动）。
+**جلسة اثنان قسم قاعدة**(`session-core/` + `session-utils/`). غير مقبول:query وضع أي واحد جانب كل لا جاف صاف، بينما كما `session-core` سعة سهل و `core/session` خلط خلط (بعد من هو `dsh-session`، معتاد إقامة داخل تخزين فوري خدمة، إبقاء في `core/` لا حركة).
 
-**会话三分法**（`session-store/` + `session-query/` + `session-utils/`）。不予采纳：`session-utils/` 是靠否定条件圈出来的附属区（「派生的、没有任何承重构件依赖它」）——正是指导准则禁止的大杂烩形态，而且事实层面也站不住（`session-query` 对 `dsh-session-title` 声明对等依赖）。杜撰的复合名也读起来不像人起的；一个朴素的 `session/` 组说的就是人会说的话。query 无论如何都保持独立：它是被独立消费的读取面，自带自己的工具包与后端。
+**جلسة ثلاثة قسم قاعدة**(`session-store/` + `session-query/` + `session-utils/`). غير مقبول:`session-utils/` هو اعتماد لا تحديد شرط حلقة خروج قدوم مرفق تابع منطقة («إرسال توليد، لا يوجد أي تحمل إعادة بنية عنصر اعتماد هو»)——صحيح هو إشارة توجيه دقيق فإن منع توقف كبير مختلط خليط شكل، بينما كما واقع طبقة وجه أيضا محطة لا إقامة (`session-query` مقابل `dsh-session-title` إعلان مقابل انتظار اعتماد). منع تأليف تكرار دمج اسم أيضا قراءة بدء قدوم لا مثل شخص بدء؛ واحد بسيط عنصر `session/` مجموعة قول حينئذ هو شخص سوف قول كلام.query بلا نقاش مثل أي كل إبقاء مستقل: هو هو يتم مستقل إزالة استهلاك قراءة وجه، ذاتي حمل ذاتي ذات أداة حزمة و خلفية.
 
-**把 `ui/` 重组为单一 `channels/` 组**（tui + jsonrpc + acp + 交互 seam + boot）。不予采纳：不过是换个名字的同一个大杂烩——这些包服务于四个平面，`jsonrpc` 的实测聚类归属是 SDK 通信栈，而 `acp/` 是自动化传输通道，不是人类通道。
+**يأخذ `ui/` إعادة مجموعة لـ مفرد واحد `channels/` مجموعة**(tui + jsonrpc + acp + تفاعل seam + boot). غير مقبول: لا مرور هو تبديل عدد اسم حرف نفس عدد كبير مختلط خليط——هذه حزمة خدمة في أربعة عدد مستو وجه،`jsonrpc` فعلي قياس تجمع صنف ملكية هو SDK عبر معلومة مكدس، بينما `acp/` هو تلقائي تحويل نقل عبر طريق، لا هو شخص صنف عبر طريق.
 
-**独立的单包 `tui/` 组。** 不予采纳：`tui` 是交互平面的主要提供方／消费方（对 `commands`、`user-questions` 有对等依赖边），把一个顶层名字花在一个插件上只添组不添信息；它折入 `interaction/`。
+**مستقل مفرد حزمة `tui/` مجموعة.** غير مقبول:`tui` هو تفاعل مستو وجه رئيسي يلزم مزود/مستهلك (مقابل `commands`،`user-questions` لديه مقابل انتظار اعتماد حافة) ، يأخذ واحد قمة طبقة اسم حرف زهرة في واحد إضافة فوق فقط إضافة مجموعة لا إضافة معلومة؛ هو طي دخول `interaction/`.
 
-**把 `app-boot` 挪到 `apps/`。** 不予采纳：`apps/` 是包层之上的组装层，而 `dsh-app-boot` 是包层的库——放进 `apps/` 会颠倒层级，并把一个 workspace 库放到 `packages/*/*` 构建 glob 之外。它仍是一个包；`boot/` 是它角色完备的家。
+**يأخذ `app-boot` نقل إلى `apps/`.** غير مقبول:`apps/` هو حزمة طبقة لـ فوق تجميع طبقة، بينما `dsh-app-boot` هو حزمة طبقة مكتبة——وضع دخول `apps/` سوف قلب قلب طبقة درجة، و يأخذ واحد workspace مكتبة وضع إلى `packages/*/*` بناء glob خارج. هو ما زال هو واحد حزمة؛`boot/` هو هو زاوية لون تمام تجهيز بيت.
 
-**把 `tool-cordis` 挪进 `core/`。** 不予采纳：自我修改是独立的产品 seam，预期还会生长；主干保持精简。该组最初命名为 `self-evolve/`；名字最终定为更朴素的 `extensions/`。
+**يأخذ `tool-cordis` نقل دخول `core/`.** غير مقبول: ذاتي أنا تعديل هو مستقل منتج seam، مسبق مدة أيضا سوف توليد طويل؛ رئيسي جاف إبقاء دقيق بسيط. هذا مجموعة الأكثر أول تسمية لـ `self-evolve/`؛ اسم حرف نهائي تحديد لـ أكثر بسيط عنصر `extensions/`.
 
-**把 `context/` 改名为 `request-context/`。** 不予采纳：在这棵树里，该组就地看并无歧义；这份改动开销并不值得。
+**يأخذ `context/` تعديل اسم لـ `request-context/`.** غير مقبول: في هذا شجرة شجرة داخل، هذا مجموعة حينئذ أرض نظر و بلا اختلاف معنى؛ هذا نسخة تعديل فتح إلغاء و لا قيمة نيل.
 
-## 后果
+## عاقبة
 
-- 五个仍然有效的重组家族持有所列成员；`ui/`、`telemetry/`、`timeout/`、`cordis/`、`session-persistence/`、`session-projection/`、`session-title/` 这些组不复存在。重组本身没有更改 npm 名。后续移除 SDK 工具链的决策有意改变包集合，并恢复 `sdk/` 作为运行时 SDK 三包的精确归属。两条 FIXME 标记钉住剩余的推迟改名；日后若某条 FIXME 被证明不对，必须连同理由显式移除，绝不允许无声消失。
-- 结果由以下检查钉住：`pnpm run typecheck`、每个被移动组的单元测试套件、`verify-package-paths`、`verify-md-links` 与全语料翻译配对在移动后的树上全部通过；`vitest.snapshot.config.ts` 中按组划定的测试 glob 随移动一并改写，套件收集到与移动前相同的测试文件（glob 匹配为空会无声地丢失覆盖）。
-- 每个触碰被移动文件的开放 PR 都跨过这次移动做一次变基；重命名检测可机械化解决大多数改动块。
-- 单包组依然存在（`boot/`、`extensions/`，以及 `acp/` 等既有单包组）。这是有意接受的：每个都是角色完备的整体而非某个家族的碎片，一个名实相符的小组胜过一次徒有其名的合并。
-- `sdk/` 的角色目录在 `tsconfig.base.json` 中显式映射到各自的 npm 名；在 `dsh-sdk-jsonrpc-server` 完成改名之前，`server/` 的映射仍是过渡性的。
-- **这次变更放弃了什么：** 功能上一无所失——变更只关乎导航。肌肉记忆和指向旧 GitHub 路径的外部链接会失效；在 pre-release、尚无外部消费方的前提下，这可以接受。
+- خمسة عدد ما زال صالح إعادة مجموعة بيت عائلة يحتفظ الذي صف عضو؛`ui/`،`telemetry/`،`timeout/`،`cordis/`،`session-persistence/`،`session-projection/`،`session-title/` هذه مجموعة لا تكرار وجود. إعادة مجموعة ذاته لا يوجد أكثر تعديل npm اسم. لاحق إزالة SDK أداة سلسلة قرار متعمد تغيير حزمة تجميع دمج، و استعادة `sdk/` بصفة وقت التشغيل SDK ثلاثة حزمة دقيق ملكية. اثنان بند FIXME علامة تثبيت إقامة باق بقية دفع متأخر تعديل اسم؛ يوم بعد إذا بعض بند FIXME يتم إثبات لا مقابل، يجب وصل نفس إدارة من صريح إزالة، أبدا سماح بلا صوت إزالة فقد.
+- نتيجة من التالي فحص تثبيت إقامة:`pnpm run typecheck`، كل يتم نقل حركة مجموعة اختبار وحدة طقم عنصر،`verify-package-paths`،`verify-md-links` و كل لغة مادة قلب ترجمة إعداد مقابل في نقل حركة بعد شجرة فوق الكل عبر؛`vitest.snapshot.config.ts` في حسب مجموعة تخطيط تحديد اختبار glob مع نقل حركة واحد و تعديل كتابة، طقم عنصر استلام تجميع إلى و نقل حركة قبل نفسه اختبار ملف (glob مطابقة لـ فارغ سوف بلا صوت أرض فقد فقد تغطية).
+- كل لمس اصطدام يتم نقل حركة ملف فتح وضع PR كل عبر مرور هذا مرة نقل حركة فعل مرة تغيير أساس؛ إعادة تسمية فحص قياس يمكن آلة آلة تحويل حل قرار كبير كثير عدد تعديل كتلة.
+- مفرد حزمة مجموعة اعتماد لكن وجود (`boot/`،`extensions/`، و `acp/` انتظار قائم مفرد حزمة مجموعة). هذا هو متعمد قبول: كل كل هو زاوية لون تمام تجهيز كامل جسم بينما غير بعض عدد بيت عائلة تفتيت قطعة، واحد اسم فعلي متبادل رمز صغير مجموعة فوز مرور مرة عبث لديه ذلك اسم دمج.
+- `sdk/` زاوية لون دليل في `tsconfig.base.json` في صريح خريطة إلى كل منها npm اسم؛ في `dsh-sdk-jsonrpc-server` إتمام تعديل اسم قبل،`server/` خريطة ما زال هو مرور عبور صفة.
+- **هذا مرة تغيير وضع ترك ماذا:** وظيفة فوق واحد بلا الذي فقد——تغيير فقط صلة نحو تنقل. عضلة لحم تسجيل ذاكرة و إشارة نحو قديم GitHub مسار خارجي رابط سوف بطلان؛ في pre-release، بعد بلا خارجي مستهلك قبل رفع تحت، هذا يمكن قبول.

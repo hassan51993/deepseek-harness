@@ -1,45 +1,45 @@
-# Agent Note: code-runtime seam 拥有可移植标识符排除集
+# Agent Note: code-runtime seam يملك يمكن نقل غرس معرف رمز ترتيب حذف تجميع
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-31-code-runtime-portable-identifier-seam.md) | 中文
+[English](2026-07-31-code-runtime-portable-identifier-seam.md) | العربية
 
 ## Problem
 
-code-runtime seam 承诺：在一个后端上有效的绑定命名空间列表，在每个后端上都有效，因此 PTC mode 消费方可以把同一组绑定交给任何已注册的运行时，而不必知道它的语言。首个后端 `dsh-code-runtime-worker-thread` 私自拥有了执行这项承诺一部分的标识符规则：一个允许 JS 专有 `$` 的 `IDENTIFIER` 正则、一个只含 ECMAScript 关键字的 `RESERVED_WORDS` 集合，以及一个含三个 JS `Error` 槽位的 `RESERVED_ERROR_PROPERTIES` 集合。这些规则描述的是 worker 自身的语言，而非 seam 的可移植性约定。
+code-runtime seam تحمل وعد: في واحد خلفية فوق صالح ربط نطاق الأسماء قائمة، في كل خلفية فوق كل صالح، لذلك PTC mode مستهلك يمكن يأخذ نفس مجموعة ربط تسليم إعطاء أي قد تسجيل وقت التشغيل، بينما لا لا بد معرفة طريق هو لغة. أول عدد خلفية `dsh-code-runtime-worker-thread` خاص ذاتي يملك تنفيذ هذا بند تحمل وعد واحد جزء معرف رمز قاعدة: واحد سماح JS مخصص لديه `$` `IDENTIFIER` صحيح فإن، واحد فقط يحتوي ECMAScript صلة مفتاح حرف `RESERVED_WORDS` تجميع دمج، و واحد يحتوي ثلاثة عدد JS `Error` مجرى موضع `RESERVED_ERROR_PROPERTIES` تجميع دمج. هذه قاعدة وصف هو worker ذاته لغة، بينما غير seam يمكن نقل غرس صفة اتفاق.
 
-一个针对不同语言（CPython）编写的第二后端，要么重新声明自己的规则——让 `lambda` 通过 worker 却在 Python 上失败，或让 `$tools` 通过 worker 却在每个非 JS 后端上失败——要么导入 worker 的规则，从而反转依赖，使一个 Service Provider 伸手进入另一个兄弟 Service Provider。二者都无法让可移植承诺成真：它只对调用方恰好测试过的那个后端成立。
+واحد إبرة مقابل مختلف لغة (CPython) تحرير كتابة ثاني خلفية، يلزم ما إعادة إعلان ذاتي ذات قاعدة——يجعل `lambda` عبر worker لكن في Python فوق فشل، أو يجعل `$tools` عبر worker لكن في كل غير JS خلفية فوق فشل——يلزم ما استيراد worker قاعدة، من بينما عكس تحويل اعتماد، جعل واحد Service Provider امتداد يد دخول آخر عدد أخ أخ Service Provider. اثنان من كل لا يمكن يجعل يمكن نقل غرس تحمل وعد صار حق: هو فقط مقابل استدعاء جهة تماما جيد اختبار مرور ذلك عدد خلفية صار قيام.
 
 ## Decision
 
-Service Definition 包（`@deepseek-ai/dsh-code-runtime`）以四个具名常量导出可移植标识符排除约定，每个 Service Provider 导入它们而非重新声明：
+Service Definition حزمة (`@deepseek-ai/dsh-code-runtime`) بـ أربعة عدد أداة اسم معتاد كمية توجيه خروج يمكن نقل غرس معرف رمز ترتيب حذف اتفاق، كل Service Provider استيراد هو جمع بينما غير إعادة إعلان:
 
-- `PORTABLE_RESERVED_WORDS`——ECMAScript 与 Python 保留字的联集。任何命名空间 global 或 error-class 名称匹配其中之一，都在所有后端上被拒绝，因此 `lambda` 即便是合法的 JS 参数名也被拒绝。新增一门语言即扩宽此联集，这是对现有绑定名称的一次有意的破坏性复审。
-- `RESERVED_BINDING_GLOBALS`——某个后端在程序命名空间中拥有的 global：`console`（worker 的日志捕获）、`__dsh_main__`/`__builtins__`/`__name__`（Python bootstrap 的包装器与预置模块 global），以及 `__debug__`（不是 seed 的槽位，而是 CPython 编译期常量，赋值会被拒，故以该名注入的 global 不可达——同一种可移植性分裂，只是机制不同）。在所有后端上被拒绝，使命名空间列表无法选到一个在某后端能用、在另一后端冲突的名称。
-- `RESERVED_ERROR_MEMBERS`——每个后端都拒绝的 error-member 名称：JS `Error` 槽位（`name`、`message`、`stack`）与 Python 异常协议成员（`args`、`with_traceback`、`add_note`）。
-- `DUNDER_MEMBER`——dunder 形式正则（`__x__`，非空中缀），作为 error member 被整体拒绝，因为其中若干是受约束的 CPython 描述符，其确切集合是解释器版本细节。
+- `PORTABLE_RESERVED_WORDS`——ECMAScript و Python إبقاء حرف ربط تجميع. أي نطاق الأسماء global أو error-class اسم مطابقة منها لـ واحد، كل في كل خلفية فوق يتم رفض، لذلك `lambda` أي سهل هو دمج قاعدة JS معامل اسم أيضا يتم رفض. إضافة جديدة واحد باب لغة أي توسيع عرض هذا ربط تجميع، هذا هو مقابل قائم ربط اسم مرة متعمد كسر تالف صفة تكرار مراجعة.
+- `RESERVED_BINDING_GLOBALS`——بعض عدد خلفية في برنامج نطاق الأسماء في يملك global:`console`(worker سجل التقاط) ،`__dsh_main__`/`__builtins__`/`__name__`(Python bootstrap حزمة تركيب جهاز و مسبق وضع وحدة global) ، و `__debug__`(لا هو seed مجرى موضع، بينما هو CPython تحرير ترجمة مدة معتاد كمية، منح قيمة سوف يتم رفض، لذا بـ هذا اسم حقن global غير ممكن بلوغ——نفس نوع يمكن نقل غرس صفة قسم شق، فقط هو آلية مختلف). في كل خلفية فوق يتم رفض، جعل نطاق الأسماء قائمة لا يمكن اختيار إلى واحد في بعض خلفية قدرة استخدام، في آخر خلفية اندفاع مفاجئ اسم.
+- `RESERVED_ERROR_MEMBERS`——كل خلفية كل رفض error-member اسم:JS `Error` مجرى موضع (`name`،`message`،`stack`) و Python استثناء بروتوكول عضو (`args`،`with_traceback`،`add_note`).
+- `DUNDER_MEMBER`——dunder شكل صيغة صحيح فإن (`__x__`، غير فارغ في لاحقة) ، بصفة error member يتم كامل جسم رفض، لأن منها إذا جاف هو تلقي قيد CPython وصف رمز، ذلك تأكيد قطع تجميع دمج هو حل تفسير جهاز إصدار دقيق عقدة.
 
-Service Definition 同时把可移植标识符子集收窄为 `[A-Za-z_][A-Za-z0-9_]*`（记录在 `CodeBindingNamespace.global` 与 `CodeBindingErrorClass` 上），去掉 JS 专有的 `$`。worker 直接以这些常量的导出名称消费它们——binding-global 与 error-class 名称用 `PORTABLE_RESERVED_WORDS`、后端拥有槽位用 `RESERVED_BINDING_GLOBALS`、error member 用 `RESERVED_ERROR_MEMBERS` 加 `DUNDER_MEMBER`——不再本地起别名；其 `IDENTIFIER` 正则去掉 `$`。
+Service Definition معا يأخذ يمكن نقل غرس معرف رمز فرعي تجميع استلام ضيق لـ `[A-Za-z_][A-Za-z0-9_]*`(سجل في `CodeBindingNamespace.global` و `CodeBindingErrorClass` فوق) ، ذهاب إسقاط JS مخصص لديه `$`.worker مباشر بـ هذه معتاد كمية توجيه خروج اسم إزالة استهلاك هو جمع——binding-global و error-class اسم استخدام `PORTABLE_RESERVED_WORDS`، خلفية يملك مجرى موضع استخدام `RESERVED_BINDING_GLOBALS`،error member استخدام `RESERVED_ERROR_MEMBERS` إضافة `DUNDER_MEMBER`——لم يعد محلي بدء آخر اسم؛ ذلك `IDENTIFIER` صحيح فإن ذهاب إسقاط `$`.
 
-尽管 worker 是唯一已交付的后端，这些常量仍置于 Service Definition：要点正是该约定与语言无关，且由高于任何单一语言的层级拥有。违反它的 Service Provider 才是 bug，而共享集合正是复审者查看「可移植」含义的地方。
+كل إدارة worker هو وحيد قد تسليم خلفية، هذه معتاد كمية ما زال وضع في Service Definition: يلزم نقطة صحيح هو هذا اتفاق و لغة غير متصل، كما من عال في أي مفرد واحد لغة طبقة درجة يملك. مخالفة عكس هو Service Provider عندئذ هو bug، بينما مشترك تجميع دمج صحيح هو تكرار مراجعة من فحص نظر «يمكن نقل غرس» يحتوي معنى أرض جهة.
 
 ## Scope
 
-本决策交付 Service Definition 扩展与 worker-thread 后端对它的采用。`py-types` 渲染器与 PTC mode 的语言分发归[语言分发 note](../feature/2026-07-31-ptc-language-dispatch.zh.md)所有。私有的实验性 CPython 子进程后端（`dsh-experimental-code-runtime-python`）采用同一 portable-identifier 契约。
+هذا قرار تسليم Service Definition توسيع و worker-thread خلفية مقابل هو اعتماد.`py-types` مصير و PTC mode لغة توزيع عودة[لغة توزيع note](../feature/2026-07-31-ptc-language-dispatch.zh.md) كل. خاص فعلي تحقق صفة CPython عملية فرعية خلفية (`dsh-experimental-code-runtime-python`) اعتماد نفس portable-identifier عقد نحو.
 
-`RESERVED_BINDING_GLOBALS` 先于后端本身编码了 Python bootstrap 的具体设计：它恰好 seed `__builtins__`/`__name__`，并把程序包装在 `__dsh_main__` 之下。任何 seed 额外模块 global（`__doc__`、`__loader__`、`__spec__`、`__file__`、`__package__` 等）的 Python 后端必须在同一改动中扩宽此集合，正如新增一门语言即扩宽 `PORTABLE_RESERVED_WORDS`——bootstrap 会 seed 却不在集合中的名称，正是本约定要防止的可移植性分裂。
+`RESERVED_BINDING_GLOBALS` أولا في خلفية ذاته تحرير رمز Python bootstrap أداة جسم تصميم: هو تماما جيد seed `__builtins__`/`__name__`، و يأخذ برنامج حزمة تركيب في `__dsh_main__` لـ تحت. أي seed مقدار خارج وحدة global(`__doc__`،`__loader__`،`__spec__`،`__file__`،`__package__` انتظار) Python خلفية يجب في نفس تعديل في توسيع عرض هذا تجميع دمج، صحيح مثل إضافة جديدة واحد باب لغة أي توسيع عرض `PORTABLE_RESERVED_WORDS`——bootstrap سوف seed لكن لا في تجميع دمج في اسم، صحيح هو هذا اتفاق يلزم منع توقف يمكن نقل غرس صفة قسم شق.
 
 ## Alternatives considered
 
-**每个后端声明自己的排除集。** 拒绝：这让可移植承诺变成逐后端成立。调用方在 worker 上测过的绑定列表可能被 Python 拒绝，而这正是 seam 存在要防止的分裂。
+**كل خلفية إعلان ذاتي ذات ترتيب حذف تجميع.** رفض: هذا يجعل يمكن نقل غرس تحمل وعد تغيير صار تدريجي خلفية صار قيام. استدعاء جهة في worker فوق قياس مرور ربط قائمة ممكن يتم Python رفض، بينما هذا صحيح هو seam وجود يلزم منع توقف قسم شق.
 
-**Python 后端导入 worker 的常量。** 拒绝：这反转依赖——seam 的 Service Provider 会为一个二者都不拥有的约定伸手进入兄弟实现。约定属于二者之上，即 seam。
+**Python خلفية استيراد worker معتاد كمية.** رفض: هذا عكس تحويل اعتماد——seam Service Provider سوف لـ واحد اثنان من كل لا يملك اتفاق امتداد يد دخول أخ أخ تنفيذ. اتفاق يخص اثنان من لـ فوق، أي seam.
 
-**在可移植标识符子集中保留 `$`。** 拒绝：`$` 是 JS 专有拼写。允许它会让 `$tools` 通过 worker 却在每个非 JS 后端上失败，为纯粹表面的好处破坏可移植性。
+**في يمكن نقل غرس معرف رمز فرعي تجميع في إبقاء `$`.** رفض:`$` هو JS مخصص لديه تجميع كتابة. سماح هو سوف يجعل `$tools` عبر worker لكن في كل غير JS خلفية فوق فشل، لـ صاف خالص جدول وجه جيد موضع كسر تالف يمكن نقل غرس صفة.
 
 ## Consequences
 
-获得：一个地方——Service Definition 包——定义什么是可移植绑定名称，每个后端通过导入执行同一约定。在一个后端上有效的命名空间列表在所有后端上都有效，这是可验证的，而非取决于调用方测试了哪个后端的巧合。
+نيل نيل: واحد أرض جهة——Service Definition حزمة——تعريف ماذا هو يمكن نقل غرس ربط اسم، كل خلفية عبر استيراد تنفيذ نفس اتفاق. في واحد خلفية فوق صالح نطاق الأسماء قائمة في كل خلفية فوق كل صالح، هذا هو يمكن تحقق، بينما غير أخذ قرار في استدعاء جهة اختبار أي عدد خلفية بارع دمج.
 
-代价：现有使用含 `$` global 的 worker 调用方现在会在标识符校验时失败。在预发布立场下这是对基础设计的一次纠正，而非需要 shim 的兼容性破坏。worker 的 Service Definition misuse 测试新增了 `$tools`、Python 异常成员（`args`）、dunder（`__dict__`）与一个 Python 拥有的 global（`__dsh_main__`）等用例，从 worker 侧证明共享集合被执行。
+بديل قيمة: قائم استخدام يحتوي `$` global worker استدعاء جهة الآن سوف في معرف رمز تحقق وقت فشل. في مسبق إصدار قيام ساحة تحت هذا هو مقابل أساس أساس تصميم مرة تصحيح صحيح، بينما غير حاجة shim توافق صفة كسر تالف.worker Service Definition misuse اختبار إضافة جديدة `$tools`،Python استثناء عضو (`args`) ،dunder(`__dict__`) و واحد Python يملك global(`__dsh_main__`) انتظار حالة استخدام، من worker جانب إثبات مشترك تجميع دمج يتم تنفيذ.

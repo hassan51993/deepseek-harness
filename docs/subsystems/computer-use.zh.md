@@ -1,31 +1,31 @@
-# 计算机操作
+# حساب حساب آلة عملية
 
-[English](computer-use.md) | 中文
+[English](computer-use.md) | العربية
 
-计算机操作让模型通过配置的提供方观察并操作本地桌面。DSH 的共享能力称为 **computer use（计算机操作）**；**Cua Driver** 是上游实现的名称。
+حساب حساب آلة عملية يجعل نموذج عبر إعداد مزود مراقبة و عملية محلي طاولة وجه.DSH مشترك قدرة تسمية لـ **computer use(حساب حساب آلة عملية)**؛**Cua Driver** هو فوق تنقل تنفيذ اسم.
 
-## 选择提供方
+## اختيار مزود
 
-在同一组合中挂载 [`dsh-computer-use`](../../packages/computer-use/computer-use/README.zh.md) 和一个提供方。两个 Cua Driver 提供方都是公开发布到 npm 的实验性包，均需显式启用。
+في نفس تركيب في تركيب [`dsh-computer-use`](../../packages/computer-use/computer-use/README.zh.md) و واحد مزود. اثنان عدد Cua Driver مزود كل هو عام إصدار إلى npm فعلي تحقق صفة حزمة، متساو يحتاج صريح تفعيل.
 
-| 提供方 | 运行时 |
+| مزود | وقت التشغيل |
 |---|---|
-| [Cua Driver MCP](../../packages/experimental/computer-use-cua-driver-mcp/README.zh.md) | 通过 MCP 连接已安装的 `cua-driver` 可执行文件 |
-| [Cua Driver 原生](../../packages/experimental/computer-use-cua-driver-native/README.zh.md) | 随 npm 依赖安装的平台原生运行时 |
+| [Cua Driver MCP](../../packages/experimental/computer-use-cua-driver-mcp/README.zh.md) | عبر MCP اتصال قد تثبيت `cua-driver` يمكن تنفيذ ملف |
+| [Cua Driver أصلي](../../packages/experimental/computer-use-cua-driver-native/README.zh.md) | مع npm اعتماد تثبيت منصة أصلي وقت التشغيل |
 
-各提供方提供上游工具目录。共享服务只注册名称，并拒绝任何第二个提供方，包括使用相同名称的另一个实例。服务不包含通用桌面操作方法或模型控制的选择器。
+كل مزود توفير فوق تنقل أداة دليل. مشترك خدمة فقط تسجيل اسم، و رفض أي ثاني عدد مزود، يشمل استخدام نفسه اسم آخر عدد نسخة. خدمة لا يتضمن عام طاولة وجه عملية طريقة أو نموذج تحكم اختيار جهاز.
 
-## 生命周期和桌面共享
+## دورة الحياة و طاولة وجه مشترك
 
-提供方在关闭工具和自有资源期间保留注册。启动失败会释放此次尝试的注册。MCP 提供方在重连期间保留注册。
+مزود في إغلاق أداة و ذاتي لديه مورد خلال إبقاء تسجيل. بدء فشل سوف تحرير هذا مرة محاولة تجربة تسجيل.MCP مزود في إعادة وصل خلال إبقاء تسجيل.
 
-一个已注册的提供方不会为某个 Session 预留桌面。调用方负责协调跨 Session 和独立 DSH 进程的完整观察、操作和验证流程。取消调用无法撤销桌面已收到的输入。
+واحد قد تسجيل مزود لن لـ بعض عدد Session مسبق إبقاء طاولة وجه. استدعاء جهة مسؤول تنسيق ضبط عبر Session و مستقل DSH عملية كامل مراقبة، عملية و تحقق مسار. إلغاء استدعاء لا يمكن سحب إلغاء طاولة وجه قد استلام إلى إدخال.
 
-## 结果和平台要求
+## نتيجة و منصة اشتراط
 
-工具使用常规执行流程和 Session 日志。支持图像的模型路由在挂载附件存储时接收持久化截图；不支持图像的路由接收现有 MCP 图像诊断。提供方 README 负责说明安装、权限和平台限制。
+أداة استخدام معتاد قاعدة تنفيذ مسار و Session سجل. دعم حمل رسم مثل نموذج توجيه في تركيب مرفق عنصر تخزين وقت استقبال حفظ دائم قطع رسم؛ لا دعم حمل رسم مثل توجيه استقبال قائم MCP رسم مثل تشخيص. مزود README مسؤول شرح تثبيت، إذن و منصة حد.
 
-[决策记录](../../.agents/notes/implemented/architecture/2026-09-12-computer-use-provider-registration.zh.md)解释只负责注册的服务和两个 Cua Driver 集成。
+[قرار سجل](../../.agents/notes/implemented/architecture/2026-09-12-computer-use-provider-registration.zh.md) حل تفسير فقط مسؤول تسجيل خدمة و اثنان عدد Cua Driver تجميع صار.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

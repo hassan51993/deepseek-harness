@@ -1,41 +1,41 @@
 ---
-description: "ACP（Agent Client Protocol）包组：通过 JSON-RPC stdio 将全新 harness agent（智能体）暴露给程序化客户端的仅面向自动化的服务器。"
+description: "ACP(Agent Client Protocol) حزمة مجموعة: عبر JSON-RPC stdio سوف كل جديد harness agent(ذكي جسم) كشف إعطاء برنامج تحويل عميل فقط موجه إلى تلقائي تحويل خادم."
 kind: "package-group"
 ---
 
-# acp/：Agent Client Protocol 自动化
+# acp/:Agent Client Protocol تلقائي تحويل
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-acp 组提供一个包：一个服务器，让程序与自动化流程可以通过标准 Agent Client Protocol 运行持久 DeepSeek Harness agent。客户端可以创建、列出、恢复与关闭会话，挂载标准 MCP 服务器，选择模型选项，发送文本与图片提示词，接收语义更新，响应权限提示并取消工作——无需人类参与。从另一个 harness 启动这种服务器的配套客户端位于 `subagent/subagent-acp`。本页概述该包组；各包的具体约定由其 README 规定。
+acp مجموعة توفير واحد حزمة: واحد خادم، يجعل برنامج و تلقائي تحويل مسار يمكن عبر معيار Agent Client Protocol تشغيل حمل دائم DeepSeek Harness agent. عميل يمكن إنشاء، صف خروج، استعادة و إغلاق جلسة، تركيب معيار MCP خادم، اختيار نموذج خيار، إرسال نص و صورة نص التوجيه، استقبال دلالة تحديث، استجابة إذن تلميح و إلغاء عمل——بلا حاجة شخص صنف مشاركة و. من آخر عدد harness بدء هذا نوع خادم إعداد طقم عميل يقع في `subagent/subagent-acp`. هذا صفحة عام وصف هذا حزمة مجموعة؛ كل حزمة أداة جسم اتفاق من ذلك README قاعدة تحديد.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 |
+| حزمة | مسؤولية |
 |---|---|
-| [`acp/`](acp/README.zh.md) | 让程序通过 ACP 管理持久 agent、挂载 MCP 服务器、选择模型选项、发送提示词、取消工作并接收语义更新 |
+| [`acp/`](acp/README.zh.md) | يجعل برنامج عبر ACP إدارة حمل دائم agent، تركيب MCP خادم، اختيار نموذج خيار، إرسال نص التوجيه، إلغاء عمل و استقبال دلالة تحديث |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [dsh-subagent-acp](../subagent/subagent-acp/README.zh.md)——spawn 并驱动本服务器的进程外 ACP 客户端。
-- [ACP 作为仅面向自动化的协议](../../.agents/notes/implemented/simplification/2026-07-23-acp-automation-only-protocol.zh.md)——自动化约定及其协议边界的决策记录。
-- [在单个连接上多路复用并发 ACP 会话](../../.agents/notes/archived/feature/2026-06-14-acp-multi-session.md)——按会话隔离、归属与清理决策。
+- [dsh-subagent-acp](../subagent/subagent-acp/README.zh.md)——spawn و قيادة هذا خادم عملية خارج ACP عميل.
+- [ACP بصفة فقط موجه إلى تلقائي تحويل بروتوكول](../../.agents/notes/implemented/simplification/2026-07-23-acp-automation-only-protocol.zh.md)——تلقائي تحويل اتفاق و ذلك بروتوكول حد قرار سجل.
+- [في مفرد عدد اتصال فوق كثير مسار إعادة استخدام تزامن ACP جلسة](../../.agents/notes/archived/feature/2026-06-14-acp-multi-session.md)——حسب جلسة عزل، ملكية و تنظيف قرار.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

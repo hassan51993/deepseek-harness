@@ -1,49 +1,49 @@
-# Agent Note: parent 自有的 subagent 目录事件
+# Agent Note: parent ذاتي لديه subagent دليل حدث
 
 Status: implemented
 
-[English](2026-09-01-parent-owned-subagent-catalog.md) | 中文
+[English](2026-09-01-parent-owned-subagent-catalog.md) | العربية
 
-## 问题
+## مشكلة
 
-直接 child discovery 曾从全局 Session 语料与每个入选 child 的日志重建目录。创建过程已经知道直接 parent、child id、mode 与 label，因此仓库范围枚举和 child 日志读取重复推导了已有归属的事实，并让浏览器刷新成本取决于无关 Session。
+مباشر child discovery سبق من عام Session لغة مادة و كل دخول اختيار child سجل إعادة بناء دليل. إنشاء مرور مسار قد معرفة طريق مباشر parent،child id،mode و label، لذلك مستودع نطاق قطعة رفع و child سجل قراءة تكرار دفع توجيه قد لديه ملكية واقع، و يجعل متصفح تحديث جديد صار هذا أخذ قرار في غير متصل Session.
 
-child descriptor 对恢复与 composition 仍然必要，但它不能作为 discovery 来源，因为读取方必须先找到并打开 child 才能读取 descriptor。fork 还有独立要求：从 parent 日志播种的副本不能继承原 Session 的 child。
+child descriptor مقابل استعادة و composition ما زال لا بد يلزم، لكن هو لا يستطيع بصفة discovery مصدر، لأن قراءة جهة يجب أولا بحث إلى و فتح child عندئذ قدرة قراءة descriptor.fork أيضا لديه مستقل اشتراط: من parent سجل بث نوع فرعي هذا لا يستطيع وراثة أصل Session child.
 
-## 决策
+## قرار
 
-parent Session 的 required `subagent/catalog` 事件是直接 child discovery 的持久化权威。每个事件都是一条成功创建事实，包含 `childId`、`childCreatedAt`、mode 与按 mode 区分的 label。没有本地 Session 的远程 one-shot run 不进入该目录。无效的自身 fact（包括不支持的 payload 版本）会使 projection 恢复失败，因为静默丢弃 required fact 会返回不完整的目录。
+parent Session required `subagent/catalog` حدث هو مباشر child discovery حفظ دائم مرجعي. كل حدث كل هو واحد بند نجاح إنشاء واقع، يتضمن `childId`،`childCreatedAt`،mode و حسب mode منطقة قسم label. لا يوجد محلي Session بعيد مسار one-shot run لا دخول هذا دليل. بلا فاعلية ذاته fact(يشمل لا دعم حمل payload إصدار) سوف جعل projection استعادة فشل، لأن ساكن صامت إسقاط required fact سوف إرجاع لا كامل دليل.
 
-创建只发布成功事实。one-shot run 在 provider 返回本地 child 后、run 到达调用方前追加目录事件。continuable run 先准入初始 prompt，再追加目录事件，最后返回 child id。准入或目录追加失败时，创建失败并释放 activation；不存在补偿目录事件或 rollback 协议。
+إنشاء فقط إصدار نجاح واقع.one-shot run في provider إرجاع محلي child بعد،run وصول استدعاء جهة قبل إلحاق دليل حدث.continuable run أولا دقيق دخول ابتدائي prompt، مجددا إلحاق دليل حدث، الأكثر بعد إرجاع child id. دقيق دخول أو دليل إلحاق فشل وقت، إنشاء فشل و تحرير activation؛ لا وجود تكملة تعويض دليل حدث أو rollback بروتوكول.
 
-child header 与 `subagent/descriptor` 继续拥有恢复与 composition 权威。Activation 与精确 parent 关系继续拥有授权与投递权威。mode 与 label 只快照一次，同一份分离值写入 parent catalog fact 与 child descriptor。
+child header و `subagent/descriptor` متابعة يملك استعادة و composition مرجعي.Activation و دقيق parent علاقة متابعة يملك تخويل و إلقاء تمرير مرجعي.mode و label فقط لقطة مرة، نفس نسخة قسم مغادرة قيمة كتابة parent catalog fact و child descriptor.
 
-注册的 `subagentCatalog` projection 物化 parent fact。它将存储、追加、迭代和检查点校验交给 [`dsh-chunked-list`](../../../../packages/util/chunked-list/README.zh.md)，后者以每块 64 项的持久 stack 保存事实，因此 append 最多复制 head chunk，以有界 O(1) 工作完成。materialization 从旧到新访问 chunk，对 D 条事实以 O(D) 时间保留父目录事件顺序。并发创建按目录成功追加的顺序排列，与 child 时间戳和 id 无关。projection checkpoint 以 O(D) 克隆 state；projection-cache 继续异步写入，并使用既有创建、turn-end 与 disposal 强制点。
+تسجيل `subagentCatalog` projection شيء تحويل parent fact. هو سوف تخزين، إلحاق، تكرار بديل و فحص نقطة تحقق تسليم إعطاء [`dsh-chunked-list`](../../../../packages/util/chunked-list/README.zh.md) ، بعد من بـ كل كتلة 64 بند حمل دائم stack حفظ واقع، لذلك append الأكثر كثير نسخ head chunk، بـ محدود O(1) عمل إتمام.materialization من قديم إلى جديد وصول chunk، مقابل D بند واقع بـ O(D) وقت إبقاء أب دليل حدث ترتيب. تزامن إنشاء حسب دليل نجاح إلحاق ترتيب ترتيب صف، و child ختم الوقت و id غير متصل.projection checkpoint بـ O(D) تغلب ضخم state؛projection-cache متابعة مختلف خطوة كتابة، و استخدام قائم إنشاء،turn-end و disposal قوي صنع نقطة.
 
-工具库拥有分块布局及其共享容量常量；目录拥有事件校验、fork 过滤和目录行转换。目录 projection state 版本 2 保存通用块值，因此 projection registry 从 Session 事件重建不兼容的缓存。Session 事件载荷和公开目录行保持各自格式。
+أداة مكتبة يملك قسم كتلة تخطيط و ذلك مشترك سعة كمية معتاد كمية؛ دليل يملك حدث تحقق،fork مرور ترشيح و دليل سطر تحويل. دليل projection state إصدار 2 حفظ عام كتلة قيمة، لذلك projection registry من Session حدث إعادة بناء لا توافق ذاكرة مؤقتة.Session حدث تحميل حمل و عام دليل سطر إبقاء كل منها صيغة.
 
-fork 隔离使用 projection 初始化时提供的精确 `Session.inheritedEventCount`。fold 忽略该 offset 之前的 `subagent/catalog` 事件。state 保存 inherited offset，但不保存每条 event seq，因为接受判定已在 fold 时完成。
+fork عزل استخدام projection ابتدائي تحويل وقت توفير دقيق `Session.inheritedEventCount`.fold تجاهل اختصار هذا offset قبل `subagent/catalog` حدث.state حفظ inherited offset، لكن لا حفظ كل بند event seq، لأن قبول حكم تحديد قد في fold وقت إتمام.
 
-Headless 快照采集按父目录顺序分配同父子级的 fixture 角色，不依赖子级创建时间戳：provider 启动可能在较新的 Session 之后发布较旧的 Session。采集过程原样保留每份日志。
+Headless لقطة أخذ تجميع حسب أب دليل ترتيب قسم إعداد نفس أب فرعي درجة fixture زاوية لون، لا اعتماد فرعي درجة إنشاء ختم الوقت:provider بدء ممكن في مقارنة جديد Session بعد إصدار مقارنة قديم Session. أخذ تجميع مرور مسار أصل مثال إبقاء كل نسخة سجل.
 
-snapshot normalizer 会把 `childCreatedAt` 归零，因为它来自 process clock。事件顺序与来源事件引用保持不变：相邻 fact 也可能来自顺序创建，因此相邻关系不能证明可交换性。
+snapshot normalizer سوف يأخذ `childCreatedAt` عودة صفر، لأن هو قدوم ذاتي process clock. حدث ترتيب و مصدر حدث مرجع إبقاء ثابت: متبادل مجاور fact أيضا ممكن قدوم ذاتي ترتيب إنشاء، لذلك متبادل مجاور علاقة لا يستطيع إثبات يمكن تسليم تبديل صفة.
 
-即使 replay 输入保留历史 Session generation，当前 writer 的快照预期也包含 catalog 事实。比较保留 catalog 及其来源事件引用；历史 replay 文件保持不变。
+أي جعل replay إدخال إبقاء تاريخ Session generation، حالي writer لقطة مسبق مدة أيضا يتضمن catalog واقع. مقارنة مقارنة إبقاء catalog و ذلك مصدر حدث مرجع؛ تاريخ replay ملف إبقاء ثابت.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**扁平不可变数组。** 用 `[...facts, fact]` append 会复制 D 个 fact，因此创建是 O(D)。修改共享数组会违反 projection state ownership 与 checkpoint 安全。
+**مسطح مستو غير ممكن تغيير عدد مجموعة.** استخدام `[...facts, fact]` append سوف نسخ D عدد fact، لذلك إنشاء هو O(D). تعديل مشترك عدد مجموعة سوف مخالفة عكس projection state ownership و checkpoint أمان.
 
-**每 fact 一个 node 的 linked list。** 它提供 O(1) append 与 O(D) read，但持久 projection checkpoint 会形成 D 层 JSON 嵌套。每块 64 项保留渐进复杂度，同时降低嵌套深度。
+**كل fact واحد node linked list.** هو توفير O(1) append و O(D) read، لكن حمل دائم projection checkpoint سوف شكل صار D طبقة JSON تضمين طقم. كل كتلة 64 بند إبقاء تدريجي دخول تكرار مختلط درجة، معا خفض منخفض تضمين طقم عميق درجة.
 
-**独立的 host state 观察输出。** 返回内部 projection state 会重复已有观察结果机制，并复制与子级发现无关的状态。目录视图通过既有的类型化 projection map 提供直接子级列表。
+**مستقل host state مراقبة إخراج.** إرجاع داخلي projection state سوف تكرار قد لديه مراقبة نتيجة آلية، و نسخ و فرعي درجة اكتشاف غير متصل حالة. دليل عرض عبر قائم نوع تحويل projection map توفير مباشر فرعي درجة قائمة.
 
-**持久 SQLite child index。** index 会为 parent Session 日志中已有顺序的 fact 增加另一套写路径、reconciliation protocol、schema 与 corruption surface。
+**حمل دائم SQLite child index.** index سوف لـ parent Session سجل في قد لديه ترتيب fact زيادة آخر طقم كتابة مسار،reconciliation protocol،schema و corruption surface.
 
-**补偿失败事件。** 在初始 prompt 准入前记录 catalog membership 会引入第二种 operation、配对规则、rollback 清理与 client reconciliation。把成功事实推迟到准入完成后即可删除该协议。
+**تكملة تعويض فشل حدث.** في ابتدائي prompt دقيق دخول قبل سجل catalog membership سوف جذب دخول ثاني نوع operation، إعداد مقابل قاعدة،rollback تنظيف و client reconciliation. يأخذ نجاح واقع دفع متأخر إلى دقيق دخول إتمام بعد يكفي حذف هذا بروتوكول.
 
-## 后果
+## عاقبة
 
-Session 观察和客户端快照通过 `projections.values.subagentCatalog` 暴露直接子级列表。目录状态变化时，projection 变更通知发布完整列表。每次视图计算成本为 O(D)，因此 D 次创建的累计视图工作量可能为 O(D²)；这沿用既有 projection 机制。直接子级和后代列表仍使用 Session 语料库与子级身份 projection。
+Session مراقبة و عميل لقطة عبر `projections.values.subagentCatalog` كشف مباشر فرعي درجة قائمة. دليل حالة تغير وقت،projection تغيير إشعار إصدار كامل قائمة. كل مرة عرض حساب حساب صار هذا لـ O(D) ، لذلك D مرة إنشاء تراكم حساب عرض عمل كمية ممكن لـ O(D²) ؛ هذا امتداد استخدام قائم projection آلية. مباشر فرعي درجة و بعد بديل قائمة ما زال استخدام Session لغة مادة مكتبة و فرعي درجة هوية projection.
 
-不认识该 required event 的 backend 会按既有 Session event 机制拒绝日志。目录投影不通过扫描旧子级日志来重建缺失的父级事实。
+لا إقرار تعرف هذا required event backend سوف حسب قائم Session event آلية رفض سجل. دليل إسقاط لا عبر مسح قديم فرعي درجة سجل قدوم إعادة بناء ناقص أب درجة واقع.

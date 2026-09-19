@@ -1,81 +1,81 @@
-# Agent Note: 产品 subagent 公开有界结构化失败事实
+# Agent Note: منتج subagent عام محدود بنية تحويل فشل واقع
 
 Status: implemented
 Archived: 2026-08-21
 
-[English](2026-08-18-product-subagent-failure-facts.md) | 中文
+[English](2026-08-18-product-subagent-failure-facts.md) | العربية
 
 ## Problem
 
-[Claude Code 与 Codex 产品提供方](2026-08-04-claude-code-and-codex-subagent-backends.zh.md)会收到结构化产品失败，但已发布运行以往会把其中大多数压成共享的 `error` 终止原因。产品日志保留了细节，前台父 agent 与[一次性后台 Job](2026-08-12-product-subagent-one-shot-background-tasks.zh.md)却无法据此区分产品限制、执行失败或进程提前退出。
+[Claude Code و Codex منتج مزود](2026-08-04-claude-code-and-codex-subagent-backends.zh.md) سوف استلام إلى بنية تحويل منتج فشل، لكن قد إصدار تشغيل بـ نحو سوف يأخذ منها كبير كثير عدد ضغط صار مشترك `error` إنهاء سبب. منتج سجل إبقاء دقيق عقدة، قبل منصة أب agent و[مرة صفة خلفية Job](2026-08-12-product-subagent-one-shot-background-tasks.zh.md) لكن لا يمكن حسب هذا منطقة قسم منتج حد، تنفيذ فشل أو عملية رفع قبل خروج.
 
-若把 SDK 错误文本、app-server payload 或 stderr 复制进结果，就会暴露任务文本、路径、环境值、凭证或产品内部信息。若增加共享错误字段，又会让提供方无关的 [subagent seam](2026-06-21-subagent-capability-seam.zh.md)拥有彼此独立变化的产品版本词汇。
+إذا يأخذ SDK خطأ نص،app-server payload أو stderr نسخ دخول نتيجة، حينئذ سوف كشف مهمة نص، مسار، بيئة قيمة، سند إثبات أو منتج داخلي معلومة. إذا زيادة مشترك خطأ حقل، أيضا سوف يجعل مزود غير متصل [subagent seam](2026-06-21-subagent-capability-seam.zh.md) يملك ذاك هذا مستقل تغير منتج إصدار مفردات.
 
 ## Decision
 
-每个产品提供方分别拥有从锁定版本官方结构化失败、当前操作和受管进程结果到一行固定安全诊断的映射。`SubagentResult` 保持不变：消费方仍接收现有的有界 `diagnostic` 字符串，而且不解析其中由产品私有的字段。[最小诊断决策](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md)已经取代本说明对 Claude Code 完整 subtype 的镜像；在 Codex 采用同一简化前，本说明继续负责其当前详细类别。
+كل منتج مزود قسم آخر يملك من قفل تحديد إصدار رسمي جهة بنية تحويل فشل، حالي عملية و تلقي إدارة عملية نتيجة إلى واحد سطر ثابت أمان تشخيص خريطة.`SubagentResult` إبقاء ثابت: مستهلك ما زال استقبال قائم محدود `diagnostic` نص، بينما كما لا تحليل منها من منتج خاص حقل.[الأكثر صغير تشخيص قرار](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md) قد يحل محل هذا شرح مقابل Claude Code كامل subtype مرآة مثل؛ في Codex اعتماد نفس بسيط تحويل قبل، هذا شرح متابعة مسؤول ذلك حالي تفصيل دقيق صنف آخر.
 
-### 安全诊断
+### أمان تشخيص
 
-结构化行采用以下固定顺序：
+بنية تحويل سطر اعتماد التالي ثابت ترتيب:
 
 ```text
 Product subagent failure (product: <product>; stage: <stage>; category: <category>; HTTP status: <status>; exit code: <code>; signal: <signal>)
 ```
 
-提供方会省略不可用的可选字段。退出码与信号是相互独立的事实，只要已观测到就分别保留。来自[非交互权限决策](2026-08-15-product-subagent-noninteractive-permissions.zh.md)且参与失败的权限决定会跟在结构化行之后；最新的安全权限事实仍只属于当前操作。共享结果边界会把完整文本限制在 4096 个 UTF-8 字节以内。
+مزود سوف حذف غير ممكن استخدام اختياري حقل. خروج رمز و إشارة هو متبادل متبادل مستقل واقع، فقط يلزم قد مراقبة قياس إلى حينئذ قسم آخر إبقاء. قدوم ذاتي[غير تفاعل إذن قرار](2026-08-15-product-subagent-noninteractive-permissions.zh.md) كما مشاركة و فشل إذن قرار سوف تتبع في بنية تحويل سطر بعد؛ الأكثر جديد أمان إذن واقع ما زال فقط يخص حالي عملية. مشترك نتيجة حد سوف يأخذ كامل نص حد في 4096 عدد UTF-8 بايت بـ داخل.
 
-成功结果与本地取消都不公开失败事实。原始产品错误、stderr、工具输入、路径、环境值、凭证和协议 payload 绝不会进入诊断。启动与清理拒绝会在 Error 消息中使用同一安全行。原始失败保留在内部 cause 链中；提供方 Host 日志与转发的 stderr 也只作为产品本地观测。
+نجاح نتيجة و محلي إلغاء كل لا عام فشل واقع. أصلي منتج خطأ،stderr، أداة إدخال، مسار، بيئة قيمة، سند إثبات و بروتوكول payload أبدا سوف دخول تشخيص. بدء و تنظيف رفض سوف في Error رسالة في استخدام نفس أمان سطر. أصلي فشل إبقاء في داخلي cause سلسلة في؛ مزود Host سجل و تحويل إرسال stderr أيضا فقط بصفة منتج محلي مراقبة قياس.
 
-### Claude Code 事实
+### Claude Code واقع
 
-[最小诊断决策](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md)独占负责 Agent SDK 0.3.241 与 Claude Code 2.1.241 的 Claude Code 类别、阶段、进程事实、权限顺序与验证。本说明不再承载独立的 Claude 类别约定。
+[الأكثر صغير تشخيص قرار](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md) وحيد احتلال مسؤول Agent SDK 0.3.241 و Claude Code 2.1.241 Claude Code صنف آخر، مرحلة مقطع، عملية واقع، إذن ترتيب و تحقق. هذا شرح لم يعد تحمل تحميل مستقل Claude صنف آخر اتفاق.
 
-### Codex 事实
+### Codex واقع
 
-Codex app-server 0.147.0 定义十一种字符串类别与五种对象 variant。提供方会保留 `contextWindowExceeded`、`sessionBudgetExceeded`、`usageLimitExceeded`、`serverOverloaded`、`cyberPolicy`、`internalServerError`、`unauthorized`、`badRequest`、`threadRollbackFailed`、`sandboxError` 和 `other`。它还会保留 `httpConnectionFailed`、`responseStreamConnectionFailed`、`responseStreamDisconnected`、`responseTooManyFailedAttempts` 与 `activeTurnNotSteerable`；四种连接／stream variant 会保留数值 `httpStatusCode`，而 active-turn variant 不公开 `turnKind`。未知字符串、同时含其他 variant 的对象、格式错误值与未分类异常统一使用 `unknown`。
+Codex app-server 0.147.0 تعريف عشرة واحد نوع نص صنف آخر و خمسة نوع كائن variant. مزود سوف إبقاء `contextWindowExceeded`،`sessionBudgetExceeded`،`usageLimitExceeded`،`serverOverloaded`،`cyberPolicy`،`internalServerError`،`unauthorized`،`badRequest`،`threadRollbackFailed`،`sandboxError` و `other`. هو أيضا سوف إبقاء `httpConnectionFailed`،`responseStreamConnectionFailed`،`responseStreamDisconnected`،`responseTooManyFailedAttempts` و `activeTurnNotSteerable`؛ أربعة نوع اتصال/stream variant سوف إبقاء عدد قيمة `httpStatusCode`، بينما active-turn variant لا عام `turnKind`. لم معرفة نص، معا يحتوي أخرى variant كائن، صيغة خطأ قيمة و لم تصنيف استثناء موحد واحد استخدام `unknown`.
 
-| 阶段 | 归属操作 | 可观察失败 |
+| مرحلة مقطع | ملكية عملية | يمكن مراقبة فشل |
 | --- | --- | --- |
-| `initialize` | App-server spawn 与 initialize/initialized 握手 | `start()` 以固定安全事实和已经观测到的进程结果拒绝 |
-| `thread-start` | 临时 `thread/start` 请求与响应校验 | `start()` 以线程阶段和可用进程结果拒绝 |
-| `turn-start` | 已发布 `turn/start` 请求、暂定 id 与早到 frame | 没有结构化类别时，运行以 `error` 和安全 unknown 回退兑现 |
-| `turn` | 终态通知、最终答案选择与 error-info 映射 | 完整类别与可选 HTTP status 进入非完成结果 |
-| `process` | 受管 app-server 在另一终态路径结算前退出 | 运行以 `error` 兑现，并携带 `process-exit` 以及可用的退出码与信号 |
-| `teardown` | Wire 关闭与进程树释放 | `dispose()` 独立拒绝；启动回滚聚合会同时公开启动与 teardown 两行 |
+| `initialize` | App-server spawn و initialize/initialized إمساك يد | `start()` بـ ثابت أمان واقع و قد مراقبة قياس إلى عملية نتيجة رفض |
+| `thread-start` | مؤقت `thread/start` طلب و استجابة تحقق | `start()` بـ خط مسار مرحلة مقطع و متاح عملية نتيجة رفض |
+| `turn-start` | قد إصدار `turn/start` طلب، مؤقت تحديد id و مبكر إلى frame | لا يوجد بنية تحويل صنف آخر وقت، تشغيل بـ `error` و أمان unknown رجوع صرف الآن |
+| `turn` | نهاية حالة إشعار، نهائي جواب سجل اختيار و error-info خريطة | كامل صنف آخر و اختياري HTTP status دخول غير إتمام نتيجة |
+| `process` | تلقي إدارة app-server في آخر نهاية حالة مسار تسوية قبل خروج | تشغيل بـ `error` صرف الآن، و يحمل `process-exit` و متاح خروج رمز و إشارة |
+| `teardown` | Wire إغلاق و عملية شجرة تحرير | `dispose()` مستقل رفض؛ بدء تراجع تجمع دمج سوف معا عام بدء و teardown اثنان سطر |
 
-`contextWindowExceeded` 仍是 `max-tokens`；其他所有已知或未知 Codex 类别仍是 `error`，`cyberPolicy` 不会变成 `refusal`。
+`contextWindowExceeded` ما زال هو `max-tokens`؛ أخرى كل معروف أو لم معرفة Codex صنف آخر ما زال هو `error`،`cyberPolicy` لن تغيير صار `refusal`.
 
-### 所有权与生命周期
+### كل حق و دورة الحياة
 
-| 事实或资源 | Owner | 消费方行为 |
+| واقع أو مورد | Owner | مستهلك سلوك |
 | --- | --- | --- |
-| Codex 错误类别 | Codex 提供方及其锁定的官方 app-server | 提供方保留当前结构化类别，并在已识别集合之外使用 `unknown` |
-| 当前失败阶段 | 产品提供方操作 | 只在失败点派生；绝不持久化，也不作为恢复状态 |
-| 退出码与信号 | `dsh-subprocess` 进程句柄 | 提供方展示已观测值，不推测缺失值 |
-| 诊断字节与送达 | `dsh-subagent`、前台工具与 Job 运行时 | 两种调度模式都把同一份有界文本与 assistant 输出分开呈现 |
-| 原始产品失败 | 产品运行时、内部 cause 链与 Host 观测 | 只保留在内部，绝不成为模型可见的结果文本 |
+| Codex خطأ صنف آخر | Codex مزود و ذلك قفل تحديد رسمي جهة app-server | مزود إبقاء حالي بنية تحويل صنف آخر، و في قد تعرف آخر تجميع دمج خارج استخدام `unknown` |
+| حالي فشل مرحلة مقطع | منتج مزود عملية | فقط في فشل نقطة إرسال توليد؛ أبدا حفظ دائم، أيضا لا بصفة استعادة حالة |
+| خروج رمز و إشارة | `dsh-subprocess` عملية جملة مقبض | مزود عرض قد مراقبة قياس قيمة، لا دفع قياس ناقص قيمة |
+| تشخيص بايت و إرسال بلوغ | `dsh-subagent`، قبل منصة أداة و Job وقت التشغيل | اثنان نوع ضبط درجة نمط كل يأخذ نفس نسخة محدود نص و assistant إخراج قسم فتح عرض |
+| أصلي منتج فشل | منتج وقت التشغيل، داخلي cause سلسلة و Host مراقبة قياس | فقط إبقاء في داخلي، أبدا يصبح نموذج مرئي نتيجة نص |
 
 ## Verification
 
-Claude Code 验证由[最小诊断决策](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md)负责。Codex 包测试固定当前全部十六种 error-info variant、HTTP status 存在与缺失、六个阶段、unknown 回退、终止原因保持不变、权限顺序、脱敏、取消、并发与清理聚合。真实 app-server fixture 会产生实际 Codex `internalServerError`，并覆盖进程／协议失败与整棵进程树完全停稳。无密钥 ACP snapshot 会在前台错误输出、后台完成通知和 `job_output` 中记录 Codex 诊断。
+Claude Code تحقق من[الأكثر صغير تشخيص قرار](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md) مسؤول.Codex حزمة اختبار ثابت حالي الكل عشرة ستة نوع error-info variant،HTTP status وجود و ناقص، ستة عدد مرحلة مقطع،unknown رجوع، إنهاء سبب إبقاء ثابت، إذن ترتيب، انفصال حساس، إلغاء، تزامن و تنظيف تجمع دمج. حقيقي app-server fixture سوف إنتاج فعلي Codex `internalServerError`، و تغطية عملية/بروتوكول فشل و كامل شجرة عملية شجرة تماما توقف مستقر. بلا مفتاح ACP snapshot سوف في قبل منصة خطأ إخراج، خلفية إتمام إشعار و `job_output` في سجل Codex تشخيص.
 
 ## Alternatives considered
 
-**返回原始 SDK 错误、app-server payload 或 stderr。** 这些值可能包含命令、路径、工作区内容、环境值、凭证或上游文本。固定白名单映射可以保留可操作事实，同时不扩大模型可见的信任边界。
+**إرجاع أصلي SDK خطأ،app-server payload أو stderr.** هذه قيمة ممكن يتضمن أمر، مسار، مساحة العمل محتوى، بيئة قيمة، سند إثبات أو فوق تنقل نص. ثابت أبيض اسم مفرد خريطة يمكن إبقاء يمكن عملية واقع، معا لا توسيع كبير نموذج مرئي معلومة مهمة حد.
 
-**增加共享产品错误 enum 或结构化结果字段。** Claude Code 与 Codex 各自独立版本化错误联合。共享 enum 会复制这些权威，并迫使无关提供方和消费方跟随产品版本。
+**زيادة مشترك منتج خطأ enum أو بنية تحويل نتيجة حقل.** Claude Code و Codex كل منها مستقل إصدار تحويل خطأ ربط دمج. مشترك enum سوف نسخ هذه مرجعي، و إجبار جعل غير متصل مزود و مستهلك تتبع مع منتج إصدار.
 
-**解析通用 stderr 与异常消息。** 自由文本既不稳定也不安全。只有锁定版本产品提供的结构化字段和受管进程结果可以成为诊断输入。
+**تحليل عام stderr و استثناء رسالة.** ذاتي من نص حيث لا مستقر أيضا لا أمان. فقط لديه قفل تحديد إصدار منتج توفير بنية تحويل حقل و تلقي إدارة عملية نتيجة يمكن يصبح تشخيص إدخال.
 
-**持久化阶段或增加恢复控制器。** 阶段只在报告失败时从当前调用点派生。持久化、重试、resume 与修复需要独立的所有权和用户约定。
+**حفظ دائم مرحلة مقطع أو زيادة استعادة تحكم جهاز.** مرحلة مقطع فقط في تقرير إبلاغ فشل وقت من حالي استدعاء نقطة إرسال توليد. حفظ دائم، إعادة محاولة،resume و إصلاح حاجة مستقل كل حق و مستخدم اتفاق.
 
-**把产品限制映射为新的共享终止原因。** Claude Code 的轮次和预算限制并不表示 token 窗口耗尽，错误类别也不能证明拒绝语义。既有终止原因保持不变。
+**يأخذ منتج حد خريطة لـ جديد مشترك إنهاء سبب.** Claude Code جولة و ميزانية حد و لا يمثل token نافذة استهلاك كل، خطأ صنف آخر أيضا لا يستطيع إثبات رفض دلالة. قائم إنهاء سبب إبقاء ثابت.
 
 ## Consequences
 
-父 agent 可以区分当前 Codex 的预算、用量、服务、策略、请求、连接、stream、回滚、sandbox 与 active-turn 类别，而不会收到原始产品文本。[最小诊断决策](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md)负责对应的 Claude 结果。前台与后台调度会保留同一事实，因为二者都消费同一个 `SubagentResult`。
+أب agent يمكن منطقة قسم حالي Codex ميزانية، استخدام كمية، خدمة، سياسة، طلب، اتصال،stream، تراجع،sandbox و active-turn صنف آخر، بينما لن استلام إلى أصلي منتج نص.[الأكثر صغير تشخيص قرار](../simplification/2026-08-21-product-subagent-minimal-diagnostics.zh.md) مسؤول مقابل Claude نتيجة. قبل منصة و خلفية ضبط درجة سوف إبقاء نفس واقع، لأن اثنان من كل إزالة استهلاك نفس عدد `SubagentResult`.
 
-诊断只是展示文本，不是新的公开协议。调用方可以呈现它，但不得根据其标点或产品私有类别名称进行分支。锁定产品版本升级时必须重新验证提供方映射与证据，但不要求每个官方错误成员都继续模型可见。
+تشخيص فقط هو عرض نص، لا هو جديد عام بروتوكول. استدعاء جهة يمكن عرض هو، لكن لا نيل أصل حسب ذلك علامة نقطة أو منتج خاص صنف آخر اسم إجراء فرع. قفل تحديد منتج إصدار ترقية وقت يجب إعادة تحقق مزود خريطة و دليل، لكن لا اشتراط كل رسمي جهة خطأ عضو كل متابعة نموذج مرئي.
 
-本决策不增加产品会话持久化、重试策略、恢复状态、stderr 分类器、身份验证或配置分类体系、进度流或人工交互路径。
+هذا قرار لا زيادة منتج جلسة حفظ دائم، إعادة محاولة سياسة، استعادة حالة،stderr تصنيف جهاز، هوية تحقق أو إعداد تصنيف جسم نظام، دخول درجة تدفق أو شخص عمل تفاعل مسار.

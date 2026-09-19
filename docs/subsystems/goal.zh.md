@@ -1,12 +1,12 @@
-# 同会话目标
+# نفس جلسة هدف
 
-[English](goal.md) | 中文
+[English](goal.md) | العربية
 
-事件溯源目标服务及其策略消费方共享的类型。[目标领域 Agent Note](../../.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.zh.md) 负责记录持久化与激活决策；本页记录 [`packages/goal/goal/src/types.ts`](../../packages/goal/goal/src/types.ts) 中的确切字段和变体。
+حدث تتبع مصدر هدف خدمة و ذلك سياسة مستهلك مشترك نوع.[هدف مجال Agent Note](../../.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.zh.md) مسؤول سجل حفظ دائم و تنشيط قرار؛ هذا صفحة سجل [`packages/goal/goal/src/types.ts`](../../packages/goal/goal/src/types.ts) في تأكيد قطع حقل و تغيير جسم.
 
-## 标识与生命周期
+## معرف و دورة الحياة
 
-`GoalId` 是[品牌化 id](core.zh.md#branded-ids)。调用方通过 `GoalRef` 修改一个确切修订版本；每次获准的持久变更都会递增修订号。
+`GoalId` هو[صنف لوحة تحويل id](core.zh.md#branded-ids). استدعاء جهة عبر `GoalRef` تعديل واحد تأكيد قطع إصلاح حجز إصدار؛ كل مرة نيل دقيق حمل دائم تغيير كل سوف تمرير زيادة إصلاح حجز رقم.
 
 ```ts type-equiv
 /** Compare-and-set identity for one exact goal revision. */
@@ -18,7 +18,7 @@ interface GoalRef {
 }
 ```
 
-持久阶段回答目标发生了什么。进程本地激活状态则另行回答续跑消费方能否开始另一个 Round。
+حمل دائم مرحلة مقطع عودة جواب هدف حدوث ماذا. عملية محلي تنشيط حالة فإن آخر سطر عودة جواب متابعة ركض مستهلك قدرة لا بدء آخر عدد Round.
 
 ```ts type-equiv
 /** Durable continuation phase. Activation is process-local and separate. */
@@ -29,7 +29,7 @@ type GoalPhase =
   | 'complete'
 ```
 
-阻塞是唯一表示「因问题而停止」的持久状态。由策略负责的阻塞原因会携带一个用于路由、稳定且采用 lower-kebab-case 的代码，以及一段供人和模型阅读的自由文本说明。
+منع سد هو وحيد يمثل «بسبب مشكلة بينما إيقاف» حمل دائم حالة. من سياسة مسؤول منع سد سبب سوف يحمل واحد لأجل توجيه، مستقر كما اعتماد lower-kebab-case شفرة، و واحد مقطع توفير شخص و نموذج قراءة قراءة ذاتي من نص شرح.
 
 ```ts type-equiv
 /** Machine-routable and human-readable explanation for a blocked goal. */
@@ -69,7 +69,7 @@ interface GoalView extends GoalSnapshot {
 }
 ```
 
-服务还会在不改变持久状态的情况下发布进程本地 activation 边沿；客户端消费该事件获得实时状态。
+خدمة أيضا سوف في لا تغيير حمل دائم حالة حال حال تحت إصدار عملية محلي activation حافة امتداد؛ عميل إزالة استهلاك هذا حدث نيل نيل فوري حالة.
 
 ```ts type-equiv
 /** Live process-local activation update forwarded to UI clients. */
@@ -88,9 +88,9 @@ interface GoalActivationChanged {
 }
 ```
 
-## 持久变更
+## حمل دائم تغيير
 
-每次变更都是持久的 `goal/change` 会话事件，其载荷要么是变更后的完整快照，要么是清除墓碑。严格折叠与持久投影只从这些事件派生生命周期状态；inbox 变更不会影响 goal 状态。
+كل مرة تغيير كل هو حمل دائم `goal/change` جلسة حدث، ذلك تحميل حمل يلزم ما هو تغيير بعد كامل لقطة، يلزم ما هو صاف حذف قبر نصب. صارم إطار طي و حمل دائم إسقاط فقط من هذه حدث إرسال توليد دورة الحياة حالة؛inbox تغيير لن أثر goal حالة.
 
 ```ts type-equiv
 /** Full-snapshot goal mutation committed by a durable `goal/change` event. */
@@ -116,7 +116,7 @@ interface GoalClearChangeMeta {
 }
 ```
 
-续跑消费方会为每个获准的用户消息轮次标注正数且连续的 Round 编号和当前修订号；只有这些获准的 `user/message` 事件会推进 `roundsStarted`。回放会拒绝非正数 Round、编号缺口、陈旧修订号、已停止阶段和超出上限。
+متابعة ركض مستهلك سوف لـ كل نيل دقيق مستخدم رسالة جولة علامة ملاحظة صحيح عدد كما وصل متابعة Round تحرير رقم و حالي إصلاح حجز رقم؛ فقط لديه هذه نيل دقيق `user/message` حدث سوف دفع دخول `roundsStarted`. إعادة تشغيل سوف رفض غير صحيح عدد Round، تحرير رقم نقص فتحة، قديم قديم إصلاح حجز رقم، قد إيقاف مرحلة مقطع و تجاوز خروج حد أعلى.
 
 ```ts type-equiv
 /** Message attribution for admitted continuation rounds. */
@@ -129,9 +129,9 @@ interface GoalMessageSource {
 }
 ```
 
-## 请求与通知
+## طلب و إشعار
 
-创建操作会区分调用方省略字段与采用部署配置值这两种情况，`create()` 会在内部解析后者。编辑是局部替换，其运行时校验器要求至少提供一个字段。每条变更通知都会携带获准的操作和确切修订号；清除操作不带 `goal`。
+إنشاء عملية سوف منطقة قسم استدعاء جهة حذف حقل و اعتماد نشر إعداد قيمة هذا اثنان نوع حال حال،`create()` سوف في داخلي تحليل بعد من. تحرير هو نطاق جزء استبدال، ذلك وقت التشغيل تحقق جهاز اشتراط حتى قليل توفير واحد حقل. كل بند تغيير إشعار كل سوف يحمل نيل دقيق عملية و تأكيد قطع إصلاح حجز رقم؛ صاف حذف عملية لا حمل `goal`.
 
 ```ts type-equiv
 /** Input whose omitted round cap is resolved by the service configuration. */
@@ -159,9 +159,9 @@ interface GoalChanged {
 }
 ```
 
-## 服务行为
+## خدمة سلوك
 
-[`GoalService`](../../packages/goal/goal/src/index.ts) 解析创建默认值、从可选注册的 `goal` 投影读取严格回放结果、校验传入的 agent（智能体）是注册表中的确切活跃实例、以比较并设置方式执行变更，并发出 `goal/changed` 通知；监听器故障会被隔离。注册表或 key 缺失时，第一次依赖它们的访问会失败。包 [README](../../packages/goal/goal/README.zh.md) 定义可调用 API 和面向模型的约定。
+[`GoalService`](../../packages/goal/goal/src/index.ts) تحليل إنشاء قيمة افتراضية، من اختياري تسجيل `goal` إسقاط قراءة صارم إطار إعادة تشغيل نتيجة، تحقق نقل دخول agent(ذكي جسم) هو سجل التسجيل في تأكيد قطع نشط وثب نسخة، بـ مقارنة مقارنة و ضبط طريقة تنفيذ تغيير، تزامن خروج `goal/changed` إشعار؛ مستمع لذا عائق سوف يتم عزل. سجل التسجيل أو key ناقص وقت، رقم مرة اعتماد هو جمع وصول سوف فشل. حزمة [README](../../packages/goal/goal/README.zh.md) تعريف يمكن استدعاء API و موجه إلى نموذج اتفاق.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

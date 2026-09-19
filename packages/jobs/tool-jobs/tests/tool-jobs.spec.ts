@@ -211,7 +211,7 @@ describe('job_output', () => {
     const { ctx } = await setup()
     ctx.jobs.start(producer({
       outputLimitBytes: 48,
-      readOutput: () => '界'.repeat(100),
+      readOutput: () => 'حد'.repeat(100),
     }).spec)
 
     const output = text(await call(ctx, 'job_output', { job_id: 'bash-1' }))

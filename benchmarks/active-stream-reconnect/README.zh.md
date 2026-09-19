@@ -1,7 +1,7 @@
-# 活跃 Assistant 重连基准
+# نشط وثب Assistant إعادة وصل أساس دقيق
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-[reconnect.bench.client.ts](reconnect.bench.client.ts) 测量重连携带一个包含 100,000 个 delta、尚未完成的 reasoning 前缀时，生产 Client 的折叠成本。编译后的私有适配器调用 `ClientAssistantStream.replace()`，不增加产品导出。三个全新的纯 Node worker 在计时前合成紧凑基线；替换时间与强制 GC 后的保留堆分别执行中位数预算检查。下一个稠密序号的实时 frame 仍须被接受。标准托管 CI 使用 50 ms 替换预期及共享的 1.25× 余量（上限为 63 ms）；保留 heap 预算仍为 30 MiB。实测样本和合成回归对照使用与 worker 判定相同的时间断言。
+[reconnect.bench.client.ts](reconnect.bench.client.ts) قياس كمية إعادة وصل يحمل واحد يتضمن 100,000 عدد delta، بعد لم إتمام reasoning بادئة وقت، إنتاج Client طي صار هذا. تحرير ترجمة بعد خاص مهايئ استدعاء `ClientAssistantStream.replace()`، لا زيادة منتج توجيه خروج. ثلاثة عدد كل جديد صاف Node worker في حساب وقت قبل دمج صار ضيق تجميع أساس خط؛ استبدال وقت و قوي صنع GC بعد إبقاء كومة قسم آخر تنفيذ في موضع عدد ميزانية فحص. تحت واحد كثيف سري ترتيب رقم فوري frame ما زال يجب يتم قبول. معيار حمل إدارة CI استخدام 50 ms استبدال مسبق مدة و مشترك 1.25× بقية كمية (حد أعلى لـ 63 ms) ؛ إبقاء heap ميزانية ما زال لـ 30 MiB. فعلي قياس مثال هذا و دمج صار ارتداد مقابل وفق استخدام و worker حكم تحديد نفسه وقت تأكيد.
 
-通过 `pnpm run build:bench` 构建，再在 `vitest.bench.config.ts` 中选择 `benchmarks/active-stream-reconnect`。这项针对 Node 的工作负载既不构建也不测量浏览器渲染。[前端性能预算](../../.agents/notes/implemented/testing/2026-09-06-frontend-performance-budgets.zh.md)记录校准与排除项。
+عبر `pnpm run build:bench` بناء، مجددا في `vitest.bench.config.ts` في اختيار `benchmarks/active-stream-reconnect`. هذا بند إبرة مقابل Node عمل سالب تحميل حيث لا بناء أيضا لا قياس كمية متصفح تصيير.[قبل طرف صفة قدرة ميزانية](../../.agents/notes/implemented/testing/2026-09-06-frontend-performance-budgets.zh.md) سجل تدقيق دقيق و ترتيب حذف بند.

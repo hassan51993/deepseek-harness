@@ -1,35 +1,35 @@
-# Agent Note: 经由 pnpm/action-setup 提供 CI 的 pnpm
+# Agent Note: مرور من pnpm/action-setup توفير CI pnpm
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-26-pnpm-action-setup-for-symmetric-ci-caching.md) | 中文
+[English](2026-07-26-pnpm-action-setup-for-symmetric-ci-caching.md) | العربية
 
-## 问题
+## مشكلة
 
-除 `landlock-run.yml` 外，每个安装 pnpm 的工作流都曾用 `corepack enable` 手工提供 pnpm，其中五个还各自重复着一套手写（hand-rolled）的缓存设置——`pnpm store path --silent >> $GITHUB_OUTPUT`、再加上以 `pnpm-lock.yaml` 为缓存键的 `actions/cache@v4`：`e2e.yml`、`docs-pages.yml`、`pi-ai-provider-e2e.yml`、`build-exe-for-python-sdk.yml`，以及 `ci.yml` 的 node-compat、serial-linux 与 benchmark 作业。与之等价、由官方维护的做法——`pnpm/action-setup@v4`（从 package.json 读取 `packageManager`）加带 `cache: pnpm` 的 `actions/setup-node`——当时已在仓库内的 `landlock-run.yml` 中得到验证，而 corepack 被从较新 Node 发行版中移除，使每一处 `corepack enable` 都成了已知的未来失效点。
+حذف `landlock-run.yml` خارج، كل تثبيت pnpm سير العمل كل سبق استخدام `corepack enable` يد عمل توفير pnpm، منها خمسة عدد أيضا كل منها تكرار حال واحد طقم يد كتابة (hand-rolled) ذاكرة مؤقتة ضبط——`pnpm store path --silent >> $GITHUB_OUTPUT`، مجددا إضافة فوق بـ `pnpm-lock.yaml` لـ ذاكرة مؤقتة مفتاح `actions/cache@v4`:`e2e.yml`،`docs-pages.yml`،`pi-ai-provider-e2e.yml`،`build-exe-for-python-sdk.yml`، و `ci.yml` node-compat،serial-linux و benchmark عمل عمل. و لـ انتظار قيمة، من رسمي جهة صيانة فعل قاعدة——`pnpm/action-setup@v4`(من package.json قراءة `packageManager`) إضافة حمل `cache: pnpm` `actions/setup-node`——عند وقت قد في مستودع داخل `landlock-run.yml` في نيل إلى تحقق، بينما corepack يتم من مقارنة جديد Node إرسال سطر إصدار في إزالة، جعل كل واحد موضع `corepack enable` كل صار معروف لم قدوم بطلان نقطة.
 
-## 决策
+## قرار
 
-`pnpm/action-setup@v4` 是 CI 中提供 pnpm 的机制：没有任何工作流运行 `corepack enable`。自托管 Windows 安装步骤是刻意的例外——它们调用 `corepack pnpm`，因为 clone 模式安装需要系统 corepack pnpm 携带、而 `pnpm/action-setup` 的 dest 构建缺少的 `@reflink/reflink` 原生模块（见 [Windows ReFS store note](2026-08-30-windows-refs-store-block-clone-install.zh.md)）。根目录的 `@yarnpkg/cli-dist` 开发依赖另行提供 generated-project e2e 所运行的现代 Yarn CLI（命令行界面）；因此，用于包管理器覆盖率的 Yarn 不会沿用 runner 镜像里的 Yarn Classic。缓存仍是叠加在 pnpm 提供机制上的按作业策略，保留三种有意采用的形态：
+`pnpm/action-setup@v4` هو CI في توفير pnpm آلية: لا يوجد أي سير العمل تشغيل `corepack enable`. ذاتي حمل إدارة Windows تثبيت خطوة هو لحظة معنى مثال خارج——هو جمع استدعاء `corepack pnpm`، لأن clone نمط تثبيت حاجة نظام corepack pnpm يحمل، بينما `pnpm/action-setup` dest بناء نقص قليل `@reflink/reflink` أصلي وحدة (رؤية [Windows ReFS store note](2026-08-30-windows-refs-store-block-clone-install.zh.md)). أصل دليل `@yarnpkg/cli-dist` تطوير اعتماد آخر سطر توفير generated-project e2e الذي تشغيل الآن بديل Yarn CLI(أمر سطر واجهة) ؛ لذلك، لأجل حزمة إدارة جهاز نسبة التغطية Yarn لن امتداد استخدام runner مرآة مثل داخل Yarn Classic. ذاكرة مؤقتة ما زال هو تراكم إضافة في pnpm توفير آلية فوق حسب عمل عمل سياسة، إبقاء ثلاثة نوع متعمد اعتماد شكل:
 
-- **对称缓存**（既恢复也保存）：带 `cache: pnpm` 的 `actions/setup-node`——`e2e.yml`、`docs-pages.yml`、`pi-ai-provider-e2e.yml`、`build-exe-for-python-sdk.yml`、`ci.yml` 的 node-compat 作业，以及 `ci-master.yml` 的两个 benchmark 作业。larger-runner benchmark 通过条件化的 `cache:` 输入让 store 缓存仅限 Linux；consolidated benchmark 在两个平台上都启用缓存。
-- **只恢复不上传**（手写的 `actions/cache` 步骤）：企业 runner 上的三个 PR（Pull Request）作业和基于 Wine 的必需 Windows 作业只恢复不保存，把缓存压缩／上传挡在它们的延迟敏感路径之外——这种不对称是 `setup-node` 的缓存无法表达的。每个作业都在 action 可替换的安装目录之外配置 store，并解析该路径。没有任何 master 作业生产这些 hosted 缓存，这些恢复步骤只能命中仍有归档的旧条目，直至其被逐出；企业作业在自托管故障切换期间跳过恢复，因为该 VM 的持久 store 已经预热。
-- **无缓存或持久化**（不使用 store 缓存 action）：独立的原生 Windows 作业、原生 serial-windows 和 serial-macos，以及 `sandbox.yml` 均从冷 store 或 runner 本地 store 安装。解压含有大量文件的 pnpm store，成本高于在 Windows 上进行一次全新安装；自托管热备与故障切换作业则复用其 VM 的持久 pnpm store，不传输托管缓存归档。
+- **مقابل تسمية ذاكرة مؤقتة**(حيث استعادة أيضا حفظ): حمل `cache: pnpm` `actions/setup-node`——`e2e.yml`،`docs-pages.yml`،`pi-ai-provider-e2e.yml`،`build-exe-for-python-sdk.yml`،`ci.yml` node-compat عمل عمل، و `ci-master.yml` اثنان عدد benchmark عمل عمل.larger-runner benchmark عبر شرط تحويل `cache:` إدخال يجعل store ذاكرة مؤقتة فقط حد Linux؛consolidated benchmark في اثنان عدد منصة فوق كل تفعيل ذاكرة مؤقتة.
+- **فقط استعادة لا فوق نقل**(يد كتابة `actions/cache` خطوة): مؤسسة عمل runner فوق ثلاثة عدد PR(Pull Request) عمل عمل و أساس في Wine مطلوب Windows عمل عمل فقط استعادة لا حفظ، يأخذ ذاكرة مؤقتة ضغط/فوق نقل حجب في هو جمع تأخير متأخر حساس شعور مسار خارج——هذا نوع لا مقابل تسمية هو `setup-node` ذاكرة مؤقتة لا يمكن جدول بلوغ. كل عمل عمل كل في action يمكن استبدال تثبيت دليل خارج إعداد store، و تحليل هذا مسار. لا يوجد أي master عمل عمل إنتاج هذه hosted ذاكرة مؤقتة، هذه استعادة خطوة فقط قدرة أمر في ما زال لديه عودة ملف قديم بند، مباشر حتى ذلك يتم تدريجي خروج؛ مؤسسة عمل عمل عمل في ذاتي حمل إدارة لذا عائق تبديل خلال قفز مرور استعادة، لأن هذا VM حمل دائم store قد مسبق حار.
+- **بلا ذاكرة مؤقتة أو حفظ دائم**(لا استخدام store ذاكرة مؤقتة action): مستقل أصلي Windows عمل عمل، أصلي serial-windows و serial-macos، و `sandbox.yml` متساو من بارد store أو runner محلي store تثبيت. حل ضغط يحتوي لديه كبير كمية ملف pnpm store، صار هذا عال في في Windows فوق إجراء مرة كل جديد تثبيت؛ ذاتي حمل إدارة حار تجهيز و لذا عائق تبديل عمل عمل فإن إعادة استخدام ذلك VM حمل دائم pnpm store، لا نقل حمل إدارة ذاكرة مؤقتة عودة ملف.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **保留手写步骤。** 它们能用，但那是会各自漂移的设置样板副本，而且对 corepack 的依赖是已知的未来失效点。
-- **把企业作业的缓存也转换成 `cache: pnpm`。** 否决：只恢复不上传的不对称是 `ci.yml` 注释中有记录的延迟决策；为统一工具而抹掉它，属于颠倒优先级。
-- **转换 serial-linux 的 store 缓存。** 实现期间否决：原提案曾把 serial-linux 计入对称设置，但其缓存步骤是企业作业只恢复不上传配对中的生产者一端——把它改成 `setup-node` 的键格式，等于换条路径做了企业作业的转换。
-- **只转换带缓存的工作流，留下其余出现 `corepack enable` 的位置。** 否决：提供 pnpm 与缓存是可分离的关注点，在无缓存作业里留下 corepack 只会保留未来失效点和两套并存的提供方式，毫无收益。
-- **依赖 runner 镜像自带的 Yarn。** 否决：Corepack 移除后，托管镜像提供的是 Yarn 1.22，而 generated-project e2e 要求 Yarn 2 或更高版本。锁定版本的根开发依赖让该项覆盖率不再受 runner 镜像内容影响。
-- **用一个组合 action 包装 action-setup 加 setup-node。**不予采纳：剩余的按作业差异（Node 版本矩阵、按平台的条件缓存、只恢复不上传配对）是刻意采用的策略而非样板。包装层要么需要增加与这些差异一一对应的输入，要么会抹平真实的不对称，而两行组合已经接近下限。
+- **إبقاء يد كتابة خطوة.** هو جمع قدرة استخدام، لكن ذلك هو سوف كل منها عائم نقل ضبط مثال لوح فرعي هذا، بينما كما مقابل corepack اعتماد هو معروف لم قدوم بطلان نقطة.
+- **يأخذ مؤسسة عمل عمل عمل ذاكرة مؤقتة أيضا تحويل صار `cache: pnpm`.** مرفوض: فقط استعادة لا فوق نقل لا مقابل تسمية هو `ci.yml` ملاحظة تفسير في لديه سجل تأخير متأخر قرار؛ لـ موحد واحد أداة بينما مسح إسقاط هو، يخص قلب قلب أولوية درجة.
+- **تحويل serial-linux store ذاكرة مؤقتة.** تنفيذ خلال مرفوض: أصل رفع سجل سبق يأخذ serial-linux حساب دخول مقابل تسمية ضبط، لكن ذلك ذاكرة مؤقتة خطوة هو مؤسسة عمل عمل عمل فقط استعادة لا فوق نقل إعداد مقابل في إنتاج من واحد طرف——يأخذ هو تعديل صار `setup-node` مفتاح صيغة، انتظار في تبديل بند مسار فعل مؤسسة عمل عمل عمل تحويل.
+- **فقط تحويل حمل ذاكرة مؤقتة سير العمل، إبقاء تحت ذلك بقية ظهور `corepack enable` موضع.** مرفوض: توفير pnpm و ذاكرة مؤقتة هو يمكن قسم مغادرة صلة ملاحظة نقطة، في بلا ذاكرة مؤقتة عمل عمل داخل إبقاء تحت corepack فقط سوف إبقاء لم قدوم بطلان نقطة و اثنان طقم و تخزين مزود صيغة، جزء بلا استلام فائدة.
+- **اعتماد runner مرآة مثل ذاتي حمل Yarn.** مرفوض:Corepack إزالة بعد، حمل إدارة مرآة مثل توفير هو Yarn 1.22، بينما generated-project e2e اشتراط Yarn 2 أو أكثر عال إصدار. قفل تحديد إصدار أصل تطوير اعتماد يجعل هذا بند نسبة التغطية لم يعد تلقي runner مرآة مثل محتوى أثر.
+- **استخدام واحد تركيب action حزمة تركيب action-setup إضافة setup-node.**غير مقبول: باق بقية حسب عمل عمل فرق مختلف (Node إصدار مستطيل دفعة، حسب منصة شرط ذاكرة مؤقتة، فقط استعادة لا فوق نقل إعداد مقابل) هو لحظة معنى اعتماد سياسة بينما غير مثال لوح. حزمة تركيب طبقة يلزم ما حاجة زيادة و هذه فرق مختلف واحد واحد مقابل إدخال، يلزم ما سوف مسح مستو حقيقي لا مقابل تسمية، بينما اثنان سطر تركيب قد وصل قريب تحت حد.
 
-## 后果
+## عاقبة
 
-- corepack 依赖已从 CI 中消失，唯独自托管 Windows 安装步骤例外——它们为 ReFS 块克隆原生模块调用 `corepack pnpm`；pnpm 在其他工作流中都经由 pnpm 团队的官方 action 提供，版本锁定继续单一来源于 `package.json` 的 `packageManager` 字段。
-- generated-project e2e 运行根目录锁定的 Yarn 4 CLI，既不再沿用 runner 镜像中的 Yarn 版本，也不会因此悄然跳过。
-- 已转换泳道的缓存键格式变更了一次；各跑一次冷运行重建缓存后，命中率与旧步骤持平。内建缓存键涵盖平台、架构与锁文件哈希，但不含 Node 版本，因此 node-compat 的各个矩阵任务共享同一条 store 缓存记录——这是安全的，因为 pnpm store 与 Node 版本无关。
-- `setup-node` 内建的 pnpm 缓存只按精确键恢复，没有 `restore-keys` 前缀回退：`pnpm-lock.yaml` 一旦变更，已转换泳道会从冷 store 起步，而不是利用上一条缓存记录预填充。
-- `pnpm/action-setup` 每次运行都会删除其安装目录，并把默认 store 放在由此产生的 `PNPM_HOME` 下。因此，需要 hosted 缓存恢复或自托管持久化的 Linux 作业会把 `PNPM_CONFIG_STORE_DIR` 设为 `$HOME/.local/share/pnpm/store`，置于 action 目录之外；只恢复不上传的作业会解析这一稳定路径及精确键。
+- corepack اعتماد قد من CI في إزالة فقد، وحيد وحيد ذاتي حمل إدارة Windows تثبيت خطوة مثال خارج——هو جمع لـ ReFS كتلة تغلب ضخم أصلي وحدة استدعاء `corepack pnpm`؛pnpm في أخرى سير العمل في كل مرور من pnpm مجموعة طابور رسمي جهة action توفير، إصدار قفل تحديد متابعة مفرد واحد مصدر في `package.json` `packageManager` حقل.
+- generated-project e2e تشغيل أصل دليل قفل تحديد Yarn 4 CLI، حيث لم يعد امتداد استخدام runner مرآة مثل في Yarn إصدار، أيضا لن لذلك صامت لكن قفز مرور.
+- قد تحويل سباحة طريق ذاكرة مؤقتة مفتاح صيغة تغيير مرة؛ كل ركض مرة بارد تشغيل إعادة بناء ذاكرة مؤقتة بعد، أمر في معدل و قديم خطوة حمل مستو. داخل بناء ذاكرة مؤقتة مفتاح شمول غطاء منصة، هيكل بنية و قفل ملف ها أمل، لكن لا يحتوي Node إصدار، لذلك node-compat كل عدد مستطيل دفعة مهمة مشترك نفس بند store ذاكرة مؤقتة سجل——هذا هو أمان، لأن pnpm store و Node إصدار غير متصل.
+- `setup-node` داخل بناء pnpm ذاكرة مؤقتة فقط حسب دقيق مفتاح استعادة، لا يوجد `restore-keys` بادئة رجوع:`pnpm-lock.yaml` واحد حالما تغيير، قد تحويل سباحة طريق سوف من بارد store بدء خطوة، بينما لا هو فائدة استخدام فوق واحد بند ذاكرة مؤقتة سجل مسبق ملء ملء.
+- `pnpm/action-setup` كل مرة تشغيل كل سوف حذف ذلك تثبيت دليل، و يأخذ افتراضي store وضع في من هذا إنتاج `PNPM_HOME` تحت. لذلك، حاجة hosted ذاكرة مؤقتة استعادة أو ذاتي حمل إدارة حفظ دائم Linux عمل عمل سوف يأخذ `PNPM_CONFIG_STORE_DIR` ضبط لـ `$HOME/.local/share/pnpm/store`، وضع في action دليل خارج؛ فقط استعادة لا فوق نقل عمل عمل سوف تحليل هذا واحد مستقر مسار و دقيق مفتاح.

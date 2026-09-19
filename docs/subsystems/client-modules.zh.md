@@ -1,14 +1,14 @@
-# Client 模块
+# Client وحدة
 
-[English](client-modules.md) | 中文
+[English](client-modules.md) | العربية
 
-Web 插件表：[dsh-client-modules](../../packages/client/modules) 中 client 模块系统的 Node 半，以 `ctx.clientModules`（`ClientModuleRegistry`）形式提供。它扫描宿主 Loader 的 entry，找出声明了 `dsh.client` 的包，组合出 `window.__DSH_BOOT__` entry 图，在 `/plugins` 下提供带版本的单资源或多资源 combo 脚本，并以启动协议行回应每次 index 注入收集——这是同一个服务的四个面。它是 Web GUI 栈的一项可选能力，不属于 agent loop（智能体循环）主干，并且是 [dsh-host-webserver](../../packages/host/webserver) 的消费方：[web-server.md](web-server.zh.md) 所述的载体提供本服务注册的前缀路由与其回应的 `webserver/index-inject` 事件。同一个包的浏览器半（`ctx.modules`，即拉取并物化这些 bundle 的 lazy CJS 模块表）属于内核机件，记录在[包 README](../../packages/client/modules/README.zh.md)中，不在本页。
+Web إضافة جدول:[dsh-client-modules](../../packages/client/modules) في client وحدة نظام Node نصف، بـ `ctx.clientModules`(`ClientModuleRegistry`) شكل صيغة توفير. هو مسح مضيف Loader entry، بحث خروج إعلان `dsh.client` حزمة، تركيب خروج `window.__DSH_BOOT__` entry رسم، في `/plugins` تحت توفير حمل إصدار مفرد مورد أو كثير مورد combo نص برمجي، و بـ بدء بروتوكول سطر عودة ينبغي كل مرة index حقن استلام تجميع——هذا هو نفس عدد خدمة أربعة عدد وجه. هو هو Web GUI مكدس واحد بند اختياري قدرة، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، و كما هو [dsh-host-webserver](../../packages/host/webserver) مستهلك:[web-server.md](web-server.zh.md) الذي وصف تحميل جسم توفير هذا خدمة تسجيل بادئة توجيه و ذلك عودة ينبغي `webserver/index-inject` حدث. نفس عدد حزمة متصفح نصف (`ctx.modules`، أي سحب أخذ و شيء تحويل هذه bundle lazy CJS وحدة جدول) يخص داخل نواة آلة عنصر، سجل في[حزمة README](../../packages/client/modules/README.zh.md) في، لا في هذا صفحة.
 
-源码：[`packages/client/modules/src/client/manifest.ts`](../../packages/client/modules/src/client/manifest.ts)
+شفرة المصدر:[`packages/client/modules/src/client/manifest.ts`](../../packages/client/modules/src/client/manifest.ts)
 
 ## wire
 
-图是 Node 半与浏览器半之间协议层的唯一真源。宿主从扫描到的包组合出 `WebBootEntry` 行与 `WebBootBatch` 描述，随后在 Vite entry 之前向结构化 index 注入表贡献 registration facade、application preload、bootstrap 脚本与图全局量。`global` 行渲染为 `globalThis["__DSH_BOOT__"]`，其中 `<` 已转义，插件可控的字符串因此无法逃出 script 元素。没有有效 manifest 的页面无法启动：浏览器解析器会拒绝畸形 row 或批次、未知成员，以及未恰好归属一个初始 combo 描述的 entry。
+رسم هو Node نصف و متصفح نصف بين بروتوكول طبقة وحيد حق مصدر. مضيف من مسح إلى حزمة تركيب خروج `WebBootEntry` سطر و `WebBootBatch` وصف، مع بعد في Vite entry قبل نحو بنية تحويل index حقن جدول مساهمة registration facade،application preload،bootstrap نص برمجي و رسم عام كمية.`global` سطر تصيير لـ `globalThis["__DSH_BOOT__"]`، منها `<` قد تحويل معنى، إضافة يمكن تحكم نص لذلك لا يمكن هروب خروج script عنصر عنصر. لا يوجد صالح manifest صفحة لا يمكن بدء: متصفح محلل سوف رفض شاذ شكل row أو دفعة مرة، لم معرفة عضو، و لم تماما جيد ملكية واحد ابتدائي combo وصف entry.
 
 ```ts type-equiv
 /**
@@ -70,21 +70,21 @@ interface WebBootGraph {
 }
 ```
 
-每个初始 row 的 `rev` 都是不透明的进程 nonce 加序号，因此组合图时不会哈希每个插件产物。HMR 观察到 bundle 变化后，该 row 的 revision 才改为新可执行字节的哈希。初始 descriptor 把 row 划入 bootstrap 与 application 两个调度阶段，每个阶段都可以包含多条 descriptor。URL 只含有序 package 资源列表和从这些 row revision 派生的 revision，阶段名不会进入路由。图组合保持 row 顺序，并在 map 形式 URL 超过 3 KiB 前贪心切分，不拼接脚本，也不读取 map。图 revision 对 entry 与 batch descriptor 求哈希。`immediately` 标记第一阶段的 registration barrier；同一 combo 中的 row 共享脚本传输，不同 combo 则独立加载。
+كل ابتدائي row `rev` كل هو لا نفاذ واضح عملية nonce إضافة ترتيب رقم، لذلك تركيب رسم وقت لن ها أمل كل إضافة ناتج.HMR مراقبة إلى bundle تغير بعد، هذا row revision عندئذ تعديل لـ جديد يمكن تنفيذ بايت ها أمل. ابتدائي descriptor يأخذ row تخطيط دخول bootstrap و application اثنان عدد ضبط درجة مرحلة مقطع، كل مرحلة مقطع كل يمكن يتضمن كثير بند descriptor.URL فقط يحتوي لديه ترتيب package مورد قائمة و من هذه row revision إرسال توليد revision، مرحلة مقطع اسم لن دخول توجيه. رسم تركيب إبقاء row ترتيب، و في map شكل صيغة URL تجاوز مرور 3 KiB قبل طمع قلب قطع قسم، لا تجميع وصل نص برمجي، أيضا لا قراءة map. رسم revision مقابل entry و batch descriptor طلب ها أمل.`immediately` علامة رقم واحد مرحلة مقطع registration barrier؛ نفس combo في row مشترك نص برمجي نقل، مختلف combo فإن مستقل تحميل.
 
-## 扫描
+## مسح
 
-包加入这张表的方式，是在自己的 package.json 中声明 `dsh.client`（`platform: 'web'`、可选的 `inject` 边、可选的 `immediately`），并在 `exports["./client"]` 导出构建好的 bundle。每个 live row 都从自己的 Loader specifier 与所属 tree `baseUrl` 解析；若 `loader.internal.resolveSync` 可用，则使用 Host face import 所用的同一个实现。最近归属的 package manifest 提供浏览器模块 id，因此相对 source 与 built overlay 仍保留包身份。若不同的 active Loader source 解析到同一包名，组合会失败；一个来源卸载后，仍存活的来源无需重启 fiber 即可提供该 row。
+حزمة إضافة دخول هذا ورقة جدول طريقة، هو في ذاتي ذات package.json في إعلان `dsh.client`(`platform: 'web'`، اختياري `inject` حافة، اختياري `immediately`) ، و في `exports["./client"]` توجيه خروج بناء جيد bundle. كل live row كل من ذاتي ذات Loader specifier و الذي تابع tree `baseUrl` تحليل؛ إذا `loader.internal.resolveSync` متاح، فإن استخدام Host face import الذي استخدام نفس عدد تنفيذ. الأكثر قريب ملكية package manifest توفير متصفح وحدة id، لذلك متبادل مقابل source و built overlay ما زال إبقاء حزمة هوية. إذا مختلف active Loader source تحليل إلى نفس حزمة اسم، تركيب سوف فشل؛ واحد مصدر إزالة بعد، ما زال تخزين نشط مصدر بلا حاجة إعادة بدء fiber يكفي توفير هذا row.
 
-扫描是单包增量的；不存在全量重扫代码路径。fiber 构造或 dispose（资源释放）时的每次 cordis `internal/plugin` 发射都把该 fiber 的 entry 名标脏，一次微任务 flush 把每个脏名与实时 loader entry 对账。激活趟以全部当前 entry 灌入同一个脏集合并同步 flush，因此初扫与稳态共享一条实现——但失败姿态相反。激活时，已加载 entry 中的畸形声明或缺失 bundle 会聚合为一个大声的 `AggregateError`，列出每个损坏的包：该 fiber 进入 FAILED，由启动的大声失败 sweep 上报。稳态下，损坏的包只记录一条警告，且不得殃及其他包。
+مسح هو مفرد حزمة زيادة كمية؛ لا وجود كل كمية إعادة مسح شفرة مسار.fiber بنية صنع أو dispose(مورد تحرير) وقت كل مرة cordis `internal/plugin` إرسال إطلاق كل يأخذ هذا fiber entry اسم علامة قذر، مرة دقيق مهمة flush يأخذ كل قذر اسم و فوري loader entry مقابل حساب. تنشيط مرة بـ الكل حالي entry ملء دخول نفس عدد قذر تجميع دمج تزامن flush، لذلك أول مسح و مستقر حالة مشترك واحد بند تنفيذ——لكن فشل وضع حالة متبادل عكس. تنشيط وقت، قد تحميل entry في شاذ شكل إعلان أو ناقص bundle سوف تجمع دمج لـ واحد كبير صوت `AggregateError`، صف خروج كل ضرر تالف حزمة: هذا fiber دخول FAILED، من بدء كبير صوت فشل sweep فوق تقرير. مستقر حالة تحت، ضرر تالف حزمة فقط سجل واحد بند تحذير إبلاغ، كما لا نيل ضرر و أخرى حزمة.
 
-包元数据——包括「非 client 包」这一否定结论——按 Loader specifier 与所属 tree base URL 缓存至重启。同一来源的 fiber 重启会原样复用其 row 与 rev；bundle 内容变更只经 `rebuilt()` 到达图。
+حزمة بيانات وصفية——يشمل «غير client حزمة» هذا واحد لا تحديد ربط نقاش——حسب Loader specifier و الذي تابع tree base URL ذاكرة مؤقتة حتى إعادة بدء. نفس مصدر fiber إعادة بدء سوف أصل مثال إعادة استخدام ذلك row و rev؛bundle محتوى تغيير فقط مرور `rebuilt()` وصول رسم.
 
-## bundle 路由与 index 注入
+## bundle توجيه و index حقن
 
-`GET`／`HEAD /plugins/??<package-a>/client.js,<package-b>/client.js&rev=<rev>` 寻址一份生成的 combo 脚本；单资源请求采用同一形式，也是 HMR 路径。脚本在首次 `GET` 时只拼接一次，并以绝对 `sourceMappingURL` 结尾，其中每个资源后缀改为 `.js.map`。启动、index 渲染、脚本 `GET` 和 `HEAD` 都不会读取 map 文件；首次 map `GET` 才会读取并校验这些文件、组合一份 Indexed Source Map v3，并缓存该 body。组件有自带 map 时直接用于对应 section；没有时则获得 identity section，其 `sourcesContent` 是捕获的 bundle，source 名取打包后的 `sourceURL` 或插件路由。每条启动请求 URL 按 UTF-8 字节计算都不超过 3 KiB；切分按更长的 map 形式计算。所有 application URL 都会预加载，所有 bootstrap URL 都会在图全局量与 Vite entry 之前执行。已物化响应使用长期 immutable 缓存。未知或被修改的资源列表、缺少 revision 及陈旧 revision 都返回 404，绝不提供其他字节，也不会让 SPA fallback 把 HTML 当作 JavaScript 返回；其他方法返回 405。注入行在每次 index 渲染时携带当前图，因此重新加载总是基于实时组合启动。
+`GET`/`HEAD /plugins/??<package-a>/client.js,<package-b>/client.js&rev=<rev>` بحث عنوان واحد نسخة توليد combo نص برمجي؛ مفرد مورد طلب اعتماد نفس شكل صيغة، أيضا هو HMR مسار. نص برمجي في أول مرة `GET` وقت فقط تجميع وصل مرة، و بـ قطعا مقابل `sourceMappingURL` ربط ذيل، منها كل مورد بعد لاحقة تعديل لـ `.js.map`. بدء،index تصيير، نص برمجي `GET` و `HEAD` كل لن قراءة map ملف؛ أول مرة map `GET` عندئذ سوف قراءة و تحقق هذه ملف، تركيب واحد نسخة Indexed Source Map v3، و ذاكرة مؤقتة هذا body. مكون لديه ذاتي حمل map وقت مباشر لأجل مقابل section؛ لا يوجد وقت فإن نيل نيل identity section، ذلك `sourcesContent` هو التقاط bundle،source اسم أخذ تحزيم بعد `sourceURL` أو إضافة توجيه. كل بند بدء طلب URL حسب UTF-8 بايت حساب حساب كل لا تجاوز مرور 3 KiB؛ قطع قسم حسب أكثر طويل map شكل صيغة حساب حساب. كل application URL كل سوف مسبق تحميل، كل bootstrap URL كل سوف في رسم عام كمية و Vite entry قبل تنفيذ. قد شيء تحويل استجابة استخدام طويل مدة immutable ذاكرة مؤقتة. لم معرفة أو يتم تعديل مورد قائمة، نقص قليل revision و قديم قديم revision كل إرجاع 404، أبدا توفير أخرى بايت، أيضا لن يجعل SPA fallback يأخذ HTML عند عمل JavaScript إرجاع؛ أخرى طريقة إرجاع 405. حقن سطر في كل مرة index تصيير وقت يحمل حالي رسم، لذلك إعادة تحميل مجموع هو أساس في فوري تركيب بدء.
 
-## 服务
+## خدمة
 
 ```ts type-equiv
 /** Filesystem baseline captured before a client artifact snapshot is read. */
@@ -98,9 +98,9 @@ interface ClientArtifactBaseline {
 }
 ```
 
-`ClientModuleRegistry`（`ctx.clientModules`，定义于 [`packages/client/modules/src/index.ts`](../../packages/client/modules/src/index.ts)）暴露读取面与重建面；签名见生成的[服务目录](#ctxclientmodules--clientmoduleregistry)。`graph()` 返回当前组合出的图（两次变更之间是同一个稳定对象），`clientPath(id)` 返回 bundle 的绝对路径，`artifactBaseline(id)` 返回读取当前快照前捕获的 bundle stat 值。`fetchBundle()` 解析 HTTP 路由所使用的同一份惰性响应。`rebuilt(id)` 是变化后的 bundle 内容到达图的唯一入口：它重新哈希 bundle 字节，只有 revision 真正变化才会重新组合图并发出通知。`onRebuilt` 按发生变化的 bundle 逐个触发并携带新 revision；`onGraphChanged` 在任何一次重新组合了图的 flush 之后触发（行的增删，或 rebuilt 带来的 revision 变化），并采用拉取模型——监听器自行重读 `graph()`。两条通知路径都会兜住监听器异常，因此一个抛错的订阅者既不能让后续订阅者被跳过，也不能杀死触发这次 flush 的一方。
+`ClientModuleRegistry`(`ctx.clientModules`، تعريف في [`packages/client/modules/src/index.ts`](../../packages/client/modules/src/index.ts)) كشف قراءة وجه و إعادة بناء وجه؛ توقيع رؤية توليد[خدمة دليل](#ctxclientmodules--clientmoduleregistry).`graph()` إرجاع حالي تركيب خروج رسم (اثنان مرة تغيير بين هو نفس عدد مستقر كائن) ،`clientPath(id)` إرجاع bundle قطعا مقابل مسار،`artifactBaseline(id)` إرجاع قراءة حالي لقطة قبل التقاط bundle stat قيمة.`fetchBundle()` تحليل HTTP توجيه الذي استخدام نفس نسخة كسول صفة استجابة.`rebuilt(id)` هو تغير بعد bundle محتوى وصول رسم وحيد مدخل: هو إعادة ها أمل bundle بايت، فقط لديه revision حق صحيح تغير عندئذ سوف إعادة تركيب رسم تزامن خروج إشعار.`onRebuilt` حسب حدوث تغير bundle تدريجي عدد إطلاق و يحمل جديد revision؛`onGraphChanged` في أي مرة إعادة تركيب رسم flush بعد إطلاق (سطر زيادة حذف، أو rebuilt حمل قدوم revision تغير) ، و اعتماد سحب أخذ نموذج——مستمع ذاتي سطر إعادة قراءة `graph()`. اثنان بند إشعار مسار كل سوف التقاط إقامة مستمع استثناء، لذلك واحد رمي خطأ حجز قراءة من حيث لا يستطيع يجعل لاحق حجز قراءة من يتم قفز مرور، أيضا لا يستطيع قتل ميت إطلاق هذا مرة flush واحد جهة.
 
-随包提供的 Web 组合通过 [`dsh-client-hmr`](../../packages/client/hmr/README.zh.md) 交付动态图快照。Host 立即转发现有图变化通知，重连会发送当前完整图。图描述浏览器的目标条目，不声明 Host 清理已经完成。产物轮询另外报告重建 revision。仅 source map 变化不会触发重载；新 combo-map URL 只会在 bundle revision 变化后出现，每份 map body 由其首次 `GET` 固定。Client Modules 校验快照，并将对账与重建串行协调；它持有启动创建的条目映射，负责单资源到达、异步移除、未使用模块与样式清理，以及页面本地重试状态。静态平台模块与 bootstrap 保持页面生命周期；Electron 安装属于独立流程。
+مع حزمة توفير Web تركيب عبر [`dsh-client-hmr`](../../packages/client/hmr/README.zh.md) تسليم حركة حالة رسم لقطة.Host قيام أي تحويل اكتشاف لديه رسم تغير إشعار، إعادة وصل سوف إرسال حالي كامل رسم. رسم وصف متصفح هدف بند، لا إعلان Host تنظيف قد إتمام. ناتج جولة استفسار آخر خارج تقرير إبلاغ إعادة بناء revision. فقط source map تغير لن إطلاق إعادة تحميل؛ جديد combo-map URL فقط سوف في bundle revision تغير بعد ظهور، كل نسخة map body من ذلك أول مرة `GET` ثابت.Client Modules تحقق لقطة، و سوف مقابل حساب و إعادة بناء سلسلة سطر تنسيق ضبط؛ هو يحتفظ بدء إنشاء بند خريطة، مسؤول مفرد مورد وصول، مختلف خطوة إزالة، لم استخدام وحدة و مثال صيغة تنظيف، و صفحة محلي إعادة محاولة حالة. ساكن حالة منصة وحدة و bootstrap إبقاء صفحة دورة الحياة؛Electron تثبيت يخص مستقل مسار.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

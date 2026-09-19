@@ -1,39 +1,39 @@
-# Agent Note: glob/grep 改用打包的 ripgrep 二进制直接 spawn
+# Agent Note: glob/grep تعديل استخدام تحزيم ripgrep اثنان دخول صنع مباشر spawn
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-01-packaged-ripgrep-search.md) | 中文
+[English](2026-08-01-packaged-ripgrep-search.md) | العربية
 
-> 取代 [bash 承载的 grep/glob 发现工具](../../archived/feature/2026-07-09-bash-backed-grep-glob-discovery.md)：v1 决策中明确延期的方案——直接 spawn ripgrep——现在成为实际交付的实现。
+> يحل محل [bash تحمل تحميل grep/glob اكتشاف أداة](../../archived/feature/2026-07-09-bash-backed-grep-glob-discovery.md):v1 قرار في واضح تأجيل خطة——مباشر spawn ripgrep——الآن يصبح فعلي تسليم تنفيذ.
 
-## 问题
+## مشكلة
 
-`glob`/`grep` 工具经由 bash 执行器 seam 运行，这使系统 `rg` 安装成为宿主依赖。Windows 和容器镜像的 `PATH` 默认没有 `rg`，工具在那里会静默消失；部署方只能从加载期探针警告里发现这一点。bash seam 还迫使整个模型可见参数面经过一个 shell 引号工具，因为工具与 ripgrep 之间隔着一层 shell——[bash 承载决策](../../archived/feature/2026-07-09-bash-backed-grep-glob-discovery.md) 把这种耦合记为 v1 的取舍，并把直接 spawn 列为 shell 字符串域一旦被证明过于敏感时的合理后续。它确实被证明了：每个模型值都要经受 POSIX 单引号转义，探针要在测试里脚本化，执行器自身的超时分类还与协作式工具超时策略已有的职责重复。
+`glob`/`grep` أداة مرور من bash منفذ seam تشغيل، هذا جعل نظام `rg` تثبيت يصبح مضيف اعتماد.Windows و حاوية مرآة مثل `PATH` افتراضي لا يوجد `rg`، أداة في ذلك داخل سوف ساكن صامت إزالة فقد؛ نشر جهة فقط قدرة من تحميل مدة استكشاف إبرة تحذير إبلاغ داخل اكتشاف هذا واحد نقطة.bash seam أيضا إجبار جعل كامل نموذج مرئي معامل وجه مرور مرور واحد shell جذب رقم أداة، لأن أداة و ripgrep بين فصل حال واحد طبقة shell——[bash تحمل تحميل قرار](../../archived/feature/2026-07-09-bash-backed-grep-glob-discovery.md) يأخذ هذا نوع اقتران دمج تسجيل لـ v1 أخذ ترك، و يأخذ مباشر spawn صف لـ shell نص مجال واحد حالما يتم إثبات مرور في حساس شعور وقت دمج إدارة لاحق. هو تأكيد فعلي يتم إثبات: كل نموذج قيمة كل يلزم مرور تلقي POSIX مفرد جذب رقم تحويل معنى، استكشاف إبرة يلزم في اختبار داخل نص برمجي تحويل، منفذ ذاته مهلة تصنيف أيضا و تنسيق عمل صيغة أداة مهلة سياسة قد لديه مسؤولية تكرار.
 
-## 决策
+## قرار
 
-`@deepseek-ai/dsh-tool-fs-search` 现在运行 PACKAGED（打包的）ripgrep 二进制（`@vscode/ripgrep`，一个 npm 依赖，其可选平台包随附二进制），经由 `ctx.subprocess` seam：`runRipgrep()` 以纯 argv 向量 spawn `rgPath`，向量前缀 `--no-config`，配以 collect 模式 stdout/stderr、`graceMs` 与转发的 `exec.signal`。`rgPath` 在首次调用时懒解析（进程内 memoize）：`@vscode/ripgrep` 在模块求值阶段解析其平台包，静态导入会把平台包缺失/损坏（`--omit=optional`、安装不全）变成 Loader 组合加载失败——这正是本次改动要消除的加载期失败模式。不再有 shell 层，执行路径上的 shell 引号边界随之消失；`singleQuote` 工具与其 shell spawn 测试一并删除。原始流使用 seam 的诊断尾部 collect 形态（无 spill 文件——工具从不读取原始 spill 路径；lossy stdout 读取以 `SEARCH_RAW_OUTPUT_OVERFLOW` 失败）。终止宽限与 stderr 尾部预算成为经校验的 `Config` 字段（`graceMs` 默认 3000，`stderrMaxBytes` 默认 64 KiB），不再继承自 bash-local 的配置。注册变为无条件——加载期 `command -v rg` 探针与条件注册决策被删除，连同那条 "rg not found" 警告。本包注入 `tools`、`systemPrompt` 与 `subprocess`。
+`@deepseek-ai/dsh-tool-fs-search` الآن تشغيل PACKAGED(تحزيم)ripgrep اثنان دخول صنع (`@vscode/ripgrep`، واحد npm اعتماد، ذلك اختياري منصة حزمة مع مرفق اثنان دخول صنع) ، مرور من `ctx.subprocess` seam:`runRipgrep()` بـ صاف argv نحو كمية spawn `rgPath`، نحو كمية بادئة `--no-config`، إعداد بـ collect نمط stdout/stderr،`graceMs` و تحويل إرسال `exec.signal`.`rgPath` في أول مرة استدعاء وقت كسول تحليل (عملية داخل memoize):`@vscode/ripgrep` في وحدة طلب قيمة مرحلة مقطع تحليل ذلك منصة حزمة، ساكن حالة استيراد سوف يأخذ منصة حزمة ناقص/ضرر تالف (`--omit=optional`، تثبيت لا كل) تغيير صار Loader تركيب تحميل فشل——هذا صحيح هو هذا مرة تعديل يلزم إزالة حذف تحميل مدة فشل نمط. لم يعد لديه shell طبقة، تنفيذ مسار فوق shell جذب رقم حد مع لـ إزالة فقد؛`singleQuote` أداة و ذلك shell spawn اختبار واحد و حذف. أصلي تدفق استخدام seam تشخيص ذيل جزء collect شكل (بلا spill ملف——أداة من لا قراءة أصلي spill مسار؛lossy stdout قراءة بـ `SEARCH_RAW_OUTPUT_OVERFLOW` فشل). إنهاء عرض حد و stderr ذيل جزء ميزانية يصبح مرور تحقق `Config` حقل (`graceMs` افتراضي 3000،`stderrMaxBytes` افتراضي 64 KiB) ، لم يعد وراثة ذاتي bash-local إعداد. تسجيل تغيير لـ بلا شرط——تحميل مدة `command -v rg` استكشاف إبرة و شرط تسجيل قرار يتم حذف، وصل نفس ذلك بند "rg not found" تحذير إبلاغ. هذه الحزمة حقن `tools`،`systemPrompt` و `subprocess`.
 
-退出语义仍由工具拥有：退出码 0 为有结果的成功，1 为成功的空搜索，其余归入既有 `SEARCH_*` 词汇（无效模式、启动失败、信号杀死、原始输出溢出）。超时是挂在工具定义上的协作式工具调用预算：`@deepseek-ai/dsh-tool-call-timeout-policy` 中止 `exec.signal`，subprocess seam 的终止升级提供硬终止，工具报告 `SEARCH_ABORTED`。工作目录为会话 header cwd（存在时），否则为 `process.cwd()`——不再有执行器配置可供默认化，因此回退由工具自己拥有。
+خروج دلالة ما زال من أداة يملك: خروج رمز 0 لـ لديه نتيجة نجاح،1 لـ نجاح فارغ بحث، ذلك بقية عودة دخول قائم `SEARCH_*` مفردات (بلا فاعلية نمط، بدء فشل، إشارة قتل ميت، أصلي إخراج فيض خروج). مهلة هو تعليق في أداة تعريف فوق تنسيق عمل صيغة أداة استدعاء ميزانية:`@deepseek-ai/dsh-tool-call-timeout-policy` في توقف `exec.signal`،subprocess seam إنهاء ترقية توفير صلب إنهاء، أداة تقرير إبلاغ `SEARCH_ABORTED`. عمل دليل لـ جلسة header cwd(وجود وقت) ، لا فإن لـ `process.cwd()`——لم يعد لديه منفذ إعداد يمكن توفير افتراضي تحويل، لذلك رجوع من أداة ذاتي ذات يملك.
 
-`fs-glob-sampling` ACP（Agent Client Protocol）快照场景改为执行真实的打包二进制，作用于一个用固定 mtime 钉住 `--sort=modified` 顺序的预制工作区，取代 PATH 注入的 `rg` 替身（仅 POSIX：展示路径携带 `/` 分隔符，会话日志比较无法归一化）。
+`fs-glob-sampling` ACP(Agent Client Protocol) لقطة مشهد تعديل لـ تنفيذ حقيقي تحزيم اثنان دخول صنع، أثر في واحد استخدام ثابت mtime تثبيت إقامة `--sort=modified` ترتيب مسبق صنع مساحة العمل، يحل محل PATH حقن `rg` بديل ذات (فقط POSIX: عرض مسار يحمل `/` قسم فصل رمز، جلسة سجل مقارنة مقارنة لا يمكن عودة واحد تحويل).
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**保留 bash seam 与探针，仅把 `rg` 记为必需宿主依赖。** 否决：宿主依赖正是本次改动要消除的失败模式，而让发现工具支持 Windows 正是此举的目的；写进文档的依赖仍是依赖。
+**إبقاء bash seam و استكشاف إبرة، فقط يأخذ `rg` تسجيل لـ مطلوب مضيف اعتماد.** مرفوض: مضيف اعتماد صحيح هو هذا مرة تعديل يلزم إزالة حذف فشل نمط، بينما يجعل اكتشاف أداة دعم حمل Windows صحيح هو هذا رفع هدف؛ كتابة دخول وثيقة اعتماد ما زال هو اعتماد.
 
-**让 `rgPath` 可注入（配置字段或环境变量覆盖），让测试与快照继续使用替身二进制。** 否决：这会新增一个只有测试钩子会消费的公开部署面，而真实二进制本身具有足够的确定性——通过 fixture（测试前置数据）的 mtime 即可直接钉住；打包二进制就是部署形态，测试应当拿它来测。
+**يجعل `rgPath` يمكن حقن (إعداد حقل أو بيئة متغير تغطية) ، يجعل اختبار و لقطة متابعة استخدام بديل ذات اثنان دخول صنع.** مرفوض: هذا سوف إضافة جديدة واحد فقط لديه اختبار خطاف سوف إزالة استهلاك عام نشر وجه، بينما حقيقي اثنان دخول صنع ذاته أداة لديه كاف كاف تحديد صفة——عبر fixture(اختبار قبل وضع بيانات) mtime يكفي مباشر تثبيت إقامة؛ تحزيم اثنان دخول صنع حينئذ هو نشر شكل، اختبار ينبغي عند أخذ هو قدوم قياس.
 
-**改用纯 JS 的 glob/搜索引擎（如 `picomatch`/`tinyglobby`）。** 否决：[依赖替换审计](../../rejected/simplification/2026-07-26-dependency-swaps-rejected-by-nih-audit.zh.md) 已基于「不存在 glob 引擎」的证据否决过该方向；ripgrep 语义（`--sort=modified`、VCS 剪枝、JSON 传输、正则方言）就是工具约定。
+**تعديل استخدام صاف JS glob/بحث جذب محرك (مثل `picomatch`/`tinyglobby`).** مرفوض:[اعتماد استبدال مراجعة حساب](../../rejected/simplification/2026-07-26-dependency-swaps-rejected-by-nih-audit.zh.md) قد أساس في «لا وجود glob جذب محرك» دليل مرفوض مرور هذا جهة نحو؛ripgrep دلالة (`--sort=modified`،VCS قص غصن،JSON نقل، صحيح فإن جهة قول) حينئذ هو أداة اتفاق.
 
-## 后果
+## عاقبة
 
-- 发现工具在打包二进制覆盖的每个平台（darwin/linux/win32，x64/arm64）上开箱即用，无需宿主安装；交付的 TUI/Web 工具清单把 `glob`/`grep` 变为固定成员（见 [拉平交付的工具清单](../feature/2026-07-31-even-out-shipped-tool-rosters.zh.md)）。
-- shell 字符串攻击面消失：恶意模式只是不具执行性的 argv 元素，由集成套件钉住；该套件现在也在 Windows 上运行（此前没有系统 `rg` 时它自行跳过）。
-- spawn 不受沙箱约束（普通的 `ctx.subprocess` 调用），因此前缀 `--no-config`：宿主的 `RIPGREP_CONFIG_PATH`（或二进制旁的 `rg.conf`）否则可注入 `--pre` 预处理器，对每个匹配文件执行任意命令。加上 `--no-config` 后，任何配置文件——因而任何预处理器——都无法触及搜索。
-- 原始输出溢出路径的形态改变：旧的 bash 承载路径继承了 bash-local 常开的 spill，可能留下没人读的多 MB 临时文件；subprocess seam 现在无 spill 收集，溢出是纯粹的错误（`SEARCH_RAW_OUTPUT_OVERFLOW`，"narrow pattern, path, or include and retry"），不返回任何内容。
-- 加载期失败模式改变：subprocess seam 损坏现在让首次搜索调用失败（`SEARCH_FAILED`），而非通过探针使插件加载失败；二进制缺失是带打包路径的启动失败，而不是 PATH 问题。
-- 集成套件的 fixture 去掉了 Windows 无法表示的文件名（名称含 `"`），保证套件在每个平台都能重放。
-- 重新生成 `THIRD_PARTY_NOTICES.md` 暴露了一个由新依赖带出的潜在生成器 bug：Node 的 `fs.globSync` 返回操作系统原生分隔符，因此在 Windows 上 notices 分层中带 `/` 后缀的 dev 区前缀永远匹配不上，dev-only 包（测试工具、support 叶子）被错分为运行时。生成器现在在入口处归一化 manifest（元数据清单）路径，notices 与平台无关。
-- `@vscode/ripgrep` 依赖为运行时层增加其 MIT 行；pnpm 11 截断的虚拟存储目录名需要在 notices 生成器的元数据查找中增加内容扫描回退。
+- اكتشاف أداة في تحزيم اثنان دخول صنع تغطية كل منصة (darwin/linux/win32،x64/arm64) فوق فتح صندوق أي استخدام، بلا حاجة مضيف تثبيت؛ تسليم TUI/Web أداة بيان يأخذ `glob`/`grep` تغيير لـ ثابت عضو (رؤية [سحب مستو تسليم أداة بيان](../feature/2026-07-31-even-out-shipped-tool-rosters.zh.md)).
+- shell نص هجوم ضرب وجه إزالة فقد: سيئ معنى نمط فقط هو لا أداة تنفيذ صفة argv عنصر عنصر، من تجميع صار طقم عنصر تثبيت إقامة؛ هذا طقم عنصر الآن أيضا في Windows فوق تشغيل (هذا قبل لا يوجد نظام `rg` وقت هو ذاتي سطر قفز مرور).
+- spawn لا تلقي صندوق رملي قيد (عادي `ctx.subprocess` استدعاء) ، لذلك بادئة `--no-config`: مضيف `RIPGREP_CONFIG_PATH`(أو اثنان دخول صنع جانب `rg.conf`) لا فإن يمكن حقن `--pre` مسبق معالج، مقابل كل مطابقة ملف تنفيذ مهمة معنى أمر. إضافة فوق `--no-config` بعد، أي ملف إعداد——بسبب بينما أي مسبق معالج——كل لا يمكن لمس و بحث.
+- أصلي إخراج فيض خروج مسار شكل تغيير: قديم bash تحمل تحميل مسار وراثة bash-local معتاد فتح spill، ممكن إبقاء تحت لا شخص قراءة كثير MB مؤقت ملف؛subprocess seam الآن بلا spill استلام تجميع، فيض خروج هو صاف خالص خطأ (`SEARCH_RAW_OUTPUT_OVERFLOW`،"narrow pattern, path, or include and retry") ، لا إرجاع أي محتوى.
+- تحميل مدة فشل نمط تغيير:subprocess seam ضرر تالف الآن يجعل أول مرة بحث استدعاء فشل (`SEARCH_FAILED`) ، بينما غير عبر استكشاف إبرة جعل إضافة تحميل فشل؛ اثنان دخول صنع ناقص هو حمل تحزيم مسار بدء فشل، بينما لا هو PATH مشكلة.
+- تجميع صار طقم عنصر fixture ذهاب إسقاط Windows لا يمكن يمثل ملف اسم (اسم يحتوي `"`) ، حفظ إثبات طقم عنصر في كل منصة كل قدرة إعادة وضع.
+- إعادة توليد `THIRD_PARTY_NOTICES.md` كشف واحد من جديد اعتماد حمل خروج كامن في توليد جهاز bug:Node `fs.globSync` إرجاع عملية نظام أصلي قسم فصل رمز، لذلك في Windows فوق notices قسم طبقة في حمل `/` بعد لاحقة dev منطقة بادئة دائم بعيد مطابقة لا فوق،dev-only حزمة (اختبار أداة،support ورقة فرعي) يتم خطأ قسم لـ وقت التشغيل. توليد جهاز الآن في مدخل موضع عودة واحد تحويل manifest(بيانات وصفية بيان) مسار،notices و منصة غير متصل.
+- `@vscode/ripgrep` اعتماد لـ وقت التشغيل طبقة زيادة ذلك MIT سطر؛pnpm 11 قطع قطع وهمي محاكاة تخزين دليل اسم حاجة في notices توليد جهاز بيانات وصفية فحص بحث في زيادة محتوى مسح رجوع.

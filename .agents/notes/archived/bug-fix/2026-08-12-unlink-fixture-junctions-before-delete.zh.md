@@ -1,24 +1,24 @@
-# Agent Note: 递归删除前先解链 fixture junction
+# Agent Note: تمرير عودة حذف قبل أولا حل سلسلة fixture junction
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-12-unlink-fixture-junctions-before-delete.md) | 中文
+[English](2026-08-12-unlink-fixture-junctions-before-delete.md) | العربية
 
-## 问题
+## مشكلة
 
-install-lefthook 与 translation-pairing 的 fixture 把仓库真实的 `scripts/`、`node_modules` 和 tsx 包目录用 junction 链进 fixture 树，让 installer 探测能穿透解析。Windows 的递归删除可能把 junction（MOUNT_POINT 重解析点）当作目录并跟随进其目标；Git 的 `worktree remove` 正是这样删掉了仓库被跟踪的 `scripts/` 和 tsx 包（事故的插桩把删除定位到这一步）。因此，信任删除器的 fixture 清理删掉的是仓库自己的源码，而不是 fixture。
+install-lefthook و translation-pairing fixture يأخذ مستودع حقيقي `scripts/`،`node_modules` و tsx حزمة دليل استخدام junction سلسلة دخول fixture شجرة، يجعل installer استكشاف قياس قدرة اختراق نفاذ تحليل.Windows تمرير عودة حذف ممكن يأخذ junction(MOUNT_POINT إعادة تحليل نقطة) عند عمل دليل و تتبع مع دخول ذلك هدف؛Git `worktree remove` صحيح هو هذا مثال حذف إسقاط مستودع يتم تتبع أثر `scripts/` و tsx حزمة (أمر لذا إدراج وتد يأخذ حذف تحديد موضع إلى هذا واحد خطوة). لذلك، معلومة مهمة حذف جهاز fixture تنظيف حذف إسقاط هو مستودع ذاتي ذات شفرة المصدر، بينما لا هو fixture.
 
-## 决策
+## قرار
 
-`scripts/test-fixture-cleanup.ts` 拥有 junction 安全的 fixture 拆除：`unlinkFixtureLinks` 先遍历并解链所有重解析点，`removeFixtureSafely` 再删除已无链接的树（带 Windows 异步句柄重试）。所有受影响的 `afterEach` 和 `worktree remove` 前的钩子都调用它。通用规则记录在 `docs/defensive-patterns.md`：链接形态的路径用 unlink 删除，递归 `rmSync` 只留给确知为真实目录的路径。
+`scripts/test-fixture-cleanup.ts` يملك junction أمان fixture تفكيك حذف:`unlinkFixtureLinks` أولا مرة تاريخ و حل سلسلة كل إعادة تحليل نقطة،`removeFixtureSafely` مجددا حذف قد بلا رابط شجرة (حمل Windows مختلف خطوة جملة مقبض إعادة محاولة). كل تلقي أثر `afterEach` و `worktree remove` قبل خطاف كل استدعاء هو. عام قاعدة سجل في `docs/defensive-patterns.md`: رابط شكل مسار استخدام unlink حذف، تمرير عودة `rmSync` فقط إبقاء إعطاء تأكيد معرفة لـ حقيقي دليل مسار.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**只信任递归删除。** 否决：特定删除器是否跟随 junction 随工具和版本而异，而 `git worktree remove` 这一条路径已经摧毁过被跟踪文件；任何清理都不该拿仓库去赌这个行为。
+**فقط معلومة مهمة تمرير عودة حذف.** مرفوض: خاص تحديد حذف جهاز هل تتبع مع junction مع أداة و إصدار بينما مختلف، بينما `git worktree remove` هذا واحد بند مسار قد تحطيم تدمير مرور يتم تتبع أثر ملف؛ أي تنظيف كل لا هذا أخذ مستودع ذهاب مراهنة هذا عدد سلوك.
 
-**复制而不是 junction 真实目录。** 否决：fixture 的意义就是用真实内容探测真实 installer 路径，复制品会失去被测边界。
+**نسخ بينما لا هو junction حقيقي دليل.** مرفوض:fixture معنى معنى حينئذ هو استخدام حقيقي محتوى استكشاف قياس حقيقي installer مسار، نسخ صنف سوف فقد ذهاب يتم قياس حد.
 
-## 后果
+## عاقبة
 
-fixture 拆除不再能穿过 junction 触及仓库源码。额外开销只是对小型 fixture 树的一趟 lstat/unlink。这个摧毁数据的缺陷现在在 defensive-patterns 规则旁有了持久化的原因，helper 也是未来所有 junction fixture 共享的拆除路径。
+fixture تفكيك حذف لم يعد قدرة اختراق مرور junction لمس و مستودع شفرة المصدر. مقدار خارج فتح إلغاء فقط هو مقابل صغير نوع fixture شجرة واحد مرة lstat/unlink. هذا عدد تحطيم تدمير بيانات نقص وقوع الآن في defensive-patterns قاعدة جانب لديه حفظ دائم سبب،helper أيضا هو لم قدوم كل junction fixture مشترك تفكيك حذف مسار.

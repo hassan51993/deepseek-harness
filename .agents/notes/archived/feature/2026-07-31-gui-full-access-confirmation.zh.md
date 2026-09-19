@@ -1,32 +1,32 @@
-# Agent Note: GUI Full access 风险确认
+# Agent Note: GUI Full access ريح خطر تأكيد
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-31-gui-full-access-confirmation.md) | 中文
+[English](2026-07-31-gui-full-access-confirmation.md) | العربية
 
-## 问题
+## مشكلة
 
-在 Web 客户端的权限选择器中切换到 `danger-full-access` 只需一次点击，且预设以 Title Case 机器名 `Danger Full Access` 展示。Full access 会减少确认步骤，允许 agent（智能体）执行敏感操作、修改文件或运行外部命令，误点即在毫无刻意确认环节的情况下启用了最危险的预设。
+في Web عميل إذن اختيار جهاز في تبديل إلى `danger-full-access` فقط يحتاج مرة نقر، كما مسبق ضبط بـ Title Case آلة جهاز اسم `Danger Full Access` عرض.Full access سوف نقص قليل تأكيد خطوة، سماح agent(ذكي جسم) تنفيذ حساس شعور عملية، تعديل ملف أو تشغيل خارجي أمر، خطأ نقطة أي في جزء بلا لحظة معنى تأكيد حلقة عقدة حال حال تحت تفعيل الأكثر خطر خطر مسبق ضبط.
 
-## 决策
+## قرار
 
-**每个权限选择器都把 `danger-full-access` 关进共享的页面内 `RiskConfirmation` 对话框：启用按钮在用户勾选明确的风险确认复选框前保持禁用；预设以 locale 所有的产品标签展示；所有取消路径都不作任何提交。**
+**كل إذن اختيار جهاز كل يأخذ `danger-full-access` صلة دخول مشترك صفحة داخل `RiskConfirmation` محادثة إطار: تفعيل حسب زر في مستخدم ربط اختيار واضح ريح خطر تأكيد تكرار اختيار إطار قبل إبقاء منع استخدام؛ مسبق ضبط بـ locale كل منتج وسم عرض؛ كل إلغاء مسار كل لا عمل أي إيداع.**
 
-- `RiskConfirmation`（ui-primitives）是受控的 Modal 组合：标题、说明、确认复选框、取消，以及 `acknowledged` 勾选前禁用的确认按钮。它始终是页面内对话框——Modal portal 到本文档 body，绝不打开可能落在另一块显示器上的原生或独立浏览器窗口。`Modal` 新增 `contentClassName` slot，令警示正文在受限的移动端／横屏视口内滚动，动作行保持固定。
-- composer chip（ui-conversation 的 `PermissionSelect`）在 `/permission` 提交前拦截 Full-access 选择：`confirmation`/`acknowledged` 组件状态打开对话框，确认后经与其他选择完全相同的注入 `command` 通道提交 `/permission danger-full-access`；取消、Escape、关闭与遮罩点击均保持当前预设不变并重置复选框。会话锁定时确认自行撤销（`locked`／值缺席 effect），切换任务时随 `key={sessionId}` 重挂载而重置。文案经标准 `conversation` locale slot 以 `access.confirm.*` 键供给。
-- `/permission` popup（ui-permission 构建于 ui-commands 外壳之上）以数据而非第二套对话框实现完成把关：`SelectOption` 新增可选的 `confirmation` 载荷，popup 控制器拥有 `confirming`/`acknowledged` 状态迁移，`PopupSelectView` 在门控选项未决期间把选择卡换成同一个 `RiskConfirmation`。
-- 「通用」设置中的「权限」行在把 Full access 持久化为后续会话的默认值前，也使用同一个受控 `RiskConfirmation`。警示会明确说明该设置只影响后续会话；取消、Escape、关闭与点击遮罩均不会改动已存默认值。
-- 规范内置预设名通过每个选择器的 locale 词典呈现（英文为 `Full access`，中文为「完全权限」），显式 host 标签保持原样。命令与 Settings 写入在 wire 上保留机器名，每份警示正文都保持中英文 locale 感知。
+- `RiskConfirmation`(ui-primitives) هو تلقي تحكم Modal تركيب: عنوان، شرح، تأكيد تكرار اختيار إطار، إلغاء، و `acknowledged` ربط اختيار قبل منع استخدام تأكيد حسب زر. هو بداية نهاية هو صفحة داخل محادثة إطار——Modal portal إلى هذا وثيقة body، أبدا فتح ممكن سقوط في آخر كتلة عرض جهاز فوق أصلي أو مستقل متصفح نافذة.`Modal` إضافة جديدة `contentClassName` slot، أمر تحذير عرض متن في تلقي حد نقل حركة طرف/أفقي شاشة نظر فتحة داخل تمرير، حركة عمل سطر إبقاء ثابت.
+- composer chip(ui-conversation `PermissionSelect`) في `/permission` إيداع قبل اعتراض قطع Full-access اختيار:`confirmation`/`acknowledged` مكون حالة فتح محادثة إطار، تأكيد بعد مرور و أخرى اختيار تماما نفسه حقن `command` عبر طريق إيداع `/permission danger-full-access`؛ إلغاء،Escape، إغلاق و حجب غطاء نقر متساو إبقاء حالي مسبق ضبط ثابت و إعادة وضع تكرار اختيار إطار. جلسة قفل تحديد وقت تأكيد ذاتي سطر سحب إلغاء (`locked`/قيمة نقص مقعد effect) ، تبديل مهمة وقت مع `key={sessionId}` إعادة تركيب بينما إعادة وضع. نص سجل مرور معيار `conversation` locale slot بـ `access.confirm.*` مفتاح توفير إعطاء.
+- `/permission` popup(ui-permission بناء في ui-commands خارج قشرة لـ فوق) بـ بيانات بينما غير ثاني طقم محادثة إطار تنفيذ إتمام يأخذ صلة:`SelectOption` إضافة جديدة اختياري `confirmation` تحميل حمل،popup تحكم جهاز يملك `confirming`/`acknowledged` حالة ترحيل،`PopupSelectView` في باب تحكم خيار لم قرار خلال يأخذ اختيار بطاقة تبديل صار نفس عدد `RiskConfirmation`.
+- «عام» ضبط في «إذن» سطر في يأخذ Full access حفظ دائم لـ لاحق جلسة قيمة افتراضية قبل، أيضا استخدام نفس عدد تلقي تحكم `RiskConfirmation`. تحذير عرض سوف واضح شرح هذا ضبط فقط أثر لاحق جلسة؛ إلغاء،Escape، إغلاق و نقر حجب غطاء متساو لن تعديل قد تخزين قيمة افتراضية.
+- مواصفة داخل وضع مسبق ضبط اسم عبر كل اختيار جهاز locale كلمة قاموس عرض (إنجليزي نص لـ `Full access`، العربية لـ «تماما إذن») ، صريح host وسم إبقاء أصل مثال. أمر و Settings كتابة في wire فوق إبقاء آلة جهاز اسم، كل نسخة تحذير عرض متن كل إبقاء في إنجليزي نص locale شعور معرفة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**原生／操作系统或独立窗口确认。** 已拒：对话框必须留在当前 WebUI 窗口内；第二个窗口可能出现在另一块显示器上，使决策脱离其守护的页面状态。
+**أصلي/عملية نظام أو مستقل نافذة تأكيد.** قد رفض: محادثة إطار يجب إبقاء في حالي WebUI نافذة داخل؛ ثاني عدد نافذة ممكن ظهور في آخر كتلة عرض جهاز فوق، جعل قرار انفصال مغادرة ذلك حراسة حماية صفحة حالة.
 
-**每个界面的安全文案共享一个 locale namespace。**不予采用：ui-permission bundle 与 ui-conversation 可独立加载，而 Settings 警示说明的是另一种只影响后续会话的生效周期。每个 bundle 各自拥有文案，ui-permission 也将 popup 与 Settings 词典分开，而非跨 bundle 边界 import。
+**كل واجهة أمان نص سجل مشترك واحد locale namespace.**لا إعطاء اعتماد:ui-permission bundle و ui-conversation يمكن مستقل تحميل، بينما Settings تحذير عرض شرح هو آخر نوع فقط أثر لاحق جلسة توليد فاعلية دورة مدة. كل bundle كل منها يملك نص سجل،ui-permission أيضا سوف popup و Settings كلمة قاموس قسم فتح، بينما غير عبر bundle حد import.
 
-**在 host／权限后端把关。** 设计上即出界：本变更只涉浏览器客户端确认流；后端权限语义、默认值与更安全预设的一键行为均不变。
+**في host/إذن خلفية يأخذ صلة.** تصميم فوق أي خروج حد: هذا تغيير فقط تعلق متصفح عميل تأكيد تدفق؛ خلفية إذن دلالة، قيمة افتراضية و أكثر أمان مسبق ضبط واحد مفتاح سلوك متساو ثابت.
 
-## 后果
+## عاقبة
 
-进入 Full access 的每条可见 GUI 路径现在都要求刻意且知情的确认，代价是真想启用该预设的用户多一步对话框。新的选择器通过各自拥有的状态机复用共享对话框，或在 popup 路径挂 `confirmation` 载荷。验收：`input-bar.spec.tsx` 中编辑器流的门控用例、`popup-view.spec.tsx` 与 `popup.spec.ts` 的 popup 门、`permission-row.spec.tsx` 的默认设置门控、`atoms.spec.tsx` 的 Modal/RiskConfirmation 约定，以及组装态 Web 回放。
+دخول Full access كل بند مرئي GUI مسار الآن كل اشتراط لحظة معنى كما معرفة حال تأكيد، بديل قيمة هو حق تفكير تفعيل هذا مسبق ضبط مستخدم كثير واحد خطوة محادثة إطار. جديد اختيار جهاز عبر كل منها يملك حالة آلة إعادة استخدام مشترك محادثة إطار، أو في popup مسار تعليق `confirmation` تحميل حمل. تحقق استلام:`input-bar.spec.tsx` في تحرير جهاز تدفق باب تحكم حالة استخدام،`popup-view.spec.tsx` و `popup.spec.ts` popup باب،`permission-row.spec.tsx` افتراضي ضبط باب تحكم،`atoms.spec.tsx` Modal/RiskConfirmation اتفاق، و تجميع حالة Web إعادة تشغيل.

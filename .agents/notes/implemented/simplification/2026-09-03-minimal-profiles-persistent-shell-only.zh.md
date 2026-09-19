@@ -1,35 +1,35 @@
-# Agent Note: 极简 profile 只提供持久 shell
+# Agent Note: أقصى بسيط profile فقط توفير حمل دائم shell
 
 Status: implemented
 
-[English](2026-09-03-minimal-profiles-persistent-shell-only.md) | 中文
+[English](2026-09-03-minimal-profiles-persistent-shell-only.md) | العربية
 
-## 问题
+## مشكلة
 
-随附 Web `minimal` preset 与独立 `sdk-minimal` profile 在持久 shell 之外还提供 `str_replace_editor`。Shell 已经可以检查和修改文件，editor 仍会为每个极简模型请求增加第二种文件修改接口及其完整 schema。它还要求挂载一个专用 `fs-local` 服务，而两份极简组合中的其他配置项都不使用该服务。
+مع مرفق Web `minimal` preset و مستقل `sdk-minimal` profile في حمل دائم shell خارج أيضا توفير `str_replace_editor`.Shell قد يمكن فحص و تعديل ملف،editor ما زال سوف لـ كل أقصى بسيط نموذج طلب زيادة ثاني نوع ملف تعديل واجهة و ذلك كامل schema. هو أيضا اشتراط تركيب واحد مخصص استخدام `fs-local` خدمة، بينما اثنان نسخة أقصى بسيط تركيب في أخرى بند إعداد كل لا استخدام هذا خدمة.
 
-只使用持久 shell 可以为模型提供一致的文件操作接口，并让 harness 组合与这一接口保持一致。如果保留 editor 的挂载，只通过呈现层过滤隐藏它，那么呈现配置变化时，该能力仍可能重新出现。
+فقط استخدام حمل دائم shell يمكن لـ نموذج توفير متسق ملف عملية واجهة، و يجعل harness تركيب و هذا واحد واجهة إبقاء متسق. إذا إبقاء editor تركيب، فقط عبر عرض طبقة مرور ترشيح إخفاء هو، ذلك ما عرض إعداد تغير وقت، هذا قدرة ما زال ممكن إعادة ظهور.
 
-## 决策
+## قرار
 
-随附的极简组合只提供一个按平台选择的持久 shell：Linux 与 macOS 使用 `bash`，Windows 使用 `pwsh`。两份组合都不挂载 `@deepseek-ai/dsh-tool-str-replace-editor`、文件系统工具或支撑 editor 的 `fs-local` 服务。固定的 complete persona、运行时上下文与 compaction 的缺失、shell 超时和各启动路径的宿主服务保持不变。
+مع مرفق أقصى بسيط تركيب فقط توفير واحد حسب منصة اختيار حمل دائم shell:Linux و macOS استخدام `bash`،Windows استخدام `pwsh`. اثنان نسخة تركيب كل لا تركيب `@deepseek-ai/dsh-tool-str-replace-editor`، نظام الملفات أداة أو دعم دعم editor `fs-local` خدمة. ثابت complete persona، وقت التشغيل سياق و compaction ناقص،shell مهلة و كل بدء مسار مضيف خدمة إبقاء ثابت.
 
-独立 editor 包仍可用于显式自定义组合。受信任的用户自定义 preset 或更高优先级的 profile patch 必须将 editor 插入 Cordis tree，并在同一服务作用域内提供文件系统后端；随附的 `minimal` 与 `sdk-minimal` 默认组合不会插入它。[Python SDK 指南](../../../../docs/user/guide/python-sdk.zh.md#opt-in-to-str_replace_editor)提供可执行的 patch 示例。
+مستقل editor حزمة ما زال متاح في صريح ذاتي تعريف تركيب. تلقي معلومة مهمة مستخدم ذاتي تعريف preset أو أكثر عال أولوية درجة profile patch يجب سوف editor إدراج دخول Cordis tree، و في نفس خدمة أثر مجال داخل توفير نظام الملفات خلفية؛ مع مرفق `minimal` و `sdk-minimal` افتراضي تركيب لن إدراج دخول هو.[Python SDK إشارة جنوب](../../../../docs/user/guide/python-sdk.zh.md#opt-in-to-str_replace_editor) توفير يمكن تنفيذ patch عرض مثال.
 
-共享的[持久 Bash 消费方](../../../../packages/shell/tool-bash-persistent/README.zh.md#model-experience)保留跨调用状态，并采用单次 shell 的命令状态文案。完成的命令追加 `[Command finished with exit code N]`，成功时也包含该标记；超时输出包含 `[Command timed out or OOM]` 和 shell 重置说明。追加状态标记前会移除输出末尾的全部换行。两份极简 Bash 描述都说明网络访问取决于任务环境。使用该消费方的显式组合共享相同的输出行为；持久 PowerShell 的描述与输出保持不变。
+مشترك[حمل دائم Bash مستهلك](../../../../packages/shell/tool-bash-persistent/README.zh.md#model-experience) إبقاء عبر استدعاء حالة، و اعتماد مفرد مرة shell أمر حالة نص سجل. إتمام أمر إلحاق `[Command finished with exit code N]`، نجاح وقت أيضا يتضمن هذا علامة؛ مهلة إخراج يتضمن `[Command timed out or OOM]` و shell إعادة وضع شرح. إلحاق حالة علامة قبل سوف إزالة إخراج نهاية ذيل الكل تبديل سطر. اثنان نسخة أقصى بسيط Bash وصف كل شرح شبكة شبكة وصول أخذ قرار في مهمة بيئة. استخدام هذا مستهلك صريح تركيب مشترك نفسه إخراج سلوك؛ حمل دائم PowerShell وصف و إخراج إبقاء ثابت.
 
-精确组合测试会断言单工具清单以及 preset 内不存在文件系统服务。`sdk-minimal` bundle 测试与构建后配置转储会断言配置项和依赖 allowlist 都不含 `fs-local` 或 `dsh-tool-str-replace-editor`。Web 与打包 Python 的模型可见快照会固定单工具 schema 清单。SDK profile 冒烟测试会执行指南中的 editor patch，并验证文件创建和查看。
+دقيق تركيب اختبار سوف تأكيد مفرد أداة بيان و preset داخل لا وجود نظام الملفات خدمة.`sdk-minimal` bundle اختبار و بناء بعد إعداد تحويل تخزين سوف تأكيد بند إعداد و اعتماد allowlist كل لا يحتوي `fs-local` أو `dsh-tool-str-replace-editor`.Web و تحزيم Python نموذج مرئي لقطة سوف ثابت مفرد أداة schema بيان.SDK profile خطر دخان اختبار سوف تنفيذ إشارة جنوب في editor patch، و تحقق ملف إنشاء و فحص نظر.
 
-本决策部分取代[极简裸运行时](../feature/2026-08-11-minimal-profiles-bare-two-tool-runtime.zh.md)中的工具选择，以及[base 编辑器决策](2026-09-05-base-default-file-editor.zh.md)中的极简例外。这些 Agent Note 继续负责提示词所有权、无 compaction 行为和基于 base 的文件编辑。[应用架构](../../../../docs/architecture.zh.md)负责 profile 启动与 bundle 分层。
+هذا قرار جزء يحل محل[أقصى بسيط عار وقت التشغيل](../feature/2026-08-11-minimal-profiles-bare-two-tool-runtime.zh.md) في أداة اختيار، و[base تحرير جهاز قرار](2026-09-05-base-default-file-editor.zh.md) في أقصى بسيط مثال خارج. هذه Agent Note متابعة مسؤول نص التوجيه كل حق، بلا compaction سلوك و أساس في base ملف تحرير.[تطبيق هيكل بنية](../../../../docs/architecture.zh.md) مسؤول profile بدء و bundle قسم طبقة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留 editor 配置项并隐藏其 schema。** 不予采用，因为呈现层或限制层会让该能力继续留在极简组合中，并使其缺失依赖另一项设置。
+**إبقاء editor بند إعداد و إخفاء ذلك schema.** لا إعطاء اعتماد، لأن عرض طبقة أو حد طبقة سوف يجعل هذا قدرة متابعة إبقاء في أقصى بسيط تركيب في، و جعل ذلك ناقص اعتماد آخر بند ضبط.
 
-**从发行物中删除 editor 包。** 不予采用，因为显式自定义组合仍是有效消费方。本需求只涉及两份随附的极简默认组合。
+**من إرسال سطر شيء في حذف editor حزمة.** لا إعطاء اعتماد، لأن صريح ذاتي تعريف تركيب ما زال هو صالح مستهلك. هذا يحتاج طلب فقط تعلق و اثنان نسخة مع مرفق أقصى بسيط افتراضي تركيب.
 
-**只在 `sdk-minimal` 中保留 editor。** 不予采用，因为两条极简路径会向同类模型提供不同的工具约定，而且打包 SDK 路径仍会承担 schema 成本和未被其他配置项使用的文件系统服务。
+**فقط في `sdk-minimal` في إبقاء editor.** لا إعطاء اعتماد، لأن اثنان بند أقصى بسيط مسار سوف نحو نفس صنف نموذج توفير مختلف أداة اتفاق، بينما كما تحزيم SDK مسار ما زال سوف تحمل تحمل schema صار هذا و لم يتم أخرى بند إعداد استخدام نظام الملفات خدمة.
 
-## 后果
+## عاقبة
 
-极简 agent 通过持久 shell 检查和修改文件。模型请求只携带一个工具 schema，组合不拥有文件系统服务。editor 包和显式 editor 组合仍然可用。Web 与 SDK 回放快照会同时固定持久 Bash 的状态标记、shell 状态和文件操作结果。
+أقصى بسيط agent عبر حمل دائم shell فحص و تعديل ملف. نموذج طلب فقط يحمل واحد أداة schema، تركيب لا يملك نظام الملفات خدمة.editor حزمة و صريح editor تركيب ما زال متاح.Web و SDK إعادة تشغيل لقطة سوف معا ثابت حمل دائم Bash حالة علامة،shell حالة و ملف عملية نتيجة.

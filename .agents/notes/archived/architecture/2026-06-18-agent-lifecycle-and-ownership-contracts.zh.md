@@ -1,51 +1,51 @@
-# Agent Note: Agent 生命周期与所有权约定
+# Agent Note: Agent دورة الحياة و كل حق اتفاق
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-06-18-agent-lifecycle-and-ownership-contracts.md) | 中文
+[English](2026-06-18-agent-lifecycle-and-ownership-contracts.md) | العربية
 
-## 问题
+## مشكلة
 
-ACP（Agent Client Protocol）与 tool-bash 的若干限制是同一个所有权约定缺失的症状：插件可以通过 `ctx.agents` 创建或恢复 agent（智能体），但无法独立拥有和 dispose（资源释放）单个 agent，而长时间运行的 bash 任务在执行器中也没有稳定的所有者。ACP 在断连时中止并等待 agent，却无法仅注销该会话的 agent；`session/cancel` 无法取消已入队但尚未开始的工作；`tool-bash` 将任务所有权保存在插件本地的 `Map` 中，因此一次 HMR（热模块替换）重载就可能让旧任务看起来无主。
+ACP(Agent Client Protocol) و tool-bash إذا جاف حد هو نفس عدد كل حق اتفاق ناقص عرض حالة: إضافة يمكن عبر `ctx.agents` إنشاء أو استعادة agent(ذكي جسم) ، لكن لا يمكن مستقل يملك و dispose(مورد تحرير) مفرد عدد agent، بينما طويل وقت تشغيل bash مهمة في منفذ في أيضا لا يوجد مستقر كل من.ACP في قطع وصل وقت في توقف و انتظار agent، لكن لا يمكن فقط ملاحظة إلغاء هذا جلسة agent؛`session/cancel` لا يمكن إلغاء قد دخول طابور لكن بعد لم بدء عمل؛`tool-bash` سوف مهمة كل حق حفظ في إضافة محلي `Map` في، لذلك مرة HMR(حار وحدة استبدال) إعادة تحميل حينئذ ممكن يجعل قديم مهمة نظر بدء قدوم بلا رئيسي.
 
-## 决策
+## قرار
 
-三项约定变更：队列感知的取消、`AgentHandle` 释放器，以及 bash 所有者令牌。
+ثلاثة بند اتفاق تغيير: طابور صف شعور معرفة إلغاء،`AgentHandle` تحرير جهاز، و bash كل من أمر لوحة.
 
-### 1. 队列感知的 `Agent.cancel(cause?)`
+### 1. طابور صف شعور معرفة `Agent.cancel(cause?)`
 
-`Agent` 接口新增 `cancel()` 动词——唯一的公开停止原语。（它最初与范围更窄、仅作用于步骤的 `abort()` 一同交付；后者后来因无人使用而移除，使 `cancel()` 成为唯一公开的停止工作方式。）它清空 inbox 的 queued + steering FIFO，在存在活跃轮次时中止它，并保留一个不带 cause 的 pre-run 标记，使在被领取前被取消的提示词永不运行，而后来的提示词仍保持独立。有效调用会在清空或中止前发出 `agent/cancel-requested`，携带类型化的 `user | parent` cause；空闲取消不发出任何事件，也不会使下一条提示词搁浅。`whenIdle()` 会在取消后达到完全停稳，ACP 的 `session/cancel` 映射到 `user`。[显式轮次取消决策](2026-07-16-explicit-turn-cancellation.zh.md)规定了当前的 cause、signal 生命周期与协作式结算约定。
+`Agent` واجهة إضافة جديدة `cancel()` حركة كلمة——وحيد عام إيقاف أصل لغة.(هو الأكثر أول و نطاق أكثر ضيق، فقط أثر في خطوة `abort()` واحد نفس تسليم؛ بعد من بعد قدوم بسبب بلا شخص استخدام بينما إزالة، جعل `cancel()` يصبح وحيد عام إيقاف عمل طريقة.) هو صاف فارغ inbox queued + steering FIFO، في وجود نشط وثب جولة وقت في توقف هو، و إبقاء واحد لا حمل cause pre-run علامة، جعل في يتم قيادة أخذ قبل يتم إلغاء نص التوجيه دائم لا تشغيل، بينما بعد قدوم نص التوجيه ما زال إبقاء مستقل. صالح استدعاء سوف في صاف فارغ أو في توقف قبل إرسال خروج `agent/cancel-requested`، يحمل نوع تحويل `user | parent` cause؛ فارغ خامل إلغاء لا إرسال خروج أي حدث، أيضا لن جعل تحت واحد بند نص التوجيه وضع ضحل.`whenIdle()` سوف في إلغاء بعد بلوغ إلى تماما توقف مستقر،ACP `session/cancel` خريطة إلى `user`.[صريح جولة إلغاء قرار](2026-07-16-explicit-turn-cancellation.zh.md) قاعدة تحديد حالي cause،signal دورة الحياة و تنسيق عمل صيغة تسوية اتفاق.
 
-### 2. `AgentHandle` 异步释放器
+### 2. `AgentHandle` مختلف خطوة تحرير جهاز
 
-`ctx.agents.create`/`resume`（以及 `AgentFactory` 接口）返回 `AgentHandle = { agent: Agent; dispose(): Promise<void> }`。释放器是一种**消费方能力**——仅持有裸 `Agent` 的注册表观察者无法将其拆除。调用方 fiber 和已注册的 factory 提供方是结构上的共同所有者：调用方卸载强制结构化所有权，而提供方卸载必须停止旧实例，因为其实例作用域的依赖 surface 通过该提供方解析。三条路径都会进入同一个记忆化的拆除过程：停止循环、等待其退出与空闲刷写完成（完全停稳，而非仅把状态翻转为 `disposed`）、分离 agent、分离其会话，然后解除其 scope。每个公开 ID 在其精确注册表条目分离时变得可复用；不存在独立的保留释放阶段。由配置创建的 agent 已归 `AgentLoop` fiber 所有（handle 被丢弃）。ACP 在其 `SessionRecord` 中保存每个全新会话的释放器，并在断连或插件拆除时运行它，因此单纯的客户端断连不会留下已注册 agent 或会话存储条目。在与关闭的竞态中落败的创建流程会 dispose 其尚未发布的 handle。
+`ctx.agents.create`/`resume`(و `AgentFactory` واجهة) إرجاع `AgentHandle = { agent: Agent; dispose(): Promise<void> }`. تحرير جهاز هو واحد نوع**مستهلك قدرة**——فقط يحتفظ عار `Agent` سجل التسجيل مراقبة من لا يمكن سوف ذلك تفكيك حذف. استدعاء جهة fiber و قد تسجيل factory مزود هو بنية فوق مشترك نفس كل من: استدعاء جهة إزالة قوي صنع بنية تحويل كل حق، بينما مزود إزالة يجب إيقاف قديم نسخة، لأن ذلك نسخة أثر مجال اعتماد surface عبر هذا مزود تحليل. ثلاثة بند مسار كل سوف دخول نفس عدد تسجيل ذاكرة تحويل تفكيك حذف مرور مسار: إيقاف حلقة، انتظار ذلك خروج و فارغ خامل تحديث كتابة إتمام (تماما توقف مستقر، بينما غير فقط يأخذ حالة قلب تحويل لـ `disposed`) ، قسم مغادرة agent، قسم مغادرة ذلك جلسة، لكن بعد حل حذف ذلك scope. كل عام ID في ذلك دقيق سجل التسجيل بند قسم مغادرة وقت تغيير نيل يمكن إعادة استخدام؛ لا وجود مستقل إبقاء تحرير مرحلة مقطع. من إعداد إنشاء agent قد عودة `AgentLoop` fiber كل (handle يتم إسقاط).ACP في ذلك `SessionRecord` في حفظ كل كل جديد جلسة تحرير جهاز، و في قطع وصل أو إضافة تفكيك حذف وقت تشغيل هو، لذلك مفرد صاف عميل قطع وصل لن إبقاء تحت قد تسجيل agent أو جلسة تخزين بند. في و إغلاق تنافس حالة في سقوط فشل إنشاء مسار سوف dispose ذلك بعد لم إصدار handle.
 
-**拆除顺序对持久性至关重要**，实现将会话生命周期折叠进 agent 的单个复合 Cordis effect（`SessionStore.prepare`/`enter`/`announce`，取代兄弟 effect 拆分）。fiber 卸载会并发释放兄弟 effect（`Promise.all`），这会让会话存储的 append 发布钩子移除与循环关闭时的 `session/flush` 竞争，从而丢失关闭的 `turn/end`；在一个 effect 内，释放器作为有序的 LIFO 链运行（停止循环 + `await agent.done` 在会话分离之前），因此无论 handle 的 `dispose()` 还是 fiber 卸载，都会捕获循环的最终刷写。被隔离的 `agent/disposed` 和 `session/disposed` 通知无法拒绝该链或跳过后续拆除。
+**تفكيك حذف ترتيب مقابل حمل دائم صفة حتى صلة إعادة يلزم**، تنفيذ سوف جلسة دورة الحياة طي دخول agent مفرد عدد تكرار دمج Cordis effect(`SessionStore.prepare`/`enter`/`announce`، يحل محل أخ أخ effect تفكيك قسم).fiber إزالة سوف تزامن تحرير أخ أخ effect(`Promise.all`) ، هذا سوف يجعل جلسة تخزين append إصدار خطاف إزالة و حلقة إغلاق وقت `session/flush` تنافس تنازع، من بينما فقد فقد إغلاق `turn/end`؛ في واحد effect داخل، تحرير جهاز بصفة لديه ترتيب LIFO سلسلة تشغيل (إيقاف حلقة + `await agent.done` في جلسة قسم مغادرة قبل) ، لذلك بلا نقاش handle `dispose()` أيضا هو fiber إزالة، كل سوف التقاط حلقة نهائي تحديث كتابة. يتم عزل `agent/disposed` و `session/disposed` إشعار لا يمكن رفض هذا سلسلة أو قفز مرور لاحق تفكيك حذف.
 
-### 3. Service Definition 中的 Bash 所有者令牌
+### 3. Service Definition في Bash كل من أمر لوحة
 
-后台任务所有权从 `tool-bash` 插件本地的 `Map<string, Agent>` 移入执行器。`ShellExecRequest` 新增可选的 `owner?: string`；解析后的 `ShellExecSpec` 将其作为必需但可空的 `owner: string | undefined` 携带（被遗忘的 owner 是可见的 `undefined`，而非静默缺失的属性）。执行器把 token 存在任务上，并通过新的 `ShellExecutor.ownerOf(id): string | undefined` 方法暴露它（不放在公开的 `BashTask` 上——只有一条读取路径，没有冗余 API）。`tool-bash` 完全删除其 `Map`：它在 `start` 时将 `exec.agent?.id`（共享的注册表/会话 id）盖章为 owner，`bash_output`/`bash_kill` 则以 `!== undefined` 语义把 `ctx.shell.ownerOf(id)` 与调用方 token 比较（空字符串 token 仍是真实 owner）。完成通知通过扫描 `ctx.get('agents')?.list()` 查找 `agent.id === ownerToken` 的存活 agent（经 `ctx.get` 读取——`onJobDone` 运行在 bash fiber 这一外部 fiber 上，直接使用 `ctx.agents` proxy 会抛异常）。由于所有权现在保存在执行器的任务上（随 `dsh-shell` fiber dispose），它能跨越 `tool-bash` HMR 重载，关闭旧的 `XXX(tool-bash-owner-hmr)` 缺口。（`onJobDone` 监听器仍受 `tool-bash` 的 `apply` effect 约束，因此落在重载间隙的完成仍会丢失一条通知——既有的重载间隙丢失——但所有权隔离本身已经不受 HMR 影响。）
+خلفية مهمة كل حق من `tool-bash` إضافة محلي `Map<string, Agent>` نقل دخول منفذ.`ShellExecRequest` إضافة جديدة اختياري `owner?: string`؛ تحليل بعد `ShellExecSpec` سوف ذلك بصفة مطلوب لكن يمكن فارغ `owner: string | undefined` يحمل (يتم متروك نسيان owner هو مرئي `undefined`، بينما غير ساكن صامت ناقص خاصية). منفذ يأخذ token وجود مهمة فوق، و عبر جديد `ShellExecutor.ownerOf(id): string | undefined` طريقة كشف هو (لا وضع في عام `BashTask` فوق——فقط لديه واحد بند قراءة مسار، لا يوجد زائد بقية API).`tool-bash` تماما حذف ذلك `Map`: هو في `start` وقت سوف `exec.agent?.id`(مشترك سجل التسجيل/جلسة id) غطاء فصل لـ owner،`bash_output`/`bash_kill` فإن بـ `!== undefined` دلالة يأخذ `ctx.shell.ownerOf(id)` و استدعاء جهة token مقارنة مقارنة (فارغ نص token ما زال هو حقيقي owner). إتمام إشعار عبر مسح `ctx.get('agents')?.list()` فحص بحث `agent.id === ownerToken` تخزين نشط agent(مرور `ctx.get` قراءة——`onJobDone` تشغيل في bash fiber هذا واحد خارجي fiber فوق، مباشر استخدام `ctx.agents` proxy سوف رمي استثناء). من في كل حق الآن حفظ في منفذ مهمة فوق (مع `dsh-shell` fiber dispose) ، هو قدرة عبر تجاوز `tool-bash` HMR إعادة تحميل، إغلاق قديم `XXX(tool-bash-owner-hmr)` نقص فتحة.(`onJobDone` مستمع ما زال تلقي `tool-bash` `apply` effect قيد، لذلك سقوط في إعادة تحميل بين فجوة إتمام ما زال سوف فقد فقد واحد بند إشعار——قائم إعادة تحميل بين فجوة فقد فقد——لكن كل حق عزل ذاته قد لا تلقي HMR أثر.)
 
-## 验证
+## تحقق
 
-以下不变式已经成立，并由测试固定：
+التالي ثابت صيغة قد صار قيام، و من اختبار ثابت:
 
-- ACP 断连或插件拆除后，任何由桥接层拥有的会话都不留下已注册 agent 或会话存储条目，包括与连接关闭竞争的创建流程。
-- 已入队的提示词启动前执行 `session/cancel`，能阻止该提示词运行；后来接受的提示词仍是独立的已入队轮次。
-- `tool-bash` HMR 重载不会使另一个会话能够读取或终止已有的后台任务（所有权保留在执行器上）。
-- 既有的非 ACP 演示无需显式管理 handle 仍能工作；由配置创建的 agent 仍归 `AgentLoop` 插件 fiber 所有。
+- ACP قطع وصل أو إضافة تفكيك حذف بعد، أي من جسر وصل طبقة يملك جلسة كل لا إبقاء تحت قد تسجيل agent أو جلسة تخزين بند، يشمل و اتصال إغلاق تنافس تنازع إنشاء مسار.
+- قد دخول طابور نص التوجيه بدء قبل تنفيذ `session/cancel`، قدرة منع توقف هذا نص التوجيه تشغيل؛ بعد قدوم قبول نص التوجيه ما زال هو مستقل قد دخول طابور جولة.
+- `tool-bash` HMR إعادة تحميل لن جعل آخر عدد جلسة قدرة كاف قراءة أو إنهاء قد لديه خلفية مهمة (كل حق إبقاء في منفذ فوق).
+- قائم غير ACP عرض عرض بلا حاجة صريح إدارة handle ما زال قدرة عمل؛ من إعداد إنشاء agent ما زال عودة `AgentLoop` إضافة fiber كل.
 
-## 会话所有者令牌在存活 agent 中唯一
+## جلسة كل من أمر لوحة في تخزين نشط agent في وحيد
 
-bash 所有者 token 比较依赖共享的 `Agent.id`/`SessionId` 在存活 agent 中唯一。并发的同 ID 操作可以都私下准备，但发布时会依次登记会话和 agent；`SessionStore.enter()` 拒绝重复的存活会话 id，每个失败事务都回滚自己的私有状态。因此程序化调用方无法发布两个共享同一会话 token 的存活 agent。访问*策略*（token 比较）留在 Consumer `tool-bash`；bash 能力只存储不透明的 `owner` 字符串且从不解释它——这是正确的 Service Definition / Service Provider / Consumer 拆分。
+bash كل من token مقارنة مقارنة اعتماد مشترك `Agent.id`/`SessionId` في تخزين نشط agent في وحيد. تزامن نفس ID عملية يمكن كل خاص تحت دقيق تجهيز، لكن إصدار وقت سوف اعتماد مرة تسجيل تسجيل جلسة و agent؛`SessionStore.enter()` رفض تكرار تخزين نشط جلسة id، كل فشل أمر خدمة كل تراجع ذاتي ذات خاص حالة. لذلك برنامج تحويل استدعاء جهة لا يمكن إصدار اثنان عدد مشترك نفس جلسة token تخزين نشط agent. وصول*سياسة*(token مقارنة مقارنة) إبقاء في Consumer `tool-bash`؛bash قدرة فقط تخزين لا نفاذ واضح `owner` نص كما من لا حل تفسير هو——هذا هو صحيح تأكيد Service Definition / Service Provider / Consumer تفكيك قسم.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **公开的 `BashTask.owner` 字段**而非 `ShellExecutor.ownerOf(id)` Service Definition 方法：否决。一条读取路径即可，无需冗余 API。
-- **为 agent 的会话生命周期使用兄弟 Cordis effect**：否决。fiber 卸载时并发释放兄弟 effect（`Promise.all`），store 拥有的 append 发布钩子的移除与循环的关闭 `session/flush` 产生竞争；单一复合 effect 的有序 LIFO 链才能在两条释放路径上都捕获关闭的 `turn/end`。
-- **在 `cancel()` 之外另设一个仅中止步骤的 `abort()`**：最初发布过，后因无人使用而移除；`cancel()` 是唯一的公开停止原语（见[公开停止接口 Agent Note](../simplification/2026-06-20-public-agent-stop-api.zh.md)）。
+- **عام `BashTask.owner` حقل**بينما غير `ShellExecutor.ownerOf(id)` Service Definition طريقة: مرفوض. واحد بند قراءة مسار يكفي، بلا حاجة زائد بقية API.
+- **لـ agent جلسة دورة الحياة استخدام أخ أخ Cordis effect**: مرفوض.fiber إزالة وقت تزامن تحرير أخ أخ effect(`Promise.all`) ،store يملك append إصدار خطاف إزالة و حلقة إغلاق `session/flush` إنتاج تنافس تنازع؛ مفرد واحد تكرار دمج effect لديه ترتيب LIFO سلسلة عندئذ قدرة في اثنان بند تحرير مسار فوق كل التقاط إغلاق `turn/end`.
+- **في `cancel()` خارج آخر ضبط واحد فقط في توقف خطوة `abort()`**: الأكثر أول إصدار مرور، بعد بسبب بلا شخص استخدام بينما إزالة؛`cancel()` هو وحيد عام إيقاف أصل لغة (رؤية[عام إيقاف واجهة Agent Note](../simplification/2026-06-20-public-agent-stop-api.zh.md)).
 
-## 后果
+## عاقبة
 
-本变更有意触及公开接口（`Agent`、`AgentFactory`、bash seam），而非作为 ACP 的局部补丁。同步 agent 交付仍然简单；异步生命周期路径是增量添加的，供需要它的所有者使用。
+هذا تغيير متعمد لمس و عام واجهة (`Agent`،`AgentFactory`،bash seam) ، بينما غير بصفة ACP نطاق جزء رقعة. تزامن agent تسليم ما زال بسيط مفرد؛ مختلف خطوة دورة الحياة مسار هو زيادة كمية إضافة، توفير حاجة هو كل من استخدام.

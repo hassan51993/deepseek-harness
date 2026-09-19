@@ -1,38 +1,38 @@
 # DeepSeek Harness
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-DeepSeek Harness（`dsh`）是由 [DeepSeek AI](https://deepseek.com) 开发的开源 agent harness（智能体框架）。
+DeepSeek Harness(`dsh`) هو من [DeepSeek AI](https://deepseek.com) تطوير فتح مصدر agent harness(ذكي جسم إطار هيكل).
 
-它构建于**一切皆插件**的架构之上，由 [Cordis](https://github.com/cordiverse/cordis) 驱动，其设计参见论文 [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512)。
+هو بناء في**واحد قطع جميع إضافة**هيكل بنية لـ فوق، من [Cordis](https://github.com/cordiverse/cordis) قيادة، ذلك تصميم مشاركة رؤية نقاش نص [_A Programming Paradigm for Spatiotemporal Composability_](https://arxiv.org/abs/2608.25512).
 
-文档：[https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
+وثيقة:[https://deepseek-harness.github.io/deepseek-harness/](https://deepseek-harness.github.io/deepseek-harness/)
 
-## 开发者预览
+## تطوير من معاينة
 
-DeepSeek Harness 处于 _开发者预览_ 阶段，正在快速迭代。**未来将出现破坏兼容性的变更。**
+DeepSeek Harness موضع في _تطوير من معاينة_ مرحلة مقطع، صحيح في سريع سرعة تكرار بديل.**لم قدوم سوف ظهور كسر تالف توافق صفة تغيير.**
 
-运行本项目前，请阅读[安全说明](SAFETY.zh.md)。
+تشغيل هذا مشروع قبل، طلب قراءة قراءة[أمان شرح](SAFETY.zh.md).
 
 <a id="run"></a>
 
-## 运行
+## تشغيل
 
-### 通过 `npm` 运行
+### عبر `npm` تشغيل
 
-安装 `Node.js`，然后运行：
+تثبيت `Node.js`، لكن بعد تشغيل:
 
 ```sh
 npx @deepseek-ai/dsh web
 ```
 
-该命令默认会在 `http://127.0.0.1:3080` 启动 Web UI，本机启动时还会用默认浏览器打开页面。通过 SSH 启动时只打印宿主机 URL，因为本地转发地址由 SSH 客户端或编辑器持有。传入 `--no-open` 可仅运行服务器而不打开浏览器。详见 [Web UI 指南](docs/user/guide/index.zh.md)。
+هذا أمر افتراضي سوف في `http://127.0.0.1:3080` بدء Web UI، هذا آلة بدء وقت أيضا سوف استخدام افتراضي متصفح فتح صفحة. عبر SSH بدء وقت فقط ضرب طبع مضيف آلة URL، لأن محلي تحويل إرسال عنوان من SSH عميل أو تحرير جهاز يحتفظ. نقل دخول `--no-open` يمكن فقط تشغيل خادم بينما لا فتح متصفح. تفصيل رؤية [Web UI إشارة جنوب](docs/user/guide/index.zh.md).
 
 <a id="run-from-source"></a>
 
-### 从源码运行
+### من شفرة المصدر تشغيل
 
-如需从仓库源码运行：
+مثل يحتاج من مستودع شفرة المصدر تشغيل:
 
 ```sh
 git clone https://github.com/deepseek-ai/deepseek-harness.git
@@ -42,42 +42,42 @@ pnpm run build
 pnpm dsh web
 ```
 
-`pnpm run build` 会准备仓库产物。`pnpm dsh web` 会直接使用这些已构建产物，不会重新构建。
+`pnpm run build` سوف دقيق تجهيز مستودع ناتج.`pnpm dsh web` سوف مباشر استخدام هذه قد بناء ناتج، لن إعادة بناء.
 
-## 社区与支持
+## مجتمع منطقة و دعم حمل
 
-- 通过 [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) 提交反馈或 bug 报告。
-- 为你的插件仓库添加 [`dsh-plugin`](https://github.com/topics/dsh-plugin) 话题，便于被发现。
-- 欢迎加入 DeepSeek Harness 企微群：扫码添加企微小助手并填写入群问卷，完成后小助手会邀请你入群。
+- عبر [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) إيداع عكس تغذية أو bug تقرير إبلاغ.
+- لـ أنت إضافة مستودع إضافة [`dsh-plugin`](https://github.com/topics/dsh-plugin) كلام عنوان، سهل في يتم اكتشاف.
+- فرح استقبال إضافة دخول DeepSeek Harness مؤسسة دقيق مجموعة: مسح رمز إضافة مؤسسة دقيق صغير مساعدة يد و ملء كتابة مجموعة سؤال لفة، إتمام بعد صغير مساعدة يد سوف دعوة طلب أنت دخول مجموعة.
 
 <table>
   <thead>
     <tr>
-      <th align="center">企微小助手</th>
-      <th align="center">入群问卷</th>
-      <th align="center">微信公众号</th>
+      <th align="center">مؤسسة دقيق صغير مساعدة يد</th>
+      <th align="center">دخول مجموعة سؤال لفة</th>
+      <th align="center">دقيق معلومة عام جمهور رقم</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-assistant.png" alt="DeepSeek Harness 企微小助手二维码" width="180" height="180"></td>
-      <td align="center"><a href="https://trtgsjkv6r.feishu.cn/share/base/form/shrcnIt5twSVdLGD52KJBckGCgg"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-survey.png" alt="DeepSeek Harness 入群问卷二维码" width="180" height="180"></a></td>
-      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wechat-official-account.png" alt="DeepSeek Harness 团队微信公众号二维码" width="180" height="180"></td>
+      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-assistant.png" alt="DeepSeek Harness مؤسسة دقيق صغير مساعدة يد اثنان صيانة رمز" width="180" height="180"></td>
+      <td align="center"><a href="https://trtgsjkv6r.feishu.cn/share/base/form/shrcnIt5twSVdLGD52KJBckGCgg"><img src="https://cdn.deepseek.com/harness/readme/community-wecom-survey.png" alt="DeepSeek Harness دخول مجموعة سؤال لفة اثنان صيانة رمز" width="180" height="180"></a></td>
+      <td align="center"><img src="https://cdn.deepseek.com/harness/readme/community-wechat-official-account.png" alt="DeepSeek Harness مجموعة طابور دقيق معلومة عام جمهور رقم اثنان صيانة رمز" width="180" height="180"></td>
     </tr>
   </tbody>
 </table>
 
-## 参与贡献
+## مشاركة و مساهمة
 
-参见 [CONTRIBUTING.md](CONTRIBUTING.zh.md)。
+مشاركة رؤية [CONTRIBUTING.md](CONTRIBUTING.zh.md).
 
-## 开发
+## تطوير
 
-请先阅读[开发指南](docs/development.zh.md)与[架构文档](docs/architecture.zh.md)。
+طلب أولا قراءة قراءة[تطوير إشارة جنوب](docs/development.zh.md) و[هيكل بنية وثيقة](docs/architecture.zh.md).
 
-面向 agent：请遵循 [AGENTS.md](AGENTS.md)。
+موجه إلى agent: طلب التزام دوران [AGENTS.md](AGENTS.md).
 
-## 引用
+## مرجع
 
 ```bibtex
 @misc{deepseek-harness2026,
@@ -89,8 +89,8 @@ pnpm dsh web
 }
 ```
 
-## 许可证
+## سماح يمكن إثبات
 
 [MIT](LICENSE)
 
-第三方依赖及其许可证见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+رقم ثلاثة جهة اعتماد و ذلك سماح يمكن إثبات رؤية [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

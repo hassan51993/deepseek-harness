@@ -1,42 +1,42 @@
-# Agent Note: Web 连接恢复控件
+# Agent Note: Web اتصال استعادة تحكم عنصر
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-28-web-connection-recovery-control.md) | 中文
+[English](2026-08-28-web-connection-recovery-control.md) | العربية
 
 ## Problem
 
-Web Client 会在故障后自动重建 Remote event generation 与物理 WebSocket，但页面既不显示断联，也不提供用户恢复操作。logical generation 与 physical socket 的重试循环还可能错位：`retry #N` 消息可能描述另一个 logical generation，而浏览器仍在等待同一个物理连接候选。Host 每 30 秒才发送一次空闲 WebSocket Ping，用户在恢复 Host 或网络后也无法主动要求一次全新尝试。
+Web Client سوف في لذا عائق بعد تلقائي إعادة بناء Remote event generation و شيء إدارة WebSocket، لكن صفحة حيث لا عرض قطع ربط، أيضا لا توفير مستخدم استعادة عملية.logical generation و physical socket إعادة محاولة حلقة أيضا ممكن خطأ موضع:`retry #N` رسالة ممكن وصف آخر عدد logical generation، بينما متصفح ما زال في انتظار نفس عدد شيء إدارة اتصال مرشح.Host كل 30 ثانية عندئذ إرسال مرة فارغ خامل WebSocket Ping، مستخدم في استعادة Host أو شبكة شبكة بعد أيضا لا يمكن رئيسي حركة اشتراط مرة كل جديد محاولة تجربة.
 
 ## Decision
 
-Host 默认通过既有且经过校验的 `websocketHeartbeatIntervalMs` 配置，每 2 秒发送一次 WebSocket Ping 控制帧。每次 Ping 前，它把 socket 标记为等待 Pong；到下一间隔仍未收到 Pong 的 socket 会被终止。`ConnectionController` 是唯一的 retry 调度器。在线状态下的传输失败进入带抖动的指数退避：上限从 500ms 开始，依次翻倍为 1s、2s、4s、8s，最终封顶 10s；实际延迟是上限的 50%–100%。[持续恢复决策](../bug-fix/2026-09-05-continuous-client-recovery.zh.md)取代本笔记的有限重试策略：达到间隔上限后仍继续尝试，握手就绪设有硬期限。每次物理 retry 都发布 `connecting`、写一条 `retry #N` warning、要求 Gateway mux 恰好一次替换候选或活动 socket，再重开内部 `$events` stream。
+Host افتراضي عبر قائم كما مرور مرور تحقق `websocketHeartbeatIntervalMs` إعداد، كل 2 ثانية إرسال مرة WebSocket Ping تحكم لقطة. كل مرة Ping قبل، هو يأخذ socket علامة لـ انتظار Pong؛ إلى تحت واحد بين فصل ما زال لم استلام إلى Pong socket سوف يتم إنهاء.`ConnectionController` هو وحيد retry مجدول. في خط حالة تحت نقل فشل دخول حمل اهتزاز حركة إشارة عدد تراجع تجنب: حد أعلى من 500ms بدء، اعتماد مرة قلب ضعف لـ 1s،2s،4s،8s، نهائي غلاف قمة 10s؛ فعلي تأخير متأخر هو حد أعلى 50%–100%.[حمل متابعة استعادة قرار](../bug-fix/2026-09-05-continuous-client-recovery.zh.md) يحل محل هذا قلم تسجيل لديه حد إعادة محاولة سياسة: بلوغ إلى بين فصل حد أعلى بعد ما زال متابعة محاولة تجربة، إمساك يد حينئذ خيط ضبط لديه صلب مدة حد. كل مرة شيء إدارة retry كل إصدار `connecting`، كتابة واحد بند `retry #N` warning، اشتراط Gateway mux تماما جيد مرة استبدال مرشح أو نشط حركة socket، مجددا إعادة فتح داخلي `$events` stream.
 
-Client Connection 服务暴露 identity 稳定的 `ctx.connection.state` observable 与 `ctx.connection.reconnect()`。snapshot 在首次连接结果前为 undefined，此后为 `disconnected`、`connecting` 或 `connected`；等价状态不触发通知。手动重连会中断当前 generation 或重试等待、重置 attempt 序号，并通过与自动恢复相同的物理和逻辑路径立即开始 retry 1。浏览器的 `offline` 事件会立即中断活动连接工作、发布 `disconnected` 并暂停自动 retry；下一次 `online` 转换会发布 `connecting`、重置 attempt 序号，并从 500ms 退避档重新开始；重复事件不会创建另一条循环。Host 是否可达由新的 `$events` ready 帧证明，而不是由 `navigator.onLine` 证明。替换 generation 建立后，各 logical stream 仍自行持有 baseline、cursor 与 replay 语义。
+Client Connection خدمة كشف identity مستقر `ctx.connection.state` observable و `ctx.connection.reconnect()`.snapshot في أول مرة اتصال نتيجة قبل لـ undefined، هذا بعد لـ `disconnected`،`connecting` أو `connected`؛ انتظار قيمة حالة لا إطلاق إشعار. يد حركة إعادة وصل سوف في قطع حالي generation أو إعادة محاولة انتظار، إعادة وضع attempt ترتيب رقم، و عبر و تلقائي استعادة نفسه شيء إدارة و منطق مسار قيام أي بدء retry 1. متصفح `offline` حدث سوف قيام أي في قطع نشط حركة اتصال عمل، إصدار `disconnected` و مؤقت توقف تلقائي retry؛ تحت مرة `online` تحويل سوف إصدار `connecting`، إعادة وضع attempt ترتيب رقم، و من 500ms تراجع تجنب ملف إعادة بدء؛ تكرار حدث لن إنشاء آخر بند حلقة.Host هل يمكن بلوغ من جديد `$events` ready لقطة إثبات، بينما لا هو من `navigator.onLine` إثبات. استبدال generation بناء قيام بعد، كل logical stream ما زال ذاتي سطر يحتفظ baseline،cursor و replay دلالة.
 
-[Web Client 架构](../architecture/2026-07-19-gui-web-client-architecture.zh.md)、[Remote 事件投递](../architecture/2026-08-10-remote-event-delivery.zh.md)和[会话事件传输](../architecture/2026-08-18-session-history-and-event-transport.zh.md)继续持有各自更宽的所有权决策；本笔记只取代其中原有的重试时序。
+[Web Client هيكل بنية](../architecture/2026-07-19-gui-web-client-architecture.zh.md) ،[Remote حدث إلقاء تمرير](../architecture/2026-08-10-remote-event-delivery.zh.md) و[جلسة حدث نقل](../architecture/2026-08-18-session-history-and-event-transport.zh.md) متابعة يحتفظ كل منها أكثر عرض كل حق قرار؛ هذا قلم تسجيل فقط يحل محل منها أصل لديه إعادة محاولة وقت ترتيب.
 
-Settings 外壳是恢复功能专用消费方，因此直接注入 Connection；普通功能代码仍使用 `ctx.remote`。它的私有 hooks compartment 绑定状态 observable 与重连命令。展开的侧边栏在 Settings 右侧渲染 `ConnectionIndicator`：`disconnected` 是浅黄色的**连接异常**操作；`connecting` 以黄色显示**自动重连中**，其中一至三个点每 500ms 前进一次，与 retry 时序无关；恢复后则以浅绿色显示**连接成功**并驻留 2 秒。鼠标悬浮或键盘聚焦任一黄色状态时只把文字改为**立即重连**；按压反馈采用轻微的警告色过渡，不使用原生 title tooltip。所有可见状态都为最宽的本地化文字预留空间，并使用固定的图标列和左对齐文字列，因此状态变化不会移动控件或改变其宽度。首次启动和未曾中断的健康连接都不渲染。
+Settings خارج قشرة هو استعادة وظيفة مخصص استخدام مستهلك، لذلك مباشر حقن Connection؛ عادي وظيفة شفرة ما زال استخدام `ctx.remote`. هو خاص hooks compartment ربط حالة observable و إعادة وصل أمر. توسيع جانب حافة شريط في Settings يمين جانب تصيير `ConnectionIndicator`:`disconnected` هو ضحل أصفر لون**اتصال استثناء**عملية؛`connecting` بـ أصفر لون عرض**تلقائي إعادة وصل في**، منها واحد حتى ثلاثة عدد نقطة كل 500ms قبل دخول مرة، و retry وقت ترتيب غير متصل؛ استعادة بعد فإن بـ ضحل أخضر لون عرض**اتصال نجاح**و إقامة إبقاء 2 ثانية. فأرة علامة معلق طفو أو مفتاح قرص تجمع تركيز مهمة واحد أصفر لون حالة وقت فقط يأخذ نص حرف تعديل لـ**قيام أي إعادة وصل**؛ حسب ضغط عكس تغذية اعتماد خفيف دقيق تحذير إبلاغ لون مرور عبور، لا استخدام أصلي title tooltip. كل مرئي حالة كل لـ الأكثر عرض محلي تحويل نص حرف مسبق إبقاء فضاء، و استخدام ثابت رسم علامة صف و يسار مقابل متساو نص حرف صف، لذلك حالة تغير لن نقل حركة تحكم عنصر أو تغيير ذلك عرض درجة. أول مرة بدء و لم سبق في قطع سليم سليم اتصال كل لا تصيير.
 
 ## Alternatives considered
 
-**固定每 2 秒重试且不进入终态。**不采用，因为长时间故障会持续产生连接流量。保留的指数策略先快速重试，再逐步降低频率，并在重试期间保留恢复操作。达到间隔上限后的重试由持续恢复决策规定。
+**ثابت كل 2 ثانية إعادة محاولة كما لا دخول نهاية حالة.**لا اعتماد، لأن طويل وقت لذا عائق سوف حمل متابعة إنتاج اتصال تدفق كمية. إبقاء إشارة عدد سياسة أولا سريع سرعة إعادة محاولة، مجددا تدريجي خطوة خفض منخفض تردد معدل، و في إعادة محاولة خلال إبقاء استعادة عملية. بلوغ إلى بين فصل حد أعلى بعد إعادة محاولة من حمل متابعة استعادة قرار قاعدة تحديد.
 
-**在视口顶部渲染全宽 `ConnectionBanner`。**不采用，因为状态应放在用户指定的恢复操作旁，全局覆盖层还会占用无关页面界面框架。该原语是内联 `ConnectionIndicator`；首次标签发布前不存在 `ConnectionBanner` 兼容导出。
+**في نظر فتحة قمة جزء تصيير كل عرض `ConnectionBanner`.**لا اعتماد، لأن حالة ينبغي وضع في مستخدم إشارة تحديد استعادة عملية جانب، عام تغطية طبقة أيضا سوف احتلال استخدام غير متصل صفحة واجهة إطار هيكل. هذا أصل لغة هو داخل ربط `ConnectionIndicator`؛ أول مرة وسم إصدار قبل لا وجود `ConnectionBanner` توافق توجيه خروج.
 
-**通过 `ctx.remote.$connection` 暴露生命周期控制。**不采用，因为 retry 状态与命令属于 Connection 服务，而不是 Remote 方法 namespace。直接使用 `ctx.connection` 仍是例外；本指示器本身负责控制重连，因此符合该例外。
+**عبر `ctx.remote.$connection` كشف دورة الحياة تحكم.**لا اعتماد، لأن retry حالة و أمر يخص Connection خدمة، بينما لا هو Remote طريقة namespace. مباشر استخدام `ctx.connection` ما زال هو مثال خارج؛ هذا إشارة عرض جهاز ذاته مسؤول تحكم إعادة وصل، لذلك رمز دمج هذا مثال خارج.
 
-**仅在用户点击时重试。**不采用，因为用户没有观察页面时仍必须自动恢复；按钮会重置退避并跳过当前等待。
+**فقط في مستخدم نقر وقت إعادة محاولة.**لا اعتماد، لأن مستخدم لا يوجد مراقبة صفحة وقت ما زال يجب تلقائي استعادة؛ حسب زر سوف إعادة وضع تراجع تجنب و قفز مرور حالي انتظار.
 
 ## Consequences
 
-空闲浏览器连接的心跳流量会高于原默认值；长时间故障则按持续恢复决策保留间隔封顶的连接尝试。部署仍可覆盖 Host Ping 间隔。Gateway mux 不拥有第二个 retry timer，因此每条 `retry #N` warning 都对应一次由 Controller 请求的物理尝试。
+فارغ خامل متصفح اتصال قلب قفز تدفق كمية سوف عال في أصل قيمة افتراضية؛ طويل وقت لذا عائق فإن حسب حمل متابعة استعادة قرار إبقاء بين فصل غلاف قمة اتصال محاولة تجربة. نشر ما زال يمكن تغطية Host Ping بين فصل.Gateway mux لا يملك ثاني عدد retry timer، لذلك كل بند `retry #N` warning كل مقابل مرة من Controller طلب شيء إدارة محاولة تجربة.
 
-手动重连会刻意中断共享物理 socket 的全部 logical Remote stream。它们既有的 generation supervisor 会通过新 baseline 或 cursor 恢复状态；单向通知仍不重放。
+يد حركة إعادة وصل سوف لحظة معنى في قطع مشترك شيء إدارة socket الكل logical Remote stream. هو جمع قائم generation supervisor سوف عبر جديد baseline أو cursor استعادة حالة؛ مفرد نحو إشعار ما زال لا إعادة وضع.
 
-连接状态与浏览器网络输入都位于 React-free 传输层。Settings 组件只接收框架绑定的 selector hook 与普通回调，因此没有 UI store 复制传输状态；只有 2 秒成功提示和 500ms 点动画属于展示层本地状态。
+اتصال حالة و متصفح شبكة شبكة إدخال كل يقع في React-free نقل طبقة.Settings مكون فقط استقبال إطار هيكل ربط selector hook و عادي عودة ضبط، لذلك لا يوجد UI store نسخ نقل حالة؛ فقط لديه 2 ثانية نجاح تلميح و 500ms نقطة حركة رسم يخص عرض طبقة محلي حالة.
 
 ## Testing
 
-Connection 与 Gateway 测试固定 2 秒心跳及 Pong deadline、指数 retry 间隔上限与日志、浏览器离线暂停和在线重置、手动重置序列、每次请求只替换一个 socket、状态去重、listener 隔离与 dispose。组件测试固定健康状态下不显示、悬浮与操作文案、独立点动画、点击行为与 2 秒成功状态。组装 Web 测试通过随附浏览器应用驱动浏览器 offline/online 转换、失败的 WebSocket 尝试、稳定的指示器几何、手动恢复与成功确认。
+Connection و Gateway اختبار ثابت 2 ثانية قلب قفز و Pong deadline، إشارة عدد retry بين فصل حد أعلى و سجل، متصفح مغادرة خط مؤقت توقف و في خط إعادة وضع، يد حركة إعادة وضع تسلسل، كل مرة طلب فقط استبدال واحد socket، حالة ذهاب إعادة،listener عزل و dispose. مكون اختبار ثابت سليم سليم حالة تحت لا عرض، معلق طفو و عملية نص سجل، مستقل نقطة حركة رسم، نقر سلوك و 2 ثانية نجاح حالة. تجميع Web اختبار عبر مع مرفق متصفح تطبيق قيادة متصفح offline/online تحويل، فشل WebSocket محاولة تجربة، مستقر إشارة عرض جهاز بضعة أي، يد حركة استعادة و نجاح تأكيد.

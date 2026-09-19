@@ -1,40 +1,40 @@
-# Agent Note: 移除未被消费的 LLM 组装便捷接口
+# Agent Note: إزالة لم يتم إزالة استهلاك LLM تجميع سهل سريع واجهة
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-06-20-drop-unconsumed-llm-assembled-surfaces.md) | 中文
+[English](2026-06-20-drop-unconsumed-llm-assembled-surfaces.md) | العربية
 
-## 问题
+## مشكلة
 
-`LlmService`（[packages/llm/llm/src/index.ts](../../../../packages/llm/llm/src/index.ts)）在模型之上暴露了三个调用接口：
+`LlmService`([packages/llm/llm/src/index.ts](../../../../packages/llm/llm/src/index.ts)) في نموذج لـ فوق كشف ثلاثة عدد استدعاء واجهة:
 
-- `stream()`：原始 `StreamChunk`，通过 `llm/stream` waterfall（瀑布式事件）分发。
-- `streamBlocks()`：一个「便捷视图」，将分片送入 `BlockAssembler` 并按流顺序产出已组装的 `ContentBlock`（[index.ts:137-144](../../../../packages/llm/llm/src/index.ts)）。
-- `generate()`：一个完整组装的 `GenerateResult`，通过第二条 `llm/generate` waterfall 分发（[index.ts:151-157](../../../../packages/llm/llm/src/index.ts)）。
+- `stream()`: أصلي `StreamChunk`، عبر `llm/stream` waterfall(شلال نشر صيغة حدث) توزيع.
+- `streamBlocks()`: واحد «سهل سريع عرض» ، سوف قسم قطعة إرسال دخول `BlockAssembler` و حسب تدفق ترتيب إنتاج خروج قد تجميع `ContentBlock`([index.ts:137-144](../../../../packages/llm/llm/src/index.ts)).
+- `generate()`: واحد كامل تجميع `GenerateResult`، عبر ثاني بند `llm/generate` waterfall توزيع ([index.ts:151-157](../../../../packages/llm/llm/src/index.ts)).
 
-LLM（大语言模型）服务唯一的生产消费方是 agent loop（智能体循环），它只使用 `stream()`：将原始分片送入自己的 `BlockAssembler`，以便在并行组装的同时记录分片，保证回放保真度（[packages/core/agent-loop/src/loop.ts](../../../../packages/core/agent-loop/src/loop.ts)，`ctx.llm.stream(req)` 步骤）。在 `packages/*/src` 和 `examples/*/src` 中 grep `streamBlocks` 与 `ctx.llm.generate`，找不到任何生产调用方。仅有的引用来自服务方法定义、文档和测试；适配器测试用 `generate()` 作为便捷驱动，但它们完全可以通过同一个 assembler 辅助函数手动消费 `stream()`，无需为此保留一个公开的生产 API。
+LLM(كبير لغة نموذج) خدمة وحيد إنتاج مستهلك هو agent loop(ذكي جسم حلقة) ، هو فقط استخدام `stream()`: سوف أصلي قسم قطعة إرسال دخول ذاتي ذات `BlockAssembler`، بـ سهل في و سطر تجميع معا سجل قسم قطعة، حفظ إثبات إعادة تشغيل حفظ حق درجة ([packages/core/agent-loop/src/loop.ts](../../../../packages/core/agent-loop/src/loop.ts) ،`ctx.llm.stream(req)` خطوة). في `packages/*/src` و `examples/*/src` في grep `streamBlocks` و `ctx.llm.generate`، بحث لا إلى أي إنتاج استدعاء جهة. فقط لديه مرجع قدوم ذاتي خدمة طريقة تعريف، وثيقة و اختبار؛ مهايئ اختبار استخدام `generate()` بصفة سهل سريع قيادة، لكن هو جمع تماما يمكن عبر نفس عدد assembler مساعد مساعدة دالة يد حركة إزالة استهلاك `stream()`، بلا حاجة لـ هذا إبقاء واحد عام إنتاج API.
 
-这属于[删除可变会话 summary](2026-06-19-drop-mutable-session-summary.md) 的同类模式：带有受测契约的组装视图 API，由测试而非生产代码消费。它们是为不关心 token 级增量的消费方推测性构建的，但唯一的真实消费方恰恰关心增量，以便持久化高保真重放数据。
+هذا يخص[حذف متغير جلسة summary](2026-06-19-drop-mutable-session-summary.md) نفس صنف نمط: حمل لديه تلقي قياس عقد نحو تجميع عرض API، من اختبار بينما غير إنتاج شفرة إزالة استهلاك. هو جمع هو لـ لا صلة قلب token درجة زيادة كمية مستهلك دفع قياس صفة بناء، لكن وحيد حقيقي مستهلك تماما تماما صلة قلب زيادة كمية، بـ سهل حفظ دائم عال حفظ حق إعادة وضع بيانات.
 
-`streamBlocks()` 拖带了 `BlockAssembler` 的一块专用逻辑：`flushReady()` 与 `flushRemaining()`（[packages/llm/llm/src/assembler.ts:138-168](../../../../packages/llm/llm/src/assembler.ts)）以及 `flushed` 游标字段，仅为支持按序增量产出而存在。`generate()` 拖带了 `GenerateResult`、`BlockAssembler.result()` 以及 `llm/generate` waterfall——在同一底层流之上的第二个拦截面。agent loop 对 assembler 的使用仅限于 `push()` / `message()` / `usage` / `finish`，不涉及流式 flush 或一次性服务组装。
+`streamBlocks()` سحب حمل `BlockAssembler` واحد كتلة مخصص استخدام منطق:`flushReady()` و `flushRemaining()`([packages/llm/llm/src/assembler.ts:138-168](../../../../packages/llm/llm/src/assembler.ts)) و `flushed` تنقل علامة حقل، فقط لـ دعم حمل حسب ترتيب زيادة كمية إنتاج خروج بينما وجود.`generate()` سحب حمل `GenerateResult`،`BlockAssembler.result()` و `llm/generate` waterfall——في نفس قاع طبقة تدفق لـ فوق ثاني عدد اعتراض قطع وجه.agent loop مقابل assembler استخدام فقط حد في `push()` / `message()` / `usage` / `finish`، لا تعلق و تدفق صيغة flush أو مرة صفة خدمة تجميع.
 
-## 决策
+## قرار
 
-`stream()` 是唯一的公开 LLM 调用接口。移除 `streamBlocks`、`generate`、其事件/结果类型，以及仅被该路径使用的 assembler 辅助方法。适配器测试通过本地辅助函数对公开流进行组装；`BlockAssembler` 仅保留有生产消费方的操作。
+`stream()` هو وحيد عام LLM استدعاء واجهة. إزالة `streamBlocks`،`generate`، ذلك حدث/نتيجة نوع، و فقط يتم هذا مسار استخدام assembler مساعد مساعدة طريقة. مهايئ اختبار عبر محلي مساعد مساعدة دالة مقابل عام تدفق إجراء تجميع؛`BlockAssembler` فقط إبقاء لديه إنتاج مستهلك عملية.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**保留 `generate()` 作为仅供测试的便捷方法**：否决。适配器测试通过共享 assembler 手动消费 `stream()`，走的是与生产完全相同的流式路径；一个唯一调用方只有测试的公开方法，正是 [drop-mutable-summary 先例](2026-06-19-drop-mutable-session-summary.md)所淘汰的死接口形态。未来如果有消费方需要不带增量的组装块，届时再为该消费方引入一个聚焦的辅助方法。
+**إبقاء `generate()` بصفة فقط توفير اختبار سهل سريع طريقة**: مرفوض. مهايئ اختبار عبر مشترك assembler يد حركة إزالة استهلاك `stream()`، مشي هو و إنتاج تماما نفسه تدفق صيغة مسار؛ واحد وحيد استدعاء جهة فقط لديه اختبار عام طريقة، صحيح هو [drop-mutable-summary أولا مثال](2026-06-19-drop-mutable-session-summary.md) الذي تصفية استبعاد ميت واجهة شكل. لم قدوم إذا لديه مستهلك حاجة لا حمل زيادة كمية تجميع كتلة، دورة وقت مجددا لـ هذا مستهلك جذب دخول واحد تجمع تركيز مساعد مساعدة طريقة.
 
-## 验证
+## تحقق
 
-`streamBlocks`、`generate`、`llm/generate` 及仅供它们使用的 assembler 辅助函数均已移除，且未产生新的无用导出；两个真实适配器都通过 `stream()` 和共享 assembler 接受测试；循环行为保持一致（ACP（Agent Client Protocol）快照预期输出未变）；README、架构文档和模块文档也不再提及已删除表面。
+`streamBlocks`،`generate`،`llm/generate` و فقط توفير هو جمع استخدام assembler مساعد مساعدة دالة متساو قد إزالة، كما لم إنتاج جديد بلا استخدام توجيه خروج؛ اثنان عدد حقيقي مهايئ كل عبر `stream()` و مشترك assembler قبول اختبار؛ حلقة سلوك إبقاء متسق (ACP(Agent Client Protocol) لقطة مسبق مدة إخراج لم تغيير) ؛README، هيكل بنية وثيقة و وحدة وثيقة أيضا لم يعد رفع و قد حذف جدول وجه.
 
-## 后果
+## عاقبة
 
-- **从一个核心词汇包中移除了公开方法。** 未来如果有插件需要不带增量的组装块，它需要直接调用 `stream()` 并使用 `BlockAssembler`，或在有真实消费方时重新引入一个聚焦的辅助方法。鉴于预发布阶段「基础优先于预设未来」的立场（[AGENTS.md](../../../../AGENTS.md)），现在正是裁剪仅供测试的公开接口的合适时机。
-- **适配器测试变得更显式。** 它们失去了便捷的 `generate()` 包装层，但这是有益的压力：测试走的是与生产相同的流式路径。
-- **waterfall 使用者失去 `llm/generate`。** 不存在生产监听者。未来的缓存/重试/日志插件应包装 `llm/stream`，它仍然是唯一的提供方调用路径。
+- **من واحد نواة قلب مفردات حزمة في إزالة عام طريقة.** لم قدوم إذا لديه إضافة حاجة لا حمل زيادة كمية تجميع كتلة، هو حاجة مباشر استدعاء `stream()` و استخدام `BlockAssembler`، أو في لديه حقيقي مستهلك وقت إعادة جذب دخول واحد تجمع تركيز مساعد مساعدة طريقة. تمييز في مسبق إصدار مرحلة مقطع «أساس أساس أولوية في مسبق ضبط لم قدوم» قيام ساحة ([AGENTS.md](../../../../AGENTS.md)) ، الآن صحيح هو قطع قص فقط توفير اختبار عام واجهة دمج ملائم وقت آلة.
+- **مهايئ اختبار تغيير نيل أكثر صريح.** هو جمع فقد ذهاب سهل سريع `generate()` حزمة تركيب طبقة، لكن هذا هو لديه فائدة ضغط قوة: اختبار مشي هو و إنتاج نفسه تدفق صيغة مسار.
+- **waterfall استخدام من فقد ذهاب `llm/generate`.** لا وجود إنتاج استماع من. لم قدوم ذاكرة مؤقتة/إعادة محاولة/سجل إضافة ينبغي حزمة تركيب `llm/stream`، هو ما زال هو وحيد مزود استدعاء مسار.
 
-改动规模不大，但它从 LLM 包中干净地移除了预设的接口面积，为生产和测试留下唯一一份模型调用契约。
+تعديل قاعدة نموذج لا كبير، لكن هو من LLM حزمة في جاف صاف أرض إزالة مسبق ضبط واجهة وجه تراكم، لـ إنتاج و اختبار إبقاء تحت وحيد واحد نسخة نموذج استدعاء عقد نحو.

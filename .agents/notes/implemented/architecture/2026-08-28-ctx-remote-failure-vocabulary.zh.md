@@ -2,21 +2,21 @@
 
 Status: implemented
 
-[English](2026-08-28-ctx-remote-failure-vocabulary.md) | 中文
+[English](2026-08-28-ctx-remote-failure-vocabulary.md) | العربية
 
 ## Problem
 
-每个 Remote owner 包各自维护一套失败面：一个 `XxxErrorDetailsMap` 接口、由它派生的 `XxxError` union，以及一个出口映射函数，把域内错误类（`UnknownPresetError`、`PresetMountError`、`SessionTitleInvalidError` 等）翻译成 wire 失败值。`@deepseek-ai/dsh-typert-protocol` 同时携带两个失败类——owner 主动上报用 `TypertRemoteFailure`，lookup resolver 产生的用 `TypertLookupFailure`——而 `@deepseek-ai/dsh-client-connection` 又保留了第二份 typed 视图 `RpcErrorDetailsMap`，把 `agent-preset-not-found`、`session-not-found` 这类域码硬编码进载体层。
+كل Remote owner حزمة كل منها صيانة واحد طقم فشل وجه: واحد `XxxErrorDetailsMap` واجهة، من هو إرسال توليد `XxxError` union، و واحد خروج فتحة خريطة دالة، يأخذ مجال داخل خطأ صنف (`UnknownPresetError`،`PresetMountError`،`SessionTitleInvalidError` انتظار) قلب ترجمة صار wire فشل قيمة.`@deepseek-ai/dsh-typert-protocol` معا يحمل اثنان عدد فشل صنف——owner رئيسي حركة فوق تقرير استخدام `TypertRemoteFailure`،lookup resolver إنتاج استخدام `TypertLookupFailure`——بينما `@deepseek-ai/dsh-client-connection` أيضا إبقاء ثاني نسخة typed عرض `RpcErrorDetailsMap`، يأخذ `agent-preset-not-found`،`session-not-found` هذا صنف مجال رمز صلب تحرير رمز دخول تحميل جسم طبقة.
 
-于是一个码同时存在三处：owner 的表、载体的 typed 视图、以及消费方为窄化而写的 union 或 cast（`result.error as SessionError`）。新增一个域码要改三处，跨域转述一个别人的码则要把对方的码复制进自己的表——`SessionErrorDetailsMap` 就收编了 `agent-preset-*`、`subagent-*`、`workspace-not-found` 五个他域码。
+في هو واحد رمز معا وجود ثلاثة موضع:owner جدول، تحميل جسم typed عرض، و مستهلك لـ ضيق تحويل بينما كتابة union أو cast(`result.error as SessionError`). إضافة جديدة واحد مجال رمز يلزم تعديل ثلاثة موضع، عبر مجال تحويل وصف واحد آخر شخص رمز فإن يلزم يأخذ مقابل جهة رمز نسخ دخول ذاتي ذات جدول——`SessionErrorDetailsMap` حينئذ استلام تحرير `agent-preset-*`،`subagent-*`،`workspace-not-found` خمسة عدد هو مجال رمز.
 
-失败信息也在两处被压平。Gateway 自己的 17 个装配失败（未挂载的方法、歧义 endpoint、lookup provider 不匹配、结果未过 codec 等）一律以 `code: 'internal'` 上 wire，client 无法把装配 bug 与业务拒绝区分开；owner 又出于防御把无关异常预折成自己的域码，于是一个真正的 Host bug 会以一个看起来合理的域失败到达调用方。
+فشل معلومة أيضا في اثنان موضع يتم ضغط مستو.Gateway ذاتي ذات 17 عدد تركيب إعداد فشل (لم تركيب طريقة، اختلاف معنى endpoint،lookup provider لا مطابقة، نتيجة لم مرور codec انتظار) واحد قاعدة بـ `code: 'internal'` فوق wire،client لا يمكن يأخذ تركيب إعداد bug و عمل خدمة رفض منطقة قسم فتح؛owner أيضا خروج في منع صد يأخذ غير متصل استثناء مسبق طي صار ذاتي ذات مجال رمز، في هو واحد حق صحيح Host bug سوف بـ واحد نظر بدء قدوم دمج إدارة مجال فشل وصول استدعاء جهة.
 
-Host 固定事实同样绕过了 `ctx.remote`：Host home 取自 `(ctx.get('connection') as ConnectionHandle).generation.getSnapshot()?.host.home`，任何只需要一条固定事实的页面都得注入载体并理解它的 generation store。
+Host ثابت واقع نفس مثال التفاف مرور `ctx.remote`:Host home أخذ ذاتي `(ctx.get('connection') as ConnectionHandle).generation.getSnapshot()?.host.home`، أي فقط حاجة واحد بند ثابت واقع صفحة كل نيل حقن تحميل جسم و إدارة حل هو generation store.
 
 ## Decision
 
-`@deepseek-ai/dsh-typert-protocol` 导出唯一的失败类 `RemoteError<Code>`：一个真 `Error`，带只读 `code` 与 `details`、结构标记 `isDSHRemoteError`，以及标准 `ErrorOptions`（`cause` 只在进程内有效）。码与 details 的对应关系收进一张 merge-extensible 的 `RemoteErrorDetailsMap`；`RemoteFailure` 是按码分布的实例 union，`RemoteResult<T>` 形状不变。
+`@deepseek-ai/dsh-typert-protocol` توجيه خروج وحيد فشل صنف `RemoteError<Code>`: واحد حق `Error`، حمل فقط قراءة `code` و `details`، بنية علامة `isDSHRemoteError`، و معيار `ErrorOptions`(`cause` فقط في عملية داخل صالح). رمز و details مقابل علاقة استلام دخول واحد ورقة merge-extensible `RemoteErrorDetailsMap`؛`RemoteFailure` هو حسب رمز قسم نشر نسخة union،`RemoteResult<T>` شكل حالة ثابت.
 
 ```text
 export class RemoteError<Code extends RemoteErrorCode = RemoteErrorCode> extends Error {
@@ -28,61 +28,61 @@ export type RemoteFailure = { [C in RemoteErrorCode]: RemoteError<C> }[RemoteErr
 export type RemoteResult<T> = { ok: true; value: T } | { ok: false; error: RemoteFailure }
 ```
 
-失败点直接 `throw new RemoteError(code, message, details)`。域内不再建错误类家族，也不再写出口映射函数；只有「把任意 provider 异常归类」这一种场景保留一个 `catch`，并在其中 `throw new RemoteError(code, messageOf(error), details, { cause: error })`。进程内仍需消费的既有异常类（`ApiSessionCwdConflict` 等）保留为不导出的私有类，在出口一行转成 `RemoteError`。
+فشل نقطة مباشر `throw new RemoteError(code, message, details)`. مجال داخل لم يعد بناء خطأ صنف بيت عائلة، أيضا لم يعد كتابة خروج فتحة خريطة دالة؛ فقط لديه «يأخذ مهمة معنى provider استثناء عودة صنف» هذا واحد نوع مشهد إبقاء واحد `catch`، و في منها `throw new RemoteError(code, messageOf(error), details, { cause: error })`. عملية داخل ما زال يحتاج إزالة استهلاك قائم استثناء صنف (`ApiSessionCwdConflict` انتظار) إبقاء لـ لا توجيه خروج خاص صنف، في خروج فتحة واحد سطر تحويل صار `RemoteError`.
 
-码是 `<语义域>/<理由>` 形式的字符串：`session/not-found`、`gateway/cancelled`、`workspace/invalid-path`、`agent-preset/locked`。前缀与 wire namespace 同风格，读者从码本身就能看出它属于谁，跨域转述时也不再需要一个别扭的无前缀名。
+رمز هو `<دلالة مجال>/<إدارة من>` شكل صيغة نص:`session/not-found`،`gateway/cancelled`،`workspace/invalid-path`،`agent-preset/locked`. بادئة و wire namespace نفس ريح إطار، قراءة من من رمز ذاته حينئذ قدرة نظر خروج هو يخص من، عبر مجال تحويل وصف وقت أيضا لم يعد حاجة واحد آخر لي بلا بادئة اسم.
 
 ## Code ownership
 
-一个码只有一个声明处，落点由「谁生产它」和「声明对谁可达」共同决定——声明合并只在增补文件进入当前 program 时生效，所以正家必须是每个生产者都能看见的包：
+واحد رمز فقط لديه واحد إعلان موضع، سقوط نقطة من «من إنتاج هو» و «إعلان مقابل من يمكن بلوغ» مشترك نفس قرار——إعلان دمج فقط في زيادة تكملة ملف دخول حالي program وقت توليد فاعلية، الذي بـ صحيح بيت يجب هو كل إنتاج من كل قدرة نظر رؤية حزمة:
 
-- **载体码**：`gateway/bad-request`、`gateway/cancelled`、`gateway/internal` 由 protocol 声明，人人可达。
-- **Gateway 装配码**：17 个 `gateway/*` 由 `packages/api/gateway/src/remote-error-codes.ts` 声明，details 统一为 `TypertGatewayFaultDetails { endpoint, field? }`；该模块 face-neutral，Host 与 Client 两面各自 import，因此两个 program 看到同一批条目。
-- **跨包共产**：两个及以上不同包抛同一个码时，声明落到双方都已依赖的最低层。`session/not-found` 落 `@deepseek-ai/dsh-session`（session-controller 与 workspace-controller 都依赖它），`workspace/not-found` 落 `@deepseek-ai/dsh-workspace`（session-controller 与 workspace-controller 之间没有依赖边，能力包是唯一共同下层）。
-- **单一生产者**：只有一个包抛的码落生产者包。`subagent/not-found` 与 `agent-preset/conflict` 因此落 session-controller——全仓只有它抛这两个码，subagent 与 agent-presets 的码表里都没有它们。
+- **تحميل جسم رمز**:`gateway/bad-request`،`gateway/cancelled`،`gateway/internal` من protocol إعلان، شخص شخص يمكن بلوغ.
+- **Gateway تركيب إعداد رمز**:17 عدد `gateway/*` من `packages/api/gateway/src/remote-error-codes.ts` إعلان،details موحد واحد لـ `TypertGatewayFaultDetails { endpoint, field? }`؛ هذا وحدة face-neutral،Host و Client اثنان وجه كل منها import، لذلك اثنان عدد program يرى نفس دفعة بند.
+- **عبر حزمة مشترك إنتاج**: اثنان عدد و بـ فوق مختلف حزمة رمي نفس عدد رمز وقت، إعلان سقوط إلى مزدوج جهة كل قد اعتماد الأكثر منخفض طبقة.`session/not-found` سقوط `@deepseek-ai/dsh-session`(session-controller و workspace-controller كل اعتماد هو) ،`workspace/not-found` سقوط `@deepseek-ai/dsh-workspace`(session-controller و workspace-controller بين لا يوجد اعتماد حافة، قدرة حزمة هو وحيد مشترك نفس تحت طبقة).
+- **مفرد واحد إنتاج من**: فقط لديه واحد حزمة رمي رمز سقوط إنتاج من حزمة.`subagent/not-found` و `agent-preset/conflict` لذلك سقوط session-controller——كل مستودع فقط لديه هو رمي هذا اثنان عدد رمز،subagent و agent-presets رمز جدول داخل كل لا يوجد هو جمع.
 
-共享的是校验逻辑，不是码。`session/invalid-time-zone` 与 `subagent/invalid-time-zone` 是两个域各自声明、各自抛出的两个码，两个端点共用 `@deepseek-ai/dsh-util-time` 的 `canonicalClientTimeZone()` 做规范化；client 对这个码没有分支语义，拆码的成本是零，而合成一个码就会重新制造可达性问题。
+مشترك هو تحقق منطق، لا هو رمز.`session/invalid-time-zone` و `subagent/invalid-time-zone` هو اثنان عدد مجال كل منها إعلان، كل منها رمي خروج اثنان عدد رمز، اثنان عدد طرف نقطة مشترك استخدام `@deepseek-ai/dsh-util-time` `canonicalClientTimeZone()` فعل مواصفة تحويل؛client مقابل هذا عدد رمز لا يوجد فرع دلالة، تفكيك رمز صار هذا هو صفر، بينما دمج صار واحد رمز حينئذ سوف إعادة صنع صنع يمكن بلوغ صفة مشكلة.
 
 ## Discrimination by code
 
-判别一律读 `code`，从不用 `instanceof`。Client 与 Host 是两个独立打包的 program，worker 传输还会把页面侧再分一次包，因此同一个类会存在多份副本，跨副本的原型链身份不成立。机制层用 protocol 的 `remoteErrorOf(value)` 读结构标记加一个字符串 `code`，Gateway client face 另外导出 `isRemoteFailure(error)` 供消费方在 catch 里判别；两者都只看这两个字段、不看类——连 `instanceof Error` 都不要求，因为另一个 realm 抛出的 Error 同样通不过它。
+حكم آخر واحد قاعدة قراءة `code`، من لا استخدام `instanceof`.Client و Host هو اثنان عدد مستقل تحزيم program،worker نقل أيضا سوف يأخذ صفحة جانب مجددا قسم مرة حزمة، لذلك نفس عدد صنف سوف وجود كثير نسخة فرعي هذا، عبر فرعي هذا أصل نوع سلسلة هوية لا صار قيام. آلية طبقة استخدام protocol `remoteErrorOf(value)` قراءة بنية علامة إضافة واحد نص `code`،Gateway client face آخر خارج توجيه خروج `isRemoteFailure(error)` توفير مستهلك في catch داخل حكم آخر؛ اثنان من كل فقط نظر هذا اثنان عدد حقل، لا نظر صنف——وصل `instanceof Error` كل لا اشتراط، لأن آخر عدد realm رمي خروج Error نفس مثال عبر لا مرور هو.
 
-业务代码通常连这两个函数都不需要：`RemoteResult` 的 `ok: false` 分支已经是类型化的 `RemoteFailure`，`if (result.error.code === 'session/not-found')` 就把 `details` 窄化到该码的形状，无需 cast。需要向上抛的站点直接 `throw result.error`——它是真 `Error`，栈与 `message` 都成立。
+عمل خدمة شفرة عبر معتاد وصل هذا اثنان عدد دالة كل لا حاجة:`RemoteResult` `ok: false` فرع قد هو نوع تحويل `RemoteFailure`،`if (result.error.code === 'session/not-found')` حينئذ يأخذ `details` ضيق تحويل إلى هذا رمز شكل حالة، بلا حاجة cast. حاجة نحو فوق رمي محطة نقطة مباشر `throw result.error`——هو هو حق `Error`، مكدس و `message` كل صار قيام.
 
-client 面不构造 `RemoteError`：唯一例外是 Gateway 的 client face 本身，它在 `invoke()` 里按 wire 数据重建实例、在流边界把载体 throw 折进同一词汇。测试替身要构造失败值时从 `@deepseek-ai/dsh-client-test-runtime` 取 `RemoteError`，而不是让 client 包值引入 protocol。断言用 `toMatchObject` 判 code（必要时加 details 字段）：`RemoteError` 是 `Error`，own key 集合与旧字面量不同，`toEqual` 会失败。
+client وجه لا بنية صنع `RemoteError`: وحيد مثال خارج هو Gateway client face ذاته، هو في `invoke()` داخل حسب wire بيانات إعادة بناء نسخة، في تدفق حد يأخذ تحميل جسم throw طي دخول نفس مفردات. اختبار بديل ذات يلزم بنية صنع فشل قيمة وقت من `@deepseek-ai/dsh-client-test-runtime` أخذ `RemoteError`، بينما لا هو يجعل client حزمة قيمة جذب دخول protocol. تأكيد استخدام `toMatchObject` حكم code(لا بد يلزم وقت إضافة details حقل):`RemoteError` هو `Error`،own key تجميع دمج و قديم حرف وجه كمية مختلف،`toEqual` سوف فشل.
 
 ## Fixed Host facts
 
-`ctx.remote.$host` 暴露两条固定事实：`home: string | undefined` 与 `isLoopback: boolean`。它是 Client Remote service 上的 getter，读的是 service 构造期取得的 connection 句柄——`home` 来自 generation 快照的 ready frame（ready 之前是 `undefined`），`isLoopback` 来自载体。没有 store、没有订阅、没有 generation 计数器。
+`ctx.remote.$host` كشف اثنان بند ثابت واقع:`home: string | undefined` و `isLoopback: boolean`. هو هو Client Remote service فوق getter، قراءة هو service بنية صنع مدة أخذ نيل connection جملة مقبض——`home` قدوم ذاتي generation لقطة ready frame(ready قبل هو `undefined`) ،`isLoopback` قدوم ذاتي تحميل جسم. لا يوجد store، لا يوجد حجز قراءة، لا يوجد generation حساب عدد جهاز.
 
-重连后的刷新走既有信号：Client Remote 在连上时 emit `connection/reset`，需要重取的消费方监听它或各域自己的 remote event，而不是让 `$host` 变成一个可订阅对象。因此消费方不再注入 `connection`：`@deepseek-ai/dsh-client-connection` 的消费白名单收缩到 hmr、frontend-static、bundle/web-app、session-log-export、webworker-runtime、gateway 与 api-remotes 装配。
+إعادة وصل بعد تحديث جديد مشي قائم إشارة:Client Remote في وصل فوق وقت emit `connection/reset`، حاجة إعادة أخذ مستهلك استماع هو أو كل مجال ذاتي ذات remote event، بينما لا هو يجعل `$host` تغيير صار واحد يمكن حجز قراءة كائن. لذلك مستهلك لم يعد حقن `connection`:`@deepseek-ai/dsh-client-connection` إزالة استهلاك أبيض اسم مفرد استلام تقليص إلى hmr،frontend-static،bundle/web-app،session-log-export،webworker-runtime،gateway و api-remotes تركيب إعداد.
 
 ## What the wire carries
 
-envelope 不变：wire 上仍是 `{ code, message, details }` 数据，`RemoteError` 是两端各自的进程内载体。Host 侧 `rpcFailure()` 收敛为两分支——结构识别出的 `RemoteError` 原样编码，其余折成 `gateway/internal`；载体信号取消也走同一词汇（`RemoteInvocationCancelled` 类整体删除，四个 throw 点改抛 `RemoteError('gateway/cancelled', …)`）。
+envelope ثابت:wire فوق ما زال هو `{ code, message, details }` بيانات،`RemoteError` هو اثنان طرف كل منها عملية داخل تحميل جسم.Host جانب `rpcFailure()` استلام جمع لـ اثنان فرع——بنية تعرف آخر خروج `RemoteError` أصل مثال تحرير رمز، ذلك بقية طي صار `gateway/internal`؛ تحميل جسم إشارة إلغاء أيضا مشي نفس مفردات (`RemoteInvocationCancelled` صنف كامل جسم حذف، أربعة عدد throw نقطة تعديل رمي `RemoteError('gateway/cancelled', …)`).
 
-三条 wire 可见行为随之确定。Gateway 的 17 个装配码按语义上 wire，client 因此能把「方法未挂载」与「业务拒绝」分开处理。owner 不预折无关异常：未归类的 throw 交给 Gateway 折一次 `gateway/internal`，诊断串保留在 `message` 里。client 一元调用被调用方 abort 时答 `gateway/cancelled`，即使本地 throw 抢在 wire 往返之前赢得竞争，也与 Host 会给出的码一致。
+ثلاثة بند wire مرئي سلوك مع لـ تحديد.Gateway 17 عدد تركيب إعداد رمز حسب دلالة فوق wire،client لذلك قدرة يأخذ «طريقة لم تركيب» و «عمل خدمة رفض» قسم فتح معالجة.owner لا مسبق طي غير متصل استثناء: لم عودة صنف throw تسليم إعطاء Gateway طي مرة `gateway/internal`، تشخيص سلسلة إبقاء في `message` داخل.client واحد عنصر استدعاء يتم استدعاء جهة abort وقت جواب `gateway/cancelled`، أي جعل محلي throw انتزاع في wire نحو إرجاع قبل فوز نيل تنافس تنازع، أيضا و Host سوف إعطاء خروج رمز متسق.
 
-载体层只保留开放的 wire 形状。`@deepseek-ai/dsh-client-connection` 的 `ConnectionRpcFailure`/`ConnectionRpcResult` 不含任何域码知识，其 `transportError()` 产出 `gateway/internal`；typed 视图的正家从此只有 protocol 的 `RemoteFailure`。
+تحميل جسم طبقة فقط إبقاء فتح وضع wire شكل حالة.`@deepseek-ai/dsh-client-connection` `ConnectionRpcFailure`/`ConnectionRpcResult` لا يحتوي أي مجال رمز معرفة تعرف، ذلك `transportError()` إنتاج خروج `gateway/internal`؛typed عرض صحيح بيت من هذا فقط لديه protocol `RemoteFailure`.
 
 ## Alternatives considered
 
-**每域一套 `RemoteFault` 错误类家族。** 让每个域（或每个码）有自己的 `Error` 子类，看起来更 OO，但它把「码」这一条信息拆成了类身份加字段两处，跨 realm 又只能退回判字段——于是类身份成为纯粹的负担：每个域要维护子类、导出它、在文档里解释它，而消费方仍然只能判 code。单类加一张码表把这份重量换成了一行声明。
+**كل مجال واحد طقم `RemoteFault` خطأ صنف بيت عائلة.** يجعل كل مجال (أو كل رمز) لديه ذاتي ذات `Error` فرعي صنف، نظر بدء قدوم أكثر OO، لكن هو يأخذ «رمز» هذا واحد بند معلومة تفكيك صار صنف هوية إضافة حقل اثنان موضع، عبر realm أيضا فقط قدرة تراجع عودة حكم حقل——في هو صنف هوية يصبح صاف خالص سالب تحمل: كل مجال يلزم صيانة فرعي صنف، توجيه خروج هو، في وثيقة داخل حل تفسير هو، بينما مستهلك ما زال فقط قدرة حكم code. مفرد صنف إضافة واحد ورقة رمز جدول يأخذ هذا نسخة إعادة كمية تبديل صار واحد سطر إعلان.
 
-**在调用点加 `attempt` / `unwrap` / `remoteFailureOf` 包装函数。** 包装能让调用点少写一个 `if`，但它把 `RemoteResult` 这个 canonical 形状变成了「先过一层库函数」，两种风格会长期并存；`unwrap` 还会把「失败是正常结果」重新变成异常流，与 Remote 面不 reject 的契约背道而驰。被保留的 `remoteErrorOf` 只服务机制层与测试断言，业务代码拿到的要么是已类型化的 `result.error`、要么是自己抛的，不需要它。
+**في استدعاء نقطة إضافة `attempt` / `unwrap` / `remoteFailureOf` حزمة تركيب دالة.** حزمة تركيب قدرة يجعل استدعاء نقطة قليل كتابة واحد `if`، لكن هو يأخذ `RemoteResult` هذا عدد canonical شكل حالة تغيير صار «أولا مرور واحد طبقة مكتبة دالة» ، اثنان نوع ريح إطار سوف طويل مدة و تخزين؛`unwrap` أيضا سوف يأخذ «فشل هو صحيح معتاد نتيجة» إعادة تغيير صار استثناء تدفق، و Remote وجه لا reject عقد نحو خلف طريق بينما انطلاق. يتم إبقاء `remoteErrorOf` فقط خدمة آلية طبقة و اختبار تأكيد، عمل خدمة شفرة أخذ إلى يلزم ما هو قد نوع تحويل `result.error`، يلزم ما هو ذاتي ذات رمي، لا حاجة هو.
 
-**`host/updated` 事件加订阅式 `$host` store。** 订阅能在 Host home 变化时自动刷新，但 home 与 isLoopback 在一条连接内是固定事实，为它引入 store、generation 与订阅生命周期，等于让每个只想读一次的页面都承担一套状态管理。重连是已有信号（`connection/reset`），业务失效走各域 remote event，固定事实保持普通值读取。
+**`host/updated` حدث إضافة حجز قراءة صيغة `$host` store.** حجز قراءة قدرة في Host home تغير وقت تلقائي تحديث جديد، لكن home و isLoopback في واحد بند اتصال داخل هو ثابت واقع، لـ هو جذب دخول store،generation و حجز قراءة دورة الحياة، انتظار في يجعل كل فقط تفكير قراءة مرة صفحة كل تحمل تحمل واحد طقم حالة إدارة. إعادة وصل هو قد لديه إشارة (`connection/reset`) ، عمل خدمة بطلان مشي كل مجال remote event، ثابت واقع إبقاء عادي قيمة قراءة.
 
-**把不上 wire 的本地失败也纳入码表。** 例如 ui-goal 的 `no-current-goal`：它从不跨进程，纳入码表会让共享词汇混入只有一个 client 包关心的条目，还会误导读者以为它有 wire 语义。本地失败保持各自的本地类型，码表只描述 Remote 词汇。
+**يأخذ لا فوق wire محلي فشل أيضا قبول دخول رمز جدول.** مثال مثل ui-goal `no-current-goal`: هو من لا عبر عملية، قبول دخول رمز جدول سوف يجعل مشترك مفردات خلط دخول فقط لديه واحد client حزمة صلة قلب بند، أيضا سوف خطأ توجيه قراءة من بـ لـ هو لديه wire دلالة. محلي فشل إبقاء كل منها محلي نوع، رمز جدول فقط وصف Remote مفردات.
 
 ## Consequences
 
-新增一个域码是一处 declaration merging 加一个 throw：不再有映射函数、错误类、载体 typed 视图三处联动。代价是落点需要判断——正家必须对每个生产者可达，而这条判断只有在真的出现第二个生产者时才显现；`workspace/not-found` 就是这样从 workspace-controller 迁到能力包的，并为此给 `@deepseek-ai/dsh-workspace` 加了一条 type-only 的 protocol 依赖。
+إضافة جديدة واحد مجال رمز هو واحد موضع declaration merging إضافة واحد throw: لم يعد لديه خريطة دالة، خطأ صنف، تحميل جسم typed عرض ثلاثة موضع ربط حركة. بديل قيمة هو سقوط نقطة حاجة حكم قطع——صحيح بيت يجب مقابل كل إنتاج من يمكن بلوغ، بينما هذا بند حكم قطع فقط لديه في حق ظهور ثاني عدد إنتاج من وقت عندئذ إظهار الآن؛`workspace/not-found` حينئذ هو هذا مثال من workspace-controller نقل إلى قدرة حزمة، و لـ هذا إعطاء `@deepseek-ai/dsh-workspace` إضافة واحد بند type-only protocol اعتماد.
 
-码字符串带前缀后，wire 字符串整体变化，connection fixture 内嵌的码、host 与 client 两侧断言、spec 本地 declare 一次性同步。发布前阶段接受这次一波切；发布后同样的改名需要一个兼容期。
+رمز نص حمل بادئة بعد،wire نص كامل جسم تغير،connection fixture داخل تضمين رمز،host و client اثنان جانب تأكيد،spec محلي declare مرة صفة تزامن. إصدار قبل مرحلة مقطع قبول هذا مرة واحد موجة قطع؛ إصدار بعد نفس مثال تعديل اسم حاجة واحد توافق مدة.
 
-`details` 的类型由码决定，因此码与 details 的搭配错误在编译期就被拒。反面是每个抛点都要给全 details 的必填字段：protocol 把 `gateway/bad-request` 的 `issues` 设为可选，正是为了让没有 codec issues 的业务校验点仍然只写 `{}`。
+`details` نوع من رمز قرار، لذلك رمز و details تركيب إعداد خطأ في تحرير ترجمة مدة حينئذ يتم رفض. عكس وجه هو كل رمي نقطة كل يلزم إعطاء كل details لا بد ملء حقل:protocol يأخذ `gateway/bad-request` `issues` ضبط لـ اختياري، صحيح هو لـ يجعل لا يوجد codec issues عمل خدمة تحقق نقطة ما زال فقط كتابة `{}`.
 
-`RemoteError` 是 `Error`，所以它进任何日志与 `errorChain()` 都保留 `message` 与 `cause`；但 `cause` 只在进程内成立，wire 上只有 `code`、`message`、`details` 三个字段。跨 realm 的判别永远读结构标记，任何新增的传输（worker、bundle 分片）都必须把标记或等价的 marker 帧带过去，否则失败值会退化为普通 `Error`。
+`RemoteError` هو `Error`، الذي بـ هو دخول أي سجل و `errorChain()` كل إبقاء `message` و `cause`؛ لكن `cause` فقط في عملية داخل صار قيام،wire فوق فقط لديه `code`،`message`،`details` ثلاثة عدد حقل. عبر realm حكم آخر دائم بعيد قراءة بنية علامة، أي إضافة جديدة نقل (worker،bundle قسم قطعة) كل يجب يأخذ علامة أو انتظار قيمة marker لقطة حمل مرور ذهاب، لا فإن فشل قيمة سوف تراجع تحويل لـ عادي `Error`.
 
-Remote 方法的消费端签名统一为 `Promise<RemoteResult<T>>`，与[方法调用面](2026-08-02-typert-remote-method-calls.zh.md)描述的生成投影一致；一元调用的迁移账本见[一元端点迁移](../../archived/architecture/2026-08-10-unary-apiproxy-remote-migration.md)。
+Remote طريقة إزالة استهلاك طرف توقيع موحد واحد لـ `Promise<RemoteResult<T>>`، و[طريقة استدعاء وجه](2026-08-02-typert-remote-method-calls.zh.md) وصف توليد إسقاط متسق؛ واحد عنصر استدعاء ترحيل حساب هذا رؤية[واحد عنصر طرف نقطة ترحيل](../../archived/architecture/2026-08-10-unary-apiproxy-remote-migration.md).

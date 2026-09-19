@@ -1,36 +1,36 @@
-# Agent Note: MCP 客户端插件——连接外部 MCP 服务器并桥接其工具
+# Agent Note: MCP عميل إضافة——اتصال خارجي MCP خادم و جسر وصل ذلك أداة
 
 Status: implemented
 
-[English](2026-07-07-mcp-client-plugin.md) | 中文
+[English](2026-07-07-mcp-client-plugin.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 此前无法消费 MCP（Model Context Protocol）生态中的工具。MCP 是工具服务器的新兴标准——GitHub、文件系统、数据库、代码搜索以及数百个社区服务器都通过 MCP 暴露工具。用户希望将 harness 指向一个或多个 MCP 服务器，让其工具以原生的模型可见工具形式出现，而无需为每个服务器编写胶水代码。
+harness هذا قبل لا يمكن إزالة استهلاك MCP(Model Context Protocol) توليد حالة في أداة.MCP هو أداة خادم جديد نهوض معيار——GitHub، نظام الملفات، قاعدة بيانات، شفرة بحث و عدد مئة عدد مجتمع منطقة خادم كل عبر MCP كشف أداة. مستخدم أمل نظر سوف harness إشارة نحو واحد أو كثير عدد MCP خادم، يجعل ذلك أداة بـ أصلي نموذج مرئي أداة شكل صيغة ظهور، بينما بلا حاجة لـ كل خادم تحرير كتابة لاصق ماء شفرة.
 
-`ToolRuntime` 已经接受原始 JSON Schema 工具定义（`dsh-tools` README 中有记录：「Raw JSON-Schema tool definitions (from MCP servers) are still accepted by `ToolRuntime.register()` directly」），扩展实操手册（cookbook）也勾勒了预期模式（「MCP | one plugin per server: discover tools → `ctx.tools.register()`」）。基础设施已就绪，缺的是桥接插件。
+`ToolRuntime` قد قبول أصلي JSON Schema أداة تعريف (`dsh-tools` README في لديه سجل:«Raw JSON-Schema tool definitions (from MCP servers) are still accepted by `ToolRuntime.register()` directly») ، توسيع فعلي تشغيل يد سجل (cookbook) أيضا ربط لي مسبق مدة نمط («MCP | one plugin per server: discover tools → `ctx.tools.register()`»). أساس أساس ضبط تطبيق قد حينئذ خيط، نقص هو جسر وصل إضافة.
 
-## 决策
+## قرار
 
-### 包
+### حزمة
 
-单个包 `@deepseek-ai/dsh-mcp-client`，位于 `packages/mcp/mcp-client/`。不做能力 seam 的三包拆分——可预见范围内不会有第二种 MCP 客户端实现，且约定是「不要预防性拆分」（[能力 seam Agent Note](../architecture/2026-06-13-capability-seams.zh.md)）。
+مفرد عدد حزمة `@deepseek-ai/dsh-mcp-client`، يقع في `packages/mcp/mcp-client/`. لا فعل قدرة seam ثلاثة حزمة تفكيك قسم——يمكن مسبق رؤية نطاق داخل لن لديه ثاني نوع MCP عميل تنفيذ، كما اتفاق هو «لا يلزم مسبق منع صفة تفكيك قسم»([قدرة seam Agent Note](../architecture/2026-06-13-capability-seams.zh.md)).
 
 ### SDK
 
-使用官方 [`@modelcontextprotocol/client`](https://github.com/modelcontextprotocol/typescript-sdk)（`Client`、`StdioClientTransport`、`StreamableHTTPClientTransport`）。[协议采用记录](2026-09-12-mcp-sdk-protocol-negotiation.zh.md) 负责协商与 SDK 校验。Harness 不实现 JSON-RPC 帧处理。
+استخدام رسمي جهة [`@modelcontextprotocol/client`](https://github.com/modelcontextprotocol/typescript-sdk)(`Client`،`StdioClientTransport`،`StreamableHTTPClientTransport`).[بروتوكول اعتماد سجل](2026-09-12-mcp-sdk-protocol-negotiation.zh.md) مسؤول تنسيق تجارة و SDK تحقق.Harness لا تنفيذ JSON-RPC لقطة معالجة.
 
-### 范围
+### نطاق
 
-仅 MCP Client，不提供服务器端。工具通过本包注册；[资源与服务器指令](2026-09-12-mcp-resources-and-instructions.zh.md) 分别通过共享资源工具和已记录的字面系统提示词提供。MCP 提示词模板不受支持。
+فقط MCP Client، لا توفير خادم طرف. أداة عبر هذه الحزمة تسجيل؛[مورد و خادم إشارة أمر](2026-09-12-mcp-resources-and-instructions.zh.md) قسم آخر عبر مشترك مورد أداة و قد سجل حرف وجه توجيه النظام توفير.MCP نص التوجيه نموذج لوح لا تلقي دعم حمل.
 
-### 插件形态
+### إضافة شكل
 
-命名空间插件（具名导出 `name`/`inject`/`Config`/`apply`，无 `export default`）。`inject: ['tools']`。每个 MCP 服务器对应 `cordis.yml` 中的一个插件实例——同一个包以不同配置加载 N 次，与 `dsh-tool-subagent` 相同。
+نطاق الأسماء إضافة (أداة اسم توجيه خروج `name`/`inject`/`Config`/`apply`، بلا `export default`).`inject: ['tools']`. كل MCP خادم مقابل `cordis.yml` في واحد إضافة نسخة——نفس عدد حزمة بـ مختلف إعداد تحميل N مرة، و `dsh-tool-subagent` نفسه.
 
-### 配置
+### إعداد
 
-以 `transport` 字段为判别的扁平联合类型：
+بـ `transport` حقل لـ حكم آخر مسطح مستو ربط دمج نوع:
 
 ```typescript
 interface StdioConfig {
@@ -54,9 +54,9 @@ interface StreamableHttpConfig {
 type Config = StdioConfig | StreamableHttpConfig
 ```
 
-`serverName` 是稳定的本地标识，用于在模型可见名称（见下文）中为该服务器的工具提供命名空间。它有意设计为用户配置，而非远端的 `serverInfo.name`：远端名称是不可信输入、跨部署不唯一（同一服务器的生产和预发布实例报告相同名称）、且可能在服务器升级时变化——这些都不得静默重命名模型可见工具。多个活跃实例使用重复的 `serverName` 属于配置错误：后加载的实例在启动时以可操作的错误消息失败，绝不静默覆盖或跳过。短 `serverName`（如 `gh`）也是缩短公开名称的配置手段。
+`serverName` هو مستقر محلي معرف، لأجل في نموذج مرئي اسم (رؤية تحت نص) في لـ هذا خادم أداة توفير نطاق الأسماء. هو متعمد تصميم لـ مستخدم إعداد، بينما غير بعيد طرف `serverInfo.name`: بعيد طرف اسم هو غير ممكن معلومة إدخال، عبر نشر لا وحيد (نفس خادم إنتاج و مسبق إصدار نسخة تقرير إبلاغ نفسه اسم) ، كما ممكن في خادم ترقية وقت تغير——هذه كل لا نيل ساكن صامت إعادة تسمية نموذج مرئي أداة. كثير عدد نشط وثب نسخة استخدام تكرار `serverName` يخص إعداد خطأ: بعد تحميل نسخة في بدء وقت بـ يمكن عملية خطأ رسالة فشل، أبدا ساكن صامت تغطية أو قفز مرور. قصير `serverName`(مثل `gh`) أيضا هو تقليص قصير عام اسم إعداد يد مقطع.
 
-`cordis.yml` 用法示例：
+`cordis.yml` استخدام قاعدة عرض مثال:
 
 ```yaml
 - id: mcp-github
@@ -79,34 +79,34 @@ type Config = StdioConfig | StreamableHttpConfig
       Authorization: !!js `Bearer ${process.env.MCP_TOKEN}`
 ```
 
-模型看到的是 `mcp__github__create_issue`、`mcp__github__search_code`、`mcp__web__search`。
+نموذج يرى هو `mcp__github__create_issue`،`mcp__github__search_code`،`mcp__web__search`.
 
-### 生命周期
+### دورة الحياة
 
-启动时从 `cordis.yml` 加载。HMR（热模块替换）（`@cordisjs/plugin-hmr`）提供热替换：编辑 yml 条目触发旧实例的 dispose（资源释放）（断开连接、注销工具），并创建新实例（连接、发现、注册）。不提供运行时动态 API。公开名称是 `(serverName, rawName)` 的纯函数，因此保持 `serverName` 不变的 HMR 替换会重建完全相同的模型可见名称——会话历史和权限规则保持有效——而添加或移除不相关的服务器永远不会重命名已有工具。
+بدء وقت من `cordis.yml` تحميل.HMR(حار وحدة استبدال)(`@cordisjs/plugin-hmr`) توفير حار استبدال: تحرير yml بند إطلاق قديم نسخة dispose(مورد تحرير)(قطع فتح اتصال، ملاحظة إلغاء أداة) ، و إنشاء جديد نسخة (اتصال، اكتشاف، تسجيل). لا توفير وقت التشغيل حركة حالة API. عام اسم هو `(serverName, rawName)` صاف دالة، لذلك إبقاء `serverName` ثابت HMR استبدال سوف إعادة بناء تماما نفسه نموذج مرئي اسم——جلسة تاريخ و إذن قاعدة إبقاء صالح——بينما إضافة أو إزالة لا متبادل صلة خادم دائم بعيد لن إعادة تسمية قد لديه أداة.
 
-### 工具发现与注册
+### أداة اكتشاف و تسجيل
 
-每个 MCP 工具有两个名称：
+كل MCP أداة لديه اثنان عدد اسم:
 
-- `rawName`——MCP `Tool.name` 的原始值，仅用于协议通信（`tools/call`）。
-- `publicName`——在 `ToolRuntime` 中注册的全局唯一模型可见名称：
+- `rawName`——MCP `Tool.name` أصلي قيمة، فقط لأجل بروتوكول عبر معلومة (`tools/call`).
+- `publicName`——في `ToolRuntime` في تسجيل عام وحيد نموذج مرئي اسم:
 
       mcp__<serverName>__<rawName>
 
-这种按服务器限定的形式是多服务器 agent 客户端事实上的标准——所有被调研的终端用户产品都按服务器限定 MCP 工具名（[Claude Code](https://code.claude.com/docs/en/agent-sdk/mcp#tool-naming-convention) `mcp__github__list_issues`、[Codex](https://openai.com/index/unrolling-the-codex-agent-loop/) `mcp__weather__get-forecast`、[Gemini CLI](https://geminicli.com/docs/tools/mcp-server/#3-tool-naming-and-namespaces)、[VS Code](https://github.com/microsoft/vscode/blob/ab9ec62c6a61e429a9abd612ff220c3f4834c9ea/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L217-L260)、[Cline](https://github.com/cline/cline/blob/52fdbb1d72f7324a28142a7ba7678d4b53c902f4/sdk/packages/core/src/extensions/mcp/name-transform.ts#L20-L35)、[Roo Code](https://github.com/RooCodeInc/Roo-Code/blob/b867ec9145750d0ae1ff7f02d35406e9bf2a0b16/src/utils/mcp-name.ts#L117-L140)、[Goose](https://github.com/block/goose/blob/b3a012cbdde854b0fe14f95b1c48543bf6517c0a/crates/goose/src/agents/extension_manager.rs#L1391-L1441)、[OpenCode](https://github.com/anomalyco/opencode/blob/d199b1bff90282a4f9cd6251b5fc7b16875a52f6/packages/opencode/src/mcp/catalog.ts#L117-L120)）；`mcp__<server>__<tool>` 的拼写方式与 Claude Code 和 Codex 一致。`mcp__` 前缀将 MCP 注册与原生工具的命名空间隔离，并为权限/遥测规则提供稳定的匹配模式（`mcp__*`、`mcp__github__*`）。
+هذا نوع حسب خادم حد تحديد شكل صيغة هو كثير خادم agent عميل واقع فوق معيار——كل يتم ضبط بحث طرفية مستخدم منتج كل حسب خادم حد تحديد MCP أداة اسم ([Claude Code](https://code.claude.com/docs/en/agent-sdk/mcp#tool-naming-convention) `mcp__github__list_issues`،[Codex](https://openai.com/index/unrolling-the-codex-agent-loop/) `mcp__weather__get-forecast`،[Gemini CLI](https://geminicli.com/docs/tools/mcp-server/#3-tool-naming-and-namespaces) ،[VS Code](https://github.com/microsoft/vscode/blob/ab9ec62c6a61e429a9abd612ff220c3f4834c9ea/src/vs/workbench/contrib/mcp/common/mcpServer.ts#L217-L260) ،[Cline](https://github.com/cline/cline/blob/52fdbb1d72f7324a28142a7ba7678d4b53c902f4/sdk/packages/core/src/extensions/mcp/name-transform.ts#L20-L35) ،[Roo Code](https://github.com/RooCodeInc/Roo-Code/blob/b867ec9145750d0ae1ff7f02d35406e9bf2a0b16/src/utils/mcp-name.ts#L117-L140) ،[Goose](https://github.com/block/goose/blob/b3a012cbdde854b0fe14f95b1c48543bf6517c0a/crates/goose/src/agents/extension_manager.rs#L1391-L1441) ،[OpenCode](https://github.com/anomalyco/opencode/blob/d199b1bff90282a4f9cd6251b5fc7b16875a52f6/packages/opencode/src/mcp/catalog.ts#L117-L120)) ؛`mcp__<server>__<tool>` تجميع كتابة طريقة و Claude Code و Codex متسق.`mcp__` بادئة سوف MCP تسجيل و أصلي أداة نطاق الأسماء عزل، و لـ إذن/بعيد قياس قاعدة توفير مستقر مطابقة نمط (`mcp__*`،`mcp__github__*`).
 
-1. 连接时：通过 `listTools(undefined, { cacheMode: 'refresh' })` 获取 SDK 聚合的列表，推导每个工具的 `publicName`，然后通过 `ctx.tools.register()` 将其注册为原始 `ToolDefinition`。MCP 的 JSON Schema 和描述原样透传（不做 `defineTool` DSL 转换）；仅替换模型可见的 `name`。
-2. 来自旧版通知或现代订阅的 SDK `listChanged.tools.onChanged` 回调触发同一同步（dispose 上一代、注册新一代）。确定性命名意味着未变化的工具在重新同步后保持原名。
-3. 执行器闭包持有 `rawName`；公开名称永远不发送给服务器，也永远不被解析以还原原始名称。
-4. 无 `presentCall`/`presentResult`——UI 消费方使用提供方无关的通用卡片兜底。
-5. 工具在系统提示词中是透明的——除名称本身外不附加「[via MCP]」标注。
+1. اتصال وقت: عبر `listTools(undefined, { cacheMode: 'refresh' })` نيل أخذ SDK تجمع دمج قائمة، دفع توجيه كل أداة `publicName`، لكن بعد عبر `ctx.tools.register()` سوف ذلك تسجيل لـ أصلي `ToolDefinition`.MCP JSON Schema و وصف أصل مثال نفاذ نقل (لا فعل `defineTool` DSL تحويل) ؛ فقط استبدال نموذج مرئي `name`.
+2. قدوم ذاتي قديم إصدار إشعار أو الآن بديل حجز قراءة SDK `listChanged.tools.onChanged` عودة ضبط إطلاق نفس تزامن (dispose فوق واحد بديل، تسجيل جديد واحد بديل). تحديد صفة تسمية معنى طعم حال لم تغير أداة في إعادة تزامن بعد إبقاء أصل اسم.
+3. منفذ إغلاق حزمة يحتفظ `rawName`؛ عام اسم دائم بعيد لا إرسال إعطاء خادم، أيضا دائم بعيد لا يتم تحليل بـ أيضا أصل أصلي اسم.
+4. بلا `presentCall`/`presentResult`——UI مستهلك استخدام مزود غير متصل عام بطاقة التقاط قاع.
+5. أداة في توجيه النظام في هو نفاذ واضح——حذف اسم ذاته خارج لا مرفق إضافة «[via MCP]» علامة ملاحظة.
 
-[协议采用记录](2026-09-12-mcp-sdk-protocol-negotiation.zh.md) 负责说明 SDK 分页及其页数上限。发现失败时，同步会保留上一代工具。
+[بروتوكول اعتماد سجل](2026-09-12-mcp-sdk-protocol-negotiation.zh.md) مسؤول شرح SDK قسم صفحة و ذلك صفحة عدد حد أعلى. اكتشاف فشل وقت، تزامن سوف إبقاء فوق واحد بديل أداة.
 
-### 公开名称规范化
+### عام اسم مواصفة تحويل
 
-MCP 允许工具名最长 128 字符且可包含 `.`；DeepSeek 的函数名约定允许 `[A-Za-z0-9_-]` 且最多 64 字符。公开名称按确定性规则规范化：非法字符替换为 `_`，当替换或截断改变了名称时，追加 `(serverName, rawName)` 标识的 12 位十六进制 SHA-256 hash，确保不同的 MCP 标识永远不会坍缩为同一个公开名称：
+MCP سماح أداة اسم الأكثر طويل 128 محرف كما يمكن يتضمن `.`؛DeepSeek دالة اسم اتفاق سماح `[A-Za-z0-9_-]` كما الأكثر كثير 64 محرف. عام اسم حسب تحديد صفة قاعدة مواصفة تحويل: غير قاعدة محرف استبدال لـ `_`، عند استبدال أو قطع قطع تغيير اسم وقت، إلحاق `(serverName, rawName)` معرف 12 موضع عشرة ستة دخول صنع SHA-256 hash، تأكيد حفظ مختلف MCP معرف دائم بعيد لن انهيار تقليص لـ نفس عدد عام اسم:
 
 ```typescript
 function publicToolName(serverName: string, rawName: string): string {
@@ -118,106 +118,106 @@ function publicToolName(serverName: string, rawName: string): string {
 }
 ```
 
-### 名称冲突处理
+### اسم اندفاع مفاجئ معالجة
 
-MCP 仅保证工具名在[单个服务器内](https://modelcontextprotocol.io/specification/2025-11-25/server/tools#tool-names)唯一；跨服务器冲突是常态而非例外（一项[微软研究院调查](https://www.microsoft.com/en-us/research/blog/tool-space-interference-in-the-mcp-era-designing-for-agent-compatibility-at-scale/#namespacing-issues-and-naming-ambiguity)覆盖 1,470 个服务器，发现 775 个冲突的工具名；仅 `search` 就出现在 32 个服务器中，官方 GitHub 服务器发布的是裸名 `create_issue`）。始终启用的命名空间从结构上杜绝冲突，而非在冲突发生时再处理：
+MCP فقط حفظ إثبات أداة اسم في[مفرد عدد خادم داخل](https://modelcontextprotocol.io/specification/2025-11-25/server/tools#tool-names) وحيد؛ عبر خادم اندفاع مفاجئ هو معتاد حالة بينما غير مثال خارج (واحد بند[دقيق لين بحث بحث دار ضبط فحص](https://www.microsoft.com/en-us/research/blog/tool-space-interference-in-the-mcp-era-designing-for-agent-compatibility-at-scale/#namespacing-issues-and-naming-ambiguity) تغطية 1,470 عدد خادم، اكتشاف 775 عدد اندفاع مفاجئ أداة اسم؛ فقط `search` حينئذ ظهور في 32 عدد خادم في، رسمي جهة GitHub خادم إصدار هو عار اسم `create_issue`). بداية نهاية تفعيل نطاق الأسماء من بنية فوق منع قطعا اندفاع مفاجئ، بينما غير في اندفاع مفاجئ حدوث وقت مجددا معالجة:
 
-- 两个服务器都发布 `search` → 共存为 `mcp__github__search` 和 `mcp__web__search`。
-- 名为 `search` 的原生 harness 工具不受影响。
-- 重复的 `serverName` 配置使后加载的实例在启动时失败（见配置一节）。
-- 服务器列出重复的工具名属于无效工具列表：同步抛出异常，上一代注册保持不变。
-- 替换期间的注册表冲突只可能意味着外部工具占据了该服务器的 `mcp__<serverName>__` 命名空间：部分代注册被回滚（该服务器零工具），并以醒目日志记录错误。
+- اثنان عدد خادم كل إصدار `search` → مشترك تخزين لـ `mcp__github__search` و `mcp__web__search`.
+- اسم لـ `search` أصلي harness أداة لا تلقي أثر.
+- تكرار `serverName` إعداد جعل بعد تحميل نسخة في بدء وقت فشل (رؤية إعداد واحد عقدة).
+- خادم صف خروج تكرار أداة اسم يخص بلا فاعلية أداة قائمة: تزامن رمي خروج استثناء، فوق واحد بديل تسجيل إبقاء ثابت.
+- استبدال خلال سجل التسجيل اندفاع مفاجئ فقط ممكن معنى طعم حال خارجي أداة احتلال حسب هذا خادم `mcp__<serverName>__` نطاق الأسماء: جزء بديل تسجيل يتم تراجع (هذا خادم صفر أداة) ، و بـ تنبيه هدف سجل سجل خطأ.
 
-SDK 接受符合协议的工具，并执行现代 HTTP header 声明检查。注册顺序不决定已接受名称的归属。
+SDK قبول رمز دمج بروتوكول أداة، و تنفيذ الآن بديل HTTP header إعلان فحص. تسجيل ترتيب لا قرار قد قبول اسم ملكية.
 
-### 命名不变式
+### تسمية ثابت صيغة
 
-1. 每个 MCP 工具拥有稳定标识 `(serverName, rawName)`；每个活跃标识恰好对应一个公开名称。
-2. 公开名称是确定性的、全局唯一的，且满足 DeepSeek 64 字符 `[A-Za-z0-9_-]` 约定。
-3. MCP `tools/call` 始终接收原始的 raw name。
-4. 连接、断开或重新同步不相关的服务器永远不会重命名已有工具。
-5. 注册顺序永远不决定哪个工具可用。
+1. كل MCP أداة يملك مستقر معرف `(serverName, rawName)`؛ كل نشط وثب معرف تماما جيد مقابل واحد عام اسم.
+2. عام اسم هو تحديد صفة، عام وحيد، كما ممتلئ كاف DeepSeek 64 محرف `[A-Za-z0-9_-]` اتفاق.
+3. MCP `tools/call` بداية نهاية استقبال أصلي raw name.
+4. اتصال، قطع فتح أو إعادة تزامن لا متبادل صلة خادم دائم بعيد لن إعادة تسمية قد لديه أداة.
+5. تسجيل ترتيب دائم بعيد لا قرار أي عدد أداة متاح.
 
-### 工具执行
+### أداة تنفيذ
 
-为来自同一个 MCP 服务器的所有工具提供统一的 `execute` 处理器：
+لـ قدوم ذاتي نفس عدد MCP خادم كل أداة توفير موحد واحد `execute` معالج:
 
-1. 调用 SDK 的 `callTool`，传入闭包持有的 `rawName`、模型参数、`exec.signal`、配置的超时时间与完整的已发现 `toolDefinition`——公开名称永远不发送给服务器。
-2. 把规范成功值保留为 `{ content: JsonValue[], structuredContent? }`；完整 MCP JSON 块仍是程序化调用／PTC mode 值。`isError: true` 会在持久化任何图片前抛出，使失败路径归注册表所有。
-3. 另行准备有序 Native 投影。连续文本块以 `'\n'` 连接；资源链接以文本保留名称和 URI；音频和嵌入资源成为明确诊断。SDK 拒绝格式错误的协议结果。只要存在图片，桥接层就严格解码完整批次，解析调用 agent 的最新确切路由，要求附件存储以及模型明确支持图片输入，再把全成员校验和有序持久化委托给 `AttachmentStore.saveImages()`。任何解码、能力或存储拒绝都会把全部图片渲染为诊断文本，且不返回部分引用。
-4. 保持 `output.render` 同步且纯净。执行器把更丰富的投影暂存在按同步世代创建、以确切执行为键的 `WeakMap` 中；只有注册表的 post-execute 结果仍保留原规范值和兜底内容时，`finalizeContent` 才安装该投影。策略阻止、值替换或内容替换仍具有权威性，重新同步也无法让旧世代消费新执行状态。
-5. PTC mode 接收未改动的规范值。其通用分发桥接层会把包含图片的成功最终内容序列经外层 `run_code` 结果延后，因此 MCP 无需私有父 token 特例。
-6. 取消：`exec.signal`（来自 agent loop 的取消）透传给 MCP SDK 的 `callTool`、确切模型查询和存储前门禁。
+1. استدعاء SDK `callTool`، نقل دخول إغلاق حزمة يحتفظ `rawName`، نموذج معامل،`exec.signal`، إعداد مهلة وقت و كامل قد اكتشاف `toolDefinition`——عام اسم دائم بعيد لا إرسال إعطاء خادم.
+2. يأخذ مواصفة نجاح قيمة إبقاء لـ `{ content: JsonValue[], structuredContent? }`؛ كامل MCP JSON كتلة ما زال هو برنامج تحويل استدعاء/PTC mode قيمة.`isError: true` سوف في حفظ دائم أي صورة قبل رمي خروج، جعل فشل مسار عودة سجل التسجيل كل.
+3. آخر سطر دقيق تجهيز لديه ترتيب Native إسقاط. وصل متابعة نص كتلة بـ `'\n'` اتصال؛ مورد رابط بـ نص إبقاء اسم و URI؛ صوت تردد و تضمين دخول مورد يصبح واضح تشخيص.SDK رفض صيغة خطأ بروتوكول نتيجة. فقط يلزم وجود صورة، جسر وصل طبقة حينئذ صارم إطار حل رمز كامل دفعة مرة، تحليل استدعاء agent الأكثر جديد تأكيد قطع توجيه، اشتراط مرفق عنصر تخزين و نموذج واضح دعم حمل صورة إدخال، مجددا يأخذ كل عضو تحقق و لديه ترتيب حفظ دائم تفويض حمل إعطاء `AttachmentStore.saveImages()`. أي حل رمز، قدرة أو تخزين رفض كل سوف يأخذ الكل صورة تصيير لـ تشخيص نص، كما لا إرجاع جزء مرجع.
+4. إبقاء `output.render` تزامن كما صاف صاف. منفذ يأخذ أكثر وفير غني إسقاط مؤقت وجود حسب تزامن عالم بديل إنشاء، بـ تأكيد قطع تنفيذ لـ مفتاح `WeakMap` في؛ فقط لديه سجل التسجيل post-execute نتيجة ما زال إبقاء أصل مواصفة قيمة و التقاط قاع محتوى وقت،`finalizeContent` عندئذ تثبيت هذا إسقاط. سياسة منع توقف، قيمة استبدال أو محتوى استبدال ما زال أداة لديه مرجعي صفة، إعادة تزامن أيضا لا يمكن يجعل قديم عالم بديل إزالة استهلاك جديد تنفيذ حالة.
+5. PTC mode استقبال لم تعديل مواصفة قيمة. ذلك عام توزيع جسر وصل طبقة سوف يأخذ يتضمن صورة نجاح نهائي محتوى تسلسل مرور خارج طبقة `run_code` نتيجة تأخير بعد، لذلك MCP بلا حاجة خاص أب token خاص مثال.
+6. إلغاء:`exec.signal`(قدوم ذاتي agent loop إلغاء) نفاذ نقل إعطاء MCP SDK `callTool`، تأكيد قطع نموذج استعلام و تخزين قبل بوابة.
 
-### 子进程环境（stdio 传输）
+### عملية فرعية بيئة (stdio نقل)
 
-以子进程服务边界共享的 `scrubbedParentEnv()` 为基础构建子进程环境；该基础环境会移除环境中匹配 `/KEY|PASSWORD|SECRET|TOKEN/i` 的名称以及 `DSH_*` 名称，然后在其上合并 `config.env`。显式配置的 env 覆盖在清洗后仍会保留。
+بـ عملية فرعية خدمة حد مشترك `scrubbedParentEnv()` لـ أساس أساس بناء عملية فرعية بيئة؛ هذا أساس أساس بيئة سوف إزالة بيئة في مطابقة `/KEY|PASSWORD|SECRET|TOKEN/i` اسم و `DSH_*` اسم، لكن بعد في ذلك فوق دمج `config.env`. صريح إعداد env تغطية في صاف غسل بعد ما زال سوف إبقاء.
 
-### 断连 / 崩溃
+### قطع وصل / انهيار انهيار
 
-每个实例的连接监督器在连接丢失后以有界指数退避和单次故障尝试预算自动重连，成功后重新执行发现流程；尝试耗尽则注销该服务器的工具并停止，直到重新加载。[自动重连 Agent Note](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md) 拥有该决策，包括 `reconnect` 配置块和恢复手动 HMR/重启恢复的 `reconnect.enabled: false` opt-out。
+كل نسخة اتصال مراقبة إشراف جهاز في اتصال فقد فقد بعد بـ محدود إشارة عدد تراجع تجنب و مفرد مرة لذا عائق محاولة تجربة ميزانية تلقائي إعادة وصل، نجاح بعد إعادة تنفيذ اكتشاف مسار؛ محاولة تجربة استهلاك كل فإن ملاحظة إلغاء هذا خادم أداة و إيقاف، مباشر إلى إعادة تحميل.[تلقائي إعادة وصل Agent Note](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md) يملك هذا قرار، يشمل `reconnect` إعداد كتلة و استعادة يد حركة HMR/إعادة بدء استعادة `reconnect.enabled: false` opt-out.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-### MCP Server 端（将 harness 工具暴露给外部 MCP 客户端）
+### MCP Server طرف (سوف harness أداة كشف إعطاء خارجي MCP عميل)
 
-延后。ACP 桥接已将 harness 暴露为 agent 服务器。再加一层 MCP server 会以不同协议重复这一功能，而用户的首要需求是消费外部工具，而非暴露自身工具。
+تأخير بعد.ACP جسر وصل قد سوف harness كشف لـ agent خادم. مجددا إضافة واحد طبقة MCP server سوف بـ مختلف بروتوكول تكرار هذا واحد وظيفة، بينما مستخدم أول يلزم يحتاج طلب هو إزالة استهلاك خارجي أداة، بينما غير كشف ذاته أداة.
 
-### 能力 seam 三包拆分（接口 / 实现 / 消费方）
+### قدرة seam ثلاثة حزمة تفكيك قسم (واجهة / تنفيذ / مستهلك)
 
-否决。可预见范围内不会有替代的 MCP 客户端实现——MCP 只有一个协议、一个 SDK。约定是「不要预防性拆分」，直到出现第二种实现。
+مرفوض. يمكن مسبق رؤية نطاق داخل لن لديه بديل MCP عميل تنفيذ——MCP فقط لديه واحد بروتوكول، واحد SDK. اتفاق هو «لا يلزم مسبق منع صفة تفكيك قسم» ، مباشر إلى ظهور ثاني نوع تنفيذ.
 
-### 指数退避自动重连
+### إشارة عدد تراجع تجنب تلقائي إعادة وصل
 
-单次连接设计否决了该方案：它会引入部分可用状态（工具已注册但暂时不可用），且 stdio 崩溃往往表明配置问题，重试无法修复；HMR 曾是恢复路径。运营反馈扭转了该延期决定——[自动重连 Agent Note](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md)以有界的单次故障预算和 opt-out 实现了自动重连。
+مفرد مرة اتصال تصميم مرفوض هذا خطة: هو سوف جذب دخول جزء متاح حالة (أداة قد تسجيل لكن مؤقت وقت غير ممكن استخدام) ، كما stdio انهيار انهيار نحو نحو جدول واضح إعداد مشكلة، إعادة محاولة لا يمكن إصلاح؛HMR سبق هو استعادة مسار. تشغيل تشغيل عكس تغذية لي تحويل هذا تأجيل قرار——[تلقائي إعادة وصل Agent Note](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md) بـ محدود مفرد مرة لذا عائق ميزانية و opt-out تنفيذ تلقائي إعادة وصل.
 
-### 桥接 Resources 和 Prompts
+### جسر وصل Resources و Prompts
 
-资源的消费机制由[按需资源决策](2026-09-12-mcp-resources-and-instructions.zh.md)负责。MCP 提示词模板仍未实现：它需要独立的用户选择和调用机制。
+مورد إزالة استهلاك آلية من[حسب يحتاج مورد قرار](2026-09-12-mcp-resources-and-instructions.zh.md) مسؤول.MCP نص التوجيه نموذج لوح ما زال لم تنفيذ: هو حاجة مستقل مستخدم اختيار و استدعاء آلية.
 
-### 原始模型可见工具名加可选 `toolPrefix`
+### أصلي نموذج مرئي أداة اسم إضافة اختياري `toolPrefix`
 
-否决。这是最初的提案，基于「大多数 MCP 服务器已在工具名中使用语义前缀（如 `github_create_issue`）」这一前提。该前提不成立：官方 GitHub 服务器发布的是 `create_issue`，参考文件系统服务器发布 `read_file`，Sentry 发布 `search_issues`——且上述微软调查表明冲突在生态规模下很常见。冲突时再加前缀（或 warn-and-skip）还会使可用工具集取决于插件加载顺序，且添加不相关服务器时工具可能被静默重命名——在对话中途使会话历史和权限规则失效。所有被调研的多服务器 agent 产品都不使用裸名。
+مرفوض. هذا هو الأكثر أول رفع سجل، أساس في «كبير كثير عدد MCP خادم قد في أداة اسم في استخدام دلالة بادئة (مثل `github_create_issue`)» هذا واحد قبل رفع. هذا قبل رفع لا صار قيام: رسمي جهة GitHub خادم إصدار هو `create_issue`، مشاركة اعتبار نظام الملفات خادم إصدار `read_file`،Sentry إصدار `search_issues`——كما فوق وصف دقيق لين ضبط فحص جدول واضح اندفاع مفاجئ في توليد حالة قاعدة نموذج تحت جدا معتاد رؤية. اندفاع مفاجئ وقت مجددا إضافة بادئة (أو warn-and-skip) أيضا سوف جعل متاح أداة تجميع أخذ قرار في إضافة تحميل ترتيب، كما إضافة لا متبادل صلة خادم وقت أداة ممكن يتم ساكن صامت إعادة تسمية——في محادثة في طريق جعل جلسة تاريخ و إذن قاعدة بطلان. كل يتم ضبط بحث كثير خادم agent منتج كل لا استخدام عار اسم.
 
-### 仅服务器命名空间（`github__create_issue`，无 `mcp__` 前缀）
+### فقط خادم نطاق الأسماء (`github__create_issue`، بلا `mcp__` بادئة)
 
-不予采纳。它能防止跨服务器冲突，但无法将 MCP 注册与原生 harness 工具分离，也丧失了 MCP 全局策略匹配模式（`mcp__*`）。前缀仅多花 5 个字符；`mcp__<server>__<tool>` 拼写与 Claude Code 和 Codex 一致，最大化模型的熟悉度。如果 ToolRuntime 未来引入源感知命名空间，届时可作为命名策略变更重新考虑去掉字面前缀。
+غير مقبول. هو قدرة منع توقف عبر خادم اندفاع مفاجئ، لكن لا يمكن سوف MCP تسجيل و أصلي harness أداة قسم مغادرة، أيضا فقد فقد MCP عام سياسة مطابقة نمط (`mcp__*`). بادئة فقط كثير زهرة 5 عدد محرف؛`mcp__<server>__<tool>` تجميع كتابة و Claude Code و Codex متسق، الأكثر كبير تحويل نموذج ناضج معرفة درجة. إذا ToolRuntime لم قدوم جذب دخول مصدر شعور معرفة نطاق الأسماء، دورة وقت يمكن بصفة تسمية سياسة تغيير إعادة اعتبار ذهاب إسقاط حرف وجه بادئة.
 
-### 从服务器公告的 `serverInfo.name` 派生命名空间
+### من خادم عام إبلاغ `serverInfo.name` إرسال توليد نطاق الأسماء
 
-否决。远端名称不可信、跨部署不唯一、升级时可变；工具标识和权限规则不得静默跟随它。命名空间是本地配置。
+مرفوض. بعيد طرف اسم غير ممكن معلومة، عبر نشر لا وحيد، ترقية وقت متغير؛ أداة معرف و إذن قاعدة لا نيل ساكن صامت تتبع مع هو. نطاق الأسماء هو محلي إعداد.
 
-### 在工具结果中保留多个 TextBlock
+### في أداة نتيجة في إبقاء كثير عدد TextBlock
 
-否决。DeepSeek 序列化器中的 `flattenText()` 在将 `ContentBlock[]` 扁平化为协议格式（wire format）时使用 `join('')`（无分隔符）。多个 text 块会静默丢失块间边界——这是正确性缺陷。所有现有工具返回单个 TextBlock；MCP 桥接遵循同一做法。
+مرفوض.DeepSeek تسلسل تحويل جهاز في `flattenText()` في سوف `ContentBlock[]` مسطح مستو تحويل لـ بروتوكول صيغة (wire format) وقت استخدام `join('')`(بلا قسم فصل رمز). كثير عدد text كتلة سوف ساكن صامت فقد فقد كتلة بين حد——هذا هو صحيح تأكيد صفة نقص وقوع. كل قائم أداة إرجاع مفرد عدد TextBlock؛MCP جسر وصل التزام دوران نفس فعل قاعدة.
 
-### 用核心 `ContentBlock[]` 替换规范 MCP 结果
+### استخدام نواة قلب `ContentBlock[]` استبدال مواصفة MCP نتيجة
 
-不予采用。程序化调用方需要协议完整的 MCP 块和 `structuredContent`，Native 消费方则需要持久核心图片而不是 base64。一份规范协议值加一份独立投影可以同时保留两项契约。
+لا إعطاء اعتماد. برنامج تحويل استدعاء جهة حاجة بروتوكول كامل MCP كتلة و `structuredContent`،Native مستهلك فإن حاجة حمل دائم نواة قلب صورة بينما لا هو base64. واحد نسخة مواصفة بروتوكول قيمة إضافة واحد نسخة مستقل إسقاط يمكن معا إبقاء اثنان بند عقد نحو.
 
-### 添加通用 RichContent 服务，或在 `output.render` 中执行 I/O
+### إضافة عام RichContent خدمة، أو في `output.render` في تنفيذ I/O
 
-不予采用。核心已经拥有角色无关的内容词汇，第二套服务会重复其日志与顺序契约。`output.render` 必须纯净、同步且可回放，因此附件 I/O 属于异步执行，再经确切的最终化交接安装结果。
+لا إعطاء اعتماد. نواة قلب قد يملك زاوية لون غير متصل محتوى مفردات، ثاني طقم خدمة سوف تكرار ذلك سجل و ترتيب عقد نحو.`output.render` يجب صاف صاف، تزامن كما يمكن إعادة تشغيل، لذلك مرفق عنصر I/O يخص مختلف خطوة تنفيذ، مجددا مرور تأكيد قطع نهائي تحويل تسليم وصل تثبيت نتيجة.
 
-### 让每个返回图片的工具分别特殊处理 PTC mode 父调用
+### يجعل كل إرجاع صورة أداة قسم آخر خاص خاص معالجة PTC mode أب استدعاء
 
-不予采用。这会把叶子工具与组合工具内部机制耦合，并漏掉未来丰富工具。通用 PTC mode 桥接层观察最终 post-policy 内容，统一转发含图片结果。
+لا إعطاء اعتماد. هذا سوف يأخذ ورقة فرعي أداة و تركيب أداة داخلي آلية اقتران دمج، و تسرب إسقاط لم قدوم وفير غني أداة. عام PTC mode جسر وصل طبقة مراقبة نهائي post-policy محتوى، موحد واحد تحويل إرسال يحتوي صورة نتيجة.
 
-## 测试
+## اختبار
 
-覆盖范围按层级列出；每项行为都放在能够表达它的最低成本层级。
+تغطية نطاق حسب طبقة درجة صف خروج؛ كل بند سلوك كل وضع في قدرة كاف جدول بلوغ هو الأكثر منخفض صار هذا طبقة درجة.
 
-- **单元测试**（`tests/mcp-client.spec.ts`、`tests/apply.spec.ts`，mock MCP SDK）：`publicToolName` 算法（干净名称、规范化、截断加 hash、确定性、不同标识的分离）、raw 与 public 的协议纪律、跨服务器与原生工具共存、重复 `serverName` 加载失败与预留释放、无效工具列表拒绝、注册代切换/回滚、重新同步失败时保留上一代注册、无损规范结果、丰富内容混合顺序、格式错误批次原子性、确切能力／存储拒绝、明确的非图片诊断、post-execute 策略优先级、取消，以及配置 schema 校验。100% 逐文件覆盖率门禁约束该包。
-- **E2E**（`tests/mcp-client.e2e.ts`，无需密钥）：使用真实 MCP 协议对接仓库内的 fixture（测试前置数据）服务器、`@modelcontextprotocol/server-everything` 和 `@modelcontextprotocol/server-filesystem`（stdio 传输），以及进程内 `StreamableHTTPServerTransport` 服务器（Streamable HTTP 传输）——命名空间下的发现、带点号名称的端到端规范化、执行往返、持久图片保存／读取且 base64 只保留在规范值中、缺少图片路由时明确拒绝、重复 `serverName` 拒绝，以及 dispose。
-- **快照**：组装后的 ACP 示例负责传输可见的内联图片 transcript 与 PTC mode 图片转发 transcript；包 E2E 负责真实 MCP 协议，因为可运行快照必须保持无密钥且确定，而不是 spawn 第三方服务器包。MCP 工具卡片仍使用通用卡片兜底，无需包专属 UI 快照。
+- **اختبار وحدة**(`tests/mcp-client.spec.ts`،`tests/apply.spec.ts`،mock MCP SDK):`publicToolName` حساب قاعدة (جاف صاف اسم، مواصفة تحويل، قطع قطع إضافة hash، تحديد صفة، مختلف معرف قسم مغادرة) ،raw و public بروتوكول سجل قاعدة، عبر خادم و أصلي أداة مشترك تخزين، تكرار `serverName` تحميل فشل و مسبق إبقاء تحرير، بلا فاعلية أداة قائمة رفض، تسجيل بديل تبديل/تراجع، إعادة تزامن فشل وقت إبقاء فوق واحد بديل تسجيل، بلا ضرر مواصفة نتيجة، وفير غني محتوى خلط دمج ترتيب، صيغة خطأ دفعة مرة أصل فرعي صفة، تأكيد قطع قدرة/تخزين رفض، واضح غير صورة تشخيص،post-execute سياسة أولوية درجة، إلغاء، و إعداد schema تحقق.100% تدريجي ملف نسبة التغطية بوابة قيد هذا حزمة.
+- **E2E**(`tests/mcp-client.e2e.ts`، بلا حاجة مفتاح): استخدام حقيقي MCP بروتوكول مقابل وصل مستودع داخل fixture(اختبار قبل وضع بيانات) خادم،`@modelcontextprotocol/server-everything` و `@modelcontextprotocol/server-filesystem`(stdio نقل) ، و عملية داخل `StreamableHTTPServerTransport` خادم (Streamable HTTP نقل)——نطاق الأسماء تحت اكتشاف، حمل نقطة رقم اسم طرف إلى طرف مواصفة تحويل، تنفيذ نحو إرجاع، حمل دائم صورة حفظ/قراءة كما base64 فقط إبقاء في مواصفة قيمة في، نقص قليل صورة توجيه وقت واضح رفض، تكرار `serverName` رفض، و dispose.
+- **لقطة**: تجميع بعد ACP عرض مثال مسؤول نقل مرئي داخل ربط صورة transcript و PTC mode صورة تحويل إرسال transcript؛ حزمة E2E مسؤول حقيقي MCP بروتوكول، لأن يمكن تشغيل لقطة يجب إبقاء بلا مفتاح كما تحديد، بينما لا هو spawn رقم ثلاثة جهة خادم حزمة.MCP أداة بطاقة ما زال استخدام عام بطاقة التقاط قاع، بلا حاجة حزمة مخصص تابع UI لقطة.
 
-## 后果
+## عاقبة
 
-- 每个 MCP 服务器只需 `cordis.yml` 中的一条配置即完成集成：`serverName: filesystem` 加一条 stdio 命令（或一个 Streamable HTTP URL），就能将 `mcp__filesystem__read_file` 放入模型的工具列表，可调用，协议上使用原始的 `read_file`。
-- 公开名称是会话历史和权限／配置 API 的一部分；测试固定了命名算法，发布后变更即为破坏性变更。
-- `mcp__<serverName>__` 限定符在每个名称上消耗 token。已接受：描述和 JSON Schema 在工具定义 token 中占主导，而限定符换来了稳定标识、冲突隔离和 MCP 全局策略匹配模式（`mcp__*`、`mcp__github__*`）。
-- **MCP SDK 稳定性**：`@modelcontextprotocol/client` 仍在演进中；破坏性变更需要更新桥接。版本已固定，且该 SDK 被广泛采用（Claude Desktop、Cursor、VS Code），因此破坏性变更不太可能悄然发生。
-- **工具 schema 质量**：MCP 服务器可能暴露描述不佳的工具（模糊的描述、不完整的 JSON Schema）。harness 原样透传——垃圾进垃圾出；这是服务器作者的责任，不是桥接的。
-- **Stdio 进程管理**：行为异常的 MCP 服务器如果忽略信号，可能卡住 dispose。Cordis fiber 的 dispose 具有有界的完全停稳过程；卡住的传输层最终会在框架层面超时。
-- 崩溃恢复在[重连预算](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md)内自动进行；耗尽后或配置 `reconnect.enabled: false` 时回退为手动重新加载。
-- 图片载荷只有通过共享持久附件存储和确切正向路由能力，才能进入模型上下文。音频与嵌入资源载荷仍只存在于执行局部，并附带明确诊断。
+- كل MCP خادم فقط يحتاج `cordis.yml` في واحد بند إعداد أي إتمام تجميع صار:`serverName: filesystem` إضافة واحد بند stdio أمر (أو واحد Streamable HTTP URL) ، حينئذ قدرة سوف `mcp__filesystem__read_file` وضع دخول نموذج أداة قائمة، يمكن استدعاء، بروتوكول فوق استخدام أصلي `read_file`.
+- عام اسم هو جلسة تاريخ و إذن/إعداد API واحد جزء؛ اختبار ثابت تسمية حساب قاعدة، إصدار بعد تغيير أي لـ كسر تالف صفة تغيير.
+- `mcp__<serverName>__` حد تحديد رمز في كل اسم فوق إزالة استهلاك token. قد قبول: وصف و JSON Schema في أداة تعريف token في احتلال رئيسي توجيه، بينما حد تحديد رمز تبديل قدوم مستقر معرف، اندفاع مفاجئ عزل و MCP عام سياسة مطابقة نمط (`mcp__*`،`mcp__github__*`).
+- **MCP SDK مستقر صفة**:`@modelcontextprotocol/client` ما زال في عرض دخول في؛ كسر تالف صفة تغيير حاجة تحديث جسر وصل. إصدار قد ثابت، كما هذا SDK يتم واسع عام اعتماد (Claude Desktop،Cursor،VS Code) ، لذلك كسر تالف صفة تغيير لا جدا ممكن صامت لكن حدوث.
+- **أداة schema جودة كمية**:MCP خادم ممكن كشف وصف لا جيد أداة (نموذج غامض وصف، لا كامل JSON Schema).harness أصل مثال نفاذ نقل——نفاية قمامة دخول نفاية قمامة خروج؛ هذا هو خادم عمل من مسؤولية مهمة، لا هو جسر وصل.
+- **Stdio عملية إدارة**: سلوك استثناء MCP خادم إذا تجاهل اختصار إشارة، ممكن بطاقة إقامة dispose.Cordis fiber dispose أداة لديه محدود تماما توقف مستقر مرور مسار؛ بطاقة إقامة نقل طبقة نهائي سوف في إطار هيكل طبقة وجه مهلة.
+- انهيار انهيار استعادة في[إعادة وصل ميزانية](../../archived/feature/2026-08-06-mcp-client-auto-reconnect.md) داخل تلقائي إجراء؛ استهلاك كل بعد أو إعداد `reconnect.enabled: false` وقت رجوع لـ يد حركة إعادة تحميل.
+- صورة تحميل حمل فقط لديه عبر مشترك حمل دائم مرفق عنصر تخزين و تأكيد قطع صحيح نحو توجيه قدرة، عندئذ قدرة دخول نموذج سياق. صوت تردد و تضمين دخول مورد تحميل حمل ما زال فقط وجود في تنفيذ نطاق جزء، و مرفق حمل واضح تشخيص.

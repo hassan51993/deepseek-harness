@@ -1,7 +1,7 @@
-- dialog "删除 minimax-cn？":
-  - heading "删除 minimax-cn？" [level=2]
-  - button "关闭":
+- dialog "حذف minimax-cn؟":
+  - heading "حذف minimax-cn؟" [level=2]
+  - button "إغلاق":
     - img
-  - paragraph: 删除 minimax-cn 会移除其配置和存储的 API 密钥。
-  - button "取消"
-  - button "删除 minimax-cn"
+  - paragraph: حذف minimax-cn سوف إزالة ذلك إعداد و تخزين API مفتاح.
+  - button "إلغاء"
+  - button "حذف minimax-cn"

@@ -1,20 +1,20 @@
 # Web Client Slots
 
-[English](slots.md) | 中文
+[English](slots.md) | العربية
 
-Slots 是 Web Client 的类型化 React 组合系统。[`dsh-client-ui-slots`](../../packages/client/ui-slots/README.zh.md)定义不依赖 React 的注册表与类型代数；[`dsh-client-ui-renderer`](../../packages/client/ui-renderer/README.zh.md)把可观测源绑定成钩子、渲染整棵树，并在内部拥有 React context。功能插件通过 `ctx.slots.register()` 贡献 UI，绝不导入其他功能插件的组件。
+Slots هو Web Client نوع تحويل React تركيب نظام.[`dsh-client-ui-slots`](../../packages/client/ui-slots/README.zh.md) تعريف لا اعتماد React سجل التسجيل و نوع بديل عدد؛[`dsh-client-ui-renderer`](../../packages/client/ui-renderer/README.zh.md) يأخذ يمكن مراقبة قياس مصدر ربط صار خطاف، تصيير كامل شجرة شجرة، و في داخلي يملك React context. وظيفة إضافة عبر `ctx.slots.register()` مساهمة UI، أبدا استيراد أخرى وظيفة إضافة مكون.
 
-本文记录 slot 的所有权、组件输入、扩展 API 与当前层级。外围的启动、Remote、Client model 与 Conversation 数据通路见 [Web Client 架构](web-client.zh.md)。
+هذا نص سجل slot كل حق، مكون إدخال، توسيع API و حالي طبقة درجة. خارج محيط بدء،Remote،Client model و Conversation بيانات عبر مسار رؤية [Web Client هيكل بنية](web-client.zh.md).
 
-## 声明与生命周期
+## إعلان و دورة الحياة
 
-`SlotMap` 是编译期注册表。包通过声明合并写入 key、cardinality（基数）、scope、owner props、keyed props 与可选的 slot 级 inject face。运行时声明则是拥有该渲染位置的组件在 `children` 中给出的对应条目。
+`SlotMap` هو تحرير ترجمة مدة سجل التسجيل. حزمة عبر إعلان دمج كتابة key،cardinality(أساس عدد) ،scope،owner props،keyed props و اختياري slot درجة inject face. وقت التشغيل إعلان فإن هو يملك هذا تصيير موضع مكون في `children` في إعطاء خروج مقابل بند.
 
-声明一个 child 会同时产生三种效果：令该 child key 生效、授权 parent entry 调用 `renderSlot` 或 `renderSlotChain`，以及记录运行时 dispatch 规格。每个声明只能有一个存活 owner。向未声明 slot 注册，或重复声明其他 entry 已拥有的 child，都会在插件激活时失败。
+إعلان واحد child سوف معا إنتاج ثلاثة نوع فاعلية نتيجة: أمر هذا child key توليد فاعلية، تخويل parent entry استدعاء `renderSlot` أو `renderSlotChain`، و سجل وقت التشغيل dispatch قاعدة إطار. كل إعلان فقط قدرة لديه واحد تخزين نشط owner. نحو لم إعلان slot تسجيل، أو تكرار إعلان أخرى entry قد يملك child، كل سوف في إضافة تنشيط وقت فشل.
 
-`root` 是唯一内建声明，也是唯一由 Cordis service 自身渲染的 key。`ui-renderer` 调用 `ctx.slots.renderSlot('root', {})`；其余每个后代都通过声明它的 entry 所收到的 `renderSlot` 或 `renderSlotChain` prop 渲染。
+`root` هو وحيد داخل بناء إعلان، أيضا هو وحيد من Cordis service ذاته تصيير key.`ui-renderer` استدعاء `ctx.slots.renderSlot('root', {})`؛ ذلك بقية كل بعد بديل كل عبر إعلان هو entry الذي استلام إلى `renderSlot` أو `renderSlotChain` prop تصيير.
 
-注册和声明遵循 Cordis effect 生命周期。销毁一个 entry 会移除其贡献，并递归折叠它声明的 child slots。因此，向其他包的 slot 贡献功能时使用 `ctx.slots.inject(key, callback)`：callback 会在每段声明生命周期内运行，owner 折叠时其 effect 随之移除，owner 再次挂载时则重新运行。
+تسجيل و إعلان التزام دوران Cordis effect دورة الحياة. إلغاء تدمير واحد entry سوف إزالة ذلك مساهمة، و تمرير عودة طي هو إعلان child slots. لذلك، نحو أخرى حزمة slot مساهمة وظيفة وقت استخدام `ctx.slots.inject(key, callback)`:callback سوف في كل مقطع إعلان دورة الحياة داخل تشغيل،owner طي وقت ذلك effect مع لـ إزالة،owner مجددا مرة تركيب وقت فإن إعادة تشغيل.
 
 ```tsx ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -41,72 +41,72 @@ export function apply(ctx: Context): void {
 }
 ```
 
-## Cardinality 与 scope
+## Cardinality و scope
 
-Slot 声明固定两个相互独立的维度。
+Slot إعلان ثابت اثنان عدد متبادل متبادل مستقل صيانة درجة.
 
-| 维度 | 值 | 含义 |
+| صيانة درجة | قيمة | يحتوي معنى |
 |---|---|---|
-| cardinality | `single` | 单个 cell，渲染当前 priority 胜者；需要并列内容时应声明 child slot，而不是把它当作列表。 |
-| cardinality | `list` | cell 由必填 `id` 定址，先按 `order`、再按注册顺序排列。 |
-| cardinality | `keyed` | owner 传入 `entryKey`；匹配 cell 以该 key 对应的 props 渲染。 |
-| cardinality | `chain` | 每个 entry 提供纯 `select(owner)` 函数；按 priority 顺序遇到的第一个非 null 结果获选，并以 `matched` 传给组件；全部拒绝时渲染 owner fallback。 |
-| scope | `root` | 一个 root 作用域组件和 store 实例。 |
-| scope | `session-maybe` | 继承外围 Provider binding，但没有 binding 时仍可渲染；Session 值是可选的。 |
-| scope | `session` | 要求可解析的外围 Provider binding，并收到确定存在的 Session 值。 |
+| cardinality | `single` | مفرد عدد cell، تصيير حالي priority فوز من؛ حاجة و صف محتوى وقت ينبغي إعلان child slot، بينما لا هو يأخذ هو عند عمل قائمة. |
+| cardinality | `list` | cell من لا بد ملء `id` تحديد عنوان، أولا حسب `order`، مجددا حسب تسجيل ترتيب ترتيب صف. |
+| cardinality | `keyed` | owner نقل دخول `entryKey`؛ مطابقة cell بـ هذا key مقابل props تصيير. |
+| cardinality | `chain` | كل entry توفير صاف `select(owner)` دالة؛ حسب priority ترتيب لقاء إلى رقم واحد غير null نتيجة نيل اختيار، و بـ `matched` نقل إعطاء مكون؛ الكل رفض وقت تصيير owner fallback. |
+| scope | `root` | واحد root أثر مجال مكون و store نسخة. |
+| scope | `session-maybe` | وراثة خارج محيط Provider binding، لكن لا يوجد binding وقت ما زال يمكن تصيير؛Session قيمة هو اختياري. |
+| scope | `session` | اشتراط يمكن تحليل خارج محيط Provider binding، و استلام إلى تحديد وجود Session قيمة. |
 
-对于 `single`、`list` 和 `keyed` cell，`priority` 是遮蔽优先级；对于 `chain`，它是选举顺序。数值越小越先运行或渲染。普通增量贡献应选用新的 list `id` 或 keyed `key`；复用已有 cell 表示有意替换其展示。
+مقابل في `single`،`list` و `keyed` cell،`priority` هو حجب حجب أولوية درجة؛ مقابل في `chain`، هو هو اختيار رفع ترتيب. عدد قيمة تجاوز صغير تجاوز أولا تشغيل أو تصيير. عادي زيادة كمية مساهمة ينبغي اختيار استخدام جديد list `id` أو keyed `key`؛ إعادة استخدام قد لديه cell يمثل متعمد استبدال ذلك عرض.
 
-## 组件输入
+## مكون إدخال
 
-注册组件会在 binding 位置收到组装后的输入。组件应从这些类型推导 props，不要重新抄写成员。
+تسجيل مكون سوف في binding موضع استلام إلى تجميع بعد إدخال. مكون ينبغي من هذه نوع دفع توجيه props، لا يلزم إعادة نسخ كتابة عضو.
 
-| 输入 | 声明者 | 组件类型 |
+| إدخال | إعلان من | مكون نوع |
 |---|---|---|
-| owner 值与标准 scope 值 | `SlotMap` 条目与已安装的 scope adapter | `PropsRuntime<K>` |
-| 获授权的 child renderer | 注册项的 `children` keys | `PropsRenderSlots<S>` |
-| 共享视图状态的 selector hook 与 mutation callback | 注册项的 `store` | `PropsStore<H>` |
-| 私有数据、callback 与 observable hook | 注册项的 `inject` factory | `InjectFace<I>` |
-| 本地化 `t` 函数 | 注册项的 `locale` namespace | `PropsLocale<N>` |
-| chain 选中的值 | 注册项的 `select` 结果 | 通过 `ComposedProps` 提供的 `matched` |
+| owner قيمة و معيار scope قيمة | `SlotMap` بند و قد تثبيت scope adapter | `PropsRuntime<K>` |
+| نيل تخويل child renderer | تسجيل بند `children` keys | `PropsRenderSlots<S>` |
+| مشترك عرض حالة selector hook و mutation callback | تسجيل بند `store` | `PropsStore<H>` |
+| خاص بيانات،callback و observable hook | تسجيل بند `inject` factory | `InjectFace<I>` |
+| محلي تحويل `t` دالة | تسجيل بند `locale` namespace | `PropsLocale<N>` |
+| chain اختيار في قيمة | تسجيل بند `select` نتيجة | عبر `ComposedProps` توفير `matched` |
 
-当 entry 声明 `session` 或 `session-maybe` child 时，`PropsRenderSlots` 还会提供 `SessionProvider`。不传 `session` prop 时，它继承外围 binding；显式传入 `SessionReference` 或 `undefined` 时，只覆盖该子树。Provider 不为整个 body 设置 key。严格 `session` entry 在 binding generation 改变时重新挂载。空白 `session-maybe` entry 接受首个 binding 时不重新挂载，后续 generation 变化或回到缺失状态时才重新挂载。
+عند entry إعلان `session` أو `session-maybe` child وقت،`PropsRenderSlots` أيضا سوف توفير `SessionProvider`. لا نقل `session` prop وقت، هو وراثة خارج محيط binding؛ صريح نقل دخول `SessionReference` أو `undefined` وقت، فقط تغطية هذا فرعي شجرة.Provider لا لـ كامل body ضبط key. صارم إطار `session` entry في binding generation تغيير وقت إعادة تركيب. فارغ أبيض `session-maybe` entry قبول أول عدد binding وقت لا إعادة تركيب، لاحق generation تغير أو عودة إلى ناقص حالة وقت عندئذ إعادة تركيب.
 
-组件绝不会收到 `ctx`。父组件在某次渲染时已经知道的值通过 `renderSlot` 的 owner 参数进入；共享视图状态使用声明的 store；service 与 model object 留在 `apply` closure 中，只向组件投影 callback 或 observable source。
+مكون أبدا سوف استلام إلى `ctx`. أب مكون في بعض مرة تصيير وقت قد معرفة طريق قيمة عبر `renderSlot` owner معامل دخول؛ مشترك عرض حالة استخدام إعلان store؛service و model object إبقاء في `apply` closure في، فقط نحو مكون إسقاط callback أو observable source.
 
-## 框架提供的 hooks
+## إطار هيكل توفير hooks
 
-当前组合中的 adapter 会添加以下标准 props。它们按目标 slot 的 scope 提供，与注册组件来自哪个包无关。
+حالي تركيب في adapter سوف إضافة التالي معيار props. هو جمع حسب هدف slot scope توفير، و تسجيل مكون قدوم ذاتي أي عدد حزمة غير متصل.
 
-| 可用范围 | Props | Owner |
+| متاح نطاق | Props | Owner |
 |---|---|---|
-| 所有 scope | `useSessions`、`useSessionStatus`、`useSessionRetainInfo` | `ui-session` |
-| 所有 scope | `useWorkspaces` | `ui-workspace` |
-| 所有作用域 | `usePanelInfo` | `ui-layout` |
-| `session` | `sessionId`、`useSession`、`useProjection` | `ui-session` |
-| `session-maybe` | 结果可选的 `sessionId`、`useSession`、`useProjection` | `ui-session` |
-| `session` | `useConversation`、`useInput`、`inputActions` | `ui-conversation` |
-| `session-maybe` | 结果可选的 `useConversation`、`useInput`、`inputActions` | `ui-conversation` |
+| كل scope | `useSessions`،`useSessionStatus`،`useSessionRetainInfo` | `ui-session` |
+| كل scope | `useWorkspaces` | `ui-workspace` |
+| كل أثر مجال | `usePanelInfo` | `ui-layout` |
+| `session` | `sessionId`،`useSession`،`useProjection` | `ui-session` |
+| `session-maybe` | نتيجة اختياري `sessionId`،`useSession`،`useProjection` | `ui-session` |
+| `session` | `useConversation`،`useInput`،`inputActions` | `ui-conversation` |
+| `session-maybe` | نتيجة اختياري `useConversation`،`useInput`،`inputActions` | `ui-conversation` |
 | `session` | `useChat` | `ui-chat` |
 | `session` | `useTrajectory` | `ui-trajectory` |
 
-Renderer 还会根据声明的 store 创建 `useStore`，并根据声明的 locale namespace 创建 `t`。这些是由注册项推导的 props，不属于全局标准 props。
+Renderer أيضا سوف أصل حسب إعلان store إنشاء `useStore`، و أصل حسب إعلان locale namespace إنشاء `t`. هذه هو من تسجيل بند دفع توجيه props، لا يخص عام معيار props.
 
-框架与领域 adapter owner 可以通过 `ctx.slots.provideRoot()` 或 `ctx.uiSession.provide()` 扩展标准集合，同时提供对应的 `GlobalStandardProps`、`SessionStandardProps` 或 `SessionMaybeStandardProps` 声明合并。普通功能组件不应自行创建 React hook prop，也不应为 entry 私有数据添加全局标准 prop。
+إطار هيكل و مجال adapter owner يمكن عبر `ctx.slots.provideRoot()` أو `ctx.uiSession.provide()` توسيع معيار تجميع دمج، معا توفير مقابل `GlobalStandardProps`،`SessionStandardProps` أو `SessionMaybeStandardProps` إعلان دمج. عادي وظيفة مكون لا ينبغي ذاتي سطر إنشاء React hook prop، أيضا لا ينبغي لـ entry خاص بيانات إضافة عام معيار prop.
 
-## 开发者提供的 injection
+## تطوير من توفير injection
 
-注册项的 `inject` 选项是通常使用的功能私有注入点。它的 factory 在插件的 `apply` 世界中运行，可以闭包捕获已经注入的 Cordis service，并且只返回组件所需的数据与 callback。对于 `session` slot，它会收到 `sessionId`；对于 `session-maybe`，它收到 `sessionId | undefined`；声明 store 后，它还会收到该 store 绑定后的 actions。
+تسجيل بند `inject` خيار هو عبر معتاد استخدام وظيفة خاص حقن نقطة. هو factory في إضافة `apply` عالم حد في تشغيل، يمكن إغلاق حزمة التقاط قد حقن Cordis service، و كما فقط إرجاع مكون الذي يحتاج بيانات و callback. مقابل في `session` slot، هو سوف استلام إلى `sessionId`؛ مقابل في `session-maybe`، هو استلام إلى `sessionId | undefined`؛ إعلان store بعد، هو أيضا سوف استلام إلى هذا store ربط بعد actions.
 
-返回值中保留的 `hooks` 对象接收裸 `getSnapshot`／`subscribe` source。Renderer 把 `hooks: { status }` 转换为组件 prop `useStatus(selector)`，并按 source identity 缓存绑定。组件不会收到 source 本身，也不直接调用 `useSyncExternalStore`。
+قيمة راجعة في إبقاء `hooks` كائن استقبال عار `getSnapshot`/`subscribe` source.Renderer يأخذ `hooks: { status }` تحويل لـ مكون prop `useStatus(selector)`، و حسب source identity ذاكرة مؤقتة ربط. مكون لن استلام إلى source ذاته، أيضا لا مباشر استدعاء `useSyncExternalStore`.
 
-当每个 occupant 都需要同一种能力时，slot owner 可以在 child 声明里放置 `inject` face。普通成员会原样交给所有 occupant；其 `hooks` 对象中的函数成员是 hook factory，它会收到 slot 的标准 props 与可选的逐次渲染 `hookContext`，再返回提供给 occupant 的受限 hook。`conversation.chat.node` 正是通过这种机制，为当前渲染的 node 提供 `useTurnData(key)`。
+عند كل occupant كل حاجة نفس نوع قدرة وقت،slot owner يمكن في child إعلان داخل وضع وضع `inject` face. عادي عضو سوف أصل مثال تسليم إعطاء كل occupant؛ ذلك `hooks` كائن في دالة عضو هو hook factory، هو سوف استلام إلى slot معيار props و اختياري تدريجي مرة تصيير `hookContext`، مجددا إرجاع توفير إعطاء occupant تلقي حد hook.`conversation.chat.node` صحيح هو عبر هذا نوع آلية، لـ حالي تصيير node توفير `useTurnData(key)`.
 
-一次渲染时 owner 已知的值走 owner props；单个 entry 的 callback 与私有 observable 走注册项 `inject`；由 slot owner 控制、所有 occupant 共享的能力走 slot 级 `inject`；需要跨 entry 共享或跨重新挂载保留的可变视图状态走声明的 store。React node 通过 child slot 组合，不通过注入值传递。
+مرة تصيير وقت owner معروف قيمة مشي owner props؛ مفرد عدد entry callback و خاص observable مشي تسجيل بند `inject`؛ من slot owner تحكم، كل occupant مشترك قدرة مشي slot درجة `inject`؛ حاجة عبر entry مشترك أو عبر إعادة تركيب إبقاء متغير عرض حالة مشي إعلان store.React node عبر child slot تركيب، لا عبر حقن قيمة نقل تمرير.
 
-## 当前层级
+## حالي طبقة درجة
 
-下图是当前发布组合的声明树。只有具名 parent entry 已挂载时，其 child 才存在；因此可选功能 entry 可以作为一个生命周期单元让整棵子树出现或消失。
+تحت رسم هو حالي إصدار تركيب إعلان شجرة. فقط لديه أداة اسم parent entry قد تركيب وقت، ذلك child عندئذ وجود؛ لذلك اختياري وظيفة entry يمكن بصفة واحد دورة الحياة وحدة يجعل كامل شجرة فرعي شجرة ظهور أو إزالة فقد.
 
 ```text
 root
@@ -177,13 +177,13 @@ root
 └─ shell.overlay
 ```
 
-生成的 Client inspect catalog 是每个 key 的完整参考，包含 cardinality、scope、owner props、标准 props、当前 occupant、声明 owner 与替换风险。运行中的动态包可以用 `cordis_inspect what:"client"` 查询实时树与某个精确 key；源码 catalog 由 `pnpm run gen-client-catalog` 根据 `SlotMap` 声明和 `slots.register()` 调用点生成。
+توليد Client inspect catalog هو كل key كامل مشاركة اعتبار، يتضمن cardinality،scope،owner props، معيار props، حالي occupant، إعلان owner و استبدال ريح خطر. تشغيل في حركة حالة حزمة يمكن استخدام `cordis_inspect what:"client"` استعلام فوري شجرة و بعض عدد دقيق key؛ شفرة المصدر catalog من `pnpm run gen-client-catalog` أصل حسب `SlotMap` إعلان و `slots.register()` استدعاء نقطة توليد.
 
-## 扩展规则
+## توسيع قاعدة
 
-- 另一个功能包只能通过 `import type` 引入声明；绝不导入或转发它的运行时值。
-- 只在拥有并渲染某个位置的组件中声明新的 child slot。其他包通过 `ctx.slots.inject()` 等待，再通过 `ctx.slots.register()` 贡献内容。
-- 业务与传输状态留在所属 Cordis service 或 Client model 中。Slot store 只承载共享的视图与交互状态。
-- 可观测 source 及其 snapshot identity 在值变化前保持稳定；值变化时通过同一个 source 发布。
-- UI domain 之间只传 JSON 兼容数据和 callback。`hooks` compartment 是裸 observable 的唯一例外；React 内容通过 slot 传递。
-- 将 `single` 和已有 occupant 的 keyed cell 视为替换点。增量扩展使用 list id 或尚未占用的 key。
+- آخر عدد وظيفة حزمة فقط قدرة عبر `import type` جذب دخول إعلان؛ أبدا استيراد أو تحويل إرسال هو وقت التشغيل قيمة.
+- فقط في يملك و تصيير بعض عدد موضع مكون في إعلان جديد child slot. أخرى حزمة عبر `ctx.slots.inject()` انتظار، مجددا عبر `ctx.slots.register()` مساهمة محتوى.
+- عمل خدمة و نقل حالة إبقاء في الذي تابع Cordis service أو Client model في.Slot store فقط تحمل تحميل مشترك عرض و تفاعل حالة.
+- يمكن مراقبة قياس source و ذلك snapshot identity في قيمة تغير قبل إبقاء مستقر؛ قيمة تغير وقت عبر نفس عدد source إصدار.
+- UI domain بين فقط نقل JSON توافق بيانات و callback.`hooks` compartment هو عار observable وحيد مثال خارج؛React محتوى عبر slot نقل تمرير.
+- سوف `single` و قد لديه occupant keyed cell نظر لـ استبدال نقطة. زيادة كمية توسيع استخدام list id أو بعد لم احتلال استخدام key.

@@ -1,36 +1,36 @@
-# Agent Note: 任务注册表是一个能力 seam（`dsh-jobs` / `dsh-jobs-local`）
+# Agent Note: مهمة سجل التسجيل هو واحد قدرة seam(`dsh-jobs` / `dsh-jobs-local`)
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-26-job-registry-seam.md) | 中文
+[English](2026-07-26-job-registry-seam.md) | العربية
 
-## 问题
+## مشكلة
 
-[后台任务运行时](2026-06-20-generic-long-running-tool-runtime.zh.md)交付时把 `JobRegistry` 做成了单个具体包：`@deepseek-ai/dsh-jobs` 既拥有每个生产方和控制器面向编程的 `ctx.jobs` 约定，也拥有进程内 Service Provider（内存存储、结算簿记、所有者清理 effect、拆除）。这种捆绑重新耦合了仓库[能力 seam 规则](2026-06-13-capability-seams.zh.md)本要分离的两种变化速率：一旦替换注册表的存储或生命周期后端，被搅动的就是同一个包，而生产方（`dsh-tool-bash`、`dsh-tool-terminal`、`dsh-tool-subagent`）、控制器（`dsh-tool-jobs`）和 `JobKindMap` 扩展方正是从这个包导入类型与 `ctx.jobs` API。harness 中其余每项可替换能力——bash、pty、fs、skill（技能）、subagent、web、会话持久化——都已具备 Service Definition / Service Provider / Consumer 三分；任务注册表曾是仅剩的 `core` 模式例外，仅由一条 `TODO(job-service-backend)` 注释把守。
+[خلفية مهمة وقت التشغيل](2026-06-20-generic-long-running-tool-runtime.zh.md) تسليم وقت يأخذ `JobRegistry` فعل صار مفرد عدد أداة جسم حزمة:`@deepseek-ai/dsh-jobs` حيث يملك كل إنتاج جهة و تحكم جهاز موجه إلى تحرير مسار `ctx.jobs` اتفاق، أيضا يملك عملية داخل Service Provider(داخل تخزين تخزين، تسوية دفتر تسجيل، كل من تنظيف effect، تفكيك حذف). هذا نوع ربط ربط إعادة اقتران دمج مستودع[قدرة seam قاعدة](2026-06-13-capability-seams.zh.md) هذا يلزم قسم مغادرة اثنان نوع تغير سرعة معدل: واحد حالما استبدال سجل التسجيل تخزين أو دورة الحياة خلفية، يتم خلط حركة حينئذ هو نفس عدد حزمة، بينما إنتاج جهة (`dsh-tool-bash`،`dsh-tool-terminal`،`dsh-tool-subagent`) ، تحكم جهاز (`dsh-tool-jobs`) و `JobKindMap` توسيع جهة صحيح هو من هذا عدد حزمة استيراد نوع و `ctx.jobs` API.harness في ذلك بقية كل بند يمكن استبدال قدرة——bash،pty،fs،skill(تقنية قدرة) ،subagent،web، جلسة حفظ دائم——كل قد أداة تجهيز Service Definition / Service Provider / Consumer ثلاثة قسم؛ مهمة سجل التسجيل سبق هو فقط باق `core` نمط مثال خارج، فقط من واحد بند `TODO(job-service-backend)` ملاحظة تفسير يأخذ حراسة.
 
-## 决策
+## قرار
 
-`jobs/` 如今是一个 bash 三件套形态的三包能力家族：
+`jobs/` مثل اليوم هو واحد bash ثلاثة عنصر طقم شكل ثلاثة حزمة قدرة بيت عائلة:
 
-- **`@deepseek-ai/dsh-jobs`（Service Definition）**——抽象的 `JobRegistry extends Service`，拥有 `ctx.jobs`、九个方法的约定（`start`、`list`、`get`、`read`、`kill`、`wait`、`onJobDone`、`onJobsChanged`、`attachController`）、全部词汇类型（`JobId`、`JobKindMap`、`JobStart`、`JobHooks`、`JobOutcome`、`JobSnapshot`、`JobRead`、`JobDoneListener`），以及快照不变式配套插件。类级 JSDoc 陈述了每个 Service Provider 都必须兑现的语义：注册的存续期长于生产方与控制器的 fiber，有所有者的访问以会话为界，结算遵循首次结果优先且监听器错误被隔离，并且当没有任何已附加的任务控制器服务于 spec 的所有者时 `start` 拒绝启动工作（控制器与监听器按 scope 分层，因此一个进程级注册表能逐所有者地回答这两个问题）。
-- **`@deepseek-ai/dsh-jobs-local`（Service Provider）**——`LocalJobRegistry`，即进程内注册表：内存存储、按 kind 划分的 id 计数器、等待方簿记、`TASK_WAIT_TIMEOUT` deadline 代码、所有者清理 effect、强制失败的拆除，以及默认值为 10 且可配置的准入策略。准入从同一组记录中按确切 owner 派生 `running` 加 `stopping` 容量，并为无 owner 任务使用一个共享桶；它不新增公开计数或第二个状态 owner。`dsh-timeout` 依赖与由 Schemastery 管理的 Service Provider 配置都位于此包；Service Definition 包不含任何提供方依赖。
-- **`@deepseek-ai/dsh-tool-jobs`（Consumer）**——保持不变；它注入 `'jobs'`，从不导入提供方类型。
+- **`@deepseek-ai/dsh-jobs`(Service Definition)**——سحب كائن `JobRegistry extends Service`، يملك `ctx.jobs`، تسعة عدد طريقة اتفاق (`start`،`list`،`get`،`read`،`kill`،`wait`،`onJobDone`،`onJobsChanged`،`attachController`) ، الكل مفردات نوع (`JobId`،`JobKindMap`،`JobStart`،`JobHooks`،`JobOutcome`،`JobSnapshot`،`JobRead`،`JobDoneListener`) ، و لقطة ثابت صيغة إعداد طقم إضافة. صنف درجة JSDoc قديم وصف كل Service Provider كل يجب صرف الآن دلالة: تسجيل تخزين متابعة مدة طويل في إنتاج جهة و تحكم جهاز fiber، لديه كل من وصول بـ جلسة لـ حد، تسوية التزام دوران أول مرة نتيجة أولوية كما مستمع خطأ يتم عزل، و كما عند لا يوجد أي قد مرفق إضافة مهمة تحكم جهاز خدمة في spec كل من وقت `start` رفض بدء عمل (تحكم جهاز و مستمع حسب scope قسم طبقة، لذلك واحد عملية درجة سجل التسجيل قدرة تدريجي كل من أرض عودة جواب هذا اثنان عدد مشكلة).
+- **`@deepseek-ai/dsh-jobs-local`(Service Provider)**——`LocalJobRegistry`، أي عملية داخل سجل التسجيل: داخل تخزين تخزين، حسب kind تخطيط قسم id حساب عدد جهاز، انتظار جهة دفتر تسجيل،`TASK_WAIT_TIMEOUT` deadline شفرة، كل من تنظيف effect، قوي صنع فشل تفكيك حذف، و قيمة افتراضية لـ 10 كما يمكن إعداد دقيق دخول سياسة. دقيق دخول من نفس مجموعة سجل في حسب تأكيد قطع owner إرسال توليد `running` إضافة `stopping` سعة كمية، و لـ بلا owner مهمة استخدام واحد مشترك دلو؛ هو لا إضافة جديدة عام حساب عدد أو ثاني عدد حالة owner.`dsh-timeout` اعتماد و من Schemastery إدارة Service Provider إعداد كل يقع في هذا حزمة؛Service Definition حزمة لا يحتوي أي مزود اعتماد.
+- **`@deepseek-ai/dsh-tool-jobs`(Consumer)**——إبقاء ثابت؛ هو حقن `'jobs'`، من لا استيراد مزود نوع.
 
-各组合在原先加载 `dsh-jobs` 的位置改为加载 `dsh-jobs-local`：`dsh-base`、`sdk-minimal`、各测试 harness，以及工具目录生成器的启动流程。生产方的配置错误诊断信息（「background jobs unavailable: load …」）点名 `dsh-jobs`——即声明缺失的 `ctx.jobs` 服务的 Service Definition 包；Service Definition 包自身的 API（其 README 与直接挂载防线）会指向各 Service Provider，因此当另一个后端日后成为推荐默认时，生产方的消息依旧正确。生产方、`JobKindMap` 声明合并和控制器仍然只导入 `@deepseek-ai/dsh-jobs`。
+كل تركيب في أصل أولا تحميل `dsh-jobs` موضع تعديل لـ تحميل `dsh-jobs-local`:`dsh-base`،`sdk-minimal`، كل اختبار harness، و أداة دليل توليد جهاز بدء مسار. إنتاج جهة إعداد خطأ تشخيص معلومة («background jobs unavailable: load …») نقطة اسم `dsh-jobs`——أي إعلان ناقص `ctx.jobs` خدمة Service Definition حزمة؛Service Definition حزمة ذاته API(ذلك README و مباشر تركيب منع خط) سوف إشارة نحو كل Service Provider، لذلك عند آخر عدد خلفية يوم بعد يصبح دفع ترشيح افتراضي وقت، إنتاج جهة رسالة اعتماد قديم صحيح تأكيد. إنتاج جهة،`JobKindMap` إعلان دمج و تحكم جهاز ما زال فقط استيراد `@deepseek-ai/dsh-jobs`.
 
-该 seam 保持进程内约定语义不变：`JobStart.run()` 仍然传入回调和确切的 `Agent` 对象，因此持久化或跨进程后端在能满足此 Service Definition 之前仍有设计工作要做（身份、重启、所有权、观察）。这次拆分把该项未来工作移出了每个 Consumer 的依赖图；它并不预先设计后端。
+هذا seam إبقاء عملية داخل اتفاق دلالة ثابت:`JobStart.run()` ما زال نقل دخول عودة ضبط و تأكيد قطع `Agent` كائن، لذلك حفظ دائم أو عبر عملية خلفية في قدرة ممتلئ كاف هذا Service Definition قبل ما زال لديه تصميم عمل يلزم فعل (هوية، إعادة بدء، كل حق، مراقبة). هذا مرة تفكيك قسم يأخذ هذا بند لم قدوم عمل نقل خروج كل Consumer اعتماد رسم؛ هو و لا مسبق أولا تصميم خلفية.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**在第二个后端出现之前保持具体服务（维持现状）。**这正是运行时 Agent Note 当初的立场：在第二个 Service Provider 出现前抽取 Service Definition，可能固化错误的边界。该方案落选，因为这条边界已不再是臆测：九个服务方法及其语义自引入以来在每一次生产方集成中都保持稳定，它们正是 `dsh-tool-jobs` 与各生产方已经面向编程的那套接口，而且仓库约定默认将可替换能力拆成三个包。剩余风险（持久化后端可能需要变更约定）不因这次拆分而改变：无论拆分与否，这类变更都会落在 Service Definition 包里；而若维持现状，它们还会连带搅动每个 Consumer 的提供方依赖。
+**في ثاني عدد خلفية ظهور قبل إبقاء أداة جسم خدمة (صيانة حمل الآن حالة).**هذا صحيح هو وقت التشغيل Agent Note عند أول قيام ساحة: في ثاني عدد Service Provider ظهور قبل سحب أخذ Service Definition، ممكن ثابت تحويل خطأ حد. هذا خطة سقوط اختيار، لأن هذا بند حد قد لم يعد هو ظن قياس: تسعة عدد خدمة طريقة و ذلك دلالة ذاتي جذب دخول بـ قدوم في كل مرة إنتاج جهة تجميع صار في كل إبقاء مستقر، هو جمع صحيح هو `dsh-tool-jobs` و كل إنتاج جهة قد موجه إلى تحرير مسار ذلك طقم واجهة، بينما كما مستودع اتفاق افتراضي سوف يمكن استبدال قدرة تفكيك صار ثلاثة عدد حزمة. باق بقية ريح خطر (حفظ دائم خلفية ممكن حاجة تغيير اتفاق) لا بسبب هذا مرة تفكيك قسم بينما تغيير: بلا نقاش تفكيك قسم و لا، هذا صنف تغيير كل سوف سقوط في Service Definition حزمة داخل؛ بينما إذا صيانة حمل الآن حالة، هو جمع أيضا سوف وصل حمل خلط حركة كل Consumer مزود اعتماد.
 
-**在单个包内仅抽取 Service Definition（在具体类旁导出一个抽象类）。**否决，因为它在运作层面并未分离任何东西：Consumer 依然依赖携带 Service Provider 及其依赖项的那个包，而替换后端若不把本地 Service Provider 纳入自身依赖图，就仍然无法发布。在这里，包边界才是独立演进的单位。
+**في مفرد عدد حزمة داخل فقط سحب أخذ Service Definition(في أداة جسم صنف جانب توجيه خروج واحد سحب كائن صنف).**مرفوض، لأن هو في تشغيل عمل طبقة وجه و لم قسم مغادرة أي شرق غرب:Consumer اعتماد لكن اعتماد يحمل Service Provider و ذلك اعتماد ذلك عدد حزمة، بينما استبدال خلفية إذا لا يأخذ محلي Service Provider قبول دخول ذاته اعتماد رسم، حينئذ ما زال لا يمكن إصدار. في هذا داخل، حزمة حد عندئذ هو مستقل عرض دخول مفرد موضع.
 
-**拆出 `types.ts` 但让服务保持具体。**基于同样的理由否决：类型并不是完整能力，`ctx.jobs` Service Definition 及其方法约定才是。生产方需要的是服务键和语义，而不只是类型形状。
+**تفكيك خروج `types.ts` لكن يجعل خدمة إبقاء أداة جسم.**أساس في نفس مثال إدارة من مرفوض: نوع و لا هو كامل قدرة،`ctx.jobs` Service Definition و ذلك طريقة اتفاق عندئذ هو. إنتاج جهة حاجة هو خدمة مفتاح و دلالة، بينما لا فقط هو نوع شكل حالة.
 
-## 后果
+## عاقبة
 
-换来的是：任务注册表如今与全仓库通行的 seam 形态一致；持久化、远程或带插桩的注册表将是一个实现九个抽象方法的同级 Service Provider，这样的注册表落地时，任何生产方、控制器或 `JobKindMap` 扩展方都无需改动。Service Definition 的 README 陈述约定；生命周期簿记方面的事实归 Service Provider 的 README 所有。注册表行为测试套件（所有者清理、结算、等待、拆除）随 `dsh-jobs-local` 存放；Service Definition 包保留一个桩子类（stub subclass）测试，固定 `ctx.jobs` 下的注册行为与单一服务的重复注册行为，外加基于探针的不变式测试套件。
+تبديل قدوم هو: مهمة سجل التسجيل مثل اليوم و كل مستودع عبر سطر seam شكل متسق؛ حفظ دائم، بعيد مسار أو حمل إدراج وتد سجل التسجيل سوف هو واحد تنفيذ تسعة عدد سحب كائن طريقة نفس درجة Service Provider، هذا مثال سجل التسجيل سقوط أرض وقت، أي إنتاج جهة، تحكم جهاز أو `JobKindMap` توسيع جهة كل بلا حاجة تعديل.Service Definition README قديم وصف اتفاق؛ دورة الحياة دفتر تسجيل جهة وجه واقع عودة Service Provider README كل. سجل التسجيل سلوك اختبار طقم عنصر (كل من تنظيف، تسوية، انتظار، تفكيك حذف) مع `dsh-jobs-local` تخزين وضع؛Service Definition حزمة إبقاء واحد وتد فرعي صنف (stub subclass) اختبار، ثابت `ctx.jobs` تحت تسجيل سلوك و مفرد واحد خدمة تكرار تسجيل سلوك، خارج إضافة أساس في استكشاف إبرة ثابت صيغة اختبار طقم عنصر.
 
-代价是：多出一个包，即多一份 manifest（元数据清单）、tsconfig、README 与不变式配套插件；同时各组合必须点名 Service Provider 包。`abstract` 在运行时会被擦除，而这个包名过去正是可挂载的具体注册表，因此直接挂载 Service Definition 时，其构造函数会明确报错——一条陈旧的组合配置行会在加载时得到「load a Service Provider such as @deepseek-ai/dsh-jobs-local」，而不是一个未完整注册的 `ctx.jobs` 在远离错误配置处才失败。
+بديل قيمة هو: كثير خروج واحد حزمة، أي كثير واحد نسخة manifest(بيانات وصفية بيان) ،tsconfig،README و ثابت صيغة إعداد طقم إضافة؛ معا كل تركيب يجب نقطة اسم Service Provider حزمة.`abstract` في وقت التشغيل سوف يتم مسح حذف، بينما هذا عدد حزمة اسم مرور ذهاب صحيح هو يمكن تركيب أداة جسم سجل التسجيل، لذلك مباشر تركيب Service Definition وقت، ذلك بنية صنع دالة سوف واضح تقرير خطأ——واحد بند قديم قديم تركيب إعداد سطر سوف في تحميل وقت نيل إلى «load a Service Provider such as @deepseek-ai/dsh-jobs-local» ، بينما لا هو واحد لم كامل تسجيل `ctx.jobs` في بعيد مغادرة خطأ إعداد موضع عندئذ فشل.

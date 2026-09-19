@@ -1,14 +1,14 @@
-# 会话标题
+# جلسة عنوان
 
-[English](session-title.md) | 中文
+[English](session-title.md) | العربية
 
-[`@deepseek-ai/dsh-session-title`](../../packages/session/session-title) 所拥有的持久、后写覆盖的标题状态与可选异步提供方词汇。共享 LLM（大语言模型）辅助组件负责精确的辅助请求记录。各包 README 负责时序、回退、失败与 fork 行为；生成的[持久化日志事件目录](../persistence-catalog.zh.md)负责完整的事件声明。
+[`@deepseek-ai/dsh-session-title`](../../packages/session/session-title) الذي يملك حمل دائم، بعد كتابة تغطية عنوان حالة و اختياري مختلف خطوة مزود مفردات. مشترك LLM(كبير لغة نموذج) مساعد مساعدة مكون مسؤول دقيق مساعد مساعدة طلب سجل. كل حزمة README مسؤول وقت ترتيب، رجوع، فشل و fork سلوك؛ توليد[حفظ دائم سجل حدث دليل](../persistence-catalog.zh.md) مسؤول كامل حدث إعلان.
 
-源码：[`packages/session/session-title/src/index.ts`](../../packages/session/session-title/src/index.ts)、[`packages/session/session-title-llm/src/index.ts`](../../packages/session/session-title-llm/src/index.ts)
+شفرة المصدر:[`packages/session/session-title/src/index.ts`](../../packages/session/session-title/src/index.ts) ،[`packages/session/session-title-llm/src/index.ts`](../../packages/session/session-title-llm/src/index.ts)
 
-## 持久标题状态
+## حمل دائم عنوان حالة
 
-提供方生成修订时会记录 `SessionTitleProviderId`。`SessionTitleEventData` 列出生成标题时使用的精确人类消息 seq，`SessionTitleSnapshot` 则加入 `ctx.sessionTitle.get()` 与 `foldSessionTitle()` 返回的持久事件封装信息。`title` 投影的版本 1 状态与客户端视图都只保留标题字符串或 `null`，因此既有持久化缓存行仍可读取。
+مزود توليد إصلاح حجز وقت سوف سجل `SessionTitleProviderId`.`SessionTitleEventData` صف خروج توليد عنوان وقت استخدام دقيق شخص صنف رسالة seq،`SessionTitleSnapshot` فإن إضافة دخول `ctx.sessionTitle.get()` و `foldSessionTitle()` إرجاع حمل دائم حدث غلاف تركيب معلومة.`title` إسقاط إصدار 1 حالة و عميل عرض كل فقط إبقاء عنوان نص أو `null`، لذلك قائم حفظ دائم ذاكرة مؤقتة سطر ما زال يمكن قراءة.
 
 ```ts type-equiv
 /** Identifies one session-title provider registration. */
@@ -62,9 +62,9 @@ interface SessionTitleSnapshot extends SessionTitleEventData {
 }
 ```
 
-## 辅助请求记录
+## مساعد مساعدة طلب سجل
 
-共享 LLM 辅助组件会在调用模型前，记录每一项已经过验证且可分发的标题请求。即使后续生成失败，载荷仍会复现模型可见的系统输入与消息输入、路由、输出上限、提供方归属和源消息归因。
+مشترك LLM مساعد مساعدة مكون سوف في استدعاء نموذج قبل، سجل كل واحد بند قد مرور تحقق كما يمكن توزيع عنوان طلب. أي جعل لاحق توليد فشل، تحميل حمل ما زال سوف تكرار الآن نموذج مرئي نظام إدخال و رسالة إدخال، توجيه، إخراج حد أعلى، مزود ملكية و مصدر رسالة عودة بسبب.
 
 ```ts type-equiv
 /** Exact model-visible request recorded before one auxiliary title dispatch. */
@@ -84,9 +84,9 @@ interface SessionTitleLlmRequestEventData {
 }
 ```
 
-## 提供方输入与输出
+## مزود إدخال و إخراج
 
-服务会对截至某一修订的合格消息创建快照。提供方返回的 seq 仅可来自该请求；由服务负责的接纳流程会验证顺序、规范化标题、强制执行字节上限，并追加标题及其来源消息 seq 和来源类型。
+خدمة سوف مقابل قطع حتى بعض واحد إصلاح حجز دمج إطار رسالة إنشاء لقطة. مزود إرجاع seq فقط يمكن قدوم ذاتي هذا طلب؛ من خدمة مسؤول وصل قبول مسار سوف تحقق ترتيب، مواصفة تحويل عنوان، قوي صنع تنفيذ بايت حد أعلى، و إلحاق عنوان و ذلك مصدر رسالة seq و مصدر نوع.
 
 ```ts type-equiv
 /** One eligible human text message exposed to title providers. */

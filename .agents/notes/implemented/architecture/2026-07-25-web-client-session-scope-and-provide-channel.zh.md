@@ -1,140 +1,140 @@
-# Agent Note: Web client Agent-scope 对等模型与供数通道（agents/scope / blank 复用 / provide）
+# Agent Note: Web client Agent-scope مقابل انتظار نموذج و توفير عدد عبر طريق (agents/scope / blank إعادة استخدام / provide)
 
 Status: implemented
 
-[English](2026-07-25-web-client-session-scope-and-provide-channel.md) | 中文
+[English](2026-07-25-web-client-session-scope-and-provide-channel.md) | العربية
 
-> 范围：client Agent scope（actx）与定向事件、client/host 实体化对等模型、空会话 blank 位与复用（`connectWorkspace`）、逐会话供数通道（`sessions.provide`），以及承载这些能力的 host wire 小件（summary `blank` 列、`host/session-added` 帧字段、`host/commands-changed` 帧）。输入状态机与 slash 管线见[输入状态机 note](../../archived/architecture/2026-07-25-web-input-machine-and-slash-pipeline.md)；命令业务面见[命令业务面 note](../../archived/architecture/2026-07-25-web-command-surfaces-and-assembly.md)。
+> نطاق:client Agent scope(actx) و تحديد نحو حدث،client/host فعلي جسم تحويل مقابل انتظار نموذج، فارغ جلسة blank موضع و إعادة استخدام (`connectWorkspace`) ، تدريجي جلسة توفير عدد عبر طريق (`sessions.provide`) ، و تحمل تحميل هذه قدرة host wire صغير عنصر (summary `blank` صف،`host/session-added` لقطة حقل،`host/commands-changed` لقطة). إدخال حالة آلة و slash إدارة خط رؤية[إدخال حالة آلة note](../../archived/architecture/2026-07-25-web-input-machine-and-slash-pipeline.md) ؛ أمر عمل خدمة وجه رؤية[أمر عمل خدمة وجه note](../../archived/architecture/2026-07-25-web-command-surfaces-and-assembly.md).
 
-## 问题
+## مشكلة
 
-web client 只有一张全局会话面：slot 全部从根上下文渲染，插件拿不到「当前是哪个 agent/会话」的语境；draft 的权威副本埋在 Session 对象里，任何要参与输入的插件都无处下手。要支撑命令/输入体系，平台层必须先回答：
+web client فقط لديه واحد ورقة عام جلسة وجه:slot الكل من أصل سياق تصيير، إضافة أخذ لا إلى «حالي هو أي عدد agent/جلسة» لغة بيئة؛draft مرجعي فرعي هذا دفن في Session كائن داخل، أي يلزم مشاركة و إدخال إضافة كل بلا موضع تحت يد. يلزم دعم دعم أمر/إدخال جسم نظام، منصة طبقة يجب أولا عودة جواب:
 
-- 会话交互态（菜单、popup、草稿、在途请求）归谁持有，双会话如何结构性隔离；
-- 「新会话」在 host 实体存在之前是什么——client 是否必须为它凭空创建独立生命周期；
-- 会话 scope 组件如何「自己拿会话数据」，而不是层层下传 props；
-- 用户放弃的新会话在 host 侧留下什么，由谁回收。
+- جلسة تفاعل حالة (قائمة مفرد،popup، مسودة مسودة، في طريق طلب) عودة من يحتفظ، مزدوج جلسة مثل أي بنية صفة عزل؛
+- «جديد جلسة» في host فعلي جسم وجود قبل هو ماذا——client هل يجب لـ هو سند فارغ إنشاء مستقل دورة الحياة؛
+- جلسة scope مكون مثل أي «ذاتي ذات أخذ جلسة بيانات» ، بينما لا هو طبقة طبقة تحت نقل props؛
+- مستخدم وضع ترك جديد جلسة في host جانب إبقاء تحت ماذا، من من عودة استلام.
 
-硬约束：host 是唯一真源；一切注册走 `ctx.effect` disposer；scope 机制与 host 的 Agent scope 架构一致；模型可见 ⟺ 已入会话日志。
+صلب قيد:host هو وحيد حق مصدر؛ واحد قطع تسجيل مشي `ctx.effect` disposer؛scope آلية و host Agent scope هيكل بنية متسق؛ نموذج مرئي ⟺ قد دخول جلسة سجل.
 
-## 决策
+## قرار
 
-[Client Session 引用](2026-09-15-client-session-references.zh.md)现已定义引用所有的生命周期与 Provider 定位。本 Note 保留 blank Session 与收养语义的理由，并描述它们的当前实现。
+[Client Session مرجع](2026-09-15-client-session-references.zh.md) الآن قد تعريف مرجع كل دورة الحياة و Provider تحديد موضع. هذا Note إبقاء blank Session و استلام رعاية دلالة إدارة من، و وصف هو جمع حالي تنفيذ.
 
-### 对等模型：client 与 host 同一根状态轴
+### مقابل انتظار نموذج:client و host نفس أصل حالة محور
 
-host 侧 `session.create(workspaceId)` 一体产出 Session + Agent + cwd（作为不可拆分的原子整体）；client 侧就是这次出生的镜像——会话行进入 list mirror 的瞬间，client 为它铸 Agent scope（actx + provide + 输入面全套挂上）：
+host جانب `session.create(workspaceId)` واحد جسم إنتاج خروج Session + Agent + cwd(بصفة غير ممكن تفكيك قسم أصل فرعي كامل جسم) ؛client جانب حينئذ هو هذا مرة خروج توليد مرآة مثل——جلسة سطر دخول list mirror لحظة بين،client لـ هو صب Agent scope(actx + provide + إدخال وجه كل طقم تعليق فوق):
 
-- 会话身份自出生即为 host 真身：sessionId 由 `session.create` 响应 / `host/session-added` 帧带来，client 侧一切寻址（scope tag、slot store 键、RPC 地址）用的都是同一个 id。
-- 实体化时点 = 用户选定 Workspace（cwd 确定）的瞬间：client 当场调 `session.create({workspaceId})`，拿到完整实体。
-- 「New Session 且未选 workspace」是**纯视图态**（一个导航位置），不对应任何会话/scope 实体；选定之前 composer 整体锁死（无 slash、无纯文本）。
-- 「空会话」就是一个日志还空着的普通实体化会话；对 host 上所有 Agent-scope 插件（goal/plan/skill（技能）/…）它与任何会话无异，slash/plan 天然全活。
+- جلسة هوية ذاتي خروج توليد أي لـ host حق ذات:sessionId من `session.create` استجابة / `host/session-added` لقطة حمل قدوم،client جانب واحد قطع بحث عنوان (scope tag،slot store مفتاح،RPC عنوان) استخدام كل هو نفس عدد id.
+- فعلي جسم تحويل وقت نقطة = مستخدم اختيار تحديد Workspace(cwd تحديد) لحظة بين:client عند ساحة ضبط `session.create({workspaceId})`، أخذ إلى كامل فعلي جسم.
+- «New Session كما لم اختيار workspace» هو**صاف عرض حالة**(واحد تنقل موضع) ، لا مقابل أي جلسة/scope فعلي جسم؛ اختيار تحديد قبل composer كامل جسم قفل ميت (بلا slash، بلا صاف نص).
+- «فارغ جلسة» حينئذ هو واحد سجل أيضا فارغ حال عادي فعلي جسم تحويل جلسة؛ مقابل host فوق كل Agent-scope إضافة (goal/plan/skill(تقنية قدرة)/…) هو و أي جلسة بلا مختلف،slash/plan يوم لكن كل نشط.
 
-### Agent scope：actx 是 client 侧 cordis 世界的唯一会话载体
+### Agent scope:actx هو client جانب cordis عالم حد وحيد جلسة تحميل جسم
 
-运行时 `agents/scope.ts` 与 host `dsh-scope` 机制层一致（fiber + tag + filter 过滤；不 value-import：host 包携带 scoped-events 的 `Events` merge，进 client program 撞 Context merge）：
+وقت التشغيل `agents/scope.ts` و host `dsh-scope` آلية طبقة متسق (fiber + tag + filter مرور ترشيح؛ لا value-import:host حزمة يحمل scoped-events `Events` merge، دخول client program اصطدام Context merge):
 
-- `createScope(ctx, key)`：no-op 插件 fiber + `extend({[kScope]: key, [Context.filter]: …})`——filter 直接住 actx：untagged listener 全局可收，tagged 只收本 scope。
-- 派发就是 cordis 原语，thisArg = actx 本身：`actx.bail(actx, event, req)` / `actx.emit(actx, event, payload)`。
-- `Session.bindScope(actx)`：resolve 铸 scope 时单次配对（重复绑 throw；dropScope unbind），镜像 host `Agent.loopCtx`——Session 用它自行派发 scoped 事件。actx→Session 反向走 `sessions.sessionOf(actx)` 一跳（镜像 host 插件 `agent.session` 用法）。
+- `createScope(ctx, key)`:no-op إضافة fiber + `extend({[kScope]: key, [Context.filter]: …})`——filter مباشر إقامة actx:untagged listener عام يمكن استلام،tagged فقط استلام هذا scope.
+- إرسال إرسال حينئذ هو cordis أصل لغة،thisArg = actx ذاته:`actx.bail(actx, event, req)` / `actx.emit(actx, event, payload)`.
+- `Session.bindScope(actx)`:resolve صب scope وقت مفرد مرة إعداد مقابل (تكرار ربط throw؛dropScope unbind) ، مرآة مثل host `Agent.loopCtx`——Session استخدام هو ذاتي سطر إرسال إرسال scoped حدث.actx→Session عكس نحو مشي `sessions.sessionOf(actx)` واحد قفز (مرآة مثل host إضافة `agent.session` استخدام قاعدة).
 
-与 host dsh-scope 的有意分歧三条：
+و host dsh-scope متعمد قسم اختلاف ثلاثة بند:
 
-- filter 住 actx 自身而非独立 carrier：host 包装层护的是「业务 Agent subject 与 scope key 不漂移」（host 事件首参注入 Agent 本体），client 事件 payload 只带 id、无 subject 可护。
-- key 用品牌 `SessionId` 值比较而非对象身份：host 里 agent.id === 会话 id（1:1 同轴），agent 身份直接复用 `SessionId` 品牌，client scope 的身份即 wire id。
-- client 是 **Agent 身份** scope 而非活对象 scope：cold 会话期 host Agent 对象已 dispose（资源释放）而 client actx 存活（视野内）——身份轴严格对等、对象冷热有意不同步。
+- filter إقامة actx ذاته بينما غير مستقل carrier:host حزمة تركيب طبقة حماية هو «عمل خدمة Agent subject و scope key لا عائم نقل»(host حدث أول مشاركة حقن Agent هذا جسم) ،client حدث payload فقط حمل id، بلا subject يمكن حماية.
+- key استخدام صنف لوحة `SessionId` قيمة مقارنة مقارنة بينما غير كائن هوية:host داخل agent.id === جلسة id(1:1 نفس محور) ،agent هوية مباشر إعادة استخدام `SessionId` صنف لوحة،client scope هوية أي wire id.
+- client هو **Agent هوية** scope بينما غير نشط كائن scope:cold جلسة مدة host Agent كائن قد dispose(مورد تحرير) بينما client actx تخزين نشط (نظر بري داخل)——هوية محور صارم إطار مقابل انتظار، كائن بارد حار متعمد مختلف خطوة.
 
-id→ctx 换乘只许三类位置（业务提供方永不换乘）：
+id→ctx تبديل ركوب فقط سماح ثلاثة صنف موضع (عمل خدمة مزود دائم لا تبديل ركوب):
 
-- slot inject 工厂：ctx 不进渲染层，slot 框架交给组件的身份就是 sessionId，经服务 map 换回对象/controller。
-- root 协调服务自寻址：从投影的 sessionId 经 `sessions.scope(id)` 找回 actx。
-- root untagged listener：按 payload 的 sessionId 查自有 store。
+- slot inject عمل مصنع:ctx لا دخول تصيير طبقة،slot إطار هيكل تسليم إعطاء مكون هوية حينئذ هو sessionId، مرور خدمة map تبديل عودة كائن/controller.
+- root تنسيق ضبط خدمة ذاتي بحث عنوان: من إسقاط sessionId مرور `sessions.scope(id)` بحث عودة actx.
+- root untagged listener: حسب payload sessionId فحص ذاتي لديه store.
 
-### scope 生命周期：挂靠显式引用
+### scope دورة الحياة: تعليق اعتماد صريح مرجع
 
-Session 实例与 scope 同生命周期；catalog 只报告可发现性，不持有 generation：
+Session نسخة و scope نفس دورة الحياة؛catalog فقط تقرير إبلاغ يمكن اكتشاف صفة، لا يحتفظ generation:
 
-- 出生 = 第一次显式调用 `sessions.retain(target, options)`；它同步返回 reference，并在历史就绪前铸造 Session binding 与 scope。
-- 最后一份 reference 释放时，Controller 先撤下确切 generation，再拆除其 Session 实例、scope fiber（级联挂在 actx 上的一切消费方）与会话键控 slot store。仍有 reference 时，catalog 移除不会结束 generation。
-- 重开 = 后续 retain 惰性重建 generation，并通过 `reference.ready` 暴露历史就绪结果（Host Session 日志是持久真相）。
-- 遗留 TODO：approval/question 帧不进 history，跨 prune 不可恢复（manager 级 pendingBuffers 只覆盖「从未实例化」窗口）。
+- خروج توليد = رقم مرة صريح استدعاء `sessions.retain(target, options)`؛ هو تزامن إرجاع reference، و في تاريخ حينئذ خيط قبل صب صنع Session binding و scope.
+- الأكثر بعد واحد نسخة reference تحرير وقت،Controller أولا سحب تحت تأكيد قطع generation، مجددا تفكيك حذف ذلك Session نسخة،scope fiber(درجة ربط تعليق في actx فوق واحد قطع مستهلك) و جلسة مفتاح تحكم slot store. ما زال لديه reference وقت،catalog إزالة لن انتهاء generation.
+- إعادة فتح = لاحق retain كسول صفة إعادة بناء generation، و عبر `reference.ready` كشف تاريخ حينئذ خيط نتيجة (Host Session سجل هو حمل دائم حق متبادل).
+- متروك إبقاء TODO:approval/question لقطة لا دخول history، عبر prune غير ممكن استعادة (manager درجة pendingBuffers فقط تغطية «من لم نسخة تحويل» نافذة).
 
-### blank 位：空会话的可见投影、转正与复用
+### blank موضع: فارغ جلسة مرئي إسقاط، تحويل صحيح و إعادة استخدام
 
-「实体化但无首条提示词」的会话经 summary 派生位 `blank` 治理（派生列而非 header 字段，SessionHeader 保持不可变）：
+«فعلي جسم تحويل لكن بلا أول بند نص التوجيه» جلسة مرور summary إرسال توليد موضع `blank` معالجة إدارة (إرسال توليد صف بينما غير header حقل،SessionHeader إبقاء غير ممكن تغيير):
 
-- host 判据：`session.seq === 0`（零日志事件 = 尚无用户消息）。live 会话 `summarize()` 内存直读；cold 会话恒 `false`——JSONL provider 的 lazy-create 约定保证 never-appended 会话不进入 `persistence.list()`，所以 blank 从不落盘。
-- wire 承载两处：`SessionSummary.blank` 必填列；`host/session-added` 帧必填 `blank` 字段（创建时恒 true，供别的 tab 按同一空会话状态入镜像）。
-- client 镜像只降不升（单调），三来源翻转，全部复用既有 wire 信号：
-  - 发送方本地：首次 `prompt()` 的**成功响应**翻 false（受理即证明用户消息已入 host 日志——此点翻转是确证而非乐观；`onEngaged` 同步更新列表镜像，当前 `New Session` 行原地转为普通标题，不新增列表行）。首条提示词被拒则会话保持 blank：与 host 权威对齐、继续显示为 `New Session`、在仍为该工作区成员时保持 connectWorkspace 复用资格。
-  - 其他端：`host/session-status (running:true)` 帧翻转——blank 会话从不 running，首次 running 必然已非 blank；
-  - 重连对齐：`session.list` 的 summary.blank 是权威，错过帧的端下次拉取自然对齐；陈旧的 blank:true 不能把已转正的会话重新标回 blank。
-- 列表纪律：store 保留全部行；Workspace browser 的分组、平铺、搜索和计数共用同一可见投影——所有非 blank 会话都显示，blank 会话只显示由 `mainView` 来源持有的一行，并强制标题为 `New Session`。切换 Workspace 后，旧 blank 实体仍在镜像中但从列表隐藏，目标 Workspace 的主 blank 显示；因此用户可见面全局至多一条 blank 行。
-- 残留账零 GC：刷新后 blank 会话带位回来，下次同 workspace 且仍为成员时复用，普通单端路径使每个 workspace 至多保留一个；host 重启后 blank 无盘痕自然蒸发；多 tab 竞态多出的空壳只会成为非 current 隐藏行，后续复用消化，不做协调。
+- host حكم حسب:`session.seq === 0`(صفر سجل حدث = بعد بلا مستخدم رسالة).live جلسة `summarize()` داخل تخزين مباشر قراءة؛cold جلسة ثابت `false`——JSONL provider lazy-create اتفاق حفظ إثبات never-appended جلسة لا دخول `persistence.list()`، الذي بـ blank من لا سقوط قرص.
+- wire تحمل تحميل اثنان موضع:`SessionSummary.blank` لا بد ملء صف؛`host/session-added` لقطة لا بد ملء `blank` حقل (إنشاء وقت ثابت true، توفير آخر tab حسب نفس فارغ جلسة حالة دخول مرآة مثل).
+- client مرآة مثل فقط خفض لا رفع (مفرد ضبط) ، ثلاثة مصدر قلب تحويل، الكل إعادة استخدام قائم wire إشارة:
+  - إرسال جهة محلي: أول مرة `prompt()` **نجاح استجابة**قلب false(تلقي إدارة أي إثبات مستخدم رسالة قد دخول host سجل——هذا نقطة قلب تحويل هو تأكيد إثبات بينما غير مرح مراقبة؛`onEngaged` تزامن تحديث قائمة مرآة مثل، حالي `New Session` سطر أصل أرض تحويل لـ عادي عنوان، لا إضافة جديدة قائمة سطر). أول بند نص التوجيه يتم رفض فإن جلسة إبقاء blank: و host مرجعي مقابل متساو، متابعة عرض لـ `New Session`، في ما زال لـ هذا مساحة العمل عضو وقت إبقاء connectWorkspace إعادة استخدام مورد إطار.
+  - أخرى طرف:`host/session-status (running:true)` لقطة قلب تحويل——blank جلسة من لا running، أول مرة running لا بد لكن قد غير blank؛
+  - إعادة وصل مقابل متساو:`session.list` summary.blank هو مرجعي، خطأ مرور لقطة طرف تحت مرة سحب أخذ ذاتي لكن مقابل متساو؛ قديم قديم blank:true لا يستطيع يأخذ قد تحويل صحيح جلسة إعادة علامة عودة blank.
+- قائمة سجل قاعدة:store إبقاء الكل سطر؛Workspace browser قسم مجموعة، مستو فرش، بحث و حساب عدد مشترك استخدام نفس مرئي إسقاط——كل غير blank جلسة كل عرض،blank جلسة فقط عرض من `mainView` مصدر يحتفظ واحد سطر، و قوي صنع عنوان لـ `New Session`. تبديل Workspace بعد، قديم blank فعلي جسم ما زال في مرآة مثل في لكن من قائمة إخفاء، هدف Workspace رئيسي blank عرض؛ لذلك مستخدم مرئي وجه عام حتى كثير واحد بند blank سطر.
+- ناقص إبقاء حساب صفر GC: تحديث جديد بعد blank جلسة حمل موضع عودة قدوم، تحت مرة نفس workspace كما ما زال لـ عضو وقت إعادة استخدام، عادي مفرد طرف مسار جعل كل workspace حتى كثير إبقاء واحد؛host إعادة بدء بعد blank بلا قرص أثر ذاتي لكن تبخر إرسال؛ كثير tab تنافس حالة كثير خروج فارغ قشرة فقط سوف يصبح غير current إخفاء سطر، لاحق إعادة استخدام إزالة تحويل، لا فعل تنسيق ضبط.
 
-### connectWorkspace：New Session 的唯一入口
+### connectWorkspace:New Session وحيد مدخل
 
-`workspaces.connectWorkspace(workspaceId): Promise<SessionId>`（归属 WorkspaceRuntime——它同时持有 workspace 规范 path 与 sessions 引用）：
+`workspaces.connectWorkspace(workspaceId): Promise<SessionId>`(ملكية WorkspaceRuntime——هو معا يحتفظ workspace مواصفة path و sessions مرجع):
 
-- 复用臂：list mirror 中找 `blank && cwd == workspace.path && sessionIds.includes(id)`——host 自己的成员规则，绝不只按 cwd。没有账户槽位的 cwd 匹配（CLI（命令行界面）/TUI 在 host cwd 创建的会话，或已删除/重建的注册）会打开一个任何分组表面都无法显示在该工作区下的会话，因此落到新建臂（见[成员复用修复](../../archived/bug-fix/2026-08-05-workspace-blank-session-reuse-membership.md)）；命中直接返回该 id，不新建。
-- 新建臂：未命中则 `session.create({workspaceId})`，返回新 id。
-- 未知 workspaceId fail loud（不静默创建到别处）。
-- 解析保证（两臂同约定）：promise resolve 时返回的 id 已在 list store。视图 owner 随后同步 retain，因此 draft 搬运方可以在历史就绪前通过该 binding 写入文本，无需等待 notifier flush。
-- 调用方拿 id 安装一份 `mainView` reference；首条提示词发送就是普通 `session.prompt`——Session 本来就在，失败即普通提示词失败，draft 文本还在 machine 里，重试即再次发送。
-- 全局 New Session 按钮默认取 `recentWorkspaceId`：先比较各 Workspace 内 Session 的最新 `updatedAt`，无 Session 时回退 Workspace `createdAt`，同值保持 Host 顺序；只有完全没有 Workspace 时才释放主视图 reference，进入无 Session 视图。Workspace 分组内的创建动作仍显式命中该 Workspace。
-- 运行时启动时订阅首次完整基线：若已有恢复成功的 current 会话则保持不动，否则自动 `connectWorkspace(recentWorkspaceId)` 并 open 返回的 blank 会话。该策略只结算一次；之后用户主动 clear 不会再次被自动选择覆盖，连接失败则等下一次基线投影重试。
-- blank Hero 中改选 Workspace 也走 `connectWorkspace`；若目标 id 与主视图 id 不同，`ui-workspace` 先 retain 目标，通过 preparation callback 搬运当前 input machine 的非空 draft，再发布新的主 reference。旧 blank 实体不删除，只因其 `mainView` reference 被释放而从列表隐藏。
+- إعادة استخدام ذراع:list mirror في بحث `blank && cwd == workspace.path && sessionIds.includes(id)`——host ذاتي ذات عضو قاعدة، أبدا فقط حسب cwd. لا يوجد حساب مستخدم مجرى موضع cwd مطابقة (CLI(أمر سطر واجهة)/TUI في host cwd إنشاء جلسة، أو قد حذف/إعادة بناء تسجيل) سوف فتح واحد أي قسم مجموعة جدول وجه كل لا يمكن عرض في هذا مساحة العمل تحت جلسة، لذلك سقوط إلى جديد بناء ذراع (رؤية[عضو إعادة استخدام إصلاح](../../archived/bug-fix/2026-08-05-workspace-blank-session-reuse-membership.md)) ؛ أمر في مباشر إرجاع هذا id، لا جديد بناء.
+- جديد بناء ذراع: لم أمر في فإن `session.create({workspaceId})`، إرجاع جديد id.
+- لم معرفة workspaceId fail loud(لا ساكن صامت إنشاء إلى آخر موضع).
+- تحليل حفظ إثبات (اثنان ذراع نفس اتفاق):promise resolve وقت إرجاع id قد في list store. عرض owner مع بعد تزامن retain، لذلك draft نقل تشغيل جهة يمكن في تاريخ حينئذ خيط قبل عبر هذا binding كتابة نص، بلا حاجة انتظار notifier flush.
+- استدعاء جهة أخذ id تثبيت واحد نسخة `mainView` reference؛ أول بند نص التوجيه إرسال حينئذ هو عادي `session.prompt`——Session هذا قدوم حينئذ في، فشل أي عادي نص التوجيه فشل،draft نص أيضا في machine داخل، إعادة محاولة أي مجددا مرة إرسال.
+- عام New Session حسب زر افتراضي أخذ `recentWorkspaceId`: أولا مقارنة مقارنة كل Workspace داخل Session الأكثر جديد `updatedAt`، بلا Session وقت رجوع Workspace `createdAt`، نفس قيمة إبقاء Host ترتيب؛ فقط لديه تماما لا يوجد Workspace وقت عندئذ تحرير رئيسي عرض reference، دخول بلا Session عرض.Workspace قسم مجموعة داخل إنشاء حركة عمل ما زال صريح أمر في هذا Workspace.
+- وقت التشغيل بدء وقت حجز قراءة أول مرة كامل أساس خط: إذا قد لديه استعادة نجاح current جلسة فإن إبقاء لا حركة، لا فإن تلقائي `connectWorkspace(recentWorkspaceId)` و open إرجاع blank جلسة. هذا سياسة فقط تسوية مرة؛ بعد مستخدم رئيسي حركة clear لن مجددا مرة يتم تلقائي اختيار تغطية، اتصال فشل فإن انتظار تحت مرة أساس خط إسقاط إعادة محاولة.
+- blank Hero في تعديل اختيار Workspace أيضا مشي `connectWorkspace`؛ إذا هدف id و رئيسي عرض id مختلف،`ui-workspace` أولا retain هدف، عبر preparation callback نقل تشغيل حالي input machine غير فارغ draft، مجددا إصدار جديد رئيسي reference. قديم blank فعلي جسم لا حذف، فقط بسبب ذلك `mainView` reference يتم تحرير بينما من قائمة إخفاء.
 
-### 逐会话供数：`uiSession.provide` 标准件通道
+### تدريجي جلسة توفير عدد:`uiSession.provide` معيار عنصر عبر طريق
 
-Session slot 组件「自己拿 Session 数据」的唯一供数路径。插件以静态描述符 `uiSession.provide({hooks, props, resolve})` 声明固定键表（重名 key 注册时 throw），`resolve(binding)` 在确定 binding 下物化值并随其 scope 拆；ui-renderer `standardKit` 统一循环把 hooks 格绑成 `use<Name>` 选择器钩子（`observableHook`→uSES，防 tearing）、props 格原样透传。
+Session slot مكون «ذاتي ذات أخذ Session بيانات» وحيد توفير عدد مسار. إضافة بـ ساكن حالة وصف رمز `uiSession.provide({hooks, props, resolve})` إعلان ثابت مفتاح جدول (إعادة اسم key تسجيل وقت throw) ،`resolve(binding)` في تحديد binding تحت شيء تحويل قيمة و مع ذلك scope تفكيك؛ui-renderer `standardKit` موحد واحد حلقة يأخذ hooks إطار ربط صار `use<Name>` اختيار جهاز خطاف (`observableHook`→uSES، منع tearing) ،props إطار أصل مثال نفاذ نقل.
 
-slot scope 是闭集 `root | session-maybe | session`：
+slot scope هو إغلاق تجميع `root | session-maybe | session`:
 
-- `root` 只拿全局标准件，不接收会话身份或供数。
-- `session-maybe` 以**收养（adoption）身份语义**继承最近 `SessionProvider` 的 binding：空态出生的化身在该 Provider 第一次收到 binding 时保持 React 实例，此后 Provider 切换 generation 或回到空态时重挂。Provider 切换 generation 时，组件本地的逐 Session 状态会清零。切换过程中，只有持久化 Store 值能活过 generation 退休；只有另一份 reference 保活该 generation 时，binding 自有 source 才能保留。无 binding 时，`sessionId`、`useSession`/`useInput` 的结果与 `inputActions` 均可缺省。Provider roster 变化会重新物化已挂载 binding，但不改变其 identity；逐 entry 的收养记账住在 renderer 的 `SessionMaybeEntry`。
-- `session` 保证 `sessionId`、所有钩子 source 与 props 均存在；每个严格 entry 的错误边界以 `sessionId` 为 key，切换会话会重建该 entry 及其会话 store。
+- `root` فقط أخذ عام معيار عنصر، لا استقبال جلسة هوية أو توفير عدد.
+- `session-maybe` بـ**استلام رعاية (adoption) هوية دلالة**وراثة الأكثر قريب `SessionProvider` binding: فارغ حالة خروج توليد تحويل ذات في هذا Provider رقم مرة استلام إلى binding وقت إبقاء React نسخة، هذا بعد Provider تبديل generation أو عودة إلى فارغ حالة وقت إعادة تعليق.Provider تبديل generation وقت، مكون محلي تدريجي Session حالة سوف صاف صفر. تبديل مرور مسار في، فقط لديه حفظ دائم Store قيمة قدرة نشط مرور generation تراجع راحة؛ فقط لديه آخر نسخة reference حفظ نشط هذا generation وقت،binding ذاتي لديه source عندئذ قدرة إبقاء. بلا binding وقت،`sessionId`،`useSession`/`useInput` نتيجة و `inputActions` متساو يمكن نقص حذف.Provider roster تغير سوف إعادة شيء تحويل قد تركيب binding، لكن لا تغيير ذلك identity؛ تدريجي entry استلام رعاية تسجيل حساب إقامة في renderer `SessionMaybeEntry`.
+- `session` حفظ إثبات `sessionId`، كل خطاف source و props متساو وجود؛ كل صارم إطار entry خطأ حد بـ `sessionId` لـ key، تبديل جلسة سوف إعادة بناء هذا entry و ذلك جلسة store.
 
-`conversation` 是其 owner `SessionProvider` 下的 `session-maybe` 常驻外壳：`ConversationRoot`、HeroShell、Workspace picker、scrollport 与 composer stack，以及 overlay chain 的 fallback 外框，在无 Session → blank Session 的切换中保持 React 实例。两个严格 session entry 只填入固定区域，不改变该树的父级：`conversation.session.header` 在 scrollport 上方承载 breadcrumb／tab／action，`conversation.session` 在其内部承载 view ring 与 draft mirror；二者共享同一个 Session scope chat store。composer bar（`conversation.composer.bar`）本身即为 `session-maybe`：无 Session 时，其 machine faces 和消息动作保持惰性，整张虚线卡片可经指针打开现有 Workspace picker，只读 textarea 也可通过 Enter 或 Space 打开。binding 出现后同一实例（含 textarea）转为 live；其余输入 slot 保持严格 `session`，在此之前不派发任何内容。blank → engaging/active 的 InputBar 不因 phase 翻转而重建。
+`conversation` هو ذلك owner `SessionProvider` تحت `session-maybe` معتاد إقامة خارج قشرة:`ConversationRoot`،HeroShell،Workspace picker،scrollport و composer stack، و overlay chain fallback خارج إطار، في بلا Session → blank Session تبديل في إبقاء React نسخة. اثنان عدد صارم إطار session entry فقط ملء دخول ثابت منطقة مجال، لا تغيير هذا شجرة أب درجة:`conversation.session.header` في scrollport فوق جهة تحمل تحميل breadcrumb/tab/action،`conversation.session` في ذلك داخلي تحمل تحميل view ring و draft mirror؛ اثنان من مشترك نفس عدد Session scope chat store.composer bar(`conversation.composer.bar`) ذاته أي لـ `session-maybe`: بلا Session وقت، ذلك machine faces و رسالة حركة عمل إبقاء كسول صفة، كامل ورقة وهمي خط بطاقة يمكن مرور إشارة إبرة فتح قائم Workspace picker، فقط قراءة textarea أيضا يمكن عبر Enter أو Space فتح.binding ظهور بعد نفس نسخة (يحتوي textarea) تحويل لـ live؛ ذلك بقية إدخال slot إبقاء صارم إطار `session`، في هذا قبل لا إرسال إرسال أي محتوى.blank → engaging/active InputBar لا بسبب phase قلب تحويل بينما إعادة بناء.
 
-blank Session 保留 header 的 leading 与 corner slot，让右侧栏展开入口等导航控件在首条消息之前即可使用。标题、actions、utilities 和 View tabs 在 blank phase 中继续隐藏。header 仍要求已选中的 Session；Files 与 Terminal 入口使用该 Session 的工作区和执行服务，无需已有 Turn 记录。
+blank Session إبقاء header leading و corner slot، يجعل يمين جانب شريط توسيع مدخل انتظار تنقل تحكم عنصر في أول بند رسالة قبل يكفي استخدام. عنوان،actions،utilities و View tabs في blank phase في متابعة إخفاء.header ما زال اشتراط قد اختيار في Session؛Files و Terminal مدخل استخدام هذا Session مساحة العمل و تنفيذ خدمة، بلا حاجة قد لديه Turn سجل.
 
-- 运行时内建第一条：`'session'` 钩子——`useSession` 本身走同一机制，无特判。
-- Concurrent 纪律：渲染平面只从 hooks 格读（uSES 一致性保证）；props 格回调只在事件 handler 空间用；描述符解析 render-safe（幂等缓存、废弃渲染残留由 prune 收尸）。
-- 第三方组件值零依赖，类型一行 type-only import（declaration merging 进 `SessionStandardProps` / `SessionMaybeStandardProps`）。
+- وقت التشغيل داخل بناء رقم واحد بند:`'session'` خطاف——`useSession` ذاته مشي نفس آلية، بلا خاص حكم.
+- Concurrent سجل قاعدة: تصيير مستو وجه فقط من hooks إطار قراءة (uSES متسق صفة حفظ إثبات) ؛props إطار عودة ضبط فقط في حدث handler فضاء استخدام؛ وصف رمز تحليل render-safe(قوة انتظار ذاكرة مؤقتة، ملغى ترك تصيير ناقص إبقاء من prune استلام جثة).
+- رقم ثلاثة جهة مكون قيمة صفر اعتماد، نوع واحد سطر type-only import(declaration merging دخول `SessionStandardProps` / `SessionMaybeStandardProps`).
 
-### 输入投递
+### إدخال إلقاء تمرير
 
-- 队列语义：running 不锁输入；普通消息经 `session.prompt {mode:'queue'}` 排队，命令永不排队。
+- طابور صف دلالة:running لا قفل إدخال؛ عادي رسالة مرور `session.prompt {mode:'queue'}` ترتيب طابور، أمر دائم لا ترتيب طابور.
 
-### host wire 小件
+### host wire صغير عنصر
 
-- summary `blank` 列与 `host/session-added` 帧 `blank` 字段（见上文 blank 位）。
-- SSE（Server-Sent Events）帧 `host/commands-changed`（纯失效信号）；client 路由为类型事件 `commands/changed` 与 `connection/reset`（连接代建立后广播，wire 派生缓存一律视旧态为陈旧）。 该 commands 帧及其类型化 client 事件后来被「`commands/change` 经 `ctx.remote.$on` 原样转发」取代（[转发的 Remote 事件](2026-08-10-remote-event-delivery.zh.md)）；`connection/reset` 不变；本条陈述的「失效而非差分」契约依然成立。
-- `command.list/execute`、`skills/list` 一律 `sessionId` 单址（会话恒有 Agent，`agentFor` 的恢复语义现成）；命令面叙述见[命令业务面 note](../../archived/architecture/2026-07-25-web-command-surfaces-and-assembly.md)。
-- `session.create` 请求形状：workspaceId/cwd 二选一 + 可选调用方预分配 sessionId（同 id 同 cwd 重试幂等，异 cwd 报 `session-conflict`）。
+- summary `blank` صف و `host/session-added` لقطة `blank` حقل (رؤية فوق نص blank موضع).
+- SSE(Server-Sent Events) لقطة `host/commands-changed`(صاف بطلان إشارة) ؛client توجيه لـ نوع حدث `commands/changed` و `connection/reset`(اتصال بديل بناء قيام بعد واسع بث،wire إرسال توليد ذاكرة مؤقتة واحد قاعدة نظر قديم حالة لـ قديم قديم). هذا commands لقطة و ذلك نوع تحويل client حدث بعد قدوم يتم «`commands/change` مرور `ctx.remote.$on` أصل مثال تحويل إرسال» يحل محل ([تحويل إرسال Remote حدث](2026-08-10-remote-event-delivery.zh.md)) ؛`connection/reset` ثابت؛ هذا بند قديم وصف «بطلان بينما غير فرق قسم» عقد نحو اعتماد لكن صار قيام.
+- `command.list/execute`،`skills/list` واحد قاعدة `sessionId` مفرد عنوان (جلسة ثابت لديه Agent،`agentFor` استعادة دلالة الآن صار) ؛ أمر وجه سرد وصف رؤية[أمر عمل خدمة وجه note](../../archived/architecture/2026-07-25-web-command-surfaces-and-assembly.md).
+- `session.create` طلب شكل حالة:workspaceId/cwd اثنان اختيار واحد + اختياري استدعاء جهة مسبق قسم إعداد sessionId(نفس id نفس cwd إعادة محاولة قوة انتظار، مختلف cwd تقرير `session-conflict`).
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-| 弃案 | 一行理由 |
+| ترك سجل | واحد سطر إدارة من |
 |---|---|
-| client-local Intent + materialize（published CAS / pendingPrompt attach 事务 / before-create 链） | client 被迫模拟 host 缺失的前半段生命，养出 published CAS、attach 事务、部分发布一坨状态机 |
-| host 预留 ID（draft Map） | host 只认了个号，状态机原封留在 client |
-| host draft Session（有 Session 无 Agent） | 每个查 Agent 的 host 面都要为 draft 分叉；core 要新增 `attachAgent` API + header cwd 后写 |
-| 无 cwd 先绑 Agent（ungrouped） | header.cwd readonly「created in」不变性被推翻 + launch-dir 副作用产品坑 |
-| React Context 层层传会话语境 | 插件在 host/client 两侧应是一个心智模型；scope 机制与 host dsh-scope 同构 |
-| `scopeTarget` carrier + 融合派发器（镜像 host `agentEvents`） | host 包装层护的是「业务 Agent subject 与 scope key 不漂移」，client 事件无 subject 可护；filter 住 actx + cordis 原语覆盖全部需求 |
-| Session 不持 ctx（对象层 cordis-free） | 只为筛选单测不引 cordis 而生的红线，代价是 contribute 两跳回调 + 可变公有字段；host Agent 本就持 loopCtx |
-| Session 实例常驻（resident-instance） | host 会话日志即持久真相；常驻仅为身份便利，与 scope 生命周期错位是复杂度之源 |
-| 组件收 wiring 回调包（inject→props 两层下传） | 标准件通道让组件自取；公共 API 收敛为 hooks + 稳定 props |
-| Hero 无会话视图与会话 Conversation 整支互换 | 即使外层 layout 不变，Hero、picker 与 composer 子树仍会一起重建，界面产生整块抖动 |
-| 让 InputBar 自身变成 `session-maybe` | 输入状态机、键盘命令面与动作都被迫接受缺省值；只替换 disabled 输入体能把可选性留在外壳边界 |
-| 专用「转正」帧 | `session-status(running:true)` 语义蕴含转正（blank 会话从不 running），加帧是 wire 多一型换零信息 |
+| client-local Intent + materialize(published CAS / pendingPrompt attach أمر خدمة / before-create سلسلة) | client يتم إجبار نموذج محاكاة host ناقص قبل نصف مقطع توليد أمر، رعاية خروج published CAS،attach أمر خدمة، جزء إصدار واحد كتلة حالة آلة |
+| host مسبق إبقاء ID(draft Map) | host فقط إقرار عدد رقم، حالة آلة أصل غلاف إبقاء في client |
+| host draft Session(لديه Session بلا Agent) | كل فحص Agent host وجه كل يلزم لـ draft قسم تقاطع؛core يلزم إضافة جديدة `attachAgent` API + header cwd بعد كتابة |
+| بلا cwd أولا ربط Agent(ungrouped) | header.cwd readonly«created in» ثابت صفة يتم دفع قلب + launch-dir فرعي أثر منتج حفرة |
+| React Context طبقة طبقة نقل جلسة لغة بيئة | إضافة في host/client اثنان جانب ينبغي هو واحد قلب ذكاء نموذج؛scope آلية و host dsh-scope نفس بنية |
+| `scopeTarget` carrier + دمج دمج إرسال إرسال جهاز (مرآة مثل host `agentEvents`) | host حزمة تركيب طبقة حماية هو «عمل خدمة Agent subject و scope key لا عائم نقل» ،client حدث بلا subject يمكن حماية؛filter إقامة actx + cordis أصل لغة تغطية الكل يحتاج طلب |
+| Session لا حمل ctx(كائن طبقة cordis-free) | فقط لـ غربلة اختيار مفرد قياس لا جذب cordis بينما توليد أحمر خط، بديل قيمة هو contribute اثنان قفز عودة ضبط + متغير عام لديه حقل؛host Agent هذا حينئذ حمل loopCtx |
+| Session نسخة معتاد إقامة (resident-instance) | host جلسة سجل أي حمل دائم حق متبادل؛ معتاد إقامة فقط لـ هوية سهل فائدة، و scope دورة الحياة خطأ موضع هو تكرار مختلط درجة لـ مصدر |
+| مكون استلام wiring عودة ضبط حزمة (inject→props اثنان طبقة تحت نقل) | معيار عنصر عبر طريق يجعل مكون ذاتي أخذ؛ عام مشترك API استلام جمع لـ hooks + مستقر props |
+| Hero بلا جلسة عرض و جلسة Conversation كامل دعم متبادل تبديل | أي جعل خارج طبقة layout ثابت،Hero،picker و composer فرعي شجرة ما زال سوف واحد بدء إعادة بناء، واجهة إنتاج كامل كتلة اهتزاز حركة |
+| يجعل InputBar ذاته تغيير صار `session-maybe` | إدخال حالة آلة، مفتاح قرص أمر وجه و حركة عمل كل يتم إجبار قبول نقص حذف قيمة؛ فقط استبدال disabled إدخال جسم قدرة يأخذ اختياري صفة إبقاء في خارج قشرة حد |
+| مخصص استخدام «تحويل صحيح» لقطة | `session-status(running:true)` دلالة كامن يحتوي تحويل صحيح (blank جلسة من لا running) ، إضافة لقطة هو wire كثير واحد نوع تبديل صفر معلومة |
 
-## 后果
+## عاقبة
 
-- 插件获得与 host 同构的会话上下文：逐会话状态挂 actx、随 scope fiber 一次拆装，泄漏结构性不可能；双会话隔离由 scope filter 结构性保证。
-- client 对象层收敛为 wire 镜像：会话身份、生命周期、能力判别全部以 host 实体为准——输入体系（下一层）面对的永远是「有真 Agent 的会话」，slash/skill 等提供方一律以 sessionId 直接寻址。
-- 空会话治理零专用机制：状态靠一个派生位，可见性靠统一列表投影（仅 current blank 以 `New Session` 展示），回收靠 lazy persistence 的既有约定（重启蒸发），常规上限靠同 Workspace 复用。
-- 代价：id→ctx 换乘纪律、provide 的 Concurrent 纪律都是约定而非类型强制，靠 review 与测试钉住。单一状态轴仍会在 Session 存在前隐藏 machine face；这段时间内，[常驻会话壳](../../../../packages/client/ui-conversation/README.zh.md)会把激活操作转到 Workspace picker。
-- 已知欠账：approval/question 跨 prune 恢复（TODO）；模型选择以 live-mutation 形状回归（host `selectModel` 三件套现成，其 client 消费方尚未构建）。
+- إضافة نيل نيل و host نفس بنية جلسة سياق: تدريجي جلسة حالة تعليق actx، مع scope fiber مرة تفكيك تركيب، تسرب تسرب بنية صفة غير ممكن قدرة؛ مزدوج جلسة عزل من scope filter بنية صفة حفظ إثبات.
+- client كائن طبقة استلام جمع لـ wire مرآة مثل: جلسة هوية، دورة الحياة، قدرة حكم آخر الكل بـ host فعلي جسم لـ دقيق——إدخال جسم نظام (تحت واحد طبقة) وجه مقابل دائم بعيد هو «لديه حق Agent جلسة» ،slash/skill انتظار مزود واحد قاعدة بـ sessionId مباشر بحث عنوان.
+- فارغ جلسة معالجة إدارة صفر مخصص استخدام آلية: حالة اعتماد واحد إرسال توليد موضع، مرئي صفة اعتماد موحد واحد قائمة إسقاط (فقط current blank بـ `New Session` عرض) ، عودة استلام اعتماد lazy persistence قائم اتفاق (إعادة بدء تبخر إرسال) ، معتاد قاعدة حد أعلى اعتماد نفس Workspace إعادة استخدام.
+- بديل قيمة:id→ctx تبديل ركوب سجل قاعدة،provide Concurrent سجل قاعدة كل هو اتفاق بينما غير نوع قوي صنع، اعتماد review و اختبار تثبيت إقامة. مفرد واحد حالة محور ما زال سوف في Session وجود قبل إخفاء machine face؛ هذا مقطع وقت داخل،[معتاد إقامة جلسة قشرة](../../../../packages/client/ui-conversation/README.zh.md) سوف يأخذ تنشيط عملية تحويل إلى Workspace picker.
+- معروف نقص حساب:approval/question عبر prune استعادة (TODO) ؛ نموذج اختيار بـ live-mutation شكل حالة ارتداد (host `selectModel` ثلاثة عنصر طقم الآن صار، ذلك client مستهلك بعد لم بناء).

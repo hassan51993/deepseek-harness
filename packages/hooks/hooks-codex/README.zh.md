@@ -1,37 +1,37 @@
 ---
-description: "在 agent 运行期间使用你现有的 Codex hooks.json 钩子配置——阻塞提示词与工具、附加上下文或强制继续——供本桥接的用户与维护者阅读。"
+description: "في agent تشغيل خلال استخدام أنت قائم Codex hooks.json خطاف إعداد——منع سد نص التوجيه و أداة، مرفق إضافة سياق أو قوي صنع متابعة——توفير هذا جسر وصل مستخدم و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-hooks-codex
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-hooks-codex` 在 agent（智能体）运行期间执行现有 Codex `hooks.json` 中的 command 钩子，让提示词与工具把关逻辑无需重写即可生效。它支持 5 个 Codex hook 点：会话开始、提示词提交、工具执行前后以及停止。钩子可以用模型可见的原因阻塞提示词或工具调用、添加对话上下文，或强制 agent 再执行一步。需要在 harness 中复用 Codex command 钩子时选择本包；超出这一受支持子集的行为应使用原生插件。
+`dsh-hooks-codex` في agent(ذكي جسم) تشغيل خلال تنفيذ قائم Codex `hooks.json` في command خطاف، يجعل نص التوجيه و أداة يأخذ صلة منطق بلا حاجة إعادة كتابة يكفي توليد فاعلية. هو دعم حمل 5 عدد Codex hook نقطة: جلسة بدء، نص التوجيه إيداع، أداة تنفيذ قبل بعد و إيقاف. خطاف يمكن استخدام نموذج مرئي سبب منع سد نص التوجيه أو أداة استدعاء، إضافة محادثة سياق، أو قوي صنع agent مجددا تنفيذ واحد خطوة. حاجة في harness في إعادة استخدام Codex command خطاف وقت اختيار هذه الحزمة؛ تجاوز خروج هذا واحد تلقي دعم حمل فرعي تجميع سلوك ينبغي استخدام أصلي إضافة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-挂载本包并把 `configPath` 指向你的 `hooks.json`，你已有的钩子就会在 agent 运行中的对应时刻开始触发。在第一个钩子生效之前无需其他设置。
+تركيب هذه الحزمة و يأخذ `configPath` إشارة نحو أنت `hooks.json`، أنت قد لديه خطاف حينئذ سوف في agent تشغيل في مقابل وقت لحظة بدء إطلاق. في رقم واحد خطاف توليد فاعلية قبل بلا حاجة أخرى ضبط.
 
-### 何时选择
+### أي وقت اختيار
 
-当你持有 Codex `hooks.json`、且其中的 command 钩子需要把关提示词、工具与轮次时，使用它。没有 Codex 对应物的行为请跳过它：原生插件拥有完整的 harness API，而本桥接只运行参考工具的 command hook 子集。
+عند أنت يحتفظ Codex `hooks.json`، كما منها command خطاف حاجة يأخذ صلة نص التوجيه، أداة و جولة وقت، استخدام هو. لا يوجد Codex مقابل شيء سلوك طلب قفز مرور هو: أصلي إضافة يملك كامل harness API، بينما هذا جسر وصل فقط تشغيل مشاركة اعتبار أداة command hook فرعي تجميع.
 
-### 最小配置
+### الأكثر صغير إعداد
 
 ```yaml
 - name: '@deepseek-ai/dsh-hooks-codex'
@@ -40,150 +40,150 @@ kind: "package-reference"
     model: deepseek-v4
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `configPath` | 必填 | Codex `hooks.json` 的路径 |
-| `model` | `''` | 写入每个 payload 的模型名称（Codex 在每个事件中都包含 `model`） |
-| `defaultTimeoutMs` | `600,000` | hook 未设置时的每 hook 超时（即 Codex 默认值） |
-| `stderrSummaryMaxChars` | `500` | 持久化 `hook/result` stderr 摘要的字符上限 |
+| `configPath` | لا بد ملء | Codex `hooks.json` مسار |
+| `model` | `''` | كتابة كل payload نموذج اسم (Codex في كل حدث في كل يتضمن `model`) |
+| `defaultTimeoutMs` | `600,000` | hook لم ضبط وقت كل hook مهلة (أي Codex قيمة افتراضية) |
+| `stderrSummaryMaxChars` | `500` | حفظ دائم `hook/result` stderr ملخص محرف حد أعلى |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-codex)是每个受支持字段的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-codex) هو كل تلقي دعم حمل حقل نفاد كل صيغة حق مصدر.
 
-### 你的钩子能做什么
+### أنت خطاف قدرة فعل ماذا
 
-| 你的钩子 | 运行时机 | 能做什么 |
+| أنت خطاف | وقت التشغيل آلة | قدرة فعل ماذا |
 |---|---|---|
-| `SessionStart` | 会话开始时 | 附加该会话中模型可见的上下文 |
-| `UserPromptSubmit` | agent 收到提示词时 | 阻塞提示词，或附加上下文 |
-| `PreToolUse` | 工具运行前 | 阻塞工具 |
-| `PostToolUse` | 工具运行后 | 带反馈阻塞结果，或附加上下文 |
-| `Stop` | 运行即将停止时 | 带原因强制再执行一步 |
+| `SessionStart` | جلسة بدء وقت | مرفق إضافة هذا جلسة في نموذج مرئي سياق |
+| `UserPromptSubmit` | agent استلام إلى نص التوجيه وقت | منع سد نص التوجيه، أو مرفق إضافة سياق |
+| `PreToolUse` | أداة تشغيل قبل | منع سد أداة |
+| `PostToolUse` | أداة تشغيل بعد | حمل عكس تغذية منع سد نتيجة، أو مرفق إضافة سياق |
+| `Stop` | تشغيل أي سوف إيقاف وقت | حمل سبب قوي صنع مجددا تنفيذ واحد خطوة |
 
-### 钩子如何运行与失败
+### خطاف مثل أي تشغيل و فشل
 
-- 钩子在你的项目目录（agent 的会话工作区）中运行，因此钩子里的 `pwd` 与相对路径指向你的项目，而非服务器启动目录。
-- 一份配置应用于整个进程：启动时只读取一次，相对 `configPath` 从启动进程的目录解析。
-- 只运行同步 command 钩子；`async: true` 或非 command 钩子会被跳过并给出警告。
-- 同一事件上的钩子按配置顺序逐个运行。
-- 如果配置无法读取或解析，桥接会记录警告且不运行任何钩子——agent 仍会启动。
-- 运行失败的钩子（命令错误或崩溃）会被记录，agent 继续运行。
+- خطاف في أنت مشروع دليل (agent جلسة مساحة العمل) في تشغيل، لذلك خطاف داخل `pwd` و متبادل مقابل مسار إشارة نحو أنت مشروع، بينما غير خادم بدء دليل.
+- واحد نسخة إعداد تطبيق في كامل عملية: بدء وقت فقط قراءة مرة، متبادل مقابل `configPath` من بدء عملية دليل تحليل.
+- فقط تشغيل تزامن command خطاف؛`async: true` أو غير command خطاف سوف يتم قفز مرور و إعطاء خروج تحذير إبلاغ.
+- نفس حدث فوق خطاف حسب إعداد ترتيب تدريجي عدد تشغيل.
+- إذا إعداد لا يمكن قراءة أو تحليل، جسر وصل سوف سجل تحذير إبلاغ كما لا تشغيل أي خطاف——agent ما زال سوف بدء.
+- تشغيل فشل خطاف (أمر خطأ أو انهيار انهيار) سوف يتم سجل،agent متابعة تشغيل.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释桥接背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير جسر وصل خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### Hook 点映射
+### Hook نقطة خريطة
 
-每个受支持事件都面向一个 harness 扩展点：`SessionStart` 在首个轮次前通过需等待的 `agent/created` 初始化加入上下文，`UserPromptSubmit` 与 `PreToolUse` 是能拒绝传入动作的 waterfall（瀑布式事件）（`agent/pre-step`、`tools/pre-execute`），`PostToolUse` 是能带反馈阻塞或向下游决策添加上下文的 waterfall（`tools/post-execute`），`Stop` 是串行监听器，其阻塞结果通过 `steer()` 强制再执行一步（`agent/turn-stopping`）。仅提供上下文的 hook 总是先通过 `next()` 委托，再把带来源的消息折叠进下游决策，因此后续监听器仍可拒绝或改写；阻塞决策映射为 `deny`（`PreToolUse` 没有 `allow` 或 `ask`）。逐事件接线位于 [`src/index.ts`](src/index.ts)。
+كل تلقي دعم حمل حدث كل موجه إلى واحد harness نقطة توسيع:`SessionStart` في أول عدد جولة قبل عبر يحتاج انتظار `agent/created` ابتدائي تحويل إضافة دخول سياق،`UserPromptSubmit` و `PreToolUse` هو قدرة رفض نقل دخول حركة عمل waterfall(شلال نشر صيغة حدث)(`agent/pre-step`،`tools/pre-execute`) ،`PostToolUse` هو قدرة حمل عكس تغذية منع سد أو نحو تحت تنقل قرار إضافة سياق waterfall(`tools/post-execute`) ،`Stop` هو سلسلة سطر مستمع، ذلك منع سد نتيجة عبر `steer()` قوي صنع مجددا تنفيذ واحد خطوة (`agent/turn-stopping`). فقط توفير سياق hook مجموع هو أولا عبر `next()` تفويض حمل، مجددا يأخذ حمل مصدر رسالة طي دخول تحت تنقل قرار، لذلك لاحق مستمع ما زال يمكن رفض أو تعديل كتابة؛ منع سد قرار خريطة لـ `deny`(`PreToolUse` لا يوجد `allow` أو `ask`). تدريجي حدث وصل خط يقع في [`src/index.ts`](src/index.ts).
 
-### 载荷与环境
+### تحميل حمل و بيئة
 
-payload 采用 Codex 形状：snake_case，轮次事件带 `turn_id`，每个事件都带 `model` 与 `permission_mode: "default"`，stdin 写入时不带尾随换行符。工具调用的 payload 携带真实 `tool_name` 与 `tool_input: { command }` 形状（存在 `command` 参数时使用该值，否则使用 `''`），因此非 shell 工具参数不会被如实公开。基础 payload 携带 `session_id` 与 `transcript_path`；后者保留 Codex `string | null` 形状但始终为 `null`——持久化 seam 不暴露产物路径，且默认 zstd 压缩的会话日志无法被 hook 脚本读取。Codex 不进行命令替换，也不注入插件环境。
+payload اعتماد Codex شكل حالة:snake_case، جولة حدث حمل `turn_id`، كل حدث كل حمل `model` و `permission_mode: "default"`،stdin كتابة وقت لا حمل ذيل مع تبديل سطر رمز. أداة استدعاء payload يحمل حقيقي `tool_name` و `tool_input: { command }` شكل حالة (وجود `command` معامل وقت استخدام هذا قيمة، لا فإن استخدام `''`) ، لذلك غير shell أداة معامل لن يتم مثل فعلي عام. أساس أساس payload يحمل `session_id` و `transcript_path`؛ بعد من إبقاء Codex `string | null` شكل حالة لكن بداية نهاية لـ `null`——حفظ دائم seam لا كشف ناتج مسار، كما افتراضي zstd ضغط جلسة سجل لا يمكن يتم hook نص برمجي قراءة.Codex لا إجراء أمر استبدال، أيضا لا حقن إضافة بيئة.
 
-### Matcher subject 与串行执行
+### Matcher subject و سلسلة سطر تنفيذ
 
-matcher subject 是工具名称（`PreToolUse`／`PostToolUse`）或会话源（`SessionStart`）；`UserPromptSubmit` 与 `Stop` 忽略 matcher。Codex matcher 始终是未锚定正则。匹配 hook 按配置顺序串行运行，这使每个 hook 的 `hook/invoked`／`hook/result` 对在日志中相邻，且最严格折叠与顺序无关（`deny > ask > allow`）。
+matcher subject هو أداة اسم (`PreToolUse`/`PostToolUse`) أو جلسة مصدر (`SessionStart`) ؛`UserPromptSubmit` و `Stop` تجاهل اختصار matcher.Codex matcher بداية نهاية هو لم مرساة تحديد صحيح فإن. مطابقة hook حسب إعداد ترتيب سلسلة سطر تشغيل، هذا جعل كل hook `hook/invoked`/`hook/result` مقابل في سجل في متبادل مجاور، كما الأكثر صارم إطار طي و ترتيب غير متصل (`deny > ask > allow`).
 
-### 脱离运行与释放
+### انفصال مغادرة تشغيل و تحرير
 
-`SessionStart` 是唯一的 emit 点，它脱离运行——没有扩展点等待它。每条运行链都会被跟踪，对桥接执行 dispose（资源释放）时会中止仍在运行的 hook 进程，并在 dispose 完成前排空 continuation（`createDetachedRuns`，位于 `dsh-hook-protocol`）。
+`SessionStart` هو وحيد emit نقطة، هو انفصال مغادرة تشغيل——لا يوجد نقطة توسيع انتظار هو. كل بند تشغيل سلسلة كل سوف يتم تتبع أثر، مقابل جسر وصل تنفيذ dispose(مورد تحرير) وقت سوف في توقف ما زال في تشغيل hook عملية، و في dispose إتمام قبل ترتيب فارغ continuation(`createDetachedRuns`، يقع في `dsh-hook-protocol`).
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **兼容适配器，而非强力工具。** 桥接的存在意义是运行现有 Codex 配置中显式受支持的子集；定制行为应放在同一批扩展点上的原生插件中。
-- **添加上下文不是否决。** 仅提供上下文的 hook 会先通过 `next()` 委托，再把其消息折叠进下游 enter 决策，因此后续 `agent/pre-step` 或 `tools/post-execute` 监听器仍可拒绝或改写。
-- **每个失败点都受控。** 配置读取／解析失败与无效 matcher 不注册任何内容；抛异常的脱离注入会被捕获并记录，而不是破坏会话启动或循环。
-- **dispose 必须达到完全停稳。** 脱离运行会被跟踪并在释放时排空，因此不会有 hook 进程或迟到回调超出 fiber 存活。
-- **保持方言形状，而非最大化。** payload 保持 snake_case 并带 `turn_id`／`model`，stdin 不带尾随换行符，桥接也不实现工具前审批或改写路径——即使 harness 本可以做得更多，也保留协议的形状。
+- **توافق مهايئ، بينما غير قوي قوة أداة.** جسر وصل وجود معنى معنى هو تشغيل قائم Codex إعداد في صريح تلقي دعم حمل فرعي تجميع؛ تحديد صنع سلوك ينبغي وضع في نفس دفعة نقطة توسيع فوق أصلي إضافة في.
+- **إضافة سياق لا هل قرار.** فقط توفير سياق hook سوف أولا عبر `next()` تفويض حمل، مجددا يأخذ ذلك رسالة طي دخول تحت تنقل enter قرار، لذلك لاحق `agent/pre-step` أو `tools/post-execute` مستمع ما زال يمكن رفض أو تعديل كتابة.
+- **كل فشل نقطة كل تلقي تحكم.** إعداد قراءة/تحليل فشل و بلا فاعلية matcher لا تسجيل أي محتوى؛ رمي استثناء انفصال مغادرة حقن سوف يتم التقاط و سجل، بينما لا هو كسر تالف جلسة بدء أو حلقة.
+- **dispose يجب بلوغ إلى تماما توقف مستقر.** انفصال مغادرة تشغيل سوف يتم تتبع أثر و في تحرير وقت ترتيب فارغ، لذلك لن لديه hook عملية أو متأخر إلى عودة ضبط تجاوز خروج fiber تخزين نشط.
+- **إبقاء جهة قول شكل حالة، بينما غير الأكثر كبير تحويل.** payload إبقاء snake_case و حمل `turn_id`/`model`،stdin لا حمل ذيل مع تبديل سطر رمز، جسر وصل أيضا لا تنفيذ أداة قبل مراجعة دفعة أو تعديل كتابة مسار——أي جعل harness هذا يمكن فعل نيل أكثر كثير، أيضا إبقاء بروتوكول شكل حالة.
 
-[hook-bridges Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md) 记录了桥接设计与延期缺口；[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) 记录了共享与逐方言的划分。
+[hook-bridges Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md) سجل جسر وصل تصميم و تأجيل نقص فتحة؛[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) سجل مشترك و تدريجي جهة قول تخطيط قسم.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：配置校验、监听器注册、逐事件 payload、决策映射 |
-| [`src/config.ts`](src/config.ts) | Codex 配置解析：五个受支持事件、matcher 校验、跳过原因 |
-| — | 不发布运行时不变式伴生入口；本桥接发布 hook-protocol 会话事件，既有 companion 负责校验每个结果所引用的调用事件。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: إعداد تحقق، مستمع تسجيل، تدريجي حدث payload، قرار خريطة |
+| [`src/config.ts`](src/config.ts) | Codex إعداد تحليل: خمسة عدد تلقي دعم حمل حدث،matcher تحقق، قفز مرور سبب |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذا جسر وصل إصدار hook-protocol جلسة حدث، قائم companion مسؤول تحقق كل نتيجة الذي مرجع استدعاء حدث. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享协议进入桥接设计，以及桥接所面向的扩展点。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك بروتوكول دخول جسر وصل تصميم، و جسر وصل الذي موجه إلى نقطة توسيع.
 
-- [hooks 组地图](../README.zh.md)——同级组页面及其包表。
-- [hook 协议库](../hook-protocol/README.zh.md)——本桥接应用的共享钩子规则。
-- [钩子桥接 Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——桥接设计、决策映射与延期缺口。
-- [拦截扩展点 Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——桥接所映射的类型化 Decision 接口面。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-codex)——每个受支持配置字段及其源声明。
+- [hooks مجموعة أرض رسم](../README.zh.md)——نفس درجة مجموعة صفحة و ذلك حزمة جدول.
+- [hook بروتوكول مكتبة](../hook-protocol/README.zh.md)——هذا جسر وصل تطبيق مشترك خطاف قاعدة.
+- [خطاف جسر وصل Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——جسر وصل تصميم، قرار خريطة و تأجيل نقص فتحة.
+- [اعتراض قطع نقطة توسيع Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——جسر وصل الذي خريطة نوع تحويل Decision واجهة وجه.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-codex)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### Hook 提供的上下文
+### Hook توفير سياق
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-`SessionStart`、已接受提示词与工具后 hook 可以添加带源归因的上下文消息；阻塞 `Stop` hook 将原因添加为下一步 steering（中途引导）。
+`SessionStart`، قد قبول نص التوجيه و أداة بعد hook يمكن إضافة حمل مصدر عودة بسبب سياق رسالة؛ منع سد `Stop` hook سوف سبب إضافة لـ تحت واحد خطوة steering(في طريق جذب توجيه).
 
-#### Token 影响
+#### Token أثر
 
-hook 不返回上下文时没有成本。Hook 文本取决于数据，会被记录，并在后续会话请求中重发，直到压缩（compaction）。
+hook لا إرجاع سياق وقت لا يوجد صار هذا.Hook نص أخذ قرار في بيانات، سوف يتم سجل، و في لاحق جلسة طلب في إعادة إرسال، مباشر إلى ضغط (compaction).
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV Cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV Cache بند بطلان.
 
-### 已阻塞提示词或工具结果
+### قد منع سد نص التوجيه أو أداة نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-提供方提供的原因逐字传递。缺失原因时，已拒绝工具变为 `Error: blocked by PreToolUse hook`，已阻塞工具后反馈精确为 `blocked by PostToolUse hook`，阻塞 stop 则精确添加 steering `continue: blocked by Stop hook`；已阻塞提示词不会产生任何模型可见消息，而是以 `blocked` 结束该轮次。Codex `systemMessage` 不会呈现。
+مزود توفير سبب تدريجي حرف نقل تمرير. ناقص سبب وقت، قد رفض أداة تغيير لـ `Error: blocked by PreToolUse hook`، قد منع سد أداة بعد عكس تغذية دقيق لـ `blocked by PostToolUse hook`، منع سد stop فإن دقيق إضافة steering `continue: blocked by Stop hook`؛ قد منع سد نص التوجيه لن إنتاج أي نموذج مرئي رسالة، بينما هو بـ `blocked` انتهاء هذا جولة.Codex `systemMessage` لن عرض.
 
-#### Token 影响
+#### Token أثر
 
-阻塞提示词不会产生该提示词对应的模型请求 token；拒绝或反馈会添加保留的回退或提供方文本；强制 continuation 需要另一个完整请求。
+منع سد نص التوجيه لن إنتاج هذا نص التوجيه مقابل نموذج طلب token؛ رفض أو عكس تغذية سوف إضافة إبقاء رجوع أو مزود نص؛ قوي صنع continuation حاجة آخر عدد كامل طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-已阻塞提示词不发送请求，不会导致失效。拒绝、反馈与强制 continuation 上下文会追加在可复用前缀之后，不改写前缀。
+قد منع سد نص التوجيه لا إرسال طلب، لن توجيه يؤدي بطلان. رفض، عكس تغذية و قوي صنع continuation سياق سوف إلحاق في يمكن إعادة استخدام بادئة بعد، لا تعديل كتابة بادئة.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制描述你的 Codex 钩子目前还无法通过本桥接做到的事情，以及行为与参考工具的差异。它们是当前包约束，而非任务积压。
+هذه حد وصف أنت Codex خطاف هدف قبل أيضا لا يمكن عبر هذا جسر وصل فعل إلى أمر حال، و سلوك و مشاركة اعتبار أداة فرق مختلف. هو جمع هو حالي حزمة قيد، بينما غير مهمة تراكم ضغط.
 
-- **不支持的 hook 事件（Codex 当前 10 项中的 5 项）**——`PermissionRequest`、`PreCompact`、`PostCompact`、`SubagentStart` 与 `SubagentStop`。这些事件的配置会在解析期间静默丢弃。比较基线是 Codex [官方 hook 参考](https://learn.chatgpt.com/docs/hooks)。
-- **`SessionStart` 只支持部分功能**——支持纯 stdout 与 JSON `additionalContext`，但 hook 脱离运行，因此上下文可能错过第一个请求。
-- **`UserPromptSubmit` 只支持部分功能**——支持阻塞加纯 stdout 或 JSON 上下文，但不会强制执行通用 `systemMessage` 与 `{"continue": false}` 控制。
-- **`PreToolUse` 只支持部分功能**——支持阻塞，但会忽略 `additionalContext`、`permissionDecision: "allow"` 与 `updatedInput`。每个工具都表示为 `tool_input: { command }`，因此非 shell 工具参数不会被如实公开给 hook。
-- **`PostToolUse` 只支持部分功能**——支持阻塞反馈与 JSON `additionalContext`，但不会强制执行 `{"continue": false}`，非 shell 工具参数会缩减为 `{ command }`，结构化工具输出会在 `tool_response` 中展平为文本。
-- **`Stop` 只支持部分功能**——阻塞会强制另一个模型轮次，但 `stop_hook_active` 始终为 `false`，`last_assistant_message` 始终为 `null`，且不会强制执行 `{"continue": false}`。因此，无条件阻塞 hook 会在每个步骤中强制 continuation，除非它自我限制。
-- **通用 payload 与输出字段只支持部分功能**——每个已映射事件都报告静态配置的 `model` 与 `permission_mode: "default"`，而非当前 Codex 运行时值，且 `transcript_path` 永不填充：它始终为 `null`，因为持久化 seam 不暴露产物路径，且默认 zstd 压缩的会话日志无法被 hook 脚本读取。`systemMessage` 会被记录 + 警告但不呈现，`{"continue": false}` 会被记录但不会应用 Codex 的事件特定停止行为。
-- **配置加载与执行只支持部分功能**——一个进程级 `configPath` 会在加载时解析；尚未实现 Codex 的活动用户层、项目层、会话层、系统／托管层与插件层、信任控制以及内联 `config.toml` hook 形态。只运行同步 `command` handler，`statusMessage` 与 `commandWindows` 等当前元数据会被忽略，匹配 handler 串行运行，而非使用 Codex 的并发启动语义。
+- **لا دعم حمل hook حدث (Codex حالي 10 بند في 5 بند)**——`PermissionRequest`،`PreCompact`،`PostCompact`،`SubagentStart` و `SubagentStop`. هذه حدث إعداد سوف في تحليل خلال ساكن صامت إسقاط. مقارنة مقارنة أساس خط هو Codex [رسمي جهة hook مشاركة اعتبار](https://learn.chatgpt.com/docs/hooks).
+- **`SessionStart` فقط دعم حمل جزء وظيفة**——دعم حمل صاف stdout و JSON `additionalContext`، لكن hook انفصال مغادرة تشغيل، لذلك سياق ممكن خطأ مرور رقم واحد طلب.
+- **`UserPromptSubmit` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد إضافة صاف stdout أو JSON سياق، لكن لن قوي صنع تنفيذ عام `systemMessage` و `{"continue": false}` تحكم.
+- **`PreToolUse` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد، لكن سوف تجاهل اختصار `additionalContext`،`permissionDecision: "allow"` و `updatedInput`. كل أداة كل يمثل لـ `tool_input: { command }`، لذلك غير shell أداة معامل لن يتم مثل فعلي عام إعطاء hook.
+- **`PostToolUse` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد عكس تغذية و JSON `additionalContext`، لكن لن قوي صنع تنفيذ `{"continue": false}`، غير shell أداة معامل سوف تقليص نقص لـ `{ command }`، بنية تحويل أداة إخراج سوف في `tool_response` في عرض مستو لـ نص.
+- **`Stop` فقط دعم حمل جزء وظيفة**——منع سد سوف قوي صنع آخر عدد نموذج جولة، لكن `stop_hook_active` بداية نهاية لـ `false`،`last_assistant_message` بداية نهاية لـ `null`، كما لن قوي صنع تنفيذ `{"continue": false}`. لذلك، بلا شرط منع سد hook سوف في كل خطوة في قوي صنع continuation، حذف غير هو ذاتي أنا حد.
+- **عام payload و إخراج حقل فقط دعم حمل جزء وظيفة**——كل قد خريطة حدث كل تقرير إبلاغ ساكن حالة إعداد `model` و `permission_mode: "default"`، بينما غير حالي Codex وقت التشغيل قيمة، كما `transcript_path` دائم لا ملء ملء: هو بداية نهاية لـ `null`، لأن حفظ دائم seam لا كشف ناتج مسار، كما افتراضي zstd ضغط جلسة سجل لا يمكن يتم hook نص برمجي قراءة.`systemMessage` سوف يتم سجل + تحذير إبلاغ لكن لا عرض،`{"continue": false}` سوف يتم سجل لكن لن تطبيق Codex حدث خاص تحديد إيقاف سلوك.
+- **إعداد تحميل و تنفيذ فقط دعم حمل جزء وظيفة**——واحد عملية درجة `configPath` سوف في تحميل وقت تحليل؛ بعد لم تنفيذ Codex نشط حركة مستخدم طبقة، مشروع طبقة، جلسة طبقة، نظام/حمل إدارة طبقة و إضافة طبقة، معلومة مهمة تحكم و داخل ربط `config.toml` hook شكل. فقط تشغيل تزامن `command` handler،`statusMessage` و `commandWindows` انتظار حالي بيانات وصفية سوف يتم تجاهل اختصار، مطابقة handler سلسلة سطر تشغيل، بينما غير استخدام Codex تزامن بدء دلالة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文、包代码和相关 Agent Note 为准。
+هذا ملاحظة تطوير هو صيانة من عمل سياق: فتح وضع مشكلة و بعد لم قرار استكشاف جهة نحو. هو واضح لا أداة مرجعي صفة——قد تسليم سلوك، حد و حيث تحديد إدارة من بـ فوق نص، حزمة شفرة و متبادل صلة Agent Note لـ دقيق.
 
-上面的延期缺口就是工作队列：按会话的 hook 配置发现、会话启动投递门、stop 循环防护，以及 `continue: false` 的运行级停止。目前均无设计；官方 Codex 参考是实现其中任何一项的基线。
+فوق وجه تأجيل نقص فتحة حينئذ هو عمل طابور صف: حسب جلسة hook إعداد اكتشاف، جلسة بدء إلقاء تمرير باب،stop حلقة منع حماية، و `continue: false` تشغيل درجة إيقاف. هدف قبل متساو بلا تصميم؛ رسمي جهة Codex مشاركة اعتبار هو تنفيذ منها أي واحد بند أساس خط.
 
 </details>

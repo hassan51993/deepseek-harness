@@ -1,14 +1,14 @@
-# spill 存储
+# spill تخزين
 
-[English](spill.md) | 中文
+[English](spill.md) | العربية
 
-spill 存储[能力 seam](../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.zh.md)持久保存调用方提供的文本，并返回面向模型的定位符与检索指引。其 Service Definition 是 [dsh-spill](../../packages/spill/spill)（`ctx.spillStore`），本地 Service Provider 是 [dsh-spill-local](../../packages/spill/spill-local)。消费方包括[工具结果策略](../../packages/spill/spill-policy)与[会话引用](../../packages/context/session-reference/README.zh.md)。spill 是可选能力，不属于[智能体循环主干](core.zh.md)；预览与 spill 决策由消费方负责，存储则原样保存所提供的文本。
+spill تخزين[قدرة seam](../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.zh.md) حمل دائم حفظ استدعاء جهة توفير نص، و إرجاع موجه إلى نموذج تحديد موضع رمز و فحص بحث إشارة جذب. ذلك Service Definition هو [dsh-spill](../../packages/spill/spill)(`ctx.spillStore`) ، محلي Service Provider هو [dsh-spill-local](../../packages/spill/spill-local). مستهلك يشمل[أداة نتيجة سياسة](../../packages/spill/spill-policy) و[جلسة مرجع](../../packages/context/session-reference/README.zh.md).spill هو اختياري قدرة، لا يخص[ذكي جسم حلقة رئيسي جاف](core.zh.md) ؛ معاينة و spill قرار من مستهلك مسؤول، تخزين فإن أصل مثال حفظ الذي توفير نص.
 
-源码：[`packages/spill/spill/src/types.ts`](../../packages/spill/spill/src/types.ts)
+شفرة المصدر:[`packages/spill/spill/src/types.ts`](../../packages/spill/spill/src/types.ts)
 
-## 保存请求
+## حفظ طلب
 
-`saveText` 是唯一的服务操作：原样持久保存 `content`，并返回不透明的定位符、后端提供的检索提示和精确字节数。请求携带保存时的存储命名空间（`owner`）、描述性的生产者来源信息（`source`，绝非访问控制）以及后端可用作命名提示而非路径的 `suggestedName`。工具来源标识实际工具调用；会话引用来源标识被捕获的源会话，而其归属是接收上下文的目标会话。
+`saveText` هو وحيد خدمة عملية: أصل مثال حمل دائم حفظ `content`، و إرجاع لا نفاذ واضح تحديد موضع رمز، خلفية توفير فحص بحث تلميح و دقيق بايت عدد. طلب يحمل حفظ وقت تخزين نطاق الأسماء (`owner`) ، وصف صفة إنتاج من مصدر معلومة (`source`، قطعا غير وصول تحكم) و خلفية متاح عمل تسمية تلميح بينما غير مسار `suggestedName`. أداة مصدر معرف فعلي أداة استدعاء؛ جلسة مرجع مصدر معرف يتم التقاط مصدر جلسة، بينما ذلك ملكية هو استقبال سياق هدف جلسة.
 
 ```ts type-equiv
 /** One request to persist text to a spill artifact. */
@@ -38,7 +38,7 @@ interface SpillOwner {
 }
 ```
 
-保留期清理可以连同其他旧会话产物一起使旧定位符失效；spill seam 不定义逐会话的清理策略。
+إبقاء مدة تنظيف يمكن وصل نفس أخرى قديم جلسة ناتج واحد بدء جعل قديم تحديد موضع رمز بطلان؛spill seam لا تعريف تدريجي جلسة تنظيف سياسة.
 
 ```ts type-equiv
 /**
@@ -63,7 +63,7 @@ type SpillSource = {
 }
 ```
 
-## 结果
+## نتيجة
 
 ```ts type-equiv
 /** A saved spill artifact: its locator, byte length, and backend-specific retrieval guidance. */
@@ -74,7 +74,7 @@ interface SpillRef {
 }
 ```
 
-`SpillLocator` 是后端返回的[品牌化](core.zh.md#branded-ids)面向模型句柄。本地后端将它渲染为文件系统路径；远程或数据库后端可以渲染 URI、键或命令 token。消费方将它视为不透明值，并使用 `retrievalHint` 渲染，而不是假定 `read` 始终是正确的检索机制。
+`SpillLocator` هو خلفية إرجاع[صنف لوحة تحويل](core.zh.md#branded-ids) موجه إلى نموذج جملة مقبض. محلي خلفية سوف هو تصيير لـ نظام الملفات مسار؛ بعيد مسار أو قاعدة بيانات خلفية يمكن تصيير URI، مفتاح أو أمر token. مستهلك سوف هو نظر لـ لا نفاذ واضح قيمة، و استخدام `retrievalHint` تصيير، بينما لا هو زائف تحديد `read` بداية نهاية هو صحيح تأكيد فحص بحث آلية.
 
 ```ts type-equiv
 /**
@@ -85,11 +85,11 @@ interface SpillRef {
 type SpillLocator = Branded<'SpillLocator'>
 ```
 
-## 服务
+## خدمة
 
-`SpillStore`（`ctx.spillStore`，定义于 [`packages/spill/spill/src/index.ts`](../../packages/spill/spill/src/index.ts)）是只有一个方法的抽象服务：`saveText(input) → Promise<SpillRef>`。它持久保存完整的 `content`，并在实际存储失败（权限、ENOSPC、后端不可用）时拒绝。该 seam 只负责存储：不负责保留策略、工具结果替换或检索／搜索 API。
+`SpillStore`(`ctx.spillStore`، تعريف في [`packages/spill/spill/src/index.ts`](../../packages/spill/spill/src/index.ts)) هو فقط لديه واحد طريقة سحب كائن خدمة:`saveText(input) → Promise<SpillRef>`. هو حمل دائم حفظ كامل `content`، و في فعلي تخزين فشل (إذن،ENOSPC، خلفية غير ممكن استخدام) وقت رفض. هذا seam فقط مسؤول تخزين: لا مسؤول إبقاء سياسة، أداة نتيجة استبدال أو فحص بحث/بحث API.
 
-本地后端（[dsh-spill-local](../../packages/spill/spill-local)）写入 `<root>/session-<hash>/<random>-<safeName>`：根目录是已配置或延迟创建的私有（0700）目录，会话子目录采用 `sha256(sessionId)`，并通过排他且仅所有者可访问的写入（`open(path, 'wx', 0o600)`）防止预先植入的符号链接重定向写入。其 `locator` 是本地路径，`retrievalHint` 则告知模型在该路径上使用 `read` 或 `grep`。策略消费方（[dsh-spill-policy](../../packages/spill/spill-policy)）会把超过 `maxInlineBytes` 的纯文本最终结果替换为保留库生成的首尾预览和 spill 引用；该过程尽力而为：保存失败时保留原始内联结果，而不会把成功的调用变成 `isError`。
+محلي خلفية ([dsh-spill-local](../../packages/spill/spill-local)) كتابة `<root>/session-<hash>/<random>-<safeName>`: أصل دليل هو قد إعداد أو تأخير متأخر إنشاء خاص (0700) دليل، جلسة فرعي دليل اعتماد `sha256(sessionId)`، و عبر ترتيب هو كما فقط كل من يمكن وصول كتابة (`open(path, 'wx', 0o600)`) منع توقف مسبق أولا غرس دخول رمز رقم رابط إعادة تحديد نحو كتابة. ذلك `locator` هو محلي مسار،`retrievalHint` فإن إبلاغ معرفة نموذج في هذا مسار فوق استخدام `read` أو `grep`. سياسة مستهلك ([dsh-spill-policy](../../packages/spill/spill-policy)) سوف يأخذ تجاوز مرور `maxInlineBytes` صاف نص نهائي نتيجة استبدال لـ إبقاء مكتبة توليد أول ذيل معاينة و spill مرجع؛ هذا مرور مسار كل قوة بينما لـ: حفظ فشل وقت إبقاء أصلي داخل ربط نتيجة، بينما لن يأخذ نجاح استدعاء تغيير صار `isError`.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

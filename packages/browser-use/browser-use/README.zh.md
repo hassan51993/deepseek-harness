@@ -1,90 +1,90 @@
 ---
-description: "浏览器操作 提供方 注册服务，供一次启用一个浏览器后端的部署使用。"
+description: "متصفح عملية مزود تسجيل خدمة، توفير مرة تفعيل واحد متصفح خلفية نشر استخدام."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-browser-use
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-部署可以一次启用一个浏览器操作 提供方。加载另一个 提供方 时会报错并指出已注册的 提供方 名称。各 提供方 提供自己的工具并拥有浏览器会话。本包不添加模型可见工具或浏览器操作。
+نشر يمكن مرة تفعيل واحد متصفح عملية مزود. تحميل آخر عدد مزود وقت سوف تقرير خطأ و إشارة خروج قد تسجيل مزود اسم. كل مزود توفير ذاتي ذات أداة و يملك متصفح جلسة. هذه الحزمة لا إضافة نموذج مرئي أداة أو متصفح عملية.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [延伸阅读](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [تأخير امتداد قراءة قراءة](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在 Cordis 组合中，将服务与所选 提供方 一起挂载一次：
+في Cordis تركيب في، سوف خدمة و الذي اختيار مزود واحد بدء تركيب مرة:
 
 ```yaml
 - name: '@deepseek-ai/dsh-browser-use'
 ```
 
-服务没有配置。提供方 插件注入 `browserUse` 并调用 `ctx.browserUse.register(BrowserUseProviderName(name))`；品牌类型从 `@deepseek-ai/dsh-browser-use/brand` 导出。返回的 effect 清理器释放该注册。
+خدمة لا يوجد إعداد. مزود إضافة حقن `browserUse` و استدعاء `ctx.browserUse.register(BrowserUseProviderName(name))`؛ صنف لوحة نوع من `@deepseek-ai/dsh-browser-use/brand` توجيه خروج. إرجاع effect تنظيف جهاز تحرير هذا تسجيل.
 
-提供方 在释放注册前停止接收工具调用、关闭资源并等待自己拥有的工作结束。`ctx.browserUse.providerName` 在释放之前持续报告已注册名称。
+مزود في تحرير تسجيل قبل إيقاف استقبال أداة استدعاء، إغلاق مورد و انتظار ذاتي ذات يملك عمل انتهاء.`ctx.browserUse.providerName` في تحرير قبل حمل متابعة تقرير إبلاغ قد تسجيل اسم.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现内部机制 — 点击展开</summary>
+<summary>تنفيذ داخلي آلية — انقر للتوسيع</summary>
 
-一个私有名称拥有该注册位。Cordis effect 在插件卸载时移除贡献；重复调用清理器不能移除后续注册。[源码](src/index.ts) 不包含浏览器对象、操作接口、资源生命周期或 提供方 选择器。
+واحد خاص اسم يملك هذا تسجيل موضع.Cordis effect في إضافة إزالة وقت إزالة مساهمة؛ تكرار استدعاء تنظيف جهاز لا يستطيع إزالة لاحق تسجيل.[شفرة المصدر](src/index.ts) لا يتضمن متصفح كائن، عملية واجهة، مورد دورة الحياة أو مزود اختيار جهاز.
 
-不发布运行时不变量伴随入口：注册表只有一个权威字段，不暴露可能与之偏离的独立维护观测值。所属测试覆盖重复注册拒绝与插件清理。
+لا إصدار وقت التشغيل ثابت كمية مرافق مع مدخل: سجل التسجيل فقط لديه واحد مرجعي حقل، لا كشف ممكن و لـ انحراف مغادرة مستقل صيانة مراقبة قياس قيمة. الذي تابع اختبار تغطية تكرار تسجيل رفض و إضافة تنظيف.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 延伸阅读
+## تأخير امتداد قراءة قراءة
 
-- [浏览器操作](../../../docs/subsystems/browser-use.zh.md) — 提供方 选择与 Session 所有权。
-- [Playwright MCP 提供方](../../experimental/browser-use-playwright-mcp/README.zh.md) — Playwright 浏览器工具。
-- [Chrome DevTools MCP 提供方](../../experimental/browser-use-chrome-devtools-mcp/README.zh.md) — Chromium 检查与控制。
-- [Stagehand 提供方](../../experimental/browser-use-stagehand-native/README.zh.md) — 支持 AI（人工智能）辅助的原生浏览器操作。
+- [متصفح عملية](../../../docs/subsystems/browser-use.zh.md) — مزود اختيار و Session كل حق.
+- [Playwright MCP مزود](../../experimental/browser-use-playwright-mcp/README.zh.md) — Playwright متصفح أداة.
+- [Chrome DevTools MCP مزود](../../experimental/browser-use-chrome-devtools-mcp/README.zh.md) — Chromium فحص و تحكم.
+- [Stagehand مزود](../../experimental/browser-use-stagehand-native/README.zh.md) — دعم حمل AI(شخص عمل ذكي) مساعد مساعدة أصلي متصفح عملية.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为此注册表只记录 提供方 名称。
+بلا، لأن هذا سجل التسجيل فقط سجل مزود اسم.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-注册不改变模型请求。提供方 拥有的工具与指导决定各自对请求前缀的影响。
+تسجيل لا تغيير نموذج طلب. مزود يملك أداة و إشارة توجيه قرار كل منها مقابل طلب بادئة أثر.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-服务在其 Cordis 服务实例内限制注册。
+خدمة في ذلك Cordis خدمة نسخة داخل حد تسجيل.
 
-- **浏览器所有权** — 提供方 拥有浏览器资源并实施 Session 隔离；此服务不保存浏览器状态。
-- **提供方 选择** — 配置选择 提供方；模型不能在运行时切换已注册后端。
+- **متصفح كل حق** — مزود يملك متصفح مورد و فعلي تطبيق Session عزل؛ هذا خدمة لا حفظ متصفح حالة.
+- **مزود اختيار** — إعداد اختيار مزود؛ نموذج لا يستطيع في وقت التشغيل تبديل قد تسجيل خلفية.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文 — 点击展开</summary>
+<summary>صيانة من عمل سياق — انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

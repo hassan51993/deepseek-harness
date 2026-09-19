@@ -1,47 +1,47 @@
-# Agent Note: Web search 来源卡片改为滚动而非折叠
+# Agent Note: Web search مصدر بطاقة تعديل لـ تمرير بينما غير طي
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-03-web-search-source-scroll.md) | 中文
+[English](2026-08-03-web-search-source-scroll.md) | العربية
 
-## 问题
+## مشكلة
 
-`web_search` 结果卡片（`WebBlock`，`packages/client/ui-primitives/src/WebBlock.tsx`）此前用首尾折叠渲染它的来源列表：超过 `maxSources` 数量（详情面板为 16，聊天行经由 `CHAT_WEB_MAX_SOURCES` 为 8）时，它画出前 `ceil(max/2)` 条来源、一个 `… 其余 N 条来源` 展开按钮，再画出末尾 `max - ceil(max/2)` 条，仿照 `TerminalBlock` 的输出上限机制。用户阅读该卡片时看到 `来源列表已截断`，会以为前端丢弃了它正持有的来源。
+`web_search` نتيجة بطاقة (`WebBlock`،`packages/client/ui-primitives/src/WebBlock.tsx`) هذا قبل استخدام أول ذيل طي تصيير هو مصدر قائمة: تجاوز مرور `maxSources` عدد كمية (تفصيل حال وجه لوح لـ 16، حديث يوم سطر مرور من `CHAT_WEB_MAX_SOURCES` لـ 8) وقت، هو رسم خروج قبل `ceil(max/2)` بند مصدر، واحد `… ذلك بقية N بند مصدر` توسيع حسب زر، مجددا رسم خروج نهاية ذيل `max - ceil(max/2)` بند، محاكاة وفق `TerminalBlock` إخراج حد أعلى آلية. مستخدم قراءة قراءة هذا بطاقة وقت يرى `مصدر قائمة قد قطع قطع`، سوف بـ لـ قبل طرف إسقاط هو صحيح يحتفظ مصدر.
 
-其实并没有。seam（`capSources`，`packages/web/web/src/index.ts`）把每个提供方结果裁剪到工具的 `searchMaxResults` 上限（默认 8）；多查询调用随后对组合来源去重、交错并限制在同一个上限内。最终的有界列表同时喂给面向模型的 render 文本与卡片的 `presentationMeta`，因此卡片持有的来源绝不会多于工具返回的来源。这个折叠隐藏的正是用户本有权完整查看的来源——并且在默认上限为 8、面板上限为 16 时，它几乎从不触发，只留下 `truncated` 提示，却无从展开任何内容。
+ذلك فعلي و لا يوجد.seam(`capSources`،`packages/web/web/src/index.ts`) يأخذ كل مزود نتيجة قطع قص إلى أداة `searchMaxResults` حد أعلى (افتراضي 8) ؛ كثير استعلام استدعاء مع بعد مقابل تركيب مصدر ذهاب إعادة، تسليم خطأ و حد في نفس عدد حد أعلى داخل. نهائي محدود قائمة معا تغذية إعطاء موجه إلى نموذج render نص و بطاقة `presentationMeta`، لذلك بطاقة يحتفظ مصدر أبدا سوف كثير في أداة إرجاع مصدر. هذا عدد طي إخفاء صحيح هو مستخدم هذا لديه حق كامل فحص نظر مصدر——و كما في افتراضي حد أعلى لـ 8، وجه لوح حد أعلى لـ 16 وقت، هو بضعة نحو من لا إطلاق، فقط إبقاء تحت `truncated` تلميح، لكن بلا من توسيع أي محتوى.
 
-## 决策
+## قرار
 
-`WebBlock` 的 search 分支把它收到的每一条来源都渲染进单个 `<ol className={css.sources}>`，不做首尾切片、不设展开按钮、也不带 `maxSources` prop。`.sources`（`WebBlock.module.css`）获得一个固定的 `max-height` 与 `overflow-y: auto`，因此长于卡片高度的列表在原地滚动，而非撑大卡片或隐藏行。该高度是卡片几何形状的一个设计常量，因此放在 CSS 里，而非插件配置字段。
+`WebBlock` search فرع يأخذ هو استلام إلى كل واحد بند مصدر كل تصيير دخول مفرد عدد `<ol className={css.sources}>`، لا فعل أول ذيل قطع قطعة، لا ضبط توسيع حسب زر، أيضا لا حمل `maxSources` prop.`.sources`(`WebBlock.module.css`) نيل نيل واحد ثابت `max-height` و `overflow-y: auto`، لذلك طويل في بطاقة عال درجة قائمة في أصل أرض تمرير، بينما غير دعم كبير بطاقة أو إخفاء سطر. هذا عال درجة هو بطاقة بضعة أي شكل حالة واحد تصميم معتاد كمية، لذلك وضع في CSS داخل، بينما غير إضافة إعداد حقل.
 
-模型侧仍受 `searchMaxResults` 限制：seam 限制每个提供方结果，多查询消费方限制组合列表，`truncated` 标志及其 `来源列表已截断` 指示保留。卡片完整且可滚动地画出最终工具来源列表，而非折叠其中段。
+نموذج جانب ما زال تلقي `searchMaxResults` حد:seam حد كل مزود نتيجة، كثير استعلام مستهلك حد تركيب قائمة،`truncated` علامة سجل و ذلك `مصدر قائمة قد قطع قطع` إشارة عرض إبقاء. بطاقة كامل كما يمكن تمرير أرض رسم خروج نهائي أداة مصدر قائمة، بينما غير طي منها مقطع.
 
-只要工具下游没有单独改写结果 content，这份列表就是模型读到的那份。挂载了 `dsh-spill-policy` 的部署会对超限结果打破这一对应：`tools/post-execute` 把面向模型的 `content` 替换为预览加 spill 定位符，而 `presentationMeta` 原样保留，因此卡片仍画出全部来源，模型读到的却是一段有界摘录。所以卡片的约定是它收到的 view，不是模型的上下文。
+فقط يلزم أداة تحت تنقل لا يوجد مفرد وحيد تعديل كتابة نتيجة content، هذا نسخة قائمة حينئذ هو نموذج قراءة إلى ذلك نسخة. تركيب `dsh-spill-policy` نشر سوف مقابل تجاوز حد نتيجة ضرب كسر هذا واحد مقابل:`tools/post-execute` يأخذ موجه إلى نموذج `content` استبدال لـ معاينة إضافة spill تحديد موضع رمز، بينما `presentationMeta` أصل مثال إبقاء، لذلك بطاقة ما زال رسم خروج الكل مصدر، نموذج قراءة إلى لكن هو واحد مقطع محدود اقتباس تسجيل. الذي بـ بطاقة اتفاق هو هو استلام إلى view، لا هو نموذج سياق.
 
-`CHAT_WEB_MAX_SOURCES` 与该 primitive 的 `DEFAULT_WEB_MAX_SOURCES` 被移除：有了滚动，聊天行与详情面板展示同一份完整列表，仅以各自的容器高度区分。`<li value={ordinal}>` 仍钉住每条来源从 1 起算的引用序号；没有了折叠造成的间断，这些序号如今就是连续的。
+`CHAT_WEB_MAX_SOURCES` و هذا primitive `DEFAULT_WEB_MAX_SOURCES` يتم إزالة: لديه تمرير، حديث يوم سطر و تفصيل حال وجه لوح عرض نفس نسخة كامل قائمة، فقط بـ كل منها حاوية عال درجة منطقة قسم.`<li value={ordinal}>` ما زال تثبيت إقامة كل بند مصدر من 1 بدء حساب مرجع ترتيب رقم؛ لا يوجد طي صنع صار بين قطع، هذه ترتيب رقم مثل اليوم حينئذ هو وصل متابعة.
 
-把列表变成滚动容器，也把它的 `padding-left` 从间距变成了正确性约束。滚动容器裁掉 inline-start 方向的溢出且无从滚回，而 `::marker` 右对齐到内容边缘，因此宽于 padding 的序号会静默丢掉前导数字——在列表原本的 20px 下，两位数序号被画成 `0.` 与 `1.`，而本该是 `10.` 与 `11.`。`searchMaxResults` 是无上界的正整数，因此该 padding 以 `em` 计量——相对列表自身的字体，也就是序号所继承的那个——装得下三位数序号（`999. ` 在应用字体栈下量得 2.35em），并保留一位数情形原有的间隙。
+يأخذ قائمة تغيير صار تمرير حاوية، أيضا يأخذ هو `padding-left` من بين مسافة تغيير صار صحيح تأكيد صفة قيد. تمرير حاوية قطع إسقاط inline-start جهة نحو فيض خروج كما بلا من تدحرج عودة، بينما `::marker` يمين مقابل متساو إلى محتوى حافة حافة، لذلك عرض في padding ترتيب رقم سوف ساكن صامت فقد إسقاط قبل توجيه عدد حرف——في قائمة أصل هذا 20px تحت، اثنان موضع عدد ترتيب رقم يتم رسم صار `0.` و `1.`، بينما هذا هذا هو `10.` و `11.`.`searchMaxResults` هو بلا فوق حد صحيح كامل عدد، لذلك هذا padding بـ `em` حساب كمية——متبادل مقابل قائمة ذاته حرف جسم، أيضا حينئذ هو ترتيب رقم الذي وراثة ذلك عدد——تركيب نيل تحت ثلاثة موضع عدد ترتيب رقم (`999. ` في تطبيق حرف جسم مكدس تحت كمية نيل 2.35em) ، و إبقاء واحد موضع عدد حال شكل أصل لديه بين فجوة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**提高 `searchMaxResults`（或让它无上限），使更多来源同时抵达模型与卡片。** 被用户否决：它改变了模型侧行为（每个请求的上下文纳入更多来源、更多 token），并拉大模型读到的内容与卡片画出的内容之间的差距。
+**رفع عال `searchMaxResults`(أو يجعل هو بلا حد أعلى) ، جعل أكثر كثير مصدر معا مقاومة بلوغ نموذج و بطاقة.** يتم مستخدم مرفوض: هو تغيير نموذج جانب سلوك (كل طلب سياق قبول دخول أكثر كثير مصدر، أكثر كثير token) ، و سحب كبير نموذج قراءة إلى محتوى و بطاقة رسم خروج محتوى بين فرق مسافة.
 
-**保留首尾折叠，仅对展开区域加滚动。** 否决：一个关注点上两套重叠机制。一旦整份列表始终渲染，折叠的算术、展开/折叠状态与那个按钮都是累赘；仅靠滚动即可约束高度。
+**إبقاء أول ذيل طي، فقط مقابل توسيع منطقة مجال إضافة تمرير.** مرفوض: واحد صلة ملاحظة نقطة فوق اثنان طقم إعادة تراكم آلية. واحد حالما كامل نسخة قائمة بداية نهاية تصيير، طي حساب فن، توسيع/طي حالة و ذلك عدد حسب زر كل هو تراكم زائد؛ فقط اعتماد تمرير يكفي قيد عال درجة.
 
-**把滚动高度做成插件配置字段。** 否决：该高度约束的是卡片在屏幕上的几何形状，而非部署策略，因此它属于 `WebBlock.module.css`，与 [Web result 卡片前端笔记](2026-07-30-web-result-card-frontend.zh.md) 已作为本卡片几何固定在那里的圆角、表面与外边距并列。
+**يأخذ تمرير عال درجة فعل صار إضافة إعداد حقل.** مرفوض: هذا عال درجة قيد هو بطاقة في شاشة ستار فوق بضعة أي شكل حالة، بينما غير نشر سياسة، لذلك هو يخص `WebBlock.module.css`، و [Web result بطاقة قبل طرف قلم تسجيل](2026-07-30-web-result-card-frontend.zh.md) قد بصفة هذا بطاقة بضعة أي ثابت في ذلك داخل دائرة زاوية، جدول وجه و خارج حافة مسافة و صف.
 
-## 后果
+## عاقبة
 
-工具返回的每一条来源始终存在于 DOM 中，因此 view 携带的来源没有一条被藏在交互之后。无论来源数量多少，卡片高度都受限；高于容器的列表在原地滚动。代价是滚动提示依赖平台的滚动条渲染：overlay 滚动条系统（macOS 默认）在指针离开时不显示常驻滚动条，因此受高度限制的列表依靠 `来源列表已截断` 提示加上被裁切的最后一行来表明还有更多内容。`WebSearchBlockProps`/`WebFetchBlockProps` 失去 `maxSources` prop，primitive 失去 `DEFAULT_WEB_MAX_SOURCES`，因此未来任何调用方都从构造上渲染完整列表，而不是靠传入一个很大的上限值。
+أداة إرجاع كل واحد بند مصدر بداية نهاية وجود في DOM في، لذلك view يحمل مصدر لا يوجد واحد بند يتم إخفاء في تفاعل بعد. بلا نقاش مصدر عدد كمية كثير قليل، بطاقة عال درجة كل تلقي حد؛ عال في حاوية قائمة في أصل أرض تمرير. بديل قيمة هو تمرير تلميح اعتماد منصة تمرير بند تصيير:overlay تمرير بند نظام (macOS افتراضي) في إشارة إبرة مغادرة فتح وقت لا عرض معتاد إقامة تمرير بند، لذلك تلقي عال درجة حد قائمة اعتماد اعتماد `مصدر قائمة قد قطع قطع` تلميح إضافة فوق يتم قطع قطع الأكثر بعد واحد سطر قدوم جدول واضح أيضا لديه أكثر كثير محتوى.`WebSearchBlockProps`/`WebFetchBlockProps` فقد ذهاب `maxSources` prop،primitive فقد ذهاب `DEFAULT_WEB_MAX_SOURCES`، لذلك لم قدوم أي استدعاء جهة كل من بنية صنع فوق تصيير كامل قائمة، بينما لا هو اعتماد نقل دخول واحد جدا كبير حد أعلى قيمة.
 
-## 测试
+## اختبار
 
-`packages/client/ui-primitives/tests/web-block.client.spec.tsx` 删去折叠相关用例（首尾切片、点击展开、折叠尾部编号、展开器不计入编号、仅首部、默认上限），并新增：一张含 30 条来源的卡片渲染出全部 30 个 `<li>`，无 `[aria-expanded]`、无 `<button>`，每个 `<ol>` 子元素都是一条来源 `<li>`，且 `<li value>` 从 1 到 N 连续编号。`packages/client/ui-tool/tests/web-card.client.spec.tsx` 删去 `CHAT_WEB_MAX_SOURCES` 上限断言；WebRow 展开测试仍断言卡片展示每一个来源字段。`packages/web/tool-web` 独立固定单查询与多查询的模型侧上限。
+`packages/client/ui-primitives/tests/web-block.client.spec.tsx` حذف ذهاب طي متبادل صلة حالة استخدام (أول ذيل قطع قطعة، انقر للتوسيع، طي ذيل جزء تحرير رقم، توسيع جهاز لا حساب دخول تحرير رقم، فقط أول جزء، افتراضي حد أعلى) ، و إضافة جديدة: واحد ورقة يحتوي 30 بند مصدر بطاقة تصيير خروج الكل 30 عدد `<li>`، بلا `[aria-expanded]`، بلا `<button>`، كل `<ol>` فرعي عنصر عنصر كل هو واحد بند مصدر `<li>`، كما `<li value>` من 1 إلى N وصل متابعة تحرير رقم.`packages/client/ui-tool/tests/web-card.client.spec.tsx` حذف ذهاب `CHAT_WEB_MAX_SOURCES` حد أعلى تأكيد؛WebRow توسيع اختبار ما زال تأكيد بطاقة عرض كل واحد مصدر حقل.`packages/web/tool-web` مستقل ثابت مفرد استعلام و كثير استعلام نموذج جانب حد أعلى.
 
-jsdom 不解析 CSS Modules layout，对任何 element 都报告 `scrollHeight === clientHeight`，因此无法见证滚动。几何由 assembled browser 的 `apps/web/tests/web-search-round.e2e.ts` 固定：确定性 search double 为两个 query 分别返回 6 条 result，每条带 title、citation snippet 与 date。真实 composition 观察两次 provider request，并固定 tool 的 round-robin combined cap——出厂 `searchMaxResults` 保留代表两个 query 的 8 条 source，model-visible render text 不含被丢弃的 4 条 URL，并含 `(Showing the first 8 sources. Refine the query for more.)`，`meta.truncated` 为 true。aria golden 后的 case 展开 `web_search` row，对 card 的 `<ol>` 断言：8 个 `<li>`、card 内没有 `<button>`、`来源列表已截断` indicator 可见，以及 computed style `max-height: 320px` 与 `overflow-y: auto`，scroll body 高于 container。后续 case 在 list 自身继承 font 下测量 `999. ` marker 宽度，要求 computed `padding-left` 不小于该宽度，从而把 scroll container 无法滚回的 marker space 固定在最宽 marker，而不是某个 fixture 的 source count。Replay 是对 fixture 嵌入式 Assistant settlement 的位置 cursor，search double 是 provider 通过 `fetch` 抵达的另一个 local endpoint。
+jsdom لا تحليل CSS Modules layout، مقابل أي element كل تقرير إبلاغ `scrollHeight === clientHeight`، لذلك لا يمكن رؤية إثبات تمرير. بضعة أي من assembled browser `apps/web/tests/web-search-round.e2e.ts` ثابت: تحديد صفة search double لـ اثنان عدد query قسم آخر إرجاع 6 بند result، كل بند حمل title،citation snippet و date. حقيقي composition مراقبة اثنان مرة provider request، و ثابت tool round-robin combined cap——خروج مصنع `searchMaxResults` إبقاء بديل جدول اثنان عدد query 8 بند source،model-visible render text لا يحتوي يتم إسقاط 4 بند URL، و يحتوي `(Showing the first 8 sources. Refine the query for more.)`،`meta.truncated` لـ true.aria golden بعد case توسيع `web_search` row، مقابل card `<ol>` تأكيد:8 عدد `<li>`،card داخل لا يوجد `<button>`،`مصدر قائمة قد قطع قطع` indicator مرئي، و computed style `max-height: 320px` و `overflow-y: auto`،scroll body عال في container. لاحق case في list ذاته وراثة font تحت قياس كمية `999. ` marker عرض درجة، اشتراط computed `padding-left` لا صغير في هذا عرض درجة، من بينما يأخذ scroll container لا يمكن تدحرج عودة marker space ثابت في الأكثر عرض marker، بينما لا هو بعض عدد fixture source count.Replay هو مقابل fixture تضمين دخول صيغة Assistant settlement موضع cursor،search double هو provider عبر `fetch` مقاومة بلوغ آخر عدد local endpoint.
 
-## 相关文档
+## متبادل صلة وثيقة
 
-- [Web result card](2026-07-30-web-result-card.zh.md) —— 本卡片消费的 `card: 'web'` 渲染意图分支与 `presentationMeta` 路由；最终有界列表的来源。
-- [Web result 卡片前端](2026-07-30-web-result-card-frontend.zh.md) —— `WebBlock`、唯一的 `web-card-model` 派生，以及绘制该卡片的各渲染点由它拥有；本笔记替换掉它所规定的来源列表折叠，它的其余决策（一个组件绘制两种 kind、http(s) 链接 allowlist、单一派生、常驻姿态）依然成立。
+- [Web result card](2026-07-30-web-result-card.zh.md) —— هذا بطاقة إزالة استهلاك `card: 'web'` تصيير معنى رسم فرع و `presentationMeta` توجيه؛ نهائي محدود قائمة مصدر.
+- [Web result بطاقة قبل طرف](2026-07-30-web-result-card-frontend.zh.md) —— `WebBlock`، وحيد `web-card-model` إرسال توليد، و رسم صنع هذا بطاقة كل تصيير نقطة من هو يملك؛ هذا قلم تسجيل استبدال إسقاط هو الذي قاعدة تحديد مصدر قائمة طي، هو ذلك بقية قرار (واحد مكون رسم صنع اثنان نوع kind،http(s) رابط allowlist، مفرد واحد إرسال توليد، معتاد إقامة وضع حالة) اعتماد لكن صار قيام.

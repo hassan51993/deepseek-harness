@@ -1,6 +1,6 @@
 - listitem:
-  - button "tool-subagent, tool-subagent, 已启用":
+  - button "tool-subagent, tool-subagent, قد تفعيل":
     - strong: tool-subagent
-    - text: 已启用
+    - text: قد تفعيل
     - img
     - code: tool-subagent

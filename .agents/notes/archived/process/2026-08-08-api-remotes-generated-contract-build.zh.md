@@ -1,19 +1,19 @@
-# Agent Note: API Remotes 生成约定的有序构建
+# Agent Note: API Remotes توليد اتفاق لديه ترتيب بناء
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-08-api-remotes-generated-contract-build.md) | 中文
+[English](2026-08-08-api-remotes-generated-contract-build.md) | العربية
 
-## 问题
+## مشكلة
 
-Host 的 `@Remote` 方法需要先由 Typert 生成 `/remote` 声明和运行时贡献，Client 的 `api-remotes/src/client/index.ts` 才能通过类型检查并打包这些贡献。若根构建先把 Host 与 Client 两张 Project Reference 图一起交给 tsc，Client 会在生成产物存在之前编译；若增加独立 contracts 预处理，又会让 generator 脱离正常 Host 图重复编译，并允许陈旧产物掩盖错误依赖。
+Host `@Remote` طريقة حاجة أولا من Typert توليد `/remote` إعلان و وقت التشغيل مساهمة،Client `api-remotes/src/client/index.ts` عندئذ قدرة عبر نوع فحص و تحزيم هذه مساهمة. إذا أصل بناء أولا يأخذ Host و Client اثنان ورقة Project Reference رسم واحد بدء تسليم إعطاء tsc،Client سوف في توليد ناتج وجود قبل تحرير ترجمة؛ إذا زيادة مستقل contracts مسبق معالجة، أيضا سوف يجعل generator انفصال مغادرة صحيح معتاد Host رسم تكرار تحرير ترجمة، و سماح قديم قديم ناتج إخفاء غطاء خطأ اعتماد.
 
-该顺序依赖不能改变仓库的普通 package 规则。正常 package 只属于一个 TypeScript face：Host package 登记在 `tsconfig.host.json`，Client package 登记在 `tsconfig.client.json`。一个 Client plugin 同时具有 Node loader 入口与 browser 入口，只是打包产物形态，不是拆分 TypeScript project 的理由。
+هذا ترتيب اعتماد لا يستطيع تغيير مستودع عادي package قاعدة. صحيح معتاد package فقط يخص واحد TypeScript face:Host package تسجيل تسجيل في `tsconfig.host.json`،Client package تسجيل تسجيل في `tsconfig.client.json`. واحد Client plugin معا أداة لديه Node loader مدخل و browser مدخل، فقط هو تحزيم ناتج شكل، لا هو تفكيك قسم TypeScript project إدارة من.
 
-## 决策
+## قرار
 
-根构建先完成 Host tsc 和 Host tsdown，由 Host tsdown 运行 Typert 并生成 Remote Client 约定；随后完成 Client tsc、Client tsdown 和 Web 构建：
+أصل بناء أولا إتمام Host tsc و Host tsdown، من Host tsdown تشغيل Typert و توليد Remote Client اتفاق؛ مع بعد إتمام Client tsc،Client tsdown و Web بناء:
 
 ~~~text
 tsc -b tsconfig.host.json
@@ -23,13 +23,13 @@ tsdown --env.DSH_BUILD_FACE client
 Vite Web build
 ~~~
 
-`build:lib:host` 负责前两步，`build:lib:client` 负责中间两步，`build:web` 最后运行。`typecheck` 也必须先执行完整 Host lib 阶段，因为 Client tsc 需要 Host tsdown 生成的声明；它不需要运行 Client tsdown 或 Web build。
+`build:lib:host` مسؤول قبل اثنان خطوة،`build:lib:client` مسؤول في بين اثنان خطوة،`build:web` الأكثر بعد تشغيل.`typecheck` أيضا يجب أولا تنفيذ كامل Host lib مرحلة مقطع، لأن Client tsc حاجة Host tsdown توليد إعلان؛ هو لا حاجة تشغيل Client tsdown أو Web build.
 
-每个 tsc 阶段都是唯一的 TypeScript 编译器路径，负责向 `lib/types` 发射 JavaScript、声明和增量状态。tsdown 只读取这些 JavaScript 并生成发布 bundle，不读取源码，也不生成声明。
+كل tsc مرحلة مقطع كل هو وحيد TypeScript تحرير ترجمة جهاز مسار، مسؤول نحو `lib/types` إرسال إطلاق JavaScript، إعلان و زيادة كمية حالة.tsdown فقط قراءة هذه JavaScript و توليد إصدار bundle، لا قراءة شفرة المصدر، أيضا لا توليد إعلان.
 
-## 唯一的 package 特例
+## وحيد package خاص مثال
 
-`api/remotes` 是唯一同时拥有 Host 与 Client composite project 的 package。Host project 包含 Agent/Session lookup 策略、Host 插件入口和 invariant；Client project 只包含需要等待生成约定的 `src/client/index.ts`：
+`api/remotes` هو وحيد معا يملك Host و Client composite project package.Host project يتضمن Agent/Session lookup سياسة،Host إضافة مدخل و invariant؛Client project فقط يتضمن حاجة انتظار توليد اتفاق `src/client/index.ts`:
 
 ~~~text
 packages/api/remotes/
@@ -44,38 +44,38 @@ packages/api/remotes/
       └─ index.ts
 ~~~
 
-包根 `tsconfig.json` 是只引用两个具体 project 的 solution，不进入任何 aggregate 或直接消费方的依赖图。根 Host aggregate 引用 `api/remotes/tsconfig.host.json`，根 Client aggregate 与直接 Client 消费方引用 `api/remotes/tsconfig.client.json`。`session-log-export` 使用相同的 solution 与 leaf 结构，让 Node archive 实现不进入浏览器 controller。workspace constraints 门禁遍历可达的 Project Reference 图；凡已声明 face 的 project 引用了拆分包的 solution 根或另一侧 leaf，门禁都会拒绝，而只有 `tsconfig.json` 的目标仍可由任一 face 引用。
+حزمة أصل `tsconfig.json` هو فقط مرجع اثنان عدد أداة جسم project solution، لا دخول أي aggregate أو مباشر مستهلك اعتماد رسم. أصل Host aggregate مرجع `api/remotes/tsconfig.host.json`، أصل Client aggregate و مباشر Client مستهلك مرجع `api/remotes/tsconfig.client.json`.`session-log-export` استخدام نفسه solution و leaf بنية، يجعل Node archive تنفيذ لا دخول متصفح controller.workspace constraints بوابة مرة تاريخ يمكن بلوغ Project Reference رسم؛ كل قد إعلان face project مرجع تفكيك قسم حزمة solution أصل أو آخر جانب leaf، بوابة كل سوف رفض، بينما فقط لديه `tsconfig.json` هدف ما زال يمكن من مهمة واحد face مرجع.
 
-两个 project 使用互不重叠的 `files` 和不同的 `.tsbuildinfo`，因此可以共享 `lib/types` 而不重复发射任何源码。若未来需要两侧共用一份实现，应把实现移入中立 package，不能把同一源码同时交给两个 emitting project。
+اثنان عدد project استخدام متبادل لا إعادة تراكم `files` و مختلف `.tsbuildinfo`، لذلك يمكن مشترك `lib/types` بينما لا تكرار إرسال إطلاق أي شفرة المصدر. إذا لم قدوم حاجة اثنان جانب مشترك استخدام واحد نسخة تنفيذ، ينبغي يأخذ تنفيذ نقل دخول في قيام package، لا يستطيع يأخذ نفس شفرة المصدر معا تسليم إعطاء اثنان عدد emitting project.
 
-这个例外由生成约定的真实先后关系决定，不是可供普通 package 选择的模板。新增 package 仍只能登记进一个 aggregate；只有修改本决策并证明存在另一条不可消除的生成依赖，才能增加例外。
+هذا عدد مثال خارج من توليد اتفاق حقيقي أولا بعد علاقة قرار، لا هو يمكن توفير عادي package اختيار نموذج لوح. إضافة جديدة package ما زال فقط قدرة تسجيل تسجيل دخول واحد aggregate؛ فقط لديه تعديل هذا قرار و إثبات وجود آخر بند غير ممكن إزالة حذف توليد اعتماد، عندئذ قدرة زيادة مثال خارج.
 
-## Typert 与 tsdown
+## Typert و tsdown
 
-Host tsdown 在普通根配置中启用 `typertPlugin({ mode: 'workspace', faces: ['host'] })`。generator 只以 `tsconfig.host.json` 为 program 种子，生成 `typert.host.*` 以及 Host 约定投影出的 `typert.remote-client.*`；Client tsdown 不启动 Typert，也不分析 Client aggregate。
+Host tsdown في عادي أصل إعداد في تفعيل `typertPlugin({ mode: 'workspace', faces: ['host'] })`.generator فقط بـ `tsconfig.host.json` لـ program نوع فرعي، توليد `typert.host.*` و Host اتفاق إسقاط خروج `typert.remote-client.*`؛Client tsdown لا بدء Typert، أيضا لا قسم تحليل Client aggregate.
 
-TypeScript compiler face 与 Typert 运行时产物 face 是两层概念。普通 `dshClient` package 即使只有一个 compiler project，也可以按公开 subpath 同时贡献 Host 与 Client 运行时模型；aggregate 显式引用 `tsconfig.host.json` 或 `tsconfig.client.json` 时，analyzer 才把该 project 限定到对应 face。因此 `api-remotes` 的 Host 分析不会顺带注册其 Client 入口，普通双入口 package 的 Host 模型也不会丢失。
+TypeScript compiler face و Typert وقت التشغيل ناتج face هو اثنان طبقة عام فكرة. عادي `dshClient` package أي جعل فقط لديه واحد compiler project، أيضا يمكن حسب عام subpath معا مساهمة Host و Client وقت التشغيل نموذج؛aggregate صريح مرجع `tsconfig.host.json` أو `tsconfig.client.json` وقت،analyzer عندئذ يأخذ هذا project حد تحديد إلى مقابل face. لذلك `api-remotes` Host قسم تحليل لن ترتيب حمل تسجيل ذلك Client مدخل، عادي مزدوج مدخل package Host نموذج أيضا لن فقد فقد.
 
-Host 与 Client 两次 tsdown 都接收 `vendor/*`、`packages/*/*` 和 `apps/cli` 这组完整 workspace。根配置不扫描 `lib/types/client/index.js`，不维护 package 分类表，也不使用 tsdown filter；包内配置根据 `DSH_BUILD_FACE` 返回本阶段入口。
+Host و Client اثنان مرة tsdown كل استقبال `vendor/*`،`packages/*/*` و `apps/cli` هذا مجموعة كامل workspace. أصل إعداد لا مسح `lib/types/client/index.js`، لا صيانة package تصنيف جدول، أيضا لا استخدام tsdown filter؛ حزمة داخل إعداد أصل حسب `DSH_BUILD_FACE` إرجاع هذا مرحلة مقطع مدخل.
 
-普通 Client plugin 在 Host pass 返回空配置，在 Client pass 同时生成 Node loader 入口与 browser bundle。`api-remotes` 的 `clientBundle(..., { hostPhase: true })` 是唯一阶段例外：Host pass 生成其 Host 入口，Client pass 只生成 browser bundle。未指定 `DSH_BUILD_FACE` 的 package-local tsdown 仍同时返回该 package 的正常入口，供本地单包开发使用。
+عادي Client plugin في Host pass إرجاع فارغ إعداد، في Client pass معا توليد Node loader مدخل و browser bundle.`api-remotes` `clientBundle(..., { hostPhase: true })` هو وحيد مرحلة مقطع مثال خارج:Host pass توليد ذلك Host مدخل،Client pass فقط توليد browser bundle. لم إشارة تحديد `DSH_BUILD_FACE` package-local tsdown ما زال معا إرجاع هذا package صحيح معتاد مدخل، توفير محلي مفرد حزمة تطوير استخدام.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留独立 contracts 预处理。** 这会在正常 Host Project Reference 图之外额外编译 generator，并让残留生成物掩盖 Client 过早进入 Host 图的问题。
+**إبقاء مستقل contracts مسبق معالجة.** هذا سوف في صحيح معتاد Host Project Reference رسم خارج مقدار خارج تحرير ترجمة generator، و يجعل ناقص إبقاء توليد شيء إخفاء غطاء Client مرور مبكر دخول Host رسم مشكلة.
 
-**一次执行根 `tsc -b tsconfig.json` 后再运行 tsdown。** Client tsc 在 Host tsdown 之前发生，无法从干净工作树获得 `/remote` 声明。
+**مرة تنفيذ أصل `tsc -b tsconfig.json` بعد مجددا تشغيل tsdown.** Client tsc في Host tsdown قبل حدوث، لا يمكن من جاف صاف عمل شجرة نيل نيل `/remote` إعلان.
 
-**拆分所有包含 `src/client/index.ts` 的 package。** Node 与 browser 双入口是普通 Client plugin 的打包约定，不形成编译顺序依赖；普遍拆分只会增加 references 和增量状态的维护成本。
+**تفكيك قسم كل يتضمن `src/client/index.ts` package.** Node و browser مزدوج مدخل هو عادي Client plugin تحزيم اتفاق، لا شكل صار تحرير ترجمة ترتيب اعتماد؛ عام مرة تفكيك قسم فقط سوف زيادة references و زيادة كمية حالة صيانة صار هذا.
 
-**扫描 Client 编译产物或维护两份 workspace 清单。** 产物扫描会让 package 是否参与构建取决于残留文件，手工清单和 package 名过滤则会随目录调整产生漂移。完整 workspace 加包内 face 选择已经提供确定行为。
+**مسح Client تحرير ترجمة ناتج أو صيانة اثنان نسخة workspace بيان.** ناتج مسح سوف يجعل package هل مشاركة و بناء أخذ قرار في ناقص إبقاء ملف، يد عمل بيان و package اسم مرور ترشيح فإن سوف مع دليل ضبط كامل إنتاج عائم نقل. كامل workspace إضافة حزمة داخل face اختيار قد توفير تحديد سلوك.
 
-**在 Client pass 再运行 Typert。** Remote Client 是 Host 约定的投影，没有独立 Client 反射源；第二个 Typert program 只会重复工作并增加两侧声明混入同一分析的风险。
+**في Client pass مجددا تشغيل Typert.** Remote Client هو Host اتفاق إسقاط، لا يوجد مستقل Client عكس إطلاق مصدر؛ ثاني عدد Typert program فقط سوف تكرار عمل و زيادة اثنان جانب إعلان خلط دخول نفس قسم تحليل ريح خطر.
 
-## 后果
+## عاقبة
 
-干净构建成为顺序正确性的权威验证：没有任何既存 `/remote` 产物时，Host tsc 必须先成功，Host tsdown 必须生成约定，随后 Client tsc、Client tsdown 与 Web build 必须成功。任何阶段都不得把产物写进 `src`。
+جاف صاف بناء يصبح ترتيب صحيح تأكيد صفة مرجعي تحقق: لا يوجد أي حيث تخزين `/remote` ناتج وقت،Host tsc يجب أولا نجاح،Host tsdown يجب توليد اتفاق، مع بعد Client tsc،Client tsdown و Web build يجب نجاح. أي مرحلة مقطع كل لا نيل يأخذ ناتج كتابة دخول `src`.
 
-[TypeScript 构建配置 Note](2026-06-17-ts-build-config.zh.md)确定的 tsc-first 职责保持不变，但其单次全图 tsc 后再打包的命令形态由本文的有序阶段取代。[双 aggregate solution Note](2026-07-22-tsconfig-solution-root-two-aggregates.zh.md)确定的普通 package 单 aggregate 规则保持不变，本文只为 `api/remotes` 建立一个显式例外。
+[TypeScript بناء إعداد Note](2026-06-17-ts-build-config.zh.md) تحديد tsc-first مسؤولية إبقاء ثابت، لكن ذلك مفرد مرة كل رسم tsc بعد مجددا تحزيم أمر شكل من هذا نص لديه ترتيب مرحلة مقطع يحل محل.[مزدوج aggregate solution Note](2026-07-22-tsconfig-solution-root-two-aggregates.zh.md) تحديد عادي package مفرد aggregate قاعدة إبقاء ثابت، هذا نص فقط لـ `api/remotes` بناء قيام واحد صريح مثال خارج.
 
-Client 的独立构建不再是干净工作树上的自足入口；仓库命令、CI 和发布流程必须先运行 Host lib 阶段。普通 package 的开发者无需理解或复制该例外，仍按所属运行环境选择一个 aggregate。
+Client مستقل بناء لم يعد هو جاف صاف عمل شجرة فوق ذاتي كاف مدخل؛ مستودع أمر،CI و إصدار مسار يجب أولا تشغيل Host lib مرحلة مقطع. عادي package تطوير من بلا حاجة إدارة حل أو نسخ هذا مثال خارج، ما زال حسب الذي تابع تشغيل بيئة اختيار واحد aggregate.

@@ -71,7 +71,7 @@ const LIVE_PROMPT = [
   ...Array.from(
     { length: 48 },
     (_, index) =>
-      `Context ${String(index + 1).padStart(2, '0')}: 用户正在检查长会话中的增量渲染性能。`
+      `Context ${String(index + 1).padStart(2, '0')}: مستخدم صحيح في فحص طويل جلسة في زيادة كمية تصيير صفة قدرة.`
       + ` Preserve item ${String(index)} and compare ${'payload'.repeat(8)}.`,
   ),
   '```ts',
@@ -428,7 +428,7 @@ function textStream(deltas: readonly string[], inputTokens: number): StreamChunk
 function comparisonPrompt(index: number): string {
   if (index === COMPARISON_TURNS) return LIVE_PROMPT
   return (`${LONG_CONTINUATION_USER_PREFIX}_${String(index)} `
-    + `继续分析这个长会话的第 ${String(index)} 个增量问题，并保留当前滚动和输入响应。 `
+    + `متابعة قسم تحليل هذا عدد طويل جلسة رقم ${String(index)} عدد زيادة كمية مشكلة، و إبقاء حالي تمرير و إدخال استجابة. `
     + 'context '.repeat(80)).trimEnd()
 }
 
@@ -470,7 +470,7 @@ function soakTurn(index: number): ConversationTurnSpec {
     : undefined
   return {
     prompt: (`${SOAK_USER_PREFIX}_${suffix} `
-      + `持续对话第 ${String(index)} 轮，检查增量渲染与保留状态。 `
+      + `حمل متابعة محادثة رقم ${String(index)} جولة، فحص زيادة كمية تصيير و إبقاء حالة. `
       + 'context '.repeat(20)).trimEnd(),
     deltas: Array.from({ length: SOAK_DELTA_COUNT }, (_, chunkIndex) => {
       if (chunkIndex === 0) return `${SOAK_FIRST_PREFIX}_${suffix} `

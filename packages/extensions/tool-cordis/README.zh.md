@@ -1,76 +1,76 @@
 ---
-description: "为开发和配置已安装 Harness 插件的 agent 提供只读运行时 API 查询。"
+description: "لـ تطوير و إعداد قد تثبيت Harness إضافة agent توفير فقط قراءة وقت التشغيل API استعلام."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-tool-cordis
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-编写插件代码前查询 Host 和 Client 的运行时 API。创造模式同时提供这些只读工具与 Plugin Manager，后者负责持久化 profile 变更。检查注册表由 Cordis host runner 提供；浏览器查询需要已连接的页面。
+تحرير كتابة إضافة شفرة قبل استعلام Host و Client وقت التشغيل API. إنشاء صنع نمط معا توفير هذه فقط قراءة أداة و Plugin Manager، بعد من مسؤول حفظ دائم profile تغيير. فحص سجل التسجيل من Cordis host runner توفير؛ متصفح استعلام حاجة قد اتصال صفحة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与待办](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و انتظار إنجاز](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-创造模式包含这组工具。其他组合需要同时挂载 `@deepseek-ai/dsh-tool-cordis` 和提供 `cordisInspect` 的 host runner。调用 `cordis_inspect_list` 发现 provider，再用 `cordis_inspect_query` 查询其具体方法和类型。通过 [Plugin Manager](../../boot/plugin-manager/README.zh.md) 安装包含插件代码或 MCP 配置的组合包。
+إنشاء صنع نمط يتضمن هذا مجموعة أداة. أخرى تركيب حاجة معا تركيب `@deepseek-ai/dsh-tool-cordis` و توفير `cordisInspect` host runner. استدعاء `cordis_inspect_list` اكتشاف provider، مجددا استخدام `cordis_inspect_query` استعلام ذلك أداة جسم طريقة و نوع. عبر [Plugin Manager](../../boot/plugin-manager/README.zh.md) تثبيت يتضمن إضافة شفرة أو MCP إعداد تركيب حزمة.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节 — 点击展开</summary>
+<summary>تنفيذ دقيق عقدة — انقر للتوسيع</summary>
 
-Host provider 结合生成的 Service/Event 目录与请求 agent 的工具注册表。Client provider 通过现有检查注册表同步清单，并从已连接页面回答查询。工具插件通过 Cordis effect 持有注册；释放时移除工具和提示词贡献。检查直接读取 provider，不维护独立运行时投影，因此不发布不变式配套插件。
+Host provider ربط دمج توليد Service/Event دليل و طلب agent أداة سجل التسجيل.Client provider عبر قائم فحص سجل التسجيل تزامن بيان، و من قد اتصال صفحة عودة جواب استعلام. أداة إضافة عبر Cordis effect يحتفظ تسجيل؛ تحرير وقت إزالة أداة و نص التوجيه مساهمة. فحص مباشر قراءة provider، لا صيانة مستقل وقت التشغيل إسقاط، لذلك لا إصدار ثابت صيغة إعداد طقم إضافة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [Plugin Manager](../../boot/plugin-manager/README.zh.md) — 持久化组合包安装和启停。
-- [Cordis host runner](../cordis-host-runner/README.zh.md) — 检查注册表和现有运行时消费者。
+- [Plugin Manager](../../boot/plugin-manager/README.zh.md) — حفظ دائم تركيب حزمة تثبيت و بدء توقف.
+- [Cordis host runner](../cordis-host-runner/README.zh.md) — فحص سجل التسجيل و قائم وقت التشغيل إزالة استهلاك من.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 运行时检查
+### وقت التشغيل فحص
 
-#### 模型所见
+#### نموذج الذي رؤية
 
-[工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-cordis) 描述两个只读检查工具。[提示词](src/prompt.ts) 指引模型通过 Plugin Manager 进行持久化变更并说明 MCP 设置方式。创造模式的视觉请求默认通过已安装的 UI 插件显示在当前 Web 页面；开发技能说明 Client 打包和 slot 注册方法。查询结果包含所请求的 API 声明或当前工具 schema。
+[أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-cordis) وصف اثنان عدد فقط قراءة فحص أداة.[نص التوجيه](src/prompt.ts) إشارة جذب نموذج عبر Plugin Manager إجراء حفظ دائم تغيير و شرح MCP ضبط طريقة. إنشاء صنع نمط نظر شعور طلب افتراضي عبر قد تثبيت UI إضافة عرض في حالي Web صفحة؛ تطوير تقنية قدرة شرح Client تحزيم و slot تسجيل طريقة. استعلام نتيجة يتضمن الذي طلب API إعلان أو حالي أداة schema.
 
-#### Token 影响
+#### Token أثر
 
-插件可见时，两个工具 schema 和指导段落进入模型请求。查询结果追加到转录中；精确查询避免加载无关声明。
+إضافة مرئي وقت، اثنان عدد أداة schema و إشارة توجيه مقطع سقوط دخول نموذج طلب. استعلام نتيجة إلحاق إلى تحويل تسجيل في؛ دقيق استعلام تجنب تجنب تحميل غير متصل إعلان.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-未改变的 schema 和指导保持前缀稳定。查询结果追加到历史中；启用其他插件可能改变后续工具 schema。
+لم تغيير schema و إشارة توجيه إبقاء بادئة مستقر. استعلام نتيجة إلحاق إلى تاريخ في؛ تفعيل أخرى إضافة ممكن تغيير لاحق أداة schema.
 
-## 已知限制与待办
+## معروف حد و انتظار إنجاز
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- Client 查询等待页面响应或取消。检查不能调用服务方法、配置插件或执行生成代码。
+- Client استعلام انتظار صفحة استجابة أو إلغاء. فحص لا يستطيع استدعاء خدمة طريقة، إعداد إضافة أو تنفيذ توليد شفرة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
-无。
+بلا.

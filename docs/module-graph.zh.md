@@ -1,11 +1,11 @@
-<!-- 由 scripts/gen-module-graph.ts 生成——请勿手工编辑。
-     运行 `pnpm run gen-module-graph` 重新生成。 -->
+<!-- من scripts/gen-module-graph.ts توليد——طلب لا يد عمل تحرير.
+     تشغيل `pnpm run gen-module-graph` إعادة توليد. -->
 
-# 共享实例依赖关系图
+# مشترك نسخة اعتماد علاقة رسم
 
-[English](module-graph.md) | 中文
+[English](module-graph.md) | العربية
 
-`@deepseek-ai/dsh-*` harness 包之间的 peer 依赖关系。peer 表示消费端需要提供共享实例，不包括普通运行时 dependency 或仅开发期关系。该图按 `packages/<group>/<pkg>` 层级分组；边 `a --> b` 表示包 `a` peer 依赖包 `b`。名称中的 `@deepseek-ai/dsh-` 前缀已移除。
+`@deepseek-ai/dsh-*` harness حزمة بين peer اعتماد علاقة.peer يمثل إزالة استهلاك طرف حاجة توفير مشترك نسخة، لا يشمل عادي وقت التشغيل dependency أو فقط تطوير مدة علاقة. هذا رسم حسب `packages/<group>/<pkg>` طبقة درجة قسم مجموعة؛ حافة `a --> b` يمثل حزمة `a` peer اعتماد حزمة `b`. اسم في `@deepseek-ai/dsh-` بادئة قد إزالة.
 
 ```mermaid
 flowchart TD
@@ -1301,7 +1301,7 @@ flowchart TD
   pkg_subagent_dsh_sdk --> pkg_subprocess
 ```
 
-| 包 | 分组 | Peer 依赖 |
+| حزمة | قسم مجموعة | Peer اعتماد |
 | --- | --- | --- |
 | [`atomic-write`](../packages/util/atomic-write) | `util` | — |
 | [`brand`](../packages/util/brand) | `util` | — |

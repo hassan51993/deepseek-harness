@@ -1,24 +1,24 @@
-# Agent Note: 用于工具调用展示的带标签 render-intent 联合类型
+# Agent Note: لأجل أداة استدعاء عرض حمل وسم render-intent ربط دمج نوع
 
 Status: implemented
 
-[English](2026-07-02-tool-render-intent-union.md) | 中文
+[English](2026-07-02-tool-render-intent-union.md) | العربية
 
-> render-intent 联合类型对 UI 传输层仍然有效；其 ACP（Agent Client Protocol）映射已被 [ACP 作为仅面向自动化的协议](../simplification/2026-07-23-acp-automation-only-protocol.zh.md)取代。
+> render-intent ربط دمج نوع مقابل UI نقل طبقة ما زال صالح؛ ذلك ACP(Agent Client Protocol) خريطة قد يتم [ACP بصفة فقط موجه إلى تلقائي تحويل بروتوكول](../simplification/2026-07-23-acp-automation-only-protocol.zh.md) يحل محل.
 
-## 问题
+## مشكلة
 
-工具通过 `ToolDefinition` 上的两个回调 `presentCall`/`presentResult` 声明其调用在 UI（编辑器的工具调用卡片）中如何渲染，返回 `ToolCallPresentation` / `ToolResultPresentation`，并带有一个可选的 `ToolTerminal` 子结构。这些类型在增量演进中变成了一个**可选字段的集合**：调用侧有 `title`、`kind`、`rawInput`、`content`、`locations`、`terminal`；结果侧有 `title`、`content`、`terminal`；`ToolTerminal` 上有 `cwd`/`output`/`exitCode`/`signal`。职责划分模糊不清：
+أداة عبر `ToolDefinition` فوق اثنان عدد عودة ضبط `presentCall`/`presentResult` إعلان ذلك استدعاء في UI(تحرير جهاز أداة استدعاء بطاقة) في مثل أي تصيير، إرجاع `ToolCallPresentation` / `ToolResultPresentation`، و حمل لديه واحد اختياري `ToolTerminal` فرعي بنية. هذه نوع في زيادة كمية عرض دخول في تغيير صار واحد**اختياري حقل تجميع دمج**: استدعاء جانب لديه `title`،`kind`،`rawInput`،`content`،`locations`،`terminal`؛ نتيجة جانب لديه `title`،`content`،`terminal`؛`ToolTerminal` فوق لديه `cwd`/`output`/`exitCode`/`signal`. مسؤولية تخطيط قسم نموذج غامض لا صاف:
 
-- 调用侧和结果侧的 `terminal` 字段重叠，bridge 需要将每次调用的 `content` 块、`terminal` 块和 `rawInput` 用临时条件逻辑拼接在一起。
-- 哪些组合是*合法的*没有文档说明：一个设置了 `content` 的 `terminal` 调用意味着「卡片上方的描述」；一个设置了 `terminal` 的 generic 调用毫无意义但类型上可表达。类型允许无意义的状态存在。
-- 无法表达编辑器最需要的文件工具能力：**diff 卡片**（`{path, oldText, newText}`，Zed 将其渲染为内联 diff / 新文件预览）。`ToolCallPresentation.content` 使用的是 *LLM（大语言模型）* 的 `ContentBlock[]` 词汇（text/image），工具根本无法请求 diff 展示。
+- استدعاء جانب و نتيجة جانب `terminal` حقل إعادة تراكم،bridge حاجة سوف كل مرة استدعاء `content` كتلة،`terminal` كتلة و `rawInput` استخدام مؤقت شرط منطق تجميع وصل في واحد بدء.
+- أي بعض تركيب هو*دمج قاعدة*لا يوجد وثيقة شرح: واحد ضبط `content` `terminal` استدعاء معنى طعم حال «بطاقة فوق جهة وصف» ؛ واحد ضبط `terminal` generic استدعاء جزء بلا معنى معنى لكن نوع فوق يمكن جدول بلوغ. نوع سماح بلا معنى معنى حالة وجود.
+- لا يمكن جدول بلوغ تحرير جهاز الأكثر حاجة ملف أداة قدرة:**diff بطاقة**(`{path, oldText, newText}`،Zed سوف ذلك تصيير لـ داخل ربط diff / جديد ملف معاينة).`ToolCallPresentation.content` استخدام هو *LLM(كبير لغة نموذج)* `ContentBlock[]` مفردات (text/image) ، أداة أصل هذا لا يمكن طلب diff عرض.
 
-一个早先被否决的折叠工具自有呈现提案把富渲染推迟到它能够「在至少有两个真实工具和两个真实消费方验证词汇之后，以带标签 render-intent 联合类型的形式回归」之时。该条件已由多个生产者族，加上 TUI 与宿主/客户端运行时（Web）这些消费方满足。
+واحد مبكر أولا يتم مرفوض طي أداة ذاتي لديه عرض رفع سجل يأخذ غني تصيير دفع متأخر إلى هو قدرة كاف «في حتى قليل لديه اثنان عدد حقيقي أداة و اثنان عدد حقيقي مستهلك تحقق مفردات بعد، بـ حمل وسم render-intent ربط دمج نوع شكل صيغة ارتداد» لـ وقت. هذا شرط قد من كثير عدد إنتاج من عائلة، إضافة فوق TUI و مضيف/عميل وقت التشغيل (Web) هذه مستهلك ممتلئ كاف.
 
-## 决策
+## قرار
 
-用一个**以 `card` 为标签的可辨识联合类型**替代可选字段集合。工具为每次调用/结果声明一个渲染意图；bridge 根据标签分发。
+استخدام واحد**بـ `card` لـ وسم يمكن تمييز تعرف ربط دمج نوع**بديل اختياري حقل تجميع دمج. أداة لـ كل مرة استدعاء/نتيجة إعلان واحد تصيير معنى رسم؛bridge أصل حسب وسم توزيع.
 
 ```ts ignore-check
 type FileLocation = { path: string; line?: number }
@@ -36,47 +36,47 @@ interface GenericResultView { card: 'generic'; title?: string; content?: Content
 interface TerminalResultView { card: 'terminal'; title?: string; output?: string; exitCode?: number; signal?: string }
 ```
 
-`card` 在每个变体上都是**必填**的——真正的判别字段，而非可选默认值。bridge 执行 `switch (view.card) { case 'generic': … case 'terminal': … case 'diff': … default: assertNever(view) }`。该联合类型是**封闭的**（遵循 [switch 穷举约定](../../../../AGENTS.md)）：第四种渲染意图（表格、图表）无论如何需要新的 bridge 代码来渲染，因此一个由插件添加但被 bridge 静默丢弃的变体，比编译错误更糟糕。新增变体会在 bridge 的 switch 处中断编译——这正是我们想要的信号。
+`card` في كل تغيير جسم فوق كل هو**لا بد ملء**——حق صحيح حكم آخر حقل، بينما غير اختياري قيمة افتراضية.bridge تنفيذ `switch (view.card) { case 'generic': … case 'terminal': … case 'diff': … default: assertNever(view) }`. هذا ربط دمج نوع هو**غلاف إغلاق**(التزام دوران [switch نفاد رفع اتفاق](../../../../AGENTS.md)): رقم أربعة نوع تصيير معنى رسم (جدول إطار، رسم جدول) بلا نقاش مثل أي حاجة جديد bridge شفرة قدوم تصيير، لذلك واحد من إضافة إضافة لكن يتم bridge ساكن صامت إسقاط تغيير جسم، مقارنة تحرير ترجمة خطأ أكثر سيئ كعكة. إضافة جديدة تغيير جسم سوف في bridge switch موضع في قطع تحرير ترجمة——هذا صحيح هو أنا جمع تفكير يلزم إشارة.
 
-### 为什么带标签联合类型优于字段集合
+### لـ ماذا حمل وسم ربط دمج نوع أفضل في حقل تجميع دمج
 
-- **无效状态变得不可表达。** generic 卡片不能携带终端输出；terminal 卡片不能携带 diff。旧的字段集合允许所有这些组合。
-- **消费方分发而非拼接。** 每种卡片一个分支，精确产出该卡片所需的视图，而非调和五个交互关系未文档化的可选字段。
-- **`diff` 成为一等意图。** `dsh-tool-fs` 的 write/edit 声明带 `{path, oldText, newText}` 的 `card:'diff'`，让有能力的 UI 无需针对工具名做特殊处理即可渲染行内变更。
+- **بلا فاعلية حالة تغيير نيل غير ممكن جدول بلوغ.** generic بطاقة لا يستطيع يحمل طرفية إخراج؛terminal بطاقة لا يستطيع يحمل diff. قديم حقل تجميع دمج سماح كل هذه تركيب.
+- **مستهلك توزيع بينما غير تجميع وصل.** كل نوع بطاقة واحد فرع، دقيق إنتاج خروج هذا بطاقة الذي يحتاج عرض، بينما غير ضبط و خمسة عدد تفاعل علاقة لم وثيقة تحويل اختياري حقل.
+- **`diff` يصبح واحد انتظار معنى رسم.** `dsh-tool-fs` write/edit إعلان حمل `{path, oldText, newText}` `card:'diff'`، يجعل لديه قدرة UI بلا حاجة إبرة مقابل أداة اسم فعل خاص خاص معالجة يكفي تصيير سطر داخل تغيير.
 
-### 生产者映射
+### إنتاج من خريطة
 
-- `dsh-tool-fs` read → `generic`（`kind:'read'`，附带一个 follow-along `location`）；write → `diff`（`oldText:null`）；edit → `diff`（`oldText:old_string || null`，`newText:new_string ?? ''`）。这与 `claude-agent-acp` 的 `toolInfoFromToolUse` 中 Read/Write/Edit 各分支逐字段对应。
-- `dsh-tool-bash` 前台运行 → `terminal` 调用 + `terminal` 结果；`run_in_background` → `generic`。通用 `job_*` 控制工具拥有各自的 generic 卡片。
-- `dsh-tool-todo` → `generic`。
+- `dsh-tool-fs` read → `generic`(`kind:'read'`، مرفق حمل واحد follow-along `location`) ؛write → `diff`(`oldText:null`) ؛edit → `diff`(`oldText:old_string || null`،`newText:new_string ?? ''`). هذا و `claude-agent-acp` `toolInfoFromToolUse` في Read/Write/Edit كل فرع تدريجي حقل مقابل.
+- `dsh-tool-bash` قبل منصة تشغيل → `terminal` استدعاء + `terminal` نتيجة؛`run_in_background` → `generic`. عام `job_*` تحكم أداة يملك كل منها generic بطاقة.
+- `dsh-tool-todo` → `generic`.
 
-### 终端回退的归属
+### طرفية رجوع ملكية
 
-`TerminalResultView` 只携带 `output`/`exitCode`/`signal`。不具备终端能力的 UI 需要一个围栏 ` ```console ` 文本回退；该推导移至 **bridge**（在无能力路径上将 `output` 包裹在围栏代码块中），而非由工具双重编码。这使 bash 工具的结果保持单一结构化形状，并逐字节保留既有的能力门控行为。
+`TerminalResultView` فقط يحمل `output`/`exitCode`/`signal`. لا أداة تجهيز طرفية قدرة UI حاجة واحد محيط شريط ` ```console ` نص رجوع؛ هذا دفع توجيه نقل حتى **bridge**(في بلا قدرة مسار فوق سوف `output` حزمة لف في محيط شريط شفرة كتلة في) ، بينما غير من أداة مزدوج إعادة تحرير رمز. هذا جعل bash أداة نتيجة إبقاء مفرد واحد بنية تحويل شكل حالة، و تدريجي بايت إبقاء قائم قدرة باب تحكم سلوك.
 
-terminal 意图只用于展示。harness 仍通过自身的 bash 服务执行命令，从而保留沙箱、环境清理、任务归属和每会话 cwd；UI 只呈现已完成的调用，绝不会成为第二个执行后端。
+terminal معنى رسم فقط لأجل عرض.harness ما زال عبر ذاته bash خدمة تنفيذ أمر، من بينما إبقاء صندوق رملي، بيئة تنظيف، مهمة ملكية و كل جلسة cwd؛UI فقط عرض قد إتمام استدعاء، أبدا سوف يصبح ثاني عدد تنفيذ خلفية.
 
-### 纯函数性保持不变
+### صاف دالة صفة إبقاء ثابت
 
-`presentCall`/`presentResult` 仍然是 `args`（`presentResult` 还有 result）的纯函数——它们在实时流式输出和会话日志回放中都会运行，因此必须具备回放确定性。每个 view 仅从 args 推导：write 的 diff 是新文件风格（`oldText:null`），因为工具在调用时没有旧内容；edit 的 diff 是 `old_string`→`new_string`。
+`presentCall`/`presentResult` ما زال هو `args`(`presentResult` أيضا لديه result) صاف دالة——هو جمع في فوري تدفق صيغة إخراج و جلسة سجل إعادة تشغيل في كل سوف تشغيل، لذلك يجب أداة تجهيز إعادة تشغيل تحديد صفة. كل view فقط من args دفع توجيه:write diff هو جديد ملف ريح إطار (`oldText:null`) ، لأن أداة في استدعاء وقت لا يوجد قديم محتوى؛edit diff هو `old_string`→`new_string`.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **完全删除工具自有的展示**：即本 Agent Note 所取代的那个被否决的 collapse 提案；其自身的结论正是推迟到两个真实工具和两个真实消费方存在后再做此联合类型，该条件现已满足。
-- **让 UI 执行 terminal 意图**：否决。这样会绕过 harness 的 bash 策略与归属约定，并把命令执行分裂到不同后端。terminal 卡片描述的是 harness 拥有的执行，绝不授权客户端侧执行。
-- **可合并扩展的联合类型**（`ContentBlockMap` 模式）：否决。新的渲染意图无论如何需要新的 bridge 代码来渲染，因此一个被 bridge 静默丢弃的插件添加变体，比封闭联合类型在 bridge 的 `assertNever` switch 处引发的编译错误更糟糕。
-- **保留可选字段集合**：即「问题」一节所剖析的现状：无效状态可表达、字段交互无文档、且完全无法请求 diff 卡片。
+- **تماما حذف أداة ذاتي لديه عرض**: أي هذا Agent Note الذي يحل محل ذلك عدد يتم مرفوض collapse رفع سجل؛ ذلك ذاته ربط نقاش صحيح هو دفع متأخر إلى اثنان عدد حقيقي أداة و اثنان عدد حقيقي مستهلك وجود بعد مجددا فعل هذا ربط دمج نوع، هذا شرط الآن قد ممتلئ كاف.
+- **يجعل UI تنفيذ terminal معنى رسم**: مرفوض. هذا مثال سوف التفاف مرور harness bash سياسة و ملكية اتفاق، و يأخذ أمر تنفيذ قسم شق إلى مختلف خلفية.terminal بطاقة وصف هو harness يملك تنفيذ، أبدا تخويل عميل جانب تنفيذ.
+- **يمكن دمج توسيع ربط دمج نوع**(`ContentBlockMap` نمط): مرفوض. جديد تصيير معنى رسم بلا نقاش مثل أي حاجة جديد bridge شفرة قدوم تصيير، لذلك واحد يتم bridge ساكن صامت إسقاط إضافة إضافة تغيير جسم، مقارنة غلاف إغلاق ربط دمج نوع في bridge `assertNever` switch موضع جذب إرسال تحرير ترجمة خطأ أكثر سيئ كعكة.
+- **إبقاء اختياري حقل تجميع دمج**: أي «مشكلة» واحد عقدة الذي تشريح تحليل الآن حالة: بلا فاعلية حالة يمكن جدول بلوغ، حقل تفاعل بلا وثيقة، كما تماما لا يمكن طلب diff بطاقة.
 
-## 后果
+## عاقبة
 
-新的渲染意图会在 bridge 的 switch 处引发编译中断——这是有意为之：渲染代码必须先于卡片种类存在。无效的卡片/字段组合现已不可表达，bash 回退推导归 bridge 所有，工具只返回一个结构化形状。第四种卡片（表格、图表）的门槛是在同一个变更中编写其 bridge 分支。
+جديد تصيير معنى رسم سوف في bridge switch موضع جذب إرسال تحرير ترجمة في قطع——هذا هو متعمد لـ لـ: تصيير شفرة يجب أولا في بطاقة نوع صنف وجود. بلا فاعلية بطاقة/حقل تركيب الآن قد غير ممكن جدول بلوغ،bash رجوع دفع توجيه عودة bridge كل، أداة فقط إرجاع واحد بنية تحويل شكل حالة. رقم أربعة نوع بطاقة (جدول إطار، رسم جدول) باب عتبة هو في نفس عدد تغيير في تحرير كتابة ذلك bridge فرع.
 
-## 非目标
+## غير هدف
 
-- **实时增量 `terminal_output_delta` 流式输出**与**命令分类**：终端渲染 Agent Note 自身推迟的后续工作，本 Agent Note 不涉及。
+- **فوري زيادة كمية `terminal_output_delta` تدفق صيغة إخراج**و**أمر تصنيف**: طرفية تصيير Agent Note ذاته دفع متأخر لاحق عمل، هذا Agent Note لا تعلق و.
 
-## 相关
+## متبادل صلة
 
-- 取代早先被否决的折叠工具自有呈现提案（已否决——「等两个真实工具和两个真实消费方，然后做带标签 render-intent 联合类型」）中的推迟决定。该条件现已满足；本 Agent Note 即为那个联合类型。
-- 被[结果时已应用 hunk 差异](../../archived/architecture/2026-07-02-result-time-applied-hunk-diffs.md)（已归档）扩展：后者添加了一个持久化的 `meta` 通道，使 write/edit 在结果时输出 `DiffResultView`（应用后的变更：带上下文行的 contextual hunk / 每个 `replace_all` 位点一个，或创建时的整文件 diff）——值/呈现拆分与持久化的 `presentationMeta` 通道现由[规范工具输出约定](2026-07-20-canonical-tool-output-contract.zh.md)拥有。
-- 将 `ToolTerminal` 折入当前 UI 传输层使用的带标签 `terminal` 视图。
+- يحل محل مبكر أولا يتم مرفوض طي أداة ذاتي لديه عرض رفع سجل (قد مرفوض——«انتظار اثنان عدد حقيقي أداة و اثنان عدد حقيقي مستهلك، لكن بعد فعل حمل وسم render-intent ربط دمج نوع») في دفع متأخر قرار. هذا شرط الآن قد ممتلئ كاف؛ هذا Agent Note أي لـ ذلك عدد ربط دمج نوع.
+- يتم[نتيجة وقت قد تطبيق hunk فرق مختلف](../../archived/architecture/2026-07-02-result-time-applied-hunk-diffs.md)(قد عودة ملف) توسيع: بعد من إضافة واحد حفظ دائم `meta` عبر طريق، جعل write/edit في نتيجة وقت إخراج `DiffResultView`(تطبيق بعد تغيير: حمل سياق سطر contextual hunk / كل `replace_all` موضع نقطة واحد، أو إنشاء وقت كامل ملف diff)——قيمة/عرض تفكيك قسم و حفظ دائم `presentationMeta` عبر طريق الآن من[مواصفة أداة إخراج اتفاق](2026-07-20-canonical-tool-output-contract.zh.md) يملك.
+- سوف `ToolTerminal` طي دخول حالي UI نقل طبقة استخدام حمل وسم `terminal` عرض.

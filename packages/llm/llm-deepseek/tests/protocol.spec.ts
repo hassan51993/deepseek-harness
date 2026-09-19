@@ -32,7 +32,7 @@ it.each([false, true])('uses Messages when protocol is omitted, schema=%s', asyn
   const connection = resolveAdapterOptions(schema ? Config(raw) : raw)
   const response = await assemble(adapter(() => connection).stream(options()))
 
-  expect(response.message.content).toEqual([{ type: 'text', text: 'Hello 世界' }])
+  expect(response.message.content).toEqual([{ type: 'text', text: 'Hello عالم حد' }])
   expect(http.requests).toHaveLength(1)
   expect(http.requests[0]).toMatchObject({
     path: '/anthropic/v1/messages',

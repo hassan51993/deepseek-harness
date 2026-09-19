@@ -1,52 +1,52 @@
 ---
-description: "goal 组地图：每会话一个持久的完成目标，以及模型工具、用户命令与自动续行，供浏览本组的用户与维护者阅读。"
+description: "goal مجموعة أرض رسم: كل جلسة واحد حمل دائم إتمام هدف، و نموذج أداة، مستخدم أمر و تلقائي متابعة سطر، توفير تصفح تصفح هذا مجموعة مستخدم و صيانة من قراءة قراءة."
 kind: "package-group"
 ---
 
 # packages/goal
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-goal 组让一个 agent（智能体）会话在重启、恢复和 fork 后继续追求一个持久的完成目标。agent 可以创建和更新该目标，用户也可以用 `/goal` 直接检查或控制它，而不消耗模型轮次。可选的续行包可以让进行中的工作连续执行多个 Round。每个会话只有一个当前目标，该目标记录完成状态而不调度工作；因此，自动续行必须单独启用。
+goal مجموعة يجعل واحد agent(ذكي جسم) جلسة في إعادة بدء، استعادة و fork بعد متابعة تتبع طلب واحد حمل دائم إتمام هدف.agent يمكن إنشاء و تحديث هذا هدف، مستخدم أيضا يمكن استخدام `/goal` مباشر فحص أو تحكم هو، بينما لا إزالة استهلاك نموذج جولة. اختياري متابعة سطر حزمة يمكن يجعل إجراء في عمل وصل متابعة تنفيذ كثير عدد Round. كل جلسة فقط لديه واحد حالي هدف، هذا هدف سجل إتمام حالة بينما لا ضبط درجة عمل؛ لذلك، تلقائي متابعة سطر يجب مفرد وحيد تفعيل.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`goal`](goal/README.zh.md) | 每个会话一个持久目标：创建、编辑、暂停、恢复、完成、阻塞和清除 | `ctx.goals` |
-| [`tool-goal`](tool-goal/README.zh.md) | 模型工具 `get_goal`、`create_goal`、`update_goal` | 注册到 `ctx.tools` |
-| [`command-goal`](command-goal/README.zh.md) | UI 命令平面中的用户 `/goal` 命令 | 注册到 `ctx.commands` |
-| [`goal-round-driver`](goal-round-driver/README.zh.md) | 自动续行：把进行中的目标变成连续的 Round | 无服务键 |
+| [`goal`](goal/README.zh.md) | كل جلسة واحد حمل دائم هدف: إنشاء، تحرير، مؤقت توقف، استعادة، إتمام، منع سد و صاف حذف | `ctx.goals` |
+| [`tool-goal`](tool-goal/README.zh.md) | نموذج أداة `get_goal`،`create_goal`،`update_goal` | تسجيل إلى `ctx.tools` |
+| [`command-goal`](command-goal/README.zh.md) | UI أمر مستو وجه في مستخدم `/goal` أمر | تسجيل إلى `ctx.commands` |
+| [`goal-round-driver`](goal-round-driver/README.zh.md) | تلقائي متابعة سطر: يأخذ إجراء في هدف تغيير صار وصل متابعة Round | بلا خدمة مفتاح |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [目标子系统](../../docs/subsystems/goal.zh.md)——目标类型、持久的 `goal/change` 事件与生成的服务 API。
-- [生成的工具目录](../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-goal)——模型接收的三个目标工具 schema。
-- [生成的配置目录](../../docs/config-catalog.zh.md#deepseek-aidsh-goal)——目标服务的每个受支持配置字段。
-- [目标领域 Agent Note](../../.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.zh.md)——领域设计及其决策。
+- [هدف فرعي نظام](../../docs/subsystems/goal.zh.md)——هدف نوع، حمل دائم `goal/change` حدث و توليد خدمة API.
+- [توليد أداة دليل](../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-goal)——نموذج استقبال ثلاثة عدد هدف أداة schema.
+- [توليد إعداد دليل](../../docs/config-catalog.zh.md#deepseek-aidsh-goal)——هدف خدمة كل تلقي دعم حمل إعداد حقل.
+- [هدف مجال Agent Note](../../.agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.zh.md)——مجال تصميم و ذلك قرار.
 
 -----
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

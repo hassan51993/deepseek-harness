@@ -1,14 +1,14 @@
-# 会话持久化
+# جلسة حفظ دائم
 
-[English](persistence.md) | 中文
+[English](persistence.md) | العربية
 
-事件日志的**持久性 seam**。[session.md](session.zh.md) 描述了内存中的 `Session`：仅追加的 `SessionEvent` 日志即为真源。本页描述如何使该日志持久化：抽象的 `SessionPersistence` 服务、它的提供方模型与随产品交付的 JSONL 后端、flush 检查点、崩溃恢复，以及随日志一同存储的元数据头。日志承载的事件词汇在生成的[持久化日志事件目录](../persistence-catalog.zh.md)中逐项列举。
+حدث سجل**حمل دائم صفة seam**.[session.md](session.zh.md) وصف داخل تخزين في `Session`: فقط إلحاق `SessionEvent` سجل أي لـ حق مصدر. هذا صفحة وصف مثل أي جعل هذا سجل حفظ دائم: سحب كائن `SessionPersistence` خدمة، هو مزود نموذج و مع منتج تسليم JSONL خلفية،flush فحص نقطة، انهيار انهيار استعادة، و مع سجل واحد نفس تخزين بيانات وصفية رأس. سجل تحمل تحميل حدث مفردات في توليد[حفظ دائم سجل حدث دليل](../persistence-catalog.zh.md) في تدريجي بند صف رفع.
 
-该 seam 是一个[能力 seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md)：一个抽象服务（[dsh-session-persistence](../../packages/session/session-persistence)，`ctx.sessionPersistence`）在现有 `SessionEvent` 上暴露 `create`/`open`/`stat`/`list`——**没有平行的持久化事件类型**——其中 `create` 与 `open` 返回逐会话的 `SessionHandle`（`read`/`append`/`flush`/`close`），它承载全部日志访问与单写者所有权。仓库随产品交付 [dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl) 作为其 provider；仓库外 provider 可以实现同一服务约定。见[基于句柄的持久化 Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md)与 [session-persistence Agent Note](../../.agents/notes/implemented/architecture/2026-06-14-session-persistence.zh.md)。
+هذا seam هو واحد[قدرة seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md): واحد سحب كائن خدمة ([dsh-session-persistence](../../packages/session/session-persistence) ،`ctx.sessionPersistence`) في قائم `SessionEvent` فوق كشف `create`/`open`/`stat`/`list`——**لا يوجد مستو سطر حفظ دائم حدث نوع**——منها `create` و `open` إرجاع تدريجي جلسة `SessionHandle`(`read`/`append`/`flush`/`close`) ، هو تحمل تحميل الكل سجل وصول و مفرد كتابة من كل حق. مستودع مع منتج تسليم [dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl) بصفة ذلك provider؛ مستودع خارج provider يمكن تنفيذ نفس خدمة اتفاق. رؤية[أساس في جملة مقبض حفظ دائم Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md) و [session-persistence Agent Note](../../.agents/notes/implemented/architecture/2026-06-14-session-persistence.zh.md).
 
-## `SessionHandle`——通向已存储会话的一条打开通道
+## `SessionHandle`——عبر نحو قد تخزين جلسة واحد بند فتح عبر طريق
 
-每一次日志读写都经由句柄流动，绝不经由按 id 寻址的服务方法：句柄是跨进程写租约把守的唯一入口。读取会返回调用方独占的外层 slice，以及由生产者建立的 event value 别名状态。一种句柄类型同时服务两种访问——在 `read` 句柄上执行修改是运行时的 `SessionReadOnlyError`，而非类型层面的拆分——而进程内单写者所有权使得在已有活跃持有者时第二次 `open(id, 'write')` 以 `SessionAlreadyOwnedError` 拒绝。
+كل مرة سجل قراءة كتابة كل مرور من جملة مقبض تدفق حركة، أبدا مرور من حسب id بحث عنوان خدمة طريقة: جملة مقبض هو عبر عملية كتابة إيجار نحو يأخذ حراسة وحيد مدخل. قراءة سوف إرجاع استدعاء جهة وحيد احتلال خارج طبقة slice، و من إنتاج من بناء قيام event value آخر اسم حالة. واحد نوع جملة مقبض نوع معا خدمة اثنان نوع وصول——في `read` جملة مقبض فوق تنفيذ تعديل هو وقت التشغيل `SessionReadOnlyError`، بينما غير نوع طبقة وجه تفكيك قسم——بينما عملية داخل مفرد كتابة من كل حق جعل نيل في قد لديه نشط وثب يحتفظ من وقت ثاني مرة `open(id, 'write')` بـ `SessionAlreadyOwnedError` رفض.
 
 ```ts type-equiv
 /** One persistence event slice returned by {@link SessionHandle.read}. */
@@ -99,23 +99,23 @@ interface SessionHandle extends AsyncDisposable {
 }
 ```
 
-已创建的会话自 `create` 完成之刻起即可在本进程内被观察到，而后端可以把物理实体化（纯粹的优化）推迟到第一次 `append` 或 `flush`；其他进程只能看到已实体化的会话，一个在崩溃前从未实体化的会话等于从未存在。
+قد إنشاء جلسة ذاتي `create` إتمام لـ لحظة بدء يكفي في هذا عملية داخل يتم مراقبة إلى، بينما خلفية يمكن يأخذ شيء إدارة فعلي جسم تحويل (صاف خالص أفضل تحويل) دفع متأخر إلى رقم مرة `append` أو `flush`؛ أخرى عملية فقط قدرة يرى قد فعلي جسم تحويل جلسة، واحد في انهيار انهيار قبل من لم فعلي جسم تحويل جلسة انتظار في من لم وجود.
 
-## flush 检查点
+## flush فحص نقطة
 
-`session/event` 是一个*同步*通知；挂载的后端按会话 id 把它路由进活跃写句柄的有界 write-behind 窗口，而不阻塞生产方（后端一次性安装这些监听器，因为持久化已保证每个 id 只有一个活跃写句柄）。第一个待处理事件会开启固定的内部批处理窗口，后续事件会加入但不会重置其截止时间。窗口到期后会通过该会话的写句柄启动一次持久化 `append`；该次写入期间接纳的事件会获得自己的截止时间，并形成后续批次。`session/flush` 会取消等待并排空至完全停稳，因此循环仍将其用作在领取下一个普通轮次之前的顺序与错误观察检查点。后台写入被拒绝时会按序保留对应事件、暂停自动路径，并通过 logger 报告；下一次显式 flush 会重试，并向其调用方响亮地拒绝。`session/disposed` 会执行同样的最终排空并关闭句柄，而 `close()` 本身会经由仍然打开的存储排空已路由的缓冲，因此后端 teardown 的关闭清扫不丢任何数据。该窗口只限制有意的批处理等待，不限制事件循环调度或后端完成持久化的延迟。
+`session/event` هو واحد*تزامن*إشعار؛ تركيب خلفية حسب جلسة id يأخذ هو توجيه دخول نشط وثب كتابة جملة مقبض محدود write-behind نافذة، بينما لا منع سد إنتاج جهة (خلفية مرة صفة تثبيت هذه مستمع، لأن حفظ دائم قد حفظ إثبات كل id فقط لديه واحد نشط وثب كتابة جملة مقبض). رقم واحد انتظار معالجة حدث سوف فتح بدء ثابت داخلي دفعة معالجة نافذة، لاحق حدث سوف إضافة دخول لكن لن إعادة وضع ذلك قطع توقف وقت. نافذة إلى مدة بعد سوف عبر هذا جلسة كتابة جملة مقبض بدء مرة حفظ دائم `append`؛ هذا مرة كتابة خلال وصل قبول حدث سوف نيل نيل ذاتي ذات قطع توقف وقت، و شكل صار لاحق دفعة مرة.`session/flush` سوف إلغاء انتظار و ترتيب فارغ حتى تماما توقف مستقر، لذلك حلقة ما زال سوف ذلك استخدام عمل في قيادة أخذ تحت واحد عادي جولة قبل ترتيب و خطأ مراقبة فحص نقطة. خلفية كتابة يتم رفض وقت سوف حسب ترتيب إبقاء مقابل حدث، مؤقت توقف تلقائي مسار، و عبر logger تقرير إبلاغ؛ تحت مرة صريح flush سوف إعادة محاولة، و نحو ذلك استدعاء جهة صدى مضيء أرض رفض.`session/disposed` سوف تنفيذ نفس مثال نهائي ترتيب فارغ و إغلاق جملة مقبض، بينما `close()` ذاته سوف مرور من ما زال فتح تخزين ترتيب فارغ قد توجيه مؤقت اندفاع، لذلك خلفية teardown إغلاق صاف مسح لا فقد أي بيانات. هذا نافذة فقط حد متعمد دفعة معالجة انتظار، لا حد حدث حلقة ضبط درجة أو خلفية إتمام حفظ دائم تأخير متأخر.
 
-## 崩溃恢复保留被中断的轮次
+## انهيار انهيار استعادة إبقاء يتم في قطع جولة
 
-一个在轮次中途崩溃的日志以打开的 `turn/start` 而无 `turn/end` 结束。持久化**不会**截断或修复它：在长周期任务中，单个轮次可能非常庞大（许多步骤、大量工具输出），而这些事件在崩溃前已被持久追加。它返回物理上有效的连续日志；只有撕裂物理尾部——属于一次从未完成的 append——中不完整的碎片会被丢弃：从中恢复的完整记录（JSONL 后端会部分解码撕裂的 Zstandard 帧）由写路径在句柄的第一次新 append 之前持久重写。修复是读方的职责：resume（agent-loop）通过其写句柄读取已存储的日志，计算 `interruptedTurnClosers`——缺失的工具错误、任何未闭合的 `step/end`，以及一个合成的 `turn/end { reason: { kind: 'interrupted' } }`——并在发布 Session 之前把它们作为普通批次通过同一句柄追加。`interrupted` 是唯一一个不由循环发出的 `TurnEndReason`（见 [session.md](session.zh.md#why-a-turn-ended-turnendreasonmap)）。
+واحد في جولة في طريق انهيار انهيار سجل بـ فتح `turn/start` بينما بلا `turn/end` انتهاء. حفظ دائم**لن**قطع قطع أو إصلاح هو: في طويل دورة مدة مهمة في، مفرد عدد جولة ممكن غير معتاد ضخم كبير (سماح كثير خطوة، كبير كمية أداة إخراج) ، بينما هذه حدث في انهيار انهيار قبل قد يتم حمل دائم إلحاق. هو إرجاع شيء إدارة فوق صالح وصل متابعة سجل؛ فقط لديه تمزيق شق شيء إدارة ذيل جزء——يخص مرة من لم إتمام append——في لا كامل تفتيت قطعة سوف يتم إسقاط: من في استعادة كامل سجل (JSONL خلفية سوف جزء حل رمز تمزيق شق Zstandard لقطة) من كتابة مسار في جملة مقبض رقم مرة جديد append قبل حمل دائم إعادة كتابة. إصلاح هو قراءة جهة مسؤولية:resume(agent-loop) عبر ذلك كتابة جملة مقبض قراءة قد تخزين سجل، حساب حساب `interruptedTurnClosers`——ناقص أداة خطأ، أي لم إغلاق دمج `step/end`، و واحد دمج صار `turn/end { reason: { kind: 'interrupted' } }`——و في إصدار Session قبل يأخذ هو جمع بصفة عادي دفعة مرة عبر نفس جملة مقبض إلحاق.`interrupted` هو وحيد واحد لا من حلقة إرسال خروج `TurnEndReason`(رؤية [session.md](session.zh.md#why-a-turn-ended-turnendreasonmap)).
 
-因此修复只在写所有权之下写入：活跃会话的写句柄由其生命周期所有者持有，故并发的 `open(id, 'write')` 会以 `SessionAlreadyOwnedError` 拒绝，而不是让修复与活跃轮次竞速。只读观察方（session-query）仅在内存中用同样的闭合事件配平被中断的冷日志，不回写任何内容。
+لذلك إصلاح فقط في كتابة كل حق لـ تحت كتابة: نشط وثب جلسة كتابة جملة مقبض من ذلك دورة الحياة كل من يحتفظ، لذا تزامن `open(id, 'write')` سوف بـ `SessionAlreadyOwnedError` رفض، بينما لا هو يجعل إصلاح و نشط وثب جولة تنافس سرعة. فقط قراءة مراقبة جهة (session-query) فقط في داخل تخزين في استخدام نفس مثال إغلاق دمج حدث إعداد مستو يتم في قطع بارد سجل، لا عودة كتابة أي محتوى.
 
-只读观察即 `open(id, 'read')`：句柄提供经过验证的连续前缀切片，绝不返回撕裂尾部，且同一句柄上的重复读取绝不会观察到比先前读取更旧的状态。持久化侧不存在已准备 Session 缓存：session-query 拥有自己的冷读缓存，按 `stat().revision` 变更令牌为每个 id 缓存一个已配平的冷 Session，仅在令牌变化时重新读取。该生命周期由[基于句柄的持久化 Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md)定义；已归档的 [Session 准备阶段记录](../../.agents/notes/archived/architecture/2026-08-05-session-preparation.md)记载了发布边界 `SessionPreparation` 最初的决策。
+فقط قراءة مراقبة أي `open(id, 'read')`: جملة مقبض توفير مرور مرور تحقق وصل متابعة بادئة قطع قطعة، أبدا إرجاع تمزيق شق ذيل جزء، كما نفس جملة مقبض فوق تكرار قراءة أبدا سوف مراقبة إلى مقارنة أولا قبل قراءة أكثر قديم حالة. حفظ دائم جانب لا وجود قد دقيق تجهيز Session ذاكرة مؤقتة:session-query يملك ذاتي ذات بارد قراءة ذاكرة مؤقتة، حسب `stat().revision` تغيير أمر لوحة لـ كل id ذاكرة مؤقتة واحد قد إعداد مستو بارد Session، فقط في أمر لوحة تغير وقت إعادة قراءة. هذا دورة الحياة من[أساس في جملة مقبض حفظ دائم Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md) تعريف؛ قد عودة ملف [Session دقيق تجهيز مرحلة مقطع سجل](../../.agents/notes/archived/architecture/2026-08-05-session-preparation.md) تسجيل تحميل إصدار حد `SessionPreparation` الأكثر أول قرار.
 
-## `SessionLocation`——拒绝诊断的产物目标
+## `SessionLocation`——رفض تشخيص ناتج هدف
 
-`SessionLocation` 不是面向消费者的查询：日志访问走会话句柄的 `read`。它仅作为拒绝诊断存在，使 `SessionFormatUnsupportedError` 能指出本构建拒绝解读的原始日志。JSONL 提供其项目/会话目录内 transcript（文本记录）的绝对路径；没有逐会话工件的后端则不提供。
+`SessionLocation` لا هو موجه إلى إزالة استهلاك من استعلام: سجل وصول مشي جلسة جملة مقبض `read`. هو فقط بصفة رفض تشخيص وجود، جعل `SessionFormatUnsupportedError` قدرة إشارة خروج هذا بناء رفض حل قراءة أصلي سجل.JSONL توفير ذلك مشروع/جلسة دليل داخل transcript(نص سجل) قطعا مقابل مسار؛ لا يوجد تدريجي جلسة عمل عنصر خلفية فإن لا توفير.
 
 ```ts type-equiv
 /**
@@ -134,11 +134,11 @@ interface SessionLocation {
 
 <a id="sessionheader--metadata-beside-the-log"></a>
 
-## `SessionHeader`：日志旁的元数据
+## `SessionHeader`: سجل جانب بيانات وصفية
 
-每个会话的元数据与事件日志**分开**存储：header 携带格式版本、cwd 与 `isSeeded` 谱系 bit，含正文的存储值则在其旁边单独携带精确 inherited cut。二者都不进入 `SessionEventMap`，也不会到达 `deriveMessages()`。logical header 通过 `session.header` 附加，Session 则以 `inheritedEventCount` 暴露其 cut。
+كل جلسة بيانات وصفية و حدث سجل**قسم فتح**تخزين:header يحمل صيغة إصدار،cwd و `isSeeded` جدول نظام bit، يحتوي متن تخزين قيمة فإن في ذلك جانب حافة مفرد وحيد يحمل دقيق inherited cut. اثنان من كل لا دخول `SessionEventMap`، أيضا لن وصول `deriveMessages()`.logical header عبر `session.header` مرفق إضافة،Session فإن بـ `inheritedEventCount` كشف ذلك cut.
 
-源码：[`packages/core/session/src/types.ts`](../../packages/core/session/src/types.ts)
+شفرة المصدر:[`packages/core/session/src/types.ts`](../../packages/core/session/src/types.ts)
 
 ```ts type-equiv
 /**
@@ -184,13 +184,13 @@ interface SessionHeader {
 }
 ```
 
-## 格式拒绝：本构建无法可靠读取的日志
+## صيغة رفض: هذا بناء لا يمكن يمكن اعتماد قراءة سجل
 
-后端用 `SessionFormatUnsupportedError` 拒绝无法可靠解读的日志，它与 `SessionPersistenceCorruptionError` 区分，因为数据没有损坏。`stat` 与 `list` 会对最高规范 generation 分类，并在不读取或改变正文的前提下转换受支持的历史 header。历史 `open` 会共享每个 Session 唯一的一次 migration preparation，再返回当前逻辑值，并保持每个源路径、字节与 inode 不变。JSONL provider 直接从该内存结果返回读句柄而不发布；写 open 则在持有单写者 claim 与文件 lease 时复用 preparation、排他发布最终 current generation，随后才返回可写句柄。即使仍有较旧的可读 generation，最高的未来 generation 仍会导致拒绝。当前格式恢复会保留已安装扩展和带 `ignorable: true` 的未知事件；历史 v0/v1/v2 迁移则会拒绝未知类型，即使它带有 ignorable 标记。后端为每个会话保留独立文件时，消息附上选定的原始日志路径。仓库外后端必须在自己的物理格式入口提供等价的仅当前句柄值与方向感知拒绝。[已发布格式迁移决策](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md)负责迁移链与不可变发布规则。
+خلفية استخدام `SessionFormatUnsupportedError` رفض لا يمكن يمكن اعتماد حل قراءة سجل، هو و `SessionPersistenceCorruptionError` منطقة قسم، لأن بيانات لا يوجد ضرر تالف.`stat` و `list` سوف مقابل الأكثر عال مواصفة generation تصنيف، و في لا قراءة أو تغيير متن قبل رفع تحت تحويل تلقي دعم حمل تاريخ header. تاريخ `open` سوف مشترك كل Session وحيد مرة migration preparation، مجددا إرجاع حالي منطق قيمة، و إبقاء كل مصدر مسار، بايت و inode ثابت.JSONL provider مباشر من هذا داخل تخزين نتيجة إرجاع قراءة جملة مقبض بينما لا إصدار؛ كتابة open فإن في يحتفظ مفرد كتابة من claim و ملف lease وقت إعادة استخدام preparation، ترتيب هو إصدار نهائي current generation، مع بعد عندئذ إرجاع يمكن كتابة جملة مقبض. أي جعل ما زال لديه مقارنة قديم يمكن قراءة generation، الأكثر عال لم قدوم generation ما زال سوف توجيه يؤدي رفض. حالي صيغة استعادة سوف إبقاء قد تثبيت توسيع و حمل `ignorable: true` لم معرفة حدث؛ تاريخ v0/v1/v2 ترحيل فإن سوف رفض لم معرفة نوع، أي جعل هو حمل لديه ignorable علامة. خلفية لـ كل جلسة إبقاء مستقل ملف وقت، رسالة مرفق فوق اختيار تحديد أصلي سجل مسار. مستودع خارج خلفية يجب في ذاتي ذات شيء إدارة صيغة مدخل توفير انتظار قيمة فقط حالي جملة مقبض قيمة و جهة نحو شعور معرفة رفض.[قد إصدار صيغة ترحيل قرار](../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md) مسؤول ترحيل سلسلة و غير ممكن تغيير إصدار قاعدة.
 
-## `CreateSessionOptions`：seed 与元数据
+## `CreateSessionOptions`:seed و بيانات وصفية
 
-通过 store 创建 `Session` 时会接收 `seed`（初始回放或 fork 历史）、可选的精确 `inheritedEventCount` 与 `meta`（store 整合进 `SessionHeader` 的存储层字段）。store 填充 `version`/`id` 并为 `createdAt` 提供默认值；调用方可以提供已校验的绝对 `cwd`、`parentSession` 谱系、`isSeeded` 谱系标记、可选的粗粒度 `origin`、`delegationDepth`、用于组装该 agent（智能体）的 `agentPreset` 以及已有的 `createdAt`。seeded 创建必须显式提供与 inherited prefix 完全相等的 seed 和精确 cut；constructor 会先在该 cut 追加 child-owned tagged end-seed marker，setup 再添加 child-owned event。`origin: 'subagent'` 让产品导航能够隐藏重复的 child 行；它不证明描述符有效，也不证明 child 可以恢复。
+عبر store إنشاء `Session` وقت سوف استقبال `seed`(ابتدائي إعادة تشغيل أو fork تاريخ) ، اختياري دقيق `inheritedEventCount` و `meta`(store كامل دمج دخول `SessionHeader` تخزين طبقة حقل).store ملء ملء `version`/`id` و لـ `createdAt` توفير قيمة افتراضية؛ استدعاء جهة يمكن توفير قد تحقق قطعا مقابل `cwd`،`parentSession` جدول نظام،`isSeeded` جدول نظام علامة، اختياري خشن حبة درجة `origin`،`delegationDepth`، لأجل تجميع هذا agent(ذكي جسم) `agentPreset` و قد لديه `createdAt`.seeded إنشاء يجب صريح توفير و inherited prefix تماما متبادل انتظار seed و دقيق cut؛constructor سوف أولا في هذا cut إلحاق child-owned tagged end-seed marker،setup مجددا إضافة child-owned event.`origin: 'subagent'` يجعل منتج تنقل قدرة كاف إخفاء تكرار child سطر؛ هو لا إثبات وصف رمز صالح، أيضا لا إثبات child يمكن استعادة.
 
 ```ts type-equiv
 /**
@@ -223,11 +223,11 @@ interface CreateSessionOptions {
 }
 ```
 
-因此，回放/fork 的调用方式为 `ctx.agents.create({ sessionId, seed, meta })`——fork 还会随 `meta.isSeeded: true` 提供 `inheritedEventCount`，且只有经 agent-loop 发布的会话才会持久化，且循环会在发布之前通过新会话的写句柄存储 seed；将一个*持久化*会话恢复为活跃 agent 的调用方式为 `ctx.agents.resume({ resumeSessionId })`。
+لذلك، إعادة تشغيل/fork استدعاء طريقة لـ `ctx.agents.create({ sessionId, seed, meta })`——fork أيضا سوف مع `meta.isSeeded: true` توفير `inheritedEventCount`، كما فقط لديه مرور agent-loop إصدار جلسة عندئذ سوف حفظ دائم، كما حلقة سوف في إصدار قبل عبر جديد جلسة كتابة جملة مقبض تخزين seed؛ سوف واحد*حفظ دائم*جلسة استعادة لـ نشط وثب agent استدعاء طريقة لـ `ctx.agents.resume({ resumeSessionId })`.
 
-## 准备与恢复所有权
+## دقيق تجهيز و استعادة كل حق
 
-`SessionStore.prepare()` 接收普通创建选项，或通过 `RestoredSessionOptions` 接收可直接接管的 seed。它的 `eventState` 表明 event value 是独占对象，还是只有深度冻结后的共享对象；生产者负责建立该状态，slice 不会根据结果长度推断其他状态。恢复流程会校验并直接接管这些值，不再复制或冻结。`SessionPreparation` 随后持有该精确的未发布 Session，直至发布或回滚；dispose 是同步且幂等的。agent-loop 的 resume 通过该会话的写句柄读取这份结果，并在准备之前追加独占的 `interruptedTurnClosers`。
+`SessionStore.prepare()` استقبال عادي إنشاء خيار، أو عبر `RestoredSessionOptions` استقبال يمكن مباشر وصل إدارة seed. هو `eventState` جدول واضح event value هو وحيد احتلال كائن، أيضا هو فقط لديه عميق درجة تجميد ربط بعد مشترك كائن؛ إنتاج من مسؤول بناء قيام هذا حالة،slice لن أصل حسب نتيجة طويل درجة دفع قطع أخرى حالة. استعادة مسار سوف تحقق و مباشر وصل إدارة هذه قيمة، لم يعد نسخ أو تجميد ربط.`SessionPreparation` مع بعد يحتفظ هذا دقيق لم إصدار Session، مباشر حتى إصدار أو تراجع؛dispose هو تزامن كما قوة انتظار.agent-loop resume عبر هذا جلسة كتابة جملة مقبض قراءة هذا نسخة نتيجة، و في دقيق تجهيز قبل إلحاق وحيد احتلال `interruptedTurnClosers`.
 
 ```ts type-equiv
 /**
@@ -291,9 +291,9 @@ declare class SessionPreparation implements Disposable {
 }
 ```
 
-## 轻量源修订号
+## خفيف كمية مصدر إصلاح حجز رقم
 
-派生读取模型的消费方会在加载完整事件日志之前比较一个低开销的不透明修订号。该修订号是来自 `stat`/`list` 的逐后端实例变更令牌：修订号相等可视为日志未变；不相等则不作任何承诺，且写所有权的变动绝不会改变修订号。session-query 以它为键管理冷读缓存；该令牌在 open、read 或 resume 中不起任何作用。
+إرسال توليد قراءة نموذج مستهلك سوف في تحميل كامل حدث سجل قبل مقارنة مقارنة واحد منخفض فتح إلغاء لا نفاذ واضح إصلاح حجز رقم. هذا إصلاح حجز رقم هو قدوم ذاتي `stat`/`list` تدريجي خلفية نسخة تغيير أمر لوحة: إصلاح حجز رقم متبادل انتظار يمكن نظر لـ سجل لم تغيير؛ لا متبادل انتظار فإن لا عمل أي تحمل وعد، كما كتابة كل حق تغيير حركة أبدا سوف تغيير إصلاح حجز رقم.session-query بـ هو لـ مفتاح إدارة بارد قراءة ذاكرة مؤقتة؛ هذا أمر لوحة في open،read أو resume في لا بدء أي أثر.
 
 ```ts type-equiv
 /**
@@ -320,13 +320,13 @@ interface SessionPersistenceSnapshot {
 }
 ```
 
-可选的 `eventCount`/`sizeBytes` 字段仍是供明确需要它们的 consumer 使用的低成本 backend observation。Session 列表不借助这两个字段打开冷日志，只读取 header 与经过 identity 校验的 projection cache hint，因此 cache 或 Session format 升级不会把启动变成 body scan。
+اختياري `eventCount`/`sizeBytes` حقل ما زال هو توفير واضح حاجة هو جمع consumer استخدام منخفض صار هذا backend observation.Session قائمة لا استعارة مساعدة هذا اثنان عدد حقل فتح بارد سجل، فقط قراءة header و مرور مرور identity تحقق projection cache hint، لذلك cache أو Session format ترقية لن يأخذ بدء تغيير صار body scan.
 
-## 后端
+## خلفية
 
-随产品交付的 provider 实现抽象 `SessionPersistence` 约定（`create`/`open`/`stat`/`list`，逐会话 `SessionHandle` 承载 `read`/`append`/`flush`/`close`，全程可选支持取消），并通过共享的持久化契约套件：
+مع منتج تسليم provider تنفيذ سحب كائن `SessionPersistence` اتفاق (`create`/`open`/`stat`/`list`، تدريجي جلسة `SessionHandle` تحمل تحميل `read`/`append`/`flush`/`close`، كل مسار اختياري دعم حمل إلغاء) ، و عبر مشترك حفظ دائم عقد نحو طقم عنصر:
 
-- **[dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl)**——逐会话仅追加的逻辑 JSONL 日志，默认存储为带 checksum 的连续 Zstandard frame，也可配置为原始行；具备崩溃安全的原子实体化、逐批 `fsync` 的 append，以及在第一次新 append 之前截断撕裂尾部。`stat`/`list` 携带 `sizeBytes` 与尽力而为的、由 `fs.stat` 派生的修订号。
+- **[dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl)**——تدريجي جلسة فقط إلحاق منطق JSONL سجل، افتراضي تخزين لـ حمل checksum وصل متابعة Zstandard frame، أيضا يمكن إعداد لـ أصلي سطر؛ أداة تجهيز انهيار انهيار أمان أصل فرعي فعلي جسم تحويل، تدريجي دفعة `fsync` append، و في رقم مرة جديد append قبل قطع قطع تمزيق شق ذيل جزء.`stat`/`list` يحمل `sizeBytes` و كل قوة بينما لـ، من `fs.stat` إرسال توليد إصلاح حجز رقم.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

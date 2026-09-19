@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [中文](2026-09-08-desktop-mandatory-update-api.zh.md)
+English | [العربية](2026-09-08-desktop-mandatory-update-api.zh.md)
 
 ## Problem
 
@@ -78,8 +78,8 @@ This means the current client does not require a mandatory update, not that its 
   "msg": "Client version too low",
   "data": {
     "show_content": {
-      "title": "请更新 DeepSeek Harness",
-      "detail": "当前版本已停止支持，请下载并安装新版本。"
+      "title": "طلب تحديث DeepSeek Harness",
+      "detail": "حالي إصدار قد إيقاف دعم حمل، طلب تحت تحميل و تثبيت جديد إصدار."
     },
     "desktop_app_link": "https://example.com/harness/download"
   }

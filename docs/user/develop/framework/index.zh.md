@@ -1,12 +1,12 @@
-# 插件与生命周期
+# إضافة و دورة الحياة
 
-[English](index.md) | 中文
+[English](index.md) | العربية
 
-本页介绍 Cordis 插件模型和生命周期状态机。
+هذا صفحة وسيط تعريف Cordis إضافة نموذج و دورة الحياة حالة آلة.
 
-## Fiber 状态机
+## Fiber حالة آلة
 
-每个被加载的插件都拥有一个 **Fiber** 作用域，其状态如下：
+كل يتم تحميل إضافة كل يملك واحد **Fiber** أثر مجال، ذلك حالة مثل تحت:
 
 ```
 PENDING → LOADING → ACTIVE
@@ -14,18 +14,18 @@ PENDING → LOADING → ACTIVE
 ACTIVE → UNLOADING → DISPOSED
 ```
 
-| 状态 | 含义 |
+| حالة | يحتوي معنى |
 |------|------|
-| PENDING | 已声明，但所需依赖未就绪 |
-| LOADING | 依赖就绪，正在执行 `apply` |
-| ACTIVE | 插件运行中 |
-| FAILED | `apply` 抛出异常 |
-| UNLOADING | 插件正在卸载并释放资源 |
-| DISPOSED | 已完全卸载 |
+| PENDING | قد إعلان، لكن الذي يحتاج اعتماد لم حينئذ خيط |
+| LOADING | اعتماد حينئذ خيط، صحيح في تنفيذ `apply` |
+| ACTIVE | إضافة تشغيل في |
+| FAILED | `apply` رمي خروج استثناء |
+| UNLOADING | إضافة صحيح في إزالة و تحرير مورد |
+| DISPOSED | قد تماما إزالة |
 
-## 依赖驱动的加载
+## اعتماد قيادة تحميل
 
-声明了 `inject` 的插件会等待所有必需服务就绪：
+إعلان `inject` إضافة سوف انتظار كل مطلوب خدمة حينئذ خيط:
 
 ```ts ignore-check
 export const inject = ['tools', 'llm']
@@ -35,11 +35,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-如果依赖的服务消失（例如提供方被替换时），插件会被自动卸载（ACTIVE → DISPOSED），待服务恢复后重新加载。
+إذا اعتماد خدمة إزالة فقد (مثال مثل مزود يتم استبدال وقت) ، إضافة سوف يتم تلقائي إزالة (ACTIVE → DISPOSED) ، انتظار خدمة استعادة بعد إعادة تحميل.
 
-## 自动清理机制
+## تلقائي تنظيف آلية
 
-通过 `ctx` 做的任何注册，在插件卸载时都会自动撤销：
+عبر `ctx` فعل أي تسجيل، في إضافة إزالة وقت كل سوف تلقائي سحب إلغاء:
 
 ```ts ignore-check
 export function apply(ctx: Context) {
@@ -54,17 +54,17 @@ export function apply(ctx: Context) {
 }
 ```
 
-以下操作都会被自动追踪和清理：
-- `ctx.on(event, handler)` — 事件监听
-- `ctx.tools.register(tool)` — 工具注册
-- `ctx.llm.registerAdapter(names, adapter)` — LLM（大语言模型）适配器注册
-- `ctx.effect(() => cleanup)` — 自定义资源
+التالي عملية كل سوف يتم تلقائي تتبع أثر و تنظيف:
+- `ctx.on(event, handler)` — حدث استماع
+- `ctx.tools.register(tool)` — أداة تسجيل
+- `ctx.llm.registerAdapter(names, adapter)` — LLM(كبير لغة نموذج) مهايئ تسجيل
+- `ctx.effect(() => cleanup)` — ذاتي تعريف مورد
 
-插件卸载时，处置器按注册顺序的逆序开始调用，但多个异步处置器会并发执行，不保证逐个完成。存在顺序依赖的清理步骤必须放进同一个 `ctx.effect()` 返回的处置器中，由该处置器负责串行等待。
+إضافة إزالة وقت، موضع وضع جهاز حسب تسجيل ترتيب عكس ترتيب بدء استدعاء، لكن كثير عدد مختلف خطوة موضع وضع جهاز سوف تزامن تنفيذ، لا حفظ إثبات تدريجي عدد إتمام. وجود ترتيب اعتماد تنظيف خطوة يجب وضع دخول نفس عدد `ctx.effect()` إرجاع موضع وضع جهاز في، من هذا موضع وضع جهاز مسؤول سلسلة سطر انتظار.
 
-## 嵌套上下文
+## تضمين طقم سياق
 
-`ctx.plugin()` 创建子 Fiber，它继承父上下文但有独立的生命周期：
+`ctx.plugin()` إنشاء فرعي Fiber، هو وراثة أب سياق لكن لديه مستقل دورة الحياة:
 
 ```ts ignore-check
 export function apply(ctx: Context) {
@@ -75,9 +75,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-## dispose（资源释放）语义
+## dispose(مورد تحرير) دلالة
 
-当你需要提前终止一个插件实例：
+عند أنت حاجة رفع قبل إنهاء واحد إضافة نسخة:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -91,22 +91,22 @@ const fiber = ctx.plugin(myPlugin)
 await fiber.dispose()
 ```
 
-`dispose` 保证：
-1. 该插件拥有的所有注册均被移除
-2. 它的子插件也被递归卸载
-3. 返回的 Promise 会在所有异步清理完成后兑现
+`dispose` حفظ إثبات:
+1. هذا إضافة يملك كل تسجيل متساو يتم إزالة
+2. هو فرعي إضافة أيضا يتم تمرير عودة إزالة
+3. إرجاع Promise سوف في كل مختلف خطوة تنظيف إتمام بعد صرف الآن
 
-## HMR（热模块替换）
+## HMR(حار وحدة استبدال)
 
-通过 `cordis.yml` 加载 `@deepseek-ai/dsh-hmr` 后，修改插件源文件会触发：
+عبر `cordis.yml` تحميل `@deepseek-ai/dsh-hmr` بعد، تعديل إضافة مصدر ملف سوف إطلاق:
 
-1. 卸载旧插件（清理所有注册）
-2. 重新加载新代码
-3. 执行新的 `apply`
+1. إزالة قديم إضافة (تنظيف كل تسجيل)
+2. إعادة تحميل جديد شفرة
+3. تنفيذ جديد `apply`
 
-因为插件注册会被自动清理，所以热替换不会保留旧实例的注册。
+لأن إضافة تسجيل سوف يتم تلقائي تنظيف، الذي بـ حار استبدال لن إبقاء قديم نسخة تسجيل.
 
-## 生命周期示例
+## دورة الحياة عرض مثال
 
 ```ts ignore-check
 export function apply(ctx: Context) {
@@ -119,19 +119,19 @@ export function apply(ctx: Context) {
 }
 ```
 
-加载时输出：
+تحميل وقت إخراج:
 ```
 plugin loading
 effect registered
 ```
 
-卸载时输出：
+إزالة وقت إخراج:
 ```
 effect cleaned up
 ```
 
-## 下一步
+## تحت واحد خطوة
 
-- [服务与依赖](./service.zh.md) — 让插件向其他插件提供能力
-- [事件系统](./events.zh.md) — 在插件之间通信
-- [Cordis 框架教程](../../../cordis-tutorial/index.zh.md) — 在 Cordis 运行时上逐步搭出同一套生命周期、服务与事件
+- [خدمة و اعتماد](./service.zh.md) — يجعل إضافة نحو أخرى إضافة توفير قدرة
+- [حدث نظام](./events.zh.md) — في إضافة بين عبر معلومة
+- [Cordis إطار هيكل تعليم مسار](../../../cordis-tutorial/index.zh.md) — في Cordis وقت التشغيل فوق تدريجي خطوة تركيب خروج نفس طقم دورة الحياة، خدمة و حدث

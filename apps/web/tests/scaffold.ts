@@ -113,9 +113,9 @@ export const WELCOME_NOTICE_ACK_FIELD = 'welcomeNoticeVersion'
 export const WELCOME_NOTICE_VERSION = '2026-08-13.1'
 export const WELCOME_NOTICE_COPY = {
   zh: {
-    title: '内测声明',
-    body: 'DeepSeek Harness 目前的 0.1 版本仍处在面向 Harness 开发者进行测试的阶段，还有许多地方需要持续改进和打磨，希望听取广大开发者的反馈建议。预计 DeepSeek Harness 的核心插件以及基础 API 都会在接下来的一段时间内快速迭代、持续演化。\n\n我们期待与全球开发者一起，在开源、开放、可复用、可组合的基础设施之上，共同探索智能上限。欢迎全球 Harness 开发者加入 DSH 插件生态。',
-    continueLabel: '继续',
+    title: 'داخل قياس إعلان',
+    body: 'DeepSeek Harness هدف قبل 0.1 إصدار ما زال موضع في موجه إلى Harness تطوير من إجراء اختبار مرحلة مقطع، أيضا لديه سماح كثير أرض جهة حاجة حمل متابعة تعديل دخول و ضرب طحن، أمل نظر استماع أخذ واسع كبير تطوير من عكس تغذية بناء اقتراح. مسبق حساب DeepSeek Harness نواة قلب إضافة و أساس أساس API كل سوف في وصل تحت قدوم واحد مقطع وقت داخل سريع سرعة تكرار بديل، حمل متابعة عرض تحويل.\n\nأنا جمع مدة انتظار و كل كرة تطوير من واحد بدء، في فتح مصدر، فتح وضع، يمكن إعادة استخدام، يمكن تركيب أساس أساس ضبط تطبيق لـ فوق، مشترك نفس استكشاف ذكي حد أعلى. فرح استقبال كل كرة Harness تطوير من إضافة دخول DSH إضافة توليد حالة.',
+    continueLabel: 'متابعة',
   },
 } as const
 
@@ -1466,7 +1466,7 @@ export async function readPersistedEvents(scaffold: WebScaffold, id: SessionId):
  * closing quote, where the bucket is always last.
  */
 const ARIA_AGE =
-  /(?:now|\d+min|\d+h|\d+d|\d+mo|\d+y|刚刚|\d+分钟|\d+小时|\d+天|\d+个月|\d+年)(?=")/g
+  /(?:now|\d+min|\d+h|\d+d|\d+mo|\d+y|للتو للتو|\d+قسم ساعة|\d+صغير وقت|\d+يوم|\d+عدد شهر|\d+سنة)(?=")/g
 
 function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): string {
   // The session heading renders the workspace's basename, not the full
@@ -1484,8 +1484,8 @@ function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): st
     )
     .replace(/\b\d[\d,]*(?:\.\d+)? ms\b/g, '{{duration}}')
     .replace(
-      /约\d+(?:年(?:\d+个月)?|个月(?:\d+天)?)|\d+(?:天(?:\d+小时(?:\d+分\d+秒)?)?|小时\d+分\d+秒|分\d+秒|(?:\.\d+)?秒)/g,
-      duration => duration.startsWith('约') ? duration : '{{duration}}',
+      /نحو\d+(?: سنة (?:\d+عدد شهر)?|عدد شهر (?:\d+يوم)?)|\d+(?: يوم (?:\d+صغير وقت (?:\d+قسم\d+ثانية)?)?|صغير وقت\d+قسم\d+ثانية|قسم\d+ثانية|(?:\.\d+)?ثانية)/g,
+      duration => duration.startsWith('نحو') ? duration : '{{duration}}',
     )
     .replace(/\d+(?:\.\d+)?(?= tok\/s(?!\w))/g, '{{throughput}}')
     // Seeded compaction prices realized file paths, whose length differs
@@ -1494,8 +1494,8 @@ function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): st
     // Session summaries and Message IconActions clocks cross calendar
     // boundaries; collapse every shape so goldens stay stable across them.
     .replace(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z/g, '{{timestamp}}')
-    .replace(/\d{4}年\d{1,2}月\d{1,2}日 \d{2}:\d{2}/g, '{{clock}}')
-    .replace(/\d{1,2}月\d{1,2}日 \d{2}:\d{2}/g, '{{clock}}')
+    .replace(/\d{4}سنة\d{1,2}شهر\d{1,2}يوم \d{2}:\d{2}/g, '{{clock}}')
+    .replace(/\d{1,2}شهر\d{1,2}يوم \d{2}:\d{2}/g, '{{clock}}')
     .replace(/(?<!\d)\d{1,2}:\d{2}:\d{2}(?:\.\d+)?(?:\s*[AP]M)?(?!\d)/gi, '{{clock}}')
     .replace(/(?<!\d)\d{2}:\d{2}(?!\d)/g, '{{clock}}')
 }

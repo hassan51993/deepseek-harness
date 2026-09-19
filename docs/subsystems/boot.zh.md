@@ -1,20 +1,20 @@
-# Profile 管理
+# Profile إدارة
 
-[English](boot.md) | 中文
+[English](boot.md) | العربية
 
-[boot 包组](../../packages/boot/README.zh.md)负责 launcher 提供的 profile 访问与插件管理器。[插件管理器](../../packages/boot/plugin-manager/README.zh.md)文档说明持久化、重载与包操作行为。
+[boot حزمة مجموعة](../../packages/boot/README.zh.md) مسؤول launcher توفير profile وصول و إضافة إدارة جهاز.[إضافة إدارة جهاز](../../packages/boot/plugin-manager/README.zh.md) وثيقة شرح حفظ دائم، إعادة تحميل و حزمة عملية سلوك.
 
-## 管理记录
+## إدارة سجل
 
-`PluginEntryId` 标识一个 Loader 条目；调用方从 `listPlugins` 获取，不自行拼接 patch id。
+`PluginEntryId` معرف واحد Loader بند؛ استدعاء جهة من `listPlugins` نيل أخذ، لا ذاتي سطر تجميع وصل patch id.
 
-`PluginInfo` 包含模块标识、实际启停状态和 fiber 阶段，以及唯一的 `patchId` 或 `readOnlyReason`。
+`PluginInfo` يتضمن وحدة معرف، فعلي بدء توقف حالة و fiber مرحلة مقطع، و وحيد `patchId` أو `readOnlyReason`.
 
-`BundleInfo` 包含包名、可选的安装版本、组合层选择状态、删除可用性及可选的解析错误。
+`BundleInfo` يتضمن حزمة اسم، اختياري تثبيت إصدار، تركيب طبقة اختيار حالة، حذف متاح صفة و اختياري تحليل خطأ.
 
-`InstallBundleOptions.enabled` 默认为 true，false 表示安装但不选择组合包层。`approvedBuilds` 在安装前向指定的待审批包名授予持久脚本权限。
+`InstallBundleOptions.enabled` افتراضي لـ true،false يمثل تثبيت لكن لا اختيار تركيب حزمة طبقة.`approvedBuilds` في تثبيت قبل نحو إشارة تحديد انتظار مراجعة دفعة حزمة اسم منح إعطاء حمل دائم نص برمجي إذن.
 
-`ChangeResult.changed` 报告磁盘修改，独立于 `application`：`applied`、`restart-required`、`overridden` 或 `failed`。可选的 `error` 包含可本地化的错误码和外部诊断。`packageResult` 记录 pnpm 退出码、有界输出、截断标志及完整诊断日志路径。`pendingBuilds` 列出整个 profile 尚未决定的包；`approvedBuilds` 记录本次操作授予权限的包名。
+`ChangeResult.changed` تقرير إبلاغ مغناطيس قرص تعديل، مستقل في `application`:`applied`،`restart-required`،`overridden` أو `failed`. اختياري `error` يتضمن يمكن محلي تحويل رمز خطأ و خارجي تشخيص.`packageResult` سجل pnpm خروج رمز، محدود إخراج، قطع قطع علامة سجل و كامل تشخيص سجل مسار.`pendingBuilds` صف خروج كامل profile بعد لم قرار حزمة؛`approvedBuilds` سجل هذا مرة عملية منح إعطاء إذن حزمة اسم.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

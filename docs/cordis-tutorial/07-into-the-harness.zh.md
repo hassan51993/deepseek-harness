@@ -1,12 +1,12 @@
-# 7. 进入 harness
+# 7. دخول harness
 
-[English](07-into-the-harness.md) | 中文
+[English](07-into-the-harness.md) | العربية
 
-本章会向 harness 的 `tools` 服务注册一个可由模型调用的工具，通过 harness 工具流水线执行它，并观察结果事件。整个示例无需密钥，也不会调用模型。
+هذا فصل سوف نحو harness `tools` خدمة تسجيل واحد يمكن من نموذج استدعاء أداة، عبر harness أداة خط الإنتاج تنفيذ هو، و مراقبة نتيجة حدث. كامل عرض مثال بلا حاجة مفتاح، أيضا لن استدعاء نموذج.
 
-## 工具插件
+## أداة إضافة
 
-创建 `greet-tool.ts`，将它放在 `tmp/cordis-tutorial` 中：
+إنشاء `greet-tool.ts`، سوف هو وضع في `tmp/cordis-tutorial` في:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -47,11 +47,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-这里的每个模式都来自前几章：`inject: ['tools']`（[第 3 章](03-services.zh.md)）会让插件等待工具注册表就绪；`ctx.tools.register(...)` 会把注册 disposer 附着到插件（[第 2 章](02-lifecycle-and-effects.zh.md)），因此卸载时会注销工具。`defineTool` 将 `parameters` 规约转换为向模型展示的 JSON Schema，推导 `args` 的类型，并在 `execute` 运行前校验模型提供的参数。工具返回由 `output.schema` 声明的规范值；`output.render` 则作为 Native renderer（原生渲染器），另行生成可持久化的结果内容。
+هذا داخل كل نمط كل قدوم ذاتي قبل بضعة فصل:`inject: ['tools']`([رقم 3 فصل](03-services.zh.md)) سوف يجعل إضافة انتظار أداة سجل التسجيل حينئذ خيط؛`ctx.tools.register(...)` سوف يأخذ تسجيل disposer مرفق حال إلى إضافة ([رقم 2 فصل](02-lifecycle-and-effects.zh.md)) ، لذلك إزالة وقت سوف ملاحظة إلغاء أداة.`defineTool` سوف `parameters` قاعدة نحو تحويل لـ نحو نموذج عرض JSON Schema، دفع توجيه `args` نوع، و في `execute` تشغيل قبل تحقق نموذج توفير معامل. أداة إرجاع من `output.schema` إعلان مواصفة قيمة؛`output.render` فإن بصفة Native renderer(أصلي مصير) ، آخر سطر توليد يمكن حفظ دائم نتيجة محتوى.
 
-## 观察插件
+## مراقبة إضافة
 
-创建 `tool-logger.ts`。这是一个独立插件，通过 harness 的 `tools/result` 事件观察应用中的每次工具调用：
+إنشاء `tool-logger.ts`. هذا هو واحد مستقل إضافة، عبر harness `tools/result` حدث مراقبة تطبيق في كل مرة أداة استدعاء:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -70,9 +70,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-`import type {} from '@deepseek-ai/dsh-tools'` 行会引入该包的声明合并，使 `'tools/result'` 及其 payload 具有类型。这与第 4 章导入 `stats.ts` 的做法相同，只是扩展到了包级别。
+`import type {} from '@deepseek-ai/dsh-tools'` سطر سوف جذب دخول هذا حزمة إعلان دمج، جعل `'tools/result'` و ذلك payload أداة لديه نوع. هذا و رقم 4 فصل استيراد `stats.ts` فعل قاعدة نفسه، فقط هو توسيع إلى حزمة درجة آخر.
 
-## 组合并运行
+## تركيب و تشغيل
 
 ```yaml
 - name: '@deepseek-ai/dsh-system-prompt'
@@ -81,7 +81,7 @@ export function apply(ctx: Context) {
 - name: './greet-tool.ts'
 ```
 
-`@deepseek-ai/dsh-tools` 会注入 `systemPrompt` 服务，因为工具需要向系统提示词贡献 schema，所以组合中也要列出该服务的提供方。缺少提供方时，工具插件会像[第 6 章](06-composition-and-hmr.zh.md)所述那样保持 PENDING。
+`@deepseek-ai/dsh-tools` سوف حقن `systemPrompt` خدمة، لأن أداة حاجة نحو توجيه النظام مساهمة schema، الذي بـ تركيب في أيضا يلزم صف خروج هذا خدمة مزود. نقص قليل مزود وقت، أداة إضافة سوف مثل[رقم 6 فصل](06-composition-and-hmr.zh.md) الذي وصف ذلك مثال إبقاء PENDING.
 
 ```sh
 node --import tsx ../../vendor/cordis/bin.js
@@ -92,17 +92,17 @@ node --import tsx ../../vendor/cordis/bin.js
 tool replied: [{"type":"text","text":"Hello, Cordis!"}]
 ```
 
-logger 会先触发：`tools/result` 在结果物化过程中发出，发生在 `execute` 向调用方返回的 promise 兑现之前。两个插件都不知道另一个插件存在，它们由注册表服务和事件连接。
+logger سوف أولا إطلاق:`tools/result` في نتيجة شيء تحويل مرور مسار في إرسال خروج، حدوث في `execute` نحو استدعاء جهة إرجاع promise صرف الآن قبل. اثنان عدد إضافة كل لا معرفة طريق آخر عدد إضافة وجود، هو جمع من سجل التسجيل خدمة و حدث اتصال.
 
-## 从这里走向完整 agent（智能体）
+## من هذا داخل مشي نحو كامل agent(ذكي جسم)
 
-真实 agent 就是这套组合再加上更多插件：LLM（大语言模型）适配器、agent loop（智能体循环）、持久化和应用入口。对照 [base profile 层](../../packages/bundle/base/cordis.patch.yml)与 [headless 层](../../packages/bundle/headless/cordis.patch.yml)，你现在已经可以读懂其中各项。通过一个小型 `--patch` overlay 加入 `greet-tool.ts` 即可。
+حقيقي agent حينئذ هو هذا طقم تركيب مجددا إضافة فوق أكثر كثير إضافة:LLM(كبير لغة نموذج) مهايئ،agent loop(ذكي جسم حلقة) ، حفظ دائم و تطبيق مدخل. مقابل وفق [base profile طبقة](../../packages/bundle/base/cordis.patch.yml) و [headless طبقة](../../packages/bundle/headless/cordis.patch.yml) ، أنت الآن قد يمكن قراءة فهم منها كل بند. عبر واحد صغير نوع `--patch` overlay إضافة دخول `greet-tool.ts` يكفي.
 
-后续可以阅读：
+لاحق يمكن قراءة قراءة:
 
-- [构建工具](../user/develop/basic/tool.zh.md)：深入了解 `defineTool`，包括呈现和更丰富的 schema。
-- [三层能力设计](../user/develop/practice/index.zh.md)：harness 如何组织可替换能力。
-- [子系统页面](../subsystems/core.zh.md)上生成的 `cordis-surface` 区块：可以注入和监听的所有内容，各在其所属页面上。
-- [架构](../architecture.zh.md)：这些插件所处的系统地图。
+- [بناء أداة](../user/develop/basic/tool.zh.md): عميق دخول حل `defineTool`، يشمل عرض و أكثر وفير غني schema.
+- [ثلاثة طبقة قدرة تصميم](../user/develop/practice/index.zh.md):harness مثل أي مجموعة نسج يمكن استبدال قدرة.
+- [فرعي نظام صفحة](../subsystems/core.zh.md) فوق توليد `cordis-surface` منطقة كتلة: يمكن حقن و استماع كل محتوى، كل في ذلك الذي تابع صفحة فوق.
+- [هيكل بنية](../architecture.zh.md): هذه إضافة الذي موضع نظام أرض رسم.
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

@@ -61,8 +61,8 @@ interface GuideModules {
 const guideModules = {
   root: {
     guide: localeCollections.root[0],
-    develop: { label: '开发', collection: localeCollections.root[1] },
-    reference: { label: '参考', collection: localeCollections.root[2] },
+    develop: { label: 'تطوير', collection: localeCollections.root[1] },
+    reference: { label: 'مشاركة اعتبار', collection: localeCollections.root[2] },
   },
   en: {
     guide: localeCollections.en[0],
@@ -134,22 +134,22 @@ const sharedTheme: Pick<DefaultTheme.Config, 'search' | 'socialLinks' | 'editLin
         root: {
           translations: {
             button: {
-              buttonText: '搜索文档',
-              buttonAriaLabel: '搜索文档',
+              buttonText: 'بحث وثيقة',
+              buttonAriaLabel: 'بحث وثيقة',
             },
             modal: {
-              displayDetails: '显示详细列表',
-              resetButtonTitle: '清除搜索',
-              backButtonTitle: '关闭搜索',
-              noResultsText: '未找到相关结果',
+              displayDetails: 'عرض تفصيل دقيق قائمة',
+              resetButtonTitle: 'صاف حذف بحث',
+              backButtonTitle: 'إغلاق بحث',
+              noResultsText: 'لم بحث إلى متبادل صلة نتيجة',
               footer: {
-                selectText: '选择',
-                selectKeyAriaLabel: '回车键',
-                navigateText: '切换',
-                navigateUpKeyAriaLabel: '上方向键',
-                navigateDownKeyAriaLabel: '下方向键',
-                closeText: '关闭',
-                closeKeyAriaLabel: 'Esc 键',
+                selectText: 'اختيار',
+                selectKeyAriaLabel: 'عودة عربة مفتاح',
+                navigateText: 'تبديل',
+                navigateUpKeyAriaLabel: 'فوق جهة نحو مفتاح',
+                navigateDownKeyAriaLabel: 'تحت جهة نحو مفتاح',
+                closeText: 'إغلاق',
+                closeKeyAriaLabel: 'Esc مفتاح',
               },
             },
           },
@@ -167,7 +167,7 @@ const sharedTheme: Pick<DefaultTheme.Config, 'search' | 'socialLinks' | 'editLin
       if (typeof editSource !== 'string') throw new Error('Projected documentation page has no editSource frontmatter.')
       return `https://github.com/deepseek-ai/deepseek-harness/edit/master/${editSource}`
     },
-    text: '在 GitHub 上编辑此页',
+    text: 'في GitHub فوق تحرير هذا صفحة',
   },
 }
 
@@ -177,7 +177,7 @@ const base = process.env.DOCS_BASE ?? '/'
 /** Site identity shared by the VitePress configuration and the llms.txt index. */
 const siteIdentity = {
   title: 'DeepSeek Harness',
-  description: '用于构建 Agent Harness 的插件化 SDK',
+  description: 'لأجل بناء Agent Harness إضافة تحويل SDK',
 }
 
 /**
@@ -284,12 +284,12 @@ export default withMermaid({
   outDir: '.dist',
   locales: {
     root: {
-      label: '简体中文',
+      label: 'بسيط جسم العربية',
       lang: 'zh-CN',
       themeConfig: {
-        siteTitle: siteTitle('技术预览'),
+        siteTitle: siteTitle('تقنية فن معاينة'),
         nav: [
-          { text: '入门', link: landingLink('root', guideModules.root.guide), activeMatch: '^/guide/' },
+          { text: 'دخول باب', link: landingLink('root', guideModules.root.guide), activeMatch: '^/guide/' },
           ...moduleNav('root'),
         ],
         sidebar: {
@@ -297,15 +297,15 @@ export default withMermaid({
           '/develop/': sidebar('root', 'zh-develop'),
           '/reference/': sidebar('root', 'zh-reference'),
         },
-        outline: { label: '本页目录' },
-        docFooter: { prev: '上一篇', next: '下一篇' },
-        darkModeSwitchLabel: '外观',
-        lightModeSwitchTitle: '切换到浅色主题',
-        darkModeSwitchTitle: '切换到深色主题',
-        sidebarMenuLabel: '菜单',
-        returnToTopLabel: '返回顶部',
-        langMenuLabel: '切换语言',
-        skipToContentLabel: '跳至内容',
+        outline: { label: 'هذا صفحة دليل' },
+        docFooter: { prev: 'فوق واحد مقالة', next: 'تحت واحد مقالة' },
+        darkModeSwitchLabel: 'خارج مراقبة',
+        lightModeSwitchTitle: 'تبديل إلى ضحل لون رئيسي عنوان',
+        darkModeSwitchTitle: 'تبديل إلى عميق لون رئيسي عنوان',
+        sidebarMenuLabel: 'قائمة مفرد',
+        returnToTopLabel: 'إرجاع قمة جزء',
+        langMenuLabel: 'تبديل لغة',
+        skipToContentLabel: 'قفز حتى محتوى',
       },
     },
     en: {

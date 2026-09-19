@@ -1,32 +1,32 @@
 ---
-description: "供运行时包使用的无损 JSON 校验、分离式快照、深度冻结、结构相等与穷尽联合类型辅助函数。"
+description: "توفير وقت التشغيل حزمة استخدام بلا ضرر JSON تحقق، قسم مغادرة صيغة لقطة، عميق درجة تجميد ربط، بنية متبادل انتظار و نفاد كل ربط دمج نوع مساعد مساعدة دالة."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-util-values
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-util-values` 为运行时包提供统一的无损 JSON 值、不可变对象图、JSON 结构相等和封闭联合类型穷尽失败实现。调用方可以校验不受信任的值、创建分离的 JSON 快照、冻结待发布值、比较 JSON 兼容数据，或终止不可达分支，而无需导入某个能力包。这些 helper 不持有共享注册表、constructor identity 或可变模块状态。
+`dsh-util-values` لـ وقت التشغيل حزمة توفير موحد واحد بلا ضرر JSON قيمة، غير ممكن تغيير كائن رسم،JSON بنية متبادل انتظار و غلاف إغلاق ربط دمج نوع نفاد كل فشل تنفيذ. استدعاء جهة يمكن تحقق لا تلقي معلومة مهمة قيمة، إنشاء قسم مغادرة JSON لقطة، تجميد ربط انتظار إصدار قيمة، مقارنة مقارنة JSON توافق بيانات، أو إنهاء غير ممكن بلوغ فرع، بينما بلا حاجة استيراد بعض عدد قدرة حزمة. هذه helper لا يحتفظ مشترك سجل التسجيل،constructor identity أو متغير وحدة حالة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 校验 JSON 数据或创建快照
+### تحقق JSON بيانات أو إنشاء لقطة
 
-需要 predicate 时使用 `isJsonValue()`，还需要分离副本时使用 `snapshotJsonValue()`。两者只接受无损 JSON 根值：`null`、布尔值、除负零外的有限数字、字符串、稠密的内建数组，以及只含可枚举字符串键的普通或 null-prototype 记录。循环、稀疏数组、自有 symbol 属性或自有不可枚举属性、函数和 class 实例都会被拒绝。
+حاجة predicate وقت استخدام `isJsonValue()`، أيضا حاجة قسم مغادرة فرعي هذا وقت استخدام `snapshotJsonValue()`. اثنان من فقط قبول بلا ضرر JSON أصل قيمة:`null`، قيمة منطقية، حذف سالب صفر خارج لديه حد عدد حرف، نص، كثيف سري داخل بناء عدد مجموعة، و فقط يحتوي يمكن قطعة رفع نص مفتاح عادي أو null-prototype سجل. حلقة، نادر متباعد عدد مجموعة، ذاتي لديه symbol خاصية أو ذاتي لديه غير ممكن قطعة رفع خاصية، دالة و class نسخة كل سوف يتم رفض.
 
 ```ts
 import { isJsonValue, snapshotJsonValue, type JsonValue } from '@deepseek-ai/dsh-util-values'
@@ -37,60 +37,60 @@ if (!isJsonValue(input)) throw new TypeError('expected lossless JSON')
 const snapshot = snapshotJsonValue(input) as JsonValue
 ```
 
-### 发布、比较或保留键控值
+### إصدار، مقارنة مقارنة أو إبقاء مفتاح تحكم قيمة
 
-`deepFreeze(value)` 原地冻结对象图并返回同一个值。它遍历可枚举字符串键的子项，并刻意让活跃 `AbortSignal` 对象保持可变。`deepEqualJson(a, b)` 按结构比较 JSON 兼容数组与记录；调用方必须先校验恶意或不受约束的值，再进行比较。
+`deepFreeze(value)` أصل أرض تجميد ربط كائن رسم و إرجاع نفس عدد قيمة. هو مرة تاريخ يمكن قطعة رفع نص مفتاح فرعي بند، و لحظة معنى يجعل نشط وثب `AbortSignal` كائن إبقاء متغير.`deepEqualJson(a, b)` حسب بنية مقارنة مقارنة JSON توافق عدد مجموعة و سجل؛ استدعاء جهة يجب أولا تحقق سيئ معنى أو لا تلقي قيد قيمة، مجددا إجراء مقارنة مقارنة.
 
-`WeakMapWithValues<Key, Value>` 组合弱对象键查找与强引用且保持插入顺序的 `values` set。每个 value 只属于一个 key。owner 必须在对应生命周期边界调用 `delete(key)` 或 `clear()`；该集合不执行自动清理。
+`WeakMapWithValues<Key, Value>` تركيب ضعيف كائن مفتاح فحص بحث و قوي مرجع كما إبقاء إدراج دخول ترتيب `values` set. كل value فقط يخص واحد key.owner يجب في مقابل دورة الحياة حد استدعاء `delete(key)` أو `clear()`؛ هذا تجميع دمج لا تنفيذ تلقائي تنظيف.
 
-### 封闭可辨识联合类型
+### غلاف إغلاق يمكن تمييز تعرف ربط دمج نوع
 
-在封闭可辨识联合类型的 default 分支中使用 `assertNever(value, context?)`。新增变体会让每个穷尽 switch 在 TypeScript 编译时失败；如果某个运行时值逃过了声明类型，该函数会抛出带可选上下文标签的错误。
+في غلاف إغلاق يمكن تمييز تعرف ربط دمج نوع default فرع في استخدام `assertNever(value, context?)`. إضافة جديدة تغيير جسم سوف يجعل كل نفاد كل switch في TypeScript تحرير ترجمة وقت فشل؛ إذا بعض عدد وقت التشغيل قيمة هروب مرور إعلان نوع، هذا دالة سوف رمي خروج حمل اختياري سياق وسم خطأ.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-JSON 校验器使用显式工作栈，并只跟踪当前祖先链，因此深层嵌套值不会消耗 JavaScript 调用栈，重复但无循环的引用仍然有效。快照写入使用自有数据属性，包括 `__proto__` 等名称。值操作的结果只取决于传入参数；`WeakMapWithValues` 仅保存实例自有的关联。
+JSON تحقق جهاز استخدام صريح عمل مكدس، و فقط تتبع أثر حالي أصل أولا سلسلة، لذلك عميق طبقة تضمين طقم قيمة لن إزالة استهلاك JavaScript استدعاء مكدس، تكرار لكن بلا حلقة مرجع ما زال صالح. لقطة كتابة استخدام ذاتي لديه بيانات خاصية، يشمل `__proto__` انتظار اسم. قيمة عملية نتيجة فقط أخذ قرار في نقل دخول معامل؛`WeakMapWithValues` فقط حفظ نسخة ذاتي لديه صلة ربط.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | JSON 值类型、校验与快照遍历、结构相等、深度冻结、弱键/强值关联和穷尽联合类型失败 |
-| — | 不发布运行时不变量伴生入口；这些值操作没有共享运行时状态，其代数行为由单元测试覆盖。 |
+| [`src/index.ts`](src/index.ts) | JSON قيمة نوع، تحقق و لقطة مرة تاريخ، بنية متبادل انتظار، عميق درجة تجميد ربط، ضعيف مفتاح/قوي قيمة صلة ربط و نفاد كل ربط دمج نوع فشل |
+| — | لا إصدار وقت التشغيل ثابت كمية مرافق توليد مدخل؛ هذه قيمة عملية لا يوجد مشترك وقت التشغيل حالة، ذلك بديل عدد سلوك من اختبار وحدة تغطية. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [工具包映射](../README.zh.md)——相邻的无状态 helper。
-- [会话子系统](../../../docs/subsystems/session.zh.md)——要求无损 JSON 的持久事件。
-- [工具子系统](../../../docs/subsystems/tools.zh.md)——构建于 `JsonValue` 之上的 schema 校验与规范工具结果。
+- [أداة حزمة خريطة](../README.zh.md)——متبادل مجاور بلا حالة helper.
+- [جلسة فرعي نظام](../../../docs/subsystems/session.zh.md)——اشتراط بلا ضرر JSON حمل دائم حدث.
+- [أداة فرعي نظام](../../../docs/subsystems/tools.zh.md)——بناء في `JsonValue` لـ فوق schema تحقق و مواصفة أداة نتيجة.
 
 -----
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **`deepEqualJson` 假定输入兼容 JSON**——它不是通用对象比较器，不为 prototype、symbol、accessor、循环、map 或 set 定义语义。
-- **`deepFreeze` 沿可枚举字符串键遍历子项**——它不会把任意宿主对象变成不可变数据，并会刻意跳过活跃 `AbortSignal` 实例。
-- **`WeakMapWithValues` 要求显式清理且 value 唯一**——value 会保持强引用，直到 owner 删除其 key 或清空集合；同一 value 不得由多个 key 共享。
+- **`deepEqualJson` زائف تحديد إدخال توافق JSON**——هو لا هو عام كائن مقارنة مقارنة جهاز، لا لـ prototype،symbol،accessor، حلقة،map أو set تعريف دلالة.
+- **`deepFreeze` امتداد يمكن قطعة رفع نص مفتاح مرة تاريخ فرعي بند**——هو لن يأخذ مهمة معنى مضيف كائن تغيير صار غير ممكن تغيير بيانات، و سوف لحظة معنى قفز مرور نشط وثب `AbortSignal` نسخة.
+- **`WeakMapWithValues` اشتراط صريح تنظيف كما value وحيد**——value سوف إبقاء قوي مرجع، مباشر إلى owner حذف ذلك key أو صاف فارغ تجميع دمج؛ نفس value لا نيل من كثير عدد key مشترك.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

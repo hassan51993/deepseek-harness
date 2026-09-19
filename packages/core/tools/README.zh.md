@@ -1,35 +1,35 @@
 ---
-description: "面向工具作者与维护者的工具注册表与执行流水线说明，用于注册、限制、呈现或调试面向模型的工具。"
+description: "موجه إلى أداة عمل من و صيانة من أداة سجل التسجيل و تنفيذ خط الإنتاج شرح، لأجل تسجيل، حد، عرض أو ضبط تجربة موجه إلى نموذج أداة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-tools
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-使用 `dsh-tools` 可向模型公开类型化能力、校验调用、执行允许／拒绝／询问策略，并在普通工具失败时返回最终结果而不中止当前轮次。通过 `mode` 选择原生 Function Calling（函数调用）、[PTC mode](#ptc-mode) 或两者；单个 agent（智能体）可用 `presentAs` 覆盖默认值。工具作者使用 `defineTool` 声明类型化参数与输出、协作式超时、并行安全属性和可选 UI 展示。模型会看到每个获准工具声明的名称、描述与参数 schema；按 agent 设置的限制可缩小该可见集合。
+استخدام `dsh-tools` يمكن نحو نموذج عام نوع تحويل قدرة، تحقق استدعاء، تنفيذ سماح/رفض/استفسار سؤال سياسة، و في عادي أداة فشل وقت إرجاع نهائي نتيجة بينما لا في توقف حالي جولة. عبر `mode` اختيار أصلي Function Calling(دالة استدعاء) ،[PTC mode](#ptc-mode) أو اثنان من؛ مفرد عدد agent(ذكي جسم) متاح `presentAs` تغطية قيمة افتراضية. أداة عمل من استخدام `defineTool` إعلان نوع تحويل معامل و إخراج، تنسيق عمل صيغة مهلة، و سطر أمان خاصية و اختياري UI عرض. نموذج سوف يرى كل نيل دقيق أداة إعلان اسم، وصف و معامل schema؛ حسب agent ضبط حد يمكن تقليص صغير هذا مرئي تجميع دمج.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在任何 agent 调用工具的地方挂载 `dsh-tools`：它提供 `ctx.tools`，即每个工具插件注册进去、循环分发所经过的注册表。注册一个工具就足以让它可见——注册表会自动把其 schema 送入系统提示词组装。
+في أي agent استدعاء أداة أرض جهة تركيب `dsh-tools`: هو توفير `ctx.tools`، أي كل أداة إضافة تسجيل دخول ذهاب، حلقة توزيع الذي مرور مرور سجل التسجيل. تسجيل واحد أداة حينئذ كاف بـ يجعل هو مرئي——سجل التسجيل سوف تلقائي يأخذ ذلك schema إرسال دخول توجيه النظام تجميع.
 
-### 注册工具
+### تسجيل أداة
 
-`defineTool` 构建类型化工具定义：面向模型的名称、描述与参数 schema、规范输出声明，以及只返回所声明 JSON 值的 `execute` 主体。模型参数在执行前被校验；无效输入变成普通错误结果。
+`defineTool` بناء نوع تحويل أداة تعريف: موجه إلى نموذج اسم، وصف و معامل schema، مواصفة إخراج إعلان، و فقط إرجاع الذي إعلان JSON قيمة `execute` رئيسي جسم. نموذج معامل في تنفيذ قبل يتم تحقق؛ بلا فاعلية إدخال تغيير صار عادي خطأ نتيجة.
 
 ```ts
 import { readFile } from 'node:fs/promises'
@@ -57,11 +57,11 @@ ctx.tools.register(defineTool({
 }))
 ```
 
-统一 schema DSL 支持 `string`、`number`、`integer`、`boolean`、`null`、`array`、`object`、仅供作者使用的 `json` 与恰好匹配一个分支的 `oneOf`；`InferValue` 在 16 层容器内保留精确类型，之后加宽为 `JsonValue`。原始 JSON Schema（`JsonSchemaNode`）是与 subagent、工作流和 MCP 共享的协议级对应类型。
+موحد واحد schema DSL دعم حمل `string`،`number`،`integer`،`boolean`،`null`،`array`،`object`، فقط توفير عمل من استخدام `json` و تماما جيد مطابقة واحد فرع `oneOf`؛`InferValue` في 16 طبقة حاوية داخل إبقاء دقيق نوع، بعد إضافة عرض لـ `JsonValue`. أصلي JSON Schema(`JsonSchemaNode`) هو و subagent، سير العمل و MCP مشترك بروتوكول درجة مقابل نوع.
 
-### 配置呈现模式
+### إعداد عرض نمط
 
-`mode` 配置决定模型看到什么：`native`（每个可见 schema）、`ptc`（只有 `run_code` 加一份生成 SDK）或 `both`。
+`mode` إعداد قرار نموذج يرى ماذا:`native`(كل مرئي schema) ،`ptc`(فقط لديه `run_code` إضافة واحد نسخة توليد SDK) أو `both`.
 
 ```yaml
 - name: '@deepseek-ai/dsh-tools'
@@ -69,112 +69,112 @@ ctx.tools.register(defineTool({
     mode: native
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `mode` | `native` | 可见工具向模型呈现的方式：`native`、`ptc` 或 `both` |
-| `maxParallelSubCalls` | `10` | `run_code` 程序重叠子调用的并发上限；`1` 恢复严格串行分发 |
+| `mode` | `native` | مرئي أداة نحو نموذج عرض طريقة:`native`،`ptc` أو `both` |
+| `maxParallelSubCalls` | `10` | `run_code` برنامج إعادة تراكم فرعي استدعاء تزامن حد أعلى؛`1` استعادة صارم إطار سلسلة سطر توزيع |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tools)是每个受支持字段的穷尽式真源。非原生模式要求已组合的 `ctx.ptcRuntime` 且其语言有已注册的 SDK 渲染器；agent preset 通过 [`dsh-agent-tool-presentation`](../agent-tool-presentation/README.zh.md) 自行选择呈现方式，单个 agent 可用 `presentAs(mode)` 遮蔽默认值。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tools) هو كل تلقي دعم حمل حقل نفاد كل صيغة حق مصدر. غير أصلي نمط اشتراط قد تركيب `ctx.ptcRuntime` كما ذلك لغة لديه قد تسجيل SDK مصير؛agent preset عبر [`dsh-agent-tool-presentation`](../agent-tool-presentation/README.zh.md) ذاتي سطر اختيار عرض طريقة، مفرد عدد agent متاح `presentAs(mode)` حجب حجب قيمة افتراضية.
 
-### 按 agent 限制工具
+### حسب agent حد أداة
 
-`ctx.tools.restrict(filter)` 对单个 agent 继承的全局工具应用允许或拒绝掩码；掩码取交集，作用域注册保持可见，限制在 dispose（资源释放）时解除。`ctx.tools.get(name, scope)` 按一个作用域的视角解析工具。使用 Host 本地展示转换器的消费方如需匹配实际执行的定义，会传入发起调用的 agent。`ctx.tools.schemas(scope)` 返回可见 schema（不含 `execute` 函数）。
+`ctx.tools.restrict(filter)` مقابل مفرد عدد agent وراثة عام أداة تطبيق سماح أو رفض إخفاء رمز؛ إخفاء رمز أخذ تسليم تجميع، أثر مجال تسجيل إبقاء مرئي، حد في dispose(مورد تحرير) وقت حل حذف.`ctx.tools.get(name, scope)` حسب واحد أثر مجال نظر زاوية تحليل أداة. استخدام Host محلي عرض تحويل جهاز مستهلك مثل يحتاج مطابقة فعلي تنفيذ تعريف، سوف نقل دخول إرسال بدء استدعاء agent.`ctx.tools.schemas(scope)` إرجاع مرئي schema(لا يحتوي `execute` دالة).
 
-### 对调用实施策略
+### مقابل استدعاء فعلي تطبيق سياسة
 
-`ctx.tools.guard(guard)` 在可扩展的 `tools/pre-execute` waterfall（瀑布式事件）之后注册单调同步守卫：返回的理由会拒绝调用，后续监听器无法把该拒绝重新变为允许。流水线事件给插件更多控制——`tools/pre-execute` 决定允许／拒绝／询问，`tools/execute` 为超时或重试包装分发，`tools/post-execute` 检查或替换结果，`tools/result` 观测冻结的最终结果。
+`ctx.tools.guard(guard)` في يمكن توسيع `tools/pre-execute` waterfall(شلال نشر صيغة حدث) بعد تسجيل مفرد ضبط تزامن حراسة حماية: إرجاع إدارة من سوف رفض استدعاء، لاحق مستمع لا يمكن يأخذ هذا رفض إعادة تغيير لـ سماح. خط الإنتاج حدث إعطاء إضافة أكثر كثير تحكم——`tools/pre-execute` قرار سماح/رفض/استفسار سؤال،`tools/execute` لـ مهلة أو إعادة محاولة حزمة تركيب توزيع،`tools/post-execute` فحص أو استبدال نتيجة،`tools/result` مراقبة قياس تجميد ربط نهائي نتيجة.
 
-### Host 展示描述
+### Host عرض وصف
 
-工具可以为 Host 本地消费方保留纯函数 `presentCall()` 与 `presentResult()` 方法。内置 Web Client 不消费这些值，而是通过 `tool.call.toolview` 选择 renderer，并从原始调用参数、结果内容、失败状态与持久 metadata 派生 card props。[Client 派生展示决策](../../../.agents/notes/implemented/architecture/2026-08-23-client-derived-tool-presentation.zh.md)负责该 transport 拆分。
+أداة يمكن لـ Host محلي مستهلك إبقاء صاف دالة `presentCall()` و `presentResult()` طريقة. داخل وضع Web Client لا إزالة استهلاك هذه قيمة، بينما هو عبر `tool.call.toolview` اختيار renderer، و من أصلي استدعاء معامل، نتيجة محتوى، فشل حالة و حمل دائم metadata إرسال توليد card props.[Client إرسال توليد عرض قرار](../../../.agents/notes/implemented/architecture/2026-08-23-client-derived-tool-presentation.zh.md) مسؤول هذا transport تفكيك قسم.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释该包如何实现上述行为；可观察约定已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير هذا حزمة مثل أي تنفيذ فوق وصف سلوك؛ يمكن مراقبة اتفاق قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-注册表在作用域层中持有类型化 `ToolDefinition`，并在请求时把它们投影为面向模型的 `ToolSchema` 集合——`output`、`execute`、`finalizeContent`、`timeoutMs` 与呈现回调绝不会泄漏到协议上。每次调用都运行一条固定流水线：`tools/pre-execute`（可扩展的允许／拒绝／询问）→ 已注册单调守卫 → `tools/execute`（环绕分发包装层）→ `tools/post-execute`（检查／替换、附加上下文）→ 由定义持有的 `finalizeContent` → 仅观测的 `tools/result` 事件。只有 `tools/execute` 视图可以替换必填信号，注册表会在调用主体前重新融合调用方信号。
+سجل التسجيل في أثر مجال طبقة في يحتفظ نوع تحويل `ToolDefinition`، و في طلب وقت يأخذ هو جمع إسقاط لـ موجه إلى نموذج `ToolSchema` تجميع دمج——`output`،`execute`،`finalizeContent`،`timeoutMs` و عرض عودة ضبط أبدا سوف تسرب تسرب إلى بروتوكول فوق. كل مرة استدعاء كل تشغيل واحد بند ثابت خط الإنتاج:`tools/pre-execute`(يمكن توسيع سماح/رفض/استفسار سؤال)→ قد تسجيل مفرد ضبط حراسة حماية → `tools/execute`(حلقة التفاف توزيع حزمة تركيب طبقة)→ `tools/post-execute`(فحص/استبدال، مرفق إضافة سياق)→ من تعريف يحتفظ `finalizeContent` → فقط مراقبة قياس `tools/result` حدث. فقط لديه `tools/execute` عرض يمكن استبدال لا بد ملء إشارة، سجل التسجيل سوف في استدعاء رئيسي جسم قبل إعادة دمج دمج استدعاء جهة إشارة.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`ToolRuntime` 服务、配置、注册表、执行流水线 |
-| [`src/types.ts`](src/types.ts) | `ToolDefinition`、`ToolExecution`、`ToolExecutionResult`、守卫与决策类型 |
-| [`src/schema.ts`](src/schema.ts) | `defineTool` DSL：`ValueSchemaSpec`、`ParameterSchemaSpec`、`InferValue`、`InferArgs` |
-| [`src/json-schema.ts`](src/json-schema.ts) | 强制执行的原始 JSON Schema 子集与校验 |
-| [`src/presentation.ts`](src/presentation.ts) | 带 `card` 标签的 UI 呈现意图 |
-| [`src/ptc.ts`](src/ptc.ts) | PTC mode：SDK 生成、`run_code` 分发桥接层、结算 |
-| [`src/ts-types.ts`](src/ts-types.ts) | TypeScript SDK 类型渲染 |
-| [`src/py-types.ts`](src/py-types.ts) | Python SDK 类型渲染 |
-| [`src/invariant.ts`](src/invariant.ts) | 不变式配套 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`ToolRuntime` خدمة، إعداد، سجل التسجيل، تنفيذ خط الإنتاج |
+| [`src/types.ts`](src/types.ts) | `ToolDefinition`،`ToolExecution`،`ToolExecutionResult`، حراسة حماية و قرار نوع |
+| [`src/schema.ts`](src/schema.ts) | `defineTool` DSL:`ValueSchemaSpec`،`ParameterSchemaSpec`،`InferValue`،`InferArgs` |
+| [`src/json-schema.ts`](src/json-schema.ts) | قوي صنع تنفيذ أصلي JSON Schema فرعي تجميع و تحقق |
+| [`src/presentation.ts`](src/presentation.ts) | حمل `card` وسم UI عرض معنى رسم |
+| [`src/ptc.ts`](src/ptc.ts) | PTC mode:SDK توليد،`run_code` توزيع جسر وصل طبقة، تسوية |
+| [`src/ts-types.ts`](src/ts-types.ts) | TypeScript SDK نوع تصيير |
+| [`src/py-types.ts`](src/py-types.ts) | Python SDK نوع تصيير |
+| [`src/invariant.ts`](src/invariant.ts) | ثابت صيغة إعداد طقم |
 
-### 执行与取消
+### تنفيذ و إلغاء
 
-每次类型化调用都会实体化并冻结解析后的参数、分配不透明关联 token，再运行策略与分发。pre-execute 拒绝可以在模型可见原因旁附带 `ToolErrorInfo`；原生与 PTC 持久投影会保留结构化名称、代码与可选用户可见原因，但不会把该详情加入模型内容。取消采用协作式并等待完全停稳：每个工具主体都收到调用方拥有的 `exec.signal` 且必须观测它；调用主体前的取消为 `ABORTED_BEFORE_DISPATCH`，调用主体后的取消只能把成功结果替换为 `ABORTED`。拒绝、包装层失败、工具失败、后置策略失败与超时产生的 `TOOL_TIMEOUT` 仍保留更具体的结果。未知工具与抛出异常的工具都会变成结构化错误（`UNKNOWN_TOOL`），因此调用会失败而不会结束轮次。
+كل مرة نوع تحويل استدعاء كل سوف فعلي جسم تحويل و تجميد ربط تحليل بعد معامل، قسم إعداد لا نفاذ واضح صلة ربط token، مجددا تشغيل سياسة و توزيع.pre-execute رفض يمكن في نموذج مرئي سبب جانب مرفق حمل `ToolErrorInfo`؛ أصلي و PTC حمل دائم إسقاط سوف إبقاء بنية تحويل اسم، شفرة و اختياري مستخدم مرئي سبب، لكن لن يأخذ هذا تفصيل حال إضافة دخول نموذج محتوى. إلغاء اعتماد تنسيق عمل صيغة و انتظار تماما توقف مستقر: كل أداة رئيسي جسم كل استلام إلى استدعاء جهة يملك `exec.signal` كما يجب مراقبة قياس هو؛ استدعاء رئيسي جسم قبل إلغاء لـ `ABORTED_BEFORE_DISPATCH`، استدعاء رئيسي جسم بعد إلغاء فقط قدرة يأخذ نجاح نتيجة استبدال لـ `ABORTED`. رفض، حزمة تركيب طبقة فشل، أداة فشل، بعد وضع سياسة فشل و مهلة إنتاج `TOOL_TIMEOUT` ما زال إبقاء أكثر أداة جسم نتيجة. لم معرفة أداة و رمي خروج استثناء أداة كل سوف تغيير صار بنية تحويل خطأ (`UNKNOWN_TOOL`) ، لذلك استدعاء سوف فشل بينما لن انتهاء جولة.
 
 ### PTC mode
 
-在 `ptc` 或 `both` 下，注册表公开保留的 `run_code` 传输以及按所加载运行时语言生成的确定性 SDK。每个 SDK 绑定捕获冻结的 ToolSchema，经由调度器传入该次执行上下文。已开始的调用在策略之前只记录配对 id、名称和规范化参数；其结算事件保留渲染结果与可选结构化错误。描述与参数 schema 仅临时存活，不进入 Session 事件或 SDK 输出。调用通过复用原生并发约定的每次运行独有池调度。在纯 `ptc` 下，模型直呼其他任何可见工具都会在策略之前解析为 `UNKNOWN_TOOL`——通告面与可调用面保持一致。中间绑定值只存在于执行局部；只有外层 `run_code` 结果有硬大小上限。[执行器塌缩 note](../../../.agents/notes/implemented/bug-fix/2026-08-07-ptc-executor-collapse.zh.md) 拥有该收束约定。
+في `ptc` أو `both` تحت، سجل التسجيل عام إبقاء `run_code` نقل و حسب الذي تحميل وقت التشغيل لغة توليد تحديد صفة SDK. كل SDK ربط التقاط تجميد ربط ToolSchema، مرور من مجدول نقل دخول هذا مرة تنفيذ سياق. قد بدء استدعاء في سياسة قبل فقط سجل إعداد مقابل id، اسم و مواصفة تحويل معامل؛ ذلك تسوية حدث إبقاء تصيير نتيجة و اختياري بنية تحويل خطأ. وصف و معامل schema فقط مؤقت تخزين نشط، لا دخول Session حدث أو SDK إخراج. استدعاء عبر إعادة استخدام أصلي تزامن اتفاق كل مرة تشغيل وحيد لديه حوض ضبط درجة. في صاف `ptc` تحت، نموذج مباشر نداء أخرى أي مرئي أداة كل سوف في سياسة قبل تحليل لـ `UNKNOWN_TOOL`——عبر إبلاغ وجه و يمكن استدعاء وجه إبقاء متسق. في بين ربط قيمة فقط وجود في تنفيذ نطاق جزء؛ فقط لديه خارج طبقة `run_code` نتيجة لديه صلب كبير صغير حد أعلى.[منفذ انهيار تقليص note](../../../.agents/notes/implemented/bug-fix/2026-08-07-ptc-executor-collapse.zh.md) يملك هذا استلام حزمة اتفاق.
 
-新子调用使用 `<parent>:ptc:<n>` 标识。消费方将这些标识视为不透明值，并通过精确相等关联事件；恢复的历史标识保留原始字节。[PTC mode 决策](../../../.agents/notes/implemented/feature/2026-06-15-ptc.zh.md) 负责持久化命名与恢复规则。
+جديد فرعي استدعاء استخدام `<parent>:ptc:<n>` معرف. مستهلك سوف هذه معرف نظر لـ لا نفاذ واضح قيمة، و عبر دقيق متبادل انتظار صلة ربط حدث؛ استعادة تاريخ معرف إبقاء أصلي بايت.[PTC mode قرار](../../../.agents/notes/implemented/feature/2026-06-15-ptc.zh.md) مسؤول حفظ دائم تسمية و استعادة قاعدة.
 
-当已挂载运行时支持覆盖时，`run_code` 接受 `timeoutMs`；其 schema 报告配置的默认值和上限、运行时使用说明及 Session 工作目录。Node 默认值为 120,000 ms，上限为 600,000 ms，包含嵌套工具和审批等待。更宽的 `sandbox_permissions` 模式要求非空 `justification`，并在程序启动前获得审批。授权仅用于该次完整执行；常驻 Session 策略与嵌套工具保留各自权限。程序不会自动重放：显式重试被拒程序前，应检查先前已发生的效果。
+عند قد تركيب وقت التشغيل دعم حمل تغطية وقت،`run_code` قبول `timeoutMs`؛ ذلك schema تقرير إبلاغ إعداد قيمة افتراضية و حد أعلى، وقت التشغيل استخدام شرح و Session عمل دليل.Node قيمة افتراضية لـ 120,000 ms، حد أعلى لـ 600,000 ms، يتضمن تضمين طقم أداة و مراجعة دفعة انتظار. أكثر عرض `sandbox_permissions` نمط اشتراط غير فارغ `justification`، و في برنامج بدء قبل نيل نيل مراجعة دفعة. تخويل فقط لأجل هذا مرة كامل تنفيذ؛ معتاد إقامة Session سياسة و تضمين طقم أداة إبقاء كل منها إذن. برنامج لن تلقائي إعادة وضع: صريح إعادة محاولة يتم رفض برنامج قبل، ينبغي فحص أولا قبل قد حدوث فاعلية نتيجة.
 
 <a id="extension-points"></a>
-### 扩展点
+### نقطة توسيع
 
-工具插件调用 `ctx.tools.register()`，其 schema 会自动流入提示词组装。`tools/pre-execute` 是可重排的允许／拒绝／询问门禁；`ctx.tools.guard()` 在其后添加单调的拥有方策略；`tools/execute` 为超时、重试或指标包装规范化后的规范分发；`tools/post-execute` 可以替换内容或值、通过反馈阻止，或附加有序上下文；`tools/result` 观测不可变的最终结果。MCP 服务器发现工具后，用服务器的 schema 调用 `ctx.tools.register()`。
+أداة إضافة استدعاء `ctx.tools.register()`، ذلك schema سوف تلقائي تدفق دخول نص التوجيه تجميع.`tools/pre-execute` هو يمكن إعادة ترتيب سماح/رفض/استفسار سؤال بوابة؛`ctx.tools.guard()` في ذلك بعد إضافة مفرد ضبط يملك جهة سياسة؛`tools/execute` لـ مهلة، إعادة محاولة أو إشارة علامة حزمة تركيب مواصفة تحويل بعد مواصفة توزيع؛`tools/post-execute` يمكن استبدال محتوى أو قيمة، عبر عكس تغذية منع توقف، أو مرفق إضافة لديه ترتيب سياق؛`tools/result` مراقبة قياس غير ممكن تغيير نهائي نتيجة.MCP خادم اكتشاف أداة بعد، استخدام خادم schema استدعاء `ctx.tools.register()`.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-包级约定对大多数消费方已经足够；需要周边领域时再阅读以下页面。
+حزمة درجة اتفاق مقابل كبير كثير عدد مستهلك قد كاف كاف؛ حاجة دورة حافة مجال وقت مجددا قراءة قراءة التالي صفحة.
 
-- [工具子系统](../../../docs/subsystems/tools.zh.md)——完整流水线类型、schema DSL 与生成的服务 API。
-- [生成工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools)——模型收到的已交付工具 schema。
-- [工具执行流水线](../../../docs/tool-execution-pipeline.zh.md)——可视化流水线。
-- [添加工具实操手册](../../../docs/cookbook/adding-a-tool.zh.md)——分步骤的工具编写指南。
-- [协作式取消 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-19-cooperative-tool-cancellation.zh.md)——完整取消约定。
-- [core 分组地图](../README.zh.md)——core 各包如何组合。
+- [أداة فرعي نظام](../../../docs/subsystems/tools.zh.md)——كامل خط الإنتاج نوع،schema DSL و توليد خدمة API.
+- [توليد أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools)——نموذج استلام إلى قد تسليم أداة schema.
+- [أداة تنفيذ خط الإنتاج](../../../docs/tool-execution-pipeline.zh.md)——يمكن نظر تحويل خط الإنتاج.
+- [إضافة أداة فعلي تشغيل يد سجل](../../../docs/cookbook/adding-a-tool.zh.md)——قسم خطوة أداة تحرير كتابة إشارة جنوب.
+- [تنسيق عمل صيغة إلغاء Agent Note](../../../.agents/notes/implemented/architecture/2026-07-19-cooperative-tool-cancellation.zh.md)——كامل إلغاء اتفاق.
+- [core قسم مجموعة أرض رسم](../README.zh.md)——core كل حزمة مثل أي تركيب.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 普通工具 schema
+### عادي أداة schema
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-在普通模式下，模型会看到每个可见定义的确切名称、描述与 JSON Schema；已交付定义记录在生成的[工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools)中。agent 作用域的限制、遮蔽与扩展注册会改变该 agent 的最终工具集合。
+في عادي نمط تحت، نموذج سوف يرى كل مرئي تعريف تأكيد قطع اسم، وصف و JSON Schema؛ قد تسليم تعريف سجل في توليد[أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools) في.agent أثر مجال حد، حجب حجب و توسيع تسجيل سوف تغيير هذا agent نهائي أداة تجميع دمج.
 
-#### Token 影响
+#### Token أثر
 
-每次请求的固定成本与可见定义成正比。隐藏工具的限制会为该 agent 移除其全部 schema 成本。
+كل مرة طلب ثابت صار هذا و مرئي تعريف صار صحيح مقارنة. إخفاء أداة حد سوف لـ هذا agent إزالة ذلك الكل schema صار هذا.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要可见定义及其顺序不变，前缀就保持稳定。注册、dispose 或作用域限制可能从第一个改变的 schema token 起使复用失效。
+فقط يلزم مرئي تعريف و ذلك ترتيب ثابت، بادئة حينئذ إبقاء مستقر. تسجيل،dispose أو أثر مجال حد ممكن من رقم واحد تغيير schema token بدء جعل إعادة استخدام بطلان.
 
-### PTC mode schema 与系统提示词
+### PTC mode schema و توجيه النظام
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-PTC mode 会公开生成的 [`run_code` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools)、下方 SDK 说明，以及按所加载运行时语言生成的精确 SDK 块。TypeScript 说明会把生成声明明确标为只能在程序内使用的绑定。当当前 `bash` 参数 schema 接受示例参数时，说明还会给出以 `run_code` 包住 `tools.bash(...)` 的完整调用。`tools:sdk` 段使用 first-party 顺序 5000，并关闭提示词变量插值，使两种运行时语言都原样保留工具描述和 schema 中的 `{{…}}` 文本。`both` 会同时公开普通 schema 与此 PTC mode API；在 `ptc` 下，提示词还会带上处于更早 first-party 顺序的 `tools:ptc-only` 规则，让模型先读到「可以调用哪些工具」再读「每个工具做什么」。
+PTC mode سوف عام توليد [`run_code` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tools) ، تحت جهة SDK شرح، و حسب الذي تحميل وقت التشغيل لغة توليد دقيق SDK كتلة.TypeScript شرح سوف يأخذ توليد إعلان واضح علامة لـ فقط قدرة في برنامج داخل استخدام ربط. عند حالي `bash` معامل schema قبول عرض مثال معامل وقت، شرح أيضا سوف إعطاء خروج بـ `run_code` حزمة إقامة `tools.bash(...)` كامل استدعاء.`tools:sdk` مقطع استخدام first-party ترتيب 5000، و إغلاق نص التوجيه متغير إدراج قيمة، جعل اثنان نوع وقت التشغيل لغة كل أصل مثال إبقاء أداة وصف و schema في `{{…}}` نص.`both` سوف معا عام عادي schema و هذا PTC mode API؛ في `ptc` تحت، نص التوجيه أيضا سوف حمل فوق موضع في أكثر مبكر first-party ترتيب `tools:ptc-only` قاعدة، يجعل نموذج أولا قراءة إلى «يمكن استدعاء أي بعض أداة» مجددا قراءة «كل أداة فعل ماذا».
 
-##### 带 bash 的 TypeScript PTC mode SDK 说明
+##### حمل bash TypeScript PTC mode SDK شرح
 
 ```markdown
 ## Writing code for run_code
@@ -193,49 +193,49 @@ Inside the program:
 Program-only SDK bindings:
 ```
 
-#### Token 影响
+#### Token أثر
 
-每次请求的固定成本与可见定义成正比。PTC mode 使用生成的 SDK 文本加一个传输 schema 取代最终工具 schema，但不承诺普遍减少成本。
+كل مرة طلب ثابت صار هذا و مرئي تعريف صار صحيح مقارنة.PTC mode استخدام توليد SDK نص إضافة واحد نقل schema يحل محل نهائي أداة schema، لكن لا تحمل وعد عام مرة نقص قليل صار هذا.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要 PTC mode 选择、生成的 SDK、传输 schema 与可见工具集合不变，前缀就保持稳定。模式或筛选器变更可能从第一个改变的提示词或 schema token 起使复用失效。
+فقط يلزم PTC mode اختيار، توليد SDK، نقل schema و مرئي أداة تجميع دمج ثابت، بادئة حينئذ إبقاء مستقر. نمط أو غربلة اختيار جهاز تغيير ممكن من رقم واحد تغيير نص التوجيه أو schema token بدء جعل إعادة استخدام بطلان.
 
-### 工具调用历史与结果
+### أداة استدعاء تاريخ و نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-循环会保留模型发出的参数与注册表的最终内容。任何抛出异常或遭到拒绝的调用，都会转换为确切的 `Error: <message>`；结构化的用户可见失败详情不会加入该消息。PTC mode 只返回外层程序打印的行与呈现后的返回值；两者都为空时返回 `(run_code completed with no output)`；失败时返回 `Error: code run failed (<kind>): <message>`，并根据是否存在已捕获内容，在其后附加 `Captured output:` 与捕获的行。内部分发事件只保留在日志中；成功且含图片的子结果会在外层结果之后作为带来源归属的上下文追加。
+حلقة سوف إبقاء نموذج إرسال خروج معامل و سجل التسجيل نهائي محتوى. أي رمي خروج استثناء أو تعرض إلى رفض استدعاء، كل سوف تحويل لـ تأكيد قطع `Error: <message>`؛ بنية تحويل مستخدم مرئي فشل تفصيل حال لن إضافة دخول هذا رسالة.PTC mode فقط إرجاع خارج طبقة برنامج ضرب طبع سطر و عرض بعد قيمة راجعة؛ اثنان من كل لـ فارغ وقت إرجاع `(run_code completed with no output)`؛ فشل وقت إرجاع `Error: code run failed (<kind>): <message>`، و أصل حسب هل وجود قد التقاط محتوى، في ذلك بعد مرفق إضافة `Captured output:` و التقاط سطر. داخلي توزيع حدث فقط إبقاء في سجل في؛ نجاح كما يحتوي صورة فرعي نتيجة سوف في خارج طبقة نتيجة بعد بصفة حمل مصدر ملكية سياق إلحاق.
 
-#### Token 影响
+#### Token أثر
 
-参数、结果与附加上下文取决于数据，并会重复发送直至压缩（compaction）。隐藏工具的限制还会在模型可以调用这些工具之前移除其 schema。
+معامل، نتيجة و مرفق إضافة سياق أخذ قرار في بيانات، و سوف تكرار إرسال مباشر حتى ضغط (compaction). إخفاء أداة حد أيضا سوف في نموذج يمكن استدعاء هذه أداة قبل إزالة ذلك schema.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新的可见内容位于可复用请求前缀之后，不会使现有 KV Cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV Cache بند بطلان.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明注册表何时需要特别留意。它们是当前包约束，不是任务积压。
+هذه حد شرح سجل التسجيل أي وقت حاجة خاص آخر إبقاء معنى. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **并发策略不是事件门禁**：`executionMode()` 直接读取已解析的工具定义；插件只能在自身拥有的定义上声明分类器。
-- **`tools/pre-execute` 有意不允许改写 `exec.arguments`**：否则日志记录与呈现的参数会与实际运行内容失去同步；改写设计记录在[拟议的 Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)中。
-- **调用方定义的 subagent 与工作流结构化输出仍要求对象根**：这是消费方层面的守卫；共享 schema 词汇与工具输出支持任意 JSON 根。
-- **定义中的 `timeoutMs` 仅作声明之用**：注册表绝不会强制执行截止时间；要强制执行，必须使用 `@deepseek-ai/dsh-tool-call-timeout-policy` 包装层。
-- **PTC mode 的 SDK 语言由当前加载的运行时决定，且呈现方式按 agent 而非按工具**：`mode: ptc`/`both` 会拒绝组装提示词，除非 `ctx.ptcRuntime.language` 有已注册的 SDK 渲染器；同一个 agent 内不能让一个工具仅使用 Native，而另一个仅使用 PTC。
-- **PTC mode 中间值只存在于执行局部，且没有字节上限**：它们无法从会话回放重建，并可能耗尽进程或 worker 内存；只有外层 `run_code` 输出受 worker 可配置的硬上限约束。
-- **每次运行都会获得全新的 `run_code` 状态**：MVP 不采用持久 REPL 风格内核，因为跨调用状态不会出现在日志中。
+- **تزامن سياسة لا هو حدث بوابة**:`executionMode()` مباشر قراءة قد تحليل أداة تعريف؛ إضافة فقط قدرة في ذاته يملك تعريف فوق إعلان تصنيف جهاز.
+- **`tools/pre-execute` متعمد لا سماح تعديل كتابة `exec.arguments`**: لا فإن سجل سجل و عرض معامل سوف و فعلي تشغيل محتوى فقد ذهاب تزامن؛ تعديل كتابة تصميم سجل في[محاكاة اقتراح Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md) في.
+- **استدعاء جهة تعريف subagent و سير العمل بنية تحويل إخراج ما زال اشتراط كائن أصل**: هذا هو مستهلك طبقة وجه حراسة حماية؛ مشترك schema مفردات و أداة إخراج دعم حمل مهمة معنى JSON أصل.
+- **تعريف في `timeoutMs` فقط عمل إعلان لـ استخدام**: سجل التسجيل أبدا سوف قوي صنع تنفيذ قطع توقف وقت؛ يلزم قوي صنع تنفيذ، يجب استخدام `@deepseek-ai/dsh-tool-call-timeout-policy` حزمة تركيب طبقة.
+- **PTC mode SDK لغة من حالي تحميل وقت التشغيل قرار، كما عرض طريقة حسب agent بينما غير حسب أداة**:`mode: ptc`/`both` سوف رفض تجميع نص التوجيه، حذف غير `ctx.ptcRuntime.language` لديه قد تسجيل SDK مصير؛ نفس عدد agent داخل لا يستطيع يجعل واحد أداة فقط استخدام Native، بينما آخر عدد فقط استخدام PTC.
+- **PTC mode في بين قيمة فقط وجود في تنفيذ نطاق جزء، كما لا يوجد بايت حد أعلى**: هو جمع لا يمكن من جلسة إعادة تشغيل إعادة بناء، و ممكن استهلاك كل عملية أو worker داخل تخزين؛ فقط لديه خارج طبقة `run_code` إخراج تلقي worker يمكن إعداد صلب حد أعلى قيد.
+- **كل مرة تشغيل كل سوف نيل نيل كل جديد `run_code` حالة**:MVP لا اعتماد حمل دائم REPL ريح إطار داخل نواة، لأن عبر استدعاء حالة لن ظهور في سجل في.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -1,36 +1,36 @@
-# Agent Note: Remote 事件投递（ctx.remote.$on）
+# Agent Note: Remote حدث إلقاء تمرير (ctx.remote.$on)
 
 Status: implemented
 
-[English](2026-08-10-remote-event-delivery.md) | 中文
+[English](2026-08-10-remote-event-delivery.md) | العربية
 
-## 问题
+## مشكلة
 
-[Typert Remote 方法调用](../../implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md)最初只覆盖「一次请求一个结果」的定向调用，明确把 Session 事件流与有状态交互留在别处；Host 向消费端的事件需要一个不归 API Proxy 领域所有的投递机制。
+[Typert Remote طريقة استدعاء](../../implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md) الأكثر أول فقط تغطية «مرة طلب واحد نتيجة» تحديد نحو استدعاء، واضح يأخذ Session حدث تدفق و لديه حالة تفاعل إبقاء في آخر موضع؛Host نحو إزالة استهلاك طرف حدث حاجة واحد لا عودة API Proxy مجال كل إلقاء تمرير آلية.
 
-Host 拥有 `agent-preset/selected`、`commands/change`、`credentials/reference-updated`、`llm/adapters-updated`、`settings/document-updated` 等单向事件；它们既不依赖 AgentScope，载荷也本来就是 JSON。若每条事件都要穿过 API Proxy 手写帧、Client Runtime 手写桥和 Client 事件别名才能抵达 UI，这些层不会陈述 owner 事件之外的新事实。
+Host يملك `agent-preset/selected`،`commands/change`،`credentials/reference-updated`،`llm/adapters-updated`،`settings/document-updated` انتظار مفرد نحو حدث؛ هو جمع حيث لا اعتماد AgentScope، تحميل حمل أيضا هذا قدوم حينئذ هو JSON. إذا كل بند حدث كل يلزم اختراق مرور API Proxy يد كتابة لقطة،Client Runtime يد كتابة جسر و Client حدث آخر اسم عندئذ قدرة مقاومة بلوغ UI، هذه طبقة لن قديم وصف owner حدث خارج جديد واقع.
 
-那份重复声明还是**有损**的：client 侧写成 `settings/changed(ns: string)`，brand 类型在这一跳被拍平成裸 `string`，与 Remote 方法侧「消费端类型指向业务包唯一符号」的既有契约相反。
+ذلك نسخة تكرار إعلان أيضا هو**لديه ضرر**:client جانب كتابة صار `settings/changed(ns: string)`،brand نوع في هذا واحد قفز يتم التقاط مستو صار عار `string`، و Remote طريقة جانب «إزالة استهلاك طرف نوع إشارة نحو عمل خدمة حزمة وحيد رمز رقم» قائم عقد نحو متبادل عكس.
 
-## 决策
+## قرار
 
-消费端 Remote 面持有一个事件订阅动词 `ctx.remote.$on(event, listener)`；**名单驱动、原样转发**：
+إزالة استهلاك طرف Remote وجه يحتفظ واحد حدث حجز قراءة حركة كلمة `ctx.remote.$on(event, listener)`؛**اسم مفرد قيادة، أصل مثال تحويل إرسال**:
 
-- `packages/api/remotes/src/remote-events.ts` 持有一份带 `emit`／`waterfall` mode 的可转发 Host 事件名单，它同时是「消费端能订阅什么」的唯一控制点。旁边的 `src/types.ts` 由它派生类型投影并填充 selection 座位，按包约定保持纯类型。两个文件**都同时列进本包 Host 与 Client 两个 face 的 `files`**，两侧读同一份。
-- wire 上的事件名 **就是 host cordis 事件原名**（`settings/document-updated`），不加 `host/` 前缀；载荷 **就是 host 的实参列表**，逐元素原样过 JSON，无投影、无脱敏、无改名。
-- Host source 由 `api/remotes` 注册到 API Gateway；Gateway 在既有 `/api/remote.mux` 上保留内部 logical endpoint `$events`，不增加物理连接，也不让 API Proxy 解释事件。waterfall 结果通过 HTTP 一元 endpoint `$events/result` 返回。
-- 事件**签名**不另立表：owner 包把自己的 cordis `Events` 声明搬进 client-safe 的 `./types` 纯类型出口，两侧读**同一份**——`$on` 的 listener 参数、结果和 `next()` 都由 `Events[Event]` 推导。「原样」不需要证明，是构造性成立的。
-- 但**只借 cordis 的类型形状，不接 cordis 的事件系统**：投递语义、注册表、异常处置全归 Typert 自己。
+- `packages/api/remotes/src/remote-events.ts` يحتفظ واحد نسخة حمل `emit`/`waterfall` mode يمكن تحويل إرسال Host حدث اسم مفرد، هو معا هو «إزالة استهلاك طرف قدرة حجز قراءة ماذا» وحيد تحكم نقطة. جانب حافة `src/types.ts` من هو إرسال توليد نوع إسقاط و ملء ملء selection مقعد موضع، حسب حزمة اتفاق إبقاء صاف نوع. اثنان عدد ملف**كل معا صف دخول هذه الحزمة Host و Client اثنان عدد face `files`**، اثنان جانب قراءة نفس نسخة.
+- wire فوق حدث اسم **حينئذ هو host cordis حدث أصل اسم**(`settings/document-updated`) ، لا إضافة `host/` بادئة؛ تحميل حمل **حينئذ هو host فعلي مشاركة قائمة**، تدريجي عنصر عنصر أصل مثال مرور JSON، بلا إسقاط، بلا انفصال حساس، بلا تعديل اسم.
+- Host source من `api/remotes` تسجيل إلى API Gateway؛Gateway في قائم `/api/remote.mux` فوق إبقاء داخلي logical endpoint `$events`، لا زيادة شيء إدارة اتصال، أيضا لا يجعل API Proxy حل تفسير حدث.waterfall نتيجة عبر HTTP واحد عنصر endpoint `$events/result` إرجاع.
+- حدث**توقيع**لا آخر قيام جدول:owner حزمة يأخذ ذاتي ذات cordis `Events` إعلان نقل دخول client-safe `./types` صاف نوع خروج فتحة، اثنان جانب قراءة**نفس نسخة**——`$on` listener معامل، نتيجة و `next()` كل من `Events[Event]` دفع توجيه.«أصل مثال» لا حاجة إثبات، هو بنية صنع صفة صار قيام.
+- لكن**فقط استعارة cordis نوع شكل حالة، لا وصل cordis حدث نظام**: إلقاء تمرير دلالة، سجل التسجيل، استثناء موضع وضع كل عودة Typert ذاتي ذات.
 
-一条 `Events` 条目若签名里够到了 host-only 符号（Service、`Agent`、Context 等），处理方式是**把代码拆到能干净落进 `./types` 为止**；不接受「一半留 index、一半搬走」的分裂声明，也不接受在 `./types` 里造结构等价的影子类型。当前名单内各 owner 都从 client-safe 类型出口提供同一份事件声明。
+واحد بند `Events` بند إذا توقيع داخل كاف إلى host-only رمز رقم (Service،`Agent`،Context انتظار) ، معالجة طريقة هو**يأخذ شفرة تفكيك إلى قدرة جاف صاف سقوط دخول `./types` لـ توقف**؛ لا قبول «واحد نصف إبقاء index، واحد نصف نقل مشي» قسم شق إعلان، أيضا لا قبول في `./types` داخل صنع بنية انتظار قيمة أثر فرعي نوع. حالي اسم مفرد داخل كل owner كل من client-safe نوع خروج فتحة توفير نفس نسخة حدث إعلان.
 
-名单内事件全部走这条路径，专用帧与 Client 别名都已删除。模型消费方直接订阅 `llm/adapters-updated` 和 `settings/document-updated`；preset 消费方订阅 `agent-preset/selected`；Session 与动态 Cordis 的无状态通知使用 `emit`；Approval 与 Question 使用 Agent-scoped `waterfall`。真正需要 baseline、投影或去重的数据仍保留专用 Remote stream。
+اسم مفرد داخل حدث الكل مشي هذا بند مسار، مخصص استخدام لقطة و Client آخر اسم كل قد حذف. نموذج مستهلك مباشر حجز قراءة `llm/adapters-updated` و `settings/document-updated`؛preset مستهلك حجز قراءة `agent-preset/selected`؛Session و حركة حالة Cordis بلا حالة إشعار استخدام `emit`؛Approval و Question استخدام Agent-scoped `waterfall`. حق صحيح حاجة baseline، إسقاط أو ذهاب إعادة بيانات ما زال إبقاء مخصص استخدام Remote stream.
 
-`skills/change`、`tools/change`、`system-prompt/change` 是同形状的纯失效事件但**没有任何已交付消费者**，按「每个抽象都要有当前 owner 与需求」不进名单，只作为扩展位记录在此。
+`skills/change`،`tools/change`،`system-prompt/change` هو نفس شكل حالة صاف بطلان حدث لكن**لا يوجد أي قد تسليم إزالة استهلاك من**، حسب «كل سحب كائن كل يلزم لديه حالي owner و يحتاج طلب» لا دخول اسم مفرد، فقط بصفة توسيع موضع سجل في هذا.
 
-### 消费端契约（dsh-typert-protocol）
+### إزالة استهلاك طرف عقد نحو (dsh-typert-protocol)
 
-type-meta 加事件形状谓词、mode 条目、选择座位和 `TypertClientRemote` 的一个成员；零运行时代码：
+type-meta إضافة حدث شكل حالة يسمى كلمة،mode بند، اختيار مقعد موضع و `TypertClientRemote` واحد عضو؛ صفر وقت التشغيل شفرة:
 
 ```ts ignore-check
 import type { Events } from '@deepseek-ai/cordis'
@@ -66,19 +66,19 @@ export type TypertRemoteEvent = Extract<keyof Events, keyof TypertRemoteEventSel
 $on<Event extends TypertRemoteEvent>(event: Event, listener: TypertClientEventListener<Event>): () => void
 ```
 
-`Events` 按程序解析：host 程序里是 host 事件全集，client 程序里是 client 编译面看得见的那些——同一个谓词在两侧各自成立，不需要把 host 声明拖进 client。
+`Events` حسب برنامج تحليل:host برنامج داخل هو host حدث كل تجميع،client برنامج داخل هو client تحرير ترجمة وجه نظر نيل رؤية ذلك بعض——نفس عدد يسمى كلمة في اثنان جانب كل منها صار قيام، لا حاجة يأخذ host إعلان سحب دخول client.
 
-**契约只公开消费动词。**`ClientRemoteService` 激活时就把内部唯一的 `$events` pump 注册为 Connection generation source，与当前有无 `$on` 订阅无关；浏览器通过共享 Remote mux 打开 `$events`，进程内组合通过 `connection.rpc.open` 打开同一 logical stream。解码、精确 item 校验和订阅表派发都是 Gateway Client 的私有实现，`TypertClientRemote` 不暴露生产方方法，因此业务插件不能伪造一条 Host 事件。
+**عقد نحو فقط عام إزالة استهلاك حركة كلمة.**`ClientRemoteService` تنشيط وقت حينئذ يأخذ داخلي وحيد `$events` pump تسجيل لـ Connection generation source، و حالي لديه بلا `$on` حجز قراءة غير متصل؛ متصفح عبر مشترك Remote mux فتح `$events`، عملية داخل تركيب عبر `connection.rpc.open` فتح نفس logical stream. حل رمز، دقيق item تحقق و حجز قراءة جدول إرسال إرسال كل هو Gateway Client خاص تنفيذ،`TypertClientRemote` لا كشف إنتاج جهة طريقة، لذلك عمل خدمة إضافة لا يستطيع زائف صنع واحد بند Host حدث.
 
-每次 Host 打开 `$events` 时，API Remotes source factory 先同步挂载所有 allowlist listener，Gateway 随后产出首项 `{ type: 'ready', clientId, host: { home } }`，再开始迭代事件 source。`ConnectionController` 只有在该项到达后才发布 `connected`，因此 baseline 读取不会跑在增量 listener 前面。
+كل مرة Host فتح `$events` وقت،API Remotes source factory أولا تزامن تركيب كل allowlist listener،Gateway مع بعد إنتاج خروج أول بند `{ type: 'ready', clientId, host: { home } }`، مجددا بدء تكرار بديل حدث source.`ConnectionController` فقط لديه في هذا بند وصول بعد عندئذ إصدار `connected`، لذلك baseline قراءة لن ركض في زيادة كمية listener قبل وجه.
 
-物理 mux 断开会让 logical stream 以 `RemoteStreamCarrierError` 结束；Host 返回的 Remote stream error、意外正常结束、非 ready 首项或畸形事件项也会结束当前 generation。Connection 撤回该 generation，在退避后重开 `$events`；Gateway mux 只负责重建物理 WebSocket。转发事件不重放；凡正确性依赖恢复的状态，owner 必须另有查询、cursor 或 opening baseline，不能把 `$on` 当作可靠日志。
+شيء إدارة mux قطع فتح سوف يجعل logical stream بـ `RemoteStreamCarrierError` انتهاء؛Host إرجاع Remote stream error، معنى خارج صحيح معتاد انتهاء، غير ready أول بند أو شاذ شكل حدث بند أيضا سوف انتهاء حالي generation.Connection سحب عودة هذا generation، في تراجع تجنب بعد إعادة فتح `$events`؛Gateway mux فقط مسؤول إعادة بناء شيء إدارة WebSocket. تحويل إرسال حدث لا إعادة وضع؛ كل صحيح تأكيد صفة اعتماد استعادة حالة،owner يجب آخر لديه استعلام،cursor أو opening baseline، لا يستطيع يأخذ `$on` عند عمل يمكن اعتماد سجل.
 
-Client 以 Remote 实例私有 Cordis key 分发。普通 `emit` 使用 `parallel()` 并隔离 listener 失败；Agent-scoped `waterfall` 在解析出的 Agent Context 上使用 `waterfall()`，允许结果、拒绝或 `next()` 委托。两类注册都归属调用方 fiber，且 Host 事件不会触发 Client 本地同名事件。
+Client بـ Remote نسخة خاص Cordis key توزيع. عادي `emit` استخدام `parallel()` و عزل listener فشل؛Agent-scoped `waterfall` في تحليل خروج Agent Context فوق استخدام `waterfall()`، سماح نتيجة، رفض أو `next()` تفويض حمل. اثنان صنف تسجيل كل ملكية استدعاء جهة fiber، كما Host حدث لن إطلاق Client محلي نفس اسم حدث.
 
-### 名单：两个 face 共读的同一份声明
+### اسم مفرد: اثنان عدد face مشترك قراءة نفس نسخة إعلان
 
-`packages/api/remotes/src/remote-events.ts` 同时列进 `tsconfig.host.json` 与 `tsconfig.client.json` 的 `files`，是名单的**唯一家**；`src/types.ts` 由它派生类型面：
+`packages/api/remotes/src/remote-events.ts` معا صف دخول `tsconfig.host.json` و `tsconfig.client.json` `files`، هو اسم مفرد**وحيد بيت**؛`src/types.ts` من هو إرسال توليد نوع وجه:
 
 ```ts ignore-check
 // remote-events.ts — the value
@@ -107,21 +107,21 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
 }
 ```
 
-于是**加一个事件只改这一行数组**：类型投影、`$on` 的键面、Host dispatch mode 与转发循环全部从它派生。`ctx.remote.$on('slots/changed', …)`（Client 本地事件）或 `$on('skills/change', …)`（名单没开）都是**编译错误**。
+في هو**إضافة واحد حدث فقط تعديل هذا واحد سطر عدد مجموعة**: نوع إسقاط،`$on` مفتاح وجه،Host dispatch mode و تحويل إرسال حلقة الكل من هو إرسال توليد.`ctx.remote.$on('slots/changed', …)`(Client محلي حدث) أو `$on('skills/change', …)`(اسم مفرد لا فتح) كل هو**تحرير ترجمة خطأ**.
 
-数组声明末尾的 `satisfies` 把 Host 事件词汇与 mode 约束落到同一份名单上：
+عدد مجموعة إعلان نهاية ذيل `satisfies` يأخذ Host حدث مفردات و mode قيد سقوط إلى نفس نسخة اسم مفرد فوق:
 
 ```ts ignore-check
 API_REMOTE_FORWARDED_EVENTS satisfies readonly TypertForwardableEventEntry[]
 ```
 
-它卡住三件事：**名字合法**（谓词以 `keyof Events` 为基）、**mode 匹配签名**，以及只接受无 scope 的 `void` 通知或带一级 Agent scope、同结果 `next()` 和 Promise 返回的 waterfall。其他 Scope、bail、parallel 与 serial 形状都被排除。
+هو بطاقة إقامة ثلاثة عنصر أمر:**اسم حرف دمج قاعدة**(يسمى كلمة بـ `keyof Events` لـ أساس) ،**mode مطابقة توقيع**، و فقط قبول بلا scope `void` إشعار أو حمل واحد درجة Agent scope، نفس نتيجة `next()` و Promise إرجاع waterfall. أخرى Scope،bail،parallel و serial شكل حالة كل يتم ترتيب حذف.
 
-**「原样」不在任何地方证明，而是构造性成立**：`$on` 的 listener 类型取自 owner 包 `./types` 里那一份 cordis `Events` 声明，host 转发读的是同一份，不存在可以彼此偏离的第二份声明。
+**«أصل مثال» لا في أي أرض جهة إثبات، بينما هو بنية صنع صفة صار قيام**:`$on` listener نوع أخذ ذاتي owner حزمة `./types` داخل ذلك واحد نسخة cordis `Events` إعلان،host تحويل إرسال قراءة هو نفس نسخة، لا وجود يمكن ذاك هذا انحراف مغادرة ثاني نسخة إعلان.
 
-载荷 JSON-safe 交给运行时：`api/remotes` 的 Host source 在入队前用 `dsh-session` 的 `isJsonValue` 逐元素校验，不合格**抛错 fail loud**（这是名单配置错误，不是外部输入）。
+تحميل حمل JSON-safe تسليم إعطاء وقت التشغيل:`api/remotes` Host source في دخول طابور قبل استخدام `dsh-session` `isJsonValue` تدريجي عنصر عنصر تحقق، لا دمج إطار**رمي خطأ fail loud**(هذا هو اسم مفرد إعداد خطأ، لا هو خارجي إدخال).
 
-### 线协议（API Gateway Remote mux）
+### خط بروتوكول (API Gateway Remote mux)
 
 ```ts ignore-check
 ready     { type, clientId }
@@ -130,70 +130,70 @@ waterfall { type, event, eventId, agentId, request }
 cancel    { type, eventId }
 ```
 
-Client 以 endpoint `$events` 和 payload `{ args: {} }` 打开 internal logical stream。Gateway 拒绝额外参数、缺失 Host source 和重复 source 注册；source 被撤回时会中止所有由该注册打开的 stream。每个 Client stream 在 `api/remotes` 中拥有独立队列与一组 allowlist listener，因此一个 Client 断开不会消费或撤销另一个 Client 的事件。
+Client بـ endpoint `$events` و payload `{ args: {} }` فتح internal logical stream.Gateway رفض مقدار خارج معامل، ناقص Host source و تكرار source تسجيل؛source يتم سحب عودة وقت سوف في توقف كل من هذا تسجيل فتح stream. كل Client stream في `api/remotes` في يملك مستقل طابور صف و واحد مجموعة allowlist listener، لذلك واحد Client قطع فتح لن إزالة استهلاك أو سحب إلغاء آخر عدد Client حدث.
 
-Client 要求首项是带非空 `clientId` 与 `host.home` 的 `ready`；后续 item 按 discriminant 精确校验字段。ready 项建立 Connection generation，并提供稳定的 Host 路径显示信息。普通 `emit` 的未知但结构合法事件名在没有订阅者时静默丢弃。waterfall 通过 `eventId` 关联 `$events/result`，并由 `agentId` 选择 Client Agent Context；Client 只回传可无损表示为 JSON 的结果，不在 transport 层重复解释业务字段。
+Client اشتراط أول بند هو حمل غير فارغ `clientId` و `host.home` `ready`؛ لاحق item حسب discriminant دقيق تحقق حقل.ready بند بناء قيام Connection generation، و توفير مستقر Host مسار عرض معلومة. عادي `emit` لم معرفة لكن بنية دمج قاعدة حدث اسم في لا يوجد حجز قراءة من وقت ساكن صامت إسقاط.waterfall عبر `eventId` صلة ربط `$events/result`، و من `agentId` اختيار Client Agent Context؛Client فقط عودة نقل يمكن بلا ضرر يمثل لـ JSON نتيجة، لا في transport طبقة تكرار حل تفسير عمل خدمة حقل.
 
-`$events` 是 Gateway 内部 endpoint，不进入生成的 Typert Remote descriptor，也不成为 `ctx.remote.<namespace>`。应用选择仍只存在于 `api/remotes` 的 allowlist 和 Host source；Gateway 只拥有注册、payload 校验与物理传输。
+`$events` هو Gateway داخلي endpoint، لا دخول توليد Typert Remote descriptor، أيضا لا يصبح `ctx.remote.<namespace>`. تطبيق اختيار ما زال فقط وجود في `api/remotes` allowlist و Host source؛Gateway فقط يملك تسجيل،payload تحقق و شيء إدارة نقل.
 
-### apps/web 的 browser e2e 属于 Host 面
+### apps/web browser e2e يخص Host وجه
 
-`apps/web/tests/**` 那批 e2e 在**根 `tsconfig.host.json`** 做类型检查：它们在进程内起真 harness、直接访问 `ctx.connection`、Host `SessionStore.get/create/flush` 与 `ctx.sessionProjectionCache`。**运行时用浏览器 ≠ 类型上属于 Client 程序**——把它们搬进 Client 聚合会报错，因为一个 program 装不下两个 face 对同一个 Context key 的合并。
+`apps/web/tests/**` ذلك دفعة e2e في**أصل `tsconfig.host.json`** فعل نوع فحص: هو جمع في عملية داخل بدء حق harness، مباشر وصول `ctx.connection`،Host `SessionStore.get/create/flush` و `ctx.sessionProjectionCache`.**وقت التشغيل استخدام متصفح ≠ نوع فوق يخص Client برنامج**——يأخذ هو جمع نقل دخول Client تجمع دمج سوف تقرير خطأ، لأن واحد program تركيب لا تحت اثنان عدد face مقابل نفس عدد Context key دمج.
 
-由此得到一条对本设计要紧的连带纪律：**这些测试从客户端包 import 值或类型，会把该包的整个 project——以及它引用的每个 project——拖进 Host 构建图**。`ui-settings-general`/`ui-settings-models`/`ui-permission`/`ui-commands` 四个消费者 references `api/remotes` 的 client face，而该 face 必须等 host tsdown 生成 `@deepseek-ai/dsh-goal/remote` 才能编译，于是形成构建期死锁：host tsc → api/remotes client face → `goal/remote` → host tsdown → 排在 host tsc 之后。
+من هذا نيل إلى واحد بند مقابل هذا تصميم يلزم ضيق وصل حمل سجل قاعدة:**هذه اختبار من عميل حزمة import قيمة أو نوع، سوف يأخذ هذا حزمة كامل project——و هو مرجع كل project——سحب دخول Host بناء رسم**.`ui-settings-general`/`ui-settings-models`/`ui-permission`/`ui-commands` أربعة عدد إزالة استهلاك من references `api/remotes` client face، بينما هذا face يجب انتظار host tsdown توليد `@deepseek-ai/dsh-goal/remote` عندئذ قدرة تحرير ترجمة، في هو شكل صار بناء مدة ميت قفل:host tsc → api/remotes client face → `goal/remote` → host tsdown → ترتيب في host tsc بعد.
 
-所需的客户端符号在测试侧**镜像**了一份（`scaffold.ts` 导出镜像后的 welcome-notice 常量，两个 chat e2e 直接引 `dsh-client-runtime/client` 因为 `runtime` 工程本来就在 host 图里），从而让那 4 个消费者离开了 host 图；`apps/cli/tsconfig.json` 里 15 条 client 工程引用随之失去 owner-map 职责，已一并删除。镜像值与源逐字一致，漂移的表现是选择器失配或通知未被抑制，都是响亮失败。
+الذي يحتاج عميل رمز رقم في اختبار جانب**مرآة مثل**واحد نسخة (`scaffold.ts` توجيه خروج مرآة مثل بعد welcome-notice معتاد كمية، اثنان عدد chat e2e مباشر جذب `dsh-client-runtime/client` لأن `runtime` عمل مسار هذا قدوم حينئذ في host رسم داخل) ، من بينما يجعل ذلك 4 عدد إزالة استهلاك من مغادرة فتح host رسم؛`apps/cli/tsconfig.json` داخل 15 بند client عمل مسار مرجع مع لـ فقد ذهاب owner-map مسؤولية، قد واحد و حذف. مرآة مثل قيمة و مصدر تدريجي حرف متسق، عائم نقل جدول الآن هو اختيار جهاز فقد إعداد أو إشعار لم يتم كبح صنع، كل هو صدى مضيء فشل.
 
-### 改动清单
+### تعديل بيان
 
-| 位置 | 改动 |
+| موضع | تعديل |
 |---|---|
-| `dsh-typert-protocol` | `src/types.ts` 提供 forwardable mode 推导、selection 与 Client listener 投影；`TypertClientRemote` 只公开 `$on`。纯类型，零运行时 |
-| `api/gateway` | Host 半提供唯一 Remote event source、`$events` stream、pending waterfall 协调和 `$events/result`；Client 半把私有 pump 注册为 Connection generation source，负责 frame 校验和 Cordis 分发 |
-| `api/remotes` | `src/remote-events.ts`（带 mode 的名单值）与 `src/types.ts`（键投影 + selection）双列进两个 face；Host 半注册每 Client source，并在入队前校验 JSON；Client 半继续组合生成的 Remote contribution |
-| 根 `tsconfig.base.json` | 加 `dsh-settings/types`、`dsh-credentials/types`、`dsh-api-remotes/types` 三条 `paths`，全部指向**源**平面 |
-| `dsh-commands` / `dsh-settings` / `dsh-credentials` | `interface Events` 子块移入各自 client-safe 的 `./types`（settings/credentials 新建该出口，brand 与纯类型一并移入，index 继续 re-export 并留住构造器；`files` 补 `lib/types/**/*.js`） |
-| `dsh-session` | `isJsonValue` 供 `api/remotes` Host source 校验每个事件参数 |
-| `client/runtime` | 删除 Host frame 到 Remote subscription table 的桥；只继续在 Connection generation 建立后发布 `connection/reset` |
-| 消费方 | Client 插件直接订阅 `ctx.remote.$on(...)`，type-only 引入 owner 事件声明并把 `'remote'` 加进 `inject` |
-| `client/connection` | 提供唯一 generation source 注册位；`ConnectionController` 发布 `$events` ready 携带的 Host 信息，fixture 也从同一 source 产生事件 |
-| `apps/web/tests` + `apps/cli` | 客户端符号镜像（见上节）；`apps/cli/tsconfig.json` 删 15 条 client 工程引用 |
+| `dsh-typert-protocol` | `src/types.ts` توفير forwardable mode دفع توجيه،selection و Client listener إسقاط؛`TypertClientRemote` فقط عام `$on`. صاف نوع، صفر وقت التشغيل |
+| `api/gateway` | Host نصف توفير وحيد Remote event source،`$events` stream،pending waterfall تنسيق ضبط و `$events/result`؛Client نصف يأخذ خاص pump تسجيل لـ Connection generation source، مسؤول frame تحقق و Cordis توزيع |
+| `api/remotes` | `src/remote-events.ts`(حمل mode اسم مفرد قيمة) و `src/types.ts`(مفتاح إسقاط + selection) مزدوج صف دخول اثنان عدد face؛Host نصف تسجيل كل Client source، و في دخول طابور قبل تحقق JSON؛Client نصف متابعة تركيب توليد Remote contribution |
+| أصل `tsconfig.base.json` | إضافة `dsh-settings/types`،`dsh-credentials/types`،`dsh-api-remotes/types` ثلاثة بند `paths`، الكل إشارة نحو**مصدر**مستو وجه |
+| `dsh-commands` / `dsh-settings` / `dsh-credentials` | `interface Events` فرعي كتلة نقل دخول كل منها client-safe `./types`(settings/credentials جديد بناء هذا خروج فتحة،brand و صاف نوع واحد و نقل دخول،index متابعة re-export و إبقاء إقامة منشئ؛`files` تكملة `lib/types/**/*.js`) |
+| `dsh-session` | `isJsonValue` توفير `api/remotes` Host source تحقق كل حدث معامل |
+| `client/runtime` | حذف Host frame إلى Remote subscription table جسر؛ فقط متابعة في Connection generation بناء قيام بعد إصدار `connection/reset` |
+| مستهلك | Client إضافة مباشر حجز قراءة `ctx.remote.$on(...)`،type-only جذب دخول owner حدث إعلان و يأخذ `'remote'` إضافة دخول `inject` |
+| `client/connection` | توفير وحيد generation source تسجيل موضع؛`ConnectionController` إصدار `$events` ready يحمل Host معلومة،fixture أيضا من نفس source إنتاج حدث |
+| `apps/web/tests` + `apps/cli` | عميل رمز رقم مرآة مثل (رؤية فوق عقدة) ؛`apps/cli/tsconfig.json` حذف 15 بند client عمل مسار مرجع |
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**继续寄生 API Proxy 的 Host downlink。**这样可以复用 Connection generation 和 `connection/reset`，但会让 API Proxy 保留 Remote 事件 allowlist、队列、schema 和 Client Runtime bridge，领域传输也无法随其他 Remote stream 共用生命周期。API Gateway 已有常驻 `/api/remote.mux` 后，`$events` 只增加一个 internal logical stream，不需要第三条 WebSocket，因此转移到 Gateway 的成本和所有权都更合理。
+**متابعة إرسال توليد API Proxy Host downlink.**هذا مثال يمكن إعادة استخدام Connection generation و `connection/reset`، لكن سوف يجعل API Proxy إبقاء Remote حدث allowlist، طابور صف،schema و Client Runtime bridge، مجال نقل أيضا لا يمكن مع أخرى Remote stream مشترك استخدام دورة الحياة.API Gateway قد لديه معتاد إقامة `/api/remote.mux` بعد،`$events` فقط زيادة واحد internal logical stream، لا حاجة رقم ثلاثة بند WebSocket، لذلك تحويل نقل إلى Gateway صار هذا و كل حق كل أكثر دمج إدارة.
 
-**给 Remote 事件另开第三条物理 WebSocket 或 duplex stream。**独立通道能拥有自己的连接状态，但会重复 Gateway mux 已经提供的认证升级、复用、取消、错误映射和退避重连。内部 `$events` endpoint 保留独立 logical stream，waterfall 结果复用 HTTP 一元调用。
+**إعطاء Remote حدث آخر فتح رقم ثلاثة بند شيء إدارة WebSocket أو duplex stream.**مستقل عبر طريق قدرة يملك ذاتي ذات اتصال حالة، لكن سوف تكرار Gateway mux قد توفير إقرار إثبات ترقية، إعادة استخدام، إلغاء، خطأ خريطة و تراجع تجنب إعادة وصل. داخلي `$events` endpoint إبقاء مستقل logical stream،waterfall نتيجة إعادة استخدام HTTP واحد عنصر استدعاء.
 
-**在 type-meta 立一张独立的 `TypertRemoteEventMap`，让 owner 包 declare-merge 进去**。消费端键集会精确等于「被声明为可远程投递的事件」；代价是每条事件的签名要在 cordis `Events` 之外**再写一遍**，于是需要一条双向 `extends` 的等价性证明来防漂移，还要给三个 owner 包新增 type-meta 依赖。共用同一份 `Events` 声明让等价性变成构造性成立，这张表因此不立。
+**في type-meta قيام واحد ورقة مستقل `TypertRemoteEventMap`، يجعل owner حزمة declare-merge دخول ذهاب**. إزالة استهلاك طرف مفتاح تجميع سوف دقيق انتظار في «يتم إعلان لـ يمكن بعيد مسار إلقاء تمرير حدث» ؛ بديل قيمة هو كل بند حدث توقيع يلزم في cordis `Events` خارج**مجددا كتابة واحد مرة**، في هو حاجة واحد بند مزدوج نحو `extends` انتظار قيمة صفة إثبات قدوم منع عائم نقل، أيضا يلزم إعطاء ثلاثة عدد owner حزمة إضافة جديدة type-meta اعتماد. مشترك استخدام نفس نسخة `Events` إعلان يجعل انتظار قيمة صفة تغيير صار بنية صنع صفة صار قيام، هذا ورقة جدول لذلك لا قيام.
 
-**让 typert generator 从 host `Events` 声明生成事件投影**（codec + `.d.ts` + 声明映射，与 `/remote` 同族）。generator 已经在分析 host 事件；但它拿不到投影与脱敏语义，且要动生成器与构建面。原样转发这条路本就不需要投影。
+**يجعل typert generator من host `Events` إعلان توليد حدث إسقاط**(codec + `.d.ts` + إعلان خريطة، و `/remote` نفس عائلة).generator قد في قسم تحليل host حدث؛ لكن هو أخذ لا إلى إسقاط و انفصال حساس دلالة، كما يلزم حركة توليد جهاز و بناء وجه. أصل مثال تحويل إرسال هذا بند مسار هذا حينئذ لا حاجة إسقاط.
 
-**给可转发事件加载荷投影函数**（`{ 事件名, 投影, zod }` 转发表）。能一举覆盖 `models-changed` 的 fan-in 与 workspace 的 view 派生；代价是投影逻辑与载荷类型手工对齐，回到方法侧刚刚消灭的中心表形态。
+**إعطاء يمكن تحويل إرسال حدث تحميل حمل إسقاط دالة**(`{ حدث اسم, إسقاط, zod }` تحويل إرسال جدول). قدرة واحد رفع تغطية `models-changed` fan-in و workspace view إرسال توليد؛ بديل قيمة هو إسقاط منطق و تحميل حمل نوع يد عمل مقابل متساو، عودة إلى طريقة جانب للتو للتو إزالة إطفاء في قلب جدول شكل.
 
-**把 apps/web 的 browser e2e 搬进 client 聚合**。看似「客户端测试归客户端面」，实测立刻 21 条错：它们用 host 服务，而 client 程序里 `ctx.sessions` 是 `ISessions`。已否。
+**يأخذ apps/web browser e2e نقل دخول client تجمع دمج**. نظر يشبه «عميل اختبار عودة عميل وجه» ، فعلي قياس قيام لحظة 21 بند خطأ: هو جمع استخدام host خدمة، بينما client برنامج داخل `ctx.sessions` هو `ISessions`. قد لا.
 
-**给 `directory-picker-browse`/`-native` 做 host/client 双 face 切分**，从根上让客户端包不进 host 图。方向正确（它们确实是未切分的双半包），但改动落在别人属地，而收益只是「构建图更干净」——本设计在测试侧镜像客户端符号之后已经不需要它。**已评估不做**。
+**إعطاء `directory-picker-browse`/`-native` فعل host/client مزدوج face قطع قسم**، من أصل فوق يجعل عميل حزمة لا دخول host رسم. جهة نحو صحيح تأكيد (هو جمع تأكيد فعلي هو لم قطع قسم مزدوج نصف حزمة) ، لكن تعديل سقوط في آخر شخص تابع أرض، بينما استلام فائدة فقط هو «بناء رسم أكثر جاف صاف»——هذا تصميم في اختبار جانب مرآة مثل عميل رمز رقم بعد قد لا حاجة هو.**قد تقييم تقدير لا فعل**.
 
-## 验证
+## تحقق
 
-钉住该行为的东西：
+تثبيت إقامة هذا سلوك شرق غرب:
 
-- Host source 真组合测试：两个 Client stream 各自收到 host emit 的 `{ event, args }`，其中一个断开不会影响另一个；非 JSON 实参会响亮拒绝且不会毒化后续合法事件。
-- 类型层负例拒绝未选择事件、非 `void` 的无 scope 事件、非 Agent-scoped waterfall，以及声明 mode 与签名不符的条目。`$on('slots/changed', …)`（Client 本地事件）与 `$on('skills/change', …)`（已声明但未选中）都编译失败——因此 `$on` 的键面恰好等于名单。
-- 消费端 `$on('settings/document-updated', …)` 把 `ns` 解析为 `SettingsNamespace`：brand 穿过 wire 存活。
-- `$on` 的 disposer 归属调用方 fiber；同一个函数对象订阅两次时两条注册各自独立退订——按 listener 身份做键的表会把它们合并，所以订阅按注册项寻址。
-- 普通通知同时收容抛出的 listener 与拒绝所返回 Promise 的 listener；waterfall 测试固定 Client result、`next()`、拒绝、取消、多 Client 首个 claim 和重连重放 pending request。
-- Gateway 测试覆盖 source 缺失、重复注册、撤销中止、payload 拒绝、ready 先于事件，以及浏览器与进程内两种 carrier；Client 测试覆盖 generation source 注册边界、描述与增量就绪顺序、物理失败后重开、Host 错误与意外结束、非 ready 首项、畸形事件项、`$events/result` 失败和 dispose quiescence。
-- `host/remote-event`、公开 `$dispatch`、Client Runtime bridge 和 API Proxy 的 allowlist 依赖都不存在；各消费方直接观察 owner 事件。
+- Host source حق تركيب اختبار: اثنان عدد Client stream كل منها استلام إلى host emit `{ event, args }`، منها واحد قطع فتح لن أثر آخر عدد؛ غير JSON فعلي مشاركة سوف صدى مضيء رفض كما لن سم تحويل لاحق دمج قاعدة حدث.
+- نوع طبقة سالب مثال رفض لم اختيار حدث، غير `void` بلا scope حدث، غير Agent-scoped waterfall، و إعلان mode و توقيع لا رمز بند.`$on('slots/changed', …)`(Client محلي حدث) و `$on('skills/change', …)`(قد إعلان لكن لم اختيار في) كل تحرير ترجمة فشل——لذلك `$on` مفتاح وجه تماما جيد انتظار في اسم مفرد.
+- إزالة استهلاك طرف `$on('settings/document-updated', …)` يأخذ `ns` تحليل لـ `SettingsNamespace`:brand اختراق مرور wire تخزين نشط.
+- `$on` disposer ملكية استدعاء جهة fiber؛ نفس عدد دالة كائن حجز قراءة اثنان مرة وقت اثنان بند تسجيل كل منها مستقل تراجع حجز——حسب listener هوية فعل مفتاح جدول سوف يأخذ هو جمع دمج، الذي بـ حجز قراءة حسب تسجيل بند بحث عنوان.
+- عادي إشعار معا استلام سعة رمي خروج listener و رفض الذي إرجاع Promise listener؛waterfall اختبار ثابت Client result،`next()`، رفض، إلغاء، كثير Client أول عدد claim و إعادة وصل إعادة وضع pending request.
+- Gateway اختبار تغطية source ناقص، تكرار تسجيل، سحب إلغاء في توقف،payload رفض،ready أولا في حدث، و متصفح و عملية داخل اثنان نوع carrier؛Client اختبار تغطية generation source تسجيل حد، وصف و زيادة كمية حينئذ خيط ترتيب، شيء إدارة فشل بعد إعادة فتح،Host خطأ و معنى خارج انتهاء، غير ready أول بند، شاذ شكل حدث بند،`$events/result` فشل و dispose quiescence.
+- `host/remote-event`، عام `$dispatch`،Client Runtime bridge و API Proxy allowlist اعتماد كل لا وجود؛ كل مستهلك مباشر مراقبة owner حدث.
 
-## 后果
+## عاقبة
 
-- **Gateway 有一个非生成 endpoint**：`$events` 不对应业务 namespace，也不进入 Typert descriptor；它是 Gateway 与 `api/remotes` 之间的内部连接点，同时定义 Client Connection generation 的存活期。严格的空 payload 校验、opening ready 校验和单 source 注册限制它不会演化成第二个手写业务 API。
-- **两个文件打破了 api/remotes 的 face 互斥约定**：`src/remote-events.ts` 与 `src/types.ts` 同属两个工程，各自向共享的 `lib/types` 发射一份相同声明。内容逐字节相同、`.tsbuildinfo` 各自独立，实践上无害；README 的构建边界节陈述了这个例外及其成因（`paths` 指向源码面）。
-- **生产方保持私有**：业务插件只能调用 `$on`；Host source 注册和 Client 派发都不在 `TypertClientRemote` 上暴露，测试 double 以自己的 `emit` 方法驱动订阅，不伪装成生产接口。
-- **畸形实参在 emit 点失败**：`api/remotes` listener 在入队前抛出，因此调用 Host `ctx.emit` 的操作立即看到名单配置错误；队列仍可继续投递后续合法事件。
-- **测试侧镜像值可能漂移**：没有任何机制核对 `apps/web/tests` 中镜像的 client 常量与其源；安全网只是漂移会让选择器失配。规则写在 `apps/web/tests/README.md`，由 review 守；grep 级门禁经评估后刻意不做。
-- **放弃的能力**：不支持投影或脱敏载荷，不支持 Agent 以外的 Scope，也不为普通通知提供重放。需要可靠恢复的状态必须拥有查询、cursor 或 opening baseline；waterfall 只重放仍处于同一次 Host 调用生命周期内的 pending request。
-- **仍有 client 包留在 host 图里**：12 个工程（`connection`、`runtime`、`ui-slots` 等）经未拆分的 `directory-picker-browse`/`-native` 与 `api/gateway → client/connection` 仍可达 host 图。它们都能编译且不再牵连 api/remotes 的 client face，因此没有阻塞本次改动；拆分那些包能减少几个，但经评估后不做。两个 chat e2e 直接引 `dsh-client-runtime/client` 依赖 `runtime` 本来就在图里——属偶然而非保证。
-- **本包不发布 invariant companion**：早先的修订曾在活事件总线上断言投递形状（`thisArg === null`、`mode === 'emit'`），这让诊断逻辑与名单值耦合，并使 rolldown 把它提成第三个 bundle chunk——而机械推导的发布文件清单并不携带它。Host 面的 `TypertForwardableEventEntry` 断言已在编译期拒绝这些偏离，包 README 也记录了不再存在独立运行时关系的原因。
+- **Gateway لديه واحد غير توليد endpoint**:`$events` لا مقابل عمل خدمة namespace، أيضا لا دخول Typert descriptor؛ هو هو Gateway و `api/remotes` بين داخلي اتصال نقطة، معا تعريف Client Connection generation تخزين نشط مدة. صارم إطار فارغ payload تحقق،opening ready تحقق و مفرد source تسجيل حد هو لن عرض تحويل صار ثاني عدد يد كتابة عمل خدمة API.
+- **اثنان عدد ملف ضرب كسر api/remotes face متبادل رفض اتفاق**:`src/remote-events.ts` و `src/types.ts` نفس تابع اثنان عدد عمل مسار، كل منها نحو مشترك `lib/types` إرسال إطلاق واحد نسخة نفسه إعلان. محتوى تدريجي بايت نفسه،`.tsbuildinfo` كل منها مستقل، فعلي ممارسة فوق بلا ضرر؛README بناء حد عقدة قديم وصف هذا عدد مثال خارج و ذلك صار بسبب (`paths` إشارة نحو شفرة المصدر وجه).
+- **إنتاج جهة إبقاء خاص**: عمل خدمة إضافة فقط قدرة استدعاء `$on`؛Host source تسجيل و Client إرسال إرسال كل لا في `TypertClientRemote` فوق كشف، اختبار double بـ ذاتي ذات `emit` طريقة قيادة حجز قراءة، لا زائف تركيب صار إنتاج واجهة.
+- **شاذ شكل فعلي مشاركة في emit نقطة فشل**:`api/remotes` listener في دخول طابور قبل رمي خروج، لذلك استدعاء Host `ctx.emit` عملية قيام أي يرى اسم مفرد إعداد خطأ؛ طابور صف ما زال يمكن متابعة إلقاء تمرير لاحق دمج قاعدة حدث.
+- **اختبار جانب مرآة مثل قيمة ممكن عائم نقل**: لا يوجد أي آلية نواة مقابل `apps/web/tests` في مرآة مثل client معتاد كمية و ذلك مصدر؛ أمان شبكة فقط هو عائم نقل سوف يجعل اختيار جهاز فقد إعداد. قاعدة كتابة في `apps/web/tests/README.md`، من review حراسة؛grep درجة بوابة مرور تقييم تقدير بعد لحظة معنى لا فعل.
+- **وضع ترك قدرة**: لا دعم حمل إسقاط أو انفصال حساس تحميل حمل، لا دعم حمل Agent بـ خارج Scope، أيضا لا لـ عادي إشعار توفير إعادة وضع. حاجة يمكن اعتماد استعادة حالة يجب يملك استعلام،cursor أو opening baseline؛waterfall فقط إعادة وضع ما زال موضع في نفس مرة Host استدعاء دورة الحياة داخل pending request.
+- **ما زال لديه client حزمة إبقاء في host رسم داخل**:12 عدد عمل مسار (`connection`،`runtime`،`ui-slots` انتظار) مرور لم تفكيك قسم `directory-picker-browse`/`-native` و `api/gateway → client/connection` ما زال يمكن بلوغ host رسم. هو جمع كل قدرة تحرير ترجمة كما لم يعد جر وصل api/remotes client face، لذلك لا يوجد منع سد هذا مرة تعديل؛ تفكيك قسم ذلك بعض حزمة قدرة نقص قليل بضعة عدد، لكن مرور تقييم تقدير بعد لا فعل. اثنان عدد chat e2e مباشر جذب `dsh-client-runtime/client` اعتماد `runtime` هذا قدوم حينئذ في رسم داخل——تابع أحيانا لكن بينما غير حفظ إثبات.
+- **هذه الحزمة لا إصدار invariant companion**: مبكر أولا إصلاح حجز سبق في نشط حدث مجموع خط فوق تأكيد إلقاء تمرير شكل حالة (`thisArg === null`،`mode === 'emit'`) ، هذا يجعل تشخيص منطق و اسم مفرد قيمة اقتران دمج، و جعل rolldown يأخذ هو رفع صار رقم ثلاثة عدد bundle chunk——بينما آلة آلة دفع توجيه إصدار ملف بيان و لا يحمل هو.Host وجه `TypertForwardableEventEntry` تأكيد قد في تحرير ترجمة مدة رفض هذه انحراف مغادرة، حزمة README أيضا سجل لم يعد وجود مستقل وقت التشغيل علاقة سبب.

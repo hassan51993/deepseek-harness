@@ -3,26 +3,26 @@
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-07-21-tui-todo-write-opt-in.md) | 中文
+[English](2026-07-21-tui-todo-write-opt-in.md) | العربية
 
 ## Problem
 
-出厂的 tui-agent `cordis.yml` 加载了 `@deepseek-ai/dsh-tool-todo`，默认向模型暴露 `todo_write`。这个工具是一项任务追踪的便利功能，而非像 `bash` 或 `read`/`write`/`edit` 文件系统工具那样的核心编码能力；多数 TUI 会话从不调用它，但出厂加载它会让每一轮的协议工具列表和系统提示词都随之变大。而 TUI 的计划渲染是事件驱动的：`packages/ui/tui/src/index.ts` 监听 `todo/write` 会话事件，`TodoComponent.render` 在列表为空时不返回任何内容，因此这个入口本就能容忍该工具的缺席或存在，与该插件没有任何运行时耦合。
+خروج مصنع tui-agent `cordis.yml` تحميل `@deepseek-ai/dsh-tool-todo`، افتراضي نحو نموذج كشف `todo_write`. هذا عدد أداة هو واحد بند مهمة تتبع أثر سهل فائدة وظيفة، بينما غير مثل `bash` أو `read`/`write`/`edit` نظام الملفات أداة ذلك مثال نواة قلب تحرير رمز قدرة؛ كثير عدد TUI جلسة من لا استدعاء هو، لكن خروج مصنع تحميل هو سوف يجعل كل واحد جولة بروتوكول أداة قائمة و توجيه النظام كل مع لـ تغيير كبير. بينما TUI حساب تخطيط تصيير هو حدث قيادة:`packages/ui/tui/src/index.ts` استماع `todo/write` جلسة حدث،`TodoComponent.render` في قائمة لـ فارغ وقت لا إرجاع أي محتوى، لذلك هذا عدد مدخل هذا حينئذ قدرة سعة تحمل هذا أداة نقص مقعد أو وجود، و هذا إضافة لا يوجد أي وقت التشغيل اقتران دمج.
 
 ## Decision
 
-tui-agent `cordis.yml` 不再加载 `tool-todo`；`todo_write` 改为可选启用。`code-mode.cordis.yml` 覆盖配置继承基础组合，因此它生成的 SDK 同样不再包含 `todo_write`。启用它只需一条配置项——把 `@deepseek-ai/dsh-tool-todo` 加入 `cordis.yml`（或 `~/.dsh` 的个人覆盖配置）——此后模型照旧记录整份清单的 `todo/write` 快照，TUI 照旧渲染该计划。`TodoItem` 类型与 `todo/write` 事件仍留在 `@deepseek-ai/dsh-session`，TUI 的计划渲染也保持接线，因此默认（禁用）与可选启用（启用）两条路径都是一等公民。同类的 acp-agent、headless-agent、jsonrpc-agent 示例仍然出厂携带该工具。
+tui-agent `cordis.yml` لم يعد تحميل `tool-todo`؛`todo_write` تعديل لـ اختياري تفعيل.`code-mode.cordis.yml` تغطية إعداد وراثة أساس أساس تركيب، لذلك هو توليد SDK نفس مثال لم يعد يتضمن `todo_write`. تفعيل هو فقط يحتاج واحد بند بند إعداد——يأخذ `@deepseek-ai/dsh-tool-todo` إضافة دخول `cordis.yml`(أو `~/.dsh` عدد شخص تغطية إعداد)——هذا بعد نموذج وفق قديم سجل كامل نسخة بيان `todo/write` لقطة،TUI وفق قديم تصيير هذا حساب تخطيط.`TodoItem` نوع و `todo/write` حدث ما زال إبقاء في `@deepseek-ai/dsh-session`،TUI حساب تخطيط تصيير أيضا إبقاء وصل خط، لذلك افتراضي (منع استخدام) و اختياري تفعيل (تفعيل) اثنان بند مسار كل هو واحد انتظار عام شعب. نفس صنف acp-agent،headless-agent،jsonrpc-agent عرض مثال ما زال خروج مصنع يحمل هذا أداة.
 
 ## Alternatives considered
 
-**在出厂的 TUI 默认配置中保留 `todo_write`。** 否决：它是一项可选启用的便利功能，而非核心工具，出厂加载它会为多数会话都忽略的功能花掉每一轮的工具列表与提示词预算。仍然携带它的示例保留了该插件的真实组合覆盖。
+**في خروج مصنع TUI افتراضي إعداد في إبقاء `todo_write`.** مرفوض: هو هو واحد بند اختياري تفعيل سهل فائدة وظيفة، بينما غير نواة قلب أداة، خروج مصنع تحميل هو سوف لـ كثير عدد جلسة كل تجاهل اختصار وظيفة زهرة إسقاط كل واحد جولة أداة قائمة و نص التوجيه ميزانية. ما زال يحمل هو عرض مثال إبقاء هذا إضافة حقيقي تركيب تغطية.
 
-**连同默认配置项一起删掉 TUI 的计划渲染与 todo 测试。** 否决：需求是同时支持启用与禁用两种情形，而事件驱动的 `TodoComponent` 本就在零插件耦合下渲染计划，删掉它等于白白丢弃一项可用能力。取而代之，启用路径保留专门的覆盖。
+**وصل نفس افتراضي بند إعداد واحد بدء حذف إسقاط TUI حساب تخطيط تصيير و todo اختبار.** مرفوض: يحتاج طلب هو معا دعم حمل تفعيل و منع استخدام اثنان نوع حال شكل، بينما حدث قيادة `TodoComponent` هذا حينئذ في صفر إضافة اقتران دمج تحت تصيير حساب تخطيط، حذف إسقاط هو انتظار في أبيض أبيض إسقاط واحد بند متاح قدرة. أخذ بينما بديل لـ، تفعيل مسار إبقاء مخصص باب تغطية.
 
 ## Testing
 
-`examples/tui-agent/tests/tui.snapshot.ts` 根据逐场景的 `enableTodo` 开关决定是否挂载 `ToolTodo`：只有 `todo-plan` 场景挂载它（启用路径的证明，其 `session.jsonl`/`terminal.expected.txt` 固定了渲染出的计划），其余每个场景都运行默认的无 todo 组合。`tests/harness.ts` 把 `ToolTodo` 做成一个 `todo` 可选项，只有 `tests/todo-write.e2e.ts` 会开启它，因此带密钥的 todo e2e 仍然驱动真实工具，而其余套件与出厂技术栈保持一致。无密钥的 `tests/tui-keyless-smoke.e2e.ts` 启动真实的 `cordis.yml`，且不对 todo 作任何断言，因此默认启动不受影响。
+`examples/tui-agent/tests/tui.snapshot.ts` أصل حسب تدريجي مشهد `enableTodo` فتح صلة قرار هل تركيب `ToolTodo`: فقط لديه `todo-plan` مشهد تركيب هو (تفعيل مسار إثبات، ذلك `session.jsonl`/`terminal.expected.txt` ثابت تصيير خروج حساب تخطيط) ، ذلك بقية كل مشهد كل تشغيل افتراضي بلا todo تركيب.`tests/harness.ts` يأخذ `ToolTodo` فعل صار واحد `todo` اختياري بند، فقط لديه `tests/todo-write.e2e.ts` سوف فتح بدء هو، لذلك حمل مفتاح todo e2e ما زال قيادة حقيقي أداة، بينما ذلك بقية طقم عنصر و خروج مصنع تقنية فن مكدس إبقاء متسق. بلا مفتاح `tests/tui-keyless-smoke.e2e.ts` بدء حقيقي `cordis.yml`، كما لا مقابل todo عمل أي تأكيد، لذلك افتراضي بدء لا تلقي أثر.
 
 ## Consequences
 
-默认 TUI 的协议工具列表和系统提示词少了一个工具；想要任务追踪的会话加一条插件配置项即可。`examples/tui-agent/composition.md`（已重新生成）及其叶子条目表不再列出 `tool-todo`，`scripts/gen-doc-graphs.ts` 中人工维护的摘要也去掉了它。`@deepseek-ai/dsh-tool-todo` 包本身没有变动，仍由 acp/headless/jsonrpc 示例出厂携带，因此它的覆盖需求在那里得到满足。若要恢复默认，只需重新加入那一条 `cordis.yml` 配置项，并把快照/harness 的可选开关重新打开。
+افتراضي TUI بروتوكول أداة قائمة و توجيه النظام قليل واحد أداة؛ تفكير يلزم مهمة تتبع أثر جلسة إضافة واحد بند إضافة بند إعداد يكفي.`examples/tui-agent/composition.md`(قد إعادة توليد) و ذلك ورقة فرعي بند جدول لم يعد صف خروج `tool-todo`،`scripts/gen-doc-graphs.ts` في شخص عمل صيانة ملخص أيضا ذهاب إسقاط هو.`@deepseek-ai/dsh-tool-todo` حزمة ذاته لا يوجد تغيير حركة، ما زال من acp/headless/jsonrpc عرض مثال خروج مصنع يحمل، لذلك هو تغطية يحتاج طلب في ذلك داخل نيل إلى ممتلئ كاف. إذا يلزم استعادة افتراضي، فقط يحتاج إعادة إضافة دخول ذلك واحد بند `cordis.yml` بند إعداد، و يأخذ لقطة/harness اختياري فتح صلة إعادة فتح.

@@ -1,29 +1,29 @@
-# Agent Note: Session 能力协议
+# Agent Note: Session قدرة بروتوكول
 
 Status: proposed
 
-[English](2026-09-10-session-capability-protocols.md) | 中文
+[English](2026-09-10-session-capability-protocols.md) | العربية
 
 ## Problem
 
-保留旧 `Session` 兼容名称并不等于实现已经可替换。若 storage、query、projection 或前端继续假设这个具体内存类、JSONL 路径或具体索引 schema，物理实现仍会穿透整个系统。
+إبقاء قديم `Session` توافق اسم و لا انتظار في تنفيذ قد يمكن استبدال. إذا storage،query،projection أو قبل طرف متابعة زائف ضبط هذا عدد أداة جسم داخل تخزين صنف،JSONL مسار أو أداة جسم بحث جذب schema، شيء إدارة تنفيذ ما زال سوف اختراق نفاذ كامل نظام.
 
 ## Proposal
 
-把会话系统看成一个小逻辑核心和若干正交能力。普通业务只认识 `LogicalSession` + `SessionService`；provider 作者分别实现物理协议。以下签名是目标，不代表阶段 3 已全部实现。
+يأخذ جلسة نظام نظر صار واحد صغير منطق نواة قلب و إذا جاف صحيح تسليم قدرة. عادي عمل خدمة فقط إقرار تعرف `LogicalSession` + `SessionService`؛provider عمل من قسم آخر تنفيذ شيء إدارة بروتوكول. التالي توقيع هو هدف، لا بديل جدول مرحلة مقطع 3 قد الكل تنفيذ.
 
-### 迁移期开发约定
+### ترحيل مدة تطوير اتفاق
 
-- 既有外部集成可以暂时保留已弃用的 `Session`、`Session.create` 与 `Session.fromRestore` 兼容 API。
-- 仓库生产代码与所有新集成都将会话标注为 `LogicalSession`，并从 `SessionService`（`ctx.sessions`）取得 live session。不能因为兼容入口仍在，就新增 `Session` 导入。
-- 只有确实需要 detached 构造、校验、provider adapter 或聚焦测试时，才使用 `createLogicalSession` / `restoreLogicalSession`；业务功能不能借 detached factory 绕过 service lifecycle。
-- 事件、header、surface projection、id 与 derived messages 从 `LogicalSession` 成员读取；cold、索引、过滤、搜索、列表或统计读取走 `SessionQuery`，不得直读 provider 文件或索引。
-- Projection 从规范事件派生可重建 read model；它既不替代逻辑会话，也不能成为 durable recovery authority。
-- 只有 composition 与 provider package 可以知道具体会话、storage、query 或 projection 实现。仓库的 production source 已用 dependency gate 执行其中关于具体 `Session` 的规则。
+- قائم خارجي تجميع صار يمكن مؤقت وقت إبقاء قد ترك استخدام `Session`،`Session.create` و `Session.fromRestore` توافق API.
+- مستودع إنتاج شفرة و كل جديد تجميع صار كل سوف جلسة علامة ملاحظة لـ `LogicalSession`، و من `SessionService`(`ctx.sessions`) أخذ نيل live session. لا يستطيع لأن توافق مدخل ما زال في، حينئذ إضافة جديدة `Session` استيراد.
+- فقط لديه تأكيد فعلي حاجة detached بنية صنع، تحقق،provider adapter أو تجمع تركيز اختبار وقت، عندئذ استخدام `createLogicalSession` / `restoreLogicalSession`؛ عمل خدمة وظيفة لا يستطيع استعارة detached factory التفاف مرور service lifecycle.
+- حدث،header،surface projection،id و derived messages من `LogicalSession` عضو قراءة؛cold، بحث جذب، مرور ترشيح، بحث، قائمة أو موحد حساب قراءة مشي `SessionQuery`، لا نيل مباشر قراءة provider ملف أو بحث جذب.
+- Projection من مواصفة حدث إرسال توليد يمكن إعادة بناء read model؛ هو حيث لا بديل منطق جلسة، أيضا لا يستطيع يصبح durable recovery authority.
+- فقط لديه composition و provider package يمكن معرفة طريق أداة جسم جلسة،storage،query أو projection تنفيذ. مستودع production source قد استخدام dependency gate تنفيذ منها صلة في أداة جسم `Session` قاعدة.
 
 ### `LogicalSession`
 
-一个逻辑会话是一个有身份的事件会话，独立于其事件的存放位置与是否发布。它拥有 header、fork 边界、seq、surface、append 和快照语义；调用方不得知道事件实际驻留在数组、共享内存、数据库还是远端。实现必须保持不可变快照、连续 seq、对象身份、事件验证与明确关闭语义。
+واحد منطق جلسة هو واحد لديه هوية حدث جلسة، مستقل في ذلك حدث تخزين وضع موضع و هل إصدار. هو يملك header،fork حد،seq،surface،append و لقطة دلالة؛ استدعاء جهة لا نيل معرفة طريق حدث فعلي إقامة إبقاء في عدد مجموعة، مشترك داخل تخزين، قاعدة بيانات أيضا هو بعيد طرف. تنفيذ يجب إبقاء غير ممكن تغيير لقطة، وصل متابعة seq، كائن هوية، حدث تحقق و واضح إغلاق دلالة.
 
 ### `SessionService`
 
@@ -41,21 +41,21 @@ abstract class SessionService extends Service {
 }
 ```
 
-服务是 live session 的唯一获取点和 live identity authority。`create`、`open` 与 `fork` 在发布前完成可能失败的准备；`enter` 返回同步 disposer；`announce` 只发布已登记会话；`flush` 汇总拥有的参与者；投影端口注册可卸载且对未发布会话同样有效。
+خدمة هو live session وحيد نيل أخذ نقطة و live identity authority.`create`،`open` و `fork` في إصدار قبل إتمام ممكن فشل دقيق تجهيز؛`enter` إرجاع تزامن disposer؛`announce` فقط إصدار قد تسجيل تسجيل جلسة؛`flush` تجميع مجموع يملك مشاركة و من؛ إسقاط طرف فتحة تسجيل يمكن إزالة كما مقابل لم إصدار جلسة نفس مثال صالح.
 
 ### `SessionStorage`
 
-物理持久化协议只负责 create/open reader、open writer、stat/list，以及 reader/writer 的 read、append、flush、close。provider 拥有 durable revision、格式 generation、迁移、租约、压缩和路径。JSONL 是一个实现；普通代码不能把 storage handle 当作 session，也不能通过 lifecycle event 拼装持久化。
+شيء إدارة حفظ دائم بروتوكول فقط مسؤول create/open reader،open writer،stat/list، و reader/writer read،append،flush،close.provider يملك durable revision، صيغة generation، ترحيل، إيجار نحو، ضغط و مسار.JSONL هو واحد تنفيذ؛ عادي شفرة لا يستطيع يأخذ storage handle عند عمل session، أيضا لا يستطيع عبر lifecycle event تجميع تركيب حفظ دائم.
 
 ### `SessionProjectionPort`
 
-Projection 消费会话的规范事件与 header，产生 title、summary、统计、列表元数据、搜索文档或其他读模型。它不是第二份 Session，也不拥有写入；所有投影都可由 durable log 重建。服务注册 projection port，使 live session 与 cold reader 使用同一语义，并让 flush/close 等待已接纳工作。
+Projection إزالة استهلاك جلسة مواصفة حدث و header، إنتاج title،summary، موحد حساب، قائمة بيانات وصفية، بحث وثيقة أو أخرى قراءة نموذج. هو لا هو ثاني نسخة Session، أيضا لا يملك كتابة؛ كل إسقاط كل يمكن من durable log إعادة بناء. خدمة تسجيل projection port، جعل live session و cold reader استخدام نفس دلالة، و يجعل flush/close انتظار قد وصل قبول عمل.
 
 ### `SessionQuery`
 
-仓库已经规划并实现 live-preferred retrieval 的 `SessionQuery`。本提案让它继续作为统一读取抽象，覆盖精确事件读取、过滤、trace、全文检索、列表元数据与统计读取；不再新增 `SessionSearch` 或 `SessionStats`。具体索引与统计聚合是 projection/provider，可替换并可重建。Query 通过 `SessionService`、逻辑会话与规范 storage reader 取得逻辑数据，不导入内存实现或 JSONL。
+مستودع قد قاعدة تخطيط و تنفيذ live-preferred retrieval `SessionQuery`. هذا رفع سجل يجعل هو متابعة بصفة موحد واحد قراءة سحب كائن، تغطية دقيق حدث قراءة، مرور ترشيح،trace، كل نص فحص بحث، قائمة بيانات وصفية و موحد حساب قراءة؛ لم يعد إضافة جديدة `SessionSearch` أو `SessionStats`. أداة جسم بحث جذب و موحد حساب تجمع دمج هو projection/provider، يمكن استبدال و يمكن إعادة بناء.Query عبر `SessionService`، منطق جلسة و مواصفة storage reader أخذ نيل منطق بيانات، لا استيراد داخل تخزين تنفيذ أو JSONL.
 
-### 整体架构
+### كامل جسم هيكل بنية
 
 ```mermaid
 flowchart TB
@@ -73,22 +73,22 @@ flowchart TB
   QueryProvider -. implements .-> Query
 ```
 
-### 依赖约束
+### اعتماد قيد
 
-前端、header、loading、persistence、migration、search、statistics 和 telemetry 可以依赖逻辑核心或自己的能力接口。只有组合根可同时看见抽象与具体 provider。每个 provider 包自身闭合，并通过共享合约套件；禁止反向导入与 provider-name 分支。
+قبل طرف،header،loading،persistence،migration،search،statistics و telemetry يمكن اعتماد منطق نواة قلب أو ذاتي ذات قدرة واجهة. فقط لديه تركيب أصل يمكن معا نظر رؤية سحب كائن و أداة جسم provider. كل provider حزمة ذاته إغلاق دمج، و عبر مشترك دمج نحو طقم عنصر؛ منع توقف عكس نحو استيراد و provider-name فرع.
 
 ## Alternatives considered
 
-**让每个功能直接读取 storage。** 拒绝，因为 durable rows 不是逻辑 session，且会把迁移与 provider schema 变成业务约定。
+**يجعل كل وظيفة مباشر قراءة storage.** رفض، لأن durable rows لا هو منطق session، كما سوف يأخذ ترحيل و provider schema تغيير صار عمل خدمة اتفاق.
 
-**为 search 和 stats 各建一个服务。** 拒绝；现有 `SessionQuery` 已拥有统一读取语义，额外服务只会分裂入口。
+**لـ search و stats كل بناء واحد خدمة.** رفض؛ قائم `SessionQuery` قد يملك موحد واحد قراءة دلالة، مقدار خارج خدمة فقط سوف قسم شق مدخل.
 
 ## Acceptance criteria
 
-- 第二个 session/service 或 storage provider 能在不改普通消费方的情况下通过同一合约测试。
-- 查询索引与统计投影能重建或替换，而不改变 Session durable source of truth。
-- 依赖门只允许组合根和 provider 测试导入具体实现。
+- ثاني عدد session/service أو storage provider قدرة في لا تعديل عادي مستهلك حال حال تحت عبر نفس دمج نحو اختبار.
+- استعلام بحث جذب و موحد حساب إسقاط قدرة إعادة بناء أو استبدال، بينما لا تغيير Session durable source of truth.
+- اعتماد باب فقط سماح تركيب أصل و provider اختبار استيراد أداة جسم تنفيذ.
 
 ## Risks
 
-`SessionService` 的发布、存储与投影时序尚未在阶段 3 达到目标签名。实现必须留在后续阶段，不能用文档把未交付行为伪装成 current。远程会话实现还会暴露同步 `append` 与生命周期是否可替换的真实限制，届时应根据合约证据修订协议。
+`SessionService` إصدار، تخزين و إسقاط وقت ترتيب بعد لم في مرحلة مقطع 3 بلوغ إلى هدف توقيع. تنفيذ يجب إبقاء في لاحق مرحلة مقطع، لا يستطيع استخدام وثيقة يأخذ لم تسليم سلوك زائف تركيب صار current. بعيد مسار جلسة تنفيذ أيضا سوف كشف تزامن `append` و دورة الحياة هل يمكن استبدال حقيقي حد، دورة وقت ينبغي أصل حسب دمج نحو دليل إصلاح حجز بروتوكول.

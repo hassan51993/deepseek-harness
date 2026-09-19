@@ -1,73 +1,73 @@
 ---
-description: "dsh Web 客户端右侧 Sidebar 的文件树 tab 类型：通过网络逐层列出会话工作区根目录，按资源地址把文件打开到 Sidebar。"
+description: "dsh Web عميل يمين جانب Sidebar ملف شجرة tab نوع: عبر شبكة شبكة تدريجي طبقة صف خروج جلسة مساحة العمل أصل دليل، حسب مورد عنوان يأخذ ملف فتح إلى Sidebar."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-sidebar-files
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-右侧 Sidebar 的导航器 tab 类型：把会话的工作区根目录画成一棵树，逐层经线上列出，并把文件打开到 Sidebar 里。它是从引导页进入的页类型，不认领任何地址；它按地址打开文件，交给 `dsh-resource://file` 的查看器认领：`ui-sidebar-right` 里没有任何东西认识本包。
+يمين جانب Sidebar تنقل جهاز tab نوع: يأخذ جلسة مساحة العمل أصل دليل رسم صار واحد شجرة شجرة، تدريجي طبقة مرور خط فوق صف خروج، و يأخذ ملف فتح إلى Sidebar داخل. هو هو من جذب توجيه صفحة دخول صفحة نوع، لا إقرار قيادة أي عنوان؛ هو حسب عنوان فتح ملف، تسليم إعطاء `dsh-resource://file` فحص نظر جهاز إقرار قيادة:`ui-sidebar-right` داخل لا يوجد أي شرق غرب إقرار تعرف هذه الحزمة.
 
-## 目录
+## دليل
 
-- [注册了什么](#what-it-registers)
-- [树](#the-tree)
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [تسجيل ماذا](#what-it-registers)
+- [شجرة](#the-tree)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="what-it-registers"></a>
-## 注册了什么
+## تسجيل ماذا
 
-- **类型**：`ctx.sidebarRightTabs.register(...)`，kind 为 `files`，id 为 `@deepseek-ai/dsh-client-ui-sidebar-files`，档位 `builtin`，没有 patterns，另有一个打开该类型的引导页入口（order 10，标题与描述取自 `sidebarFiles` 命名空间，图标是共享的文件夹图标）。
-- **正文**：以该 id 为键的 `sidebar.right.pane.tab` slot：strip 下的一行标题行，然后是树。标题行与文档预览（`ui-sidebar-documentpreview`）的相同：根路径，目录部分灰色、最后一段正色，从不省略号截断（比行宽的路径保留末尾、淡出开头），右端是它唯一的控件、重新读取。这一行是复制而非共享，因为插件 bundle 只经平台模块共享运行时代码；待 artifact 与各 slot 的形态定下来后，可以在 `ui-primitives` 放一份供每个 pane 标题行使用。
-- **标签页标题**：以该 id 为键的 `sidebar.right.pane.tab.title` slot：类型标签前的一枚 16px 共享 `FileTypeIcon` 文件夹图标。树本身的行不画这枚图标。
+- **نوع**:`ctx.sidebarRightTabs.register(...)`،kind لـ `files`،id لـ `@deepseek-ai/dsh-client-ui-sidebar-files`، ملف موضع `builtin`، لا يوجد patterns، آخر لديه واحد فتح هذا نوع جذب توجيه صفحة مدخل (order 10، عنوان و وصف أخذ ذاتي `sidebarFiles` نطاق الأسماء، رسم علامة هو مشترك ملف مشبك رسم علامة).
+- **متن**: بـ هذا id لـ مفتاح `sidebar.right.pane.tab` slot:strip تحت واحد سطر عنوان سطر، لكن بعد هو شجرة. عنوان سطر و وثيقة معاينة (`ui-sidebar-documentpreview`) نفسه: أصل مسار، دليل جزء رمادي لون، الأكثر بعد واحد مقطع صحيح لون، من لا حذف رقم قطع قطع (مقارنة سطر عرض مسار إبقاء نهاية ذيل، باهت خروج فتح رأس) ، يمين طرف هو هو وحيد تحكم عنصر، إعادة قراءة. هذا واحد سطر هو نسخ بينما غير مشترك، لأن إضافة bundle فقط مرور منصة وحدة مشترك وقت التشغيل شفرة؛ انتظار artifact و كل slot شكل تحديد تحت قدوم بعد، يمكن في `ui-primitives` وضع واحد نسخة توفير كل pane عنوان سطر استخدام.
+- **وسم صفحة عنوان**: بـ هذا id لـ مفتاح `sidebar.right.pane.tab.title` slot: نوع وسم قبل واحد قطعة 16px مشترك `FileTypeIcon` ملف مشبك رسم علامة. شجرة ذاته سطر لا رسم هذا قطعة رسم علامة.
 
-`src/client/` 下七个源文件：`definition.tsx`（类型是什么）、`store.ts`（它保存什么）、`face.ts`（它如何列目录，含 Remote 绑定）、`FilesBody.tsx`（它画什么，含排序与失败行两个辅助函数）、`FilesTitle.tsx`（标签页标题）、`locales.ts`（它说什么）、`index.ts`（接线）。
+`src/client/` تحت سبعة عدد مصدر ملف:`definition.tsx`(نوع هو ماذا) ،`store.ts`(هو حفظ ماذا) ،`face.ts`(هو مثل أي صف دليل، يحتوي Remote ربط) ،`FilesBody.tsx`(هو رسم ماذا، يحتوي ترتيب ترتيب و فشل سطر اثنان عدد مساعد مساعدة دالة) ،`FilesTitle.tsx`(وسم صفحة عنوان) ،`locales.ts`(هو قول ماذا) ،`index.ts`(وصل خط).
 
 <a id="the-tree"></a>
-## 树
+## شجرة
 
-根是会话的工作目录，读自 `useSessions().byId[sessionId].cwd`，标题行里的拆分由 `@deepseek-ai/dsh-util-workspace-path` 的 `pathPartsOf` 给出。每一层以绝对路径为键；子路径是父路径以 `/` 拼上条目名。一层在首次展开时经 `@deepseek-ai/dsh-api-workspace-files` 命名空间的 `remote.workspaceFiles.list(sessionId, absolutePath)` 列出；适配器保留列表的条目与截断标志，丢弃其工作区相对路径。行序为目录优先，其后按自然序、不分大小写的名称排列；dotfiles 与其他条目一样显示。
+أصل هو جلسة عمل دليل، قراءة ذاتي `useSessions().byId[sessionId].cwd`، عنوان سطر داخل تفكيك قسم من `@deepseek-ai/dsh-util-workspace-path` `pathPartsOf` إعطاء خروج. كل واحد طبقة بـ قطعا مقابل مسار لـ مفتاح؛ فرعي مسار هو أب مسار بـ `/` تجميع فوق بند اسم. واحد طبقة في أول مرة توسيع وقت مرور `@deepseek-ai/dsh-api-workspace-files` نطاق الأسماء `remote.workspaceFiles.list(sessionId, absolutePath)` صف خروج؛ مهايئ إبقاء قائمة بند و قطع قطع علامة سجل، إسقاط ذلك مساحة العمل متبادل مقابل مسار. سطر ترتيب لـ دليل أولوية، ذلك بعد حسب ذاتي لكن ترتيب، لا قسم كبير صغير كتابة اسم ترتيب صف؛dotfiles و أخرى بند واحد مثال عرض.
 
-| 条目类型 | 行 |
+| بند نوع | سطر |
 |---|---|
-| `directory` | 切换展开与折叠；该层在首次打开时拉取，折叠期间保留。 |
-| `file` | 经 `useTabInfo().tab.actions.openResource` 打开 `dsh-resource://file/session/<sessionId>/<encoded path relative to the root>`，地址由 `@deepseek-ai/dsh-util-workspace-path` 的 `fileAddressFor` 从条目的绝对路径与树的根生成，落在该 tab 自己的 pane 里。 |
-| `other` | 灰显且不可点击，从而完整呈现目录内容。 |
+| `directory` | تبديل توسيع و طي؛ هذا طبقة في أول مرة فتح وقت سحب أخذ، طي خلال إبقاء. |
+| `file` | مرور `useTabInfo().tab.actions.openResource` فتح `dsh-resource://file/session/<sessionId>/<encoded path relative to the root>`، عنوان من `@deepseek-ai/dsh-util-workspace-path` `fileAddressFor` من بند قطعا مقابل مسار و شجرة أصل توليد، سقوط في هذا tab ذاتي ذات pane داخل. |
+| `other` | رمادي إظهار كما غير ممكن نقر، من بينما كامل عرض دليل محتوى. |
 
-被端点条目上限截断的层以一条标记收尾；空层如实说明；失败的层按错误码各显示一行（`workspace-file/not-found`、`outside-workspace`、`not-directory`），其他情况显示传输层自己的消息。重新读取丢弃所有已列出的层并只对展开中的层重新请求；折叠的层在下次打开时重新拉取。没有工作目录的会话只显示一行说明，而不是树。
+يتم طرف نقطة بند حد أعلى قطع قطع طبقة بـ واحد بند علامة استلام ذيل؛ فارغ طبقة مثل فعلي شرح؛ فشل طبقة حسب رمز خطأ كل عرض واحد سطر (`workspace-file/not-found`،`outside-workspace`،`not-directory`) ، أخرى حال حال عرض نقل طبقة ذاتي ذات رسالة. إعادة قراءة إسقاط كل قد صف خروج طبقة و فقط مقابل توسيع في طبقة إعادة طلب؛ طي طبقة في تحت مرة فتح وقت إعادة سحب أخذ. لا يوجد عمل دليل جلسة فقط عرض واحد سطر شرح، بينما لا هو شجرة.
 
-状态保存在类型自己的存储里，按 tab id 分桶：`root`、`levels`（每个绝对路径的 loading / ready / failed）、`expanded` 与 `scrollTop`——滚动期间偏移由正文自己记录，卸载时一次性写入。存储比 body 活得久，切到其他侧栏 tab 再切回来时树带着已加载的层重新挂载，滚动位置也随之恢复。owner 的 `signal` 终结一个桶：中止时忘掉该 tab，其后才结算的列表与卸载时的偏移提交都什么也不写。
+حالة حفظ في نوع ذاتي ذات تخزين داخل، حسب tab id قسم دلو:`root`،`levels`(كل قطعا مقابل مسار loading / ready / failed) ،`expanded` و `scrollTop`——تمرير خلال انحراف نقل من متن ذاتي ذات سجل، إزالة وقت مرة صفة كتابة. تخزين مقارنة body نشط نيل دائم، قطع إلى أخرى جانب شريط tab مجددا قطع عودة قدوم وقت شجرة حمل حال قد تحميل طبقة إعادة تركيب، تمرير موضع أيضا مع لـ استعادة.owner `signal` نهاية ربط واحد دلو: في توقف وقت نسيان إسقاط هذا tab، ذلك بعد عندئذ تسوية قائمة و إزالة وقت انحراف نقل إيداع كل ماذا أيضا لا كتابة.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为本包在浏览器里绘制工作区文件树，不注册任何面向模型的内容。
+بلا، لأن هذه الحزمة في متصفح داخل رسم صنع مساحة العمل ملف شجرة، لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；目录列表经 Remote 传输，不会组装模型请求。
+بلا؛ دليل قائمة مرور Remote نقل، لن تجميع نموذج طلب.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
-- **只有列目录。**没有搜索、产物过滤、拖拽、重命名、右键菜单、当前文件高亮或文件系统监听；一层只会因重新读取而变化。
-- **只有一个根。**树以会话工作目录为根；没有办法浏览到它之上，而 Host 本来也拒绝工作区根之外的路径。
+- **فقط لديه صف دليل.**لا يوجد بحث، ناتج مرور ترشيح، سحب جر، إعادة تسمية، يمين مفتاح قائمة مفرد، حالي ملف عال مضيء أو نظام الملفات استماع؛ واحد طبقة فقط سوف بسبب إعادة قراءة بينما تغير.
+- **فقط لديه واحد أصل.**شجرة بـ جلسة عمل دليل لـ أصل؛ لا يوجد إنجاز قاعدة تصفح تصفح إلى هو لـ فوق، بينما Host هذا قدوم أيضا رفض مساحة العمل أصل خارج مسار.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变量：** 不发布 companion。树唯一的运行时状态是每 tab 一份的 Slot store，由持有它的正文写入、随 tab 的中止信号忘掉；没有第二个观测源可与之比对。
+**وقت التشغيل ثابت كمية:** لا إصدار companion. شجرة وحيد وقت التشغيل حالة هو كل tab واحد نسخة Slot store، من يحتفظ هو متن كتابة، مع tab في توقف إشارة نسيان إسقاط؛ لا يوجد ثاني عدد مراقبة قياس مصدر يمكن و لـ مقارنة مقابل.

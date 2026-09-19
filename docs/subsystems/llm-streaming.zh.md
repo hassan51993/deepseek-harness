@@ -1,18 +1,18 @@
-# LLM（大语言模型）流式输出
+# LLM(كبير لغة نموذج) تدفق صيغة إخراج
 
-[English](llm-streaming.md) | 中文
+[English](llm-streaming.md) | العربية
 
-[`packages/llm`](../../packages/llm/README.zh.md) 提供对话与流式输出类型：每个请求和持久历史共用的 `Message`/`ContentBlock` 变体、完整组装的模型请求、原始 `StreamChunk` 协议、每个适配器必须实现的适配器约定（adapter contract），以及共享的 assembler。[核心包](core.zh.md)在每个轮次持有并记录这些值；本页声明它们。
+[`packages/llm`](../../packages/llm/README.zh.md) توفير محادثة و تدفق صيغة إخراج نوع: كل طلب و حمل دائم تاريخ مشترك استخدام `Message`/`ContentBlock` تغيير جسم، كامل تجميع نموذج طلب، أصلي `StreamChunk` بروتوكول، كل مهايئ يجب تنفيذ مهايئ اتفاق (adapter contract) ، و مشترك assembler.[نواة قلب حزمة](core.zh.md) في كل جولة يحتفظ و سجل هذه قيمة؛ هذا صفحة إعلان هو جمع.
 
-源码：[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
+شفرة المصدر:[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
 
 <a id="content-blocks-and-messages"></a>
 
-## 内容块与消息
+## محتوى كتلة و رسالة
 
-一段对话由 `Message` 组成；一条消息是一个类型化**内容块**的数组。块的联合类型从 `ContentBlockMap` 派生。
+واحد مقطع محادثة من `Message` مجموعة صار؛ واحد بند رسالة هو واحد نوع تحويل**محتوى كتلة**عدد مجموعة. كتلة ربط دمج نوع من `ContentBlockMap` إرسال توليد.
 
-源码：[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
+شفرة المصدر:[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
 
 ```ts type-equiv
 /**
@@ -29,11 +29,11 @@ interface ContentBlockMap {
 }
 ```
 
-各块接口（完整字段见源码）：`TextBlock`（`text`）、`ReasoningBlock`（thinking，区别于可见文本）、`ImageBlock`（一个持久的[图片附件](attachment.zh.md)）、`FileBlock`（一个持久的原样[文件附件](attachment.zh.md)，请求组装对每条路由都把它投影为 handle 文本）、`ToolCallBlock`（`id: ToolCallId`、`name`、原始 JSON `arguments`），以及 `ToolResultBlock`（`toolCallId`、嵌套 `content: ContentBlock[]`、`isError?`）。`ContentBlock = ContentBlockMap[ContentBlockType]`。仅当适配器、UI、压缩（compaction）和持久回放路径均支持某种新模态时，才将其纳入可合并扩展的 map。
+كل كتلة واجهة (كامل حقل رؤية شفرة المصدر):`TextBlock`(`text`) ،`ReasoningBlock`(thinking، منطقة آخر في مرئي نص) ،`ImageBlock`(واحد حمل دائم[صورة مرفق عنصر](attachment.zh.md)) ،`FileBlock`(واحد حمل دائم أصل مثال[ملف مرفق عنصر](attachment.zh.md) ، طلب تجميع مقابل كل بند توجيه كل يأخذ هو إسقاط لـ handle نص) ،`ToolCallBlock`(`id: ToolCallId`،`name`، أصلي JSON `arguments`) ، و `ToolResultBlock`(`toolCallId`، تضمين طقم `content: ContentBlock[]`،`isError?`).`ContentBlock = ContentBlockMap[ContentBlockType]`. فقط عند مهايئ،UI، ضغط (compaction) و حمل دائم إعادة تشغيل مسار متساو دعم حمل بعض نوع جديد نموذج حالة وقت، عندئذ سوف ذلك قبول دخول يمكن دمج توسيع map.
 
-图片访问方式属于请求序列化，不属于持久附件或确定性请求图片版本。`resolveImageAttachmentAccess()` 把附件提供方可选的宿主对象路径，与消费方为当前工具执行文件系统提供的映射组合起来。结果只适用于本次请求，不参与 `variantId`。
+صورة وصول طريقة يخص طلب تسلسل تحويل، لا يخص حمل دائم مرفق عنصر أو تحديد صفة طلب صورة إصدار.`resolveImageAttachmentAccess()` يأخذ مرفق عنصر مزود اختياري مضيف كائن مسار، و مستهلك لـ حالي أداة تنفيذ نظام الملفات توفير خريطة تركيب بدء قدوم. نتيجة فقط ملائم لأجل هذا مرة طلب، لا مشاركة و `variantId`.
 
-源码：[`packages/llm/llm/src/content.ts`](../../packages/llm/llm/src/content.ts)
+شفرة المصدر:[`packages/llm/llm/src/content.ts`](../../packages/llm/llm/src/content.ts)
 
 ```ts type-equiv
 /** Execution-world path that model tools can use to read one normalized attachment. */
@@ -43,9 +43,9 @@ interface ImageAttachmentAccess {
 }
 ```
 
-源码：[`packages/llm/llm/src/message.ts`](../../packages/llm/llm/src/message.ts)
+شفرة المصدر:[`packages/llm/llm/src/message.ts`](../../packages/llm/llm/src/message.ts)
 
-`Message` 是一个带标识且不可变的角色／来源／内容值。模型生成的 assistant 消息会在来源中记录生成它的提供方和模型，以及可选的适配器私有回放数据：
+`Message` هو واحد حمل معرف كما غير ممكن تغيير زاوية لون/مصدر/محتوى قيمة. نموذج توليد assistant رسالة سوف في مصدر في سجل توليد هو مزود و نموذج، و اختياري مهايئ خاص إعادة تشغيل بيانات:
 
 ```ts type-equiv
 /** Provider/model identity and adapter-private replay data for an assistant message. */
@@ -77,7 +77,7 @@ interface Message {
 }
 ```
 
-消息来源本身也是一个可合并扩展的和类型：
+رسالة مصدر ذاته أيضا هو واحد يمكن دمج توسيع و نوع:
 
 ```ts type-equiv
 /**
@@ -92,7 +92,7 @@ interface MessageSourceMap {
 }
 ```
 
-生产方标识与呈现形式相互独立。`kind` 回答「由谁产生」；可选的 `form` 回答「这是什么类型的信息」，消费方决定如何呈现。多个生产方可以共用一种 `form`，一个生产方在一次会话中也可以发出多种 `form`。这些取值描述语义，并逐个增加；未声明或无法识别的值使用文档规定的默认值，按不透明内容呈现：
+إنتاج جهة معرف و عرض شكل صيغة متبادل متبادل مستقل.`kind` عودة جواب «من من إنتاج» ؛ اختياري `form` عودة جواب «هذا هو ماذا نوع معلومة» ، مستهلك قرار مثل أي عرض. كثير عدد إنتاج جهة يمكن مشترك استخدام واحد نوع `form`، واحد إنتاج جهة في مرة جلسة في أيضا يمكن إرسال خروج كثير نوع `form`. هذه أخذ قيمة وصف دلالة، و تدريجي عدد زيادة؛ لم إعلان أو لا يمكن تعرف آخر قيمة استخدام وثيقة قاعدة تحديد قيمة افتراضية، حسب لا نفاذ واضح محتوى عرض:
 
 ```ts type-equiv
 /**
@@ -166,9 +166,9 @@ type ContextFormed =
 
 <a id="streamchunk--the-raw-protocol"></a>
 
-## `StreamChunk`：原始协议
+## `StreamChunk`: أصلي بروتوكول
 
-一个流式响应交错包含多种类型的块（文本、推理（reasoning）、多个工具调用）。`index` 将每个 delta 关联到其所属块；`block-end` 携带完整组装好的 `ContentBlock`，消费方无需自行重新组装 delta。这是一个**封闭的**可辨识联合类型：对 `type` 的 `switch` 以 `assertNever` 结尾，因此新增变体会在每个必须处理它的消费方处触发编译错误。
+واحد تدفق صيغة استجابة تسليم خطأ يتضمن كثير نوع نوع كتلة (نص، دفع إدارة (reasoning) ، كثير عدد أداة استدعاء).`index` سوف كل delta صلة ربط إلى ذلك الذي تابع كتلة؛`block-end` يحمل كامل تجميع جيد `ContentBlock`، مستهلك بلا حاجة ذاتي سطر إعادة تجميع delta. هذا هو واحد**غلاف إغلاق**يمكن تمييز تعرف ربط دمج نوع: مقابل `type` `switch` بـ `assertNever` ربط ذيل، لذلك إضافة جديدة تغيير جسم سوف في كل يجب معالجة هو مستهلك موضع إطلاق تحرير ترجمة خطأ.
 
 ```ts type-equiv
 /**
@@ -219,19 +219,19 @@ type StreamChunk =
 
 <a id="compact-assistant-streams"></a>
 
-## 紧凑 Assistant stream
+## ضيق تجميع Assistant stream
 
-`AssistantStreamAccumulator` 把每个 `StreamChunk` 与其原始安全整数时间戳配对，并生成 `AssistantStreamRecord[]`。同一 block 的连续 text、reasoning 或 tool argument delta 会变成一个 record，使用 `time0`、精确时间戳间隔和每个原始 delta 对应的一个数组成员；其他 chunk 保留为带时间戳的 raw record。该表示会移除重复 event envelope，但不会合并 token 边界，也不会丢弃 terminal、usage、block、failure 或 replay 事实。
+`AssistantStreamAccumulator` يأخذ كل `StreamChunk` و ذلك أصلي أمان كامل عدد ختم الوقت إعداد مقابل، و توليد `AssistantStreamRecord[]`. نفس block وصل متابعة text،reasoning أو tool argument delta سوف تغيير صار واحد record، استخدام `time0`، دقيق ختم الوقت بين فصل و كل أصلي delta مقابل واحد عدد مجموعة عضو؛ أخرى chunk إبقاء لـ حمل ختم الوقت raw record. هذا يمثل سوف إزالة تكرار event envelope، لكن لن دمج token حد، أيضا لن إسقاط terminal،usage،block،failure أو replay واقع.
 
-`snapshot()` 返回分离且不可变的 stream。`expandAssistantStream()` 会严格检查 record key、成员数、index、时间戳、tool-call identity 与无损 JSON，再重建精确的带时间 chunk 序列。Session 日志会把该 stream 嵌入作为 surface result 的 `assistant/message`，或嵌入没有 surface message 的 `assistant/attempt`。
+`snapshot()` إرجاع قسم مغادرة كما غير ممكن تغيير stream.`expandAssistantStream()` سوف صارم إطار فحص record key، عضو عدد،index، ختم الوقت،tool-call identity و بلا ضرر JSON، مجددا إعادة بناء دقيق حمل وقت chunk تسلسل.Session سجل سوف يأخذ هذا stream تضمين دخول بصفة surface result `assistant/message`، أو تضمين دخول لا يوجد surface message `assistant/attempt`.
 
-进程本地 `agent/assistant-stream` frame 承载实时呈现。持久回放与恢复校验仍会展开内嵌 settlement；遥测、token 记账与 Host 折叠直接读取紧凑记录。记录级读取器（`assistantStreamFirstTokenTime`、`assistantStreamHasVisibleContent`、`assistantStreamHasVisibleText`、`lastAssistantStreamChunk`、`assistantStreamChunks`、`joinAssistantStreamText`、`assembleAssistantStream` 以及按 run 的 `runFirstTokenTime` 与 `runFirstVisibleTime`）以提前退出在一次扫描内回答消费方问题，因此大历史每次结算的代价为 O(records) 而非 O(members) 展开（[折叠决策](../../.agents/notes/implemented/architecture/2026-09-06-embedded-stream-record-readers.zh.md)）。`expandAssistantStream()` 仍是持久边界读取记录与需要每个成员的消费方的校验路径。
+عملية محلي `agent/assistant-stream` frame تحمل تحميل فوري عرض. حمل دائم إعادة تشغيل و استعادة تحقق ما زال سوف توسيع داخل تضمين settlement؛ بعيد قياس،token تسجيل حساب و Host طي مباشر قراءة ضيق تجميع سجل. سجل درجة قراءة جهاز (`assistantStreamFirstTokenTime`،`assistantStreamHasVisibleContent`،`assistantStreamHasVisibleText`،`lastAssistantStreamChunk`،`assistantStreamChunks`،`joinAssistantStreamText`،`assembleAssistantStream` و حسب run `runFirstTokenTime` و `runFirstVisibleTime`) بـ رفع قبل خروج في مرة مسح داخل عودة جواب مستهلك مشكلة، لذلك كبير تاريخ كل مرة تسوية بديل قيمة لـ O(records) بينما غير O(members) توسيع ([طي قرار](../../.agents/notes/implemented/architecture/2026-09-06-embedded-stream-record-readers.zh.md)).`expandAssistantStream()` ما زال هو حمل دائم حد قراءة سجل و حاجة كل عضو مستهلك تحقق مسار.
 
 <a id="llmfailure"></a>
 
 ## `LlmFailure`
 
-每个抛出的失败或最终适配器的带内失败都会规范化为一种可序列化、提供方无关的 payload。`providerRetryAfterMs` 是经校验、由提供方请求的正数延迟，而不是重试决策；`ProviderRequestId` 是用于诊断的不透明品牌字符串。
+كل رمي خروج فشل أو نهائي مهايئ حمل داخل فشل كل سوف مواصفة تحويل لـ واحد نوع يمكن تسلسل تحويل، مزود غير متصل payload.`providerRetryAfterMs` هو مرور تحقق، من مزود طلب صحيح عدد تأخير متأخر، بينما لا هو إعادة محاولة قرار؛`ProviderRequestId` هو لأجل تشخيص لا نفاذ واضح صنف لوحة نص.
 
 ```ts type-equiv
 /** Serializable provider or transport failure facts; policy decides whether they are retryable. */
@@ -256,9 +256,9 @@ interface LlmFailure {
 }
 ```
 
-## 请求图片定价
+## طلب صورة تحديد قيمة
 
-提供方对请求图片收取视觉 token 的适配器通过覆写 `LlmAdapter.imageRequestPricing` 声明按路由的定价，消费方经 `ctx.llm.imageRequestPricing(provider, model)` 同步解析。token 计量服务在每次计量时解析路由模型的定价，使 compaction 的压力、保留与选段都按路由请求实际发送的形式为图片历史计价；DeepSeek 适配器按模型的请求目标用官方公布的视觉计量为每个保留的出现位置定价，并把日志中的图片省略决策选中的出现位置按其占位文本定价，已完成请求仍以 provider usage 为权威锚点。
+مزود مقابل طلب صورة استلام أخذ نظر شعور token مهايئ عبر تغطية كتابة `LlmAdapter.imageRequestPricing` إعلان حسب توجيه تحديد قيمة، مستهلك مرور `ctx.llm.imageRequestPricing(provider, model)` تزامن تحليل.token حساب كمية خدمة في كل مرة حساب كمية وقت تحليل توجيه نموذج تحديد قيمة، جعل compaction ضغط قوة، إبقاء و اختيار مقطع كل حسب توجيه طلب فعلي إرسال شكل صيغة لـ صورة تاريخ حساب قيمة؛DeepSeek مهايئ حسب نموذج طلب هدف استخدام رسمي جهة عام نشر نظر شعور حساب كمية لـ كل إبقاء ظهور موضع تحديد قيمة، و يأخذ سجل في صورة حذف قرار اختيار في ظهور موضع حسب ذلك احتلال موضع نص تحديد قيمة، قد إتمام طلب ما زال بـ provider usage لـ مرجعي مرساة نقطة.
 
 ```ts type-equiv
 /**
@@ -295,27 +295,27 @@ interface LlmImageRequestPricing {
 }
 ```
 
-## 适配器约定
+## مهايئ اتفاق
 
-每个适配器必须遵守以下规则，每个消费方可以依赖它们：
+كل مهايئ يجب التزام حراسة التالي قاعدة، كل مستهلك يمكن اعتماد هو جمع:
 
-- **`usage` 在 `finish` 之前，`finish` 之后不再有任何分片。** 将两者都推迟到提供方的流结束标记，这样尾部的 usage-only 分片就不会违反顺序。
-- **工具调用的 `arguments` 全程保持原始 JSON 字符串。** 部分片段通过 `argumentsDelta` 流式传输；如果提供方返回的是已解析的对象，适配器在 `block-end` 时重新序列化为字符串。
-- **两条受支持的错误路径，共用一个 `LlmFailure` 类型。** 失败可以从 `stream()` 抛出（传输／协议错误），**或者**以 `finish {kind:'error'|'aborted', failure}` 结束流（无法在流中途抛异常的适配器用它表示提供方带内错误）。`LlmError.failure` 携带同一个 `LlmFailure`。调用选定适配器后，流会保留被抛出的确切 `Error` 对象，并将不可变事实以及实际服务注册所对应的不可变重试策略关联到该调用；agent loop（智能体循环）先把 attempt stream 提交为 `assistant/attempt`，再关闭失败步骤，并把错误、事实、不可变的先前已重试失败事实、实际服务策略和轮次信号提供给 `agent/request-error`。处理该错误的 listener 在其 await 的修复完成后返回 `{ kind: 'retry' }`；若未恢复，结构化失败会成为轮次错误，并且该次 attempt 不会提交 surface Assistant message 或工具副作用。
-- **一次适配器调用就是一次提供方尝试。** 适配器禁用库重试。agent 层恢复会打开另一个持久、带编号的轮次；直接调用 `ctx.llm.stream()` 的调用方仍然只尝试一次。
-- **提供方停顿在传输层受到时限约束。** 两个已交付的远程适配器都暴露正数且有限的 `streamIdleTimeoutMs`，默认五分钟。watchdog 只在 iterator `next()` 尚未完成时启动，整个请求使用同一个稳定 signal，把自身到期映射为 `TIMEOUT`，并把更早发生的调用方中止保留为 `ABORTED`。
-- **上下文溢出只有一个规范 code。** 两个 DeepSeek 适配器都通过 `isContextWindowExceededError()` 对提供方的显式细节分类并暴露 `CONTEXT_WINDOW_EXCEEDED`，无论失败以抛出的 HTTP `LlmError` 还是带内 finish error 到达。消费方按 code 路由，绝不依赖提供方文本。
-- **空 completion 是可重试错误，而不是静默的成功结果。** 两个适配器都把没有携带任何内容块的终止性 `stop` 结束映射为携带规范 `EMPTY_RESPONSE` code 的 `finish {kind:'error'}`，`dsh-llm-retry` 默认会重试它。
-- **每个提供方 HTTP 请求都携带应用归属头。** 适配器发送 `attributionHeaders()`（见下文）作为 `User-Agent` 基线，并通过协议级测试加以证明。
-- **回放状态归适配器所有；其切分是共享词汇。** 成功的 `finish` 可以携带一个 `ReplayEnvelope`：不透明的响应级元数据，加上与发射块序列对齐的可选逐块条目。对齐关系是 harness 的词汇——组装丢弃某个块时，同一位置的条目一并丢弃，因此存储的元数据始终描述存储的内容。循环把裁剪后的数据与组装后的 assistant 消息一起存储。后续请求中，仅当历史提供方与目标提供方当前注册到完全相同的适配器实例时，`LlmRuntime` 才会传递该状态。该适配器负责校验状态并拥有所有跨模型或跨提供方转换；其他适配器只会收到提供方无关的内容以及提供方／模型字段，不会收到私有状态。持久化内容保持权威：读取适配器无法使用的已存状态只会把这一条消息降级为提供方无关转换并带出诊断，而不是让请求失败。
+- **`usage` في `finish` قبل،`finish` بعد لم يعد لديه أي قسم قطعة.** سوف اثنان من كل دفع متأخر إلى مزود تدفق انتهاء علامة، هذا مثال ذيل جزء usage-only قسم قطعة حينئذ لن مخالفة عكس ترتيب.
+- **أداة استدعاء `arguments` كل مسار إبقاء أصلي JSON نص.** جزء قطعة مقطع عبر `argumentsDelta` تدفق صيغة نقل؛ إذا مزود إرجاع هو قد تحليل كائن، مهايئ في `block-end` وقت إعادة تسلسل تحويل لـ نص.
+- **اثنان بند تلقي دعم حمل خطأ مسار، مشترك استخدام واحد `LlmFailure` نوع.** فشل يمكن من `stream()` رمي خروج (نقل/بروتوكول خطأ) ،**أو من**بـ `finish {kind:'error'|'aborted', failure}` انتهاء تدفق (لا يمكن في تدفق في طريق رمي استثناء مهايئ استخدام هو يمثل مزود حمل داخل خطأ).`LlmError.failure` يحمل نفس عدد `LlmFailure`. استدعاء اختيار تحديد مهايئ بعد، تدفق سوف إبقاء يتم رمي خروج تأكيد قطع `Error` كائن، و سوف غير ممكن تغيير واقع و فعلي خدمة تسجيل الذي مقابل غير ممكن تغيير إعادة محاولة سياسة صلة ربط إلى هذا استدعاء؛agent loop(ذكي جسم حلقة) أولا يأخذ attempt stream إيداع لـ `assistant/attempt`، مجددا إغلاق فشل خطوة، و يأخذ خطأ، واقع، غير ممكن تغيير أولا قبل قد إعادة محاولة فشل واقع، فعلي خدمة سياسة و جولة إشارة توفير إعطاء `agent/request-error`. معالجة هذا خطأ listener في ذلك await إصلاح إتمام بعد إرجاع `{ kind: 'retry' }`؛ إذا لم استعادة، بنية تحويل فشل سوف يصبح جولة خطأ، و كما هذا مرة attempt لن إيداع surface Assistant message أو أداة فرعي أثر.
+- **مرة مهايئ استدعاء حينئذ هو مرة مزود محاولة تجربة.** مهايئ منع استخدام مكتبة إعادة محاولة.agent طبقة استعادة سوف فتح آخر عدد حمل دائم، حمل تحرير رقم جولة؛ مباشر استدعاء `ctx.llm.stream()` استدعاء جهة ما زال فقط محاولة تجربة مرة.
+- **مزود توقف توقف في نقل طبقة تلقي إلى وقت حد قيد.** اثنان عدد قد تسليم بعيد مسار مهايئ كل كشف صحيح عدد كما لديه حد `streamIdleTimeoutMs`، افتراضي خمسة قسم ساعة.watchdog فقط في iterator `next()` بعد لم إتمام وقت بدء، كامل طلب استخدام نفس عدد مستقر signal، يأخذ ذاته إلى مدة خريطة لـ `TIMEOUT`، و يأخذ أكثر مبكر حدوث استدعاء جهة في توقف إبقاء لـ `ABORTED`.
+- **سياق فيض خروج فقط لديه واحد مواصفة code.** اثنان عدد DeepSeek مهايئ كل عبر `isContextWindowExceededError()` مقابل مزود صريح دقيق عقدة تصنيف و كشف `CONTEXT_WINDOW_EXCEEDED`، بلا نقاش فشل بـ رمي خروج HTTP `LlmError` أيضا هو حمل داخل finish error وصول. مستهلك حسب code توجيه، أبدا اعتماد مزود نص.
+- **فارغ completion هو يمكن إعادة محاولة خطأ، بينما لا هو ساكن صامت نجاح نتيجة.** اثنان عدد مهايئ كل يأخذ لا يوجد يحمل أي محتوى كتلة إنهاء صفة `stop` انتهاء خريطة لـ يحمل مواصفة `EMPTY_RESPONSE` code `finish {kind:'error'}`،`dsh-llm-retry` افتراضي سوف إعادة محاولة هو.
+- **كل مزود HTTP طلب كل يحمل تطبيق ملكية رأس.** مهايئ إرسال `attributionHeaders()`(رؤية تحت نص) بصفة `User-Agent` أساس خط، و عبر بروتوكول درجة اختبار إضافة بـ إثبات.
+- **إعادة تشغيل حالة عودة مهايئ كل؛ ذلك قطع قسم هو مشترك مفردات.** نجاح `finish` يمكن يحمل واحد `ReplayEnvelope`: لا نفاذ واضح استجابة درجة بيانات وصفية، إضافة فوق و إرسال إطلاق كتلة تسلسل مقابل متساو اختياري تدريجي كتلة بند. مقابل متساو علاقة هو harness مفردات——تجميع إسقاط بعض عدد كتلة وقت، نفس موضع بند واحد و إسقاط، لذلك تخزين بيانات وصفية بداية نهاية وصف تخزين محتوى. حلقة يأخذ قطع قص بعد بيانات و تجميع بعد assistant رسالة واحد بدء تخزين. لاحق طلب في، فقط عند تاريخ مزود و هدف مزود حالي تسجيل إلى تماما نفسه مهايئ نسخة وقت،`LlmRuntime` عندئذ سوف نقل تمرير هذا حالة. هذا مهايئ مسؤول تحقق حالة و يملك كل عبر نموذج أو عبر مزود تحويل؛ أخرى مهايئ فقط سوف استلام إلى مزود غير متصل محتوى و مزود/نموذج حقل، لن استلام إلى خاص حالة. حفظ دائم محتوى إبقاء مرجعي: قراءة مهايئ لا يمكن استخدام قد تخزين حالة فقط سوف يأخذ هذا واحد بند رسالة تخفيض لـ مزود غير متصل تحويل و حمل خروج تشخيص، بينما لا هو يجعل طلب فشل.
 
 ## `ResolvedRetryPolicy`
 
-重试配置会在路由注册前解析为不可变的可辨识联合。normal mode 携带 `mode: 'normal'`、有限的 `maxRetries`、`retryableCodes`，以及必填的 `initialDelayMs`、`maxDelayMs` 与 `jitterRatio`；always mode 携带 `mode: 'always'` 和相同的必填退避字段，但没有有限上限。省略提供方策略时使用重试五次的 normal 默认值。分层 settings 在切换到 always 模式后可能保留仅属于 normal 的 `maxRetries` 或 `retryableCodes`；解析器会忽略这些未启用字段，并捕获纯 always 策略。`LlmRuntime.providerRetryPolicy(provider)` 返回注册值；调用选定实际提供服务的注册后，`llmRetryPolicyOf(stream)` 返回从中捕获的值，因此之后释放或替换路由都无法改变进行中失败的恢复策略。可选配置输入字段由[生成的配置目录](../config-catalog.zh.md)列出。
+إعادة محاولة إعداد سوف في توجيه تسجيل قبل تحليل لـ غير ممكن تغيير يمكن تمييز تعرف ربط دمج.normal mode يحمل `mode: 'normal'`، لديه حد `maxRetries`،`retryableCodes`، و لا بد ملء `initialDelayMs`،`maxDelayMs` و `jitterRatio`؛always mode يحمل `mode: 'always'` و نفسه لا بد ملء تراجع تجنب حقل، لكن لا يوجد لديه حد حد أعلى. حذف مزود سياسة وقت استخدام إعادة محاولة خمسة مرة normal قيمة افتراضية. قسم طبقة settings في تبديل إلى always نمط بعد ممكن إبقاء فقط يخص normal `maxRetries` أو `retryableCodes`؛ محلل سوف تجاهل اختصار هذه لم تفعيل حقل، و التقاط صاف always سياسة.`LlmRuntime.providerRetryPolicy(provider)` إرجاع تسجيل قيمة؛ استدعاء اختيار تحديد فعلي توفير خدمة تسجيل بعد،`llmRetryPolicyOf(stream)` إرجاع من في التقاط قيمة، لذلك بعد تحرير أو استبدال توجيه كل لا يمكن تغيير إجراء في فشل استعادة سياسة. اختياري إعداد إدخال حقل من[توليد إعداد دليل](../config-catalog.zh.md) صف خروج.
 
-## `AppIdentity`：应用归属
+## `AppIdentity`: تطبيق ملكية
 
-每个适配器都会向提供方发送的静态公开应用标识（[`packages/llm/llm/src/attribution.ts`](../../packages/llm/llm/src/attribution.ts)）。`attributionHeaders(identity?)` 只把它映射到标准 `User-Agent` header；该约定有意不支持 OpenRouter 特有的应用归属 header。默认 `APP_IDENTITY` 从包 manifest（元数据清单）获取版本；每个字段都是公开产品事实——不含 secret、路径、会话 id 或逐用户标识，且任何逐请求信息都不得影响这些值。设计理由见[强制 `User-Agent` 归属](../../.agents/notes/implemented/architecture/2026-06-21-mandatory-app-attribution-headers.zh.md)。
+كل مهايئ كل سوف نحو مزود إرسال ساكن حالة عام تطبيق معرف ([`packages/llm/llm/src/attribution.ts`](../../packages/llm/llm/src/attribution.ts)).`attributionHeaders(identity?)` فقط يأخذ هو خريطة إلى معيار `User-Agent` header؛ هذا اتفاق متعمد لا دعم حمل OpenRouter خاص لديه تطبيق ملكية header. افتراضي `APP_IDENTITY` من حزمة manifest(بيانات وصفية بيان) نيل أخذ إصدار؛ كل حقل كل هو عام منتج واقع——لا يحتوي secret، مسار، جلسة id أو تدريجي مستخدم معرف، كما أي تدريجي طلب معلومة كل لا نيل أثر هذه قيمة. تصميم إدارة من رؤية[قوي صنع `User-Agent` ملكية](../../.agents/notes/implemented/architecture/2026-06-21-mandatory-app-attribution-headers.zh.md).
 
 ```ts type-equiv
 /**
@@ -339,7 +339,7 @@ interface AppIdentity {
 
 ## `TokenUsage`
 
-逐调用 token 记账。各计数**互不重叠**：`inputTokens` 只包含未缓存输入；缓存输入单独报告，计费输入是三者之和。若提供方把缓存命中折入单一提示词总数（如 DeepSeek 的 `prompt_tokens`），适配器会再将其扣除。可选的 `totalTokens` 是精确的提示词与输出聚合计数，由适配器保留提供方原值或从权威聚合计数重建；不可用或不一致时省略。`reasoningTokens` 存在时只是信息性细节，已经包含在 `outputTokens` 中；汇总时不得重复相加。
+تدريجي استدعاء token تسجيل حساب. كل حساب عدد**متبادل لا إعادة تراكم**:`inputTokens` فقط يتضمن لم ذاكرة مؤقتة إدخال؛ ذاكرة مؤقتة إدخال مفرد وحيد تقرير إبلاغ، حساب استهلاك إدخال هو ثلاثة من لـ و. إذا مزود يأخذ ذاكرة مؤقتة أمر في طي دخول مفرد واحد نص التوجيه مجموع عدد (مثل DeepSeek `prompt_tokens`) ، مهايئ سوف مجددا سوف ذلك خصم حذف. اختياري `totalTokens` هو دقيق نص التوجيه و إخراج تجمع دمج حساب عدد، من مهايئ إبقاء مزود أصل قيمة أو من مرجعي تجمع دمج حساب عدد إعادة بناء؛ غير ممكن استخدام أو لا متسق وقت حذف.`reasoningTokens` وجود وقت فقط هو معلومة صفة دقيق عقدة، قد يتضمن في `outputTokens` في؛ تجميع مجموع وقت لا نيل تكرار متبادل إضافة.
 
 ```ts type-equiv
 /**
@@ -371,9 +371,9 @@ interface TokenUsage {
 
 ## `BlockAssembler`
 
-`BlockAssembler`（[`packages/llm/llm/src/assembler.ts`](../../packages/llm/llm/src/assembler.ts)）是唯一的共享实现，负责把 `StreamChunk` 流折叠回 `ContentBlock`、usage、结束原因与回放状态。循环在记录原始分片的同时，把同一批分片送入 assembler，再将组装后的 assistant 内容连同生成它的提供方和模型一起存储。需要组装结果、又不想重新实现 fold 的消费方使用它。
+`BlockAssembler`([`packages/llm/llm/src/assembler.ts`](../../packages/llm/llm/src/assembler.ts)) هو وحيد مشترك تنفيذ، مسؤول يأخذ `StreamChunk` تدفق طي عودة `ContentBlock`،usage، انتهاء سبب و إعادة تشغيل حالة. حلقة في سجل أصلي قسم قطعة معا، يأخذ نفس دفعة قسم قطعة إرسال دخول assembler، مجددا سوف تجميع بعد assistant محتوى وصل نفس توليد هو مزود و نموذج واحد بدء تخزين. حاجة تجميع نتيجة، أيضا لا تفكير إعادة تنفيذ fold مستهلك استخدام هو.
 
-内容与元数据共用同一次保留/丢弃决定：`max-tokens` 结束会丢弃每个工具调用，因为被截断的调用不能安全执行，而同一决定会在每个被丢弃的位置裁剪回放数据的逐块条目。无论组装移除什么，`blocks()` 与 `replayState` 都不可能不一致。
+محتوى و بيانات وصفية مشترك استخدام نفس مرة إبقاء/إسقاط قرار:`max-tokens` انتهاء سوف إسقاط كل أداة استدعاء، لأن يتم قطع قطع استدعاء لا يستطيع أمان تنفيذ، بينما نفس قرار سوف في كل يتم إسقاط موضع قطع قص إعادة تشغيل بيانات تدريجي كتلة بند. بلا نقاش تجميع إزالة ماذا،`blocks()` و `replayState` كل غير ممكن قدرة لا متسق.
 
 ```ts public-api
 /**
@@ -430,15 +430,15 @@ declare class BlockAssembler {
 
 <a id="the-model-request-and-result"></a>
 
-## 模型请求
+## نموذج طلب
 
-一次模型调用是一个完全组装好的 `GenerateOptions`。适配器以原始 [`StreamChunk`](#streamchunk--the-raw-protocol) 流作答；消费方用 [`BlockAssembler`](#blockassembler) 组装它。
+مرة نموذج استدعاء هو واحد تماما تجميع جيد `GenerateOptions`. مهايئ بـ أصلي [`StreamChunk`](#streamchunk--the-raw-protocol) تدفق عمل جواب؛ مستهلك استخدام [`BlockAssembler`](#blockassembler) تجميع هو.
 
-源码：[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
+شفرة المصدر:[`packages/llm/llm/src/types.ts`](../../packages/llm/llm/src/types.ts)
 
-提供方与模型发现使用小型、提供方无关的描述符。模型目录仅供参考：路由仍以已注册提供方为键。
+مزود و نموذج اكتشاف استخدام صغير نوع، مزود غير متصل وصف رمز. نموذج دليل فقط توفير مشاركة اعتبار: توجيه ما زال بـ قد تسجيل مزود لـ مفتاح.
 
-注册适配器会返回一个句柄：既是释放器，也带有原子的路由替换——路由集合由用户配置决定的插件正需要它。
+تسجيل مهايئ سوف إرجاع واحد جملة مقبض: حيث هو تحرير جهاز، أيضا حمل لديه أصل فرعي توجيه استبدال——توجيه تجميع دمج من مستخدم إعداد قرار إضافة صحيح حاجة هو.
 
 ```ts type-equiv
 /**
@@ -476,7 +476,7 @@ interface LlmProviderInfo {
 }
 ```
 
-适配器插件还会通过 `registerConfigurableProviders()` 声明哪些路由*可以*运行，并指明每条路由的用户设置分节，使配置界面能在任何路由注册之前就呈现休眠的提供方。
+مهايئ إضافة أيضا سوف عبر `registerConfigurableProviders()` إعلان أي بعض توجيه*يمكن*تشغيل، و إشارة واضح كل بند توجيه مستخدم ضبط قسم عقدة، جعل إعداد واجهة قدرة في أي توجيه تسجيل قبل حينئذ عرض راحة نوم مزود.
 
 ```ts type-equiv
 /**
@@ -527,7 +527,7 @@ interface LlmModelInfo {
 }
 ```
 
-对正确性敏感的元数据与参考目录分开解析，并归服务该确切路由的适配器所有。上下文容量、适配器调用默认值、推理选项和系统提示词更新模式共用同一个确切模型结果，消费方因而无需重复执行权威模型解析。`SystemPromptUpdate` 只有一个值 `'in-history'`：模型把 `messages` 中任意位置最新的 `system` 消息读作完整的有效系统提示词，因此 agent loop 可以把变化后的提示词追加到已缓存历史之后，而不是改写第 0 条消息（[决策规则](../../packages/core/agent-loop/README.zh.md#understand-the-implementation)）；模式缺失表示只读取开头的 system 消息，`normalizeModelInfo` 以 `INVALID_MODEL_INFO` 拒绝任何其他值。
+مقابل صحيح تأكيد صفة حساس شعور بيانات وصفية و مشاركة اعتبار دليل قسم فتح تحليل، و عودة خدمة هذا تأكيد قطع توجيه مهايئ كل. سياق سعة كمية، مهايئ استدعاء قيمة افتراضية، دفع إدارة خيار و توجيه النظام تحديث نمط مشترك استخدام نفس عدد تأكيد قطع نموذج نتيجة، مستهلك بسبب بينما بلا حاجة تكرار تنفيذ مرجعي نموذج تحليل.`SystemPromptUpdate` فقط لديه واحد قيمة `'in-history'`: نموذج يأخذ `messages` في مهمة معنى موضع الأكثر جديد `system` رسالة قراءة عمل كامل صالح توجيه النظام، لذلك agent loop يمكن يأخذ تغير بعد نص التوجيه إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد، بينما لا هو تعديل كتابة رقم 0 بند رسالة ([قرار قاعدة](../../packages/core/agent-loop/README.zh.md#understand-the-implementation)) ؛ نمط ناقص يمثل فقط قراءة فتح رأس system رسالة،`normalizeModelInfo` بـ `INVALID_MODEL_INFO` رفض أي أخرى قيمة.
 
 ```ts type-equiv
 /** Provider-owned context capacity for one exact provider/model route. */
@@ -537,7 +537,7 @@ interface LlmModelContext {
 }
 ```
 
-推理强度是另一项针对确切路由的能力。核心为标识符添加品牌类型，但不枚举其值；有序集合、展示名称和可选的部署默认值均由各适配器持有。
+دفع إدارة قوي درجة هو آخر بند إبرة مقابل تأكيد قطع توجيه قدرة. نواة قلب لـ معرف رمز إضافة صنف لوحة نوع، لكن لا قطعة رفع ذلك قيمة؛ لديه ترتيب تجميع دمج، عرض اسم و اختياري نشر قيمة افتراضية متساو من كل مهايئ يحتفظ.
 
 ```ts type-equiv
 /** Adapter-owned identifier for one model's selectable reasoning effort. */
@@ -628,7 +628,7 @@ interface GenerateOptions {
 }
 ```
 
-模型响应为何停止由可合并扩展的原因表示。提供方终态失败携带流式约定的 [`LlmFailure`](#llmfailure)：
+نموذج استجابة لـ أي إيقاف من يمكن دمج توسيع سبب يمثل. مزود نهاية حالة فشل يحمل تدفق صيغة اتفاق [`LlmFailure`](#llmfailure):
 
 ```ts type-equiv
 /**
@@ -644,9 +644,9 @@ interface FinishReasonMap {
 }
 ```
 
-`FinishReason = FinishReasonMap[keyof FinishReasonMap]`。`TokenUsage`（逐调用计量，含不相交的缓存字段）详见[下文](#tokenusage)。
+`FinishReason = FinishReasonMap[keyof FinishReasonMap]`.`TokenUsage`(تدريجي استدعاء حساب كمية، يحتوي لا متبادل تسليم ذاكرة مؤقتة حقل) تفصيل رؤية[تحت نص](#tokenusage).
 
-`GenerateOptions.tools` 携带 `ToolSchema`——工具的 JSON Schema 描述，发送给模型。它声明在 dsh-llm（而非 dsh-tools）中，正是因为它是循环每一步组装请求的一部分：
+`GenerateOptions.tools` يحمل `ToolSchema`——أداة JSON Schema وصف، إرسال إعطاء نموذج. هو إعلان في dsh-llm(بينما غير dsh-tools) في، صحيح هو لأن هو هو حلقة كل واحد خطوة تجميع طلب واحد جزء:
 
 ```ts type-equiv
 /**
@@ -664,9 +664,9 @@ interface ToolSchema {
 }
 ```
 
-面向模型的 `ToolSchema` 是协议类型；产出它的已注册 `ToolDefinition`（schema + `execute`）在 [tools.md](tools.zh.md) 中。
+موجه إلى نموذج `ToolSchema` هو بروتوكول نوع؛ إنتاج خروج هو قد تسجيل `ToolDefinition`(schema + `execute`) في [tools.md](tools.zh.md) في.
 
-界面正在起草的提供方既没有路由也没有 catalog，因此询问被单独描述：请求携带用户正在编辑的草稿，回复是界面可以采纳的候选，而不是它必须服务的 catalog。
+واجهة صحيح في بدء مسودة مزود حيث لا يوجد توجيه أيضا لا يوجد catalog، لذلك استفسار سؤال يتم مفرد وحيد وصف: طلب يحمل مستخدم صحيح في تحرير مسودة مسودة، عودة تكرار هو واجهة يمكن قبول مرشح، بينما لا هو هو يجب خدمة catalog.
 
 ```ts type-equiv
 /**
@@ -715,15 +715,15 @@ interface LlmDiscoveredModel {
 }
 ```
 
-### 请求信封：`LlmCallConfig` 与记录的 header
+### طلب معلومة غلاف:`LlmCallConfig` و سجل header
 
-循环从已记录状态构建每个请求。`EpochHeader` 记录调用配置，标记由适配器默认值提供的字段，并通过完整的 `request/header` 快照记录权威返回工具顺序（由 `toolOrder` 配置；未配置时按字典序）。渲染后的提示词是派生历史——surface 第 0 号节点上的 `system/message`，加上 `in-history` 路由追加的任何后续系统节点——因此请求头与派生历史共同使请求可由会话日志重建。见 [session.md](session.zh.md#the-request-header-event-requestheader) 与[可重建性 Agent Note](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.zh.md)。
+حلقة من قد سجل حالة بناء كل طلب.`EpochHeader` سجل استدعاء إعداد، علامة من مهايئ قيمة افتراضية توفير حقل، و عبر كامل `request/header` لقطة سجل مرجعي إرجاع أداة ترتيب (من `toolOrder` إعداد؛ لم إعداد وقت حسب حرف قاموس ترتيب). تصيير بعد نص التوجيه هو إرسال توليد تاريخ——surface رقم 0 رقم عقدة فوق `system/message`، إضافة فوق `in-history` توجيه إلحاق أي لاحق نظام عقدة——لذلك طلب رأس و إرسال توليد تاريخ مشترك نفس جعل طلب يمكن من جلسة سجل إعادة بناء. رؤية [session.md](session.zh.md#the-request-header-event-requestheader) و[يمكن إعادة بناء صفة Agent Note](../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.zh.md).
 
-`agent/request` 接收冻结的调用配置种子，并可返回替代值以切换提供方、模型、推理强度或采样参数。waterfall（瀑布式事件）开始前，循环会移除标记为适配器默认值的值，使确切模型准备过程填入所选路由的当前值；未带标记的显式设置仍保留在提议中。waterfall 结束后，准备过程会在轮次信号控制下拒绝显式指定但不受支持的推理强度 ID（不自动调整），并记录生效配置以及由适配器默认值提供的字段。步骤准入时，该 waterfall 与准备过程在组装和 `step/start` 之后、系统提示词与已接纳用户批次提交之前运行；在任一阶段取消都不会提交这两者。已准备调用的能力决定提示词协调，调用直至分派完成始终持有同一项适配器注册。到达 `llm/stream` 的请求会被深度冻结，因此变更会抛异常；请求还携带进程本地循环标识，使观察者不会把单独记录的冻结辅助调用误认成对话请求。
+`agent/request` استقبال تجميد ربط استدعاء إعداد نوع فرعي، و يمكن إرجاع بديل قيمة بـ تبديل مزود، نموذج، دفع إدارة قوي درجة أو أخذ مثال معامل.waterfall(شلال نشر صيغة حدث) بدء قبل، حلقة سوف إزالة علامة لـ مهايئ قيمة افتراضية قيمة، جعل تأكيد قطع نموذج دقيق تجهيز مرور مسار ملء دخول الذي اختيار توجيه حالي قيمة؛ لم حمل علامة صريح ضبط ما زال إبقاء في رفع اقتراح في.waterfall انتهاء بعد، دقيق تجهيز مرور مسار سوف في جولة إشارة تحكم تحت رفض صريح إشارة تحديد لكن لا تلقي دعم حمل دفع إدارة قوي درجة ID(لا تلقائي ضبط كامل) ، و سجل توليد فاعلية إعداد و من مهايئ قيمة افتراضية توفير حقل. خطوة دقيق دخول وقت، هذا waterfall و دقيق تجهيز مرور مسار في تجميع و `step/start` بعد، توجيه النظام و قد وصل قبول مستخدم دفعة مرة إيداع قبل تشغيل؛ في مهمة واحد مرحلة مقطع إلغاء كل لن إيداع هذا اثنان من. قد دقيق تجهيز استدعاء قدرة قرار نص التوجيه تنسيق ضبط، استدعاء مباشر حتى قسم إرسال إتمام بداية نهاية يحتفظ نفس بند مهايئ تسجيل. وصول `llm/stream` طلب سوف يتم عميق درجة تجميد ربط، لذلك تغيير سوف رمي استثناء؛ طلب أيضا يحمل عملية محلي حلقة معرف، جعل مراقبة من لن يأخذ مفرد وحيد سجل تجميد ربط مساعد مساعدة استدعاء خطأ إقرار صار محادثة طلب.
 
-在协议中，循环构建的请求只有派生历史：渲染后的提示词作为开头的 `system` 角色消息（surface 第 0 号节点，即一个 `system/message` 事件）传输，并且当已准备调用声明 `systemPromptUpdate: 'in-history'` 时，变化后的非空提示词可以作为后续的 `system` 角色消息跟在已缓存历史之后，由模型读作有效提示词；请求的 `system` 字段不设置——`GenerateOptions.system` 服务于标题提供方等直接单次调用方。空渲染文本使派生历史不包含任何系统消息，即使先前请求保留了多个提示词版本。已记录的请求会以最新的 `user/message`（轮次首步）或上一步的工具结果（后续步骤）结尾。开发不变式针对每个循环构建的请求精确重算此等式，并拒绝携带 `system` 字段的循环请求。
+في بروتوكول في، حلقة بناء طلب فقط لديه إرسال توليد تاريخ: تصيير بعد نص التوجيه بصفة فتح رأس `system` زاوية لون رسالة (surface رقم 0 رقم عقدة، أي واحد `system/message` حدث) نقل، و كما عند قد دقيق تجهيز استدعاء إعلان `systemPromptUpdate: 'in-history'` وقت، تغير بعد غير فارغ نص التوجيه يمكن بصفة لاحق `system` زاوية لون رسالة تتبع في قد ذاكرة مؤقتة تاريخ بعد، من نموذج قراءة عمل صالح نص التوجيه؛ طلب `system` حقل لا ضبط——`GenerateOptions.system` خدمة في عنوان مزود انتظار مباشر مفرد مرة استدعاء جهة. فارغ تصيير نص جعل إرسال توليد تاريخ لا يتضمن أي نظام رسالة، أي جعل أولا قبل طلب إبقاء كثير عدد نص التوجيه إصدار. قد سجل طلب سوف بـ الأكثر جديد `user/message`(جولة أول خطوة) أو فوق واحد خطوة أداة نتيجة (لاحق خطوة) ربط ذيل. تطوير ثابت صيغة إبرة مقابل كل حلقة بناء طلب دقيق إعادة حساب هذا انتظار صيغة، و رفض يحمل `system` حقل حلقة طلب.
 
-FIXME(call-config-shape)：重新审视其余哪些字段出于缓存目的确实属于 epoch 层级（`model` 和模型持有的推理强度已明确属于；采样标量目前出于谨慎保留在此）。
+FIXME(call-config-shape): إعادة مراجعة نظر ذلك بقية أي بعض حقل خروج في ذاكرة مؤقتة هدف تأكيد فعلي يخص epoch طبقة درجة (`model` و نموذج يحتفظ دفع إدارة قوي درجة قد واضح يخص؛ أخذ مثال علامة كمية هدف قبل خروج في حذر حذر إبقاء في هذا).
 
 ```ts type-equiv
 /**
@@ -753,15 +753,15 @@ interface LlmCallConfigAdapterDefaults {
 }
 ```
 
-## DeepSeek 官方请求扩展
+## DeepSeek رسمي جهة طلب توسيع
 
-`ctx.deepseekLlmApiExtensions` 是用于向 `deepseek-official` 请求添加顶层字段的提供方特定注册表。贡献插件通过 `register(field, provider)` 认领一个字段；适配器在序列化基础正文后调用 `prepare(request)`，并在 HTTP 前合并返回字段。已准备的 `accept()` 事务会在 2xx 后运行，因此贡献方可以提交交付状态，而不会把传输失败或提供方拒绝当作接受。准备、冲突与接受失败会使用 `REQUEST_EXTENSION`，并使模型请求失败。
+`ctx.deepseekLlmApiExtensions` هو لأجل نحو `deepseek-official` طلب إضافة قمة طبقة حقل مزود خاص تحديد سجل التسجيل. مساهمة إضافة عبر `register(field, provider)` إقرار قيادة واحد حقل؛ مهايئ في تسلسل تحويل أساس أساس متن بعد استدعاء `prepare(request)`، و في HTTP قبل دمج إرجاع حقل. قد دقيق تجهيز `accept()` أمر خدمة سوف في 2xx بعد تشغيل، لذلك مساهمة جهة يمكن إيداع تسليم حالة، بينما لن يأخذ نقل فشل أو مزود رفض عند عمل قبول. دقيق تجهيز، اندفاع مفاجئ و قبول فشل سوف استخدام `REQUEST_EXTENSION`، و جعل نموذج طلب فشل.
 
-[协议参考](../deepseek-llm-api-wire-extensions.zh.md)定义确切的请求标头、扩展事务、字段版本和接收方义务。随附组合会将 [`dsh_session_log`](../../packages/session/session-log-deepseek/README.zh.md) 注册为无损增量权威日志后缀，并将 [`dsh_plugin_packages`](../../packages/llm/plugin-package-inventory-deepseek/README.zh.md) 注册为完整存活 Loader 包集合。这些字段仍位于模型消息之外，也不会进入 pi-ai 适配器路径。
+[بروتوكول مشاركة اعتبار](../deepseek-llm-api-wire-extensions.zh.md) تعريف تأكيد قطع طلب علامة رأس، توسيع أمر خدمة، حقل إصدار و استقبال جهة معنى خدمة. مع مرفق تركيب سوف سوف [`dsh_session_log`](../../packages/session/session-log-deepseek/README.zh.md) تسجيل لـ بلا ضرر زيادة كمية مرجعي سجل بعد لاحقة، و سوف [`dsh_plugin_packages`](../../packages/llm/plugin-package-inventory-deepseek/README.zh.md) تسجيل لـ كامل تخزين نشط Loader حزمة تجميع دمج. هذه حقل ما زال يقع في نموذج رسالة خارج، أيضا لن دخول pi-ai مهايئ مسار.
 
-## 服务与提供方约定
+## خدمة و مزود اتفاق
 
-`LlmAdapter` 是提供方约定：创建子类、实现 `stream()`，再用 `ctx.llm.registerAdapter(providers, adapter)` 注册一个适配器实例。`GenerateOptions.provider` 选择已注册适配器；`GenerateOptions.model` 会传给该适配器，无需在生命周期启动时注册。重复提供方路由会原子失败。可选的 `providerRetryPolicy()` 会按路由捕获并填入 normal 默认值，`providerInfo()` 与异步 `listModels()` 方法则为 `LlmRuntime.listProviders()` / `listModels()` 提供分离的 selector 元数据。该目录仅供参考，不是请求白名单：适配器仍是权威，并可接受未列出的模型 id。单次异步 `resolveModel()` 查询返回确切模型身份，以及可选的对正确性敏感的上下文容量、适配器配置的 `defaultMaxTokens`、由模型持有的有序推理强度 ID 和可选的部署默认值；字段缺失表示元数据不可用或保留提供方持有的行为，而不表示目录成员关系无效。解析器会接收可选的取消信号，并且必须在信号中止后迅速完成结算。`LlmRuntime.resolveModelInfo()` 会校验聚合结果并返回分离值。在最终适配器边界，`resolveCallConfig()` 仅在 `maxTokens` 缺失时填入输出默认值，并校验和填入推理强度，因此直接调用也无法绕过任何一项已配置行为；直接分派会在等待解析前捕获一项适配器注册。agent loop 则使用 `prepareCall()`，使模型解析、请求头持久记录和分派全程使用同一项注册，保留来自同一次查询的分离上下文元数据，并报告适配器填入的配置字段。适配器查找发生在 `llm/stream` waterfall 的终端 continuation，因此 listener 可以在查找前短路调用，或路由一个可变的一次性请求。AgentLoop 在外层 waterfall 返回流句柄时观察到一次请求尝试；这个有限边界不能证明惰性终端适配器已构造完成或开始提供方 I/O。`block-start` / `block-end` 的 `index` 关联与 assembler 共同意味着适配器只需 emit 格式正确的分片——块重组不是每个适配器各自的问题。`ctx.llm.stream()` 与 `llm/stream` waterfall 在一个轮次中的位置见 [architecture.md](../architecture.zh.md#turn-flow)。
+`LlmAdapter` هو مزود اتفاق: إنشاء فرعي صنف، تنفيذ `stream()`، مجددا استخدام `ctx.llm.registerAdapter(providers, adapter)` تسجيل واحد مهايئ نسخة.`GenerateOptions.provider` اختيار قد تسجيل مهايئ؛`GenerateOptions.model` سوف نقل إعطاء هذا مهايئ، بلا حاجة في دورة الحياة بدء وقت تسجيل. تكرار مزود توجيه سوف أصل فرعي فشل. اختياري `providerRetryPolicy()` سوف حسب توجيه التقاط و ملء دخول normal قيمة افتراضية،`providerInfo()` و مختلف خطوة `listModels()` طريقة فإن لـ `LlmRuntime.listProviders()` / `listModels()` توفير قسم مغادرة selector بيانات وصفية. هذا دليل فقط توفير مشاركة اعتبار، لا هو طلب أبيض اسم مفرد: مهايئ ما زال هو مرجعي، و يمكن قبول لم صف خروج نموذج id. مفرد مرة مختلف خطوة `resolveModel()` استعلام إرجاع تأكيد قطع نموذج هوية، و اختياري مقابل صحيح تأكيد صفة حساس شعور سياق سعة كمية، مهايئ إعداد `defaultMaxTokens`، من نموذج يحتفظ لديه ترتيب دفع إدارة قوي درجة ID و اختياري نشر قيمة افتراضية؛ حقل ناقص يمثل بيانات وصفية غير ممكن استخدام أو إبقاء مزود يحتفظ سلوك، بينما لا يمثل دليل عضو علاقة بلا فاعلية. محلل سوف استقبال اختياري إلغاء إشارة، و كما يجب في إشارة في توقف بعد سريع سرعة إتمام تسوية.`LlmRuntime.resolveModelInfo()` سوف تحقق تجمع دمج نتيجة و إرجاع قسم مغادرة قيمة. في نهائي مهايئ حد،`resolveCallConfig()` فقط في `maxTokens` ناقص وقت ملء دخول إخراج قيمة افتراضية، و تحقق و ملء دخول دفع إدارة قوي درجة، لذلك مباشر استدعاء أيضا لا يمكن التفاف مرور أي واحد بند قد إعداد سلوك؛ مباشر قسم إرسال سوف في انتظار تحليل قبل التقاط واحد بند مهايئ تسجيل.agent loop فإن استخدام `prepareCall()`، جعل نموذج تحليل، طلب رأس حمل دائم سجل و قسم إرسال كل مسار استخدام نفس بند تسجيل، إبقاء قدوم ذاتي نفس مرة استعلام قسم مغادرة سياق بيانات وصفية، و تقرير إبلاغ مهايئ ملء دخول إعداد حقل. مهايئ فحص بحث حدوث في `llm/stream` waterfall طرفية continuation، لذلك listener يمكن في فحص بحث قبل قصير مسار استدعاء، أو توجيه واحد متغير مرة صفة طلب.AgentLoop في خارج طبقة waterfall إرجاع تدفق جملة مقبض وقت مراقبة إلى مرة طلب محاولة تجربة؛ هذا عدد لديه حد حد لا يستطيع إثبات كسول صفة طرفية مهايئ قد بنية صنع إتمام أو بدء مزود I/O.`block-start` / `block-end` `index` صلة ربط و assembler مشترك نفس معنى طعم حال مهايئ فقط يحتاج emit صيغة صحيح تأكيد قسم قطعة——كتلة إعادة مجموعة لا هو كل مهايئ كل منها مشكلة.`ctx.llm.stream()` و `llm/stream` waterfall في واحد جولة في موضع رؤية [architecture.md](../architecture.zh.md#turn-flow).
 
 ```ts type-equiv
 /** One model call whose config and adapter registration were resolved together. */
@@ -860,7 +860,7 @@ declare abstract class LlmAdapter {
 }
 ```
 
-`ContentBlockType`（带 `index` 关联的块所携带的键集合）从上文的 [`ContentBlockMap`](#content-blocks-and-messages) 派生。
+`ContentBlockType`(حمل `index` صلة ربط كتلة الذي يحمل مفتاح تجميع دمج) من فوق نص [`ContentBlockMap`](#content-blocks-and-messages) إرسال توليد.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

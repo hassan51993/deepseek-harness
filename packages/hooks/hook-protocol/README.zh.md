@@ -1,143 +1,143 @@
 ---
-description: "Claude Code 与 Codex 桥接背后的共享钩子规则——钩子能做什么、运行时会发生什么——供 hooks 子系统的用户与维护者阅读。"
+description: "Claude Code و Codex جسر وصل خلف بعد مشترك خطاف قاعدة——خطاف قدرة فعل ماذا، وقت التشغيل سوف حدوث ماذا——توفير hooks فرعي نظام مستخدم و صيانة من قراءة قراءة."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-hook-protocol
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-hook-protocol` 让两个桥接以相同方式处理你的钩子：它定义钩子能做什么、运行时会发生什么。你无需自行安装或配置它——选择 `dsh-hooks-claude-code` 或 `dsh-hooks-codex`，把它指向你现有的 `hooks.json`，这些规则就会作用于你的钩子。通过任一桥接，钩子都可以带一条模型可见的消息阻塞提示词或工具调用、向对话附加额外上下文，或请求运行停止。只有 command 钩子会运行；`http`、`mcp_tool`、`prompt` 与 `agent` handler 会被跳过并给出警告。
+`dsh-hook-protocol` يجعل اثنان عدد جسر وصل بـ نفسه طريقة معالجة أنت خطاف: هو تعريف خطاف قدرة فعل ماذا، وقت التشغيل سوف حدوث ماذا. أنت بلا حاجة ذاتي سطر تثبيت أو إعداد هو——اختيار `dsh-hooks-claude-code` أو `dsh-hooks-codex`، يأخذ هو إشارة نحو أنت قائم `hooks.json`، هذه قاعدة حينئذ سوف أثر في أنت خطاف. عبر مهمة واحد جسر وصل، خطاف كل يمكن حمل واحد بند نموذج مرئي رسالة منع سد نص التوجيه أو أداة استدعاء، نحو محادثة مرفق إضافة مقدار خارج سياق، أو طلب تشغيل إيقاف. فقط لديه command خطاف سوف تشغيل؛`http`،`mcp_tool`،`prompt` و `agent` handler سوف يتم قفز مرور و إعطاء خروج تحذير إبلاغ.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-你无需直接安装或配置本包——挂载 `dsh-hooks-claude-code` 或 `dsh-hooks-codex` 就会把这些规则应用到你的 `hooks.json` 钩子上。用本页了解钩子能做什么、运行时会发生什么；两个桥接页面列出各方言支持的事件。
+أنت بلا حاجة مباشر تثبيت أو إعداد هذه الحزمة——تركيب `dsh-hooks-claude-code` أو `dsh-hooks-codex` حينئذ سوف يأخذ هذه قاعدة تطبيق إلى أنت `hooks.json` خطاف فوق. استخدام هذا صفحة حل خطاف قدرة فعل ماذا، وقت التشغيل سوف حدوث ماذا؛ اثنان عدد جسر وصل صفحة صف خروج كل جهة قول دعم حمل حدث.
 
-### 何时选择
+### أي وقت اختيار
 
-当你持有现有的 Claude Code 或 Codex 钩子、希望它们在 agent（智能体）运行期间继续工作时，选择 `dsh-hooks-claude-code` 或 `dsh-hooks-codex`。你永远不会直接选择本包。没有参考工具对应物的定制行为请避开整个组：原生 Cordis 插件拥有完整的 harness API，无需中间的钩子协议。
+عند أنت يحتفظ قائم Claude Code أو Codex خطاف، أمل نظر هو جمع في agent(ذكي جسم) تشغيل خلال متابعة عمل وقت، اختيار `dsh-hooks-claude-code` أو `dsh-hooks-codex`. أنت دائم بعيد لن مباشر اختيار هذه الحزمة. لا يوجد مشاركة اعتبار أداة مقابل شيء تحديد صنع سلوك طلب تجنب فتح كامل مجموعة: أصلي Cordis إضافة يملك كامل harness API، بلا حاجة في بين خطاف بروتوكول.
 
-### 钩子能做什么
+### خطاف قدرة فعل ماذا
 
-- **带消息阻塞操作**——退出码为 2 的钩子会停止提示词或工具调用，其错误输出会作为原因展示。
-- **工具运行前请求确认**——Claude Code 钩子可以请求确认而非直接阻塞；Codex 桥接不呈现此选项。
-- **附加上下文**——钩子可以返回额外文本，模型会在下一次请求中看到。
-- **在选定时刻运行**——钩子配置按名称或 pattern 选择触发的事件；缺失、空或 `'*'` pattern 表示该类的每个事件。
-- **失败不停止运行**——除 2 以外的任何退出码都是非阻塞失败：操作继续，失败被记录；完全无法启动的钩子按同样方式处理。
-- **请求运行停止**——钩子可以请求运行停止（`{"continue": false}`）；该请求会被记录，但没有运行级效果（见已知限制）。
+- **حمل رسالة منع سد عملية**——خروج رمز لـ 2 خطاف سوف إيقاف نص التوجيه أو أداة استدعاء، ذلك خطأ إخراج سوف بصفة سبب عرض.
+- **أداة تشغيل قبل طلب تأكيد**——Claude Code خطاف يمكن طلب تأكيد بينما غير مباشر منع سد؛Codex جسر وصل لا عرض هذا خيار.
+- **مرفق إضافة سياق**——خطاف يمكن إرجاع مقدار خارج نص، نموذج سوف في تحت مرة طلب في يرى.
+- **في اختيار تحديد وقت لحظة تشغيل**——خطاف إعداد حسب اسم أو pattern اختيار إطلاق حدث؛ ناقص، فارغ أو `'*'` pattern يمثل هذا صنف كل حدث.
+- **فشل لا إيقاف تشغيل**——حذف 2 بـ خارج أي خروج رمز كل هو غير منع سد فشل: عملية متابعة، فشل يتم سجل؛ تماما لا يمكن بدء خطاف حسب نفس مثال طريقة معالجة.
+- **طلب تشغيل إيقاف**——خطاف يمكن طلب تشغيل إيقاف (`{"continue": false}`) ؛ هذا طلب سوف يتم سجل، لكن لا يوجد تشغيل درجة فاعلية نتيجة (رؤية معروف حد).
 
-### 钩子运行时你会看到什么
+### خطاف وقت التشغيل أنت سوف يرى ماذا
 
-- 钩子阻塞时，操作不会发生，钩子的消息会被展示。
-- 钩子附加上下文时，模型会在下一次请求中看到该文本。
-- 失败的钩子——命令错误、崩溃或除 2 以外的任何退出码——会被记录，不会停止 agent。
-- 如果钩子配置无法读取或解析，桥接会记录警告且不运行任何钩子；agent 仍会启动。
-- 混合钩子类型的配置仍然可用：`http`、`mcp_tool`、`prompt` 与 `agent` handler 会被跳过并给出警告，其 command 钩子照常运行。
+- خطاف منع سد وقت، عملية لن حدوث، خطاف رسالة سوف يتم عرض.
+- خطاف مرفق إضافة سياق وقت، نموذج سوف في تحت مرة طلب في يرى هذا نص.
+- فشل خطاف——أمر خطأ، انهيار انهيار أو حذف 2 بـ خارج أي خروج رمز——سوف يتم سجل، لن إيقاف agent.
+- إذا خطاف إعداد لا يمكن قراءة أو تحليل، جسر وصل سوف سجل تحذير إبلاغ كما لا تشغيل أي خطاف؛agent ما زال سوف بدء.
+- خلط دمج خطاف نوع إعداد ما زال متاح:`http`،`mcp_tool`،`prompt` و `agent` handler سوف يتم قفز مرور و إعطاء خروج تحذير إبلاغ، ذلك command خطاف وفق معتاد تشغيل.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释本库背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير هذا مكتبة خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 处理流水线
+### معالجة خط الإنتاج
 
-本库是一串单一用途的步骤，每个步骤一个函数：校验 matcher pattern、通过 `dsh-shell` 执行器运行命令、解码结果、把每个匹配 hook 的结果合并为最严格的一个结果，并记录持久的 `hook/*` 事件对。matcher 的 `mode` 参数是两个方言唯一的差异轴——`claude-code` 把 pattern 解释为字面量备选或正则，`codex` 始终解释为未锚定正则。每个步骤都会降级为受控结果而不是抛异常，因此钩子永远不会使调用轮次崩溃：无效正则是运行时的不匹配，执行器拒绝会变成没有退出码的 `HookOutput`，退出码 2 以 stderr 作为原因阻塞，其他失败均不阻塞。合并应用 `deny > ask > allow` 优先级，保持首个 `continue: false` 停止的粘性，并按 hook 顺序累积上下文。脱离运行会被跟踪，因此 `fiber.dispose()` 能达到完全停稳；不变式伴生插件会拒绝位于尚未结束的轮次之外的 `hook/*` 记录。这些步骤位于 [`src/matcher.ts`](src/matcher.ts)、[`src/runner.ts`](src/runner.ts)、[`src/codec.ts`](src/codec.ts)、[`src/merge.ts`](src/merge.ts)、[`src/events.ts`](src/events.ts)、[`src/detached.ts`](src/detached.ts) 与 [`src/invariant.ts`](src/invariant.ts)。
+هذا مكتبة هو واحد سلسلة مفرد واحد استخدام طريق خطوة، كل خطوة واحد دالة: تحقق matcher pattern، عبر `dsh-shell` منفذ تشغيل أمر، حل رمز نتيجة، يأخذ كل مطابقة hook نتيجة دمج لـ الأكثر صارم إطار واحد نتيجة، و سجل حمل دائم `hook/*` حدث مقابل.matcher `mode` معامل هو اثنان عدد جهة قول وحيد فرق مختلف محور——`claude-code` يأخذ pattern حل تفسير لـ حرف وجه كمية تجهيز اختيار أو صحيح فإن،`codex` بداية نهاية حل تفسير لـ لم مرساة تحديد صحيح فإن. كل خطوة كل سوف تخفيض لـ تلقي تحكم نتيجة بينما لا هو رمي استثناء، لذلك خطاف دائم بعيد لن جعل استدعاء جولة انهيار انهيار: بلا فاعلية صحيح فإن هو وقت التشغيل لا مطابقة، منفذ رفض سوف تغيير صار لا يوجد خروج رمز `HookOutput`، خروج رمز 2 بـ stderr بصفة سبب منع سد، أخرى فشل متساو لا منع سد. دمج تطبيق `deny > ask > allow` أولوية درجة، إبقاء أول عدد `continue: false` إيقاف لصق صفة، و حسب hook ترتيب تراكم تراكم سياق. انفصال مغادرة تشغيل سوف يتم تتبع أثر، لذلك `fiber.dispose()` قدرة بلوغ إلى تماما توقف مستقر؛ ثابت صيغة مرافق توليد إضافة سوف رفض يقع في بعد لم انتهاء جولة خارج `hook/*` سجل. هذه خطوة يقع في [`src/matcher.ts`](src/matcher.ts) ،[`src/runner.ts`](src/runner.ts) ،[`src/codec.ts`](src/codec.ts) ،[`src/merge.ts`](src/merge.ts) ،[`src/events.ts`](src/events.ts) ،[`src/detached.ts`](src/detached.ts) و [`src/invariant.ts`](src/invariant.ts).
 
-### `hook/*` 会话事件
+### `hook/*` جلسة حدث
 
-`hook/invoked` 与 `hook/result` 事件通过 declaration merging 合并进 `SessionEventMap`，作为仅日志记录：与 `compaction/*` 相同，它们不是 surface 事件，也不携带 `surfaceOp`。`hook/result` 按 `handlerId` 与其 `hook/invoked` 配对，决策规则由 `appendHookResult` 负责。载荷与逐事件 JSDoc 位于生成的[持久化日志事件目录](../../../docs/persistence-catalog.zh.md)中。
+`hook/invoked` و `hook/result` حدث عبر declaration merging دمج دخول `SessionEventMap`، بصفة فقط سجل سجل: و `compaction/*` نفسه، هو جمع لا هو surface حدث، أيضا لا يحمل `surfaceOp`.`hook/result` حسب `handlerId` و ذلك `hook/invoked` إعداد مقابل، قرار قاعدة من `appendHookResult` مسؤول. تحميل حمل و تدريجي حدث JSDoc يقع في توليد[حفظ دائم سجل حدث دليل](../../../docs/persistence-catalog.zh.md) في.
 
-调用与结果记录必须位于尚未结束的轮次内：`UserPromptSubmit`、`PreToolUse`、`PostToolUse` 与 `Stop` 按构造满足该关系，而 `SessionStart` 在轮次 1 之前运行、没有 `hook/*` 记录——改为投递其注入的上下文。不变式伴生插件注册到 `ctx.invariants`，拒绝在尚未结束的轮次之外追加的 `hook/*` 事件、没有匹配 invoked 的结果、未知方言或非有限时长。
+استدعاء و نتيجة سجل يجب يقع في بعد لم انتهاء جولة داخل:`UserPromptSubmit`،`PreToolUse`،`PostToolUse` و `Stop` حسب بنية صنع ممتلئ كاف هذا علاقة، بينما `SessionStart` في جولة 1 قبل تشغيل، لا يوجد `hook/*` سجل——تعديل لـ إلقاء تمرير ذلك حقن سياق. ثابت صيغة مرافق توليد إضافة تسجيل إلى `ctx.invariants`، رفض في بعد لم انتهاء جولة خارج إلحاق `hook/*` حدث، لا يوجد مطابقة invoked نتيجة، لم معرفة جهة قول أو غير لديه حد وقت طويل.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **把唯一差异轴收拢进 `mode`。** 两个方言只在 matcher pattern 的解读方式上不同，因此 matcher 把 mode 作为参数，而不是复制引擎。
-- **执行器拥有进程控制。** 命令通过 `dsh-shell` 执行器运行，而非自建 spawn：执行器已经提供了协议所需的已清理但可覆盖的环境、进程组取消与超时。
-- **绝不向循环抛异常。** 每种失败模式——格式错误的 JSON、无效正则、执行器拒绝——都会降级为受控的结果或不匹配，因此钩子永远不能使调用轮次崩溃。
-- **仅日志、轮次内的事件。** `hook/*` 记录是「运行了什么、决定了什么」的持久证据；它们不是 surface 事件，不变式伴生插件会拒绝尚未结束的轮次之外的记录。
+- **يأخذ وحيد فرق مختلف محور استلام تجميع دخول `mode`.** اثنان عدد جهة قول فقط في matcher pattern حل قراءة طريقة فوق مختلف، لذلك matcher يأخذ mode بصفة معامل، بينما لا هو نسخ جذب محرك.
+- **منفذ يملك عملية تحكم.** أمر عبر `dsh-shell` منفذ تشغيل، بينما غير ذاتي بناء spawn: منفذ قد توفير بروتوكول الذي يحتاج قد تنظيف لكن يمكن تغطية بيئة، عملية مجموعة إلغاء و مهلة.
+- **أبدا نحو حلقة رمي استثناء.** كل نوع فشل نمط——صيغة خطأ JSON، بلا فاعلية صحيح فإن، منفذ رفض——كل سوف تخفيض لـ تلقي تحكم نتيجة أو لا مطابقة، لذلك خطاف دائم بعيد لا يستطيع جعل استدعاء جولة انهيار انهيار.
+- **فقط سجل، جولة داخل حدث.** `hook/*` سجل هو «تشغيل ماذا، قرار ماذا» حمل دائم دليل؛ هو جمع لا هو surface حدث، ثابت صيغة مرافق توليد إضافة سوف رفض بعد لم انتهاء جولة خارج سجل.
 
-[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) 记录了共享与逐方言的划分以及备选方案。
+[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) سجل مشترك و تدريجي جهة قول تخطيط قسم و تجهيز اختيار خطة.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 每个原语与事件辅助函数的公开导出 |
-| [`src/matcher.ts`](src/matcher.ts) | 匹配全部哨兵、字面量或正则模式、校验与运行时匹配 |
-| [`src/runner.ts`](src/runner.ts) | 通过 `ctx.shell` 的 `runHook` 执行与 `DEFAULT_HOOK_TIMEOUT_MS` |
-| [`src/codec.ts`](src/codec.ts) | 退出码与结构化 stdout 解码为 `HookOutput` |
-| [`src/merge.ts`](src/merge.ts) | 最严格合并与 `MergedHookOutcome` 类型 |
-| [`src/events.ts`](src/events.ts) | `hook/*` 事件声明、追加辅助函数、stderr 摘要 |
-| [`src/detached.ts`](src/detached.ts) | 脱离运行的完全停稳跟踪 |
-| [`src/types.ts`](src/types.ts) | `HookOutput`、`MatcherGroup`、`CommandHook` 与 `hook/*` 载荷类型 |
-| [`src/invariant.ts`](src/invariant.ts) | 不变式伴生插件：配对、轮次包裹、方言与时长检查 |
+| [`src/index.ts`](src/index.ts) | كل أصل لغة و حدث مساعد مساعدة دالة عام توجيه خروج |
+| [`src/matcher.ts`](src/matcher.ts) | مطابقة الكل مراقبة جندي، حرف وجه كمية أو صحيح فإن نمط، تحقق و وقت التشغيل مطابقة |
+| [`src/runner.ts`](src/runner.ts) | عبر `ctx.shell` `runHook` تنفيذ و `DEFAULT_HOOK_TIMEOUT_MS` |
+| [`src/codec.ts`](src/codec.ts) | خروج رمز و بنية تحويل stdout حل رمز لـ `HookOutput` |
+| [`src/merge.ts`](src/merge.ts) | الأكثر صارم إطار دمج و `MergedHookOutcome` نوع |
+| [`src/events.ts`](src/events.ts) | `hook/*` حدث إعلان، إلحاق مساعد مساعدة دالة،stderr ملخص |
+| [`src/detached.ts`](src/detached.ts) | انفصال مغادرة تشغيل تماما توقف مستقر تتبع أثر |
+| [`src/types.ts`](src/types.ts) | `HookOutput`،`MatcherGroup`،`CommandHook` و `hook/*` تحميل حمل نوع |
+| [`src/invariant.ts`](src/invariant.ts) | ثابت صيغة مرافق توليد إضافة: إعداد مقابل، جولة حزمة لف، جهة قول و وقت طويل فحص |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享规则进入应用这些规则的桥接，以及它们所面向的扩展点。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك قاعدة دخول تطبيق هذه قاعدة جسر وصل، و هو جمع الذي موجه إلى نقطة توسيع.
 
-- [hooks 组地图](../README.zh.md)——同级组页面及其包表。
-- [hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md)——协议核心为何共享、各桥接负责什么。
-- [钩子桥接 Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——两个桥接如何使用这些原语。
-- [拦截扩展点 Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——桥接所映射的类型化 Decision 接口面。
-- [生成的持久化日志事件目录](../../../docs/persistence-catalog.zh.md)——`hook/*` 事件载荷与逐事件 JSDoc。
+- [hooks مجموعة أرض رسم](../README.zh.md)——نفس درجة مجموعة صفحة و ذلك حزمة جدول.
+- [hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md)——بروتوكول نواة قلب لـ أي مشترك، كل جسر وصل مسؤول ماذا.
+- [خطاف جسر وصل Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——اثنان عدد جسر وصل مثل أي استخدام هذه أصل لغة.
+- [اعتراض قطع نقطة توسيع Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——جسر وصل الذي خريطة نوع تحويل Decision واجهة وجه.
+- [توليد حفظ دائم سجل حدث دليل](../../../docs/persistence-catalog.zh.md)——`hook/*` حدث تحميل حمل و تدريجي حدث JSDoc.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过 `dsh-hooks-claude-code` 与 `dsh-hooks-codex` 间接影响；它们是将解码后的 hook 输出渲染为模型上下文的唯一消费方。
+عبر `dsh-hooks-claude-code` و `dsh-hooks-codex` بين وصل أثر؛ هو جمع هو سوف حل رمز بعد hook إخراج تصيير لـ نموذج سياق وحيد مستهلك.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-不会直接失效；请求前缀变更由上述消费方负责。
+لن مباشر بطلان؛ طلب بادئة تغيير من فوق وصف مستهلك مسؤول.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制描述钩子目前还无法通过共享引擎做到的事情。它们是当前包约束，而非任务积压。
+هذه حد وصف خطاف هدف قبل أيضا لا يمكن عبر مشترك جذب محرك فعل إلى أمر حال. هو جمع هو حالي حزمة قيد، بينما غير مهمة تراكم ضغط.
 
-- **`HookOutput.updatedInput` 会被解析但不会应用**——输入改写是已延期的一致性设计问题（见 [pre-tool-input-rewrite Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)）；当 hook 设置它时，桥接会记录并警告。
-- **折叠出的停止没有运行级效果**——`mergeHookOutputs` 把 `continue: false` 折叠为粘性 `stop`，但拦截点没有硬停止原语，因此桥接只记录该停止并保留 hook 的逐点效果。
-- **只有 command 形态会运行**——协议只执行 `{ type: 'command', command, timeout? }`；桥接会解析并跳过其方言定义的其他形态（`http`、`mcp_tool`、`prompt`、`agent`）。
+- **`HookOutput.updatedInput` سوف يتم تحليل لكن لن تطبيق**——إدخال تعديل كتابة هو قد تأجيل متسق صفة تصميم مشكلة (رؤية [pre-tool-input-rewrite Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)) ؛ عند hook ضبط هو وقت، جسر وصل سوف سجل و تحذير إبلاغ.
+- **طي خروج إيقاف لا يوجد تشغيل درجة فاعلية نتيجة**——`mergeHookOutputs` يأخذ `continue: false` طي لـ لصق صفة `stop`، لكن اعتراض قطع نقطة لا يوجد صلب إيقاف أصل لغة، لذلك جسر وصل فقط سجل هذا إيقاف و إبقاء hook تدريجي نقطة فاعلية نتيجة.
+- **فقط لديه command شكل سوف تشغيل**——بروتوكول فقط تنفيذ `{ type: 'command', command, timeout? }`؛ جسر وصل سوف تحليل و قفز مرور ذلك جهة قول تعريف أخرى شكل (`http`،`mcp_tool`،`prompt`،`agent`).
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文、包代码和相关 Agent Note 为准。
+هذا ملاحظة تطوير هو صيانة من عمل سياق: فتح وضع مشكلة و بعد لم قرار استكشاف جهة نحو. هو واضح لا أداة مرجعي صفة——قد تسليم سلوك، حد و حيث تحديد إدارة من بـ فوق نص، حزمة شفرة و متبادل صلة Agent Note لـ دقيق.
 
-#### 未来：运行级停止
+#### لم قدوم: تشغيل درجة إيقاف
 
-请求停止整个运行的 hook（`continue: false`）会被折叠进 `MergedHookOutcome.stop`，但不会在任何地方生效：拦截点缺少硬停止原语，轮次中途的请求改为在 `hook/result` 中记录该停止。运行级停止机制可以让桥接真正应用它；目前尚无设计。
+طلب إيقاف كامل تشغيل hook(`continue: false`) سوف يتم طي دخول `MergedHookOutcome.stop`، لكن لن في أي أرض جهة توليد فاعلية: اعتراض قطع نقطة نقص قليل صلب إيقاف أصل لغة، جولة في طريق طلب تعديل لـ في `hook/result` في سجل هذا إيقاف. تشغيل درجة إيقاف آلية يمكن يجعل جسر وصل حق صحيح تطبيق هو؛ هدف قبل بعد بلا تصميم.
 
 </details>

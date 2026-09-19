@@ -1,36 +1,36 @@
-# Agent Note: Windows 覆盖率 lane 的 hook 预算与 Lefthook 套件预算
+# Agent Note: Windows نسبة التغطية lane hook ميزانية و Lefthook طقم عنصر ميزانية
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-29-windows-lane-hook-and-lefthook-budget.md) | 中文
+[English](2026-08-29-windows-lane-hook-and-lefthook-budget.md) | العربية
 
-## 问题
+## مشكلة
 
-两件事让 Windows 覆盖率 lane 在既没碰套件、也没碰 gate 的分支上持续失败。
+اثنان عنصر أمر يجعل Windows نسبة التغطية lane في حيث لا اصطدام طقم عنصر، أيضا لا اصطدام gate فرع فوق حمل متابعة فشل.
 
-[`scripts/install-lefthook.spec.ts`](../../../../scripts/install-lefthook.spec.ts) 在 `describe` 层取 `{ timeout: 30_000 }`，并以 `MULTI_PROCESS_TEST_TIMEOUT_MS` 常量的形式在其中五个用例上重复了同一个值。每个用例都会建临时 worktree 并通过 spawn 的 Git 与 Node 子进程驱动它，因此这个套件受进程创建约束，而不是受它的断言约束。在空闲的 macOS 主机上，它最慢的用例耗时 7.5 秒，也就是说这个上限只有约四倍余量——而 [translation-pairing-merge 套件](2026-08-27-translation-pairing-merge-budget.zh.md)在十倍以上余量的 15 秒上限下仍然触发。在自托管 Windows runner 数秒级的进程创建尖峰下，这个套件曾在没有改动它的分支上报出 `Test timed out in 30000ms`，而被观察到失败的两个用例正是它最慢的那个和第七慢的那个。
+[`scripts/install-lefthook.spec.ts`](../../../../scripts/install-lefthook.spec.ts) في `describe` طبقة أخذ `{ timeout: 30_000 }`، و بـ `MULTI_PROCESS_TEST_TIMEOUT_MS` معتاد كمية شكل صيغة في منها خمسة عدد حالة استخدام فوق تكرار نفس عدد قيمة. كل حالة استخدام كل سوف بناء مؤقت worktree و عبر spawn Git و Node عملية فرعية قيادة هو، لذلك هذا عدد طقم عنصر تلقي عملية إنشاء قيد، بينما لا هو تلقي هو تأكيد قيد. في فارغ خامل macOS رئيسي آلة فوق، هو الأكثر بطيء حالة استخدام استهلاك وقت 7.5 ثانية، أيضا حينئذ هو قول هذا عدد حد أعلى فقط لديه نحو أربعة ضعف بقية كمية——بينما [translation-pairing-merge طقم عنصر](2026-08-27-translation-pairing-merge-budget.zh.md) في عشرة ضعف بـ فوق بقية كمية 15 ثانية حد أعلى تحت ما زال إطلاق. في ذاتي حمل إدارة Windows runner عدد ثانية درجة عملية إنشاء حاد ذروة تحت، هذا عدد طقم عنصر سبق في لا يوجد تعديل هو فرع فوق تقرير خروج `Test timed out in 30000ms`، بينما يتم مراقبة إلى فشل اثنان عدد حالة استخدام صحيح هو هو الأكثر بطيء ذلك عدد و رقم سبعة بطيء ذلك عدد.
 
-另一件事是 [`scripts/coverage-partitions.ts`](../../../../scripts/coverage-partitions.ts) 里的 `coverageTestTimeoutArgs`：它用 `DSH_COVERAGE_TEST_TIMEOUT_MS` 抬高了 `--testTimeout` 和 `--expect.poll.timeout`，却把 `--hookTimeout` 留在 Vitest 独立的 10 秒默认值上。setup 与 teardown 承受的是被抬高的测试预算所针对的同一种争抢：[`removeFixtureSafely`](../../../../scripts/test-fixture-cleanup.ts) 会在一个注释写明的 10 秒窗口内重试 Windows 句柄释放，因此一个真正用满该窗口的 `afterEach` 恰好撞上 hook 默认值。只抬高测试预算，只是把一个受争抢套件的失败从用例挪到它的 teardown，而不是消除它。
+آخر عنصر أمر هو [`scripts/coverage-partitions.ts`](../../../../scripts/coverage-partitions.ts) داخل `coverageTestTimeoutArgs`: هو استخدام `DSH_COVERAGE_TEST_TIMEOUT_MS` رفع عال `--testTimeout` و `--expect.poll.timeout`، لكن يأخذ `--hookTimeout` إبقاء في Vitest مستقل 10 ثانية قيمة افتراضية فوق.setup و teardown تحمل تلقي هو يتم رفع عال اختبار ميزانية الذي إبرة مقابل نفس نوع تنازع انتزاع:[`removeFixtureSafely`](../../../../scripts/test-fixture-cleanup.ts) سوف في واحد ملاحظة تفسير كتابة واضح 10 ثانية نافذة داخل إعادة محاولة Windows جملة مقبض تحرير، لذلك واحد حق صحيح استخدام ممتلئ هذا نافذة `afterEach` تماما جيد اصطدام فوق hook قيمة افتراضية. فقط رفع عال اختبار ميزانية، فقط هو يأخذ واحد تلقي تنازع انتزاع طقم عنصر فشل من حالة استخدام نقل إلى هو teardown، بينما لا هو إزالة حذف هو.
 
-## 决定
+## قرار
 
-Lefthook 套件取 `{ timeout: 90_000 }`，与 [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) 里的 `DSH_COVERAGE_TEST_TIMEOUT_MS` 一致。逐用例常量被删除而不是被抬高：它只是重述了 `describe` 的取值，而 translation-pairing-merge 的 note 已经否决过逐用例余量——后续新增的用例若不带余量，就会静默继承另一个上限。
+Lefthook طقم عنصر أخذ `{ timeout: 90_000 }`، و [`.github/workflows/ci.yml`](../../../../.github/workflows/ci.yml) داخل `DSH_COVERAGE_TEST_TIMEOUT_MS` متسق. تدريجي حالة استخدام معتاد كمية يتم حذف بينما لا هو يتم رفع عال: هو فقط هو إعادة وصف `describe` أخذ قيمة، بينما translation-pairing-merge note قد مرفوض مرور تدريجي حالة استخدام بقية كمية——لاحق إضافة جديدة حالة استخدام إذا لا حمل بقية كمية، حينئذ سوف ساكن صامت وراثة آخر عدد حد أعلى.
 
-`coverageTestTimeoutArgs` 在原有两个参数旁边发出 `--hookTimeout`。一个环境变量管一份预算，覆盖受争抢的 lane 必须完成的工作，无论这份工作位于用例内还是位于它的 setup 与 teardown。
+`coverageTestTimeoutArgs` في أصل لديه اثنان عدد معامل جانب حافة إرسال خروج `--hookTimeout`. واحد بيئة متغير إدارة واحد نسخة ميزانية، تغطية تلقي تنازع انتزاع lane يجب إتمام عمل، بلا نقاش هذا نسخة عمل يقع في حالة استخدام داخل أيضا هو يقع في هو setup و teardown.
 
-## 后果
+## عاقبة
 
-共享卷 runner 上一次 `git` 或 `node` 的 spawn 尖峰不再决定这两个套件的结果，一次缓慢的 fixture teardown 也不再让一个用例全部通过的套件失败。两个取值都不是对「需要多久」的测量：Lefthook 套件最慢的用例在空闲主机上约 7.5 秒，而抬高上限不会让一次通过的运行变慢。
+مشترك لفة runner فوق مرة `git` أو `node` spawn حاد ذروة لم يعد قرار هذا اثنان عدد طقم عنصر نتيجة، مرة مؤقت بطيء fixture teardown أيضا لم يعد يجعل واحد حالة استخدام الكل عبر طقم عنصر فشل. اثنان عدد أخذ قيمة كل لا هو مقابل «حاجة كثير دائم» قياس كمية:Lefthook طقم عنصر الأكثر بطيء حالة استخدام في فارغ خامل رئيسي آلة فوق نحو 7.5 ثانية، بينما رفع عال حد أعلى لن يجعل مرة عبر تشغيل تغيير بطيء.
 
-两份预算都放宽了「多长算可接受」，因此一个退化到几十秒的真实变慢现在会通过，而此前的上限会拦住它。这项检测能力是有意换掉的：那些上限触发的是宿主机争抢，不是回归。
+اثنان نسخة ميزانية كل وضع عرض «كثير طويل حساب يمكن قبول» ، لذلك واحد تراجع تحويل إلى بضعة عشرة ثانية حقيقي تغيير بطيء الآن سوف عبر، بينما هذا قبل حد أعلى سوف اعتراض إقامة هو. هذا بند فحص قياس قدرة هو متعمد تبديل إسقاط: ذلك بعض حد أعلى إطلاق هو مضيف آلة تنازع انتزاع، لا هو ارتداد.
 
-hook 的改动在所有设置了 `DSH_COVERAGE_TEST_TIMEOUT_MS` 的地方生效：[ci.yml](../../../../.github/workflows/ci.yml) 的 Windows 覆盖率 lane，以及 [ci-master.yml](../../../../.github/workflows/ci-master.yml) 的 `serial-windows` master standby（[serial-windows notices 超时 note](../process/2026-08-31-serial-windows-notices-timeout-budget.zh.md) 记录了第二个 lane 的采用）。不设置它的 lane 保持全部 Vitest 默认值，包括 10 秒的 hook 预算。
+hook تعديل في كل ضبط `DSH_COVERAGE_TEST_TIMEOUT_MS` أرض جهة توليد فاعلية:[ci.yml](../../../../.github/workflows/ci.yml) Windows نسبة التغطية lane، و [ci-master.yml](../../../../.github/workflows/ci-master.yml) `serial-windows` master standby([serial-windows notices مهلة note](../process/2026-08-31-serial-windows-notices-timeout-budget.zh.md) سجل ثاني عدد lane اعتماد). لا ضبط هو lane إبقاء الكل Vitest قيمة افتراضية، يشمل 10 ثانية hook ميزانية.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**给 `--hookTimeout` 单独一个环境变量。**两个旋钮描述宿主机的同一个属性，而只抬高其中一个的 lane 会以相反的方向复现同一个失败。
+**إعطاء `--hookTimeout` مفرد وحيد واحد بيئة متغير.**اثنان عدد دوران زر وصف مضيف آلة نفس عدد خاصية، بينما فقط رفع عال منها واحد lane سوف بـ متبادل عكس جهة نحو تكرار الآن نفس عدد فشل.
 
-**改为缩短 `removeFixtureSafely` 的重试窗口。**这是用清理失败换共享自托管 `/tmp` 上的临时目录残留，而该残留已经两次耗尽宿主机的 inode 容量。
+**تعديل لـ تقليص قصير `removeFixtureSafely` إعادة محاولة نافذة.**هذا هو استخدام تنظيف فشل تبديل مشترك ذاتي حمل إدارة `/tmp` فوق مؤقت دليل ناقص إبقاء، بينما هذا ناقص إبقاء قد اثنان مرة استهلاك كل مضيف آلة inode سعة كمية.
 
-**只抬高 Lefthook 套件，保留 hook 默认值。**该套件的 `afterEach` 正是它 Windows `EPERM` 清理失败出现的位置，所以被抬高的用例预算只会把同一次运行改成以 hook 超时的形式暴露。
+**فقط رفع عال Lefthook طقم عنصر، إبقاء hook قيمة افتراضية.**هذا طقم عنصر `afterEach` صحيح هو هو Windows `EPERM` تنظيف فشل ظهور موضع، الذي بـ يتم رفع عال حالة استخدام ميزانية فقط سوف يأخذ نفس مرة تشغيل تعديل صار بـ hook مهلة شكل صيغة كشف.

@@ -1,14 +1,14 @@
-# 用户交互
+# مستخدم تفاعل
 
-[English](user-questions.md) | 中文
+[English](user-questions.md) | العربية
 
-[dsh-user-questions](../../packages/interaction/user-questions) 的用户交互 seam。它是工具或权限插件需要人类回答后 agent（智能体）才能继续时所使用的、提供方无关的词汇。Agent-scoped waterfall listener 组合可用的 UI 界面，其中包括转发到已连接 client 的 listener。
+[dsh-user-questions](../../packages/interaction/user-questions) مستخدم تفاعل seam. هو هو أداة أو إذن إضافة حاجة شخص صنف عودة جواب بعد agent(ذكي جسم) عندئذ قدرة متابعة وقت الذي استخدام، مزود غير متصل مفردات.Agent-scoped waterfall listener تركيب متاح UI واجهة، منها يشمل تحويل إرسال إلى قد اتصال client listener.
 
-源码：[`packages/interaction/user-questions/src/index.ts`](../../packages/interaction/user-questions/src/index.ts)
+شفرة المصدر:[`packages/interaction/user-questions/src/index.ts`](../../packages/interaction/user-questions/src/index.ts)
 
-## 问题选项
+## مشكلة خيار
 
-`AskUserQuestionOption` 包含一个可供选择的选项。`label` 是面向用户的选项文字，同时也是面向模型的选中值；`description` 是可选的 UI 帮助文本。
+`AskUserQuestionOption` يتضمن واحد يمكن توفير اختيار خيار.`label` هو موجه إلى مستخدم خيار نص حرف، معا أيضا هو موجه إلى نموذج اختيار في قيمة؛`description` هو اختياري UI مساعدة مساعدة نص.
 
 ```ts type-equiv
 /** One selectable answer offered to the user. */
@@ -20,9 +20,9 @@ interface AskUserQuestionOption {
 }
 ```
 
-## 呈现意图
+## عرض معنى رسم
 
-`AskUserQuestionIntent` 可选地声明一种已知的决策类型。它按 `kind` 打标签，因此可以增加新的意图；不认识某个标签的 UI 渲染通用选项列表。意图只改变呈现方式——遵循它的 UI 回答的仍是通用 UI 会发送的那些选项标签，因此调用方两种情况下读到的回答字段相同。`approve` 指名肯定选项，而不依赖选项顺序。`ask()` 会拒绝两种无法由类型系统表达的情况：`approve` 未指向该问题自身的任何选项，以及为没有 `detail` 的问题指定意图。
+`AskUserQuestionIntent` اختياري أرض إعلان واحد نوع معروف قرار نوع. هو حسب `kind` ضرب وسم، لذلك يمكن زيادة جديد معنى رسم؛ لا إقرار تعرف بعض عدد وسم UI تصيير عام خيار قائمة. معنى رسم فقط تغيير عرض طريقة——التزام دوران هو UI عودة جواب ما زال هو عام UI سوف إرسال ذلك بعض خيار وسم، لذلك استدعاء جهة اثنان نوع حال حال تحت قراءة إلى عودة جواب حقل نفسه.`approve` إشارة اسم قبول تحديد خيار، بينما لا اعتماد خيار ترتيب.`ask()` سوف رفض اثنان نوع لا يمكن من نوع نظام جدول بلوغ حال حال:`approve` لم إشارة نحو هذا مشكلة ذاته أي خيار، و لـ لا يوجد `detail` مشكلة إشارة تحديد معنى رسم.
 
 ```ts type-equiv
 /**
@@ -46,9 +46,9 @@ type AskUserQuestionIntent = {
 }
 ```
 
-## 问题条目
+## مشكلة بند
 
-`AskUserQuestionItem` 是请求中的一个问题。调用方提供稳定的 `id`，它会随答案原样返回，使批量问题仍可路由。可选的 `detail` 携带辅助文本；提供方会将其随问题渲染，但不会放入可选选项标签。
+`AskUserQuestionItem` هو طلب في واحد مشكلة. استدعاء جهة توفير مستقر `id`، هو سوف مع جواب سجل أصل مثال إرجاع، جعل دفعة كمية مشكلة ما زال يمكن توجيه. اختياري `detail` يحمل مساعد مساعدة نص؛ مزود سوف سوف ذلك مع مشكلة تصيير، لكن لن وضع دخول اختياري خيار وسم.
 
 ```ts type-equiv
 /** One question in a user-questions request. */
@@ -70,18 +70,18 @@ interface AskUserQuestionItem {
 }
 ```
 
-## 提问请求
+## رفع سؤال طلب
 
-`AskUserQuestionRequest` 是跨包请求。`questions` 是数组，这样 UI 可以在一个流程中呈现相关提示，同时保持每个回答有稳定的 id。如提供 `agent`，它必须与存活调用方是同一实例；只有当当前注册表将该实例识别为运行时根时，交互 seam 才会接纳该 agent。
+`AskUserQuestionRequest` هو عبر حزمة طلب.`questions` هو عدد مجموعة، هذا مثال UI يمكن في واحد مسار في عرض متبادل صلة تلميح، معا إبقاء كل عودة جواب لديه مستقر id. مثل توفير `agent`، هو يجب و تخزين نشط استدعاء جهة هو نفس نسخة؛ فقط لديه عند حالي سجل التسجيل سوف هذا نسخة تعرف آخر لـ وقت التشغيل أصل وقت، تفاعل seam عندئذ سوف وصل قبول هذا agent.
 
 ```ts type-equiv
 /** Request for a human answer. */
 interface AskUserQuestionRequest extends AskUserQuestionRequestEvent {}
 ```
 
-## 回答
+## عودة جواب
 
-提供方为每个问题 id 返回一个回答项。`selected` 包含选中的选项标签，`custom` 在用户输入自由文本时携带「其他」回答。对于单选题，`custom` 会覆盖选中的选项，且 `selected` 为空。对于多选题，`custom` 可以补充 `selected` 中的标签。UI 也可以使用 `selected` 为空且不含 `custom` 的回答项，在其余问题均已完成的批次中保留被跳过的问题。
+مزود لـ كل مشكلة id إرجاع واحد عودة جواب بند.`selected` يتضمن اختيار في خيار وسم،`custom` في مستخدم إدخال ذاتي من نص وقت يحمل «أخرى» عودة جواب. مقابل في مفرد اختيار عنوان،`custom` سوف تغطية اختيار في خيار، كما `selected` لـ فارغ. مقابل في كثير اختيار عنوان،`custom` يمكن تكملة ملء `selected` في وسم.UI أيضا يمكن استخدام `selected` لـ فارغ كما لا يحتوي `custom` عودة جواب بند، في ذلك بقية مشكلة متساو قد إتمام دفعة مرة في إبقاء يتم قفز مرور مشكلة.
 
 ```ts type-equiv
 /** Answer to one question. */
@@ -103,9 +103,9 @@ interface AskUserQuestionAnswer {
 }
 ```
 
-## 错误
+## خطأ
 
-`UserQuestionError` 继承 `HarnessError`，因此 `ctx.tools.execute()` 会保留 `{ name, code }`，用于面向模型的工具失败，如 `EMPTY_QUESTIONS`、`NO_PROVIDER`、`ASK_ABORTED` 或 UI 侧取消。
+`UserQuestionError` وراثة `HarnessError`، لذلك `ctx.tools.execute()` سوف إبقاء `{ name, code }`، لأجل موجه إلى نموذج أداة فشل، مثل `EMPTY_QUESTIONS`،`NO_PROVIDER`،`ASK_ABORTED` أو UI جانب إلغاء.
 
 ```ts type-equiv
 /** Stable error taxonomy for user-questions failures. */

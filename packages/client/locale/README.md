@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-client-locale
 
-English | [中文](README.zh.md)
+English | [العربية](README.zh.md)
 
 ## Summary
 
@@ -44,13 +44,13 @@ export const inject = ['locale']
 
 export function apply(ctx) {
   ctx.effect(
-    () => ctx.locale.addLanguage({ id: 'ja', label: '日本語', fallback: 'en' }),
+    () => ctx.locale.addLanguage({ id: 'ja', label: 'يوم هذا لغة', fallback: 'en' }),
     'my-locale: language',
   )
   ctx.effect(
     () => ctx.locale.register('common', 'ja', {
       cancel: 'キャンセル',
-      close: '閉じる',
+      close: 'إغلاقじる',
     }),
     'my-locale: common dictionary',
   )

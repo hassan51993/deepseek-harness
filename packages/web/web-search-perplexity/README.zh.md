@@ -1,39 +1,39 @@
 ---
-description: "ctx.web 的 Perplexity 搜索提供方：部署方如何挂载 OpenAI 兼容的 Perplexity 搜索，获得生成答案与引用。"
+description: "ctx.web Perplexity بحث مزود: نشر جهة مثل أي تركيب OpenAI توافق Perplexity بحث، نيل نيل توليد جواب سجل و مرجع."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-web-search-perplexity
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-有了 `dsh-web-search-perplexity`，harness 可以通过 Perplexity 搜索 web，一次调用同时获得模型生成的答案与可引用来源。当部署持有 Perplexity API 密钥、并希望获得生成答案时选择它。Perplexity 没有结果数量控制，因此返回的来源会在事后被截断到请求的上限。Perplexity 省略结构化结果元数据时，来源回退为只含 URL 的引用。面向模型的 `web_search` 工具位于 `dsh-tool-web`。
+لديه `dsh-web-search-perplexity`،harness يمكن عبر Perplexity بحث web، مرة استدعاء معا نيل نيل نموذج توليد جواب سجل و يمكن مرجع مصدر. عند نشر يحتفظ Perplexity API مفتاح، و أمل نظر نيل نيل توليد جواب سجل وقت اختيار هو.Perplexity لا يوجد نتيجة عدد كمية تحكم، لذلك إرجاع مصدر سوف في أمر بعد يتم قطع قطع إلى طلب حد أعلى.Perplexity حذف بنية تحويل نتيجة بيانات وصفية وقت، مصدر رجوع لـ فقط يحتوي URL مرجع. موجه إلى نموذج `web_search` أداة يقع في `dsh-tool-web`.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在已加载 web 服务的组合中挂载本提供方；它以 `perplexity` 搜索提供方身份注册，因此当它是唯一可用的搜索后端时，`ctx.web.search()` 会自动解析到它——也可以用 `searchProvider: perplexity` 固定。
+في قد تحميل web خدمة تركيب في تركيب هذا مزود؛ هو بـ `perplexity` بحث مزود هوية تسجيل، لذلك عند هو هو وحيد متاح بحث خلفية وقت،`ctx.web.search()` سوف تلقائي تحليل إلى هو——أيضا يمكن استخدام `searchProvider: perplexity` ثابت.
 
-### 何时选择
+### أي وقت اختيار
 
-当部署持有 Perplexity API 密钥、并希望一次搜索同时获得模型生成的答案与可引用来源时选择此后端。密钥为空或端点基址无法解析时，提供方不可用——每次搜索调用都会以结构化错误失败。
+عند نشر يحتفظ Perplexity API مفتاح، و أمل نظر مرة بحث معا نيل نيل نموذج توليد جواب سجل و يمكن مرجع مصدر وقت اختيار هذا خلفية. مفتاح لـ فارغ أو طرف نقطة أساس عنوان لا يمكن تحليل وقت، مزود غير ممكن استخدام——كل مرة بحث استدعاء كل سوف بـ بنية تحويل خطأ فشل.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-加载 web 服务与本提供方；API 密钥回退到启动环境中的 `$PERPLEXITY_API_KEY`，其余设置都有安全默认值。
+تحميل web خدمة و هذا مزود؛API مفتاح رجوع إلى بدء بيئة في `$PERPLEXITY_API_KEY`، ذلك بقية ضبط كل لديه أمان قيمة افتراضية.
 
 ```yaml
 - name: '@deepseek-ai/dsh-web'
@@ -42,125 +42,125 @@ kind: "package-reference"
     apiKey: !!js process.env.PERPLEXITY_API_KEY
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `apiKey` | `$PERPLEXITY_API_KEY` | Perplexity API 密钥；为空或缺失时提供方不可用 |
-| `baseURL` | `https://api.perplexity.ai` | 端点基址；追加 `/chat/completions`。无法解析时提供方不可用 |
-| `model` | `sonar` | 搜索模型名称 |
-| `maxTokens` | `1024` | 生成答案 token 上限（`max_tokens`）；必须是正整数 |
-| `searchRecency` | （未设置） | 以 `search_recency_filter` 发送的新近程度窗口：`day`、`week`、`month` 或 `year`。未设置时不发送过滤条件 |
+| `apiKey` | `$PERPLEXITY_API_KEY` | Perplexity API مفتاح؛ لـ فارغ أو ناقص وقت مزود غير ممكن استخدام |
+| `baseURL` | `https://api.perplexity.ai` | طرف نقطة أساس عنوان؛ إلحاق `/chat/completions`. لا يمكن تحليل وقت مزود غير ممكن استخدام |
+| `model` | `sonar` | بحث نموذج اسم |
+| `maxTokens` | `1024` | توليد جواب سجل token حد أعلى (`max_tokens`) ؛ يجب هو صحيح كامل عدد |
+| `searchRecency` | (لم ضبط) | بـ `search_recency_filter` إرسال جديد قريب مسار درجة نافذة:`day`،`week`،`month` أو `year`. لم ضبط وقت لا إرسال مرور ترشيح شرط |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-perplexity)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-perplexity) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
-### 搜索返回什么
+### بحث إرجاع ماذا
 
-`content` 携带 Perplexity 的生成答案。`sources[]` 优先使用结构化 `search_results[]`（`url`、`title`、`snippet`、`publishedAt` 取自 `date`），仅当 `search_results` 缺失时才回退到只含 URL 的 `citations[]` 数组——这正是服务上 `title`／`snippet`／`publishedAt` 为可选字段的原因。Perplexity 不公开结果数量控制，因此服务通过截断并标记来强制执行 `maxResults`。
+`content` يحمل Perplexity توليد جواب سجل.`sources[]` أولوية استخدام بنية تحويل `search_results[]`(`url`،`title`،`snippet`،`publishedAt` أخذ ذاتي `date`) ، فقط عند `search_results` ناقص وقت عندئذ رجوع إلى فقط يحتوي URL `citations[]` عدد مجموعة——هذا صحيح هو خدمة فوق `title`/`snippet`/`publishedAt` لـ اختياري حقل سبب.Perplexity لا عام نتيجة عدد كمية تحكم، لذلك خدمة عبر قطع قطع و علامة قدوم قوي صنع تنفيذ `maxResults`.
 
-### 失败与恢复
+### فشل و استعادة
 
-提供方失败——HTTP 错误、网络失败、响应体无法解析或结构不符——以 `WebError` `WEB_PROVIDER_ERROR` 呈现；中止请求以 `WEB_ABORTED` 呈现。HTTP 重定向会在访问 `Location` 指向的目标之前被拒绝，并以 `WEB_PROVIDER_ERROR` 呈现。调用方根据错误码进行路由；面向模型的 `web_search` 工具会在自己的错误包装层内把失败呈现给模型。
+مزود فشل——HTTP خطأ، شبكة شبكة فشل، استجابة جسم لا يمكن تحليل أو بنية لا رمز——بـ `WebError` `WEB_PROVIDER_ERROR` عرض؛ في توقف طلب بـ `WEB_ABORTED` عرض.HTTP إعادة تحديد نحو سوف في وصول `Location` إشارة نحو هدف قبل يتم رفض، و بـ `WEB_PROVIDER_ERROR` عرض. استدعاء جهة أصل حسب رمز خطأ إجراء توجيه؛ موجه إلى نموذج `web_search` أداة سوف في ذاتي ذات خطأ حزمة تركيب طبقة داخل يأخذ فشل عرض إعطاء نموذج.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释提供方背后的设计决策；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير مزود خلف بعد تصميم قرار؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-该提供方是 Perplexity chat-completions 端点之上的薄适配器，遵循两条刻意的规则：
+هذا مزود هو Perplexity chat-completions طرف نقطة لـ فوق رقيق مهايئ، التزام دوران اثنان بند لحظة معنى قاعدة:
 
-- **生成答案直接用作 `content`。** 与其他搜索后端不同，Perplexity 返回模型生成的答案，本提供方将其作为规范化 `content` 字段透传。
-- **结构化来源优先；只含 URL 的引用是回退。** `search_results[]` 携带可移植字段；`citations[]` 只携带 URL，服务词汇把这些字段设为可选，正是为了这种情况。
+- **توليد جواب سجل مباشر استخدام عمل `content`.** و أخرى بحث خلفية مختلف،Perplexity إرجاع نموذج توليد جواب سجل، هذا مزود سوف ذلك بصفة مواصفة تحويل `content` حقل نفاذ نقل.
+- **بنية تحويل مصدر أولوية؛ فقط يحتوي URL مرجع هو رجوع.** `search_results[]` يحمل يمكن نقل غرس حقل؛`citations[]` فقط يحمل URL، خدمة مفردات يأخذ هذه حقل ضبط لـ اختياري، صحيح هو لـ هذا نوع حال حال.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：配置 schema、环境变量回退、提供方注册 |
-| [`src/provider.ts`](src/provider.ts) | `PerplexitySearchProvider`：请求分发、中止分类、答案与来源映射 |
-| [`src/types.ts`](src/types.ts) | chat-completions 响应的 Perplexity 协议类型 |
-| — | 不发布运行时不变量配套入口；除所属 seam 强制执行的约定外，本包不公开独立的事件序列或可变数据关系。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: إعداد schema، بيئة متغير رجوع، مزود تسجيل |
+| [`src/provider.ts`](src/provider.ts) | `PerplexitySearchProvider`: طلب توزيع، في توقف تصنيف، جواب سجل و مصدر خريطة |
+| [`src/types.ts`](src/types.ts) | chat-completions استجابة Perplexity بروتوكول نوع |
+| — | لا إصدار وقت التشغيل ثابت كمية إعداد طقم مدخل؛ حذف الذي تابع seam قوي صنع تنفيذ اتفاق خارج، هذه الحزمة لا عام مستقل حدث تسلسل أو متغير بيانات علاقة. |
 
-### 请求与映射流程
+### طلب و خريطة مسار
 
-`search()` 以 `redirect: 'error'` 把查询连同模型、token 上限与可选新近程度过滤条件 POST 到 `{baseURL}/chat/completions`。响应的 `content` 变为 `content`；存在 `search_results[]` 时它变为 `sources[]`，否则每个 `citations[]` 条目变为只含 URL 的来源；服务在返回路径上应用最终的 `maxResults` 上限。中止——名为 `AbortError` 的 `DOMException`——变为 `WEB_ABORTED`；其余情况变为 `WEB_PROVIDER_ERROR`。
+`search()` بـ `redirect: 'error'` يأخذ استعلام وصل نفس نموذج،token حد أعلى و اختياري جديد قريب مسار درجة مرور ترشيح شرط POST إلى `{baseURL}/chat/completions`. استجابة `content` تغيير لـ `content`؛ وجود `search_results[]` وقت هو تغيير لـ `sources[]`، لا فإن كل `citations[]` بند تغيير لـ فقط يحتوي URL مصدر؛ خدمة في إرجاع مسار فوق تطبيق نهائي `maxResults` حد أعلى. في توقف——اسم لـ `AbortError` `DOMException`——تغيير لـ `WEB_ABORTED`؛ ذلك بقية حال حال تغيير لـ `WEB_PROVIDER_ERROR`.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享词汇逐步进入服务、面向模型的工具与设计依据。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك مفردات تدريجي خطوة دخول خدمة، موجه إلى نموذج أداة و تصميم اعتماد حسب.
 
-- [web 子系统](../../../docs/subsystems/web.zh.md)——穷尽式的搜索请求／结果词汇与错误码。
-- [web 包映射](../README.zh.md)——六包家族与各角色。
-- [dsh-web](../web/README.zh.md)——本提供方注册进入的 web 服务。
-- [dsh-tool-web](../tool-web/README.zh.md)——渲染本提供方来源的面向模型 `web_search` 工具。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-perplexity)——每个受支持配置字段及其源声明。
-- [web 能力 seam 决策](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——搜索与抓取为何共用一项提供方选择服务。
+- [web فرعي نظام](../../../docs/subsystems/web.zh.md)——نفاد كل صيغة بحث طلب/نتيجة مفردات و رمز خطأ.
+- [web حزمة خريطة](../README.zh.md)——ستة حزمة بيت عائلة و كل زاوية لون.
+- [dsh-web](../web/README.zh.md)——هذا مزود تسجيل دخول web خدمة.
+- [dsh-tool-web](../tool-web/README.zh.md)——تصيير هذا مزود مصدر موجه إلى نموذج `web_search` أداة.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-perplexity)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
+- [web قدرة seam قرار](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——بحث و إمساك أخذ لـ أي مشترك استخدام واحد بند مزود اختيار خدمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 辅助 Perplexity 请求
+### مساعد مساعدة Perplexity طلب
 
-#### 模型看到的内容
+#### نموذج يرى محتوى
 
-独立的 Perplexity 模型通过 chat-completions 端点将 `<query>` 原样作为唯一用户消息接收。该请求不属于会话模型上下文。
+مستقل Perplexity نموذج عبر chat-completions طرف نقطة سوف `<query>` أصل مثال بصفة وحيد مستخدم رسالة استقبال. هذا طلب لا يخص جلسة نموذج سياق.
 
-#### Token 影响
+#### Token أثر
 
-每次搜索都会产生独立的提供方 token；`maxTokens` 限制生成答案。
+كل مرة بحث كل سوف إنتاج مستقل مزود token؛`maxTokens` حد توليد جواب سجل.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-与会话请求缓存相互独立。同一模型路由下的相同查询可能复用提供方缓存；查询或路由改变会建立不同前缀。
+و جلسة طلب ذاكرة مؤقتة متبادل متبادل مستقل. نفس نموذج توجيه تحت نفسه استعلام ممكن إعادة استخدام مزود ذاكرة مؤقتة؛ استعلام أو توجيه تغيير سوف بناء قيام مختلف بادئة.
 
-### 间接的会话工具结果
+### بين وصل جلسة أداة نتيجة
 
-#### 模型看到的内容
+#### نموذج يرى محتوى
 
-通过 `dsh-tool-web`，会话模型会看到生成答案及结构化结果元数据，或只含 URL 的引用。该提供方确切的错误消息为 `Perplexity search aborted`、`Perplexity search request failed: <error>` 和 `Perplexity returned an unprocessable response body: <error>`；HTTP 失败保留提供方消息。错误包装层属于消费方。
+عبر `dsh-tool-web`، جلسة نموذج سوف يرى توليد جواب سجل و بنية تحويل نتيجة بيانات وصفية، أو فقط يحتوي URL مرجع. هذا مزود تأكيد قطع خطأ رسالة لـ `Perplexity search aborted`،`Perplexity search request failed: <error>` و `Perplexity returned an unprocessable response body: <error>`؛HTTP فشل إبقاء مزود رسالة. خطأ حزمة تركيب طبقة يخص مستهلك.
 
-#### Token 影响
+#### Token أثر
 
-注册不会直接产生会话 token。答案与来源 token 取决于数据，来源数量受服务限制；保留的结果或错误会重复发送，直到发生压缩（compaction）。
+تسجيل لن مباشر إنتاج جلسة token. جواب سجل و مصدر token أخذ قرار في بيانات، مصدر عدد كمية تلقي خدمة حد؛ إبقاء نتيجة أو خطأ سوف تكرار إرسال، مباشر إلى حدوث ضغط (compaction).
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV Cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV Cache بند بطلان.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明提供方在哪些情况下不合适。它们是当前包约束。
+هذه حد شرح مزود في أي بعض حال حال تحت لا دمج ملائم. هو جمع هو حالي حزمة قيد.
 
-- **引用回退来源只含 URL**——Perplexity 省略结构化 `search_results[]` 时，来源不含 `title`／`snippet`／`publishedAt`，因此工具只渲染纯主机名标签。
-- **超量返回的来源仍会增加 token 消耗与延迟**——协议没有结果数量控制，`maxResults` 只能由服务在事后截断。
-- **只公开 `model`／`maxTokens`／`searchRecency`**——Perplexity 的其他搜索控制项（域名过滤条件、`web_search_options` 上下文大小、图片）等待提供方无关的服务字段（见 [seam Agent Note](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)）。
-- **按错误形状分类中止**——只有名为 `AbortError` 的 `DOMException` 才映射为 `WEB_ABORTED`；携带自定义原因的中止（例如 `dsh-timeout` 的 `TimeoutReason`）呈现为 `WEB_PROVIDER_ERROR`。
+- **مرجع رجوع مصدر فقط يحتوي URL**——Perplexity حذف بنية تحويل `search_results[]` وقت، مصدر لا يحتوي `title`/`snippet`/`publishedAt`، لذلك أداة فقط تصيير صاف رئيسي آلة اسم وسم.
+- **تجاوز كمية إرجاع مصدر ما زال سوف زيادة token إزالة استهلاك و تأخير متأخر**——بروتوكول لا يوجد نتيجة عدد كمية تحكم،`maxResults` فقط قدرة من خدمة في أمر بعد قطع قطع.
+- **فقط عام `model`/`maxTokens`/`searchRecency`**——Perplexity أخرى بحث تحكم بند (مجال اسم مرور ترشيح شرط،`web_search_options` سياق كبير صغير، صورة) انتظار مزود غير متصل خدمة حقل (رؤية [seam Agent Note](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)).
+- **حسب خطأ شكل حالة تصنيف في توقف**——فقط لديه اسم لـ `AbortError` `DOMException` عندئذ خريطة لـ `WEB_ABORTED`؛ يحمل ذاتي تعريف سبب في توقف (مثال مثل `dsh-timeout` `TimeoutReason`) عرض لـ `WEB_PROVIDER_ERROR`.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文和相关 Agent Note 为准。
+هذا ملاحظة تطوير هو صيانة من عمل سياق: فتح وضع مشكلة و بعد لم قرار استكشاف جهة نحو. هو واضح لا أداة مرجعي صفة——قد تسليم سلوك، حد و حيث تحديد إدارة من بـ فوق نص و متبادل صلة Agent Note لـ دقيق.
 
-#### 未来：更宽的 Perplexity 控制面
+#### لم قدوم: أكثر عرض Perplexity تحكم وجه
 
-Perplexity 的域名过滤条件、`web_search_options` 上下文大小与图片支持仍未公开。公开它们需要先有提供方无关的服务字段，让家族以一个协调一致的控制项、而非厂商专有参数的方式新增。
+Perplexity مجال اسم مرور ترشيح شرط،`web_search_options` سياق كبير صغير و صورة دعم حمل ما زال لم عام. عام هو جمع حاجة أولا لديه مزود غير متصل خدمة حقل، يجعل بيت عائلة بـ واحد تنسيق ضبط متسق تحكم بند، بينما غير مصنع تجارة مخصص لديه معامل طريقة إضافة جديدة.
 
 </details>

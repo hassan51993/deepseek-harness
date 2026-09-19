@@ -331,13 +331,13 @@ it.each(titleSurfaces)('handles Escape, unchanged names and IME composition whil
   fireEvent.blur(input)
   expect(h.model.rename).not.toHaveBeenCalled()
   input = edit()
-  fireEvent.change(input, { target: { value: '开发' } })
+  fireEvent.change(input, { target: { value: 'تطوير' } })
   fireEvent.keyDown(input, { key: 'Enter', isComposing: true })
   fireEvent.keyDown(input, { key: 'Enter', keyCode: 229 })
   expect(title.getByRole('textbox', { name: en.rename })).toBe(input)
   expect(h.model.rename).not.toHaveBeenCalled()
   fireEvent.blur(input)
-  expect(h.model.rename).toHaveBeenCalledWith('开发')
+  expect(h.model.rename).toHaveBeenCalledWith('تطوير')
 })
 
 it.each(titleSurfaces)('removes the native $name listener when its title unmounts', (surface) => {

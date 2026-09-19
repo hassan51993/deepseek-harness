@@ -1,14 +1,14 @@
-# 用户审批
+# مستخدم مراجعة دفعة
 
-[English](approval.md) | 中文
+[English](approval.md) | العربية
 
-[dsh-user-approval](../../packages/interaction/user-approval) 的用户审批 seam 回答一个问题：这个具体操作是否可以继续？它拥有共享的请求/结果词汇、`ctx.approval` 分发服务、`approval/request` 应答者 waterfall（瀑布式事件）、仅记录日志的审计事件对，以及按会话的 `ask`/`never` 策略。UI 通道可以提供人类应答者；[ACP（Agent Client Protocol）自动化桥接层](../../packages/acp/acp)为其拥有的 agent（智能体）提供一次性机器决策。调用方如 [dsh-tools](../../packages/core/tools) 和 [dsh-tool-bash](../../packages/shell/tool-bash) 消费闭合的结果，除非结果为 `allowed-once`，否则一律拒绝。
+[dsh-user-approval](../../packages/interaction/user-approval) مستخدم مراجعة دفعة seam عودة جواب واحد مشكلة: هذا عدد أداة جسم عملية هل يمكن متابعة؟ هو يملك مشترك طلب/نتيجة مفردات،`ctx.approval` توزيع خدمة،`approval/request` ينبغي جواب من waterfall(شلال نشر صيغة حدث) ، فقط سجل سجل مراجعة حساب حدث مقابل، و حسب جلسة `ask`/`never` سياسة.UI عبر طريق يمكن توفير شخص صنف ينبغي جواب من؛[ACP(Agent Client Protocol) تلقائي تحويل جسر وصل طبقة](../../packages/acp/acp) لـ ذلك يملك agent(ذكي جسم) توفير مرة صفة آلة جهاز قرار. استدعاء جهة مثل [dsh-tools](../../packages/core/tools) و [dsh-tool-bash](../../packages/shell/tool-bash) إزالة استهلاك إغلاق دمج نتيجة، حذف غير نتيجة لـ `allowed-once`، لا فإن واحد قاعدة رفض.
 
-源码：[`packages/interaction/user-approval/src/index.ts`](../../packages/interaction/user-approval/src/index.ts)
+شفرة المصدر:[`packages/interaction/user-approval/src/index.ts`](../../packages/interaction/user-approval/src/index.ts)
 
-## 标识与结果
+## معرف و نتيجة
 
-每个请求都会获得一个全新的 `ApprovalRequestId`。该品牌类型将 `approval/asked` 与 `approval/decided` 审计事件配对，同时不会让审批 id 与工具调用 id 或 agent/会话 id 互换。
+كل طلب كل سوف نيل نيل واحد كل جديد `ApprovalRequestId`. هذا صنف لوحة نوع سوف `approval/asked` و `approval/decided` مراجعة حساب حدث إعداد مقابل، معا لن يجعل مراجعة دفعة id و أداة استدعاء id أو agent/جلسة id متبادل تبديل.
 
 ```ts type-equiv
 /**
@@ -18,7 +18,7 @@
 type ApprovalRequestId = Branded<'ApprovalRequestId'>
 ```
 
-`ApprovalOutcome` 是闭合的，且失败时拒绝。`allowed-once` 仅授权所询问的那一个操作；调用方对 `rejected`、`cancelled` 和 `unavailable` 均执行拒绝。缺失、不负责该请求、抛异常或不合规的应答者会产生 `unavailable`，而非放行。
+`ApprovalOutcome` هو إغلاق دمج، كما فشل وقت رفض.`allowed-once` فقط تخويل الذي استفسار سؤال ذلك واحد عملية؛ استدعاء جهة مقابل `rejected`،`cancelled` و `unavailable` متساو تنفيذ رفض. ناقص، لا مسؤول هذا طلب، رمي استثناء أو لا دمج قاعدة ينبغي جواب من سوف إنتاج `unavailable`، بينما غير وضع سطر.
 
 ```ts type-equiv
 /**
@@ -28,9 +28,9 @@ type ApprovalRequestId = Branded<'ApprovalRequestId'>
 type ApprovalOutcome = 'allowed-once' | 'rejected' | 'cancelled' | 'unavailable'
 ```
 
-## 按会话策略
+## حسب جلسة سياسة
 
-`ApprovalPolicy` 决定在交互式应答者运行之前发生什么。`ask` 委托给组合的应答者链，链的无应答默认值为 `unavailable`；`never` 确定性地返回 `rejected`，不分发任何应答者。生效值为会话日志中最后一条 `approval/policy` 事件，回退到服务配置。消费方通过 `ctx.approval.effectivePolicy(session)` 读取；`setApprovalPolicy(session, policy)` 是唯一的写入路径，因此回放能重建覆盖值。
+`ApprovalPolicy` قرار في تفاعل صيغة ينبغي جواب من تشغيل قبل حدوث ماذا.`ask` تفويض حمل إعطاء تركيب ينبغي جواب من سلسلة، سلسلة بلا ينبغي جواب قيمة افتراضية لـ `unavailable`؛`never` تحديد صفة أرض إرجاع `rejected`، لا توزيع أي ينبغي جواب من. توليد فاعلية قيمة لـ جلسة سجل في الأكثر بعد واحد بند `approval/policy` حدث، رجوع إلى خدمة إعداد. مستهلك عبر `ctx.approval.effectivePolicy(session)` قراءة؛`setApprovalPolicy(session, policy)` هو وحيد كتابة مسار، لذلك إعادة تشغيل قدرة إعادة بناء تغطية قيمة.
 
 ```ts type-equiv
 /**
@@ -46,11 +46,11 @@ type ApprovalOutcome = 'allowed-once' | 'rejected' | 'cancelled' | 'unavailable'
 type ApprovalPolicy = 'ask' | 'never'
 ```
 
-两种策略都会将各自完整的当前含义贡献给缓存安全的运行时上下文快照。带来源的 `user/message` 是持久化且模型可见的输入；审批状态变化时，会在保留的历史后追加一份新的完整快照，而不触碰承载渲染后系统提示词的 `system/message` 节点。
+اثنان نوع سياسة كل سوف سوف كل منها كامل حالي يحتوي معنى مساهمة إعطاء ذاكرة مؤقتة أمان وقت التشغيل سياق لقطة. حمل مصدر `user/message` هو حفظ دائم كما نموذج مرئي إدخال؛ مراجعة دفعة حالة تغير وقت، سوف في إبقاء تاريخ بعد إلحاق واحد نسخة جديد كامل لقطة، بينما لا لمس اصطدام تحمل تحميل تصيير بعد توجيه النظام `system/message` عقدة.
 
-## 审批请求
+## مراجعة دفعة طلب
 
-`ApprovalRequest` 以足够精确的方式标识 agent 和工具操作，以便路由和审计该问题。它有意省略工具参数：应答者通过 `callId` 将提示附加到已流式输出的工具调用上，而非渲染另一份可能漂移的副本。
+`ApprovalRequest` بـ كاف كاف دقيق طريقة معرف agent و أداة عملية، بـ سهل توجيه و مراجعة حساب هذا مشكلة. هو متعمد حذف أداة معامل: ينبغي جواب من عبر `callId` سوف تلميح مرفق إضافة إلى قد تدفق صيغة إخراج أداة استدعاء فوق، بينما غير تصيير آخر نسخة ممكن عائم نقل فرعي هذا.
 
 ```ts type-equiv
 /**
@@ -81,11 +81,11 @@ interface ApprovalRequest extends ApprovalRequestEvent {
 }
 ```
 
-## 分发与审计
+## توزيع و مراجعة حساب
 
-`ctx.approval.request(req)` 要求发起请求的会话处于一个尚未结束的轮次内。它追加 `approval/asked`，获取一个结果，追加对应的 `approval/decided`，然后以该结果完成。`never` 策略在服务内部、waterfall 分发之前强制执行，因此即使后来以 `prepend` 注册的应答者也无法绕过它。应答者在负责处理该请求时返回结果，否则调用 `next()` 委托；第一个应答占据唯一的决策槽位。
+`ctx.approval.request(req)` اشتراط إرسال بدء طلب جلسة موضع في واحد بعد لم انتهاء جولة داخل. هو إلحاق `approval/asked`، نيل أخذ واحد نتيجة، إلحاق مقابل `approval/decided`، لكن بعد بـ هذا نتيجة إتمام.`never` سياسة في خدمة داخلي،waterfall توزيع قبل قوي صنع تنفيذ، لذلك أي جعل بعد قدوم بـ `prepend` تسجيل ينبغي جواب من أيضا لا يمكن التفاف مرور هو. ينبغي جواب من في مسؤول معالجة هذا طلب وقت إرجاع نتيجة، لا فإن استدعاء `next()` تفويض حمل؛ رقم واحد ينبغي جواب احتلال حسب وحيد قرار مجرى موضع.
 
-审计事件仅写入日志，不进入模型 transcript（文本记录）。模型可见的行为是调用方派生的工具结果与当前运行时上下文快照。服务 dispose（资源释放）时会移除其上下文贡献；应答者监听器独立地通过 effect 绑定到其所属插件。
+مراجعة حساب حدث فقط كتابة سجل، لا دخول نموذج transcript(نص سجل). نموذج مرئي سلوك هو استدعاء جهة إرسال توليد أداة نتيجة و حالي وقت التشغيل سياق لقطة. خدمة dispose(مورد تحرير) وقت سوف إزالة ذلك سياق مساهمة؛ ينبغي جواب من مستمع مستقل أرض عبر effect ربط إلى ذلك الذي تابع إضافة.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

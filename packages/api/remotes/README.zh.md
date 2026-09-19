@@ -1,88 +1,88 @@
 ---
-description: "应用 Remote 装配：为 Client 消费方选择带类型的 Host 能力与转发事件。"
+description: "تطبيق Remote تركيب إعداد: لـ Client مستهلك اختيار حمل نوع Host قدرة و تحويل إرسال حدث."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-api-remotes
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-为本应用选定的 Host Remote 能力提供双侧 BFF。Host 入口拥有转发事件名单并向 API Gateway 注册应用事件 source；Client 入口以运行时值形式导入生成的 `/remote` 产物，通过 `ctx.remote.$mount()` 挂载每项贡献，并重新导出对应的声明合并。Client 业务包依赖该外观，而不依赖 Gateway 实现或单独的 Remote 运行时入口。
+لـ هذا تطبيق اختيار تحديد Host Remote قدرة توفير مزدوج جانب BFF.Host مدخل يملك تحويل إرسال حدث اسم مفرد و نحو API Gateway تسجيل تطبيق حدث source؛Client مدخل بـ وقت التشغيل قيمة شكل صيغة استيراد توليد `/remote` ناتج، عبر `ctx.remote.$mount()` تركيب كل بند مساهمة، و إعادة توجيه خروج مقابل إعلان دمج.Client عمل خدمة حزمة اعتماد هذا خارج مراقبة، بينما لا اعتماد Gateway تنفيذ أو مفرد وحيد Remote وقت التشغيل مدخل.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [转发的 Host 事件](#forwarded-host-events)
-- [构建边界](#build-boundary)
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [تحويل إرسال Host حدث](#forwarded-host-events)
+- [بناء حد](#build-boundary)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-[`@deepseek-ai/dsh-api-session-controller`](../session-controller/README.zh.md) 拥有 agent（智能体）与会话身份策略，包括供其他 namespace 使用的 Typert lookup 解析器。本包只选择并挂载生成的会话 contribution，不复制激活策略。
+[`@deepseek-ai/dsh-api-session-controller`](../session-controller/README.zh.md) يملك agent(ذكي جسم) و جلسة هوية سياسة، يشمل توفير أخرى namespace استخدام Typert lookup محلل. هذه الحزمة فقط اختيار و تركيب توليد جلسة contribution، لا نسخ تنشيط سياسة.
 
-Client 组合挂载 Office 转换、Commands、凭据、settings、Goal、动态 Cordis、文件与会话引用、只读 Host 插件清单、消息反馈、权限预设、会话控制器、subagents 和 Workspace 控制器 contribution。`permissionPresets` namespace 返回 current-session 控件使用的完整进程级目录。该组合卸载时，Cordis effect 的所有权机制会撤回所有贡献；`@deepseek-ai/dsh-api-gateway/client` 负责描述符校验、可追踪的 namespace 服务、直接与作用域方法、调用、流与取消。Client 入口通过 Cordis 消费共享的 `TypertClientRemote` 接口，不导入具体 Gateway；它只以 type-only 形式重新导出 Gateway Client face 的声明合并，因此消费端经由本外观取到转发事件词汇时，运行时不会多出一条通往 Gateway 实现的边。
+Client تركيب تركيب Office تحويل،Commands، اعتماد،settings،Goal، حركة حالة Cordis، ملف و جلسة مرجع، فقط قراءة Host إضافة بيان، رسالة عكس تغذية، إذن مسبق ضبط، جلسة تحكم جهاز،subagents و Workspace تحكم جهاز contribution.`permissionPresets` namespace إرجاع current-session تحكم عنصر استخدام كامل عملية درجة دليل. هذا تركيب إزالة وقت،Cordis effect كل حق آلية سوف سحب عودة كل مساهمة؛`@deepseek-ai/dsh-api-gateway/client` مسؤول وصف رمز تحقق، يمكن تتبع أثر namespace خدمة، مباشر و أثر مجال طريقة، استدعاء، تدفق و إلغاء.Client مدخل عبر Cordis إزالة استهلاك مشترك `TypertClientRemote` واجهة، لا استيراد أداة جسم Gateway؛ هو فقط بـ type-only شكل صيغة إعادة توجيه خروج Gateway Client face إعلان دمج، لذلك إزالة استهلاك طرف مرور من هذا خارج مراقبة أخذ إلى تحويل إرسال حدث مفردات وقت، وقت التشغيل لن كثير خروج واحد بند عبر نحو Gateway تنفيذ حافة.
 
-本 facade 同时是 Client 包指称 wire 类型词汇的正门。它以 type-only 方式转出 Remote 失败词汇（`RemoteResult`、`RemoteFailure`、`RemoteErrorCode`、`RemoteErrorDetailsMap`）、Host 事实（`RemoteHostFacts`），以及各已选领域对 Client 安全的载荷类型，因此 Client 功能包只 import 一个 specifier，不必伸手进 `dsh-typert-protocol`、Gateway 或某个拥有方的 Host 入口。有两类包刻意不走这道门：本装配自己选中的 API 层包——反向 import 会形成依赖环——以及它们的测试，后者直接从 `dsh-typert-protocol` 取失败词汇。UI 包的测试则从 [`dsh-client-test-runtime`](../../test-support/client-runtime/README.zh.md) 取 `RemoteError` 构造器。
+هذا facade معا هو Client حزمة إشارة تسمية wire نوع مفردات صحيح باب. هو بـ type-only طريقة تحويل خروج Remote فشل مفردات (`RemoteResult`،`RemoteFailure`،`RemoteErrorCode`،`RemoteErrorDetailsMap`) ،Host واقع (`RemoteHostFacts`) ، و كل قد اختيار مجال مقابل Client أمان تحميل حمل نوع، لذلك Client وظيفة حزمة فقط import واحد specifier، لا لا بد امتداد يد دخول `dsh-typert-protocol`،Gateway أو بعض عدد يملك جهة Host مدخل. لديه اثنان صنف حزمة لحظة معنى لا مشي هذا طريق باب: هذا تركيب إعداد ذاتي ذات اختيار في API طبقة حزمة——عكس نحو import سوف شكل صار اعتماد حلقة——و هو جمع اختبار، بعد من مباشر من `dsh-typert-protocol` أخذ فشل مفردات.UI حزمة اختبار فإن من [`dsh-client-test-runtime`](../../test-support/client-runtime/README.zh.md) أخذ `RemoteError` منشئ.
 
-本包不拥有物理传输或 Host 服务发现。它只把应用选择投影为生成的 Remote contribution，以及每个 Client 各自独立的 Host 事件源；API Gateway 负责 endpoint、carrier、取消与重连。Web 或未来的 TUI 只要提供同一份不依赖 React 的 `ctx.remote` 约定，均可复用其 Client face。
+هذه الحزمة لا يملك شيء إدارة نقل أو Host خدمة اكتشاف. هو فقط يأخذ تطبيق اختيار إسقاط لـ توليد Remote contribution، و كل Client كل منها مستقل Host حدث مصدر؛API Gateway مسؤول endpoint،carrier، إلغاء و إعادة وصل.Web أو لم قدوم TUI فقط يلزم توفير نفس نسخة لا اعتماد React `ctx.remote` اتفاق، متساو يمكن إعادة استخدام ذلك Client face.
 
 -----
 
 <a id="forwarded-host-events"></a>
-## 转发的 Host 事件
+## تحويل إرسال Host حدث
 
-`src/remote-events.ts` 持有 `API_REMOTE_FORWARDED_EVENTS`，即本应用不改名转发给消费端的 Host Cordis 事件名单；每个条目还会选择普通发送或 agent-scoped waterfall（瀑布式事件）投递。该名单同时就是 `ctx.remote.$on` 的合法键集，只含类型的 `src/types.ts` 派生其选择面。多转发一个事件只需在该数组里加一项：类型投影、消费端键面与 Host 转发循环全部由它派生。
+`src/remote-events.ts` يحتفظ `API_REMOTE_FORWARDED_EVENTS`، أي هذا تطبيق لا تعديل اسم تحويل إرسال إعطاء إزالة استهلاك طرف Host Cordis حدث اسم مفرد؛ كل بند أيضا سوف اختيار عادي إرسال أو agent-scoped waterfall(شلال نشر صيغة حدث) إلقاء تمرير. هذا اسم مفرد معا حينئذ هو `ctx.remote.$on` دمج قاعدة مفتاح تجميع، فقط يحتوي نوع `src/types.ts` إرسال توليد ذلك اختيار وجه. كثير تحويل إرسال واحد حدث فقط يحتاج في هذا عدد مجموعة داخل إضافة واحد بند: نوع إسقاط، إزالة استهلاك طرف مفتاح وجه و Host تحويل إرسال حلقة الكل من هو إرسال توليد.
 
-监听器签名不在此处重写。名单内每条事件的 Cordis `Events` 声明都住在其 owner 包 client-safe 的 `./types` 导出，本包两个 face 都把那些声明纳入编译面。Host face 还会把每个条目断言给 `TypertForwardableEventEntry`：`emit` 条目必须是已声明的单向事件，`waterfall` 条目则必须是已声明的 agent-scoped waterfall，且其最后一个参数是返回相同结果类型的 `next()` 回调。
+مستمع توقيع لا في هذا موضع إعادة كتابة. اسم مفرد داخل كل بند حدث Cordis `Events` إعلان كل إقامة في ذلك owner حزمة client-safe `./types` توجيه خروج، هذه الحزمة اثنان عدد face كل يأخذ ذلك بعض إعلان قبول دخول تحرير ترجمة وجه.Host face أيضا سوف يأخذ كل بند تأكيد إعطاء `TypertForwardableEventEntry`:`emit` بند يجب هو قد إعلان مفرد نحو حدث،`waterfall` بند فإن يجب هو قد إعلان agent-scoped waterfall، كما ذلك الأكثر بعد واحد معامل هو إرجاع نفسه نتيجة نوع `next()` عودة ضبط.
 
-Host entry 为每条 Client 流独立注册一组 allowlist listener 和一个队列，并在普通事件入队前拒绝非 JSON 参数。对于 waterfall，它只投影顶层 agent 身份与 JSON 请求字段；Client 结果也必须能无损表示为 JSON，而 `next()` 会委托给后续 Host listener。每个作用域 waterfall 请求都必须以 `request.agent` 直接携带路由所用的 agent；Host 会在转发前拒绝缺失或不匹配的身份。该 source 在 `ctx.typertGateway.registerRemoteEvents()` 暴露 Gateway 内部的 `$events` 逻辑流前同步挂好所有 listener，因此首个 `ready` 项既能证明增量投递已就绪，也会携带供 Client 显示路径的 Host home。撤回注册会中止活动流。
+Host entry لـ كل بند Client تدفق مستقل تسجيل واحد مجموعة allowlist listener و واحد طابور صف، و في عادي حدث دخول طابور قبل رفض غير JSON معامل. مقابل في waterfall، هو فقط إسقاط قمة طبقة agent هوية و JSON طلب حقل؛Client نتيجة أيضا يجب قدرة بلا ضرر يمثل لـ JSON، بينما `next()` سوف تفويض حمل إعطاء لاحق Host listener. كل أثر مجال waterfall طلب كل يجب بـ `request.agent` مباشر يحمل توجيه الذي استخدام agent؛Host سوف في تحويل إرسال قبل رفض ناقص أو لا مطابقة هوية. هذا source في `ctx.typertGateway.registerRemoteEvents()` كشف Gateway داخلي `$events` منطق تدفق قبل تزامن تعليق جيد كل listener، لذلك أول عدد `ready` بند حيث قدرة إثبات زيادة كمية إلقاء تمرير قد حينئذ خيط، أيضا سوف يحمل توفير Client عرض مسار Host home. سحب عودة تسجيل سوف في توقف نشط حركة تدفق.
 
-无 payload 的 `permission-presets/catalog-changed` 事件使进程目录失效。Client 在首次读取 `permissionPresets.catalog()` 前先订阅，并在通知后重新读取完整快照；该事件不携带目录状态，也不改变 Session 序号。
+بلا payload `permission-presets/catalog-changed` حدث جعل عملية دليل بطلان.Client في أول مرة قراءة `permissionPresets.catalog()` قبل أولا حجز قراءة، و في إشعار بعد إعادة قراءة كامل لقطة؛ هذا حدث لا يحمل دليل حالة، أيضا لا تغيير Session ترتيب رقم.
 
 <a id="build-boundary"></a>
-## 构建边界
+## بناء حد
 
-仓库中的多数包只属于一个 TypeScript face：Host 包登记在根 `tsconfig.host.json`，Client 包登记在根 `tsconfig.client.json`。本包需要拆分，因为 Host 入口要参与 Host Typert 图，而 `src/client/index.ts` 必须等 Host tsdown 生成业务包的 `/remote` 声明后才能编译。
+مستودع في كثير عدد حزمة فقط يخص واحد TypeScript face:Host حزمة تسجيل تسجيل في أصل `tsconfig.host.json`،Client حزمة تسجيل تسجيل في أصل `tsconfig.client.json`. هذه الحزمة حاجة تفكيك قسم، لأن Host مدخل يلزم مشاركة و Host Typert رسم، بينما `src/client/index.ts` يجب انتظار Host tsdown توليد عمل خدمة حزمة `/remote` إعلان بعد عندئذ قدرة تحرير ترجمة.
 
-本包根 `tsconfig.json` 只是引用 `tsconfig.host.json` 与 `tsconfig.client.json` 的 solution。Host aggregate 和 Host 直接消费方引用前者，Client aggregate 和 Client 直接消费方引用后者；禁止把包根 solution 放进任一 aggregate 的依赖图。两个 project 拥有互不重叠的源码和 `.tsbuildinfo`，但共享 `lib/types` 输出目录——只有一处刻意的例外：`src/remote-events.ts` 与 `src/types.ts` **同时**列进两个 face 的 `files`，因为转发事件名单是「消费端能收到什么」的唯一控制点，Host 转发循环与 Client 的 `ctx.remote.$on` 键面必须读同一份声明，而不是两份可能彼此漂移的声明。
+هذه الحزمة أصل `tsconfig.json` فقط هو مرجع `tsconfig.host.json` و `tsconfig.client.json` solution.Host aggregate و Host مباشر مستهلك مرجع قبل من،Client aggregate و Client مباشر مستهلك مرجع بعد من؛ منع توقف يأخذ حزمة أصل solution وضع دخول مهمة واحد aggregate اعتماد رسم. اثنان عدد project يملك متبادل لا إعادة تراكم شفرة المصدر و `.tsbuildinfo`، لكن مشترك `lib/types` إخراج دليل——فقط لديه واحد موضع لحظة معنى مثال خارج:`src/remote-events.ts` و `src/types.ts` **معا**صف دخول اثنان عدد face `files`، لأن تحويل إرسال حدث اسم مفرد هو «إزالة استهلاك طرف قدرة استلام إلى ماذا» وحيد تحكم نقطة،Host تحويل إرسال حلقة و Client `ctx.remote.$on` مفتاح وجه يجب قراءة نفس نسخة إعلان، بينما لا هو اثنان نسخة ممكن ذاك هذا عائم نقل إعلان.
 
-这条例外不止是一行 `files`。根 `tsconfig.base.json` 把 `@deepseek-ai/dsh-api-remotes/types` 映射到 `src/types.ts`——**源平面**，与其余所有 workspace 子路径一致，也与生成的 `/remote` 产物相反（后者没有 `paths` 条目，靠 `exports` 命中构建产物）。于是两个 face 都把同一份名单与类型投影收进各自的 program，并向 `lib/types` 发射逐字相同的 `remote-events` 与 `types` 输出；`.tsbuildinfo` 仍各自独立。没有任何门禁强制两个 face 的源文件互不重叠——`scripts/project-reference-faces.ts` 只校验「引用一个 split project 必须指到对应 face」——因此本段记录这次双列为何是有意的。
+هذا بند مثال خارج لا توقف هو واحد سطر `files`. أصل `tsconfig.base.json` يأخذ `@deepseek-ai/dsh-api-remotes/types` خريطة إلى `src/types.ts`——**مصدر مستو وجه**، و ذلك بقية كل workspace فرعي مسار متسق، أيضا و توليد `/remote` ناتج متبادل عكس (بعد من لا يوجد `paths` بند، اعتماد `exports` أمر في بناء ناتج). في هو اثنان عدد face كل يأخذ نفس نسخة اسم مفرد و نوع إسقاط استلام دخول كل منها program، و نحو `lib/types` إرسال إطلاق تدريجي حرف نفسه `remote-events` و `types` إخراج؛`.tsbuildinfo` ما زال كل منها مستقل. لا يوجد أي بوابة قوي صنع اثنان عدد face مصدر ملف متبادل لا إعادة تراكم——`scripts/project-reference-faces.ts` فقط تحقق «مرجع واحد split project يجب إشارة إلى مقابل face»——لذلك هذا مقطع سجل هذا مرة مزدوج صف لـ أي هو متعمد.
 
-包内 `clientBundle(..., { hostPhase: true })` 让 Host tsdown 打包 Host 入口，让后续 Client tsdown 只打包 browser 入口。普通 Client 插件仍使用单一 Client project，并在 Client tsdown 阶段一起生成 Node loader 入口和 browser bundle；只有两组源码需要不同 compiler face 时才拆分。
+حزمة داخل `clientBundle(..., { hostPhase: true })` يجعل Host tsdown تحزيم Host مدخل، يجعل لاحق Client tsdown فقط تحزيم browser مدخل. عادي Client إضافة ما زال استخدام مفرد واحد Client project، و في Client tsdown مرحلة مقطع واحد بدء توليد Node loader مدخل و browser bundle؛ فقط لديه اثنان مجموعة شفرة المصدر حاجة مختلف compiler face وقت عندئذ تفكيك قسم.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为该 BFF 只选择 Remote 应用方法和转发事件，不注册任何模型接口。
+بلا، لأن هذا BFF فقط اختيار Remote تطبيق طريقة و تحويل إرسال حدث، لا تسجيل أي نموذج واجهة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；其触发的任何模型可见行为均由已挂载的 Host 能力负责。
+بلا مباشر أثر؛ ذلك إطلاق أي نموذج مرئي سلوك متساو من قد تركيب Host قدرة مسؤول.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- 能力集合由构建时显式导入的值固定确定；Client 不会在运行时发现 Host 中已启用的服务或 Remote 定义。
-- 若要增加能力，必须显式导入相应的 `/remote` 值并在此组合中挂载。
-- 只有仍在等待的作用域 waterfall 会在重连后回放；单向通知仍是相互隔离的 best-effort 投递，不会回放。需要可靠恢复的状态必须由拥有方提供查询、游标或初始基线。
+- قدرة تجميع دمج من بناء وقت صريح استيراد قيمة ثابت تحديد؛Client لن في وقت التشغيل اكتشاف Host في قد تفعيل خدمة أو Remote تعريف.
+- إذا يلزم زيادة قدرة، يجب صريح استيراد متبادل ينبغي `/remote` قيمة و في هذا تركيب في تركيب.
+- فقط لديه ما زال في انتظار أثر مجال waterfall سوف في إعادة وصل بعد إعادة تشغيل؛ مفرد نحو إشعار ما زال هو متبادل متبادل عزل best-effort إلقاء تمرير، لن إعادة تشغيل. حاجة يمكن اعتماد استعادة حالة يجب من يملك جهة توفير استعلام، تنقل علامة أو ابتدائي أساس خط.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。被观察的关系由 Typert、agent 注册表和会话注册表负责。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. يتم مراقبة علاقة من Typert،agent سجل التسجيل و جلسة سجل التسجيل مسؤول.

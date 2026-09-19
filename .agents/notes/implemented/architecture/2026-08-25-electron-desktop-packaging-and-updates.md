@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-25-electron-desktop-packaging-and-updates.zh.md)
+English | [العربية](2026-08-25-electron-desktop-packaging-and-updates.zh.md)
 
 Plugin management and native recovery follow the [shared Web wrapper decision](2026-09-10-desktop-web-wrapper.md).
 

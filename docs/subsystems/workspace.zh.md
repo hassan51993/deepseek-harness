@@ -1,12 +1,12 @@
-# 工作区
+# مساحة العمل
 
-[English](workspace.md) | 中文
+[English](workspace.md) | العربية
 
-工作区（workspace）是用户工作目录的持久记录：一个建立在规范路径之上的稳定 id、一个显示标题，以及归属于它的会话的有序账本。该子系统是单个包（package）（[dsh-workspace](../../packages/workspace/workspace)，`ctx.workspaceRegistry`）——一项宿主侧可选能力，不属于 agent loop（智能体循环）主干，并且对模型不可见（没有工具、没有提示词文本、没有会话事件）。它通过[存储领域数据形式](storage.zh.md)存储自己的记录，并对照 [`SessionHeader.cwd`](persistence.zh.md#sessionheader--metadata-beside-the-log) 校验会话成员资格，因此 `storageDomain` 与 `sessionPersistence` 是必需的启动依赖：持久化这一依赖不可用时，插件保持 pending，而不是把这种不可用误当作空历史。设计记录：[领域 KV 存储 Agent Note（agent 决策记录）](../../.agents/notes/proposed/architecture/2026-07-24-domain-kv-storage-and-workspace.zh.md)；引导与 GUI 顺序：[Workspace UI 产品流程 Agent Note](../../.agents/notes/archived/feature/2026-07-25-workspace-ui-product-flow.md)。
+مساحة العمل (workspace) هو مستخدم عمل دليل حمل دائم سجل: واحد بناء قيام في مواصفة مسار لـ فوق مستقر id، واحد عرض عنوان، و ملكية في هو جلسة لديه ترتيب حساب هذا. هذا فرعي نظام هو مفرد عدد حزمة (package)([dsh-workspace](../../packages/workspace/workspace) ،`ctx.workspaceRegistry`)——واحد بند مضيف جانب اختياري قدرة، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، و كما مقابل نموذج غير ممكن رؤية (لا يوجد أداة، لا يوجد نص التوجيه نص، لا يوجد جلسة حدث). هو عبر[تخزين مجال بيانات شكل صيغة](storage.zh.md) تخزين ذاتي ذات سجل، و مقابل وفق [`SessionHeader.cwd`](persistence.zh.md#sessionheader--metadata-beside-the-log) تحقق جلسة عضو مورد إطار، لذلك `storageDomain` و `sessionPersistence` هو مطلوب بدء اعتماد: حفظ دائم هذا واحد اعتماد غير ممكن استخدام وقت، إضافة إبقاء pending، بينما لا هو يأخذ هذا نوع غير ممكن استخدام خطأ عند عمل فارغ تاريخ. تصميم سجل:[مجال KV تخزين Agent Note(agent قرار سجل)](../../.agents/notes/proposed/architecture/2026-07-24-domain-kv-storage-and-workspace.zh.md) ؛ جذب توجيه و GUI ترتيب:[Workspace UI منتج مسار Agent Note](../../.agents/notes/archived/feature/2026-07-25-workspace-ui-product-flow.md).
 
-源码：[`packages/workspace/workspace/src/types.ts`](../../packages/workspace/workspace/src/types.ts)
+شفرة المصدر:[`packages/workspace/workspace/src/types.ts`](../../packages/workspace/workspace/src/types.ts)
 
-## 标识
+## معرف
 
 ```ts type-equiv
 /**
@@ -16,11 +16,11 @@
 type WorkspaceId = Branded<'WorkspaceId'>
 ```
 
-`WorkspaceId` 是[品牌化 id](core.zh.md#branded-ids)。路径标识与之分离：`realpathNormalize`（`fs.realpath`；尾部斜杠、`..` 与符号链接全部解析）是唯一的一套唯一性规范——工作区路径以规范化形式存储，唯一性即规范路径的字符串相等（指向已被拥有目录的符号链接会与之冲突），attach 时的会话 cwd 检查也走同一套规范。
+`WorkspaceId` هو[صنف لوحة تحويل id](core.zh.md#branded-ids). مسار معرف و لـ قسم مغادرة:`realpathNormalize`(`fs.realpath`؛ ذيل جزء مائل عمود،`..` و رمز رقم رابط الكل تحليل) هو وحيد واحد طقم وحيد صفة مواصفة——مساحة العمل مسار بـ مواصفة تحويل شكل صيغة تخزين، وحيد صفة أي مواصفة مسار نص متبادل انتظار (إشارة نحو قد يتم يملك دليل رمز رقم رابط سوف و لـ اندفاع مفاجئ) ،attach وقت جلسة cwd فحص أيضا مشي نفس طقم مواصفة.
 
-## 工作区实体
+## مساحة العمل فعلي جسم
 
-消费方只看到 `Workspace` 接口；实现保持包内私有。
+مستهلك فقط يرى `Workspace` واجهة؛ تنفيذ إبقاء حزمة داخل خاص.
 
 ```ts type-equiv
 /**
@@ -113,17 +113,17 @@ interface Workspace {
 }
 ```
 
-所有权的真源是记录中有序的 `sessionIds`，绝不从会话 cwd 派生——但成员资格要求两者同时成立：账本上有其 id，且 header 的规范 cwd 等于工作区路径，因此一个会话在结构上至多属于一个工作区。失败的写入会拒绝（`insertSessionBefore` 的账本错误以 `WorkspaceMoveInvalidError` 拒绝，存储失败以普通错误拒绝）；每次被接受的变更都盖上 `updatedAt` 时间戳，并持久修剪不再通过成员资格检查的候选项。
+كل حق حق مصدر هو سجل في لديه ترتيب `sessionIds`، أبدا من جلسة cwd إرسال توليد——لكن عضو مورد إطار اشتراط اثنان من معا صار قيام: حساب هذا فوق لديه ذلك id، كما header مواصفة cwd انتظار في مساحة العمل مسار، لذلك واحد جلسة في بنية فوق حتى كثير يخص واحد مساحة العمل. فشل كتابة سوف رفض (`insertSessionBefore` حساب هذا خطأ بـ `WorkspaceMoveInvalidError` رفض، تخزين فشل بـ عادي خطأ رفض) ؛ كل مرة يتم قبول تغيير كل غطاء فوق `updatedAt` ختم الوقت، و حمل دائم إصلاح قص لم يعد عبر عضو مورد إطار فحص مرشح بند.
 
-## 注册表：`ctx.workspaceRegistry`
+## سجل التسجيل:`ctx.workspaceRegistry`
 
-`WorkspaceRegistry`（[签名](#ctxworkspaceregistry--workspaceregistry)）拥有注册与解析。`create(path, title?)` 要求完全限定路径并将其规范化，拒绝不存在的路径（原样传出原始 `ENOENT`）或非目录；当规范路径已被拥有时原样返回既有实体；否则创建一条标题为 `title ?? defaultWorkspaceTitle(path)` 的记录并前插到持久的注册表顺序中（不同规范路径可以共享同一显示标题，没有最终路径段时使用根路径拼写）。`get(id)` 与有序的 `list()` 是同步缓存读取；`resolveByPath(path)` 应用同一套完全限定 realpath 规范但不创建。`delete(id)` 只移除注册记录、顺序条目和会话账本——目录、用户文件、实时会话和已持久化日志一概不动，因此这些会话变为 Ungrouped（[决策](../../.agents/notes/implemented/feature/2026-07-27-workspace-registration-deletion.zh.md)）；未知 id 返回 `false`。create 与 delete 会在其两次写入（记录 + 顺序）可能分叉之前先持久写入一个待定变更标记；启动时恰好解决被标记的那次变更——通过删除被标记的表行：这会补完被中断的 delete，并回滚被中断的 create（注册可以重建，因此回滚是安全方向）——而没有标记的顺序/表不一致则作为损坏大声失败。
+`WorkspaceRegistry`([توقيع](#ctxworkspaceregistry--workspaceregistry)) يملك تسجيل و تحليل.`create(path, title?)` اشتراط تماما حد تحديد مسار و سوف ذلك مواصفة تحويل، رفض لا وجود مسار (أصل مثال نقل خروج أصلي `ENOENT`) أو غير دليل؛ عند مواصفة مسار قد يتم يملك وقت أصل مثال إرجاع قائم فعلي جسم؛ لا فإن إنشاء واحد بند عنوان لـ `title ?? defaultWorkspaceTitle(path)` سجل و قبل إدراج إلى حمل دائم سجل التسجيل ترتيب في (مختلف مواصفة مسار يمكن مشترك نفس عرض عنوان، لا يوجد نهائي مسار مقطع وقت استخدام أصل مسار تجميع كتابة).`get(id)` و لديه ترتيب `list()` هو تزامن ذاكرة مؤقتة قراءة؛`resolveByPath(path)` تطبيق نفس طقم تماما حد تحديد realpath مواصفة لكن لا إنشاء.`delete(id)` فقط إزالة تسجيل سجل، ترتيب بند و جلسة حساب هذا——دليل، مستخدم ملف، فوري جلسة و قد حفظ دائم سجل واحد عام لا حركة، لذلك هذه جلسة تغيير لـ Ungrouped([قرار](../../.agents/notes/implemented/feature/2026-07-27-workspace-registration-deletion.zh.md)) ؛ لم معرفة id إرجاع `false`.create و delete سوف في ذلك اثنان مرة كتابة (سجل + ترتيب) ممكن قسم تقاطع قبل أولا حمل دائم كتابة واحد انتظار تحديد تغيير علامة؛ بدء وقت تماما جيد حل قرار يتم علامة ذلك مرة تغيير——عبر حذف يتم علامة جدول سطر: هذا سوف تكملة تمام يتم في قطع delete، و تراجع يتم في قطع create(تسجيل يمكن إعادة بناء، لذلك تراجع هو أمان جهة نحو)——بينما لا يوجد علامة ترتيب/جدول لا متسق فإن بصفة ضرر تالف كبير صوت فشل.
 
-会话的 cwd 在创建时由创建者赋予，而不是由本注册表赋予——API 网关从所选工作区的 `path` 解析新会话的 cwd（回退到显式或默认 cwd），先创建会话使 cwd 落入其不可变的 [`SessionHeader`](persistence.zh.md#sessionheader--metadata-beside-the-log)，再调用 `attachSession`，后者会把已存储的 header cwd 与工作区路径重新校验一遍。首次成功启动时，注册表仅凭已持久化的 header（`id`、`cwd`、`createdAt`——绝不读事件正文）引导历史：把规范 cwd 有效的会话按目录分组为工作区，最新的排在最前；「已初始化」标记最后写入，因此被中断的引导可以安全续跑。引导只发生这一次：没有 cwd 的历史遗留会话保持 Ungrouped，此后创建的会话只能通过 `attachSession` 加入工作区。
+جلسة cwd في إنشاء وقت من إنشاء من منح إعطاء، بينما لا هو من هذا سجل التسجيل منح إعطاء——API شبكة صلة من الذي اختيار مساحة العمل `path` تحليل جديد جلسة cwd(رجوع إلى صريح أو افتراضي cwd) ، أولا إنشاء جلسة جعل cwd سقوط دخول ذلك غير ممكن تغيير [`SessionHeader`](persistence.zh.md#sessionheader--metadata-beside-the-log) ، مجددا استدعاء `attachSession`، بعد من سوف يأخذ قد تخزين header cwd و مساحة العمل مسار إعادة تحقق واحد مرة. أول مرة نجاح بدء وقت، سجل التسجيل فقط سند قد حفظ دائم header(`id`،`cwd`،`createdAt`——أبدا قراءة حدث متن) جذب توجيه تاريخ: يأخذ مواصفة cwd صالح جلسة حسب دليل قسم مجموعة لـ مساحة العمل، الأكثر جديد ترتيب في الأكثر قبل؛ «قد ابتدائي تحويل» علامة الأكثر بعد كتابة، لذلك يتم في قطع جذب توجيه يمكن أمان متابعة ركض. جذب توجيه فقط حدوث هذا مرة: لا يوجد cwd تاريخ متروك إبقاء جلسة إبقاء Ungrouped، هذا بعد إنشاء جلسة فقط قدرة عبر `attachSession` إضافة دخول مساحة العمل.
 
-## 消费方
+## مستهلك
 
-[`dsh-workspace-controller`](../../packages/api/workspace-controller) 经 `ctx.workspaceRegistry` 向 GUI 客户端提供工作区 CRUD，[`dsh-session-controller`](../../packages/api/session-controller) 执行上文「先建会话再 attach」的流程。[dsh-agent-instructions](../../packages/context/agent-instructions) 尽管名字如此，却**不是**消费方：它在 agent 自己的 cwd 下发现 AGENTS.md 风格的指令文件，从不触碰 `ctx.workspaceRegistry`——两者共用的这个词指的是用户的工作目录，而非本注册表的实体。
+[`dsh-workspace-controller`](../../packages/api/workspace-controller) مرور `ctx.workspaceRegistry` نحو GUI عميل توفير مساحة العمل CRUD،[`dsh-session-controller`](../../packages/api/session-controller) تنفيذ فوق نص «أولا بناء جلسة مجددا attach» مسار.[dsh-agent-instructions](../../packages/context/agent-instructions) كل إدارة اسم حرف مثل هذا، لكن**لا هو**مستهلك: هو في agent ذاتي ذات cwd تحت اكتشاف AGENTS.md ريح إطار إشارة أمر ملف، من لا لمس اصطدام `ctx.workspaceRegistry`——اثنان من مشترك استخدام هذا عدد كلمة إشارة هو مستخدم عمل دليل، بينما غير هذا سجل التسجيل فعلي جسم.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

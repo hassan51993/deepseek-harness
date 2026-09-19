@@ -1,6 +1,6 @@
 # Event system
 
-English | [中文](events.zh.md)
+English | [العربية](events.zh.md)
 
 Events are the core communication mechanism between Cordis plugins. Harness uses them extensively for loosely coupled extension points.
 

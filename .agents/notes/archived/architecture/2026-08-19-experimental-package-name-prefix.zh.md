@@ -1,30 +1,30 @@
-# Agent Note: 在 npm 名中标记实验性包
+# Agent Note: في npm اسم في علامة فعلي تحقق صفة حزمة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-19-experimental-package-name-prefix.md) | 中文
+[English](2026-08-19-experimental-package-name-prefix.md) | العربية
 
-## 问题
+## مشكلة
 
-目录归属、私有 manifest 与发布系列过滤可以阻止实验性包进入发布，但 npm specifier 或 Cordis 配置项无法体现该状态。外观稳定的包名可能被复制到其他组合中，而读者看不出其完整公开约定仍处于实验阶段。
+دليل ملكية، خاص manifest و إصدار نظام صف مرور ترشيح يمكن منع توقف فعلي تحقق صفة حزمة دخول إصدار، لكن npm specifier أو Cordis بند إعداد لا يمكن جسم الآن هذا حالة. خارج مراقبة مستقر حزمة اسم ممكن يتم نسخ إلى أخرى تركيب في، بينما قراءة من نظر لا خروج ذلك كامل عام اتفاق ما زال موضع في فعلي تحقق مرحلة مقطع.
 
-## 决策
+## قرار
 
-`packages/experimental/` 直属的每个包都使用 `@deepseek-ai/dsh-experimental-*` npm 前缀。workspace constraints 门禁会发现这些 manifest，并在现有 `private: true` 与省略 `publishConfig` 要求之外拒绝缺少该前缀的包。
+`packages/experimental/` مباشر تابع كل حزمة كل استخدام `@deepseek-ai/dsh-experimental-*` npm بادئة.workspace constraints بوابة سوف اكتشاف هذه manifest، و في قائم `private: true` و حذف `publishConfig` اشتراط خارج رفض نقص قليل هذا بادئة حزمة.
 
-Agent Teams 使用位于 `packages/experimental/agent-team` 的 `@deepseek-ai/dsh-experimental-agent-team`，以及位于 `packages/experimental/tool-agent-team` 的 `@deepseek-ai/dsh-experimental-tool-agent-team`。包 import、Cordis 配置项、生成目录和仓库元数据直接使用这些名称，不提供兼容别名。
+Agent Teams استخدام يقع في `packages/experimental/agent-team` `@deepseek-ai/dsh-experimental-agent-team`، و يقع في `packages/experimental/tool-agent-team` `@deepseek-ai/dsh-experimental-tool-agent-team`. حزمة import،Cordis بند إعداد، توليد دليل و مستودع بيانات وصفية مباشر استخدام هذه اسم، لا توفير توافق آخر اسم.
 
-promotion 会把包移至其产品职责组、从 npm 名中移除 `experimental-`，并原子更新全部仓库引用。预发布兼容策略允许该重命名不提供别名包。
+promotion سوف يأخذ حزمة نقل حتى ذلك منتج مسؤولية مجموعة، من npm اسم في إزالة `experimental-`، و أصل فرعي تحديث الكل مستودع مرجع. مسبق إصدار توافق سياسة سماح هذا إعادة تسمية لا توفير آخر اسم حزمة.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**保留外观稳定的 npm 名，仅通过目录和发布元数据表达实验状态。** 这种方式可以减少 promotion 改动，但 import specifier 与配置项会隐藏包状态，也无法在评审中携带仅存在于仓库内的目录规则。
+**إبقاء خارج مراقبة مستقر npm اسم، فقط عبر دليل و إصدار بيانات وصفية جدول بلوغ فعلي تحقق حالة.** هذا نوع طريقة يمكن نقص قليل promotion تعديل، لكن import specifier و بند إعداد سوف إخفاء حزمة حالة، أيضا لا يمكن في مراجعة في يحمل فقط وجود في مستودع داخل دليل قاعدة.
 
-**使用 experimental 后缀。** 前缀会把所有实验性包归入一个可搜索的 npm 命名空间，并在产品职责之前显示状态；后缀会把该标记分散在各个职责名称之后。
+**استخدام experimental بعد لاحقة.** بادئة سوف يأخذ كل فعلي تحقق صفة حزمة عودة دخول واحد يمكن بحث npm نطاق الأسماء، و في منتج مسؤولية قبل عرض حالة؛ بعد لاحقة سوف يأخذ هذا علامة قسم تفرق في كل عدد مسؤولية اسم بعد.
 
-## 后果
+## عاقبة
 
-实验性 import 与配置项无需查阅仓库布局即可表明其支持状态。顶层 constraints 命令及其聚焦单元测试会阻止新实验性包遗漏该前缀。
+فعلي تحقق صفة import و بند إعداد بلا حاجة فحص قراءة مستودع تخطيط يكفي جدول واضح ذلك دعم حمل حالة. قمة طبقة constraints أمر و ذلك تجمع تركيز اختبار وحدة سوف منع توقف جديد فعلي تحقق صفة حزمة متروك تسرب هذا بادئة.
 
-promotion 会明确重命名 import、配置、生成引用与元数据。不会有兼容包保留实验名称。
+promotion سوف واضح إعادة تسمية import، إعداد، توليد مرجع و بيانات وصفية. لن لديه توافق حزمة إبقاء فعلي تحقق اسم.

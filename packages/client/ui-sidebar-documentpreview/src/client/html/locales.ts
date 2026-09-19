@@ -1,9 +1,9 @@
 /** Locale-owned HTML implementation name and iframe status text. */
 export const zh = {
   title: 'HTML',
-  frame: 'HTML 文档预览',
-  loading: '正在读取…',
-  failed: '无法预览这份 HTML 文档',
+  frame: 'HTML وثيقة معاينة',
+  loading: 'صحيح في قراءة…',
+  failed: 'لا يمكن معاينة هذا نسخة HTML وثيقة',
 } satisfies Record<string, string>
 
 /** HTML renderer dictionary keys. */

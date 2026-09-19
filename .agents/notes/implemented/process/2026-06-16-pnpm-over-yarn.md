@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-06-16-pnpm-over-yarn.zh.md)
+English | [العربية](2026-06-16-pnpm-over-yarn.zh.md)
 
 ## Problem
 

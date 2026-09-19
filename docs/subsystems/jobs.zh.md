@@ -1,12 +1,12 @@
-# 后台任务运行时
+# خلفية مهمة وقت التشغيل
 
-[English](jobs.md) | 中文
+[English](jobs.md) | العربية
 
-长时间运行的生产方、`ctx.jobs` 与任务控制命令共用的类型。[运行时 Agent Note](../../.agents/notes/implemented/architecture/2026-06-20-generic-long-running-tool-runtime.zh.md) 负责设计；本页记录 [`packages/jobs/jobs/src/types.ts`](../../packages/jobs/jobs/src/types.ts) 中的确切字段和变体。
+طويل وقت تشغيل إنتاج جهة،`ctx.jobs` و مهمة تحكم أمر مشترك استخدام نوع.[وقت التشغيل Agent Note](../../.agents/notes/implemented/architecture/2026-06-20-generic-long-running-tool-runtime.zh.md) مسؤول تصميم؛ هذا صفحة سجل [`packages/jobs/jobs/src/types.ts`](../../packages/jobs/jobs/src/types.ts) في تأكيد قطع حقل و تغيير جسم.
 
-## ID 与状态
+## ID و حالة
 
-`JobId` 是按 `<kind>-N` 生成的[品牌化 id](core.zh.md#branded-ids)。访问控制依赖拥有者授权，而非 id 的保密性。`JobKind` 派生自可合并扩展的 map；注册表将各个 kind 视为不透明的 id 命名空间。
+`JobId` هو حسب `<kind>-N` توليد[صنف لوحة تحويل id](core.zh.md#branded-ids). وصول تحكم اعتماد يملك من تخويل، بينما غير id حفظ سري صفة.`JobKind` إرسال توليد ذاتي يمكن دمج توسيع map؛ سجل التسجيل سوف كل عدد kind نظر لـ لا نفاذ واضح id نطاق الأسماء.
 
 ```ts type-equiv
 /**
@@ -19,11 +19,11 @@ interface JobKindMap {
 }
 ```
 
-`JobStatus` 为 `'running' | 'stopping' | 'completed' | 'killed' | 'failed'`；生产方特有的事实归入 `JobSnapshot.detail`。
+`JobStatus` لـ `'running' | 'stopping' | 'completed' | 'killed' | 'failed'`؛ إنتاج جهة خاص لديه واقع عودة دخول `JobSnapshot.detail`.
 
-## 生产方约定
+## إنتاج جهة اتفاق
 
-`JobStart` 声明身份和启动器。运行时会在调用 `run()` 前完成预检，随后提交注册，不再执行可能失败的步骤。生产方拥有执行资源；运行时拥有身份、访问权限和生命周期状态。
+`JobStart` إعلان هوية و بدء جهاز. وقت التشغيل سوف في استدعاء `run()` قبل إتمام مسبق فحص، مع بعد إيداع تسجيل، لم يعد تنفيذ ممكن فشل خطوة. إنتاج جهة يملك تنفيذ مورد؛ وقت التشغيل يملك هوية، وصول إذن و دورة الحياة حالة.
 
 ```ts type-equiv
 /**
@@ -57,7 +57,7 @@ interface JobStart {
 }
 ```
 
-`JobHooks.done` 会在生产方释放其资源后 resolve，而不是仅在工作完成时 resolve。可选的 `readOutput` 用来区分会消费输出的流式任务和仅有最终输出的任务。
+`JobHooks.done` سوف في إنتاج جهة تحرير ذلك مورد بعد resolve، بينما لا هو فقط في عمل إتمام وقت resolve. اختياري `readOutput` استخدام قدوم منطقة قسم سوف إزالة استهلاك إخراج تدفق صيغة مهمة و فقط لديه نهائي إخراج مهمة.
 
 ```ts type-equiv
 /** Hooks through which the runtime controls and observes producer work. */
@@ -95,9 +95,9 @@ interface JobOutcome {
 }
 ```
 
-## 消费方视图
+## مستهلك عرض
 
-快照是每次新建的只读投影。`ownerSession` 携带用于授权的共享 `SessionId`；完成监听器则会另行收到用于生命周期清理的确切拥有者对象。另一个接口已经交付终止状态或承诺交付时，`reported` 会抑制完成通知；排空 owner 或服务的 teardown 取消同样计入。
+لقطة هو كل مرة جديد بناء فقط قراءة إسقاط.`ownerSession` يحمل لأجل تخويل مشترك `SessionId`؛ إتمام مستمع فإن سوف آخر سطر استلام إلى لأجل دورة الحياة تنظيف تأكيد قطع يملك من كائن. آخر عدد واجهة قد تسليم إنهاء حالة أو تحمل وعد تسليم وقت،`reported` سوف كبح صنع إتمام إشعار؛ ترتيب فارغ owner أو خدمة teardown إلغاء نفس مثال حساب دخول.
 
 ```ts type-equiv
 /**
@@ -152,9 +152,9 @@ interface JobRead {
 }
 ```
 
-## 服务行为
+## خدمة سلوك
 
-抽象的 [`JobRegistry`](../../packages/jobs/jobs/src/index.ts) Service Definition 规定原子 `start`、限定调用方作用域的 `get` 和 `list`、`read`、`kill`、有界 `wait`、故障隔离的 `onJobDone` 与 `onJobsChanged` 监听器，以及 `attachController`；[`LocalJobRegistry`](../../packages/jobs/jobs-local/src/index.ts) 是其进程局部 Service Provider。授权会比较拥有者会话；拥有者清理与准入会使用确切的已注册 `Agent` 实例。本地 Service Provider 的 `maxConcurrentJobsPerOwner` 配置必须是正的安全整数，默认值为 `10`；它按确切 owner 统计 `running` 与 `stopping` 记录，所有无 owner 任务共享一个服务级桶，并在生产方终止结算后释放容量。Service Definition 约定见 [`dsh-jobs`](../../packages/jobs/jobs/README.zh.md)，注册表生命周期与准入策略见 [`dsh-jobs-local`](../../packages/jobs/jobs-local/README.zh.md)，面向模型的 Consumer 见 [`dsh-tool-jobs`](../../packages/jobs/tool-jobs/README.zh.md)。
+سحب كائن [`JobRegistry`](../../packages/jobs/jobs/src/index.ts) Service Definition قاعدة تحديد أصل فرعي `start`، حد تحديد استدعاء جهة أثر مجال `get` و `list`،`read`،`kill`، محدود `wait`، لذا عائق عزل `onJobDone` و `onJobsChanged` مستمع، و `attachController`؛[`LocalJobRegistry`](../../packages/jobs/jobs-local/src/index.ts) هو ذلك عملية نطاق جزء Service Provider. تخويل سوف مقارنة مقارنة يملك من جلسة؛ يملك من تنظيف و دقيق دخول سوف استخدام تأكيد قطع قد تسجيل `Agent` نسخة. محلي Service Provider `maxConcurrentJobsPerOwner` إعداد يجب هو صحيح أمان كامل عدد، قيمة افتراضية لـ `10`؛ هو حسب تأكيد قطع owner موحد حساب `running` و `stopping` سجل، كل بلا owner مهمة مشترك واحد خدمة درجة دلو، و في إنتاج جهة إنهاء تسوية بعد تحرير سعة كمية.Service Definition اتفاق رؤية [`dsh-jobs`](../../packages/jobs/jobs/README.zh.md) ، سجل التسجيل دورة الحياة و دقيق دخول سياسة رؤية [`dsh-jobs-local`](../../packages/jobs/jobs-local/README.zh.md) ، موجه إلى نموذج Consumer رؤية [`dsh-tool-jobs`](../../packages/jobs/tool-jobs/README.zh.md).
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

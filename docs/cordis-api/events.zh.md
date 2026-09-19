@@ -1,11 +1,11 @@
-<!-- 英文源文件由 scripts/gen-cordis-catalog.ts 生成；本中文文件是通过双语配对维护的经评审对侧。
-     更新时先运行 `pnpm run gen-cordis-catalog` 更新英文，再更新本文件并运行 `pnpm run verify-translation-pairing --write docs/cordis-api/events.md` 重新记录配对。 -->
+<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
+     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/events.md` إعادة سجل إعداد مقابل. -->
 
-# 事件
+# حدث
 
-[English](events.md) | 中文
+[English](events.md) | العربية
 
-每个上下文中都混入了事件分发 API。Harness 事件声明及其分发模式会生成到各自所属的[子系统页面](../subsystems/core.zh.md)。
+كل سياق في كل خلط دخول حدث توزيع API.Harness حدث إعلان و ذلك توزيع نمط سوف توليد إلى كل منها الذي تابع[فرعي نظام صفحة](../subsystems/core.zh.md).
 
 ### ctx.parallel(name, ...args)
 
@@ -21,14 +21,14 @@ parallel<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Promi
 parallel<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): Promise<void>
 ```
 
-分发一个事件，并发运行所有监听器。
+توزيع واحد حدث، تزامن تشغيل كل مستمع.
 
-- `name`：事件名称。
-- `args`：传递给每个监听器的参数。
+- `name`: حدث اسم.
+- `args`: نقل تمرير إعطاء كل مستمع معامل.
 
-**返回值**：一个 Promise，在所有监听器均已完成后兑现。
+**قيمة راجعة**: واحد Promise، في كل مستمع متساو قد إتمام بعد صرف الآن.
 
-[源码](../../vendor/cordis/src/events.ts#L44)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L44)
 
 ### ctx.emit(name, ...args)
 
@@ -43,12 +43,12 @@ emit<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): void
 emit<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): void
 ```
 
-同步分发一个事件，忽略监听器的返回值。
+تزامن توزيع واحد حدث، تجاهل اختصار مستمع قيمة راجعة.
 
-- `name`：事件名称。
-- `args`：传递给每个监听器的参数。
+- `name`: حدث اسم.
+- `args`: نقل تمرير إعطاء كل مستمع معامل.
 
-[源码](../../vendor/cordis/src/events.ts#L53)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L53)
 
 ### ctx.serial(name, ...args)
 
@@ -64,14 +64,14 @@ serial<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Promisi
 serial<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): Promisify<ReturnType<Events[K]>>
 ```
 
-分发一个事件，依次等待各监听器，直到其中一个提前终止分发。
+توزيع واحد حدث، اعتماد مرة انتظار كل مستمع، مباشر إلى منها واحد رفع قبل إنهاء توزيع.
 
-- `name`：事件名称。
-- `args`：传递给每个监听器的参数。
+- `name`: حدث اسم.
+- `args`: نقل تمرير إعطاء كل مستمع معامل.
 
-**返回值**：第一个提前终止值（非 null、非 false 且非 undefined）；如果没有，则不返回此类值。
+**قيمة راجعة**: رقم واحد رفع قبل إنهاء قيمة (غير null، غير false كما غير undefined) ؛ إذا لا يوجد، فإن لا إرجاع هذا صنف قيمة.
 
-[源码](../../vendor/cordis/src/events.ts#L63)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L63)
 
 ### ctx.bail(name, ...args)
 
@@ -87,14 +87,14 @@ bail<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): ReturnTyp
 bail<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): ReturnType<Events[K]>
 ```
 
-分发一个事件，依次调用各监听器，直到其中一个提前终止分发。
+توزيع واحد حدث، اعتماد مرة استدعاء كل مستمع، مباشر إلى منها واحد رفع قبل إنهاء توزيع.
 
-- `name`：事件名称。
-- `args`：传递给每个监听器的参数。
+- `name`: حدث اسم.
+- `args`: نقل تمرير إعطاء كل مستمع معامل.
 
-**返回值**：第一个提前终止值（非 null、非 false 且非 undefined）；如果没有，则不返回此类值。
+**قيمة راجعة**: رقم واحد رفع قبل إنهاء قيمة (غير null، غير false كما غير undefined) ؛ إذا لا يوجد، فإن لا إرجاع هذا صنف قيمة.
 
-[源码](../../vendor/cordis/src/events.ts#L73)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L73)
 
 ### ctx.waterfall(name, ...args)
 
@@ -113,16 +113,16 @@ waterfall<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Retu
 waterfall<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): ReturnType<Events[K]>
 ```
 
-分发一个事件，其最后一个参数是续接执行的 `next` 回调。
+توزيع واحد حدث، ذلك الأكثر بعد واحد معامل هو متابعة وصل تنفيذ `next` عودة ضبط.
 
-每个监听器都会包装调用链的其余部分：调用 `next()` 会执行下一个监听器，最终执行内置行为；不调用则会否决后续执行。
+كل مستمع كل سوف حزمة تركيب استدعاء سلسلة ذلك بقية جزء: استدعاء `next()` سوف تنفيذ تحت واحد مستمع، نهائي تنفيذ داخل وضع سلوك؛ لا استدعاء فإن سوف مرفوض لاحق تنفيذ.
 
-- `name`：事件名称。
-- `args`：监听器参数；最后一个参数是最内层的 `next`。
+- `name`: حدث اسم.
+- `args`: مستمع معامل؛ الأكثر بعد واحد معامل هو الأكثر داخل طبقة `next`.
 
-**返回值**：最外层监听器的返回值。
+**قيمة راجعة**: الأكثر خارج طبقة مستمع قيمة راجعة.
 
-[源码](../../vendor/cordis/src/events.ts#L86)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L86)
 
 ### ctx.on(name, listener, options?)
 
@@ -138,15 +138,15 @@ waterfall<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K
 on<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | EventOptions): () => boolean
 ```
 
-注册一个归当前 fiber 所有的事件监听器。
+تسجيل واحد عودة حالي fiber كل حدث مستمع.
 
-- `name`：要监听的事件名称。
-- `listener`：使用分发参数调用的监听器。
-- `options`：监听器选项；布尔值可作为 `prepend` 的简写。
+- `name`: يلزم استماع حدث اسم.
+- `listener`: استخدام توزيع معامل استدعاء مستمع.
+- `options`: مستمع خيار؛ قيمة منطقية يمكن بصفة `prepend` بسيط كتابة.
 
-**返回值**：一个用于移除监听器的资源释放函数；如果调用该函数时监听器仍处于注册状态，则返回 `true`。
+**قيمة راجعة**: واحد لأجل إزالة مستمع مورد تحرير دالة؛ إذا استدعاء هذا دالة وقت مستمع ما زال موضع في تسجيل حالة، فإن إرجاع `true`.
 
-[源码](../../vendor/cordis/src/events.ts#L97)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L97)
 
 ### ctx.once(name, listener, options?)
 
@@ -162,19 +162,19 @@ on<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | Eve
 once<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | EventOptions): () => boolean
 ```
 
-与 `on()` 相同，但监听器在首次调用后会自行注销。
+و `on()` نفسه، لكن مستمع في أول مرة استدعاء بعد سوف ذاتي سطر ملاحظة إلغاء.
 
-- `name`：要监听的事件名称。
-- `listener`：使用分发参数调用，最多调用一次。
-- `options`：监听器选项；布尔值可作为 `prepend` 的简写。
+- `name`: يلزم استماع حدث اسم.
+- `listener`: استخدام توزيع معامل استدعاء، الأكثر كثير استدعاء مرة.
+- `options`: مستمع خيار؛ قيمة منطقية يمكن بصفة `prepend` بسيط كتابة.
 
-**返回值**：一个用于移除监听器的资源释放函数；如果调用该函数时监听器仍处于注册状态，则返回 `true`。
+**قيمة راجعة**: واحد لأجل إزالة مستمع مورد تحرير دالة؛ إذا استدعاء هذا دالة وقت مستمع ما زال موضع في تسجيل حالة، فإن إرجاع `true`.
 
-[源码](../../vendor/cordis/src/events.ts#L106)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L106)
 
 ## EventOptions
 
-`ctx.on()` 和 `ctx.once()` 接受的选项。
+`ctx.on()` و `ctx.once()` قبول خيار.
 
 ```ts cordis-catalog
 /** Options accepted by `ctx.on()` and `ctx.once()`. */
@@ -186,13 +186,13 @@ interface EventOptions {
 }
 ```
 
-[源码](../../vendor/cordis/src/events.ts#L112)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L112)
 
 ## DispatchMode
 
-事件服务使用的事件分发策略。
+حدث خدمة استخدام حدث توزيع سياسة.
 
-`emit` 运行同步监听器但不等待它们，`parallel` 同时等待所有监听器，`serial` 依次等待监听器直至其中一个提前终止分发，`bail` 遇到第一个同步提前终止值时停止，`waterfall` 则围绕最终的 `next` 回调组合监听器。
+`emit` تشغيل تزامن مستمع لكن لا انتظار هو جمع،`parallel` معا انتظار كل مستمع،`serial` اعتماد مرة انتظار مستمع مباشر حتى منها واحد رفع قبل إنهاء توزيع،`bail` لقاء إلى رقم واحد تزامن رفع قبل إنهاء قيمة وقت إيقاف،`waterfall` فإن محيط التفاف نهائي `next` عودة ضبط تركيب مستمع.
 
 ```ts cordis-catalog
 /**
@@ -206,4 +206,4 @@ interface EventOptions {
 type DispatchMode = 'emit' | 'parallel' | 'serial' | 'bail' | 'waterfall'
 ```
 
-[源码](../../vendor/cordis/src/events.ts#L32)
+[شفرة المصدر](../../vendor/cordis/src/events.ts#L32)

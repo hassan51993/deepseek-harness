@@ -142,7 +142,7 @@ describe('translation pairing snapshots', () => {
       })
       mkdirSync(join(root, 'docs'), { recursive: true })
       writeFileSync(join(root, 'docs/reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'docs/reference.zh.md'), '# 参考\n')
+      writeFileSync(join(root, 'docs/reference.zh.md'), '# مشاركة اعتبار\n')
       execFileSync('git', ['-C', root, 'add', 'docs'])
 
       expect(gitIndexPaths(root)).toEqual(new Set([
@@ -209,9 +209,9 @@ describe('translation pairing switchers', () => {
 
   it('accepts only the canonical public URL for an absolute switcher', () => {
     const targets = languageSwitcherTargets('python/sdk/README.zh.md')
-    const canonicalMarkdown = '# README\n\nEnglish | [中文](https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk/README.zh.md)\n'
+    const canonicalMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk/README.zh.md)\n'
     const canonical = parseTranslationMarkdown(canonicalMarkdown)
-    const wrongMarkdown = '# README\n\nEnglish | [中文](https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.zh.md)\n'
+    const wrongMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.zh.md)\n'
     const wrongPath = parseTranslationMarkdown(wrongMarkdown)
 
     expect(translationStructureSignature(canonical, targets, {
@@ -234,8 +234,8 @@ describe('translation pairing switchers', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-switcher-'))
     try {
       writeFileSync(join(root, 'guide.md'), '# Guide\n')
-      writeFileSync(join(root, 'guide.zh.md'), '# 指南\n')
-      const markdown = '# 指南\n\n[English](guide.md) | 中文\n\n[正文](guide.md)\n'
+      writeFileSync(join(root, 'guide.zh.md'), '# إشارة جنوب\n')
+      const markdown = '# إشارة جنوب\n\n[English](guide.md) | العربية\n\n[متن](guide.md)\n'
       expect(translationStructureSignature(
         parseTranslationMarkdown(markdown),
         languageSwitcherTargets('guide.md'),
@@ -253,7 +253,7 @@ describe('translation pairing switchers', () => {
 describe('translation pairing link language parity', () => {
   it('compares a .zh.md target and its .md sibling as the same document', () => {
     const en = 'See [docs](persistence.md) and [notes](note.md#anchor).'
-    const zh = '参见[文档](persistence.zh.md)与[笔记](note.zh.md#anchor)。'
+    const zh = 'مشاركة رؤية[وثيقة](persistence.zh.md) و[قلم تسجيل](note.zh.md#anchor).'
     expect(
       translationStructureDiff(
         signature(en),
@@ -264,7 +264,7 @@ describe('translation pairing link language parity', () => {
 
   it('still rejects a genuinely different target', () => {
     const en = 'See [docs](persistence.md).'
-    const zh = '参见[文档](other.md)。'
+    const zh = 'مشاركة رؤية[وثيقة](other.md).'
     expect(
       translationStructureDiff(
         signature(en),
@@ -360,9 +360,9 @@ describe('translation structural signature', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-structure-'))
     try {
       writeFileSync(join(root, 'reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'reference.zh.md'), '# 参考\n')
+      writeFileSync(join(root, 'reference.zh.md'), '# مشاركة اعتبار\n')
       const sourceMarkdown = '[Reference](reference.md?view=full#section)\n'
-      const counterpartMarkdown = '[参考](reference.zh.md?view=full#section)\n'
+      const counterpartMarkdown = '[مشاركة اعتبار](reference.zh.md?view=full#section)\n'
       const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.zh.md')
       const counterpart = fixtureSignature(root, 'guide.zh.md', counterpartMarkdown, 'guide.md')
       expect(translationStructureDiff(source, counterpart)).toEqual([])
@@ -375,7 +375,7 @@ describe('translation structural signature', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-structure-'))
     try {
       writeFileSync(join(root, 'reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'reference.zh.md'), '# 参考\n')
+      writeFileSync(join(root, 'reference.zh.md'), '# مشاركة اعتبار\n')
       const markdown = [
         '[Reference][doc]',
         '',
@@ -406,7 +406,7 @@ describe('translation structural signature', () => {
         writeFileSync(join(root, `${name}.zh.md`), `# ${name} zh\n`)
       }
       const sourceMarkdown = '[Reference][ref]\n\n[ref]: reference.md\n[ref]: other.md\n'
-      const counterpartMarkdown = '[参考][ref]\n\n[ref]: different.zh.md\n[ref]: other.zh.md\n'
+      const counterpartMarkdown = '[مشاركة اعتبار][ref]\n\n[ref]: different.zh.md\n[ref]: other.zh.md\n'
       const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.zh.md')
       const counterpart = fixtureSignature(root, 'guide.zh.md', counterpartMarkdown, 'guide.md')
       expect(translationStructureDiff(source, counterpart)).toEqual([
@@ -419,13 +419,13 @@ describe('translation structural signature', () => {
 
   it('accepts matching list kinds, starts, and item counts', () => {
     const source = signature('3. One\n4. Two\n\n- A\n- B\n')
-    const counterpart = signature('3. 一\n4. 二\n\n- 甲\n- 乙\n')
+    const counterpart = signature('3. واحد\n4. اثنان\n\n- درع\n- ثان\n')
     expect(translationStructureDiff(source, counterpart)).toEqual([])
   })
 
   it('rejects an altered ordered-list start', () => {
     const source = signature('3. One\n4. Two\n\n- A\n- B\n')
-    const counterpart = signature('1. 一\n2. 二\n\n- 甲\n- 乙\n')
+    const counterpart = signature('1. واحد\n2. اثنان\n\n- درع\n- ثان\n')
     expect(translationStructureDiff(source, counterpart)).toEqual([
       'list (kind, start, item count) #1 diverges between the pair: "ordered:start=3:items=2" vs "ordered:start=1:items=2"',
     ])
@@ -433,7 +433,7 @@ describe('translation structural signature', () => {
 
   it('rejects a missing list item', () => {
     const source = signature('- A\n- B\n')
-    const counterpart = signature('- 甲\n')
+    const counterpart = signature('- درع\n')
     expect(translationStructureDiff(source, counterpart)).toEqual([
       'list (kind, start, item count) #1 diverges between the pair: "bullet:items=2" vs "bullet:items=1"',
     ])
@@ -441,7 +441,7 @@ describe('translation structural signature', () => {
 
   it('rejects altered table row or column counts', () => {
     const source = signature('| A | B |\n|---|---|\n| 1 | 2 |\n| 3 | 4 |\n')
-    const counterpart = signature('| 甲 | 乙 |\n|---|---|\n| 一 | 二 |\n')
+    const counterpart = signature('| درع | ثان |\n|---|---|\n| واحد | اثنان |\n')
     expect(translationStructureDiff(source, counterpart)).toEqual([
       'table (row x column count) #1 diverges between the pair: "3x2" vs "2x2"',
     ])

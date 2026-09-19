@@ -1,31 +1,31 @@
-# Agent Note: 共享 base 默认文件编辑器选择
+# Agent Note: مشترك base افتراضي ملف تحرير جهاز اختيار
 
 Status: implemented
 
-[English](2026-09-05-base-default-file-editor.md) | 中文
+[English](2026-09-05-base-default-file-editor.md) | العربية
 
 ## Problem
 
-共享 base 同时选择 `read`/`write`/`edit` 和 `str_replace_editor`，这些工具提供重叠的文件编辑接口。Issue #3599 要求基于 base 的 profile 默认使用一套接口，同时保留专用的极简组合。
+مشترك base معا اختيار `read`/`write`/`edit` و `str_replace_editor`، هذه أداة توفير إعادة تراكم ملف تحرير واجهة.Issue #3599 اشتراط أساس في base profile افتراضي استخدام واحد طقم واجهة، معا إبقاء مخصص استخدام أقصى بسيط تركيب.
 
 ## Decision
 
-[base patch](../../../../packages/bundle/base/cordis.patch.yml) 选择 `read`、`write` 和 `edit` 负责文件编辑。它不插入 `tool-str-replace-editor`；因此 SDK 与 Web 应用 patch 无需禁用覆盖。编辑器包仍可供显式插入它的组合使用。
+[base patch](../../../../packages/bundle/base/cordis.patch.yml) اختيار `read`،`write` و `edit` مسؤول ملف تحرير. هو لا إدراج دخول `tool-str-replace-editor`؛ لذلك SDK و Web تطبيق patch بلا حاجة منع استخدام تغطية. تحرير جهاز حزمة ما زال يمكن توفير صريح إدراج دخول هو تركيب استخدام.
 
-Web minimal 与独立 `sdk-minimal` bundle 各自负责工具选择，不依赖 base。[仅持久 shell 决策](2026-09-03-minimal-profiles-persistent-shell-only.zh.md)负责它们的单工具默认值。
+Web minimal و مستقل `sdk-minimal` bundle كل منها مسؤول أداة اختيار، لا اعتماد base.[فقط حمل دائم shell قرار](2026-09-03-minimal-profiles-persistent-shell-only.zh.md) مسؤول هو جمع مفرد أداة قيمة افتراضية.
 
-本决策细化了[统一 dsh 启动器](../architecture/2026-08-22-single-dsh-application-launcher.zh.md)中的共享工具默认值。该文档对启动所有权、共享服务和 patch 优先级仍然有效；没有被完全取代的活跃 Agent Note。
+هذا قرار دقيق تحويل[موحد واحد dsh بدء جهاز](../architecture/2026-08-22-single-dsh-application-launcher.zh.md) في مشترك أداة قيمة افتراضية. هذا وثيقة مقابل بدء كل حق، مشترك خدمة و patch أولوية درجة ما زال صالح؛ لا يوجد يتم تماما يحل محل نشط وثب Agent Note.
 
 ## Alternatives considered
 
-**在每个应用中分别禁用编辑器。** 这会在 base 中保留重叠的默认接口，并要求各消费方主动退出。共享选择由 base 直接负责。
+**في كل تطبيق في قسم آخر منع استخدام تحرير جهاز.** هذا سوف في base في إبقاء إعادة تراكم افتراضي واجهة، و اشتراط كل مستهلك رئيسي حركة خروج. مشترك اختيار من base مباشر مسؤول.
 
-**删除工具包。** 显式自定义组合仍使用此接口。base 的默认选择不删除包，也不约束独立负责的极简默认值。
+**حذف أداة حزمة.** صريح ذاتي تعريف تركيب ما زال استخدام هذا واجهة.base افتراضي اختيار لا حذف حزمة، أيضا لا قيد مستقل مسؤول أقصى بسيط قيمة افتراضية.
 
 ## Consequences
 
-基于 base 的 SDK、headless、ACP 与自定义 profile 默认不包含该编辑器 schema。Web standard 同样不包含它。profile、home 或逐次调用 patch 可以通过 `insert` 添加工具；只设置 `disabled: false` 的 patch 需要已有配置项，无法创建配置项。本决策不要求 SDK 与 Web 的全部工具一致。
+أساس في base SDK،headless،ACP و ذاتي تعريف profile افتراضي لا يتضمن هذا تحرير جهاز schema.Web standard نفس مثال لا يتضمن هو.profile،home أو تدريجي مرة استدعاء patch يمكن عبر `insert` إضافة أداة؛ فقط ضبط `disabled: false` patch حاجة قد لديه بند إعداد، لا يمكن إنشاء بند إعداد. هذا قرار لا اشتراط SDK و Web الكل أداة متسق.
 
 ## Verification
 
-[SDK 进程测试](../../../../apps/cli/tests/profiles/sdk/keyless-smoke.e2e.ts) 捕获默认文件工具、显式插入编辑器与独立极简工具清单的实际模型请求。[headless 进程测试](../../../../apps/cli/tests/profiles/headless/tests/keyless-smoke.e2e.ts) 通过所属应用检查共享默认值。[headless](../../../../snapshots/session/headless.snapshot.ts)、[SDK](../../../../snapshots/sdk/sdk.snapshot.ts) 与 [ACP](../../../../snapshots/acp/acp.snapshot.ts) 录制会话固定组装后模型可见的输出，包括显式插入编辑器的 SDK fixture。
+[SDK عملية اختبار](../../../../apps/cli/tests/profiles/sdk/keyless-smoke.e2e.ts) التقاط افتراضي ملف أداة، صريح إدراج دخول تحرير جهاز و مستقل أقصى بسيط أداة بيان فعلي نموذج طلب.[headless عملية اختبار](../../../../apps/cli/tests/profiles/headless/tests/keyless-smoke.e2e.ts) عبر الذي تابع تطبيق فحص مشترك قيمة افتراضية.[headless](../../../../snapshots/session/headless.snapshot.ts) ،[SDK](../../../../snapshots/sdk/sdk.snapshot.ts) و [ACP](../../../../snapshots/acp/acp.snapshot.ts) تسجيل صنع جلسة ثابت تجميع بعد نموذج مرئي إخراج، يشمل صريح إدراج دخول تحرير جهاز SDK fixture.

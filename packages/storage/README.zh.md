@@ -1,51 +1,51 @@
 ---
-description: "存储组地图：通过具名后端与类型化领域数据形式持久化非会话数据，供浏览本组的用户与维护者阅读。"
+description: "تخزين مجموعة أرض رسم: عبر أداة اسم خلفية و نوع تحويل مجال بيانات شكل صيغة حفظ دائم غير جلسة بيانات، توفير تصفح تصفح هذا مجموعة مستخدم و صيانة من قراءة قراءة."
 kind: "package-group"
 ---
 
 # packages/storage
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-存储组跨重启保留非会话应用数据，包括工作区记录和会话伴随数据。需要人类可读文件时选择 `storage-json`，需要在单个数据库中定点更新时选择 `storage-sqlite`；`storage-domain` 增加经过 schema 校验的类型化记录和变更通知，而 `storage` 选择已配置的后端。这些包是可选项且只面向宿主侧：它们不会向模型暴露工具、提示词内容或会话事件。当应用状态必须在进程结束后继续存在时使用本组；组合没有此类数据时可以省略本组。
+تخزين مجموعة عبر إعادة بدء إبقاء غير جلسة تطبيق بيانات، يشمل مساحة العمل سجل و جلسة مرافق مع بيانات. حاجة شخص صنف يمكن قراءة ملف وقت اختيار `storage-json`، حاجة في مفرد عدد قاعدة بيانات في تحديد نقطة تحديث وقت اختيار `storage-sqlite`؛`storage-domain` زيادة مرور مرور schema تحقق نوع تحويل سجل و تغيير إشعار، بينما `storage` اختيار قد إعداد خلفية. هذه حزمة هو اختياري بند كما فقط موجه إلى مضيف جانب: هو جمع لن نحو نموذج كشف أداة، نص التوجيه محتوى أو جلسة حدث. عند تطبيق حالة يجب في عملية انتهاء بعد متابعة وجود وقت استخدام هذا مجموعة؛ تركيب لا يوجد هذا صنف بيانات وقت يمكن حذف هذا مجموعة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`storage`](storage/README.zh.md) | 把已注册后端与已挂载的数据形式设施连接起来 | `ctx.storage` |
-| [`storage-json`](storage-json/README.zh.md) | 把每个单元存为一个人类可读的 JSON 文件 | 注册后端 `json` |
-| [`storage-sqlite`](storage-sqlite/README.zh.md) | 把单元作为 JSON 文档存进一个 SQLite 数据库 | 注册后端 `sqlite` |
-| [`storage-domain`](storage-domain/README.zh.md) | 在已路由后端之上提供经过 schema 校验、发出变更事件的 KV 领域 | `ctx.storageDomain` |
+| [`storage`](storage/README.zh.md) | يأخذ قد تسجيل خلفية و قد تركيب بيانات شكل صيغة ضبط تطبيق اتصال بدء قدوم | `ctx.storage` |
+| [`storage-json`](storage-json/README.zh.md) | يأخذ كل وحدة تخزين لـ واحد شخص صنف يمكن قراءة JSON ملف | تسجيل خلفية `json` |
+| [`storage-sqlite`](storage-sqlite/README.zh.md) | يأخذ وحدة بصفة JSON وثيقة تخزين دخول واحد SQLite قاعدة بيانات | تسجيل خلفية `sqlite` |
+| [`storage-domain`](storage-domain/README.zh.md) | في قد توجيه خلفية لـ فوق توفير مرور مرور schema تحقق، إرسال خروج تغيير حدث KV مجال | `ctx.storageDomain` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [存储子系统](../../docs/subsystems/storage.zh.md)——权威约定：后端约定、领域声明、变更事件与生成的 API。
-- [领域 KV 存储 Agent Note](../../.agents/notes/proposed/architecture/2026-07-24-domain-kv-storage-and-workspace.zh.md)——本家族的设计、workspace 消费方与被推迟的会话后端迁移。
-- [Workspace 子系统](../../docs/subsystems/workspace.zh.md)——领域数据形式的第一个消费方。
+- [تخزين فرعي نظام](../../docs/subsystems/storage.zh.md)——مرجعي اتفاق: خلفية اتفاق، مجال إعلان، تغيير حدث و توليد API.
+- [مجال KV تخزين Agent Note](../../.agents/notes/proposed/architecture/2026-07-24-domain-kv-storage-and-workspace.zh.md)——هذا بيت عائلة تصميم،workspace مستهلك و يتم دفع متأخر جلسة خلفية ترحيل.
+- [Workspace فرعي نظام](../../docs/subsystems/workspace.zh.md)——مجال بيانات شكل صيغة رقم واحد مستهلك.
 
 -----
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-设计 Agent Note 仍标记为 proposed，而本家族已经发布；其范围外事项表就是迁移阶段（`log` 分面、会话后端复用、跨进程变更推送）的延期工作清单。决策落地后，请把结论提升为 implemented 笔记。
+تصميم Agent Note ما زال علامة لـ proposed، بينما هذا بيت عائلة قد إصدار؛ ذلك نطاق خارج أمر بند جدول حينئذ هو ترحيل مرحلة مقطع (`log` قسم وجه، جلسة خلفية إعادة استخدام، عبر عملية تغيير دفع إرسال) تأجيل عمل بيان. قرار سقوط أرض بعد، طلب يأخذ ربط نقاش رفع رفع لـ implemented قلم تسجيل.
 
 </details>

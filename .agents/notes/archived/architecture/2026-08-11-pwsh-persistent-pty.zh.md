@@ -1,69 +1,69 @@
-# Agent Note: Windows 上基于 terminal seam 的持久化 pwsh
+# Agent Note: Windows فوق أساس في terminal seam حفظ دائم pwsh
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-11-pwsh-persistent-pty.md) | 中文
+[English](2026-08-11-pwsh-persistent-pty.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 在 Windows 上没有持久 shell。持久 `bash` 栈按构造就是 POSIX-only：`@deepseek-ai/dsh-subprocess-local` 在终端分配时直接抛错（`createProcessInspector()` 拒绝 win32），`@deepseek-ai/dsh-terminal-bash` 是 bash 形态（`/bin/bash` 默认值、`PS1`/`PROMPT_COMMAND` 环境标记），`@deepseek-ai/dsh-tool-bash-persistent` 用 bash 语法包装命令，pty 测试全部在 win32 上 skip。一次性 `pwsh` 工具（`@deepseek-ai/dsh-tool-pwsh` + `@deepseek-ai/dsh-pwsh-local`）已经能在 Windows 运行，但每次调用都是全新的 `pwsh -Command` 进程：cwd、`$env:` 变量、函数和交互式子进程都随调用结束，其 README 把 "No persistent shell or PTY" 记为 deferred work。
+harness في Windows فوق لا يوجد حمل دائم shell. حمل دائم `bash` مكدس حسب بنية صنع حينئذ هو POSIX-only:`@deepseek-ai/dsh-subprocess-local` في طرفية قسم إعداد وقت مباشر رمي خطأ (`createProcessInspector()` رفض win32) ،`@deepseek-ai/dsh-terminal-bash` هو bash شكل (`/bin/bash` قيمة افتراضية،`PS1`/`PROMPT_COMMAND` بيئة علامة) ،`@deepseek-ai/dsh-tool-bash-persistent` استخدام bash لغة قاعدة حزمة تركيب أمر،pty اختبار الكل في win32 فوق skip. مرة صفة `pwsh` أداة (`@deepseek-ai/dsh-tool-pwsh` + `@deepseek-ai/dsh-pwsh-local`) قد قدرة في Windows تشغيل، لكن كل مرة استدعاء كل هو كل جديد `pwsh -Command` عملية:cwd،`$env:` متغير، دالة و تفاعل صيغة عملية فرعية كل مع استدعاء انتهاء، ذلك README يأخذ "No persistent shell or PTY" تسجيل لـ deferred work.
 
-这个缺口排除了状态驻留在终端里的 Windows 工作流：单步调试、在 Python 或 Node REPL 中探索、中断前台命令后回到原 shell —— 正是持久 bash pty 在 POSIX 上服务的同一类工作。
+هذا عدد نقص فتحة ترتيب حذف حالة إقامة إبقاء في طرفية داخل Windows سير العمل: مفرد خطوة ضبط تجربة، في Python أو Node REPL في استكشاف، في قطع قبل منصة أمر بعد عودة إلى أصل shell —— صحيح هو حمل دائم bash pty في POSIX فوق خدمة نفس صنف عمل.
 
-两个基础已经存在。PTY 服务本身（`ctx.terminals` 注册表、owner 作用域、send/read/signal/kill 契约）是平台无关的。Loader 的 `disabled: !!js` 插值（PR #2234）按平台门控 shell 行，并钉死了"每宿主恰好挂载一个 shell 栈"的不变量；持久 pwsh 栈通过同一行机制组合。
+اثنان عدد أساس أساس قد وجود.PTY خدمة ذاته (`ctx.terminals` سجل التسجيل،owner أثر مجال،send/read/signal/kill عقد نحو) هو منصة غير متصل.Loader `disabled: !!js` إدراج قيمة (PR #2234) حسب منصة باب تحكم shell سطر، و تثبيت ميت"كل مضيف تماما جيد تركيب واحد shell مكدس"ثابت كمية؛ حمل دائم pwsh مكدس عبر نفس سطر آلية تركيب.
 
-## 决定
+## قرار
 
-模型侧持久 `pwsh` 工具在 Windows 上交付，契约与 `tool-bash-persistent` 逐项对齐：每个 Agent 一个 owner 作用域的持久 shell、标记检测的命令完成、精确的原生退出码、有界输出，以及超时/取消/`exit` 时重置 shell 并告知模型的语义。三块交付：`subprocess-local` 的 Windows 基座、`terminal-bash` 的 shell 方言选项、新的 `tool-pwsh-persistent` 包加 minimal 预设组合行。
+نموذج جانب حمل دائم `pwsh` أداة في Windows فوق تسليم، عقد نحو و `tool-bash-persistent` تدريجي بند مقابل متساو: كل Agent واحد owner أثر مجال حمل دائم shell، علامة فحص قياس أمر إتمام، دقيق أصلي خروج رمز، محدود إخراج، و مهلة/إلغاء/`exit` وقت إعادة وضع shell و إبلاغ معرفة نموذج دلالة. ثلاثة كتلة تسليم:`subprocess-local` Windows أساس مقعد،`terminal-bash` shell جهة قول خيار، جديد `tool-pwsh-persistent` حزمة إضافة minimal مسبق ضبط تركيب سطر.
 
-### `@deepseek-ai/dsh-subprocess-local` 的 Windows 基座
+### `@deepseek-ai/dsh-subprocess-local` Windows أساس مقعد
 
-`createProcessInspector()` 在 win32 返回 `WindowsProcessInspector` 而不是抛错。基于 koffi 的检查器通过 Toolhelp32 枚举进程表，把 GetProcessTimes 创建身份与进程句柄零时等待结合起来（同时防止 PID 复用并识别已终止的进程对象），把 **shell pid 作为伪前台进程组**（Windows 没有 POSIX 进程组；这个稳定值让 prompt-marker 就绪快路径在一个轮询间隔内结算），不报告 stdin-wait 证据（就绪与 macOS 同档），信号走 `taskkill /T` 升级（仅 SIGKILL 加 `/F`）。koffi（`^3.1.0`，`sandbox-windows-acl` 已固定的版本）仅在 win32 惰性加载。
+`createProcessInspector()` في win32 إرجاع `WindowsProcessInspector` بينما لا هو رمي خطأ. أساس في koffi فحص جهاز عبر Toolhelp32 قطعة رفع عملية جدول، يأخذ GetProcessTimes إنشاء هوية و عملية جملة مقبض صفر وقت انتظار ربط دمج بدء قدوم (معا منع توقف PID إعادة استخدام و تعرف آخر قد إنهاء عملية كائن) ، يأخذ **shell pid بصفة زائف قبل منصة عملية مجموعة**(Windows لا يوجد POSIX عملية مجموعة؛ هذا عدد مستقر قيمة يجعل prompt-marker حينئذ خيط سريع مسار في واحد جولة استفسار بين فصل داخل تسوية) ، لا تقرير إبلاغ stdin-wait دليل (حينئذ خيط و macOS نفس ملف) ، إشارة مشي `taskkill /T` ترقية (فقط SIGKILL إضافة `/F`).koffi(`^3.1.0`،`sandbox-windows-acl` قد ثابت إصدار) فقط في win32 كسول صفة تحميل.
 
-`LocalTerminalHandle` 为 win32 分支，因为 node-pty 的 `kill(signal)` 会抛错（"Signals not supported on windows"），其无参 kill 委托的 console-list agent 在没有父控制台时失败。拆卸经 taskkill 升级并以 shell 的启动身份作栅栏；由于被外部 taskkill 的 shell 可能永远不会触发 node-pty 的退出通知，句柄从 inspector 验证的消失状态结算 `done`（`settleExitIfGone`）。`signalForeground` 把 SIGINT 映射为 `\x03` Ctrl-C 输入写入（conhost 转为控制台级 CTRL_C 事件的投递方式；实测可中断运行中的命令），SIGTERM/SIGKILL 路由到 taskkill，SIGTSTP/SIGHUP 以 Windows 不可用为由拒绝。公共 `PtySignal` 集合与 seam 类型不变；映射全部留在 backend。
+`LocalTerminalHandle` لـ win32 فرع، لأن node-pty `kill(signal)` سوف رمي خطأ ("Signals not supported on windows") ، ذلك بلا مشاركة kill تفويض حمل console-list agent في لا يوجد أب تحكم منصة وقت فشل. تفكيك إزالة مرور taskkill ترقية و بـ shell بدء هوية عمل شبكة شريط؛ من في يتم خارجي taskkill shell ممكن دائم بعيد لن إطلاق node-pty خروج إشعار، جملة مقبض من inspector تحقق إزالة فقد حالة تسوية `done`(`settleExitIfGone`).`signalForeground` يأخذ SIGINT خريطة لـ `\x03` Ctrl-C إدخال كتابة (conhost تحويل لـ تحكم منصة درجة CTRL_C حدث إلقاء تمرير طريقة؛ فعلي قياس يمكن في قطع تشغيل في أمر) ،SIGTERM/SIGKILL توجيه إلى taskkill،SIGTSTP/SIGHUP بـ Windows غير ممكن استخدام لـ من رفض. عام مشترك `PtySignal` تجميع دمج و seam نوع ثابت؛ خريطة الكل إبقاء في backend.
 
-### `@deepseek-ai/dsh-terminal-bash` 的 shell 方言
+### `@deepseek-ai/dsh-terminal-bash` shell جهة قول
 
-一个 backend、两种方言：`shellDialect: 'bash' | 'pwsh'`（默认 `'bash'`；bash 的 argv 和环境默认值保持不变）。有效 `shellPath`/`shellArgs` 按方言解析（bash `/bin/bash --noprofile --norc -i`；pwsh 经共享的 `dsh-pwsh-local` 解析器取 `-NoLogo -NoProfile`，保留交互宿主供子 REPL）。子环境去掉 bash 专属 `PS1`/`PROMPT_COMMAND` 标记并为 pwsh 加 `NO_COLOR`。pwsh 无法从环境安装提示符，因此 backend 在启动时通过会话写入 prompt 函数，并且只接受 backend 的 `stdin_read` 结果；回显引导输入中的可打印提示符字面量不代表就绪。一条 `timeoutMs` 绝对超时计时器负责限制完整启动重试循环，因此 `inferred_idle` 后续 send 无法重新计时。一个不保留 scrollback 的 `@xterm/headless` 实例会消费原始 PTY 数据，并通过 `SubprocessTerminalHandle` 发出终端协议响应；backend 会在调用方输入前排空这些写入，并且只接受协议工作在整次检查期间保持静止时的前台状态，因此调用方输入不会被当作光标位置响应而消费。一个 parser 写入保持活跃，随后到达的原始 chunk 会合并为下一批，从而避免高输出量为每个 chunk 分别调度解析。现有 sanitizer 与有界缓冲区仍负责输出投影。两种方言发出相同的 BEL 终结 OSC `133;D;` 标记，因此 `PROMPT_MARKER_PREFIX`、`CONTROLLED_PROMPT` 与精确尾部就绪逻辑保持共享——标记仍是载荷不被消费的就绪信号，延后的 BEL 事件通道也继续保持延后。
+واحد backend، اثنان نوع جهة قول:`shellDialect: 'bash' | 'pwsh'`(افتراضي `'bash'`؛bash argv و بيئة قيمة افتراضية إبقاء ثابت). صالح `shellPath`/`shellArgs` حسب جهة قول تحليل (bash `/bin/bash --noprofile --norc -i`؛pwsh مرور مشترك `dsh-pwsh-local` محلل أخذ `-NoLogo -NoProfile`، إبقاء تفاعل مضيف توفير فرعي REPL). فرعي بيئة ذهاب إسقاط bash مخصص تابع `PS1`/`PROMPT_COMMAND` علامة و لـ pwsh إضافة `NO_COLOR`.pwsh لا يمكن من بيئة تثبيت تلميح رمز، لذلك backend في بدء وقت عبر جلسة كتابة prompt دالة، و كما فقط قبول backend `stdin_read` نتيجة؛ عودة إظهار جذب توجيه إدخال في يمكن ضرب طبع تلميح رمز حرف وجه كمية لا بديل جدول حينئذ خيط. واحد بند `timeoutMs` قطعا مقابل مهلة حساب وقت جهاز مسؤول حد كامل بدء إعادة محاولة حلقة، لذلك `inferred_idle` لاحق send لا يمكن إعادة حساب وقت. واحد لا إبقاء scrollback `@xterm/headless` نسخة سوف إزالة استهلاك أصلي PTY بيانات، و عبر `SubprocessTerminalHandle` إرسال خروج طرفية بروتوكول استجابة؛backend سوف في استدعاء جهة إدخال قبل ترتيب فارغ هذه كتابة، و كما فقط قبول بروتوكول عمل في كامل مرة فحص خلال إبقاء ساكن توقف وقت قبل منصة حالة، لذلك استدعاء جهة إدخال لن يتم عند عمل ضوء علامة موضع استجابة بينما إزالة استهلاك. واحد parser كتابة إبقاء نشط وثب، مع بعد وصول أصلي chunk سوف دمج لـ تحت واحد دفعة، من بينما تجنب تجنب عال إخراج كمية لـ كل chunk قسم آخر ضبط درجة تحليل. قائم sanitizer و محدود مؤقت اندفاع منطقة ما زال مسؤول إخراج إسقاط. اثنان نوع جهة قول إرسال خروج نفسه BEL نهاية ربط OSC `133;D;` علامة، لذلك `PROMPT_MARKER_PREFIX`،`CONTROLLED_PROMPT` و دقيق ذيل جزء حينئذ خيط منطق إبقاء مشترك——علامة ما زال هو تحميل حمل لا يتم إزالة استهلاك حينئذ خيط إشارة، تأخير بعد BEL حدث عبر طريق أيضا متابعة إبقاء تأخير بعد.
 
 ### `@deepseek-ai/dsh-tool-pwsh-persistent`
 
-新包镜像 `tool-bash-persistent`：同样的 `Config`（`backendType` 默认 `shell`、`timeoutMs`、`maxOutputChars`、`description`）、同样的 owner 作用域 shell 注册表与每 owner 串行队列、同样的超时/中止/退出/重置路径。工具名是 `pwsh`；它与一次性 `tool-pwsh` 永不共挂，因为预设行按平台互斥。
+جديد حزمة مرآة مثل `tool-bash-persistent`: نفس مثال `Config`(`backendType` افتراضي `shell`،`timeoutMs`،`maxOutputChars`،`description`) ، نفس مثال owner أثر مجال shell سجل التسجيل و كل owner سلسلة سطر طابور صف، نفس مثال مهلة/في توقف/خروج/إعادة وضع مسار. أداة اسم هو `pwsh`؛ هو و مرة صفة `tool-pwsh` دائم لا مشترك تعليق، لأن مسبق ضبط سطر حسب منصة متبادل رفض.
 
-命令经包装器执行：先重置 `$LASTEXITCODE`（可赋值，已实测），通过 `Invoke-Expression` 在反引号转义的双引号字符串中执行 body（`quoteForPwsh`：反引号、引号、`$`、CRLF 与 ESC 转义，输入行上不携带裸控制字符，包装器可在 ConstrainedLanguage 下存活），报告精确原生退出码、PowerShell 终止性错误的 `1` 或成功的 `0`。PSReadLine 会把提交的包装器回显进流——没有 `stty -echo` 的对应物——因此提取会从捕获输出中剥离包装器原文；回显无法伪造完成，因为状态正则要求 END nonce 后紧跟数字，而回显继续是引号字符。prompt 函数安装工具自有提示符（`__DSH_PERSISTENT_PWSH_PROMPT__ `）覆盖 backend 引导值，与 bash 的双层结构相同。
+أمر مرور حزمة تركيب جهاز تنفيذ: أولا إعادة وضع `$LASTEXITCODE`(يمكن منح قيمة، قد فعلي قياس) ، عبر `Invoke-Expression` في عكس جذب رقم تحويل معنى مزدوج جذب رقم نص في تنفيذ body(`quoteForPwsh`: عكس جذب رقم، جذب رقم،`$`،CRLF و ESC تحويل معنى، إدخال سطر فوق لا يحمل عار تحكم محرف، حزمة تركيب جهاز يمكن في ConstrainedLanguage تحت تخزين نشط) ، تقرير إبلاغ دقيق أصلي خروج رمز،PowerShell إنهاء صفة خطأ `1` أو نجاح `0`.PSReadLine سوف يأخذ إيداع حزمة تركيب جهاز عودة إظهار دخول تدفق——لا يوجد `stty -echo` مقابل شيء——لذلك رفع أخذ سوف من التقاط إخراج في تقشير مغادرة حزمة تركيب جهاز أصل نص؛ عودة إظهار لا يمكن زائف صنع إتمام، لأن حالة صحيح فإن اشتراط END nonce بعد ضيق تتبع عدد حرف، بينما عودة إظهار متابعة هو جذب رقم محرف.prompt دالة تثبيت أداة ذاتي لديه تلميح رمز (`__DSH_PERSISTENT_PWSH_PROMPT__ `) تغطية backend جذب توجيه قيمة، و bash مزدوج طبقة بنية نفسه.
 
-### 组合
+### تركيب
 
-minimal 预设用 #2234 的 `disabled: !!js` 插值按平台门控持久 shell 栈：bash 行（`terminal-bash` + `tool-bash-persistent`）在 POSIX 挂载，pwsh 行（`shellDialect: pwsh` 的 `terminal-bash` + `tool-pwsh-persistent`）在 win32 挂载——每宿主恰好一个持久 shell。`windows-shell.spec` 钉死按平台的花名册；真实 Loader 组合在真实 ConPTY pwsh 上跑通整条栈。
+minimal مسبق ضبط استخدام #2234 `disabled: !!js` إدراج قيمة حسب منصة باب تحكم حمل دائم shell مكدس:bash سطر (`terminal-bash` + `tool-bash-persistent`) في POSIX تركيب،pwsh سطر (`shellDialect: pwsh` `terminal-bash` + `tool-pwsh-persistent`) في win32 تركيب——كل مضيف تماما جيد واحد حمل دائم shell.`windows-shell.spec` تثبيت ميت حسب منصة زهرة اسم سجل؛ حقيقي Loader تركيب في حقيقي ConPTY pwsh فوق ركض عبر كامل بند مكدس.
 
-### 测试
+### اختبار
 
-Windows 测试面沿用 master 的豁免结构：terminal-bash 与 subprocess-local 的测试在 win32 上继续排除（`windowsUnsupportedTests`），其源码在 win32 上继续覆盖豁免（`windowsUnsupportedCoveragePackages`），平台门控 fixture 与 node 翻译命令因此仍是 win32 开发车道的证据；koffi-backed inspector 在 Linux 侧加入 windows-only 覆盖豁免。`tool-pwsh-persistent` 不在豁免之列：其套件在 windows-native 车道上运行、源码受覆盖约束，镜像 `tool-bash-persistent` 的 stub 模式矩阵并加回显剥离模式。session 套件无需真实 shell 即可固定拆分的光标位置查询、响应写入顺序与解析批处理；macOS 和 Windows 上的真实 pwsh 套件证明持久 cwd/env、密钥清洗、UTF-8 输出、多行与 here-string 命令、大输出裁剪及退出/重置。ACP keyless snapshot 通过真实 Loader 组合启动持久工具，并固定模型可见的 schema 与结果。
+Windows اختبار وجه امتداد استخدام master إعفاء تجنب بنية:terminal-bash و subprocess-local اختبار في win32 فوق متابعة ترتيب حذف (`windowsUnsupportedTests`) ، ذلك شفرة المصدر في win32 فوق متابعة تغطية إعفاء تجنب (`windowsUnsupportedCoveragePackages`) ، منصة باب تحكم fixture و node قلب ترجمة أمر لذلك ما زال هو win32 تطوير عربة طريق دليل؛koffi-backed inspector في Linux جانب إضافة دخول windows-only تغطية إعفاء تجنب.`tool-pwsh-persistent` لا في إعفاء تجنب لـ صف: ذلك طقم عنصر في windows-native عربة طريق فوق تشغيل، شفرة المصدر تلقي تغطية قيد، مرآة مثل `tool-bash-persistent` stub نمط مستطيل دفعة و إضافة عودة إظهار تقشير مغادرة نمط.session طقم عنصر بلا حاجة حقيقي shell يكفي ثابت تفكيك قسم ضوء علامة موضع استعلام، استجابة كتابة ترتيب و تحليل دفعة معالجة؛macOS و Windows فوق حقيقي pwsh طقم عنصر إثبات حمل دائم cwd/env، مفتاح صاف غسل،UTF-8 إخراج، كثير سطر و here-string أمر، كبير إخراج قطع قص و خروج/إعادة وضع.ACP keyless snapshot عبر حقيقي Loader تركيب بدء حمل دائم أداة، و ثابت نموذج مرئي schema و نتيجة.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-- **独立的 `pty-pwsh-local` backend 包。** 拒绝：本地 session、sanitizer、就绪档位和沙箱栅栏是共享机制；为一个 config 字段复制 500 行 session 换来的是一包复制粘贴，与 bash 组并置薄 executor 的情形不同。
-- **tasklist 或 wmic 轮询进程树。** 拒绝：`inspectForeground` 每次就绪轮询（约 50ms）都跑，每 tick 生成一次探测进程不可行；wmic 已从现行 Windows 移除。koffi + Toolhelp32 是进程内、廉价的。
-- **为 SIGINT 加原生 helper 或 `GenerateConsoleCtrlEvent`。** 拒绝：向 ConPTY 输入写 `\x03` 即可中断运行中的命令（已实测），零新增代码。语义差异——在提示符处 `\x03` 取消当前行而不是给进程发信号——文档化而不是绕开。
-- **包装器 body 用 base64 编码。** 拒绝：解码需要 `[Convert]`/`[System.Text.Encoding]` 调用，其在 ConstrainedLanguage 下的可用性未证实；反引号转义的双引号字符串只用语言级构造，且已端到端实测。
-- **手写光标位置响应。** 拒绝：响应必须反映 shell 已经发出的光标移动、换行折叠和控制序列。固定坐标会放大控制台重绘并可能耗尽有界输出；`@xterm/headless` 会维护这份协议状态，但不取代逐行输出投影。
-- **容忍回显而不剥离包装器。** 拒绝：完整路径和提示符就绪路径下回显天然被排除，但超时和 START 丢失的回退会把包装器源码（含 marker nonce）泄漏进模型可见文本。
-- **复活 BEL 模型通知通道。** 拒绝：当前实现不消费任何 marker 载荷、不投递任何 BEL 事件；设计对齐当前实现，deferred 项保持 deferred。
-- **把 Windows PowerShell 5.1 当一等目标。** 拒绝：pwsh 7（含 Store 安装）是目标；`resolvePwshPath` 保留 5.1 作为最后的可执行回退，但不承诺持久 shell 在其上的完整行为。
+- **مستقل `pty-pwsh-local` backend حزمة.** رفض: محلي session،sanitizer، حينئذ خيط ملف موضع و صندوق رملي شبكة شريط هو مشترك آلية؛ لـ واحد config حقل نسخ 500 سطر session تبديل قدوم هو واحد حزمة نسخ لصق لصق، و bash مجموعة و وضع رقيق executor حال شكل مختلف.
+- **tasklist أو wmic جولة استفسار عملية شجرة.** رفض:`inspectForeground` كل مرة حينئذ خيط جولة استفسار (نحو 50ms) كل ركض، كل tick توليد مرة استكشاف قياس عملية غير ممكن سطر؛wmic قد من الآن سطر Windows إزالة.koffi + Toolhelp32 هو عملية داخل، نزيه قيمة.
+- **لـ SIGINT إضافة أصلي helper أو `GenerateConsoleCtrlEvent`.** رفض: نحو ConPTY إدخال كتابة `\x03` يكفي في قطع تشغيل في أمر (قد فعلي قياس) ، صفر إضافة جديدة شفرة. دلالة فرق مختلف——في تلميح رمز موضع `\x03` إلغاء حالي سطر بينما لا هو إعطاء عملية إرسال إشارة——وثيقة تحويل بينما لا هو التفاف فتح.
+- **حزمة تركيب جهاز body استخدام base64 تحرير رمز.** رفض: حل رمز حاجة `[Convert]`/`[System.Text.Encoding]` استدعاء، ذلك في ConstrainedLanguage تحت متاح صفة لم إثبات فعلي؛ عكس جذب رقم تحويل معنى مزدوج جذب رقم نص فقط استخدام لغة درجة بنية صنع، كما قد طرف إلى طرف فعلي قياس.
+- **يد كتابة ضوء علامة موضع استجابة.** رفض: استجابة يجب عكس عكس shell قد إرسال خروج ضوء علامة نقل حركة، تبديل سطر طي و تحكم تسلسل. ثابت جلوس علامة سوف وضع كبير تحكم منصة إعادة رسم و ممكن استهلاك كل محدود إخراج؛`@xterm/headless` سوف صيانة هذا نسخة بروتوكول حالة، لكن لا يحل محل تدريجي سطر إخراج إسقاط.
+- **سعة تحمل عودة إظهار بينما لا تقشير مغادرة حزمة تركيب جهاز.** رفض: كامل مسار و تلميح رمز حينئذ خيط مسار تحت عودة إظهار يوم لكن يتم ترتيب حذف، لكن مهلة و START فقد فقد رجوع سوف يأخذ حزمة تركيب جهاز شفرة المصدر (يحتوي marker nonce) تسرب تسرب دخول نموذج مرئي نص.
+- **تكرار نشط BEL نموذج إشعار عبر طريق.** رفض: حالي تنفيذ لا إزالة استهلاك أي marker تحميل حمل، لا إلقاء تمرير أي BEL حدث؛ تصميم مقابل متساو حالي تنفيذ،deferred بند إبقاء deferred.
+- **يأخذ Windows PowerShell 5.1 عند واحد انتظار هدف.** رفض:pwsh 7(يحتوي Store تثبيت) هو هدف؛`resolvePwshPath` إبقاء 5.1 بصفة الأكثر بعد يمكن تنفيذ رجوع، لكن لا تحمل وعد حمل دائم shell في ذلك فوق كامل سلوك.
 
-## 后果
+## عاقبة
 
-**Windows 成为一等公民的持久 shell 宿主。** 持久 pwsh 栈在 windows-native 车道上运行并受覆盖门禁约束；一次性/持久 shell 的划分与 POSIX 镜像，预设 spec 在两种平台上都钉死每宿主恰好一个 shell 栈。
+**Windows يصبح واحد انتظار عام شعب حمل دائم shell مضيف.** حمل دائم pwsh مكدس في windows-native عربة طريق فوق تشغيل و تلقي تغطية بوابة قيد؛ مرة صفة/حمل دائم shell تخطيط قسم و POSIX مرآة مثل، مسبق ضبط spec في اثنان نوع منصة فوق كل تثبيت ميت كل مضيف تماما جيد واحد shell مكدس.
 
-**Windows 覆盖沿用 master 的豁免结构。** subprocess-local 与 terminal-bash 源码在 win32 上保持覆盖豁免、其套件保持测试排除，与 master 完全一致；Windows 代码路径经 win32 开发车道与真实 pwsh 工具套件验证，新表面的覆盖义务在 windows-native 车道上落在 `tool-pwsh-persistent`。
+**Windows تغطية امتداد استخدام master إعفاء تجنب بنية.** subprocess-local و terminal-bash شفرة المصدر في win32 فوق إبقاء تغطية إعفاء تجنب، ذلك طقم عنصر إبقاء اختبار ترتيب حذف، و master تماما متسق؛Windows شفرة مسار مرور win32 تطوير عربة طريق و حقيقي pwsh أداة طقم عنصر تحقق، جديد جدول وجه تغطية معنى خدمة في windows-native عربة طريق فوق سقوط في `tool-pwsh-persistent`.
 
-**Windows 就绪弱于 Linux。** 伪 pgid marker 快路径覆盖 shell 提示符，但没有提示符的子进程按静默档结算（约 3s），与 macOS 完全一致；没有精确的 stdin-wait 档。
+**Windows حينئذ خيط ضعيف في Linux.** زائف pgid marker سريع مسار تغطية shell تلميح رمز، لكن لا يوجد تلميح رمز عملية فرعية حسب ساكن صامت ملف تسوية (نحو 3s) ، و macOS تماما متسق؛ لا يوجد دقيق stdin-wait ملف.
 
-**Windows 的拆卸与信号不同于 POSIX。** 不带 `/F` 的 taskkill 无法终止控制台进程（TERM 档是 `/F` 升级前的宽限等待）、SIGINT 是控制台级 Ctrl-C、SIGTSTP/SIGHUP 不可用，且被外部 taskkill 的 shell 可能不触发 node-pty 的退出通知——句柄改从验证的消失状态结算。
+**Windows تفكيك إزالة و إشارة مختلف في POSIX.** لا حمل `/F` taskkill لا يمكن إنهاء تحكم منصة عملية (TERM ملف هو `/F` ترقية قبل عرض حد انتظار) ،SIGINT هو تحكم منصة درجة Ctrl-C،SIGTSTP/SIGHUP غير ممكن استخدام، كما يتم خارجي taskkill shell ممكن لا إطلاق node-pty خروج إشعار——جملة مقبض تعديل من تحقق إزالة فقد حالة تسوية.
 
-**输入回显是接受的平台事实。** PSReadLine 回显提交的输入；marker 锚定提取与包装器原文剥离在完整结果中移除它，部分输出回退中残留有界。
+**إدخال عودة إظهار هو قبول منصة واقع.** PSReadLine عودة إظهار إيداع إدخال؛marker مرساة تحديد رفع أخذ و حزمة تركيب جهاز أصل نص تقشير مغادرة في كامل نتيجة في إزالة هو، جزء إخراج رجوع في ناقص إبقاء محدود.
 
-**终端协议响应先于调用方输入。** headless 模拟器不保留 scrollback，也不贡献模型可见文本；它跟踪终端控制状态，并通过已挂载的进程管理提供方发出响应。这会增加受维护的 `@xterm/headless` 运行时依赖，并避免光标查询消费后续工具命令。
+**طرفية بروتوكول استجابة أولا في استدعاء جهة إدخال.** headless نموذج محاكاة جهاز لا إبقاء scrollback، أيضا لا مساهمة نموذج مرئي نص؛ هو تتبع أثر طرفية تحكم حالة، و عبر قد تركيب عملية إدارة مزود إرسال خروج استجابة. هذا سوف زيادة تلقي صيانة `@xterm/headless` وقت التشغيل اعتماد، و تجنب تجنب ضوء علامة استعلام إزالة استهلاك لاحق أداة أمر.
 
-**携带的风险。** Windows ACL 沙箱只读模式下，ConstrainedLanguage 可能拒绝引导代码通过 `[Console]::` 固定编码并写入 prompt marker；若 marker 就绪持续不可用，启动会在 `timeoutMs` 到期时拒绝，而不会发布引导未完成的 shell。模型后来重定义 `prompt` 函数会使命令就绪降级到静默档。模型命令中的裸 ESC 字符不受支持（PSReadLine 会吞掉）。koffi 与 `@xterm/headless` 分别增加进程基座和终端后端的依赖评审。
+**يحمل ريح خطر.** Windows ACL صندوق رملي فقط قراءة نمط تحت،ConstrainedLanguage ممكن رفض جذب توجيه شفرة عبر `[Console]::` ثابت تحرير رمز و كتابة prompt marker؛ إذا marker حينئذ خيط حمل متابعة غير ممكن استخدام، بدء سوف في `timeoutMs` إلى مدة وقت رفض، بينما لن إصدار جذب توجيه لم إتمام shell. نموذج بعد قدوم إعادة تعريف `prompt` دالة سوف جعل أمر حينئذ خيط تخفيض إلى ساكن صامت ملف. نموذج أمر في عار ESC محرف لا تلقي دعم حمل (PSReadLine سوف ابتلاع إسقاط).koffi و `@xterm/headless` قسم آخر زيادة عملية أساس مقعد و طرفية خلفية اعتماد مراجعة.

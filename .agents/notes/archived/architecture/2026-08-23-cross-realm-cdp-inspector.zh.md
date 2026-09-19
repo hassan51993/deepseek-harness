@@ -1,101 +1,101 @@
-# Agent Note: 跨 realm CDP Inspector
+# Agent Note: عبر realm CDP Inspector
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-23-cross-realm-cdp-inspector.md) | 中文
+[English](2026-08-23-cross-realm-cdp-inspector.md) | العربية
 
 ## Problem
 
-Host 诊断、浏览器 Client 观测和 JavaScript 调试来自不同 JavaScript realm。Host 主线程上的 debugger transport 无法在该线程暂停时投递 `Debugger.resume`；若每个 producer 直接生成 CDP，又会重复协议状态，并把应用观测逻辑绑到 Chrome 呈现协议。
+Host تشخيص، متصفح Client مراقبة قياس و JavaScript ضبط تجربة قدوم ذاتي مختلف JavaScript realm.Host رئيسي خط مسار فوق debugger transport لا يمكن في هذا خط مسار مؤقت توقف وقت إلقاء تمرير `Debugger.resume`؛ إذا كل producer مباشر توليد CDP، أيضا سوف تكرار بروتوكول حالة، و يأخذ تطبيق مراقبة قياس منطق ربط إلى Chrome عرض بروتوكول.
 
 ## Decision
 
-`@deepseek-ai/dsh-experimental-inspector` 是一个私有 Client/Host 双面 Cordis 插件包。Host 面启动 Node Worker，Client 面直接连接该 Worker。Cordis 只负责组合、服务发布、bootstrap 注入与 dispose；source 协议、Worker 状态、CDP server、V8 bridge 和 domain adapter 不检查 Cordis 运行时数据。
+`@deepseek-ai/dsh-experimental-inspector` هو واحد خاص Client/Host مزدوج وجه Cordis إضافة حزمة.Host وجه بدء Node Worker،Client وجه مباشر اتصال هذا Worker.Cordis فقط مسؤول تركيب، خدمة إصدار،bootstrap حقن و dispose؛source بروتوكول،Worker حالة،CDP server،V8 bridge و domain adapter لا فحص Cordis وقت التشغيل بيانات.
 
-Worker 是唯一 CDP endpoint，也是 CDP 状态的唯一 owner。Host 与 Client producer 通过有版本的内部协议发送验证后的观测记录；Client Runtime、Console、Sources 和语义查询在同一条鉴权 carrier 上使用相互独立的类型化帧。realm registry 为每条 DevTools 连接提供相同的 Runtime、Console、Sources 和 Debugger capability slot，并用明确的 unsupported 成员保留 Host 与 Client 的支持差异。
+Worker هو وحيد CDP endpoint، أيضا هو CDP حالة وحيد owner.Host و Client producer عبر لديه إصدار داخلي بروتوكول إرسال تحقق بعد مراقبة قياس سجل؛Client Runtime،Console،Sources و دلالة استعلام في نفس بند تمييز حق carrier فوق استخدام متبادل متبادل مستقل نوع تحويل لقطة.realm registry لـ كل بند DevTools اتصال توفير نفسه Runtime،Console،Sources و Debugger capability slot، و استخدام واضح unsupported عضو إبقاء Host و Client دعم حمل فرق مختلف.
 
-## Realm 所有权
+## Realm كل حق
 
-Host 主线程拥有应用对象和 `globalThis.fetch`。它通过专用 `MessagePort` 发送观测记录，绝不构造 CDP 消息。
+Host رئيسي خط مسار يملك تطبيق كائن و `globalThis.fetch`. هو عبر مخصص استخدام `MessagePort` إرسال مراقبة قياس سجل، أبدا بنية صنع CDP رسالة.
 
-Client 页面拥有浏览器观测、求值得到的值和 Client object handle。它通过带鉴权的 ingest WebSocket 直接与 Worker 交换 JSON 帧，因此 Host 暂停不会阻断 Client 投递或 Runtime 执行。
+Client صفحة يملك متصفح مراقبة قياس، طلب قيمة نيل إلى قيمة و Client object handle. هو عبر حمل تمييز حق ingest WebSocket مباشر و Worker تسليم تبديل JSON لقطة، لذلك Host مؤقت توقف لن منع قطع Client إلقاء تمرير أو Runtime تنفيذ.
 
-Inspector Worker 拥有 HTTP discovery、两条 WebSocket route、source generation、保留历史、realm session、CDP session 和 domain adapter。每条 DevTools 连接为 Host 和每个已连接 Client realm 分别建立一套 backend session。V8 object id 只留在 Node Runtime backend 内。Client object handle 只留在类型化 Client 协议内。单个 connection-local object table 把两类 backend handle 映射成 CDP object id，并投影同一种 RemoteObject、property、exception、Console 与 paused-frame 类型。
+Inspector Worker يملك HTTP discovery، اثنان بند WebSocket route،source generation، إبقاء تاريخ،realm session،CDP session و domain adapter. كل بند DevTools اتصال لـ Host و كل قد اتصال Client realm قسم آخر بناء قيام واحد طقم backend session.V8 object id فقط إبقاء في Node Runtime backend داخل.Client object handle فقط إبقاء في نوع تحويل Client بروتوكول داخل. مفرد عدد connection-local object table يأخذ اثنان صنف backend handle خريطة صار CDP object id، و إسقاط نفس نوع RemoteObject،property،exception،Console و paused-frame نوع.
 
-Chrome DevTools 消费一个 page 类型 target。Runtime 方法按 execution context 或 object id 路由；Debugger source 方法按 script id 路由。Host script 保留原生调试，Client script 只暴露只读内容，并拒绝 active debugging。`Profiler` 与 `HeapProfiler` 仍然只属于 Host；`Network` 与最小 page-target scaffold 在 Worker 内执行。
+Chrome DevTools إزالة استهلاك واحد page نوع target.Runtime طريقة حسب execution context أو object id توجيه؛Debugger source طريقة حسب script id توجيه.Host script إبقاء أصلي ضبط تجربة،Client script فقط كشف فقط قراءة محتوى، و رفض active debugging.`Profiler` و `HeapProfiler` ما زال فقط يخص Host؛`Network` و الأكثر صغير page-target scaffold في Worker داخل تنفيذ.
 
-## Source 协议
+## Source بروتوكول
 
-MessagePort 与 WebSocket carrier 使用同一组 JSON 值和判别联合帧。source 标识一个逻辑 producer 和一个连接 generation，声明 capability 与 topic，发送初始 replace，再追加带 sequence 的 batch。Worker 在读取 domain 字段前拒绝畸形、超限、旧 generation 和未声明 topic 的帧。
+MessagePort و WebSocket carrier استخدام نفس مجموعة JSON قيمة و حكم آخر ربط دمج لقطة.source معرف واحد منطق producer و واحد اتصال generation، إعلان capability و topic، إرسال ابتدائي replace، مجددا إلحاق حمل sequence batch.Worker في قراءة domain حقل قبل رفض شاذ شكل، تجاوز حد، قديم generation و لم إعلان topic لقطة.
 
-投递有序且尽力而为。producer 不在应用路径上等待 acknowledgement。有界 producer 队列通过 sequence gap 报告被丢弃的前缀；Host MessagePort carrier 同时只允许一个 append batch 在途，并在 Worker 确认消费后发送下一批。无法解释的 gap 会让 Worker 请求新 snapshot。domain store 只保留有界状态，并在 source 断开时明确关闭未完成操作。
+إلقاء تمرير لديه ترتيب كما كل قوة بينما لـ.producer لا في تطبيق مسار فوق انتظار acknowledgement. محدود producer طابور صف عبر sequence gap تقرير إبلاغ يتم إسقاط بادئة؛Host MessagePort carrier معا فقط سماح واحد append batch في طريق، و في Worker تأكيد إزالة استهلاك بعد إرسال تحت واحد دفعة. لا يمكن حل تفسير gap سوف يجعل Worker طلب جديد snapshot.domain store فقط إبقاء محدود حالة، و في source قطع فتح وقت واضح إغلاق لم إتمام عملية.
 
-Runtime 帧使用封闭的 command 与 result 联合，而不是 method 字符串加无类型 parameter record。每个 request 携带 source id、source generation、DevTools Runtime session id、request id 和 command；每个 result 重复这些身份与 command 判别符。Console lifecycle/event、分块 source 读取和非 CDP 语义查询使用各自独立的关联帧。RemoteObject value、preview、property descriptor、call argument、exception、Console event、debugger frame、script 与 error 都有独立的精确 decoder。
+Runtime لقطة استخدام غلاف إغلاق command و result ربط دمج، بينما لا هو method نص إضافة بلا نوع parameter record. كل request يحمل source id،source generation،DevTools Runtime session id،request id و command؛ كل result تكرار هذه هوية و command حكم آخر رمز.Console lifecycle/event، قسم كتلة source قراءة و غير CDP دلالة استعلام استخدام كل منها مستقل صلة ربط لقطة.RemoteObject value،preview،property descriptor،call argument،exception،Console event،debugger frame،script و error كل لديه مستقل دقيق decoder.
 
-## Client Runtime、Console 与 Sources
+## Client Runtime،Console و Sources
 
-`Runtime.enable` 发布 Host 的真实 execution context，并为每个声明 Runtime 能力的已连接 Client source 发布一个负数 id synthetic execution context。不指定 context 仍然表示 Host。Client source replacement 会销毁旧 context，并以新的 generation 与 unique id 创建新 context。
+`Runtime.enable` إصدار Host حقيقي execution context، و لـ كل إعلان Runtime قدرة قد اتصال Client source إصدار واحد سالب عدد id synthetic execution context. لا إشارة تحديد context ما زال يمثل Host.Client source replacement سوف إلغاء تدمير قديم context، و بـ جديد generation و unique id إنشاء جديد context.
 
-Client Runtime 子集包括 `Runtime.evaluate`、`Runtime.getProperties`、`Runtime.callFunctionOn`、`Runtime.awaitPromise`、`Runtime.releaseObject`、`Runtime.releaseObjectGroup` 和 `Runtime.globalLexicalScopeNames`。Client 在页面 realm 中执行命令，并在按 DevTools Runtime session 隔离的表中保留实时对象。Client 只返回不透明 handle 与 JSON-safe metadata；Worker 验证结果并分配连接私有的 CDP object id。对象参数只能由同一 Client source generation 与 DevTools session 使用。source 断开、Runtime disable、DevTools 关闭、释放对象或释放 object group 都会移除对应 handle。
+Client Runtime فرعي تجميع يشمل `Runtime.evaluate`،`Runtime.getProperties`،`Runtime.callFunctionOn`،`Runtime.awaitPromise`،`Runtime.releaseObject`،`Runtime.releaseObjectGroup` و `Runtime.globalLexicalScopeNames`.Client في صفحة realm في تنفيذ أمر، و في حسب DevTools Runtime session عزل جدول في إبقاء فوري كائن.Client فقط إرجاع لا نفاذ واضح handle و JSON-safe metadata؛Worker تحقق نتيجة و قسم إعداد اتصال خاص CDP object id. كائن معامل فقط قدرة من نفس Client source generation و DevTools session استخدام.source قطع فتح،Runtime disable،DevTools إغلاق، تحرير كائن أو تحرير object group كل سوف إزالة مقابل handle.
 
-JavaScript exception 是携带 `exceptionDetails` 的成功 Runtime response；transport failure 使用独立的 error 联合。Worker deadline 会向 Client 发送 request-scoped cancellation。response 分配的 handle 在 Worker 确认该 response 前保持 provisional，因此 cancellation 和 late response 不会留下无法访问的对象。有限的命令 deadline、对象数、属性数、source 字节数与帧字节数约束保留或返回的状态。
+JavaScript exception هو يحمل `exceptionDetails` نجاح Runtime response؛transport failure استخدام مستقل error ربط دمج.Worker deadline سوف نحو Client إرسال request-scoped cancellation.response قسم إعداد handle في Worker تأكيد هذا response قبل إبقاء provisional، لذلك cancellation و late response لن إبقاء تحت لا يمكن وصول كائن. لديه حد أمر deadline، كائن عدد، خاصية عدد،source بايت عدد و لقطة بايت عدد قيد إبقاء أو إرجاع حالة.
 
-Client Console observer 保持原始页面调用行为，并为每个已启用的 DevTools session 异步发出一份 event。每个 session 把 argument 序列化到自己的 `console` object group，因此断联、Runtime disable 或 `Runtime.discardConsoleEntries` 可以释放一条连接而不使其他连接失效。Context 与 Fiber argument 使用和求值结果相同的语义引用及 DOM 反向映射。
+Client Console observer إبقاء أصلي صفحة استدعاء سلوك، و لـ كل قد تفعيل DevTools session مختلف خطوة إرسال خروج واحد نسخة event. كل session يأخذ argument تسلسل تحويل إلى ذاتي ذات `console` object group، لذلك قطع ربط،Runtime disable أو `Runtime.discardConsoleEntries` يمكن تحرير واحد بند اتصال بينما لا جعل أخرى اتصال بطلان.Context و Fiber argument استخدام و طلب قيمة نتيجة نفسه دلالة مرجع و DOM عكس نحو خريطة.
 
-Client 从组装后的 web boot graph 发现本包 `lib/client.js` 的 URL。`Debugger.enable` 通过类型化 source operation 读取 metadata，`Debugger.getScriptSource` 重组有界 base64 chunk；source map 保持在公布的 URL 上可用。Client script breakpoint、step 与 call-frame 操作明确不受支持，因为页面 JavaScript 无法暂停自身 realm 后继续处理控制消息。target-wide pause 与 resume 继续控制 Host debugger。
+Client من تجميع بعد web boot graph اكتشاف هذه الحزمة `lib/client.js` URL.`Debugger.enable` عبر نوع تحويل source operation قراءة metadata،`Debugger.getScriptSource` إعادة مجموعة محدود base64 chunk؛source map إبقاء في عام نشر URL فوق متاح.Client script breakpoint،step و call-frame عملية واضح لا تلقي دعم حمل، لأن صفحة JavaScript لا يمكن مؤقت توقف ذاته realm بعد متابعة معالجة تحكم رسالة.target-wide pause و resume متابعة تحكم Host debugger.
 
-## Host 调试
+## Host ضبط تجربة
 
-Worker 为每条 DevTools 连接建立独立 Node inspector Session，并连接 Host 主 isolate。Node Runtime、Console、Sources 与 Debugger backend 把原生 value 和 event 归一化成 Client backend 使用的同一种 realm model。公共 projector 为求值结果、Console argument、paused scope 和 call-frame result 分配 connection-local object id。breakpoint request 到达 Node 前会反向转换成原生 backend handle。默认 context 可以改显示名为 `Host`，但保留真实 id 和 metadata。
+Worker لـ كل بند DevTools اتصال بناء قيام مستقل Node inspector Session، و اتصال Host رئيسي isolate.Node Runtime،Console،Sources و Debugger backend يأخذ أصلي value و event عودة واحد تحويل صار Client backend استخدام نفس نوع realm model. عام مشترك projector لـ طلب قيمة نتيجة،Console argument،paused scope و call-frame result قسم إعداد connection-local object id.breakpoint request وصول Node قبل سوف عكس نحو تحويل صار أصلي backend handle. افتراضي context يمكن تعديل عرض اسم لـ `Host`، لكن إبقاء حقيقي id و metadata.
 
-Host JavaScript 暂停时，Worker event loop、DevTools socket、Client ingest socket 与 Node inspector Session 仍可运行。Host 观测自然暂停到 resume。
+Host JavaScript مؤقت توقف وقت،Worker event loop،DevTools socket،Client ingest socket و Node inspector Session ما زال يمكن تشغيل.Host مراقبة قياس ذاتي لكن مؤقت توقف إلى resume.
 
-## Fetch 采集
+## Fetch أخذ تجميع
 
-fetch 采集包装 `globalThis.fetch`，并默认开启。之后每次 fetch 都记录完整 URL、headers、请求体、响应 headers、响应体、时间、取消与错误。默认不脱敏任何字段；启用 Inspector 即把这些秘密交给本机 DevTools。
+fetch أخذ تجميع حزمة تركيب `globalThis.fetch`، و افتراضي فتح بدء. بعد كل مرة fetch كل سجل كامل URL،headers، طلب جسم، استجابة headers، استجابة جسم، وقت، إلغاء و خطأ. افتراضي لا انفصال حساس أي حقل؛ تفعيل Inspector أي يأخذ هذه سري سري تسليم إعطاء هذا آلة DevTools.
 
-wrapper 把标准化 Request 交给原 fetch，通过独立采集任务读取 request/response clone，并在 fetch resolve 后立即把原始 Response 交给调用方。采集失败不得改变调用方的 fetch 结果。有限的单体与 journal 预算阻止无界保留；超过预算时保留已采集前缀并报告截断。
+wrapper يأخذ معيار تحويل Request تسليم إعطاء أصل fetch، عبر مستقل أخذ تجميع مهمة قراءة request/response clone، و في fetch resolve بعد قيام أي يأخذ أصلي Response تسليم إعطاء استدعاء جهة. أخذ تجميع فشل لا نيل تغيير استدعاء جهة fetch نتيجة. لديه حد مفرد جسم و journal ميزانية منع توقف بلا حد إبقاء؛ تجاوز مرور ميزانية وقت إبقاء قد أخذ تجميع بادئة و تقرير إبلاغ قطع قطع.
 
 ## Alternatives considered
 
-**在 Host 主线程运行 CDP server。** 拒绝，因为断点会冻结负责投递 `Debugger.resume` 的 socket。
+**في Host رئيسي خط مسار تشغيل CDP server.** رفض، لأن قطع نقطة سوف تجميد ربط مسؤول إلقاء تمرير `Debugger.resume` socket.
 
-**经 Host web server 中转 Client 观测。** 拒绝，因为 Host 断点同样冻结中转，并使 Client 数据路径依赖 Host 响应。
+**مرور Host web server في تحويل Client مراقبة قياس.** رفض، لأن Host قطع نقطة نفس مثال تجميد ربط في تحويل، و جعل Client بيانات مسار اعتماد Host استجابة.
 
-**让 producer 直接生成 CDP 消息。** 拒绝，因为 Chrome 专用 request id、回放、enable 状态和排序会落入 producer，而不是领域观测。
+**يجعل producer مباشر توليد CDP رسالة.** رفض، لأن Chrome مخصص استخدام request id، إعادة تشغيل،enable حالة و ترتيب ترتيب سوف سقوط دخول producer، بينما لا هو مجال مراقبة قياس.
 
-**多个 DevTools client 共用一个 Node inspector Session。** 拒绝，因为 object id、object group、enable 状态与 debugger 操作属于单个协议 session；共享需要易错的虚拟 session 层。
+**كثير عدد DevTools client مشترك استخدام واحد Node inspector Session.** رفض، لأن object id،object group،enable حالة و debugger عملية يخص مفرد عدد بروتوكول session؛ مشترك حاجة سهل خطأ وهمي محاكاة session طبقة.
 
-**通过 WebSocket 发送 Client 实时对象或 CDP object id。** 拒绝，因为 JSON 无法保留对象身份或行为，而 CDP object id 只属于一条 DevTools session。Client-local handle 加 Worker 所有的逐连接映射同时维护这两条所有权规则。
+**عبر WebSocket إرسال Client فوري كائن أو CDP object id.** رفض، لأن JSON لا يمكن إبقاء كائن هوية أو سلوك، بينما CDP object id فقط يخص واحد بند DevTools session.Client-local handle إضافة Worker كل تدريجي اتصال خريطة معا صيانة هذا اثنان بند كل حق قاعدة.
 
-**使用一个无类型 Runtime RPC method。** 拒绝，因为 method 字符串和任意 parameter object 无法保证 command/result 关联、对象引用所有权，也无法在 Runtime、Sources 与 Debugger 支持增长时做穷尽演进。
+**استخدام واحد بلا نوع Runtime RPC method.** رفض، لأن method نص و مهمة معنى parameter object لا يمكن حفظ إثبات command/result صلة ربط، كائن مرجع كل حق، أيضا لا يمكن في Runtime،Sources و Debugger دعم حمل زيادة طويل وقت فعل نفاد كل عرض دخول.
 
-**把 protocol、Host 与 Client 拆成多个包。** 实验阶段拒绝。一个包保持能力以一个 Client/Host 插件部署，同时由源码目录与构建入口维护 realm 边界。
+**يأخذ protocol،Host و Client تفكيك صار كثير عدد حزمة.** فعلي تحقق مرحلة مقطع رفض. واحد حزمة إبقاء قدرة بـ واحد Client/Host إضافة نشر، معا من شفرة المصدر دليل و بناء مدخل صيانة realm حد.
 
-**用 Undici diagnostics channel 作为完整 fetch 数据源。** 拒绝，因为它能观察 transport lifecycle，却无法在不消费应用 stream 的前提下提供完整 request/response body。后续可以用它补充 transport 级 timing。
+**استخدام Undici diagnostics channel بصفة كامل fetch بيانات مصدر.** رفض، لأن هو قدرة مراقبة transport lifecycle، لكن لا يمكن في لا إزالة استهلاك تطبيق stream قبل رفع تحت توفير كامل request/response body. لاحق يمكن استخدام هو تكملة ملء transport درجة timing.
 
 ## Verification
 
-- 真实 Worker 同时接收 Host MessagePort 与 Client WebSocket source，并通过一个 CDP target 暴露两者。
-- 畸形、超限、旧 generation 与 sequence gap 帧不会破坏其他 source 或 Worker。
-- Console 在 Host context 求值并接收 Host console event。
-- Console 列出 Host 与 Client context；Client 求值、属性、函数调用、Promise await 与释放操作维持 RemoteObject 身份，且不在 realm 或 DevTools 连接之间共享对象。
-- Host 与 Client Console event 使用相同 projector；Client argument 按 DevTools 连接隔离，Cordis argument 可以解析到 Elements node。
-- Sources 接收 Host script 与构建后的 Client bundle；Client source 读取采用分块传输，active debugging 明确失败，而 Host 仍可被断点暂停、求值 call frame 并 resume。
-- Host paused scope 与 call-frame result 使用和 Runtime 求值相同的 connection-local RemoteObject table。
-- Network 回放 `Network.enable` 前的请求，并无遗漏、无重复地推送后续请求。
-- 成功、失败、取消、重定向、文本、二进制、流式与截断 fetch 都保持调用方行为，并暴露配置允许的完整采集数据。
-- dispose 停止采集、关闭入口、断开 V8 session、关闭 socket，并等待 Worker exit 后完成。
+- حقيقي Worker معا استقبال Host MessagePort و Client WebSocket source، و عبر واحد CDP target كشف اثنان من.
+- شاذ شكل، تجاوز حد، قديم generation و sequence gap لقطة لن كسر تالف أخرى source أو Worker.
+- Console في Host context طلب قيمة و استقبال Host console event.
+- Console صف خروج Host و Client context؛Client طلب قيمة، خاصية، دالة استدعاء،Promise await و تحرير عملية صيانة حمل RemoteObject هوية، كما لا في realm أو DevTools اتصال بين مشترك كائن.
+- Host و Client Console event استخدام نفسه projector؛Client argument حسب DevTools اتصال عزل،Cordis argument يمكن تحليل إلى Elements node.
+- Sources استقبال Host script و بناء بعد Client bundle؛Client source قراءة اعتماد قسم كتلة نقل،active debugging واضح فشل، بينما Host ما زال يمكن يتم قطع نقطة مؤقت توقف، طلب قيمة call frame و resume.
+- Host paused scope و call-frame result استخدام و Runtime طلب قيمة نفسه connection-local RemoteObject table.
+- Network إعادة تشغيل `Network.enable` قبل طلب، و بلا متروك تسرب، بلا تكرار أرض دفع إرسال لاحق طلب.
+- نجاح، فشل، إلغاء، إعادة تحديد نحو، نص، اثنان دخول صنع، تدفق صيغة و قطع قطع fetch كل إبقاء استدعاء جهة سلوك، و كشف إعداد سماح كامل أخذ تجميع بيانات.
+- dispose إيقاف أخذ تجميع، إغلاق مدخل، قطع فتح V8 session، إغلاق socket، و انتظار Worker exit بعد إتمام.
 
 ## Consequences
 
-Worker 所有的 endpoint 在 Host JavaScript 暂停时仍保持 DevTools 控制可响应，并让 Host 与 Client 观测共享唯一 CDP 状态 owner。这项所有权带来以下安全、资源与兼容性成本。
+Worker كل endpoint في Host JavaScript مؤقت توقف وقت ما زال إبقاء DevTools تحكم يمكن استجابة، و يجعل Host و Client مراقبة قياس مشترك وحيد CDP حالة owner. هذا بند كل حق حمل قدوم التالي أمان، مورد و توافق صفة صار هذا.
 
-完整 fetch 采集会有意把 credential 和 payload 暴露给任何能连接 CDP endpoint 的本机进程。loopback 监听是强制要求，但不是鉴权。
+كامل fetch أخذ تجميع سوف متعمد يأخذ credential و payload كشف إعطاء أي قدرة اتصال CDP endpoint هذا آلة عملية.loopback استماع هو قوي صنع اشتراط، لكن لا هو تمييز حق.
 
-clone request/response stream 会增加 CPU、内存与 I/O 压力。有限预算能约束保留字节，不能让完整采集没有成本。
+clone request/response stream سوف زيادة CPU، داخل تخزين و I/O ضغط قوة. لديه حد ميزانية قدرة قيد إبقاء بايت، لا يستطيع يجعل كامل أخذ تجميع لا يوجد صار هذا.
 
-page 类型 synthetic target 依赖 Node 原生 inspector domain 之外的一组 Chrome DevTools 兼容响应。每个 no-op 都必须明确命名并有测试；统一吞掉未知方法会掩盖协议漂移。
+page نوع synthetic target اعتماد Node أصلي inspector domain خارج واحد مجموعة Chrome DevTools توافق استجابة. كل no-op كل يجب واضح تسمية و لديه اختبار؛ موحد واحد ابتلاع إسقاط لم معرفة طريقة سوف إخفاء غطاء بروتوكول عائم نقل.
 
-Client Runtime 执行使用页面 JavaScript 求值，因此页面 Content Security Policy 可能拒绝它，也不承诺原生 DevTools command-line 或 REPL 语义。只读 Client Sources 不代表 active Client debugging；增加该能力需要一个在被检查页面 realm 暂停时仍能响应的执行 agent。
+Client Runtime تنفيذ استخدام صفحة JavaScript طلب قيمة، لذلك صفحة Content Security Policy ممكن رفض هو، أيضا لا تحمل وعد أصلي DevTools command-line أو REPL دلالة. فقط قراءة Client Sources لا بديل جدول active Client debugging؛ زيادة هذا قدرة حاجة واحد في يتم فحص صفحة realm مؤقت توقف وقت ما زال قدرة استجابة تنفيذ agent.

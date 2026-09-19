@@ -1,47 +1,47 @@
-# 通过 GitHub Webhook 创建评审会话
+# عبر GitHub Webhook إنشاء مراجعة جلسة
 
-[English](github-review.md) | 中文
+[English](github-review.md) | العربية
 
-此可选 overlay 会为 `dsh web` 增加一个签名 GitHub 端点。当已配置仓库中的 pull request 从 draft 变为 ready for review 时，规则会在该仓库的 Web Workspace 下创建带标题的根 Session，并启动只读评审提示词。
+هذا اختياري overlay سوف لـ `dsh web` زيادة واحد توقيع GitHub طرف نقطة. عند قد إعداد مستودع في pull request من draft تغيير لـ ready for review وقت، قاعدة سوف في هذا مستودع Web Workspace تحت إنشاء حمل عنوان أصل Session، و بدء فقط قراءة مراجعة نص التوجيه.
 
-## 前置条件
+## قبل وضع شرط
 
-- 一个可由 DSH 注册为 Web Workspace 的本地 checkout。
-- 一个可通过 `DSH_GITHUB_WEBHOOK_SECRET` 凭据引用访问的高熵 GitHub webhook 密钥。
-- 一个可以把单个公共 URL 转发到 loopback 监听器的 TLS 反向代理或 tunnel。
-- GitHub webhook 订阅 Pull requests 事件，且 content type 为 `application/json`。
+- واحد يمكن من DSH تسجيل لـ Web Workspace محلي checkout.
+- واحد يمكن عبر `DSH_GITHUB_WEBHOOK_SECRET` اعتماد مرجع وصول عال عشوائية GitHub webhook مفتاح.
+- واحد يمكن يأخذ مفرد عدد عام مشترك URL تحويل إرسال إلى loopback مستمع TLS عكس نحو بديل إدارة أو tunnel.
+- GitHub webhook حجز قراءة Pull requests حدث، كما content type لـ `application/json`.
 
-overlay 默认使用启动目录作为 Workspace，并监听 `127.0.0.1:3081`。可通过 `DSH_GITHUB_REVIEW_WORKSPACE` 与 `DSH_GITHUB_WEBHOOK_PORT` 覆盖它们。
+overlay افتراضي استخدام بدء دليل بصفة Workspace، و استماع `127.0.0.1:3081`. يمكن عبر `DSH_GITHUB_REVIEW_WORKSPACE` و `DSH_GITHUB_WEBHOOK_PORT` تغطية هو جمع.
 
-## 启动 DSH
+## بدء DSH
 
-生成密钥，并在重启后继续使用同一值：
+توليد مفتاح، و في إعادة بدء بعد متابعة استخدام نفس قيمة:
 
 ```sh
 export DSH_GITHUB_WEBHOOK_SECRET="$(openssl rand -hex 32)"
 printf '%s\n' "$DSH_GITHUB_WEBHOOK_SECRET"
 ```
 
-在开发 checkout 中运行：
+في تطوير checkout في تشغيل:
 
 ```sh
 export DSH_GITHUB_REVIEW_WORKSPACE=/path/to/deepseek-harness
 pnpm dsh web --patch apps/cli/config/examples/github-review/cordis.yml
 ```
 
-安装版 DSH 通过绝对路径使用同一 overlay：
+تثبيت إصدار DSH عبر قطعا مقابل مسار استخدام نفس overlay:
 
 ```sh
 dsh web --patch /absolute/path/to/github-review/cordis.yml
 ```
 
-对于永久 profile，把 `github-ready-review-rule.mjs` 放在 `$DSH_HOME/profiles/web/cordis.patch.yml` 旁边，把 `cordis.yml` 中的行追加到该 patch，然后运行 `dsh web`。随附 CLI 已经包含两个 webhook 包；只需 overlay 即可激活它们。
+مقابل في دائم دائم profile، يأخذ `github-ready-review-rule.mjs` وضع في `$DSH_HOME/profiles/web/cordis.patch.yml` جانب حافة، يأخذ `cordis.yml` في سطر إلحاق إلى هذا patch، لكن بعد تشغيل `dsh web`. مع مرفق CLI قد يتضمن اثنان عدد webhook حزمة؛ فقط يحتاج overlay يكفي تنشيط هو جمع.
 
-## 暴露专用端点
+## كشف مخصص استخدام طرف نقطة
 
-主 Web UI 与 `/api` 继续位于端口 3080。overlay 会在隔离 realm 中挂载第二个 WebServer；其中只注册 `POST /github`，其他路径均返回 `404`。
+رئيسي Web UI و `/api` متابعة يقع في طرف فتحة 3080.overlay سوف في عزل realm في تركيب ثاني عدد WebServer؛ منها فقط تسجيل `POST /github`، أخرى مسار متساو إرجاع `404`.
 
-Caddy 配置可以只暴露该监听器：
+Caddy إعداد يمكن فقط كشف هذا مستمع:
 
 ```caddyfile
 hooks.example.com {
@@ -53,7 +53,7 @@ hooks.example.com {
 }
 ```
 
-GitHub 配置如下：
+GitHub إعداد مثل تحت:
 
 ```text
 Payload URL:  https://hooks.example.com/github
@@ -63,17 +63,17 @@ Events:       Pull requests
 Active:       yes
 ```
 
-## 规则行为
+## قاعدة سلوك
 
-规则只接受来源 `primary-github`、仓库 `deepseek-harness/deepseek-harness`、事件 `pull_request` 与动作 `ready_for_review`。它会把精确 head SHA 和选定 PR 字段传给评审提示词，把 JSON 标为不受信任的元数据，并禁止修改文件、分支、PR 或 GitHub 状态。
+قاعدة فقط قبول مصدر `primary-github`، مستودع `deepseek-harness/deepseek-harness`، حدث `pull_request` و حركة عمل `ready_for_review`. هو سوف يأخذ دقيق head SHA و اختيار تحديد PR حقل نقل إعطاء مراجعة نص التوجيه، يأخذ JSON علامة لـ لا تلقي معلومة مهمة بيانات وصفية، و منع توقف تعديل ملف، فرع،PR أو GitHub حالة.
 
-Session 请求选择 `standard` agent preset 与 `read-only` permission preset。`workspacePath` 通过 `WorkspaceRegistry.create()` 规范化，因此第一次匹配交付会在 Workspace 不存在时创建它，后续交付会复用它。
+Session طلب اختيار `standard` agent preset و `read-only` permission preset.`workspacePath` عبر `WorkspaceRegistry.create()` مواصفة تحويل، لذلك رقم مرة مطابقة تسليم سوف في Workspace لا وجود وقت إنشاء هو، لاحق تسليم سوف إعادة استخدام هو.
 
-HTTP 响应刻意弱于 Agent 结果：`202` 表示签名与 JSON 已被接受，规则调用已在内存中调度。它不表示此规则已经匹配，也不表示已创建 Session。
+HTTP استجابة لحظة معنى ضعيف في Agent نتيجة:`202` يمثل توقيع و JSON قد يتم قبول، قاعدة استدعاء قد في داخل تخزين في ضبط درجة. هو لا يمثل هذا قاعدة قد مطابقة، أيضا لا يمثل قد إنشاء Session.
 
-## 程序化扩展
+## برنامج تحويل توسيع
 
-`run()` 是普通受信任 JavaScript。部署可以在返回 Session 请求前查询内部策略服务：
+`run()` هو عادي تلقي معلومة مهمة JavaScript. نشر يمكن في إرجاع Session طلب قبل استعلام داخلي سياسة خدمة:
 
 ```js
 const response = await fetch('https://policy.internal/pr-review', {
@@ -85,7 +85,7 @@ const response = await fetch('https://policy.internal/pr-review', {
 if (!response.ok || (await response.json()).automaticReview !== true) return null
 ```
 
-它还可以把仓库映射到不同本地路径：
+هو أيضا يمكن يأخذ مستودع خريطة إلى مختلف محلي مسار:
 
 ```js
 const workspacePath = {
@@ -95,8 +95,8 @@ const workspacePath = {
 if (workspacePath === undefined) return null
 ```
 
-## 交付语义
+## تسليم دلالة
 
-webhook runtime 不存储交付或执行状态。重复交付会运行规则，并可能创建另一个 Session。崩溃会丢失尚未接纳提示词的规则调用。提示词接纳后，工作由普通 Session 日志、persistence、Workspace 与 Agent 生命周期拥有。
+webhook runtime لا تخزين تسليم أو تنفيذ حالة. تكرار تسليم سوف تشغيل قاعدة، و ممكن إنشاء آخر عدد Session. انهيار انهيار سوف فقد فقد بعد لم وصل قبول نص التوجيه قاعدة استدعاء. نص التوجيه وصل قبول بعد، عمل من عادي Session سجل،persistence،Workspace و Agent دورة الحياة يملك.
 
-webhook 密钥只验证入站 GitHub 数据。它不会向规则代码或所创建 Agent 授予出站 GitHub 访问权；规则或 Agent 需要时应单独配置该权限。
+webhook مفتاح فقط تحقق دخول محطة GitHub بيانات. هو لن نحو قاعدة شفرة أو الذي إنشاء Agent منح إعطاء خروج محطة GitHub وصول حق؛ قاعدة أو Agent حاجة وقت ينبغي مفرد وحيد إعداد هذا إذن.

@@ -27,17 +27,17 @@ function structuralChanges(entry: PersistenceReleaseEntry, language: Language): 
   if (entry.record.previous === null) {
     return language === 'en'
       ? 'This entry establishes the historical comparison starting point. Its declaration lists every extracted root; it makes no compatibility judgment about earlier versions.'
-      : '本条记录建立历史比较起点。机器声明列出所有提取的根类型，不对更早版本作兼容性判断。'
+      : 'هذا بند سجل بناء قيام تاريخ مقارنة مقارنة بدء نقطة. آلة جهاز إعلان صف خروج كل رفع أخذ أصل نوع، لا مقابل أكثر مبكر إصدار عمل توافق صفة حكم قطع.'
   }
   if (entry.differences.length === 0) {
     return language === 'en'
       ? 'Normalized root types and their transitive digests are unchanged from the preceding tag.'
-      : '规范化后的根类型及其传递引用摘要与前一 tag 相同。'
+      : 'مواصفة تحويل بعد أصل نوع و ذلك نقل تمرير مرجع ملخص و قبل واحد tag نفسه.'
   }
   const summary = language === 'en'
     ? `Detected ${count(entry.record.changes.length, 'changed root')} and ${count(entry.differences.length, 'structural difference')}. The minimum below is calculated using current rules for comparison only; it does not assert historical compliance, migration correctness, or runtime compatibility.`
-    : `检测到 ${entry.record.changes.length} 个根类型变化、${entry.differences.length} 项结构差异。下表的最低要求按当前规则计算，只用于比较；不表示旧版本曾遵守这些规则，也不证明迁移或运行时兼容性。`
-  const heading = language === 'en' ? '| Path | Change | Current minimum |' : '| 路径 | 变化 | 当前最低要求 |'
+    : `فحص قياس إلى ${entry.record.changes.length} عدد أصل نوع تغير،${entry.differences.length} بند بنية فرق مختلف. تحت جدول الأكثر منخفض اشتراط حسب حالي قاعدة حساب حساب، فقط لأجل مقارنة مقارنة؛ لا يمثل قديم إصدار سبق التزام حراسة هذه قاعدة، أيضا لا إثبات ترحيل أو وقت التشغيل توافق صفة.`
+  const heading = language === 'en' ? '| Path | Change | Current minimum |' : '| مسار | تغير | حالي الأكثر منخفض اشتراط |'
   const rows = entry.differences.map((change) => {
     const path = change.path.replaceAll('`', '\\`').replaceAll('|', '\\|')
     return `| \`${path}\` | \`${change.kind}\` | \`${change.requiresVersionBump ? 'version-bump' : 'same-version'}\` |`
@@ -69,7 +69,7 @@ export function persistenceReleaseFactArtifacts(root: string, archive: Persisten
   const index = (language: Language): string => {
     const heading = language === 'en'
       ? '| Tag | Source date (UTC) | Session version | Roots / types | Changed roots |'
-      : '| Tag | 源码日期（UTC） | Session 版本 | 根 / 类型 | 变化根 |'
+      : '| Tag | شفرة المصدر يوم مدة (UTC) | Session إصدار | أصل / نوع | تغير أصل |'
     const rows = archive.entries.map((entry, index) => {
       const tag = entry.release.tag
       const date = new Date(entry.release.sourceDate).toISOString().slice(0, 10)
@@ -85,7 +85,7 @@ export function persistenceReleaseFactArtifacts(root: string, archive: Persisten
       const path = `${entry.release.tag}${language === 'zh' ? '.zh' : ''}.md`
       const inventory = language === 'en'
         ? `${count(entry.roots.size, 'root')} / ${count(typeCounts[index] as number, 'type')}`
-        : `${entry.roots.size} 个根类型 / ${typeCounts[index]} 种类型`
+        : `${entry.roots.size} عدد أصل نوع / ${typeCounts[index]} نوع نوع`
       return replaceFacts(replaceFacts(read(path), 'inventory', inventory, path),
         'changes', '\n\n' + structuralChanges(entry, language) + '\n\n', path)
     }

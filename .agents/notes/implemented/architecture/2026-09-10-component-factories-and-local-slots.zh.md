@@ -1,36 +1,36 @@
-# Agent Note: 带局部 slot 的可复用组件 Factory
+# Agent Note: حمل نطاق جزء slot يمكن إعادة استخدام مكون Factory
 
 Status: implemented
 
-[English](2026-09-10-component-factories-and-local-slots.md) | 中文
+[English](2026-09-10-component-factories-and-local-slots.md) | العربية
 
-## 问题
+## مشكلة
 
-浏览器 Slot 系统从 parent-owned 扩展位置开始。parent entry 通过 `children` 声明 child，之后互不相关的插件可以向该位置注册实现。声明固定 child Slot 的 kind、scope、渲染权限与生命周期。
+متصفح Slot نظام من parent-owned توسيع موضع بدء.parent entry عبر `children` إعلان child، بعد متبادل لا متبادل صلة إضافة يمكن نحو هذا موضع تسجيل تنفيذ. إعلان ثابت child Slot kind،scope، تصيير إذن و دورة الحياة.
 
-可复用组件装配采用相反的所有权方向。一个包定义装配，互不相关的 parents 渲染独立 occurrence，并且每个 parent 可以为具名内部区域选择不同 Component。普通 Slot 无法表示这种关系，因为它的 definition 属于全局 Slot 树中的一个 parent 位置。
+يمكن إعادة استخدام مكون تركيب إعداد اعتماد متبادل عكس كل حق جهة نحو. واحد حزمة تعريف تركيب إعداد، متبادل لا متبادل صلة parents تصيير مستقل occurrence، و كما كل parent يمكن لـ أداة اسم داخلي منطقة مجال اختيار مختلف Component. عادي Slot لا يمكن يمثل هذا نوع علاقة، لأن هو definition يخص عام Slot شجرة في واحد parent موضع.
 
-定义包与消费包独立编译。TypeScript 无法从另一个包中的运行时 registration 推导所选 Component 的 props，另行维护的扁平 props 类型则会重复 store、injection、locale、child-render 与 scope 声明。
+تعريف حزمة و إزالة استهلاك حزمة مستقل تحرير ترجمة.TypeScript لا يمكن من آخر عدد حزمة في وقت التشغيل registration دفع توجيه الذي اختيار Component props، آخر سطر صيانة مسطح مستو props نوع فإن سوف تكرار store،injection،locale،child-render و scope إعلان.
 
-## 决策
+## قرار
 
-`ui-slots` 与 `ui-renderer` 在[普通 Slot 体系](2026-07-22-slot-type-chain-implementation.zh.md)之外提供具名 Component Factory。`registerFactory()` 安装一个可复用 definition，`renderFactorySlot()` 渲染一个 occurrence，definition 通过 `useFactorySlot()` 读取调用方选择的局部 Component。
+`ui-slots` و `ui-renderer` في[عادي Slot جسم نظام](2026-07-22-slot-type-chain-implementation.zh.md) خارج توفير أداة اسم Component Factory.`registerFactory()` تثبيت واحد يمكن إعادة استخدام definition،`renderFactorySlot()` تصيير واحد occurrence،definition عبر `useFactorySlot()` قراءة استدعاء جهة اختيار نطاق جزء Component.
 
-### 相反的注册方向
+### متبادل عكس تسجيل جهة نحو
 
-普通 Slot 与 Component Factory 保留不同的所有权模型。
+عادي Slot و Component Factory إبقاء مختلف كل حق نموذج.
 
-| 属性 | 普通 Slot | Component Factory |
+| خاصية | عادي Slot | Component Factory |
 |---|---|---|
-| 首个声明 | Parent 声明 child Slot | Definition owner 声明 Factory |
-| 后续操作 | Child 注册进 parent 位置 | Parent 渲染 occurrence |
-| 静态权威 | `SlotMap` 描述位置 | `SlotFactoryMap` 描述完整 definition |
-| 有效 definitions | 多个 entries 可以占据 cells | 一个 definition 独占一个 Factory 名 |
-| Parent 输入 | `renderSlot()` owner 与 keyed props | `renderFactorySlot()` occurrence props |
-| Parent 选择的 Component | Registry routing 选择 entries | 调用方为每个局部 slot 选择一个 Component |
-| 后代扩展点 | Entry-owned 普通 `children` | Definition-owned 普通 `children` |
+| أول عدد إعلان | Parent إعلان child Slot | Definition owner إعلان Factory |
+| لاحق عملية | Child تسجيل دخول parent موضع | Parent تصيير occurrence |
+| ساكن حالة مرجعي | `SlotMap` وصف موضع | `SlotFactoryMap` وصف كامل definition |
+| صالح definitions | كثير عدد entries يمكن احتلال حسب cells | واحد definition وحيد احتلال واحد Factory اسم |
+| Parent إدخال | `renderSlot()` owner و keyed props | `renderFactorySlot()` occurrence props |
+| Parent اختيار Component | Registry routing اختيار entries | استدعاء جهة لـ كل نطاق جزء slot اختيار واحد Component |
+| بعد بديل نقطة توسيع | Entry-owned عادي `children` | Definition-owned عادي `children` |
 
-`SlotFactoryMap` 通过声明合并给出完整静态 definition：
+`SlotFactoryMap` عبر إعلان دمج إعطاء خروج كامل ساكن حالة definition:
 
 ```text
 interface SlotFactoryDef {
@@ -44,62 +44,62 @@ interface SlotFactoryDef {
 }
 ```
 
-该 map 是唯一类型权威。`registerFactory()` 根据对应 map 条目检查运行时 definition 与主 Component。Store 声明通过 `HandleOf` 规范化，因此 registration 只接受一个共享 handle 或一个生成该 handle 的 factory，绝不接受嵌套 factory。`FactoryComponentPropsOf<F>` 和 `FactoryLocalComponentPropsOf<F, N>` 从同一条目推导完整 Component props；definition owner 与消费方无需重述扁平共享类型。
+هذا map هو وحيد نوع مرجعي.`registerFactory()` أصل حسب مقابل map بند فحص وقت التشغيل definition و رئيسي Component.Store إعلان عبر `HandleOf` مواصفة تحويل، لذلك registration فقط قبول واحد مشترك handle أو واحد توليد هذا handle factory، أبدا قبول تضمين طقم factory.`FactoryComponentPropsOf<F>` و `FactoryLocalComponentPropsOf<F, N>` من نفس بند دفع توجيه كامل Component props؛definition owner و مستهلك بلا حاجة إعادة وصف مسطح مستو مشترك نوع.
 
-### Definition 与 occurrence 生命周期
+### Definition و occurrence دورة الحياة
 
-每个 Factory 名在独立于普通 Slot cells 的 registry ledger 中只有一个有效 definition。registration 遵循调用方的 Cordis effect。dispose 会移除 definition、折叠其普通 child 声明、通知已挂载 outlets，并令保留的 child-render 或局部 Component 权限失效。
+كل Factory اسم في مستقل في عادي Slot cells registry ledger في فقط لديه واحد صالح definition.registration التزام دوران استدعاء جهة Cordis effect.dispose سوف إزالة definition، طي ذلك عادي child إعلان، إشعار قد تركيب outlets، و أمر إبقاء child-render أو نطاق جزء Component إذن بطلان.
 
-每次 `renderFactorySlot()` 调用都会创建 occurrence，其 identity 由 React 位置和 `key` 决定。替换 definition 会重新挂载 occurrence。Definition Component 及其 fallback 局部 Component 的失败归属 definition，调用方所选局部 Component 的失败归属调用方 registration；嵌套 Factory 渲染保留同一 owner。所有失败都限制在当前 occurrence 内，不会移除共享 definition。装配错误继续向外传播，所有权与陈旧授权错误则像普通组件失败一样上报。外层错误边界随 Factory scope incarnation 重置，每个局部边界随自身局部 slot 的 scope incarnation 重置。
+كل مرة `renderFactorySlot()` استدعاء كل سوف إنشاء occurrence، ذلك identity من React موضع و `key` قرار. استبدال definition سوف إعادة تركيب occurrence.Definition Component و ذلك fallback نطاق جزء Component فشل ملكية definition، استدعاء جهة الذي اختيار نطاق جزء Component فشل ملكية استدعاء جهة registration؛ تضمين طقم Factory تصيير إبقاء نفس owner. كل فشل كل حد في حالي occurrence داخل، لن إزالة مشترك definition. تركيب إعداد خطأ متابعة نحو خارج نقل بث، كل حق و قديم قديم تخويل خطأ فإن مثل عادي مكون فشل واحد مثال فوق تقرير. خارج طبقة خطأ حد مع Factory scope incarnation إعادة وضع، كل نطاق جزء حد مع ذاته نطاق جزء slot scope incarnation إعادة وضع.
 
-Factory scope 跟随 occurrence 所在 React 位置的 scope binding。`renderFactorySlot()` 不接受 Session id 或 scope target。严格 `session` Factory 要求当前 binding 存在，并在 identity 变化时重新挂载；`session-maybe` Factory 保留首次从空状态采纳 Session 的过程，并在后续 identity 变化时重新挂载，与普通 Slot 行为一致。
+Factory scope تتبع مع occurrence الذي في React موضع scope binding.`renderFactorySlot()` لا قبول Session id أو scope target. صارم إطار `session` Factory اشتراط حالي binding وجود، و في identity تغير وقت إعادة تركيب؛`session-maybe` Factory إبقاء أول مرة من فارغ حالة قبول Session مرور مسار، و في لاحق identity تغير وقت إعادة تركيب، و عادي Slot سلوك متسق.
 
-共享 store handle 保留普通模式的 handle-by-scope 行为，包括两个非 root scope 均要求 Session binding。独占 store factory 在 occurrence 首次物化时创建一个 handle；若该 handle 声明 `spec.persist`，renderer 会拒绝它，因为 registration 必须保持 lazy，且多个同时存活的独立 occurrence 无法安全共享一个 persistence key。渲染期记录在幂等 effect setup 保留已 commit occurrence 前只持有弱引用；effect cleanup 会移除 mounted 强引用，而 occurrence-keyed WeakMap 在 React effect replay 期间保留 identity，并允许实例在卸载后被回收。
+مشترك store handle إبقاء عادي نمط handle-by-scope سلوك، يشمل اثنان عدد غير root scope متساو اشتراط Session binding. وحيد احتلال store factory في occurrence أول مرة شيء تحويل وقت إنشاء واحد handle؛ إذا هذا handle إعلان `spec.persist`،renderer سوف رفض هو، لأن registration يجب إبقاء lazy، كما كثير عدد معا تخزين نشط مستقل occurrence لا يمكن أمان مشترك واحد persistence key. تصيير مدة سجل في قوة انتظار effect setup إبقاء قد commit occurrence قبل فقط يحتفظ ضعيف مرجع؛effect cleanup سوف إزالة mounted قوي مرجع، بينما occurrence-keyed WeakMap في React effect replay خلال إبقاء identity، و سماح نسخة في إزالة بعد يتم عودة استلام.
 
-### 局部 slots 与普通 children
+### نطاق جزء slots و عادي children
 
-调用方可以为 Factory `slots` 声明中的每个名称选择一个 Component。Factory 调用 `useFactorySlot(name, fallback)`，取得 identity 稳定的绑定 Component；该 Component 只接受对应局部 slot 的 occurrence props。绑定 Component 渲染时，renderer 提供 Factory 的 store、injection、locale、child renderers 与该局部 slot 自身的标准 scope props。
+استدعاء جهة يمكن لـ Factory `slots` إعلان في كل اسم اختيار واحد Component.Factory استدعاء `useFactorySlot(name, fallback)`، أخذ نيل identity مستقر ربط Component؛ هذا Component فقط قبول مقابل نطاق جزء slot occurrence props. ربط Component تصيير وقت،renderer توفير Factory store،injection،locale،child renderers و هذا نطاق جزء slot ذاته معيار scope props.
 
-局部 slots 没有 list、keyed 或 chain routing，也没有独立 registration 生命周期。多贡献方扩展点仍使用 Factory 声明的普通 child Slots。这些 child 声明在 definition 范围内全局共享，而每个 occurrence 都在继承的 scope 下渲染其 registered entries。
+نطاق جزء slots لا يوجد list،keyed أو chain routing، أيضا لا يوجد مستقل registration دورة الحياة. كثير مساهمة جهة نقطة توسيع ما زال استخدام Factory إعلان عادي child Slots. هذه child إعلان في definition نطاق داخل عام مشترك، بينما كل occurrence كل في وراثة scope تحت تصيير ذلك registered entries.
 
-实时检查将每个 definition 表示为 `type: 'factory'` 节点，并把其普通 child Slots 嵌套在该节点下。普通节点保留 `type: 'slot'` 与现有 `kind`；调用方通过 `factory:<name>` 选择 Factory 根节点。
+فوري فحص سوف كل definition يمثل لـ `type: 'factory'` عقدة، و يأخذ ذلك عادي child Slots تضمين طقم في هذا عقدة تحت. عادي عقدة إبقاء `type: 'slot'` و قائم `kind`؛ استدعاء جهة عبر `factory:<name>` اختيار Factory أصل عقدة.
 
-每个由 renderer 创建的 Component 都会收到 `renderFactorySlot`，因此 Factory occurrence 不需要 parent-side use declaration。局部选择仍然属于单个 occurrence，并且不会引入对定义包的运行时 value import。
+كل من renderer إنشاء Component كل سوف استلام إلى `renderFactorySlot`، لذلك Factory occurrence لا حاجة parent-side use declaration. نطاق جزء اختيار ما زال يخص مفرد عدد occurrence، و كما لن جذب دخول مقابل تعريف حزمة وقت التشغيل value import.
 
-### 首个交付用途
+### أول عدد تسليم استخدام طريق
 
-`ui-conversation` 在共享正文与 Composer 外注册 optional-Session `conversation.content` Factory。其 strict-Session `views` 局部位置默认使用一个渲染现有 `conversation.session` Slot 的 adapter；其他 occurrence 可以选择不同的 View Component，且不会挂载主 Conversation Header。
+`ui-conversation` في مشترك متن و Composer خارج تسجيل optional-Session `conversation.content` Factory. ذلك strict-Session `views` نطاق جزء موضع افتراضي استخدام واحد تصيير قائم `conversation.session` Slot adapter؛ أخرى occurrence يمكن اختيار مختلف View Component، كما لن تركيب رئيسي Conversation Header.
 
-Factory 不拥有 Conversation store。普通 `conversation.session` body 与 `conversation.session.header` 保留同一个 strict-Session handle，在保持草稿与 View 选择 identity 的同时，避免将该 handle 同时挂到 `session` 和 `session-maybe` scope。
+Factory لا يملك Conversation store. عادي `conversation.session` body و `conversation.session.header` إبقاء نفس عدد strict-Session handle، في إبقاء مسودة مسودة و View اختيار identity معا، تجنب تجنب سوف هذا handle معا تعليق إلى `session` و `session-maybe` scope.
 
-### 类型与运行时强制规则
+### نوع و وقت التشغيل قوي صنع قاعدة
 
-类型链拒绝未知 Factory 名、缺失或多余的 occurrence props、与 `SlotMap` 不一致的 child spec、与 `SlotFactoryMap` 不一致的 definition 字段、嵌套 store factory、未知局部名称、不兼容的选中 Component，以及 input、registration、injection 与 scope props 之间的所有权重叠。
+نوع سلسلة رفض لم معرفة Factory اسم، ناقص أو كثير بقية occurrence props، و `SlotMap` لا متسق child spec، و `SlotFactoryMap` لا متسق definition حقل، تضمين طقم store factory، لم معرفة نطاق جزء اسم، لا توافق اختيار في Component، و input،registration،injection و scope props بين كل حق إعادة تراكم.
 
-运行时检查覆盖动态装配与纯 JavaScript 调用方：重复 definitions、child 声明冲突、未声明的局部名称、递归渲染、prop 冲突、陈旧权限、严格 scope 缺失与组件失败隔离。类型和运行时测试还固定了各 occurrence 的独占 store、按 scope 共享的 handles、注册前 fallback 行为、definition 替换、局部 scope 投影与普通 child 渲染。
+وقت التشغيل فحص تغطية حركة حالة تركيب إعداد و صاف JavaScript استدعاء جهة: تكرار definitions،child إعلان اندفاع مفاجئ، لم إعلان نطاق جزء اسم، تمرير عودة تصيير،prop اندفاع مفاجئ، قديم قديم إذن، صارم إطار scope ناقص و مكون فشل عزل. نوع و وقت التشغيل اختبار أيضا ثابت كل occurrence وحيد احتلال store، حسب scope مشترك handles، تسجيل قبل fallback سلوك،definition استبدال، نطاق جزء scope إسقاط و عادي child تصيير.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**把普通 Slot 复用为可移植 definition。** 普通 Slot 属于一个 parent 声明以及全局树中的一个位置。在其他位置复用它会借用错误的所有权与生命周期。
+**يأخذ عادي Slot إعادة استخدام لـ يمكن نقل غرس definition.** عادي Slot يخص واحد parent إعلان و عام شجرة في واحد موضع. في أخرى موضع إعادة استخدام هو سوف استعارة استخدام خطأ كل حق و دورة الحياة.
 
-**把主 Conversation Header 移进 Factory。** 只有主 host 渲染该 Header。将其留在 Factory 外，使嵌入式 occurrence 无需另一个局部选择即可省略 Header，并保留其现有 strict-Session Slot 生命周期。
+**يأخذ رئيسي Conversation Header نقل دخول Factory.** فقط لديه رئيسي host تصيير هذا Header. سوف ذلك إبقاء في Factory خارج، جعل تضمين دخول صيغة occurrence بلا حاجة آخر عدد نطاق جزء اختيار يكفي حذف Header، و إبقاء ذلك قائم strict-Session Slot دورة الحياة.
 
-**把共享 Conversation store 移到 optional-Session Factory。** Header 与 Session body 共享一个 strict-Session handle。将该 handle 同时挂到 `session-maybe` Factory 和 `session` Header 会违反 one-handle-one-scope 规则。
+**يأخذ مشترك Conversation store نقل إلى optional-Session Factory.** Header و Session body مشترك واحد strict-Session handle. سوف هذا handle معا تعليق إلى `session-maybe` Factory و `session` Header سوف مخالفة عكس one-handle-one-scope قاعدة.
 
-**在每个 parent 下分别注册同一装配。** 独立 registrations 会重复 definition 及其 child 声明。全局贡献方需要使用平行 child 名称，或造成声明冲突。
+**في كل parent تحت قسم آخر تسجيل نفس تركيب إعداد.** مستقل registrations سوف تكرار definition و ذلك child إعلان. عام مساهمة جهة حاجة استخدام مستو سطر child اسم، أو صنع صار إعلان اندفاع مفاجئ.
 
-**维护扁平共享 props 类型。** 这会重复 `children`、`store`、`inject`、`locale` 与 scope 字段中已有的事实，使声明与 Component props 可以发生漂移。
+**صيانة مسطح مستو مشترك props نوع.** هذا سوف تكرار `children`،`store`،`inject`،`locale` و scope حقل في قد لديه واقع، جعل إعلان و Component props يمكن حدوث عائم نقل.
 
-**把 React node 或 render callback 作为业务 props 传递。** 这些值绕过 renderer 提供的 scope props、store 与 injection 装配、陈旧权限检查和局部 Component 类型检查。
+**يأخذ React node أو render callback بصفة عمل خدمة props نقل تمرير.** هذه قيمة التفاف مرور renderer توفير scope props،store و injection تركيب إعداد، قديم قديم إذن فحص و نطاق جزء Component نوع فحص.
 
-**让局部 slots 具备普通 Slot routing。** 普通 Slots 已经负责多贡献方 routing。局部 slot 表示一次 occurrence 的一个调用方选择。
+**يجعل نطاق جزء slots أداة تجهيز عادي Slot routing.** عادي Slots قد مسؤول كثير مساهمة جهة routing. نطاق جزء slot يمثل مرة occurrence واحد استدعاء جهة اختيار.
 
-**向 `renderFactorySlot()` 传递 Session identity。** occurrence 像普通 Slot 一样继承渲染位置的 scope。第二个 identity 参数会产生两个可能不一致的权威；独立定址的 Session provider 属于另一项能力。
+**نحو `renderFactorySlot()` نقل تمرير Session identity.** occurrence مثل عادي Slot واحد مثال وراثة تصيير موضع scope. ثاني عدد identity معامل سوف إنتاج اثنان عدد ممكن لا متسق مرجعي؛ مستقل تحديد عنوان Session provider يخص آخر بند قدرة.
 
-## 影响
+## أثر
 
-功能包可以发布一份可复用 UI 装配，而消费方无需运行时导入其 Component。每个 occurrence 可以获得独立选择的局部 Components 与独占状态，同时保留全局普通 child 贡献以及现有 scope、locale、injection 和 store 规则。
+وظيفة حزمة يمكن إصدار واحد نسخة يمكن إعادة استخدام UI تركيب إعداد، بينما مستهلك بلا حاجة وقت التشغيل استيراد ذلك Component. كل occurrence يمكن نيل نيل مستقل اختيار نطاق جزء Components و وحيد احتلال حالة، معا إبقاء عام عادي child مساهمة و قائم scope،locale،injection و store قاعدة.
 
-新增的 registry ledger 与 occurrence 记录增加了 renderer 复杂度。Factory definitions 必须全局唯一，局部 slots 有意只支持一个选中 Component，并且该 API 本身不会创建可独立定址的 Session scope。
+إضافة جديدة registry ledger و occurrence سجل زيادة renderer تكرار مختلط درجة.Factory definitions يجب عام وحيد، نطاق جزء slots متعمد فقط دعم حمل واحد اختيار في Component، و كما هذا API ذاته لن إنشاء يمكن مستقل تحديد عنوان Session scope.
 
-Factory 类型与运行时测试是可执行的兼容性记录。Slots 子系统参考以及 `ui-slots` 和 `ui-renderer` 包参考记录消费方 API。
+Factory نوع و وقت التشغيل اختبار هو يمكن تنفيذ توافق صفة سجل.Slots فرعي نظام مشاركة اعتبار و `ui-slots` و `ui-renderer` حزمة مشاركة اعتبار سجل مستهلك API.

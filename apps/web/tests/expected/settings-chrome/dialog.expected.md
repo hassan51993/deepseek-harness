@@ -1,53 +1,53 @@
-- dialog "设置":
+- dialog "ضبط":
   - navigation:
-    - text: 设置
-    - button "通用设置":
+    - text: ضبط
+    - button "عام ضبط":
       - img
-      - text: 通用设置
-    - button "模型":
+      - text: عام ضبط
+    - button "نموذج":
       - img
-      - text: 模型
-    - button "内置插件":
+      - text: نموذج
+    - button "داخل وضع إضافة":
       - img
-      - text: 内置插件
-    - button "Agent 预设":
+      - text: داخل وضع إضافة
+    - button "Agent مسبق ضبط":
       - img
-      - text: Agent 预设
-    - button "已归档会话":
+      - text: Agent مسبق ضبط
+    - button "قد عودة ملف جلسة":
       - img
-      - text: 已归档会话
-  - button "打开配置文件"
-  - button "关闭":
+      - text: قد عودة ملف جلسة
+  - button "فتح ملف إعداد"
+  - button "إغلاق":
     - img
-    - text: 关闭
-  - text: 权限 选择新会话的默认权限模式
-  - button "工作区内修改":
-    - text: 工作区内修改
+    - text: إغلاق
+  - text: إذن اختيار جديد جلسة افتراضي إذن نمط
+  - button "مساحة العمل داخل تعديل":
+    - text: مساحة العمل داخل تعديل
     - img
-  - text: 语言
-  - button "中文":
-    - text: 中文
+  - text: لغة
+  - button "العربية":
+    - text: العربية
     - img
-  - text: 外观
-  - button "浅色":
+  - text: خارج مراقبة
+  - button "ضحل لون":
     - img
-    - text: 浅色
-  - button "深色":
+    - text: ضحل لون
+  - button "عميق لون":
     - img
-    - text: 深色
-  - button "跟随系统" [pressed]:
+    - text: عميق لون
+  - button "تتبع مع نظام" [pressed]:
     - img
-    - text: 跟随系统
-  - text: 字号大小 仅影响会话内容的字号 14
-  - button "增大字号":
+    - text: تتبع مع نظام
+  - text: حرف رقم كبير صغير فقط أثر جلسة محتوى حرف رقم 14
+  - button "زيادة كبير حرف رقم":
     - img
-  - button "减小字号":
+  - button "نقص صغير حرف رقم":
     - img
-  - text: px 对话显示 控制已完成轮次的过程内容
-  - button "紧凑":
-    - text: 紧凑
+  - text: px محادثة عرض تحكم قد إتمام جولة مرور مسار محتوى
+  - button "ضيق تجميع":
+    - text: ضيق تجميع
     - img
-  - text: 繁忙时的发送行为 智能体运行时 Enter 键和发送按钮的行为；Cmd/Ctrl+Enter 使用另一行为
-  - button "排队发送":
-    - text: 排队发送
+  - text: كثيف مشغول وقت إرسال سلوك ذكي جسم وقت التشغيل Enter مفتاح و إرسال حسب زر سلوك؛Cmd/Ctrl+Enter استخدام آخر سلوك
+  - button "ترتيب طابور إرسال":
+    - text: ترتيب طابور إرسال
     - img

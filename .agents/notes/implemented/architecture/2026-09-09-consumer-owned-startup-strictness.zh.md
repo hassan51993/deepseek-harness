@@ -1,41 +1,41 @@
-# Agent Note：由 consumer 持有启动严格语义
+# Agent Note: من consumer يحتفظ بدء صارم إطار دلالة
 
 Status: implemented
 
-[English](2026-09-09-consumer-owned-startup-strictness.md) | 中文
+[English](2026-09-09-consumer-owned-startup-strictness.md) | العربية
 
-## 问题
+## مشكلة
 
-Best-effort Loader reconcile 会保留可用 plugin，但应用仍需一组最小 capability。HTTP 应用没有 listening server 就不算运行，而一个 tool 不可用时可以仅省略该 tool，剩余应用仍然可用。Cordis 无法从 plugin 实现或依赖状态推断这一区别。
+Best-effort Loader reconcile سوف إبقاء متاح plugin، لكن تطبيق ما زال يحتاج واحد مجموعة الأكثر صغير capability.HTTP تطبيق لا يوجد listening server حينئذ لا حساب تشغيل، بينما واحد tool غير ممكن استخدام وقت يمكن فقط حذف هذا tool، باق بقية تطبيق ما زال متاح.Cordis لا يمكن من plugin تنفيذ أو اعتماد حالة دفع قطع هذا واحد منطقة آخر.
 
-## 决策
+## قرار
 
-DSH 在 vendored Cordis 之外持有启动严格语义。App-boot 用一份全局稳定 entry id list 审计已结算的初始 tree。List 中存在、启用且未 active 的 entry 会使启动 reject，并拆卸应用。List 中缺失或禁用的 id 不产生影响。Bootstrap Include 按 entry 身份被视为 required，因为根配置缺失或无效会阻止应用组装。其他 inactive entry 输出一次 warning，并让成功 sibling 继续运行。
+DSH في vendored Cordis خارج يحتفظ بدء صارم إطار دلالة.App-boot استخدام واحد نسخة عام مستقر entry id list مراجعة حساب قد تسوية ابتدائي tree.List في وجود، تفعيل كما لم active entry سوف جعل بدء reject، و تفكيك إزالة تطبيق.List في ناقص أو منع استخدام id لا إنتاج أثر.Bootstrap Include حسب entry هوية يتم نظر لـ required، لأن أصل إعداد ناقص أو بلا فاعلية سوف منع توقف تطبيق تجميع. أخرى inactive entry إخراج مرة warning، و يجعل نجاح sibling متابعة تشغيل.
 
-Required id 为 `agent-loop`、`webserver`、`modules`、`connection`、`headless-runner`、`acp` 和 `sdk-jsonrpc-server`。它们分别代表共享 Agent 执行、应用 endpoint，以及 Web 启动与传输。即使 HTTP server 不依赖它们也能监听，Web 仍需要客户端模块注册表和经过认证的连接。通过注入已成为必需项的 provider 不需要单列：它们缺失时，已列出的消费方会保持 pending 或失败。
+Required id لـ `agent-loop`،`webserver`،`modules`،`connection`،`headless-runner`،`acp` و `sdk-jsonrpc-server`. هو جمع قسم آخر بديل جدول مشترك Agent تنفيذ، تطبيق endpoint، و Web بدء و نقل. أي جعل HTTP server لا اعتماد هو جمع أيضا قدرة استماع،Web ما زال حاجة عميل وحدة سجل التسجيل و مرور مرور إقرار إثبات اتصال. عبر حقن قد يصبح مطلوب بند provider لا حاجة مفرد صف: هو جمع ناقص وقت، قد صف خروج مستهلك سوف إبقاء pending أو فشل.
 
-审计将 `disabled` 表达式抛出的异常视为 entry 失败，而不是 entry 已禁用，因为求值未能确定是否跳过它。该失败遵循相同的 optional/required 策略。
+مراجعة حساب سوف `disabled` جدول بلوغ صيغة رمي خروج استثناء نظر لـ entry فشل، بينما لا هو entry قد منع استخدام، لأن طلب قيمة لم قدرة تحديد هل قفز مرور هو. هذا فشل التزام دوران نفسه optional/required سياسة.
 
-该审计只在应用首次启动时运行。之后的 config HMR 仍采用 best effort，并保留 failed candidate 供后续修复。
+هذا مراجعة حساب فقط في تطبيق أول مرة بدء وقت تشغيل. بعد config HMR ما زال اعتماد best effort، و إبقاء failed candidate توفير لاحق إصلاح.
 
-该策略适用于 [Web host 启动](2026-07-24-web-config-tree-boot-and-transport-layering.zh.md)，包括其 [client 插件名册](2026-07-23-client-plugin-loading-model.zh.md)。[按会话的 preset](2026-08-03-per-session-agent-presets.zh.md)持有独立的严格子树审计。
+هذا سياسة ملائم لأجل [Web host بدء](2026-07-24-web-config-tree-boot-and-transport-layering.zh.md) ، يشمل ذلك [client إضافة اسم سجل](2026-07-23-client-plugin-loading-model.zh.md).[حسب جلسة preset](2026-08-03-per-session-agent-presets.zh.md) يحتفظ مستقل صارم إطار فرعي شجرة مراجعة حساب.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-- **给 vendored Loader 增加 transactional 与 best-effort mode。** 拒绝，因为严格语义属于应用或资源 owner，而一个 Loader group 包含互不相关的 plugin。Mode 还会扩大 vendor patch，并要求 caller 为每个 group 选择 policy。
-- **在每个 profile 中声明 required entry。** 拒绝，因为相同应用 endpoint 会在 profile data 与 custom profile 中重复。全局 list 会忽略缺失 id，同时让稳定的随附 id 保持权威。
-- **把所有启动失败都视为 optional。** 拒绝，因为无法暴露所选应用 endpoint 的进程必须报告启动失败。
+- **إعطاء vendored Loader زيادة transactional و best-effort mode.** رفض، لأن صارم إطار دلالة يخص تطبيق أو مورد owner، بينما واحد Loader group يتضمن متبادل لا متبادل صلة plugin.Mode أيضا سوف توسيع كبير vendor patch، و اشتراط caller لـ كل group اختيار policy.
+- **في كل profile في إعلان required entry.** رفض، لأن نفسه تطبيق endpoint سوف في profile data و custom profile في تكرار. عام list سوف تجاهل اختصار ناقص id، معا يجعل مستقر مع مرفق id إبقاء مرجعي.
+- **يأخذ كل بدء فشل كل نظر لـ optional.** رفض، لأن لا يمكن كشف الذي اختيار تطبيق endpoint عملية يجب تقرير إبلاغ بدء فشل.
 
-## 后果
+## عاقبة
 
-稳定的 required entry id 是应用 assembly 的一部分。重命名时必须同步更新 list 与测试。Optional plugin failure 会保留在 Loader state 和 stderr 中，但不会拆卸 active sibling。Required failure 将所有 inactive entry 合并到一份诊断中，区分失败插件与等待服务的插件，并标记 required entry。App-boot 拆卸 root 后，`StartupError` 仍以 cause 保留原始失败。CLI 仅输出其消息一次，并以退出码 1 结束，避免重复的包装堆栈，同时保留插件堆栈、嵌套原因和聚合错误成员。CLI 将原始错误、未激活条目的元数据及启动警告、错误记录保存到直接位于 `$DSH_HOME/logs/` 下的唯一报告中，保留简洁终端输出省略的导入错误和错误属性。写入失败时，完整报告回退到 stderr，退出码仍为 1。其他异常继续作为未处理异常抛出。
+مستقر required entry id هو تطبيق assembly واحد جزء. إعادة تسمية وقت يجب تزامن تحديث list و اختبار.Optional plugin failure سوف إبقاء في Loader state و stderr في، لكن لن تفكيك إزالة active sibling.Required failure سوف كل inactive entry دمج إلى واحد نسخة تشخيص في، منطقة قسم فشل إضافة و انتظار خدمة إضافة، و علامة required entry.App-boot تفكيك إزالة root بعد،`StartupError` ما زال بـ cause إبقاء أصلي فشل.CLI فقط إخراج ذلك رسالة مرة، و بـ خروج رمز 1 انتهاء، تجنب تجنب تكرار حزمة تركيب كومة مكدس، معا إبقاء إضافة كومة مكدس، تضمين طقم سبب و تجمع دمج خطأ عضو.CLI سوف أصلي خطأ، لم تنشيط بند بيانات وصفية و بدء تحذير إبلاغ، خطأ سجل حفظ إلى مباشر يقع في `$DSH_HOME/logs/` تحت وحيد تقرير إبلاغ في، إبقاء بسيط نظيف طرفية إخراج حذف استيراد خطأ و خطأ خاصية. كتابة فشل وقت، كامل تقرير إبلاغ رجوع إلى stderr، خروج رمز ما زال لـ 1. أخرى استثناء متابعة بصفة لم معالجة استثناء رمي خروج.
 
-简洁的终端报告突出失败插件；单独文件保存原始诊断，不受默认 logger 缓冲区记录数限制。原始错误值保持完整，因此报告附带分享提醒，不会静默脱敏字段。独立的 exporter 生命周期覆盖应用的异步资源释放。CLI 等待 stderr 写入完成后明确退出，因为失败插件可能留下 stdin 或其他打开的句柄。
+بسيط نظيف طرفية تقرير إبلاغ مفاجئ خروج فشل إضافة؛ مفرد وحيد ملف حفظ أصلي تشخيص، لا تلقي افتراضي logger مؤقت اندفاع منطقة سجل عدد حد. أصلي خطأ قيمة إبقاء كامل، لذلك تقرير إبلاغ مرفق حمل قسم مشاركة رفع تنبيه، لن ساكن صامت انفصال حساس حقل. مستقل exporter دورة الحياة تغطية تطبيق مختلف خطوة مورد تحرير.CLI انتظار stderr كتابة إتمام بعد واضح خروج، لأن فشل إضافة ممكن إبقاء تحت stdin أو أخرى فتح جملة مقبض.
 
-## 测试
+## اختبار
 
-App-boot 单元测试覆盖缺失和禁用的 required id、optional import failure、config evaluation failure、同步和异步 `apply()` failure、pending dependency，以及 required failure teardown。单元预期输出固定诊断分组、原始错误对象与导入日志的保留、exporter 清理、完整诊断值、私有文件创建、并发报告命名以及写入失败回退行为。构建后的 Web-profile acceptance 断言端口冲突堆栈只输出一次且不包含 Node 包装输出，验证已保存的诊断文件及其 stderr 回退，并会在 optional failure 存在时继续提供完整 UI，并在 required HTTP port 被占用或 `modules`、`connection` 无法激活时以非零码退出，且不报告就绪。
+App-boot اختبار وحدة تغطية ناقص و منع استخدام required id،optional import failure،config evaluation failure، تزامن و مختلف خطوة `apply()` failure،pending dependency، و required failure teardown. وحدة مسبق مدة إخراج ثابت تشخيص قسم مجموعة، أصلي خطأ كائن و استيراد سجل إبقاء،exporter تنظيف، كامل تشخيص قيمة، خاص ملف إنشاء، تزامن تقرير إبلاغ تسمية و كتابة فشل رجوع سلوك. بناء بعد Web-profile acceptance تأكيد طرف فتحة اندفاع مفاجئ كومة مكدس فقط إخراج مرة كما لا يتضمن Node حزمة تركيب إخراج، تحقق قد حفظ تشخيص ملف و ذلك stderr رجوع، و سوف في optional failure وجود وقت متابعة توفير كامل UI، و في required HTTP port يتم احتلال استخدام أو `modules`،`connection` لا يمكن تنشيط وقت بـ غير صفر رمز خروج، كما لا تقرير إبلاغ حينئذ خيط.
 
-[Web 进程矩阵](../../../../apps/cli/tests/profiles/web/tests/web-failure-matrix.expected.e2e.ts)分别验证启动时和原生补丁文件修改后的 optional 与 required 失败。经过认证的 HTTP 请求和插件生命周期文件区分可用应用与仅存活的进程。这些无需密钥的进程检查与[受控事件投递单元测试](../testing/2026-09-09-user-patch-hmr-test-delivery.zh.md)互补：单元测试隔离配置协调失败，进程测试还要求随附启动器、原生监听器和有界关闭流程协同工作。
+[Web عملية مستطيل دفعة](../../../../apps/cli/tests/profiles/web/tests/web-failure-matrix.expected.e2e.ts) قسم آخر تحقق بدء وقت و أصلي رقعة ملف تعديل بعد optional و required فشل. مرور مرور إقرار إثبات HTTP طلب و إضافة دورة الحياة ملف منطقة قسم متاح تطبيق و فقط تخزين نشط عملية. هذه بلا حاجة مفتاح عملية فحص و[تلقي تحكم حدث إلقاء تمرير اختبار وحدة](../testing/2026-09-09-user-patch-hmr-test-delivery.zh.md) متبادل تكملة: اختبار وحدة عزل إعداد تنسيق ضبط فشل، عملية اختبار أيضا اشتراط مع مرفق بدء جهاز، أصلي مستمع و محدود إغلاق مسار تنسيق نفس عمل.
 
-矩阵启用 Chokidar 的 `awaitWriteFinish`，在每次重载前确认文件内容已稳定；否则它的短暂 change 事件抑制窗口可能丢弃下一次测试编辑。测试仍然依赖原生事件，并等待观察到激活或失败，而不是固定时长的休眠。这是显式测试配置，不能证明默认监听器的时序行为。
+مستطيل دفعة تفعيل Chokidar `awaitWriteFinish`، في كل مرة إعادة تحميل قبل تأكيد ملف محتوى قد مستقر؛ لا فإن هو قصير مؤقت change حدث كبح صنع نافذة ممكن إسقاط تحت مرة اختبار تحرير. اختبار ما زال اعتماد أصلي حدث، و انتظار مراقبة إلى تنشيط أو فشل، بينما لا هو ثابت وقت طويل راحة نوم. هذا هو صريح اختبار إعداد، لا يستطيع إثبات افتراضي مستمع وقت ترتيب سلوك.

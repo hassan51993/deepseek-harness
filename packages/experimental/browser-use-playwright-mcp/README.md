@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-experimental-browser-use-playwright-mcp
 
-English | [中文](README.zh.md)
+English | [العربية](README.zh.md)
 
 ## Summary
 

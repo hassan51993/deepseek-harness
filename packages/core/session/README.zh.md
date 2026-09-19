@@ -1,35 +1,35 @@
 ---
-description: "面向用户与维护者的事件溯源会话日志与内存存储说明，用于构建、检查或扩展每个 agent（智能体）交互背后的持久记录。"
+description: "موجه إلى مستخدم و صيانة من حدث تتبع مصدر جلسة سجل و داخل تخزين تخزين شرح، لأجل بناء، فحص أو توسيع كل agent(ذكي جسم) تفاعل خلف بعد حمل دائم سجل."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-session
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-session` 在仅追加的会话日志中记录每个模型可见事实，并从该记录派生模型历史。消费方可以检查、回放、fork 和刷新会话，同时保留历史事件；压缩（compaction）会在活跃对话中隐藏被取代的条目，但不会删除它们。除非添加持久化后端，否则会话仅保留在内存中；持久性检查点会等待配置的后端。agent 需要可重建的会话记录时请选择本包；它本身不调用模型。
+`dsh-session` في فقط إلحاق جلسة سجل في سجل كل نموذج مرئي واقع، و من هذا سجل إرسال توليد نموذج تاريخ. مستهلك يمكن فحص، إعادة تشغيل،fork و تحديث جديد جلسة، معا إبقاء تاريخ حدث؛ ضغط (compaction) سوف في نشط وثب محادثة في إخفاء يتم يحل محل بند، لكن لن حذف هو جمع. حذف غير إضافة حفظ دائم خلفية، لا فإن جلسة فقط إبقاء في داخل تخزين في؛ حمل دائم صفة فحص نقطة سوف انتظار إعداد خلفية.agent حاجة يمكن إعادة بناء جلسة سجل وقت طلب اختيار هذه الحزمة؛ هو ذاته لا استدعاء نموذج.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在必须存在会话的任何地方挂载 `dsh-session`。它在内存中创建并持有事件溯源的 `Session` 实例；持久存储由订阅 `session/event` 流的持久化插件叠加。
+في يجب وجود جلسة أي أرض جهة تركيب `dsh-session`. هو في داخل تخزين في إنشاء و يحتفظ حدث تتبع مصدر `Session` نسخة؛ حمل دائم تخزين من حجز قراءة `session/event` تدفق حفظ دائم إضافة تراكم إضافة.
 
-### 创建与检查会话
+### إنشاء و فحص جلسة
 
-`ctx.sessions.create()` 构建绑定到调用方 fiber 的实时会话；`get(id)` 与 `list()` 查找会话，`fork()` 从实时会话的稳定前缀创建子会话。
+`ctx.sessions.create()` بناء ربط إلى استدعاء جهة fiber فوري جلسة؛`get(id)` و `list()` فحص بحث جلسة،`fork()` من فوري جلسة مستقر بادئة إنشاء فرعي جلسة.
 
 ```text
 const session = ctx.sessions.create(sessionId, { meta: { cwd: '/workspace' } })
@@ -37,9 +37,9 @@ ctx.sessions.get(sessionId)      // the live session
 ctx.sessions.list()              // every live session, in creation order
 ```
 
-### 追加与派生
+### إلحاق و إرسال توليد
 
-`session.append(type, data, opts?)` 提交一个类型化事件——它先快照并冻结载荷、校验其为无损 JSON，再通知观察者。`session.deriveMessages()` 把日志投影为模型看到的 `Message[]`，采用增量且有缓存的方式：
+`session.append(type, data, opts?)` إيداع واحد نوع تحويل حدث——هو أولا لقطة و تجميد ربط تحميل حمل، تحقق ذلك لـ بلا ضرر JSON، مجددا إشعار مراقبة من.`session.deriveMessages()` يأخذ سجل إسقاط لـ نموذج يرى `Message[]`، اعتماد زيادة كمية كما لديه ذاكرة مؤقتة طريقة:
 
 ```text
 session.append('user/message', { role: 'user', content: [{ type: 'text', text: 'hello' }], source: { kind: 'user' } },
@@ -47,152 +47,152 @@ session.append('user/message', { role: 'user', content: [{ type: 'text', text: '
 session.deriveMessages()         // the derived model history
 ```
 
-表层事件（`system/message`、`user/message`、`assistant/message`、`tool/result`）在类型化事件与追加输入中都必须带有 `surfaceOp`。替换操作仅接受 `{ op: 'replace', startSeq, endSeq }`，端点为包含边界的 `SessionSeq`，按当前 surface 顺序解释。assistant 消息会嵌入精确、紧凑的提供方流，并禁止 `sourceEventSeqs`。已知仅日志事件禁止这两个元数据字段，且从不产生消息。
+جدول طبقة حدث (`system/message`،`user/message`،`assistant/message`،`tool/result`) في نوع تحويل حدث و إلحاق إدخال في كل يجب حمل لديه `surfaceOp`. استبدال عملية فقط قبول `{ op: 'replace', startSeq, endSeq }`، طرف نقطة لـ يتضمن حد `SessionSeq`، حسب حالي surface ترتيب حل تفسير.assistant رسالة سوف تضمين دخول دقيق، ضيق تجميع مزود تدفق، و منع توقف `sourceEventSeqs`. معروف فقط سجل حدث منع توقف هذا اثنان عدد بيانات وصفية حقل، كما من لا إنتاج رسالة.
 
-插件用 `@messageProjection` 声明修改内容的事件，并通过 `ctx.sessions.registerMessageProjection()` 注册纯处理器。Session 在接受事件前调用处理器，并缓存其不可变消息更新。缺少处理器时拒绝追加和恢复，卸载已经使用的处理器后也会拒绝读取缓存。独立构造函数和 `foldSurface(events, projections)` 必须显式接收处理器。重建函数将折叠结果的 `projectedMessages` 传给 `deriveEventMessage()`，实时实例方法自动应用相同的投影。[插件拥有消息投影](../../../.agents/notes/implemented/architecture/2026-09-11-plugin-owned-message-projections.zh.md)说明职责划分和离线装配。
+إضافة استخدام `@messageProjection` إعلان تعديل محتوى حدث، و عبر `ctx.sessions.registerMessageProjection()` تسجيل صاف معالج.Session في قبول حدث قبل استدعاء معالج، و ذاكرة مؤقتة ذلك غير ممكن تغيير رسالة تحديث. نقص قليل معالج وقت رفض إلحاق و استعادة، إزالة قد استخدام معالج بعد أيضا سوف رفض قراءة ذاكرة مؤقتة. مستقل بنية صنع دالة و `foldSurface(events, projections)` يجب صريح استقبال معالج. إعادة بناء دالة سوف طي نتيجة `projectedMessages` نقل إعطاء `deriveEventMessage()`، فوري نسخة طريقة تلقائي تطبيق نفسه إسقاط.[إضافة يملك رسالة إسقاط](../../../.agents/notes/implemented/architecture/2026-09-11-plugin-owned-message-projections.zh.md) شرح مسؤولية تخطيط قسم و مغادرة خط تركيب إعداد.
 
-追加、seed/restore 与事件 adoption/snapshot 会拒绝任何 `header.system` 及恰好为空的可选请求头字段（`tools: []`、`adapterDefaults: {}`），而不规范化输入。工具结果的 `data.error` 仅在 `message.content[0].isError === true` 时允许存在；失败标识仍是可选的。被拒绝的追加不会改变日志、派生状态或事件流。Adoption 校验事件局部元数据，但不校验所引用的历史或替换端点是否属于 surface。
+إلحاق،seed/restore و حدث adoption/snapshot سوف رفض أي `header.system` و تماما جيد لـ فارغ اختياري طلب رأس حقل (`tools: []`،`adapterDefaults: {}`) ، بينما لا مواصفة تحويل إدخال. أداة نتيجة `data.error` فقط في `message.content[0].isError === true` وقت سماح وجود؛ فشل معرف ما زال هو اختياري. يتم رفض إلحاق لن تغيير سجل، إرسال توليد حالة أو حدث تدفق.Adoption تحقق حدث نطاق جزء بيانات وصفية، لكن لا تحقق الذي مرجع تاريخ أو استبدال طرف نقطة هل يخص surface.
 
-`system/message` 承载渲染后的系统提示词：第一条是 surface 第 0 号节点，准入依据已准备调用的能力，不具备能力的路由将非空渲染文本归并到首个系统节点，延续中的 `in-history` 序列则在缓存历史之后追加；空系统节点不投影为消息，因此清除提示词必须为所有生效的系统节点记录空内容替换，而非仅替换最新节点；当第 0 号节点是 `system/message` 时，surface 折叠拒绝覆盖它的替换，除非替换事件本身是恰好覆盖该节点的 `system/message`，而后续系统节点不受保护，压缩范围可以遮蔽它们（[决策](../../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md)）。
+`system/message` تحمل تحميل تصيير بعد توجيه النظام: رقم واحد بند هو surface رقم 0 رقم عقدة، دقيق دخول اعتماد حسب قد دقيق تجهيز استدعاء قدرة، لا أداة تجهيز قدرة توجيه سوف غير فارغ تصيير نص عودة و إلى أول عدد نظام عقدة، تأخير متابعة في `in-history` تسلسل فإن في ذاكرة مؤقتة تاريخ بعد إلحاق؛ فارغ نظام عقدة لا إسقاط لـ رسالة، لذلك صاف حذف نص التوجيه يجب لـ كل توليد فاعلية نظام عقدة سجل فارغ محتوى استبدال، بينما غير فقط استبدال الأكثر جديد عقدة؛ عند رقم 0 رقم عقدة هو `system/message` وقت،surface طي رفض تغطية هو استبدال، حذف غير استبدال حدث ذاته هو تماما جيد تغطية هذا عقدة `system/message`، بينما لاحق نظام عقدة لا تلقي حفظ حماية، ضغط نطاق يمكن حجب حجب هو جمع ([قرار](../../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md)).
 
-### 读取日志
+### قراءة سجل
 
-`session.seq` 无需物化数组即可读取当前日志长度，`session.eventAt(seq)` 按序列号读取单个已接受且深度冻结的事件。`session.snapshotEvents(fromSeq?, toSeqExclusive?)` 会物化半开区间的冻结稳定快照；当前完整快照会缓存到下一次追加。`eventAt()`、`snapshotEvents()` 和 `ownEvents()` 已弃用：现有逻辑可以暂不迁移，但禁止新增生产调用。仓库测试文件可以在限定范围的 lint 豁免下使用这三个读取方法（[策略](../../../.agents/notes/implemented/architecture/2026-09-09-deprecate-synchronous-session-event-reads.zh.md)）。只需要长度的调用方使用 `seq`。
+`session.seq` بلا حاجة شيء تحويل عدد مجموعة يكفي قراءة حالي سجل طويل درجة،`session.eventAt(seq)` حسب تسلسل رقم قراءة مفرد عدد قد قبول كما عميق درجة تجميد ربط حدث.`session.snapshotEvents(fromSeq?, toSeqExclusive?)` سوف شيء تحويل نصف فتح منطقة بين تجميد ربط مستقر لقطة؛ حالي كامل لقطة سوف ذاكرة مؤقتة إلى تحت مرة إلحاق.`eventAt()`،`snapshotEvents()` و `ownEvents()` قد ترك استخدام: قائم منطق يمكن مؤقت لا ترحيل، لكن منع توقف إضافة جديدة إنتاج استدعاء. مستودع اختبار ملف يمكن في حد تحديد نطاق lint إعفاء تجنب تحت استخدام هذا ثلاثة عدد قراءة طريقة ([سياسة](../../../.agents/notes/implemented/architecture/2026-09-09-deprecate-synchronous-session-event-reads.zh.md)). فقط حاجة طويل درجة استدعاء جهة استخدام `seq`.
 
-会话日志位置使用两种数字类型。`SessionSeq` 标识已有事件或包含端点的事件水位；`SessionLogOffset` 标识间隙、前缀长度或读取边界，并且可以等于事件数量。`SessionSeqCursor` 添加 `-1` 这个“尚无事件”值，`OptionalSessionSeq` 则在缺失本身属于数据时使用 `null`。构造函数会校验非负安全整数，brand 在运行时会被擦除，因此持久 JSON 与 wire 值仍是普通数字。
+جلسة سجل موضع استخدام اثنان نوع عدد حرف نوع.`SessionSeq` معرف قد لديه حدث أو يتضمن طرف نقطة حدث ماء موضع؛`SessionLogOffset` معرف بين فجوة، بادئة طويل درجة أو قراءة حد، و كما يمكن انتظار في حدث عدد كمية.`SessionSeqCursor` إضافة `-1` هذا عدد “بعد بلا حدث” قيمة،`OptionalSessionSeq` فإن في ناقص ذاته يخص بيانات وقت استخدام `null`. بنية صنع دالة سوف تحقق غير سالب أمان كامل عدد،brand في وقت التشغيل سوف يتم مسح حذف، لذلك حمل دائم JSON و wire قيمة ما زال هو عادي عدد حرف.
 
-### 派生会话的 fork
+### إرسال توليد جلسة fork
 
-`ctx.sessions.fork(source, boundary?, childSessionId?)` 选取截至 `boundary` 事件序号（含该事件）的源事件（默认：当前最后一个事件），要求所选前缀结束时没有开放轮次，再创建带谱系元数据的实时子会话。必须在轮次中途分支的工具时委派会裁剪到已完成前缀。
+`ctx.sessions.fork(source, boundary?, childSessionId?)` اختيار أخذ قطع حتى `boundary` حدث ترتيب رقم (يحتوي هذا حدث) مصدر حدث (افتراضي: حالي الأكثر بعد واحد حدث) ، اشتراط الذي اختيار بادئة انتهاء وقت لا يوجد فتح وضع جولة، مجددا إنشاء حمل جدول نظام بيانات وصفية فوري فرعي جلسة. يجب في جولة في طريق فرع أداة وقت تفويض إرسال سوف قطع قص إلى قد إتمام بادئة.
 
-逻辑 `SessionHeader.isSeeded` 字段报告是否存在 fork 历史，而不公开位置整数。`Session.inheritedEventCount` 保留经过校验的精确 `SessionLogOffset`；`ownEvents()` 返回从该切点开始的事件，`isOwnSeq(seq)` 只接受已存在且由子会话拥有的位置。底层带 seed 构造必须显式提供 `seed` 与 `inheritedEventCount`，因为构造 seed 可以在继承前缀之后包含子会话自有的设置事件。
+منطق `SessionHeader.isSeeded` حقل تقرير إبلاغ هل وجود fork تاريخ، بينما لا عام موضع كامل عدد.`Session.inheritedEventCount` إبقاء مرور مرور تحقق دقيق `SessionLogOffset`؛`ownEvents()` إرجاع من هذا قطع نقطة بدء حدث،`isOwnSeq(seq)` فقط قبول قد وجود كما من فرعي جلسة يملك موضع. قاع طبقة حمل seed بنية صنع يجب صريح توفير `seed` و `inheritedEventCount`، لأن بنية صنع seed يمكن في وراثة بادئة بعد يتضمن فرعي جلسة ذاتي لديه ضبط حدث.
 
-### 刷新持久状态
+### تحديث جديد حمل دائم حالة
 
-`ctx.sessions.flush(session)` 分发需等待完成的持久性检查点：每个持久化监听器都会刷新，调用在所有监听器结算后完成。需要立即持久性屏障的生产方应等待它，而不是假定延后写入已经排空。
+`ctx.sessions.flush(session)` توزيع يحتاج انتظار إتمام حمل دائم صفة فحص نقطة: كل حفظ دائم مستمع كل سوف تحديث جديد، استدعاء في كل مستمع تسوية بعد إتمام. حاجة قيام أي حمل دائم صفة شاشة عائق إنتاج جهة ينبغي انتظار هو، بينما لا هو زائف تحديد تأخير بعد كتابة قد ترتيب فارغ.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释该包如何实现上述行为；可观察约定已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير هذا حزمة مثل أي تنفيذ فوق وصف سلوك؛ يمكن مراقبة اتفاق قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-该包建立在事件溯源之上：`Session` 是类型化 `SessionEvent` 的仅追加日志，其他一切——模型历史、transcript（文本记录）、遥测、标题、持久化——都从这条流派生。surface 是派生投影：一个增量管理器校验追加候选、根据已提交事件推进有序视图，通过 `replaceGeneration` 跟踪位置替换，通过 `contentGeneration` 跟踪位置替换和插件拥有的消息变更。模型可见即已记录：任何到达模型请求的内容都必须能从日志重建。每个完成结算的模型尝试都会提交一个事件：`assistant/message` 携带组装后的模型可见 message 及其紧凑带时间 stream，`assistant/attempt` 则保留失败、重试、取消或 stream error attempt，且不添加模型历史。如果进程在 settlement 前硬中断，则不会留下持久 attempt stream。
+هذا حزمة بناء قيام في حدث تتبع مصدر لـ فوق:`Session` هو نوع تحويل `SessionEvent` فقط إلحاق سجل، أخرى واحد قطع——نموذج تاريخ،transcript(نص سجل) ، بعيد قياس، عنوان، حفظ دائم——كل من هذا بند تدفق إرسال توليد.surface هو إرسال توليد إسقاط: واحد زيادة كمية إدارة جهاز تحقق إلحاق مرشح، أصل حسب قد إيداع حدث دفع دخول لديه ترتيب عرض، عبر `replaceGeneration` تتبع أثر موضع استبدال، عبر `contentGeneration` تتبع أثر موضع استبدال و إضافة يملك رسالة تغيير. نموذج مرئي أي قد سجل: أي وصول نموذج طلب محتوى كل يجب قدرة من سجل إعادة بناء. كل إتمام تسوية نموذج محاولة تجربة كل سوف إيداع واحد حدث:`assistant/message` يحمل تجميع بعد نموذج مرئي message و ذلك ضيق تجميع حمل وقت stream،`assistant/attempt` فإن إبقاء فشل، إعادة محاولة، إلغاء أو stream error attempt، كما لا إضافة نموذج تاريخ. إذا عملية في settlement قبل صلب في قطع، فإن لن إبقاء تحت حمل دائم attempt stream.
 
-### 请求头
+### طلب رأس
 
-`request/header` 存储非历史请求封装的完整规范快照，原因为 `initial`、`resume`、`change` 或 `series`。显式消息序列起点、表层替换或插件拥有的消息变更会在请求封装不变时写入 `series` 快照；同时发生变化时使用 `startsSeries: true`。同一序列内的步骤、重试与普通后续轮次继承最新快照。`adapterDefaults` 区分由适配器解析的值与显式设置，`foldRequestHeader()` 选择最新快照。这种自包含记录以每个消息序列增加存储为代价，支持局部窗口渲染与精确重建；细节由[可重建请求 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.zh.md)负责。
+`request/header` تخزين غير تاريخ طلب غلاف تركيب كامل مواصفة لقطة، سبب لـ `initial`،`resume`،`change` أو `series`. صريح رسالة تسلسل بدء نقطة، جدول طبقة استبدال أو إضافة يملك رسالة تغيير سوف في طلب غلاف تركيب ثابت وقت كتابة `series` لقطة؛ معا حدوث تغير وقت استخدام `startsSeries: true`. نفس تسلسل داخل خطوة، إعادة محاولة و عادي لاحق جولة وراثة الأكثر جديد لقطة.`adapterDefaults` منطقة قسم من مهايئ تحليل قيمة و صريح ضبط،`foldRequestHeader()` اختيار الأكثر جديد لقطة. هذا نوع ذاتي يتضمن سجل بـ كل رسالة تسلسل زيادة تخزين لـ بديل قيمة، دعم حمل نطاق جزء نافذة تصيير و دقيق إعادة بناء؛ دقيق عقدة من[يمكن إعادة بناء طلب Agent Note](../../../.agents/notes/implemented/architecture/2026-07-05-reconstructable-requests.zh.md) مسؤول.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`SessionStore` 服务、存储生命周期、`fork`、`flush` |
-| [`src/types.ts`](src/types.ts) | `SessionEventMap`、`SessionEvent`、`UserMessage`、`SessionHeader`、`TurnEndReasonMap` |
-| [`src/surface.ts`](src/surface.ts) | 有序 surface 投影、替换校验、`deriveEventMessage` |
-| [`src/request-header.ts`](src/request-header.ts) | `request/header` 折叠与重建 |
-| [`dsh-util-values`](../../util/values/README.zh.md) | 共享无损 JSON 校验与分离式快照 |
-| [`src/repair.ts`](src/repair.ts) | 崩溃遗留日志的冷修复 |
-| [`src/invariant.ts`](src/invariant.ts) | 不变式配套：序号、轮次／步骤闭合、工具调用／结果配对 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`SessionStore` خدمة، تخزين دورة الحياة،`fork`،`flush` |
+| [`src/types.ts`](src/types.ts) | `SessionEventMap`،`SessionEvent`،`UserMessage`،`SessionHeader`،`TurnEndReasonMap` |
+| [`src/surface.ts`](src/surface.ts) | لديه ترتيب surface إسقاط، استبدال تحقق،`deriveEventMessage` |
+| [`src/request-header.ts`](src/request-header.ts) | `request/header` طي و إعادة بناء |
+| [`dsh-util-values`](../../util/values/README.zh.md) | مشترك بلا ضرر JSON تحقق و قسم مغادرة صيغة لقطة |
+| [`src/repair.ts`](src/repair.ts) | انهيار انهيار متروك إبقاء سجل بارد إصلاح |
+| [`src/invariant.ts`](src/invariant.ts) | ثابت صيغة إعداد طقم: ترتيب رقم، جولة/خطوة إغلاق دمج، أداة استدعاء/نتيجة إعداد مقابل |
 
-### 追加校验
+### إلحاق تحقق
 
-每次追加都会使用共享的迭代式 `snapshotJsonValue()` 流程，对每个嵌套值只读取、校验并复制一次，因此有状态的 getter 无法给校验提供一个值、给存储提供另一个值。非无损 JSON 载荷（BigInt、循环、稀疏数组、`-0`、特殊原型）会在追加位置被拒绝，先于任何后端刷新。追加路径会构造每个 `SessionSeq`；surface 事件还会校验标记形态、被引用的源事件序号，以及替换的完整遮蔽节点覆盖。
+كل مرة إلحاق كل سوف استخدام مشترك تكرار بديل صيغة `snapshotJsonValue()` مسار، مقابل كل تضمين طقم قيمة فقط قراءة، تحقق و نسخ مرة، لذلك لديه حالة getter لا يمكن إعطاء تحقق توفير واحد قيمة، إعطاء تخزين توفير آخر عدد قيمة. غير بلا ضرر JSON تحميل حمل (BigInt، حلقة، نادر متباعد عدد مجموعة،`-0`، خاص خاص أصل نوع) سوف في إلحاق موضع يتم رفض، أولا في أي خلفية تحديث جديد. إلحاق مسار سوف بنية صنع كل `SessionSeq`؛surface حدث أيضا سوف تحقق علامة شكل، يتم مرجع مصدر حدث ترتيب رقم، و استبدال كامل حجب حجب عقدة تغطية.
 
-### 派生历史
+### إرسال توليد تاريخ
 
-`deriveMessages()` 缓存深度冻结的派生消息，每次调用返回新数组。四种 surface 事件类型（`system/message`、`user/message`、`assistant/message`、`tool/result`）提供记录的消息身份和内容，空内容的系统节点不派生消息。插件拥有的投影修改派生内容，不修改记录的消息。替换和投影决策使缓存失效。嵌入式 Assistant stream 与 `assistant/attempt` 事件只保留回放和诊断数据。
+`deriveMessages()` ذاكرة مؤقتة عميق درجة تجميد ربط إرسال توليد رسالة، كل مرة استدعاء إرجاع جديد عدد مجموعة. أربعة نوع surface حدث نوع (`system/message`،`user/message`،`assistant/message`،`tool/result`) توفير سجل رسالة هوية و محتوى، فارغ محتوى نظام عقدة لا إرسال توليد رسالة. إضافة يملك إسقاط تعديل إرسال توليد محتوى، لا تعديل سجل رسالة. استبدال و إسقاط قرار جعل ذاكرة مؤقتة بطلان. تضمين دخول صيغة Assistant stream و `assistant/attempt` حدث فقط إبقاء إعادة تشغيل و تشخيص بيانات.
 
-### 请求头
+### طلب رأس
 
-循环在每个循环实例边界及变更时记录完整规范 `request/header` 快照（调用配置、适配器默认值、组装后的工具 schema——渲染后的系统提示词是 `system/message` surface 节点，不是 header 状态）；`foldRequestHeader(events)` 通过选择最新快照来重建它，使每个对话请求都成为日志的纯函数。路由元数据（`request/context`）是独立的已记录状态，仅在提供方、模型、容量或 `systemPromptUpdate` 模式变化时追加；它在提示词与用户消息准入之后记录实际已准备调用的模式，而非提供准入决策。
+حلقة في كل حلقة نسخة حد و تغيير وقت سجل كامل مواصفة `request/header` لقطة (استدعاء إعداد، مهايئ قيمة افتراضية، تجميع بعد أداة schema——تصيير بعد توجيه النظام هو `system/message` surface عقدة، لا هو header حالة) ؛`foldRequestHeader(events)` عبر اختيار الأكثر جديد لقطة قدوم إعادة بناء هو، جعل كل محادثة طلب كل يصبح سجل صاف دالة. توجيه بيانات وصفية (`request/context`) هو مستقل قد سجل حالة، فقط في مزود، نموذج، سعة كمية أو `systemPromptUpdate` نمط تغير وقت إلحاق؛ هو في نص التوجيه و مستخدم رسالة دقيق دخول بعد سجل فعلي قد دقيق تجهيز استدعاء نمط، بينما غير توفير دقيق دخول قرار.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-包级约定对大多数消费方已经足够；需要周边领域时再阅读以下页面。
+حزمة درجة اتفاق مقابل كبير كثير عدد مستهلك قد كاف كاف؛ حاجة دورة حافة مجال وقت مجددا قراءة قراءة التالي صفحة.
 
-- [会话子系统](../../../docs/subsystems/session.zh.md)——完整事件词汇、surface 类型与生成的服务 API。
-- [持久化子系统](../../../docs/subsystems/persistence.zh.md)——后端如何让该日志持久化。
-- [Core 子系统](../../../docs/subsystems/core.zh.md)——写入并派生会话的循环。
-- [生成持久化目录](../../../docs/persistence-catalog.zh.md)——每个会话事件及其载荷与声明位置。
-- [core 分组地图](../README.zh.md)——core 各包如何组合。
+- [جلسة فرعي نظام](../../../docs/subsystems/session.zh.md)——كامل حدث مفردات،surface نوع و توليد خدمة API.
+- [حفظ دائم فرعي نظام](../../../docs/subsystems/persistence.zh.md)——خلفية مثل أي يجعل هذا سجل حفظ دائم.
+- [Core فرعي نظام](../../../docs/subsystems/core.zh.md)——كتابة و إرسال توليد جلسة حلقة.
+- [توليد حفظ دائم دليل](../../../docs/persistence-catalog.zh.md)——كل جلسة حدث و ذلك تحميل حمل و إعلان موضع.
+- [core قسم مجموعة أرض رسم](../README.zh.md)——core كل حزمة مثل أي تركيب.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 派生消息历史
+### إرسال توليد رسالة تاريخ
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-模型会接收 `system/message`、`user/message`、`assistant/message` 与 `tool/result` surface 条目中的消息，并应用日志中的投影，系统提示词在先。消息标识、角色、来源及未修改的内容块保持不变，投影不生成标识。直接提示词与注入上下文仍是独立的 `user/message` 事件，各事件的来源保留其出处。嵌入式 stream、`assistant/attempt`、边界与其他仅日志事实不添加消息。
+نموذج سوف استقبال `system/message`،`user/message`،`assistant/message` و `tool/result` surface بند في رسالة، و تطبيق سجل في إسقاط، توجيه النظام في أولا. رسالة معرف، زاوية لون، مصدر و لم تعديل محتوى كتلة إبقاء ثابت، إسقاط لا توليد معرف. مباشر نص التوجيه و حقن سياق ما زال هو مستقل `user/message` حدث، كل حدث مصدر إبقاء ذلك خروج موضع. تضمين دخول صيغة stream،`assistant/attempt`، حد و أخرى فقط سجل واقع لا إضافة رسالة.
 
-#### Token 影响
+#### Token أثر
 
-追加的 surface 条目会在后续步骤中重新发送。`replace` surface 操作会从未来输入中移除被遮蔽条目，但不删除其原始日志记录。
+إلحاق surface بند سوف في لاحق خطوة في إعادة إرسال.`replace` surface عملية سوف من لم قدوم إدخال في إزالة يتم حجب حجب بند، لكن لا حذف ذلك أصلي سجل سجل.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-追加的 surface 条目会保留可复用前缀。即使底层事件日志保持仅追加，`replace` 操作也会从首条被遮蔽消息起使缓存复用失效。
+إلحاق surface بند سوف إبقاء يمكن إعادة استخدام بادئة. أي جعل قاع طبقة حدث سجل إبقاء فقط إلحاق،`replace` عملية أيضا سوف من أول بند يتم حجب حجب رسالة بدء جعل ذاكرة مؤقتة إعادة استخدام بطلان.
 
-### 崩溃修复结果
+### انهيار انهيار إصلاح نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-如果恢复发现 assistant 工具请求没有持久 `tool/call`，其合成 `TOOL_NOT_STARTED` 结果内容为 `The tool call was interrupted before the Harness recorded it as started. Retry it if it is still needed.`。如果持久 `tool/call` 没有结果，其 `TOOL_OUTCOME_UNKNOWN` 结果内容为 `The tool call was interrupted after it was recorded, but no result was durably recorded. Its outcome is unknown. Decide whether to retry from the tool semantics: retry only if the operation is read-only or idempotent; if it may have side effects, first verify external state or ask the user. Do not retry blindly.`。
+إذا استعادة اكتشاف assistant أداة طلب لا يوجد حمل دائم `tool/call`، ذلك دمج صار `TOOL_NOT_STARTED` نتيجة محتوى لـ `The tool call was interrupted before the Harness recorded it as started. Retry it if it is still needed.`. إذا حمل دائم `tool/call` لا يوجد نتيجة، ذلك `TOOL_OUTCOME_UNKNOWN` نتيجة محتوى لـ `The tool call was interrupted after it was recorded, but no result was durably recorded. Its outcome is unknown. Decide whether to retry from the tool semantics: retry only if the operation is read-only or idempotent; if it may have side effects, first verify external state or ask the user. Do not retry blindly.`.
 
-#### Token 影响
+#### Token أثر
 
-未受损会话的 token 增量为零。恢复时，每个修复后的调用都会添加保留的、针对具体风险的错误文本。
+لم تلقي ضرر جلسة token زيادة كمية لـ صفر. استعادة وقت، كل إصلاح بعد استدعاء كل سوف إضافة إبقاء، إبرة مقابل أداة جسم ريح خطر خطأ نص.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-保持仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV Cache 条目失效。
+إبقاء فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV Cache بند بطلان.
 
-### 已记录的请求头
+### قد سجل طلب رأس
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-会话会重建循环实际发送的工具 schema 与调用配置；系统提示词作为 surface 第 0 号节点、并在历史内更新之后作为最新的系统节点，属于 `deriveMessages()` 的一部分。请求头事件不向历史加入任何消息，也不持有提示词的副本。
+جلسة سوف إعادة بناء حلقة فعلي إرسال أداة schema و استدعاء إعداد؛ توجيه النظام بصفة surface رقم 0 رقم عقدة، و في تاريخ داخل تحديث بعد بصفة الأكثر جديد نظام عقدة، يخص `deriveMessages()` واحد جزء. طلب رأس حدث لا نحو تاريخ إضافة دخول أي رسالة، أيضا لا يحتفظ نص التوجيه فرعي هذا.
 
-#### Token 影响
+#### Token أثر
 
-日志记录不产生重复 token。各系统节点与 schema 仍会产生正常的逐请求开销。
+سجل سجل لا إنتاج تكرار token. كل نظام عقدة و schema ما زال سوف إنتاج صحيح معتاد تدريجي طلب فتح إلغاء.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-记录日志不会导致失效，精确重建会保持请求前缀一致。后续请求头若更改配置或 schema，可能从第一处差异开始使复用失效；替换 surface 第 0 号节点的提示词变更会从第一个 token 起使复用失效，而历史内追加则保持直到已缓存历史末尾的前缀可复用。
+سجل سجل لن توجيه يؤدي بطلان، دقيق إعادة بناء سوف إبقاء طلب بادئة متسق. لاحق طلب رأس إذا أكثر تعديل إعداد أو schema، ممكن من رقم واحد موضع فرق مختلف بدء جعل إعادة استخدام بطلان؛ استبدال surface رقم 0 رقم عقدة نص التوجيه تغيير سوف من رقم واحد token بدء جعل إعادة استخدام بطلان، بينما تاريخ داخل إلحاق فإن إبقاء مباشر إلى قد ذاكرة مؤقتة تاريخ نهاية ذيل بادئة يمكن إعادة استخدام.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明会话存储何时需要特别留意。它们是当前包约束，不是任务积压。
+هذه حد شرح جلسة تخزين أي وقت حاجة خاص آخر إبقاء معنى. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **`fork()` 仅在实时会话的稳定边界处切分**：所选前缀结束时不得有开放轮次，且源会话必须位于存储中；fork API 不支持对已持久化但未加载的会话进行 fork。
-- **`SESSION_FORMAT_VERSION` 命名[当前逻辑表示](../../../docs/session-format-status.zh.md)**——当前读取器拒绝已退役的 `header.system`，并校验 `system/message` 载荷与受保护头节点的重写。历史 header 与事件归相邻格式包所有；相邻迁移链在构造 `Session` 前转换受支持的历史，写打开只发布当前格式的后继代际。同版本未知事件要求信封显式带有 `ignorable` 标记，但这不保证结构迁移的安全性（[机制](../../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md)）。
-- **`TurnEndReasonMap` 不含 ACP（Agent Client Protocol）命名的 `refusal`／`max_turn_requests` 变体**：受生产方约束；只有当适配器或循环首次产生这些变体时才加入。
-- **fork 之外没有会话树**：基于分支会话的 pi 风格条目树被推迟，除非消费方需要超越基于边界的 forking 的能力。
+- **`fork()` فقط في فوري جلسة مستقر حد موضع قطع قسم**: الذي اختيار بادئة انتهاء وقت لا نيل لديه فتح وضع جولة، كما مصدر جلسة يجب يقع في تخزين في؛fork API لا دعم حمل مقابل قد حفظ دائم لكن لم تحميل جلسة إجراء fork.
+- **`SESSION_FORMAT_VERSION` تسمية[حالي منطق يمثل](../../../docs/session-format-status.zh.md)**——حالي قراءة جهاز رفض قد تراجع دور `header.system`، و تحقق `system/message` تحميل حمل و تلقي حفظ حماية رأس عقدة إعادة كتابة. تاريخ header و حدث عودة متبادل مجاور صيغة حزمة كل؛ متبادل مجاور ترحيل سلسلة في بنية صنع `Session` قبل تحويل تلقي دعم حمل تاريخ، كتابة فتح فقط إصدار حالي صيغة بعد استمرار بديل حد. نفس إصدار لم معرفة حدث اشتراط معلومة غلاف صريح حمل لديه `ignorable` علامة، لكن هذا لا حفظ إثبات بنية ترحيل أمان صفة ([آلية](../../../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md)).
+- **`TurnEndReasonMap` لا يحتوي ACP(Agent Client Protocol) تسمية `refusal`/`max_turn_requests` تغيير جسم**: تلقي إنتاج جهة قيد؛ فقط لديه عند مهايئ أو حلقة أول مرة إنتاج هذه تغيير جسم وقت عندئذ إضافة دخول.
+- **fork خارج لا يوجد جلسة شجرة**: أساس في فرع جلسة pi ريح إطار بند شجرة يتم دفع متأخر، حذف غير مستهلك حاجة تجاوز تجاوز أساس في حد forking قدرة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

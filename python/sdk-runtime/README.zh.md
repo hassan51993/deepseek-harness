@@ -1,42 +1,42 @@
 # deepseek-harness-runtime-bin
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-DeepSeek Harness Python SDK 的平台运行时 wheel 包。它把普通 `dsh` CLI（命令行界面）及其封闭的 Node 依赖树打包成原生可执行程序，因此使用 SDK 不需要系统 Node.js。本包只发布 wheel 包。
+DeepSeek Harness Python SDK منصة وقت التشغيل wheel حزمة. هو يأخذ عادي `dsh` CLI(أمر سطر واجهة) و ذلك غلاف إغلاق Node اعتماد شجرة تحزيم صار أصلي يمكن تنفيذ برنامج، لذلك استخدام SDK لا حاجة نظام Node.js. هذه الحزمة فقط إصدار wheel حزمة.
 
-## 安装命令与产物
+## تثبيت أمر و ناتج
 
-wheel 包会安装 `dsh` 控制台命令和 `deepseek_harness_runtime` Python 模块。`dsh` 将参数转发给内置可执行程序，并要求非空 `DSH_HOME`；它不会回退到 `~/.dsh`。
+wheel حزمة سوف تثبيت `dsh` تحكم منصة أمر و `deepseek_harness_runtime` Python وحدة.`dsh` سوف معامل تحويل إرسال إعطاء داخل وضع يمكن تنفيذ برنامج، و اشتراط غير فارغ `DSH_HOME`؛ هو لن رجوع إلى `~/.dsh`.
 
-生产可执行程序位于模块的 `runtime/` 目录，命名为 `deepseek-harness-sdk-runtime-<platform>-<arch>`；Windows 使用 `.exe` 后缀。Linux 与 macOS wheel 包含目标平台原生的 `-rg` 伴随程序，Windows 包含 `-rg.exe`，macOS 还包含 `node-pty` 使用的 `-spawn-helper`。已发布目标是 Linux x64、Linux arm64、macOS arm64、macOS x64 与 Windows x64。wheel 包标签必须与载荷严格匹配；不发布 Windows arm64 wheel 包。
+إنتاج يمكن تنفيذ برنامج يقع في وحدة `runtime/` دليل، تسمية لـ `deepseek-harness-sdk-runtime-<platform>-<arch>`؛Windows استخدام `.exe` بعد لاحقة.Linux و macOS wheel يتضمن هدف منصة أصلي `-rg` مرافق مع برنامج،Windows يتضمن `-rg.exe`،macOS أيضا يتضمن `node-pty` استخدام `-spawn-helper`. قد إصدار هدف هو Linux x64،Linux arm64،macOS arm64،macOS x64 و Windows x64.wheel حزمة وسم يجب و تحميل حمل صارم إطار مطابقة؛ لا إصدار Windows arm64 wheel حزمة.
 
-每个目标还要求 `<executable-stem>-office/`，其中 stem 不含 `.exe`。该目录包含完整的已安装 Office 包及其依赖，保留引擎资源、清单、许可证、源码清单与辅助程序权限。复制可执行文件时必须一并复制此目录。缺少目标引擎会使 sidecar 构建失败，错误会指出其 npm 包名与目标平台／架构。
+كل هدف أيضا اشتراط `<executable-stem>-office/`، منها stem لا يحتوي `.exe`. هذا دليل يتضمن كامل قد تثبيت Office حزمة و ذلك اعتماد، إبقاء جذب محرك مورد، بيان، سماح يمكن إثبات، شفرة المصدر بيان و مساعد مساعدة برنامج إذن. نسخ يمكن تنفيذ ملف وقت يجب واحد و نسخ هذا دليل. نقص قليل هدف جذب محرك سوف جعل sidecar بناء فشل، خطأ سوف إشارة خروج ذلك npm حزمة اسم و هدف منصة/هيكل بنية.
 
-仓库构建还会物化仅限开发的 `runtime/node/` 载体。它在系统 Node 22.19 或更高版本上运行 `node runtime/node/node_modules/@deepseek-ai/dsh/lib/bin.js`。系统不会自动选择它，而且 wheel 包与 sdist 均不包含它。
+مستودع بناء أيضا سوف شيء تحويل فقط حد تطوير `runtime/node/` تحميل جسم. هو في نظام Node 22.19 أو أكثر عال إصدار فوق تشغيل `node runtime/node/node_modules/@deepseek-ai/dsh/lib/bin.js`. نظام لن تلقائي اختيار هو، بينما كما wheel حزمة و sdist متساو لا يتضمن هو.
 
-两种载体执行相同的 `dsh` 语法与随附 profile，包括独立的 `sdk-minimal` 配置树，以及包含前端产物的完整 `web` profile。私有 `dsh-python-runtime-closure` manifest（元数据清单）定义打包依赖闭包；不存在 Python 专用 Node 应用或检入的默认 `cordis.yml`。
+اثنان نوع تحميل جسم تنفيذ نفسه `dsh` لغة قاعدة و مع مرفق profile، يشمل مستقل `sdk-minimal` إعداد شجرة، و يتضمن قبل طرف ناتج كامل `web` profile. خاص `dsh-python-runtime-closure` manifest(بيانات وصفية بيان) تعريف تحزيم اعتماد إغلاق حزمة؛ لا وجود Python مخصص استخدام Node تطبيق أو فحص دخول افتراضي `cordis.yml`.
 
-## Python 模块 API
+## Python وحدة API
 
-- `bundled_package_dir() -> Path` 返回已安装模块数据根目录，并校验发布元数据。
-- `bundled_runtime_path() -> Path` 返回当前平台可执行程序，并校验必需伴随文件。
-- `resolve_bundled_launch_args(mode=None) -> tuple[str, ...]` 默认返回可执行程序 argv。显式 `mode="node"` 或 `DSH_RUNTIME_MODE=node` 会选择仅限仓库使用的 Node 载体。
-- `main()` 实现已安装的 `dsh` 控制台命令，并拒绝缺失或空白的 `DSH_HOME`。在 Windows 上，它让打包进程继承标准流，等待其结束并转发退出状态；在 POSIX 上，它替换 Python 进程。
+- `bundled_package_dir() -> Path` إرجاع قد تثبيت وحدة بيانات أصل دليل، و تحقق إصدار بيانات وصفية.
+- `bundled_runtime_path() -> Path` إرجاع حالي منصة يمكن تنفيذ برنامج، و تحقق مطلوب مرافق مع ملف.
+- `resolve_bundled_launch_args(mode=None) -> tuple[str, ...]` افتراضي إرجاع يمكن تنفيذ برنامج argv. صريح `mode="node"` أو `DSH_RUNTIME_MODE=node` سوف اختيار فقط حد مستودع استخدام Node تحميل جسم.
+- `main()` تنفيذ قد تثبيت `dsh` تحكم منصة أمر، و رفض ناقص أو فارغ أبيض `DSH_HOME`. في Windows فوق، هو يجعل تحزيم عملية وراثة معيار تدفق، انتظار ذلك انتهاء و تحويل إرسال خروج حالة؛ في POSIX فوق، هو استبدال Python عملية.
 
-不支持的平台以及缺失的可执行程序或伴随文件会抛出 `FileNotFoundError`，并指出构建与安装路径。未知运行时模式会抛出 `ValueError`。
+لا دعم حمل منصة و ناقص يمكن تنفيذ برنامج أو مرافق مع ملف سوف رمي خروج `FileNotFoundError`، و إشارة خروج بناء و تثبيت مسار. لم معرفة وقت التشغيل نمط سوف رمي خروج `ValueError`.
 
-## 打包后的 profile 解析
+## تحزيم بعد profile تحليل
 
-`dsh` 在显式指定的主目录下初始化随附 profile、组合其 bundle patch，并从可执行程序的虚拟文件系统加载内置插件。操作系统符号链接无法进入该文件系统，因此打包运行会在 `$DSH_HOME/profiles/node_modules` 下维护小型真实 ESM 代理包。每个代理复现运行时的显式导出项、记录原包身份，并重新导出虚拟模块 URL。因此，内置配置项与外部插件 peer 会共享同一个 Cordis／模块实例。原生共享库与 Windows ConPTY addon 会同其他原生 addon 一起打包；ripgrep 与 macOS PTY helper 仍是可执行伴随程序。
+`dsh` في صريح إشارة تحديد رئيسي دليل تحت ابتدائي تحويل مع مرفق profile، تركيب ذلك bundle patch، و من يمكن تنفيذ برنامج وهمي محاكاة نظام الملفات تحميل داخل وضع إضافة. عملية نظام رمز رقم رابط لا يمكن دخول هذا نظام الملفات، لذلك تحزيم تشغيل سوف في `$DSH_HOME/profiles/node_modules` تحت صيانة صغير نوع حقيقي ESM بديل إدارة حزمة. كل بديل إدارة تكرار الآن وقت التشغيل صريح توجيه خروج بند، سجل أصل حزمة هوية، و إعادة توجيه خروج وهمي محاكاة وحدة URL. لذلك، داخل وضع بند إعداد و خارجي إضافة peer سوف مشترك نفس عدد Cordis/وحدة نسخة. أصلي مشترك مكتبة و Windows ConPTY addon سوف نفس أخرى أصلي addon واحد بدء تحزيم؛ripgrep و macOS PTY helper ما زال هو يمكن تنفيذ مرافق مع برنامج.
 
-Python bootstrap 从相邻目录解析 Office kit，让原生辅助程序与 URL Worker 使用真实文件系统路径。kit 负责引擎选择与校验；Python bootstrap 不增加运行时下载或编译。
+Python bootstrap من متبادل مجاور دليل تحليل Office kit، يجعل أصلي مساعد مساعدة برنامج و URL Worker استخدام حقيقي نظام الملفات مسار.kit مسؤول جذب محرك اختيار و تحقق؛Python bootstrap لا زيادة وقت التشغيل تحت تحميل أو تحرير ترجمة.
 
-外部 profile 管理使用 `dsh plugin --profile <name> ...`。该命令要求 `PATH` 中存在 `pnpm`；普通 SDK／profile 运行不需要它。
+خارجي profile إدارة استخدام `dsh plugin --profile <name> ...`. هذا أمر اشتراط `PATH` في وجود `pnpm`؛ عادي SDK/profile تشغيل لا حاجة هو.
 
-## 构建与分发
+## بناء و توزيع
 
-生产部署允许工作区中不属于运行时闭包的补丁保持未使用；闭包内包的补丁仍必须成功应用。此例外仅用于部署命令，仓库安装仍拒绝未使用的补丁。
+إنتاج نشر سماح مساحة العمل في لا يخص وقت التشغيل إغلاق حزمة رقعة إبقاء لم استخدام؛ إغلاق حزمة داخل حزمة رقعة ما زال يجب نجاح تطبيق. هذا مثال خارج فقط لأجل نشر أمر، مستودع تثبيت ما زال رفض لم استخدام رقعة.
 
-在仓库根目录运行 `pnpm exec tsx scripts/build-exe-for-python-sdk.ts`，会校验闭包、构建包、部署无符号链接的文件树、打包所选目标，并把可执行程序及伴随文件同步到本模块。`scripts/build-python-release.py` 按仓库根版本暂存发布形态的 wheel 包，并将 `deepseek-harness-sdk` 固定到完全相同的运行时版本。
+في مستودع أصل دليل تشغيل `pnpm exec tsx scripts/build-exe-for-python-sdk.ts`، سوف تحقق إغلاق حزمة، بناء حزمة، نشر بلا رمز رقم رابط ملف شجرة، تحزيم الذي اختيار هدف، و يأخذ يمكن تنفيذ برنامج و مرافق مع ملف تزامن إلى هذا وحدة.`scripts/build-python-release.py` حسب مستودع أصل إصدار مؤقت تخزين إصدار شكل wheel حزمة، و سوف `deepseek-harness-sdk` ثابت إلى تماما نفسه وقت التشغيل إصدار.
 
-已安装 wheel 包冒烟测试会在检出目录外创建干净的虚拟环境，验证分发物与可执行程序的来源，然后覆盖默认及自定义 SDK profile、外部插件、MCP、原生工具、直接 JSON-RPC、检入快照，以及可信运行中的真实提供方。Office 场景会迁移完整的目标载荷目录，并使用所需的平台引擎转换 DOCX：使用目标已声明的原生引擎，未声明原生引擎时使用 WASM。另见 [Python 贡献者工作流](../development.zh.md) 与 [installed-wheel 测试决策](../../.agents/notes/implemented/testing/2026-08-23-installed-python-wheel-black-box-ci.zh.md)。
+قد تثبيت wheel حزمة خطر دخان اختبار سوف في فحص خروج دليل خارج إنشاء جاف صاف وهمي محاكاة بيئة، تحقق توزيع شيء و يمكن تنفيذ برنامج مصدر، لكن بعد تغطية افتراضي و ذاتي تعريف SDK profile، خارجي إضافة،MCP، أصلي أداة، مباشر JSON-RPC، فحص دخول لقطة، و يمكن معلومة تشغيل في حقيقي مزود.Office مشهد سوف ترحيل كامل هدف تحميل حمل دليل، و استخدام الذي يحتاج منصة جذب محرك تحويل DOCX: استخدام هدف قد إعلان أصلي جذب محرك، لم إعلان أصلي جذب محرك وقت استخدام WASM. آخر رؤية [Python مساهمة من سير العمل](../development.zh.md) و [installed-wheel اختبار قرار](../../.agents/notes/implemented/testing/2026-08-23-installed-python-wheel-black-box-ci.zh.md).

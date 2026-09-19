@@ -1,37 +1,37 @@
-# Agent Note: GUI 分层与 RPC 协议——host/client 按能力提供方分层、四象限消息模型与 fetch 载体
+# Agent Note: GUI قسم طبقة و RPC بروتوكول——host/client حسب قدرة مزود قسم طبقة، أربعة كائن حد رسالة نموذج و fetch تحميل جسم
 
 Status: implemented
 Archived: 2026-08-27
 
-[English](2026-07-19-gui-layering-and-rpc-protocol.md) | 中文
+[English](2026-07-19-gui-layering-and-rpc-protocol.md) | العربية
 
-> 分工线：本篇 = 分层模型 + 通道无关的 RPC 协议；协议的 Web 实现由 HTTP 上行加 [WebSocket 下行载体](2026-08-04-websocket-downlink-carrier.zh.md)组成，浏览器对象层见 [Web 客户端架构笔记](2026-07-19-gui-web-client-architecture.zh.md)。
+> قسم عمل خط: هذا مقالة = قسم طبقة نموذج + عبر طريق غير متصل RPC بروتوكول؛ بروتوكول Web تنفيذ من HTTP فوق سطر إضافة [WebSocket تحت سطر تحميل جسم](2026-08-04-websocket-downlink-carrier.zh.md) مجموعة صار، متصفح كائن طبقة رؤية [Web عميل هيكل بنية قلم تسجيل](2026-07-19-gui-web-client-architecture.zh.md).
 
 ## Problem
 
-需要提供 UI 对接层，除已有 ACP（Agent Client Protocol）/stdio 基线外，还需要 Web（server）、Electron 等其他产品客户端。我们把它们统一称为 Client。希望具备以下能力：
-- 一个 `dsh` 进程同时支持 `dsh web`（启动）和 `dsh --profile headless`（headless），一个进程两种模式（设计预留）
-- 在 Electron 中使用与 `dsh web` 相同的 Web 技术启动
+حاجة توفير UI مقابل وصل طبقة، حذف قد لديه ACP(Agent Client Protocol)/stdio أساس خط خارج، أيضا حاجة Web(server) ،Electron انتظار أخرى منتج عميل. أنا جمع يأخذ هو جمع موحد واحد تسمية لـ Client. أمل نظر أداة تجهيز التالي قدرة:
+- واحد `dsh` عملية معا دعم حمل `dsh web`(بدء) و `dsh --profile headless`(headless) ، واحد عملية اثنان نوع نمط (تصميم مسبق إبقاء)
+- في Electron في استخدام و `dsh web` نفسه Web تقنية فن بدء
 
-那么当前的工程代码需要稳定的分层职责模型，便于以后接入各类 client。
+ذلك ما حالي عمل مسار شفرة حاجة مستقر قسم طبقة مسؤولية نموذج، سهل في بـ بعد وصل دخول كل صنف client.
 
-同时各消费方的物理通道不同（浏览器 HTTP／WebSocket、进程内 fetch/SSE、将来 IPC），还需要一个通道无关的消息模型和单一约定真源，让「加一个方法」「换一种载体」互不牵连，且 wire 上的每条消息可类型校验、可观测、可对账。
+معا كل مستهلك شيء إدارة عبر طريق مختلف (متصفح HTTP/WebSocket، عملية داخل fetch/SSE، سوف قدوم IPC) ، أيضا حاجة واحد عبر طريق غير متصل رسالة نموذج و مفرد واحد اتفاق حق مصدر، يجعل «إضافة واحد طريقة»«تبديل واحد نوع تحميل جسم» متبادل لا جر وصل، كما wire فوق كل بند رسالة يمكن نوع تحقق، يمكن مراقبة قياس، يمكن مقابل حساب.
 
 ## Decision
 
-### 分层
+### قسم طبقة
 
-目录按照如下分层：
-- `packages/host/*`：包只提供 Host 侧能力（代表了以现在 Harness 实体插件系统为主体的 Node.js 代码核心工程），除此之外，还包含
-    - 统一后端协议（fetch、HTTP、流式接口等）定义和支持，见本篇「消息协议」起各节
-- `packages/client/*`：包只提供 Client 侧能力，每包单边不混。这里住三类包（两条轴归 [client 插件装载笔记](2026-07-23-client-plugin-loading-model.zh.md) 所有）：
-    - **纯库**（`ui-slots`、`ui-primitives`，外加内核包 `loader`）：普通根入口包，静态打包进壳；两个客户端库播种进模块表。
-    - **静态到达 entry 包**（`connection`、`runtime`、`ui-theme`、`i18n`、`hmr`）：无 `dsh.client` 键、无浏览器 bundle——壳把它们的 `src/client/` 半边打进自己的 bundle 并向 `ctx.modules` 登记；它们与其余单元一样，作为 host 独家撰写的图里的 entry 受治理。
-    - **fetch 到达插件包**（`ui-layout`、`ui-sidebar`、`ui-conversation`、`ui-trajectory`）：双入口——根入口是 node 半边（空 `apply`，其存在是为了让 host Loader 管辖生命周期、让 web 插件注册表发现 package.json 的 `dsh.client` 声明）；实现住在 `src/client/` 下，经 `./client` 子路径发布（tsdown 闭包工厂 bundle）。跨插件消费 `/client` 只限类型；值层面的协作走 cordis 服务。
-- `apps/` 作为对外导出的应用入口，可以由 Client / Host 混合组装。
-    - `apps/web`（`dsh-web-frontend`）是 vite 应用：`dsh-client-web` 导出的壳 API 之上的一层薄 `main.ts`。
-    - `apps/cli`（`@deepseek-ai/dsh`）分发命令：`dsh web` = Host + webserver + 构建出的 `dsh-web-frontend` dist；`dsh --profile headless` = [直接使用核心 Agent／Session 的入口](2026-08-09-headless-direct-core-entry-point.zh.md)，不含 Host、HTTP 或浏览器层。
-    - 将来的 Electron 应用经由 IPC fetch 载体复用同一套 web client 包。
+دليل حسب وفق مثل تحت قسم طبقة:
+- `packages/host/*`: حزمة فقط توفير Host جانب قدرة (بديل جدول بـ الآن Harness فعلي جسم إضافة نظام لـ رئيسي جسم Node.js شفرة نواة قلب عمل مسار) ، حذف هذا خارج، أيضا يتضمن
+    - موحد واحد خلفية بروتوكول (fetch،HTTP، تدفق صيغة واجهة انتظار) تعريف و دعم حمل، رؤية هذا مقالة «رسالة بروتوكول» بدء كل عقدة
+- `packages/client/*`: حزمة فقط توفير Client جانب قدرة، كل حزمة مفرد حافة لا خلط. هذا داخل إقامة ثلاثة صنف حزمة (اثنان بند محور عودة [client إضافة تركيب تحميل قلم تسجيل](2026-07-23-client-plugin-loading-model.zh.md) كل):
+    - **صاف مكتبة**(`ui-slots`،`ui-primitives`، خارج إضافة داخل نواة حزمة `loader`): عادي أصل مدخل حزمة، ساكن حالة تحزيم دخول قشرة؛ اثنان عدد عميل مكتبة بث نوع دخول وحدة جدول.
+    - **ساكن حالة وصول entry حزمة**(`connection`،`runtime`،`ui-theme`،`i18n`،`hmr`): بلا `dsh.client` مفتاح، بلا متصفح bundle——قشرة يأخذ هو جمع `src/client/` نصف حافة ضرب دخول ذاتي ذات bundle و نحو `ctx.modules` تسجيل تسجيل؛ هو جمع و ذلك بقية وحدة واحد مثال، بصفة host وحيد بيت تأليف كتابة رسم داخل entry تلقي معالجة إدارة.
+    - **fetch وصول إضافة حزمة**(`ui-layout`،`ui-sidebar`،`ui-conversation`،`ui-trajectory`): مزدوج مدخل——أصل مدخل هو node نصف حافة (فارغ `apply`، ذلك وجود هو لـ يجعل host Loader إدارة ولاية دورة الحياة، يجعل web إضافة سجل التسجيل اكتشاف package.json `dsh.client` إعلان) ؛ تنفيذ إقامة في `src/client/` تحت، مرور `./client` فرعي مسار إصدار (tsdown إغلاق حزمة عمل مصنع bundle). عبر إضافة إزالة استهلاك `/client` فقط حد نوع؛ قيمة طبقة وجه تنسيق عمل مشي cordis خدمة.
+- `apps/` بصفة مقابل خارج توجيه خروج تطبيق مدخل، يمكن من Client / Host خلط دمج تجميع.
+    - `apps/web`(`dsh-web-frontend`) هو vite تطبيق:`dsh-client-web` توجيه خروج قشرة API لـ فوق واحد طبقة رقيق `main.ts`.
+    - `apps/cli`(`@deepseek-ai/dsh`) توزيع أمر:`dsh web` = Host + webserver + بناء خروج `dsh-web-frontend` dist؛`dsh --profile headless` = [مباشر استخدام نواة قلب Agent/Session مدخل](2026-08-09-headless-direct-core-entry-point.zh.md) ، لا يحتوي Host،HTTP أو متصفح طبقة.
+    - سوف قدوم Electron تطبيق مرور من IPC fetch تحميل جسم إعادة استخدام نفس طقم web client حزمة.
 
 ```
 apps/*  (applications: apps/web = vite app, apps/cli = bin dispatch)
@@ -46,209 +46,209 @@ packages/host/*                      packages/client/*
 harness core packages ──────────────────┘ (types reach the browser via import type)
 ```
 
-方向纪律（每条都由包 deps 可核）：
+جهة نحو سجل قاعدة (كل بند كل من حزمة deps يمكن نواة):
 
-- `runtime → apiproxy` 单向；apiproxy 仅依赖类型定义。
-- client 侧包**永不 import** host 侧包的运行时（只吃 `/api`、`/client` 两个浏览器安全子路径）。
-- `webserver` 不依赖 `runtime`：它提供 `{ fetch }` 特定实现 ——「webserver ← runtime」只是运行时注入关系，不是包依赖。
-- client 侧跨包 import 插件包一律走 `/client` 子路径，且插件包之间只限类型 import——跨插件值 import 在 tsdown 纯度门禁处即构建错误（值层面的协作走 cordis 服务；边规则归 [client 插件装载笔记](2026-07-23-client-plugin-loading-model.zh.md) 所有）。
+- `runtime → apiproxy` مفرد نحو؛apiproxy فقط اعتماد نوع تعريف.
+- client جانب حزمة**دائم لا import** host جانب حزمة وقت التشغيل (فقط أكل `/api`،`/client` اثنان عدد متصفح أمان فرعي مسار).
+- `webserver` لا اعتماد `runtime`: هو توفير `{ fetch }` خاص تحديد تنفيذ ——«webserver ← runtime» فقط هو وقت التشغيل حقن علاقة، لا هو حزمة اعتماد.
+- client جانب عبر حزمة import إضافة حزمة واحد قاعدة مشي `/client` فرعي مسار، كما إضافة حزمة بين فقط حد نوع import——عبر إضافة قيمة import في tsdown صاف درجة بوابة موضع أي بناء خطأ (قيمة طبقة وجه تنسيق عمل مشي cordis خدمة؛ حافة قاعدة عودة [client إضافة تركيب تحميل قلم تسجيل](2026-07-23-client-plugin-loading-model.zh.md) كل).
 
-TypeScript 以 solution 根引用的**两个聚合 program** 检查（`tsconfig.json` = solution；`tsconfig.host.json` = host 侧 + 测试，排除 `packages/client`；`tsconfig.client.json` = client 各包及其测试）：两侧在相同键（`sessions`、`loader`）下以不同服务合并 cordis `Context` 接口，单一 program 会同时看到两份声明合并而报冲突。共享叶子包（session/llm/tools/apiproxy 等）只构建一次，由两个 program 共同引用（[拓扑](../process/2026-07-22-tsconfig-solution-root-two-aggregates.zh.md)）。
+TypeScript بـ solution أصل مرجع**اثنان عدد تجمع دمج program** فحص (`tsconfig.json` = solution؛`tsconfig.host.json` = host جانب + اختبار، ترتيب حذف `packages/client`؛`tsconfig.client.json` = client كل حزمة و ذلك اختبار): اثنان جانب في نفسه مفتاح (`sessions`،`loader`) تحت بـ مختلف خدمة دمج cordis `Context` واجهة، مفرد واحد program سوف معا يرى اثنان نسخة إعلان دمج بينما تقرير اندفاع مفاجئ. مشترك ورقة فرعي حزمة (session/llm/tools/apiproxy انتظار) فقط بناء مرة، من اثنان عدد program مشترك نفس مرجع ([توسيع اندفاع](../process/2026-07-22-tsconfig-solution-root-two-aggregates.zh.md)).
 
-协议侧：TS interface（`packages/host/apiproxy/src/api/`，零 Node 依赖，浏览器可 import）；wire 消息统一为**双向模型**——每条逻辑消息按「谁发起 × request/response」分类（两轴四格，后文称四象限），与物理通道解耦；客户端统一继承 `AbstractApiClient`（协议不变量全在基类，平台差异只是 `doFetch` 传输切面）。
+بروتوكول جانب:TS interface(`packages/host/apiproxy/src/api/`، صفر Node اعتماد، متصفح يمكن import) ؛wire رسالة موحد واحد لـ**مزدوج نحو نموذج**——كل بند منطق رسالة حسب «من إرسال بدء × request/response» تصنيف (اثنان محور أربعة إطار، بعد نص تسمية أربعة كائن حد) ، و شيء إدارة عبر طريق حل اقتران؛ عميل موحد واحد وراثة `AbstractApiClient`(بروتوكول ثابت كمية كل في أساس صنف، منصة فرق مختلف فقط هو `doFetch` نقل قطع وجه).
 
-#### 分层角色
+#### قسم طبقة زاوية لون
 
-| 层 | 包 | 职责 | 关键纪律 |
+| طبقة | حزمة | مسؤولية | صلة مفتاح سجل قاعدة |
 |---|---|---|---|
-| 前置层 | `dsh-host-apiproxy` | TS/zod 定义 (api/)+ fetch 抽象 (fetch/：handler + 客户端基类) | 做简单、每个消费方都要；Node/浏览器皆可 import；协议内容见下文「消息协议」起各节；client 不得经 ctx 绕开 api |
-| 装配层 | `dsh-host-runtime` | 插件组合 + ApiProxy 集成 + web UI 插件挂载（覆盖八个 dsh.client 包的内存 Loader 树）；host 级配置归属地（defaults/persistenceRoot，将来用户 profile） | 装什么插件、给什么默认值只在这里定；壳不得改装配 |
-| 承载层 | `dsh-host-webserver` | Web HTTP 与 upgrade：静态服务 + `/api/*`→handler 转发 + WebSocket upgrade route + close 语义；插件 bundle 端点 + `__DSH_BOOT__` manifest（元数据清单）注入（由 web 插件注册表供给） | Web（浏览器访问）专用；零 workspace 依赖（注册表经结构注入到达）；Electron 不复用它 |
-| client 库 | `dsh-client-ui-slots` / `dsh-client-ui-primitives` | slot 约定 / 纯 React 原子组件 | 由壳播种进 loader 模块表 |
-| client 插件 | `dsh-client-connection` / `dsh-client-runtime` / `dsh-client-ui-theme` / `dsh-client-ui-renderer` / 功能 UI 包 | 浏览器侧 Cordis 插件树：wire 消费方、核心服务、主题、React 渲染与功能组合——见 Web 客户端架构笔记 | 双入口（node 半边=空 apply；实现在 `src/client/`）；跨插件值协作经服务与 slot 完成 |
-| 应用 | `@deepseek-ai/dsh`（apps/cli）+ `dsh-web-frontend`（apps/web，vite 应用） | bin 粗分发 + 每个应用一个拼装模块（web.ts / headless.ts）；vite 应用是 `dsh-client-web` 壳表面之上的薄 main | 各应用使用动态 import，因此不会互相加载；dist 定位等 workspace 知识留在 app |
+| قبل وضع طبقة | `dsh-host-apiproxy` | TS/zod تعريف (api/)+ fetch سحب كائن (fetch/:handler + عميل أساس صنف) | فعل بسيط مفرد، كل مستهلك كل يلزم؛Node/متصفح جميع يمكن import؛ بروتوكول محتوى رؤية تحت نص «رسالة بروتوكول» بدء كل عقدة؛client لا نيل مرور ctx التفاف فتح api |
+| تركيب إعداد طبقة | `dsh-host-runtime` | إضافة تركيب + ApiProxy تجميع صار + web UI إضافة تركيب (تغطية ثمانية عدد dsh.client حزمة داخل تخزين Loader شجرة) ؛host درجة إعداد ملكية أرض (defaults/persistenceRoot، سوف قدوم مستخدم profile) | تركيب ماذا إضافة، إعطاء ماذا قيمة افتراضية فقط في هذا داخل تحديد؛ قشرة لا نيل تعديل تركيب إعداد |
+| تحمل تحميل طبقة | `dsh-host-webserver` | Web HTTP و upgrade: ساكن حالة خدمة + `/api/*`→handler تحويل إرسال + WebSocket upgrade route + close دلالة؛ إضافة bundle طرف نقطة + `__DSH_BOOT__` manifest(بيانات وصفية بيان) حقن (من web إضافة سجل التسجيل توفير إعطاء) | Web(متصفح وصول) مخصص استخدام؛ صفر workspace اعتماد (سجل التسجيل مرور بنية حقن وصول) ؛Electron لا إعادة استخدام هو |
+| client مكتبة | `dsh-client-ui-slots` / `dsh-client-ui-primitives` | slot اتفاق / صاف React أصل فرعي مكون | من قشرة بث نوع دخول loader وحدة جدول |
+| client إضافة | `dsh-client-connection` / `dsh-client-runtime` / `dsh-client-ui-theme` / `dsh-client-ui-renderer` / وظيفة UI حزمة | متصفح جانب Cordis إضافة شجرة:wire مستهلك، نواة قلب خدمة، رئيسي عنوان،React تصيير و وظيفة تركيب——رؤية Web عميل هيكل بنية قلم تسجيل | مزدوج مدخل (node نصف حافة=فارغ apply؛ تنفيذ في `src/client/`) ؛ عبر إضافة قيمة تنسيق عمل مرور خدمة و slot إتمام |
+| تطبيق | `@deepseek-ai/dsh`(apps/cli)+ `dsh-web-frontend`(apps/web،vite تطبيق) | bin خشن توزيع + كل تطبيق واحد تجميع تركيب وحدة (web.ts / headless.ts) ؛vite تطبيق هو `dsh-client-web` قشرة جدول وجه لـ فوق رقيق main | كل تطبيق استخدام حركة حالة import، لذلك لن متبادل متبادل تحميل؛dist تحديد موضع انتظار workspace معرفة تعرف إبقاء في app |
 
-#### 命名规则
+#### تسمية قاعدة
 
-`packages/host/*` 与 `packages/client/*` 下的包名**必须含目录组前缀**：host/runtime → `dsh-host-runtime`、client/runtime → `dsh-client-runtime`。目录名不重复组前缀（host/ 已表达）。因此包名尾段 ≠ 目录名，tsconfig.base.json 的 `dsh-*` 通配（按目录名解析）命不中——**这两组的每包需显式 paths 条目**，且 client 各包的 `/client` 子路径要单列条目，使源码级解析与 exports map 一致。
+`packages/host/*` و `packages/client/*` تحت حزمة اسم**يجب يحتوي دليل مجموعة بادئة**:host/runtime → `dsh-host-runtime`،client/runtime → `dsh-client-runtime`. دليل اسم لا تكرار مجموعة بادئة (host/ قد جدول بلوغ). لذلك حزمة اسم ذيل مقطع ≠ دليل اسم،tsconfig.base.json `dsh-*` عبر إعداد (حسب دليل اسم تحليل) أمر لا في——**هذا اثنان مجموعة كل حزمة يحتاج صريح paths بند**، كما client كل حزمة `/client` فرعي مسار يلزم مفرد صف بند، جعل شفرة المصدر درجة تحليل و exports map متسق.
 
-#### 怎么接入一个新应用（操作清单）
+#### كيف ما وصل دخول واحد جديد تطبيق (عملية بيان)
 
-1. **选 fetch 伪造方式**：浏览器同源 HTTP / 进程内 `host.handler.fetch` 注入 / 自写传输切面子类（如将来 Electron IPC，见下文「子类表」）。
-2. **在 `apps/` 下写拼装模块**：`startHost()` + 客户端子类 + 该应用私有的信号/打印/退出语义；混合体不建包，拼装写在 app 里。
-3. **需要 HTTP 承载才 import `dsh-host-webserver`**，否则零端口。
+1. **اختيار fetch زائف صنع طريقة**: متصفح نفس مصدر HTTP / عملية داخل `host.handler.fetch` حقن / ذاتي كتابة نقل قطع وجه فرعي صنف (مثل سوف قدوم Electron IPC، رؤية تحت نص «فرعي صنف جدول»).
+2. **في `apps/` تحت كتابة تجميع تركيب وحدة**:`startHost()` + عميل فرعي صنف + هذا تطبيق خاص إشارة/ضرب طبع/خروج دلالة؛ خلط دمج جسم لا بناء حزمة، تجميع تركيب كتابة في app داخل.
+3. **حاجة HTTP تحمل تحميل عندئذ import `dsh-host-webserver`**، لا فإن صفر طرف فتحة.
 
-现有两个应用保持这一区分：Web 应用挂载 Host、载体与浏览器组合，而 `dsh --profile headless` 挂载直接使用核心服务的 runner，不包含 Host、HTTP 或端口。ACP 类协议桥不遵循 client 载体清单：它把 core 暴露给外部生态，直接通过 `ctx.plugin(入口插件)` 挂载，不使用 fetch。
+قائم اثنان عدد تطبيق إبقاء هذا واحد منطقة قسم:Web تطبيق تركيب Host، تحميل جسم و متصفح تركيب، بينما `dsh --profile headless` تركيب مباشر استخدام نواة قلب خدمة runner، لا يتضمن Host،HTTP أو طرف فتحة.ACP صنف بروتوكول جسر لا التزام دوران client تحميل جسم بيان: هو يأخذ core كشف إعطاء خارجي توليد حالة، مباشر عبر `ctx.plugin(مدخل إضافة)` تركيب، لا استخدام fetch.
 
-## 消息协议
+## رسالة بروتوكول
 
-以下各节是前置层（`dsh-host-apiproxy`）承载的协议本体。wire 上只有四种消息（四象限）——右列的 Web 承载只是示例，换载体（进程内/IPC）时四象限不变：
+التالي كل عقدة هو قبل وضع طبقة (`dsh-host-apiproxy`) تحمل تحميل بروتوكول هذا جسم.wire فوق فقط لديه أربعة نوع رسالة (أربعة كائن حد)——يمين صف Web تحمل تحميل فقط هو عرض مثال، تبديل تحميل جسم (عملية داخل/IPC) وقت أربعة كائن حد ثابت:
 
 ```
-                 client 发起                      server 发起
+                 client إرسال بدء server إرسال بدء
   request   ① ClientRequest                 ③ ServerRequest
-            （POST /api/<method> body）      （WebSocket message：session 事件、审批/问答 requested）
+            (POST /api/<method> body) (WebSocket message:session حدث، مراجعة دفعة/سؤال جواب requested)
   response  ② ServerResponse                ④ ClientResponse
-            （该 POST 的 HTTP 应答体）        （POST /api/respond body，回填 ③ 的 rpcId）
+            (هذا POST HTTP ينبغي جواب جسم) (POST /api/respond body، عودة ملء ③ rpcId)
 ```
 
-### wire 全形：四具名判别 union（`api/rpc.ts`）
+### wire كل شكل: أربعة أداة اسم حكم آخر union(`api/rpc.ts`)
 
-| 类型 | 判别 tag | 字段 | rpcId 归属 | Web 承载 |
+| نوع | حكم آخر tag | حقل | rpcId ملكية | Web تحمل تحميل |
 |---|---|---|---|---|
 | `ClientRequest` | `'client-request'` | `rpcId` `method` `payload` | client mint | `POST /api/<method>` body |
-| `ServerResponse` | `'server-response'` | `rpcId` `result` | 回填 ① | 该 POST 的应答体（恒 HTTP 200） |
+| `ServerResponse` | `'server-response'` | `rpcId` `result` | عودة ملء ① | هذا POST ينبغي جواب جسم (ثابت HTTP 200) |
 | `ServerRequest` | `'server-request'` | `rpcId` `method` `payload` | server mint | WebSocket text message |
-| `ClientResponse` | `'client-response'` | `rpcId` `result` | 回填 ③ | `POST /api/respond` body |
+| `ClientResponse` | `'client-response'` | `rpcId` `result` | عودة ملء ③ | `POST /api/respond` body |
 
-`RpcMessage = ClientRequest | ServerResponse | ServerRequest | ClientResponse`，`switch (message.type)` 窄化。
+`RpcMessage = ClientRequest | ServerResponse | ServerRequest | ClientResponse`،`switch (message.type)` ضيق تحويل.
 
-**rpcId 纪律**（`RpcId` 是 branded string，构造函数 `RpcId()`）：
+**rpcId سجل قاعدة**(`RpcId` هو branded string، بنية صنع دالة `RpcId()`):
 
-- 谁发起谁 mint；应答一律回填对应 request 的 rpcId，**绝不 mint 新 id**。
-- server-request 分两类，静态按 `method`（=帧 type）区分，**不设第三种 kind**：可应答帧（`approval/requested`、`question/requested`）的 rpcId 是稳定逻辑请求 id（受理时 mint 一次、基线回放原样复用、client 以它回填应答）；纯推送帧（`session/event` 等）的 rpcId 标识该次推送（每次新 mint）。
-- 业务代码不 mint：unary 的 mint 收口在客户端基类 `callUnary`，帧的 mint 收口在 host 侧。
+- من إرسال بدء من mint؛ ينبغي جواب واحد قاعدة عودة ملء مقابل request rpcId،**أبدا mint جديد id**.
+- server-request قسم اثنان صنف، ساكن حالة حسب `method`(=لقطة type) منطقة قسم،**لا ضبط رقم ثلاثة نوع kind**: يمكن ينبغي جواب لقطة (`approval/requested`،`question/requested`) rpcId هو مستقر منطق طلب id(تلقي إدارة وقت mint مرة، أساس خط إعادة تشغيل أصل مثال إعادة استخدام،client بـ هو عودة ملء ينبغي جواب) ؛ صاف دفع إرسال لقطة (`session/event` انتظار) rpcId معرف هذا مرة دفع إرسال (كل مرة جديد mint).
+- عمل خدمة شفرة لا mint:unary mint استلام فتحة في عميل أساس صنف `callUnary`، لقطة mint استلام فتحة في host جانب.
 
-### 签名窄形与载体补全
+### توقيع ضيق شكل و تحميل جسم تكملة كل
 
-域接口签名只感知窄形：`RpcRequest<P> = { rpcId, payload }`、`RpcResponse<T> = { rpcId, result: RpcResult<T> }`。载体层把窄形补全为全形（补 `type` tag 与 `method`），方向不靠通道推断。`RpcResult<T> = { ok: true; value } | { ok: false; error: RpcError }`——方法不 throw 业务错误。
+مجال واجهة توقيع فقط شعور معرفة ضيق شكل:`RpcRequest<P> = { rpcId, payload }`،`RpcResponse<T> = { rpcId, result: RpcResult<T> }`. تحميل جسم طبقة يأخذ ضيق شكل تكملة كل لـ كل شكل (تكملة `type` tag و `method`) ، جهة نحو لا اعتماد عبر طريق دفع قطع.`RpcResult<T> = { ok: true; value } | { ok: false; error: RpcError }`——طريقة لا throw عمل خدمة خطأ.
 
-### RpcReceipt：载体回执
+### RpcReceipt: تحميل جسم عودة تنفيذ
 
-`ClientResponse` 的 HTTP 应答体是 `RpcReceipt = { accepted: true } | { accepted: false; reason: 'not-pending' | 'bad-response' }`——载体层回执，**不是** RpcMessage（response 不再有 response）；迟到/重复应答收 `not-pending`，逻辑收敛点是 `*/resolved` 帧。
+`ClientResponse` HTTP ينبغي جواب جسم هو `RpcReceipt = { accepted: true } | { accepted: false; reason: 'not-pending' | 'bad-response' }`——تحميل جسم طبقة عودة تنفيذ،**لا هو** RpcMessage(response لم يعد لديه response) ؛ متأخر إلى/تكرار ينبغي جواب استلام `not-pending`، منطق استلام جمع نقطة هو `*/resolved` لقطة.
 
-## 类型体系：函数签名即真源
+## نوع جسم نظام: دالة توقيع أي حق مصدر
 
-### RpcMethodMap 与派生泛型（`api/rpc-map.ts`）
+### RpcMethodMap و إرسال توليد عام نوع (`api/rpc-map.ts`)
 
-方法的参数/返回结构**只住在接口方法签名里**；map 登记方法本身；其余一切位置（handler、client、store、测试）引用派生泛型，禁止复写字面量或另起平铺具名类型：
+طريقة معامل/إرجاع بنية**فقط إقامة في واجهة طريقة توقيع داخل**؛map تسجيل تسجيل طريقة ذاته؛ ذلك بقية واحد قطع موضع (handler،client،store، اختبار) مرجع إرسال توليد عام نوع، منع توقف تكرار كتابة حرف وجه كمية أو آخر بدء مستو فرش أداة اسم نوع:
 
 ```ts ignore-check
 export interface RpcMethodMap {
-  'session.list': SessionsApi['list']        // map key 即 wire 路径段
-  // …其余方法同形登记，全集见 api/rpc-map.ts
+  'session.list': SessionsApi['list'] // map key أي wire مسار مقطع
+  // …ذلك بقية طريقة نفس شكل تسجيل تسجيل، كل تجميع رؤية api/rpc-map.ts
 }
-// 派生泛型（穿透窄形取业务类型；实际声明带 K extends keyof RpcMethodMap 约束）
+// إرسال توليد عام نوع (اختراق نفاذ ضيق شكل أخذ عمل خدمة نوع؛ فعلي إعلان حمل K extends keyof RpcMethodMap قيد)
 export type RequestPayload<K> = Parameters<RpcMethodMap[K]>[0]['payload']
 export type ResponseValue<K> =
   Awaited<ReturnType<RpcMethodMap[K]>> extends RpcResponse<infer T> ? T : never
 ```
 
-流方法（`events.mux`/`events.host`）不进 map（不是 unary）；`respond` 不进 map（是 client-response 不是方法调用）。
+تدفق طريقة (`events.mux`/`events.host`) لا دخول map(لا هو unary) ؛`respond` لا دخول map(هو client-response لا هو طريقة استدعاء).
 
-### 错误模型（`RpcErrorDetailsMap`）
+### خطأ نموذج (`RpcErrorDetailsMap`)
 
-错误码示例一行：
+رمز خطأ عرض مثال واحد سطر:
 
-| code | details | 何时 |
+| code | details | أي وقت |
 |---|---|---|
-| `bad-request` | `{ issues: ZodIssue[] }` | wire/payload zod 校验失败 |
+| `bad-request` | `{ issues: ZodIssue[] }` | wire/payload zod تحقق فشل |
 
-码全集见 `api/rpc.ts` 的 `RpcErrorDetailsMap`。`RpcError` 是 map 展开的分布式 union：`code` 判别、`switch` 后 `details` 自动窄化；**details 必填**——新码=map 加一行+错误 schema 加一支，漏填是编译错误。transport 故障（断网、host 没起）由载体抛异常，与业务错误两层不混。
+رمز كل تجميع رؤية `api/rpc.ts` `RpcErrorDetailsMap`.`RpcError` هو map توسيع قسم نشر صيغة union:`code` حكم آخر،`switch` بعد `details` تلقائي ضيق تحويل؛**details لا بد ملء**——جديد رمز=map إضافة واحد سطر+خطأ schema إضافة واحد دعم، تسرب ملء هو تحرير ترجمة خطأ.transport لذا عائق (قطع شبكة،host لا بدء) من تحميل جسم رمي استثناء، و عمل خدمة خطأ اثنان طبقة لا خلط.
 
-### zod 双向校验与锚定
+### zod مزدوج نحو تحقق و مرساة تحديد
 
-- **两级 parse**：全形 schema 一次（type/rpcId/method 结构 + handler 校验 path==method）→ 业务 payload 按 method/帧型分派二次 parse；拒收 = `bad-request`。
-- **锚定**：schema 统一 `satisfies z.ZodType<Wire<T>>`（`api/rpc.schema.ts`）。`Wire<T>` 是深度「| undefined」宽化——仓库开 `exactOptionalPropertyTypes` 而 zod `.optional()` 输出 `T | undefined`，直接锚原类型全线不可用；JSON wire 上缺席与 undefined 同形，宽化不损失校验语义。透传宽分支（`SessionEvent`/`ContentBlock`/帧 union/`RpcError`）与 brand id schema 用显式 cast + 注释。
-- brand cast 单点：每个 schema 文件的 id cast 收口一处（`rpcIdSchema` 是 rpc.schema.ts 唯一 cast 点）。
+- **اثنان درجة parse**: كل شكل schema مرة (type/rpcId/method بنية + handler تحقق path==method)→ عمل خدمة payload حسب method/لقطة نوع قسم إرسال اثنان مرة parse؛ رفض استلام = `bad-request`.
+- **مرساة تحديد**:schema موحد واحد `satisfies z.ZodType<Wire<T>>`(`api/rpc.schema.ts`).`Wire<T>` هو عميق درجة «| undefined» عرض تحويل——مستودع فتح `exactOptionalPropertyTypes` بينما zod `.optional()` إخراج `T | undefined`، مباشر مرساة أصل نوع كل خط غير ممكن استخدام؛JSON wire فوق نقص مقعد و undefined نفس شكل، عرض تحويل لا ضرر فقد تحقق دلالة. نفاذ نقل عرض فرع (`SessionEvent`/`ContentBlock`/لقطة union/`RpcError`) و brand id schema استخدام صريح cast + ملاحظة تفسير.
+- brand cast مفرد نقطة: كل schema ملف id cast استلام فتحة واحد موضع (`rpcIdSchema` هو rpc.schema.ts وحيد cast نقطة).
 
-## 约定面（ApiProxy）
+## اتفاق وجه (ApiProxy)
 
-根接口 `ApiProxy = { sessions, host, events, respond }`（`api/index.ts`）。新 client-request 域 = 新的一对文件（`<域>.ts` + `<域>.schema.ts`）+ 根接口一个字段 + map 加行。
+أصل واجهة `ApiProxy = { sessions, host, events, respond }`(`api/index.ts`). جديد client-request مجال = جديد واحد مقابل ملف (`<مجال>.ts` + `<مجال>.schema.ts`)+ أصل واجهة واحد حقل + map إضافة سطر.
 
-### unary 方法表
+### unary طريقة جدول
 
-方法示例一行（表结构即读法）：
+طريقة عرض مثال واحد سطر (جدول بنية أي قراءة قاعدة):
 
-| method key | 请求 payload | 返回 value | 语义 |
+| method key | طلب payload | إرجاع value | دلالة |
 |---|---|---|---|
-| `session.list` | `{ cursor?: string }`（cursor 留座不实现） | `{ items: SessionSummary[] }` | 已持久化 session，updatedAt 倒序；v1 不建索引 |
+| `session.list` | `{ cursor?: string }`(cursor إبقاء مقعد لا تنفيذ) | `{ items: SessionSummary[] }` | قد حفظ دائم session،updatedAt قلب ترتيب؛v1 لا بناء بحث جذب |
 
-其余方法（`session.create`/`session.history`/`session.rename`/`session.prompt`/`session.cancel`/`host.describe`）的参数与返回不在此复写——签名即真源，见 `api/sessions.ts`、`api/host.ts` 与 `RpcMethodMap`。
+ذلك بقية طريقة (`session.create`/`session.history`/`session.rename`/`session.prompt`/`session.cancel`/`host.describe`) معامل و إرجاع لا في هذا تكرار كتابة——توقيع أي حق مصدر، رؤية `api/sessions.ts`،`api/host.ts` و `RpcMethodMap`.
 
-### 帧（server→client，具名 union）
+### لقطة (server→client، أداة اسم union)
 
-两条逻辑流：mux 流（`/api/events.mux`，全 session 聚合）与 host 流（`/api/events.host`，host 级事件）。浏览器通过每流一条下行 WebSocket 消费，进程内 fetch 载体以 SSE 保持同构；物理边界见 [WebSocket 下行载体](2026-08-04-websocket-downlink-carrier.zh.md)。帧示例一行：
+اثنان بند منطق تدفق:mux تدفق (`/api/events.mux`، كل session تجمع دمج) و host تدفق (`/api/events.host`،host درجة حدث). متصفح عبر كل تدفق واحد بند تحت سطر WebSocket إزالة استهلاك، عملية داخل fetch تحميل جسم بـ SSE إبقاء نفس بنية؛ شيء إدارة حد رؤية [WebSocket تحت سطر تحميل جسم](2026-08-04-websocket-downlink-carrier.zh.md). لقطة عرض مثال واحد سطر:
 
-| 帧 type | 载荷 | 何时发 |
+| لقطة type | تحميل حمل | أي وقت إرسال |
 |---|---|---|
-| `session/event` | `{ sessionId; event: SessionEvent }` | 核心透传：core 事件原样过，`assistant/chunk` 即 token 流，无独立 delta 帧 |
+| `session/event` | `{ sessionId; event: SessionEvent }` | نواة قلب نفاذ نقل:core حدث أصل مثال مرور،`assistant/chunk` أي token تدفق، بلا مستقل delta لقطة |
 
-其余帧型不在此复写，union 全集见 `api/events.ts` 的 `MuxFrame`/`HostFrame`。语义上须知三点：`session/subscribed` 的 lastSeq 供 history 竞态检测；`approval/question` 的 requested 帧可应答（rpcId 稳定）、resolved 帧是收敛面；`host/agent-error` 是无 turn 位置 live 失败的唯一出口。
+ذلك بقية لقطة نوع لا في هذا تكرار كتابة،union كل تجميع رؤية `api/events.ts` `MuxFrame`/`HostFrame`. دلالة فوق يجب معرفة ثلاثة نقطة:`session/subscribed` lastSeq توفير history تنافس حالة فحص قياس؛`approval/question` requested لقطة يمكن ينبغي جواب (rpcId مستقر) ،resolved لقطة هو استلام جمع وجه؛`host/agent-error` هو بلا turn موضع live فشل وحيد خروج فتحة.
 
-**透传纪律**：wire 上的事件/消息/内容块就是 core 类型（`SessionEvent`/`ContentBlock`），不造第二套 DTO；类型经 `import type` 依赖链直达浏览器。`SessionEventMap` merge-extensible：client 对未知 type documented-default（忽略），事件 schema 留「合法信封+未知类型」分支——信封仍严格，不是字段级 passthrough。
+**نفاذ نقل سجل قاعدة**:wire فوق حدث/رسالة/محتوى كتلة حينئذ هو core نوع (`SessionEvent`/`ContentBlock`) ، لا صنع ثاني طقم DTO؛ نوع مرور `import type` اعتماد سلسلة مباشر بلوغ متصفح.`SessionEventMap` merge-extensible:client مقابل لم معرفة type documented-default(تجاهل اختصار) ، حدث schema إبقاء «دمج قاعدة معلومة غلاف+لم معرفة نوع» فرع——معلومة غلاف ما زال صارم إطار، لا هو حقل درجة passthrough.
 
-### 会话语义（impl 侧承诺）
+### جلسة دلالة (impl جانب تحمل وعد)
 
-- **历史 = 事件回放**：一套 fold（client 侧），历史分页与 live 增量同一条代码路径；server 不做物化快照第二套。history **页边界对齐消息边界**（绝不从消息中间截断；分片随定稿消息归组），尾页含进行中 partial 的分片。
-- **提示词关联**：提示词的 rpcId 经 MessageSource（`'user-rpc'`）透传进 `user/message` 事件，client 以此把乐观回显转正。
-- **重连 = 重建**：不做续传 cursor（`mux` 的 `since` 签名留座、传了忽略）；断线重开流 + 重拉 history；`subscribed.lastSeq` 与 history 尾 seq 比对，有缝再补拉一次。
-- **冷会话处理遵循所有权**：`session.history` 与 `session.fork` 的源端读取会在不获取 Agent 的情况下检查持久化存储，而绑定到 Agent 的普通会话方法（如 `prompt`）则通过在途表去重后恢复会话。由会话支撑的 subagent 会拒绝这条通用恢复路径，且附加状态不对客户端暴露（`running` 已经覆盖）。
-- **审批/问答**：requested 帧受理时 mint 稳定 rpcId；先到先赢，host 内存 pending 表（keyed by rpcId）是唯一裁判；mux 重开后在 subscribed 帧后回放仍 pending 的 requested 帧（rpcId 原样复用，刷新恢复）。审计事件 `approval/asked`/`decided` 照旧走 durable 日志——帧=live 控制面，事件=durable 审计。**现状**：约定与帧类型已 shipped，host 侧 pending 表/wire answerer 未实现（`api-proxy.ts` 的 `respond` 是 stub，恒回 `not-pending`）；PendingCard v1 只展示。
-- **不设协议版本**：client 与 host 绑定发布，`host.describe` 无 protocolVersion 字段；出现独立发布的 client 时再引入。
-- **预留方法纪律**：map 只含已实现方法，未知 method 在信封 parse 即 fail loud（`bad-request`），不设 not-implemented 兜底码。预留清单（实现时把签名抄进域接口+map 加行+schema 加对即升格）：`session.fork`、`prompt.mode` 加 `'inject'`、`task.list`、`host.listModels`、describe 加 `hostInstanceId`。（`session.rename` 已从本清单毕业：追加 user 来源的 `session/title` 事件。）
+- **تاريخ = حدث إعادة تشغيل**: واحد طقم fold(client جانب) ، تاريخ قسم صفحة و live زيادة كمية نفس بند شفرة مسار؛server لا فعل شيء تحويل لقطة ثاني طقم.history **صفحة حد مقابل متساو رسالة حد**(أبدا من رسالة في بين قطع قطع؛ قسم قطعة مع تحديد مسودة رسالة عودة مجموعة) ، ذيل صفحة يحتوي إجراء في partial قسم قطعة.
+- **نص التوجيه صلة ربط**: نص التوجيه rpcId مرور MessageSource(`'user-rpc'`) نفاذ نقل دخول `user/message` حدث،client بـ هذا يأخذ مرح مراقبة عودة إظهار تحويل صحيح.
+- **إعادة وصل = إعادة بناء**: لا فعل متابعة نقل cursor(`mux` `since` توقيع إبقاء مقعد، نقل تجاهل اختصار) ؛ قطع خط إعادة فتح تدفق + إعادة سحب history؛`subscribed.lastSeq` و history ذيل seq مقارنة مقابل، لديه شق مجددا تكملة سحب مرة.
+- **بارد جلسة معالجة التزام دوران كل حق**:`session.history` و `session.fork` مصدر طرف قراءة سوف في لا نيل أخذ Agent حال حال تحت فحص حفظ دائم تخزين، بينما ربط إلى Agent عادي جلسة طريقة (مثل `prompt`) فإن عبر في طريق جدول ذهاب إعادة بعد استعادة جلسة. من جلسة دعم دعم subagent سوف رفض هذا بند عام استعادة مسار، كما مرفق إضافة حالة لا مقابل عميل كشف (`running` قد تغطية).
+- **مراجعة دفعة/سؤال جواب**:requested لقطة تلقي إدارة وقت mint مستقر rpcId؛ أولا إلى أولا فوز،host داخل تخزين pending جدول (keyed by rpcId) هو وحيد قطع حكم؛mux إعادة فتح بعد في subscribed لقطة بعد إعادة تشغيل ما زال pending requested لقطة (rpcId أصل مثال إعادة استخدام، تحديث جديد استعادة). مراجعة حساب حدث `approval/asked`/`decided` وفق قديم مشي durable سجل——لقطة=live تحكم وجه، حدث=durable مراجعة حساب.**الآن حالة**: اتفاق و لقطة نوع قد shipped،host جانب pending جدول/wire answerer لم تنفيذ (`api-proxy.ts` `respond` هو stub، ثابت عودة `not-pending`) ؛PendingCard v1 فقط عرض.
+- **لا ضبط بروتوكول إصدار**:client و host ربط إصدار،`host.describe` بلا protocolVersion حقل؛ ظهور مستقل إصدار client وقت مجددا جذب دخول.
+- **مسبق إبقاء طريقة سجل قاعدة**:map فقط يحتوي قد تنفيذ طريقة، لم معرفة method في معلومة غلاف parse أي fail loud(`bad-request`) ، لا ضبط not-implemented التقاط قاع رمز. مسبق إبقاء بيان (تنفيذ وقت يأخذ توقيع نسخ دخول مجال واجهة+map إضافة سطر+schema إضافة مقابل أي رفع إطار):`session.fork`،`prompt.mode` إضافة `'inject'`،`task.list`،`host.listModels`،describe إضافة `hostInstanceId`.(`session.rename` قد من هذا بيان انتهاء عمل: إلحاق user مصدر `session/title` حدث.)
 
-## 客户端载体：AbstractApiClient 类体系（`fetch/client.ts`）
+## عميل تحميل جسم:AbstractApiClient صنف جسم نظام (`fetch/client.ts`)
 
-**协议不变量住基类，平台差异是两个切面**：抽象方法 `doFetch(url, init)`（传输）+ 可覆写 `onEnvelope`（观测）。
+**بروتوكول ثابت كمية إقامة أساس صنف، منصة فرق مختلف هو اثنان عدد قطع وجه**: سحب كائن طريقة `doFetch(url, init)`(نقل)+ يمكن تغطية كتابة `onEnvelope`(مراقبة قياس).
 
-### IApiClient：caller 视图
+### IApiClient:caller عرض
 
-与 `ApiProxy` 同域树，但 unary 方法**收业务 payload 直传**——载体 mint rpcId 并包信封，业务代码永不 mint；需要本次调用 rpcId 的从返回的 `RpcResponse` 回显里读。`ApiProxy` 是 impl 侧实现的窄形签名约定，`IApiClient` 是 client 侧消费的 payload 直传视图，`AbstractApiClient` 桥接两者。方法逐 key 从 `RpcMethodMap` 派生——map 加行即机械更新。
+و `ApiProxy` نفس مجال شجرة، لكن unary طريقة**استلام عمل خدمة payload مباشر نقل**——تحميل جسم mint rpcId و حزمة معلومة غلاف، عمل خدمة شفرة دائم لا mint؛ حاجة هذا مرة استدعاء rpcId من إرجاع `RpcResponse` عودة إظهار داخل قراءة.`ApiProxy` هو impl جانب تنفيذ ضيق شكل توقيع اتفاق،`IApiClient` هو client جانب إزالة استهلاك payload مباشر نقل عرض،`AbstractApiClient` جسر وصل اثنان من. طريقة تدريجي key من `RpcMethodMap` إرسال توليد——map إضافة سطر أي آلة آلة تحديث.
 
-### 基类持有的协议路径
+### أساس صنف يحتفظ بروتوكول مسار
 
-| 路径 | 内容 |
+| مسار | محتوى |
 |---|---|
-| `callUnary` | mint → tap → POST 全形 → `serverResponseSchema` parse → **rpcId 回显校验**（不符即 throw）→ tap → 吐窄形 |
-| `readSse` | streaming fetch（非 EventSource）、`\n\n` 分帧、`data:` 拼接、ServerRequest 全形 parse、tap、吐窄形 `RpcRequest<帧>` |
-| `respond` | client-response 透传（rpcId 是回填，此处不 mint）；应答体 `rpcReceiptSchema` parse |
-| unary 时限 | 普通 unary 调用使用 `AbortSignal.timeout`（默认 30s，构造参数可调）；由用户掌控节奏的 `host.pickDirectory` 和 `command.execute` 不设该时限，但保留调用方／连接取消；流不设时限 |
-| `resolveBase` | 浏览器=同源 origin；无 location 环境（Node）=`http://dsh.internal` 假 authority |
+| `callUnary` | mint → tap → POST كل شكل → `serverResponseSchema` parse → **rpcId عودة إظهار تحقق**(لا رمز أي throw)→ tap → إخراج ضيق شكل |
+| `readSse` | streaming fetch(غير EventSource) ،`\n\n` قسم لقطة،`data:` تجميع وصل،ServerRequest كل شكل parse،tap، إخراج ضيق شكل `RpcRequest<لقطة>` |
+| `respond` | client-response نفاذ نقل (rpcId هو عودة ملء، هذا موضع لا mint) ؛ ينبغي جواب جسم `rpcReceiptSchema` parse |
+| unary وقت حد | عادي unary استدعاء استخدام `AbortSignal.timeout`(افتراضي 30s، بنية صنع معامل يمكن ضبط) ؛ من مستخدم كف تحكم عقدة عزف `host.pickDirectory` و `command.execute` لا ضبط هذا وقت حد، لكن إبقاء استدعاء جهة/اتصال إلغاء؛ تدفق لا ضبط وقت حد |
+| `resolveBase` | متصفح=نفس مصدر origin؛ بلا location بيئة (Node)=`http://dsh.internal` زائف authority |
 
-### 实例级 envelope 观测切面
+### نسخة درجة envelope مراقبة قياس قطع وجه
 
-四象限全形均过 `onEnvelope`；基类实现是**实例持有的微任务合批缓冲**（帧风暴不逐帧惊扰消费方；模块级状态会跨实例/测试泄漏，故实例持有）。观测者经 `subscribeEnvelopes(listener)` 订阅（收整批 `readonly RpcMessage[]`，返回退订函数）；listener 抛异常被隔离（观测不得反噬载体）。无订阅者时零缓冲成本。没有任何已交付消费方订阅——该切面是 wire 诊断的预留位（已退役的 RPC 调试面板是它的首个消费方，将来的诊断消费方接入时不动载体）。
+أربعة كائن حد كل شكل متساو مرور `onEnvelope`؛ أساس صنف تنفيذ هو**نسخة يحتفظ دقيق مهمة دمج دفعة مؤقت اندفاع**(لقطة ريح كشف لا تدريجي لقطة مفاجأة إزعاج مستهلك؛ وحدة درجة حالة سوف عبر نسخة/اختبار تسرب تسرب، لذا نسخة يحتفظ). مراقبة قياس من مرور `subscribeEnvelopes(listener)` حجز قراءة (استلام كامل دفعة `readonly RpcMessage[]`، إرجاع تراجع حجز دالة) ؛listener رمي استثناء يتم عزل (مراقبة قياس لا نيل عكس التهام تحميل جسم). بلا حجز قراءة من وقت صفر مؤقت اندفاع صار هذا. لا يوجد أي قد تسليم مستهلك حجز قراءة——هذا قطع وجه هو wire تشخيص مسبق إبقاء موضع (قد تراجع دور RPC ضبط تجربة وجه لوح هو هو أول عدد مستهلك، سوف قدوم تشخيص مستهلك وصل دخول وقت لا حركة تحميل جسم).
 
-### 子类表（传输承载）
+### فرعي صنف جدول (نقل تحمل تحميل)
 
-| 子类 | 所在包 | doFetch | 用途 |
+| فرعي صنف | الذي في حزمة | doFetch | استخدام طريق |
 |---|---|---|---|
-| `InProcessApiClient` | apiproxy 本包 | 注入的 `{ fetch }` handler | **同构点**：`new InProcessApiClient(toFetchHandler(api))` 全程不过网络但真跑 wire 序列化/zod/SSE 帧；载体测试与调用方可以在不打开端口的情况下运行这套协议，而产品 `dsh --profile headless` 直接驱动 core |
-| `WebApiClient` | dsh-client-connection | `globalThis.fetch` 上行 + 每逻辑流一条同源 WebSocket 下行 | 浏览器客户端；物理边界见 [WebSocket 下行载体](2026-08-04-websocket-downlink-carrier.zh.md) |
-| `FixtureApiClient` | dsh-client-connection | 不用（协议层覆写） | 无 server 的 UI 开发（`?fixture`）：覆写 `callUnary`/`openMux`/`openHost`/`respond` 虚方法，自己就是假 server（帧 rpcId 由它 mint，语义自洽） |
-| IPC 桥子类（假想示例——尚无此形态） | Electron 壳 | IPC 序列化往返 | 只需换 doFetch，约定/基类零改 |
+| `InProcessApiClient` | apiproxy هذه الحزمة | حقن `{ fetch }` handler | **نفس بنية نقطة**:`new InProcessApiClient(toFetchHandler(api))` كل مسار لا مرور شبكة شبكة لكن حق ركض wire تسلسل تحويل/zod/SSE لقطة؛ تحميل جسم اختبار و استدعاء جهة يمكن في لا فتح طرف فتحة حال حال تحت تشغيل هذا طقم بروتوكول، بينما منتج `dsh --profile headless` مباشر قيادة core |
+| `WebApiClient` | dsh-client-connection | `globalThis.fetch` فوق سطر + كل منطق تدفق واحد بند نفس مصدر WebSocket تحت سطر | متصفح عميل؛ شيء إدارة حد رؤية [WebSocket تحت سطر تحميل جسم](2026-08-04-websocket-downlink-carrier.zh.md) |
+| `FixtureApiClient` | dsh-client-connection | لا استخدام (بروتوكول طبقة تغطية كتابة) | بلا server UI تطوير (`?fixture`): تغطية كتابة `callUnary`/`openMux`/`openHost`/`respond` وهمي طريقة، ذاتي ذات حينئذ هو زائف server(لقطة rpcId من هو mint، دلالة ذاتي توافق) |
+| IPC جسر فرعي صنف (زائف تفكير عرض مثال——بعد بلا هذا شكل) | Electron قشرة | IPC تسلسل تحويل نحو إرجاع | فقط يحتاج تبديل doFetch، اتفاق/أساس صنف صفر تعديل |
 
-## 怎么扩展（操作清单）
+## كيف ما توسيع (عملية بيان)
 
-**加一个 unary 方法（5 步）**：①域接口加方法签名（参数/返回内联，这是唯一真源）；②`RpcMethodMap` 加一行；③`<域>.schema.ts` 加 request/value schema 对（锚 `Wire<RequestPayload<'…'>>`）；④handler `UNARY_ROUTES` 加一行（handler 的 Web 承载见 Web 客户端架构笔记）；⑤impl 实现（回显 `request.rpcId`）。client 侧 `IApiClient`/`AbstractApiClient` 的域方法表同步加一行透传。
+**إضافة واحد unary طريقة (5 خطوة)**:①مجال واجهة إضافة طريقة توقيع (معامل/إرجاع داخل ربط، هذا هو وحيد حق مصدر) ؛②`RpcMethodMap` إضافة واحد سطر؛③`<مجال>.schema.ts` إضافة request/value schema مقابل (مرساة `Wire<RequestPayload<'…'>>`) ؛④handler `UNARY_ROUTES` إضافة واحد سطر (handler Web تحمل تحميل رؤية Web عميل هيكل بنية قلم تسجيل) ؛⑤impl تنفيذ (عودة إظهار `request.rpcId`).client جانب `IApiClient`/`AbstractApiClient` مجال طريقة جدول تزامن إضافة واحد سطر نفاذ نقل.
 
-**加一个帧型（3 步）**：①`MuxFrame`/`HostFrame` union 加一支（可应答帧须注明 rpcId 稳定语义）；②帧 schema 加一支；③消费方的 fold/路由 documented-default 已兜底未知型，按需加显式分支。
+**إضافة واحد لقطة نوع (3 خطوة)**:①`MuxFrame`/`HostFrame` union إضافة واحد دعم (يمكن ينبغي جواب لقطة يجب ملاحظة واضح rpcId مستقر دلالة) ؛②لقطة schema إضافة واحد دعم؛③مستهلك fold/توجيه documented-default قد التقاط قاع لم معرفة نوع، حسب يحتاج إضافة صريح فرع.
 
-**加一个错误码（2 步）**：①`RpcErrorDetailsMap` 加一行（details 必填）；②`rpcErrorSchema` discriminatedUnion 加一支。
+**إضافة واحد رمز خطأ (2 خطوة)**:①`RpcErrorDetailsMap` إضافة واحد سطر (details لا بد ملء) ؛②`rpcErrorSchema` discriminatedUnion إضافة واحد دعم.
 
-**接一种新载体**：继承 `AbstractApiClient` 只实现 `doFetch`；需要拦截协议层（如 fixture（测试前置数据））再覆写 `callUnary`/`openMux`/`openHost` 虚方法。约定与基类零改。
+**وصل واحد نوع جديد تحميل جسم**: وراثة `AbstractApiClient` فقط تنفيذ `doFetch`؛ حاجة اعتراض قطع بروتوكول طبقة (مثل fixture(اختبار قبل وضع بيانات)) مجددا تغطية كتابة `callUnary`/`openMux`/`openHost` وهمي طريقة. اتفاق و أساس صنف صفر تعديل.
 
-**升格一个预留方法**：把预留签名抄进域接口 → map 加行 → schema 加对 → UNARY_ROUTES 加行 → impl 实现。
+**رفع إطار واحد مسبق إبقاء طريقة**: يأخذ مسبق إبقاء توقيع نسخ دخول مجال واجهة → map إضافة سطر → schema إضافة مقابل → UNARY_ROUTES إضافة سطر → impl تنفيذ.
 
 ## Consequences
 
-所有 client 使用同一约定：加一个 unary 方法是从单一签名出发的五步机械改动，换载体只动一个 `doFetch` 子类，wire 上每条消息可 zod 校验、可经 envelope tap 观测、可按 rpcId 对账。普通 unary 调用仍受时限约束，而 `host.pickDirectory` 与 `command.execute` 可保持挂起，直到操作完成或调用方／连接取消到来；若由用户掌控节奏的操作不自行结束，请求可能一直挂起，这是为避免把合理的操作时长视为传输失败而接受的代价。其余接受的代价：两组包需要显式 tsconfig paths 条目；预留方法（fork/inject/task.list/listModels/hostInstanceId）在真实消费方出现前保持休眠。
+كل client استخدام نفس اتفاق: إضافة واحد unary طريقة هو من مفرد واحد توقيع خروج إرسال خمسة خطوة آلة آلة تعديل، تبديل تحميل جسم فقط حركة واحد `doFetch` فرعي صنف،wire فوق كل بند رسالة يمكن zod تحقق، يمكن مرور envelope tap مراقبة قياس، يمكن حسب rpcId مقابل حساب. عادي unary استدعاء ما زال تلقي وقت حد قيد، بينما `host.pickDirectory` و `command.execute` يمكن إبقاء تعليق بدء، مباشر إلى عملية إتمام أو استدعاء جهة/اتصال إلغاء إلى قدوم؛ إذا من مستخدم كف تحكم عقدة عزف عملية لا ذاتي سطر انتهاء، طلب ممكن واحد مباشر تعليق بدء، هذا هو لـ تجنب تجنب يأخذ دمج إدارة عملية وقت طويل نظر لـ نقل فشل بينما قبول بديل قيمة. ذلك بقية قبول بديل قيمة: اثنان مجموعة حزمة حاجة صريح tsconfig paths بند؛ مسبق إبقاء طريقة (fork/inject/task.list/listModels/hostInstanceId) في حقيقي مستهلك ظهور قبل إبقاء راحة نوم.
 
 ## Alternatives considered
 
-| 放弃项 | 一句话理由 |
+| وضع ترك بند | واحد جملة كلام إدارة من |
 |---|---|
-| 按产品分包（web 一族、electron 一族） | 产品共享的是 host/client 两侧能力，而不是某个应用实现；能力提供方分层让新应用零新包 |
-| 混合体建包（如 headless 独立包） | 混合体只有一个消费方（它自己的 app），建包是无主抽象；拼装写在 app 里可读可弃 |
-| 消费型 client 直连 ctx（省 apiproxy 一层） | client 需要 wire 校验、观测与多 client 一致性。直接 headless 是没有 client 边界的本地入口，使用公开的 Agent／Session seam，而不是 client 命令面 |
-| webserver 依赖 runtime（省 handler 注入） | 结构 typing 注入让 webserver 可被 sidecar/测试复用且零 workspace 依赖；包依赖会把装配知识拖进承载层 |
-| 包名不带组前缀（沿用 dsh-<尾段>） | `dsh-runtime`/`dsh-web-ui` 在扁平 npm 命名空间里失去归属信息；代价只是每包一条显式 paths |
-| 复用仓内 JSON-RPC 2.0（dsh-sdk-jsonrpc-server） | 数字错误码退化成单码兜底、约定双份人肉对齐、命名无 convention 自然漂移 |
-| 三信封模型（Request/Response/Frame 各一信封，签名不感知方向） | rpcId 是逻辑层关联，帧与应答的方向语义靠通道推断在换载体时即失效 |
-| 具名 Request/Response 类型对为真源（map 登记类型对） | 平铺具名类型是同一事实的第二个名字；签名 infer 反推让加方法只改一处 |
-| REST 风格路径 | 消费方是自家 client，无第三方 REST 体验诉求；RPC 直映方法表更机械 |
-| DTO 层（wire 专用第二套结构） | core 类型 type-only 直达浏览器零成本；DTO 是永久的双向同步税 |
-| cursor 续传（mux since 实装） | 重连=重建（opencode 同款）覆盖 v1 全部需求；签名留座，实装等真实消费方 |
-| createApiClient 工厂函数（原实现） | 平台差异（传输/观测）是继承切面不是参数；类体系让 fixture 在协议层替换而不是包一层假信封 |
-| 对 `command.execute` 应用 30 秒传输时限 | 命令耗时属于操作本身，而非传输健康预算；该时限会终止本应继续运行的长时处理器，调用方／连接取消已提供所需的停止路径 |
+| حسب منتج قسم حزمة (web واحد عائلة،electron واحد عائلة) | منتج مشترك هو host/client اثنان جانب قدرة، بينما لا هو بعض عدد تطبيق تنفيذ؛ قدرة مزود قسم طبقة يجعل جديد تطبيق صفر جديد حزمة |
+| خلط دمج جسم بناء حزمة (مثل headless مستقل حزمة) | خلط دمج جسم فقط لديه واحد مستهلك (هو ذاتي ذات app) ، بناء حزمة هو بلا رئيسي سحب كائن؛ تجميع تركيب كتابة في app داخل يمكن قراءة يمكن ترك |
+| إزالة استهلاك نوع client مباشر وصل ctx(حذف apiproxy واحد طبقة) | client حاجة wire تحقق، مراقبة قياس و كثير client متسق صفة. مباشر headless هو لا يوجد client حد محلي مدخل، استخدام عام Agent/Session seam، بينما لا هو client أمر وجه |
+| webserver اعتماد runtime(حذف handler حقن) | بنية typing حقن يجعل webserver يمكن يتم sidecar/اختبار إعادة استخدام كما صفر workspace اعتماد؛ حزمة اعتماد سوف يأخذ تركيب إعداد معرفة تعرف سحب دخول تحمل تحميل طبقة |
+| حزمة اسم لا حمل مجموعة بادئة (امتداد استخدام dsh-<ذيل مقطع>) | `dsh-runtime`/`dsh-web-ui` في مسطح مستو npm نطاق الأسماء داخل فقد ذهاب ملكية معلومة؛ بديل قيمة فقط هو كل حزمة واحد بند صريح paths |
+| إعادة استخدام مستودع داخل JSON-RPC 2.0(dsh-sdk-jsonrpc-server) | عدد حرف رمز خطأ تراجع تحويل صار مفرد رمز التقاط قاع، اتفاق مزدوج نسخة شخص لحم مقابل متساو، تسمية بلا convention ذاتي لكن عائم نقل |
+| ثلاثة معلومة غلاف نموذج (Request/Response/Frame كل واحد معلومة غلاف، توقيع لا شعور معرفة جهة نحو) | rpcId هو منطق طبقة صلة ربط، لقطة و ينبغي جواب جهة نحو دلالة اعتماد عبر طريق دفع قطع في تبديل تحميل جسم وقت أي بطلان |
+| أداة اسم Request/Response نوع مقابل لـ حق مصدر (map تسجيل تسجيل نوع مقابل) | مستو فرش أداة اسم نوع هو نفس واقع ثاني عدد اسم حرف؛ توقيع infer عكس دفع يجعل إضافة طريقة فقط تعديل واحد موضع |
+| REST ريح إطار مسار | مستهلك هو ذاتي بيت client، بلا رقم ثلاثة جهة REST تجربة إبلاغ طلب؛RPC مباشر عكس طريقة جدول أكثر آلة آلة |
+| DTO طبقة (wire مخصص استخدام ثاني طقم بنية) | core نوع type-only مباشر بلوغ متصفح صفر صار هذا؛DTO هو دائم دائم مزدوج نحو تزامن ضريبة |
+| cursor متابعة نقل (mux since فعلي تركيب) | إعادة وصل=إعادة بناء (opencode نفس بند) تغطية v1 الكل يحتاج طلب؛ توقيع إبقاء مقعد، فعلي تركيب انتظار حقيقي مستهلك |
+| createApiClient عمل مصنع دالة (أصل تنفيذ) | منصة فرق مختلف (نقل/مراقبة قياس) هو وراثة قطع وجه لا هو معامل؛ صنف جسم نظام يجعل fixture في بروتوكول طبقة استبدال بينما لا هو حزمة واحد طبقة زائف معلومة غلاف |
+| مقابل `command.execute` تطبيق 30 ثانية نقل وقت حد | أمر استهلاك وقت يخص عملية ذاته، بينما غير نقل سليم سليم ميزانية؛ هذا وقت حد سوف إنهاء هذا ينبغي متابعة تشغيل طويل وقت معالج، استدعاء جهة/اتصال إلغاء قد توفير الذي يحتاج إيقاف مسار |

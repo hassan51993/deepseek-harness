@@ -1,79 +1,79 @@
 ---
-description: "Target-neutral 对话装配与浏览器 shell：事件和视图注册表、逐会话 binding、输入状态、slot 与临时 composer takeover。"
+description: "Target-neutral محادثة تركيب إعداد و متصفح shell: حدث و عرض سجل التسجيل، تدريجي جلسة binding، إدخال حالة،slot و مؤقت composer takeover."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-conversation
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`ui-conversation` 拥有与 target 无关的 Conversation 组装和共享浏览器 shell。它消费 Session Controller 的 `SessionEventLikeEntry` feed，通过 `ctx.uiConversation` 暴露不依赖 React 的注册表与逐 Session binding，并通过 `ctx.uiSession` 提供 `useConversation`、`useInput` 和 `inputActions` 标准 props。它还拥有按会话的持久化图片 URL 缓存：`ctx.uiConversation.imageUrl(sessionId, attachment)` 为每个附件解析一个经会话授权的浏览器 URL，并随 Session binding 释放而撤销，因此所有 Conversation target 共享一次 `session.attachment` 读取。Chat 等具体 target 位于独立包，由各自包注册 Definition、快照 builder、View 和 renderer。
+`ui-conversation` يملك و target غير متصل Conversation تجميع و مشترك متصفح shell. هو إزالة استهلاك Session Controller `SessionEventLikeEntry` feed، عبر `ctx.uiConversation` كشف لا اعتماد React سجل التسجيل و تدريجي Session binding، و عبر `ctx.uiSession` توفير `useConversation`،`useInput` و `inputActions` معيار props. هو أيضا يملك حسب جلسة حفظ دائم صورة URL ذاكرة مؤقتة:`ctx.uiConversation.imageUrl(sessionId, attachment)` لـ كل مرفق عنصر تحليل واحد مرور جلسة تخويل متصفح URL، و مع Session binding تحرير بينما سحب إلغاء، لذلك كل Conversation target مشترك مرة `session.attachment` قراءة.Chat انتظار أداة جسم target يقع في مستقل حزمة، من كل منها حزمة تسجيل Definition، لقطة builder،View و renderer.
 
-## 目录
+## دليل
 
-- [Conversation 组装](#conversation-assembly)
-- [Shell 与标准 props](#shell-and-standard-props)
-- [临时 composer entry](#temporary-composer-entries)
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [Conversation تجميع](#conversation-assembly)
+- [Shell و معيار props](#shell-and-standard-props)
+- [مؤقت composer entry](#temporary-composer-entries)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="conversation-assembly"></a>
-## Conversation 组装
+## Conversation تجميع
 
-`UiConversation.events` 是 event Definition 的唯一 registry，`UiConversation.views` 是 target snapshot builder 的唯一 registry。两者都拒绝重复 key、保持注册顺序、返回幂等 disposer，并在 contribution roster 变化时重建现有 binding。`UiConversation.binding(bindingOrSessionId)` 为当前 Session Controller binding 返回 identity 稳定的 Conversation binding，不会另开事件源。
+`UiConversation.events` هو event Definition وحيد registry،`UiConversation.views` هو target snapshot builder وحيد registry. اثنان من كل رفض تكرار key، إبقاء تسجيل ترتيب، إرجاع قوة انتظار disposer، و في contribution roster تغير وقت إعادة بناء قائم binding.`UiConversation.binding(bindingOrSessionId)` لـ حالي Session Controller binding إرجاع identity مستقر Conversation binding، لن آخر فتح حدث مصدر.
 
-适配器把每个 `SessionEventLikeEntry` 直接交给 assembler。外层 `type` 区分持久事件与 Client-only transient event，内部 `event` 则统一公开 `type`、`seq`、`time` 与 `data`；Definition 接收这个内部 `SessionEventLike`。replacement window 可以包含两种 entry，历史 prepend 携带持久 entry，实时 append 则可以携带任一种。两种事件都使用 Definition 的同一组 `match` 与 `update` 方法，`start` 只接收持久 event，assembler 会拒绝 transient start。不消费 Assistant delta 的 Definition 对 `assistant/live-chunk` 返回 `null`。replace window 或 revision 断档从完整已加载窗口重建；连续 revision 的 append、prepend 与 Assistant settlement 使用增量组装。settlement 只删除具名 attempt 的 transient match，应用可选持久 entry，并重放受影响的 Context 及其 dependent，不替换无关 target node。assembler 拥有 Context 匹配、Turn/Step location、target node 物化、target activity 和稳定 target source。`ConversationSnapshot` 只包含与 target 无关的 View 与 active-target 事实；Session lifecycle 状态仍属于 `SessionSnapshot`。
+مهايئ يأخذ كل `SessionEventLikeEntry` مباشر تسليم إعطاء assembler. خارج طبقة `type` منطقة قسم حمل دائم حدث و Client-only transient event، داخلي `event` فإن موحد واحد عام `type`،`seq`،`time` و `data`؛Definition استقبال هذا عدد داخلي `SessionEventLike`.replacement window يمكن يتضمن اثنان نوع entry، تاريخ prepend يحمل حمل دائم entry، فوري append فإن يمكن يحمل مهمة واحد نوع. اثنان نوع حدث كل استخدام Definition نفس مجموعة `match` و `update` طريقة،`start` فقط استقبال حمل دائم event،assembler سوف رفض transient start. لا إزالة استهلاك Assistant delta Definition مقابل `assistant/live-chunk` إرجاع `null`.replace window أو revision قطع ملف من كامل قد تحميل نافذة إعادة بناء؛ وصل متابعة revision append،prepend و Assistant settlement استخدام زيادة كمية تجميع.settlement فقط حذف أداة اسم attempt transient match، تطبيق اختياري حمل دائم entry، و إعادة وضع تلقي أثر Context و ذلك dependent، لا استبدال غير متصل target node.assembler يملك Context مطابقة،Turn/Step location،target node شيء تحويل،target activity و مستقر target source.`ConversationSnapshot` فقط يتضمن و target غير متصل View و active-target واقع؛Session lifecycle حالة ما زال يخص `SessionSnapshot`.
 
-shell 选择解析出 target 或 target source 收到首个 subscriber 时，该 target 进入 active 状态。assembler 从当前 Context 对它执行一次 replace，并使它参与后续增量 flush；创建 source 不会激活 target，取消订阅也不会停用 target。
+shell اختيار تحليل خروج target أو target source استلام إلى أول عدد subscriber وقت، هذا target دخول active حالة.assembler من حالي Context مقابل هو تنفيذ مرة replace، و جعل هو مشاركة و لاحق زيادة كمية flush؛ إنشاء source لن تنشيط target، إلغاء حجز قراءة أيضا لن توقف استخدام target.
 
-target package 通过 declaration merge 扩展 snapshot 与 Location data map，再调用 `ctx.uiConversation.events.register(...)` 和 `ctx.uiConversation.views.register(...)`。target 通过 `ctx.uiConversation.binding(binding).target(targetId)` 读取其 Session-owned source。注册属于 Cordis effect，返回的 disposer 从同一个 registry 移除 contribution。共享的请求检查服务于每个 target：`ctx.uiConversation.inspectSystemPrompt(previous, event)` 将系统消息与位置替换解释为不可变的已加载 surface 状态。它按 surface 顺序选择最后一个非空的存活系统节点，为连续重写只保留存活的替换位置；遇到未建立索引的更早端点后，提示词保持不可用，直到向前补页回放提供其顺序。target 自有的 Definition 独立保留历史卡片。`ctx.uiConversation.inspectRequestPrompt(previous, header, system)` 根据该有效提示词分类请求变更；普通消息与流式分片无需处理系统状态。
+target package عبر declaration merge توسيع snapshot و Location data map، مجددا استدعاء `ctx.uiConversation.events.register(...)` و `ctx.uiConversation.views.register(...)`.target عبر `ctx.uiConversation.binding(binding).target(targetId)` قراءة ذلك Session-owned source. تسجيل يخص Cordis effect، إرجاع disposer من نفس عدد registry إزالة contribution. مشترك طلب فحص خدمة في كل target:`ctx.uiConversation.inspectSystemPrompt(previous, event)` سوف نظام رسالة و موضع استبدال حل تفسير لـ غير ممكن تغيير قد تحميل surface حالة. هو حسب surface ترتيب اختيار الأكثر بعد واحد غير فارغ تخزين نشط نظام عقدة، لـ وصل متابعة إعادة كتابة فقط إبقاء تخزين نشط استبدال موضع؛ لقاء إلى لم بناء قيام بحث جذب أكثر مبكر طرف نقطة بعد، نص التوجيه إبقاء غير ممكن استخدام، مباشر إلى نحو قبل تكملة صفحة إعادة تشغيل توفير ذلك ترتيب.target ذاتي لديه Definition مستقل إبقاء تاريخ بطاقة.`ctx.uiConversation.inspectRequestPrompt(previous, header, system)` أصل حسب هذا صالح نص التوجيه تصنيف طلب تغيير؛ عادي رسالة و تدفق صيغة قسم قطعة بلا حاجة معالجة نظام حالة.
 
 <a id="shell-and-standard-props"></a>
-## Shell 与标准 props
+## Shell و معيار props
 
-共享图片插槽属性将展示选择与持久化引用分开：`thumbnail` 请求完整缩放的附件列表缩略图，`compact` 请求裁剪的图片方块。每张图片可通过可选的 `label` 提供无障碍展示名称；加载和缓存标识仍使用原始附件引用。[ui-attachment](../ui-attachment/README.zh.md) 负责渲染与灯箱。
+مشترك صورة إدراج مجرى خاصية سوف عرض اختيار و حفظ دائم مرجع قسم فتح:`thumbnail` طلب كامل تقليص وضع مرفق عنصر قائمة تقليص اختصار رسم،`compact` طلب قطع قص صورة جهة كتلة. كل ورقة صورة يمكن عبر اختياري `label` توفير بلا عائق عائق عرض اسم؛ تحميل و ذاكرة مؤقتة معرف ما زال استخدام أصلي مرفق عنصر مرجع.[ui-attachment](../ui-attachment/README.zh.md) مسؤول تصيير و مصباح صندوق.
 
-上下文占用按钮在输入卡片下方、会话统计右侧显示圆环和百分比。点击按钮可在视口内的面板查看 token 构成，没有统计项时面板也不会越界；上下文用量和容量尚不可用时，按钮保持隐藏。
+سياق احتلال استخدام حسب زر في إدخال بطاقة تحت جهة، جلسة موحد حساب يمين جانب عرض دائرة حلقة و مئة قسم مقارنة. نقر حسب زر يمكن في نظر فتحة داخل وجه لوح فحص نظر token بنية صار، لا يوجد موحد حساب بند وقت وجه لوح أيضا لن تجاوز حد؛ سياق استخدام كمية و سعة كمية بعد غير ممكن استخدام وقت، حسب زر إبقاء إخفاء.
 
-输入框注册「文件」命令动作，负责其标题、可用性和原生文件选择器回调。菜单可用性与实际调用都读取已挂载输入框当前的附件接收策略。输入框卸载或锁定后该动作不可用，插件 dispose（资源释放）时移除注册。回调绑定留在输入模块内部。
+إدخال إطار تسجيل «ملف» أمر حركة عمل، مسؤول ذلك عنوان، متاح صفة و أصلي ملف اختيار جهاز عودة ضبط. قائمة مفرد متاح صفة و فعلي استدعاء كل قراءة قد تركيب إدخال إطار حالي مرفق عنصر استقبال سياسة. إدخال إطار إزالة أو قفل تحديد بعد هذا حركة عمل غير ممكن استخدام، إضافة dispose(مورد تحرير) وقت إزالة تسجيل. عودة ضبط ربط إبقاء في إدخال وحدة داخلي.
 
-`SessionInputShell` 通过私有 [DraftEditorRuntime](src/client/input/editor/runtime.ts) 为每个 Session 持有一个 Lexical editor，同时保留提交、附件选择和恢复决策。[DraftEditor](src/client/input/editor/DraftEditor.tsx) 呈现借用的 editor；InputBar 保留钩子与 refs，并通过 [view-binding](src/client/input/editor/view-binding.ts) 安装 DOM 行为。编辑器类型位于 [draft-editor.ts](src/client/contract/draft-editor.ts)，共享输入和提交类型位于 [input.ts](src/client/contract/input.ts)。这一拆分不支持同一 Session 同时挂载多个可编辑 root；[两阶段隔离提案](../../../.agents/notes/proposed/architecture/2026-09-14-composer-model-and-draft-editor.zh.md) 定义剩余工作。
+`SessionInputShell` عبر خاص [DraftEditorRuntime](src/client/input/editor/runtime.ts) لـ كل Session يحتفظ واحد Lexical editor، معا إبقاء إيداع، مرفق عنصر اختيار و استعادة قرار.[DraftEditor](src/client/input/editor/DraftEditor.tsx) عرض استعارة استخدام editor؛InputBar إبقاء خطاف و refs، و عبر [view-binding](src/client/input/editor/view-binding.ts) تثبيت DOM سلوك. تحرير جهاز نوع يقع في [draft-editor.ts](src/client/contract/draft-editor.ts) ، مشترك إدخال و إيداع نوع يقع في [input.ts](src/client/contract/input.ts). هذا واحد تفكيك قسم لا دعم حمل نفس Session معا تركيب كثير عدد يمكن تحرير root؛[اثنان مرحلة مقطع عزل رفع سجل](../../../.agents/notes/proposed/architecture/2026-09-14-composer-model-and-draft-editor.zh.md) تعريف باق بقية عمل.
 
-已认领的命令在仅删除参数和末尾分隔空格时保留身份与高亮，改动命令名才会释放认领。所有命令和语言使用相同规则，包括 `/goal`、`/目标`、`/plan` 和 `/计划`。输入法组合输入期间，命令提示和普通占位文字持续隐藏，直到编辑器提交最终文字且对应输入为空时才重新显示。
+قد إقرار قيادة أمر في فقط حذف معامل و نهاية ذيل قسم فصل فارغ إطار وقت إبقاء هوية و عال مضيء، تعديل أمر اسم عندئذ سوف تحرير إقرار قيادة. كل أمر و لغة استخدام نفسه قاعدة، يشمل `/goal`،`/هدف`،`/plan` و `/حساب تخطيط`. إدخال قاعدة تركيب إدخال خلال، أمر تلميح و عادي احتلال موضع نص حرف حمل متابعة إخفاء، مباشر إلى تحرير جهاز إيداع نهائي نص حرف كما مقابل إدخال لـ فارغ وقت عندئذ إعادة عرض.
 
-工作区选择使用 `uiWorkspace.openWorkspace` 准备目标并提交导航。草稿文字和附件仅在该请求仍为当前请求时，通过它的同步准备回调搬移；后续导航或所有者释放会保留原草稿。
+مساحة العمل اختيار استخدام `uiWorkspace.openWorkspace` دقيق تجهيز هدف و إيداع تنقل. مسودة مسودة نص حرف و مرفق عنصر فقط في هذا طلب ما زال لـ حالي طلب وقت، عبر هو تزامن دقيق تجهيز عودة ضبط نقل نقل؛ لاحق تنقل أو كل من تحرير سوف إبقاء أصل مسودة مسودة.
 
-本包占据 root 作用域 `main` 中的 `conversation` key。其 `main.conversation` shell 将 strict Session Header 保留在 optional-Session `conversation.content` Component Factory 外。Factory 拥有共享正文与 Composer，通过其标准 Hook 读取当前 Session，并公开 strict-Session `views` 与 root-scoped `widthControls` 两个局部位置。默认 adapter 渲染现有 `conversation.session` entry，主 occurrence 选择宽度拖拽条；嵌入式 occurrence 可以替换 `views`、省略拖拽条，且不渲染主 Header。`ctx.uiSession.provide()` 从同一个 Session binding 物化 Conversation 与 input source，并将 `inputActions` 作为稳定标准 prop 提供。
+هذه الحزمة احتلال حسب root أثر مجال `main` في `conversation` key. ذلك `main.conversation` shell سوف strict Session Header إبقاء في optional-Session `conversation.content` Component Factory خارج.Factory يملك مشترك متن و Composer، عبر ذلك معيار Hook قراءة حالي Session، و عام strict-Session `views` و root-scoped `widthControls` اثنان عدد نطاق جزء موضع. افتراضي adapter تصيير قائم `conversation.session` entry، رئيسي occurrence اختيار عرض درجة سحب جر بند؛ تضمين دخول صيغة occurrence يمكن استبدال `views`، حذف سحب جر بند، كما لا تصيير رئيسي Header.`ctx.uiSession.provide()` من نفس عدد Session binding شيء تحويل Conversation و input source، و سوف `inputActions` بصفة مستقر معيار prop توفير.
 
-blank Session 保留 header 的 leading 与 corner 控件，包括右侧栏展开入口，同时隐藏标题、actions、utilities 和 View tabs。选择 Workspace 会创建这些控件所需的 Session，无需先发送消息。没有选中 Session 时，strict header 不挂载。侧栏各入口仍遵循自身的数据与执行环境要求。
+blank Session إبقاء header leading و corner تحكم عنصر، يشمل يمين جانب شريط توسيع مدخل، معا إخفاء عنوان،actions،utilities و View tabs. اختيار Workspace سوف إنشاء هذه تحكم عنصر الذي يحتاج Session، بلا حاجة أولا إرسال رسالة. لا يوجد اختيار في Session وقت،strict header لا تركيب. جانب شريط كل مدخل ما زال التزام دوران ذاته بيانات و تنفيذ بيئة اشتراط.
 
-View 选择规则固定：有效且已注册的持久化选择优先，其次是已注册的 `chat`，否则不渲染 View；绝不选择第一个已注册 View。Shell phase 只组合 Session lifecycle 与 active-target set，不读取任何 target-specific 快照。
+View اختيار قاعدة ثابت: صالح كما قد تسجيل حفظ دائم اختيار أولوية، ذلك مرة هو قد تسجيل `chat`، لا فإن لا تصيير View؛ أبدا اختيار رقم واحد قد تسجيل View.Shell phase فقط تركيب Session lifecycle و active-target set، لا قراءة أي target-specific لقطة.
 
-Session 首次绑定或缓存的 Session 成为 current 时，shell 会在渲染前读取持久化 View 偏好，激活已注册的偏好 View 或 Chat fallback，并在后续 tab 或 focus 选择写入 store 前先激活对应 target。blank Session 仍不渲染 `conversation.view` slot；未选中的 target 不会激活。
+Session أول مرة ربط أو ذاكرة مؤقتة Session يصبح current وقت،shell سوف في تصيير قبل قراءة حفظ دائم View انحراف جيد، تنشيط قد تسجيل انحراف جيد View أو Chat fallback، و في لاحق tab أو focus اختيار كتابة store قبل أولا تنشيط مقابل target.blank Session ما زال لا تصيير `conversation.view` slot؛ لم اختيار في target لن تنشيط.
 
-主 occurrence 的活跃 transcript 只在未被内容覆盖的两侧沟槽中提供正文宽度拖拽条；嵌入式 occurrence 省略这些拖拽条。View 如果绘制进沟槽，只将具体的可见元素提到拖拽条上方；透明的全宽包装层保持在下方，不会占用空白沟槽。该规则要求此元素与 Conversation body 之间不能引入中间堆叠上下文；浏览器场景固定了交付 Chromium 的行为。Chat 将该规则用于表格元素，其限定在阅读列内的工具卡片无需提高层级。指针位于拖拽条上时，滚轮仍会滚动 transcript，Ctrl+滚轮则保留为浏览器缩放手势。粘滞 composer 刻意拥有完整的底部区带，该区域不是宽度调整目标；已捕获的拖拽会将指示线提高到松开为止（[决策](../../../.agents/notes/implemented/bug-fix/2026-09-14-transcript-width-handle-layering.zh.md)）。
+رئيسي occurrence نشط وثب transcript فقط في لم يتم محتوى تغطية اثنان جانب خندق مجرى في توفير متن عرض درجة سحب جر بند؛ تضمين دخول صيغة occurrence حذف هذه سحب جر بند.View إذا رسم صنع دخول خندق مجرى، فقط سوف أداة جسم مرئي عنصر عنصر رفع إلى سحب جر بند فوق جهة؛ نفاذ واضح كل عرض حزمة تركيب طبقة إبقاء في تحت جهة، لن احتلال استخدام فارغ أبيض خندق مجرى. هذا قاعدة اشتراط هذا عنصر عنصر و Conversation body بين لا يستطيع جذب دخول في بين كومة تراكم سياق؛ متصفح مشهد ثابت تسليم Chromium سلوك.Chat سوف هذا قاعدة لأجل جدول إطار عنصر عنصر، ذلك حد تحديد في قراءة قراءة صف داخل أداة بطاقة بلا حاجة رفع عال طبقة درجة. إشارة إبرة يقع في سحب جر بند فوق وقت، تدحرج جولة ما زال سوف تمرير transcript،Ctrl+تدحرج جولة فإن إبقاء لـ متصفح تقليص وضع يد اتجاه. لصق ركود composer لحظة معنى يملك كامل قاع جزء منطقة حمل، هذا منطقة مجال لا هو عرض درجة ضبط كامل هدف؛ قد التقاط سحب جر سوف سوف إشارة عرض خط رفع عال إلى رخو فتح لـ توقف ([قرار](../../../.agents/notes/implemented/bug-fix/2026-09-14-transcript-width-handle-layering.zh.md)).
 
-常驻 composer 在无 Session 与有 Session 之间保持挂载。输入空白字符会隐藏占位提示；没有附件的纯空白草稿无法发送。无 Session 时，同一个编辑器表面保持 inert，Workspace picker 连接 blank Session。该表面是 shell 所有的 Lexical 编辑器：引用 chip 是携带 owner 序列化身份的原子 decorator 节点（提交时经 owner codec 展开），已认领的 slash command 保持为带样式的行首文本，文件夹文本引用以图标前缀携带文件夹图形，草稿的剪贴板投影镜像到逐 Session Conversation store。QueueDock 直接从 Session 的 `inbox` 投影读取 `next-turn`，包含从冷状态恢复的消息。Queue 操作通过 scoped `ctx.conversation` service 寻址准确的 queue occurrence；queue 预览经 `ui-primitives` 的共享行内引用投影渲染已发送文本（wire 会话形式折叠为其标签），并按原始附件顺序展示本地或持久化的图片和文件。图片使用缩略图，文件使用紧凑的名称与大小卡片。编辑态展示字面发送文本，持久化缩略图通过会话图片 URL 缓存解析。繁忙时 Enter 行为保存在 Host-backed `ui-conversation` settings namespace。 composer 键盘映射经斜杠流水线裁决触发菜单的按键——Tab 确认高亮补全项（可下钻项则下钻），Escape 与 Shift+Tab 离开菜单且不选定——其余按键交给编辑器自身。 接管键盘的浮层通过 `SessionInput.focus()` 把键盘还回来，该路径走 Lexical 自己的 focus，因此光标回到草稿原来的位置而不是开头。
+معتاد إقامة composer في بلا Session و لديه Session بين إبقاء تركيب. إدخال فارغ أبيض محرف سوف إخفاء احتلال موضع تلميح؛ لا يوجد مرفق عنصر صاف فارغ أبيض مسودة مسودة لا يمكن إرسال. بلا Session وقت، نفس عدد تحرير جهاز جدول وجه إبقاء inert،Workspace picker اتصال blank Session. هذا جدول وجه هو shell كل Lexical تحرير جهاز: مرجع chip هو يحمل owner تسلسل تحويل هوية أصل فرعي decorator عقدة (إيداع وقت مرور owner codec توسيع) ، قد إقرار قيادة slash command إبقاء لـ حمل مثال صيغة سطر أول نص، ملف مشبك نص مرجع بـ رسم علامة بادئة يحمل ملف مشبك رسم شكل، مسودة مسودة قص لصق لوح إسقاط مرآة مثل إلى تدريجي Session Conversation store.QueueDock مباشر من Session `inbox` إسقاط قراءة `next-turn`، يتضمن من بارد حالة استعادة رسالة.Queue عملية عبر scoped `ctx.conversation` service بحث عنوان دقيق تأكيد queue occurrence؛queue معاينة مرور `ui-primitives` مشترك سطر داخل مرجع إسقاط تصيير قد إرسال نص (wire جلسة شكل صيغة طي لـ ذلك وسم) ، و حسب أصلي مرفق عنصر ترتيب عرض محلي أو حفظ دائم صورة و ملف. صورة استخدام تقليص اختصار رسم، ملف استخدام ضيق تجميع اسم و كبير صغير بطاقة. تحرير حالة عرض حرف وجه إرسال نص، حفظ دائم تقليص اختصار رسم عبر جلسة صورة URL ذاكرة مؤقتة تحليل. كثيف مشغول وقت Enter سلوك حفظ في Host-backed `ui-conversation` settings namespace. composer مفتاح قرص خريطة مرور مائل عمود خط الإنتاج قطع قرار إطلاق قائمة مفرد حسب مفتاح——Tab تأكيد عال مضيء تكملة كل بند (يمكن تحت حفر بند فإن تحت حفر) ،Escape و Shift+Tab مغادرة فتح قائمة مفرد كما لا اختيار تحديد——ذلك بقية حسب مفتاح تسليم إعطاء تحرير جهاز ذاته. وصل إدارة مفتاح قرص طفو طبقة عبر `SessionInput.focus()` يأخذ مفتاح قرص أيضا عودة قدوم، هذا مسار مشي Lexical ذاتي ذات focus، لذلك ضوء علامة عودة إلى مسودة مسودة أصل قدوم موضع بينما لا هو فتح رأس.
 
-默认发送采用乐观提交：Enter 在同一事务里清空草稿、occurrence 表和撤销历史，composer 保持 `plain`，发送作为 detached attempt 运行，发送期间可以继续输入和提交。`sendSession` 在序列化之前用投递模式注册 Session 提交回显（`session.beginSubmission`），并在 `pendingSubmissions` 中保留图片与文件的选择顺序；Session 根据该模式与当前运行状态推导位置，因此空闲发送进入 transcript（文本记录），繁忙时 Queue 进入 QueueDock，繁忙时 Steer 进入 pending-steering 区域。随后让出一帧，图片经浏览器原生 `FileReader` data-URL 路径编码，文件则引用已暂存凭证。命令提交也用同一凭证表示通用文件，因此发送 `/goal` 或 `/plan` 时不会再次读取这些浏览器文件。提示词复用提交 `requestId`；queue 或历史以同一 `rpcId` 被观察后，回显只退休一次。多个并发发送失败时，在用户编辑还原内容之前按提交顺序合并还原；命令提交保持冻结的 `submitting` 阶段。Detached attempt 持有附件 id，直到 admission 完成或 Session scope 销毁。回显以 observed 退休时，durable 图片缓存立即公开每个预览 URL，读取 admitted 附件后用规范化 URL 替换预览，并在各 URL 停止使用后撤销，同时释放文件卡。选中的通用文件进入同一个先进先出的后台上传队列；`maxConcurrentFileUploads` 默认允许两个 Worker transport 同时运行，Conversation 服务在切换 Session 时继续持有排队和运行中的传输操作及字节进度，移除草稿会跳过排队中的传输或中止正在运行的传输。continuable 子代理禁用附件入口，也不创建本地回显，因为其 transport 不保留浏览器 request id。
+افتراضي إرسال اعتماد مرح مراقبة إيداع:Enter في نفس أمر خدمة داخل صاف فارغ مسودة مسودة،occurrence جدول و سحب إلغاء تاريخ،composer إبقاء `plain`، إرسال بصفة detached attempt تشغيل، إرسال خلال يمكن متابعة إدخال و إيداع.`sendSession` في تسلسل تحويل قبل استخدام إلقاء تمرير نمط تسجيل Session إيداع عودة إظهار (`session.beginSubmission`) ، و في `pendingSubmissions` في إبقاء صورة و ملف اختيار ترتيب؛Session أصل حسب هذا نمط و حالي تشغيل حالة دفع توجيه موضع، لذلك فارغ خامل إرسال دخول transcript(نص سجل) ، كثيف مشغول وقت Queue دخول QueueDock، كثيف مشغول وقت Steer دخول pending-steering منطقة مجال. مع بعد يجعل خروج واحد لقطة، صورة مرور متصفح أصلي `FileReader` data-URL مسار تحرير رمز، ملف فإن مرجع قد مؤقت تخزين سند إثبات. أمر إيداع أيضا استخدام نفس سند إثبات يمثل عام ملف، لذلك إرسال `/goal` أو `/plan` وقت لن مجددا مرة قراءة هذه متصفح ملف. نص التوجيه إعادة استخدام إيداع `requestId`؛queue أو تاريخ بـ نفس `rpcId` يتم مراقبة بعد، عودة إظهار فقط تراجع راحة مرة. كثير عدد تزامن إرسال فشل وقت، في مستخدم تحرير أيضا أصل محتوى قبل حسب إيداع ترتيب دمج أيضا أصل؛ أمر إيداع إبقاء تجميد ربط `submitting` مرحلة مقطع.Detached attempt يحتفظ مرفق عنصر id، مباشر إلى admission إتمام أو Session scope إلغاء تدمير. عودة إظهار بـ observed تراجع راحة وقت،durable صورة ذاكرة مؤقتة قيام أي عام كل معاينة URL، قراءة admitted مرفق عنصر بعد استخدام مواصفة تحويل URL استبدال معاينة، و في كل URL إيقاف استخدام بعد سحب إلغاء، معا تحرير ملف بطاقة. اختيار في عام ملف دخول نفس عدد أولا دخول أولا خروج خلفية فوق نقل طابور صف؛`maxConcurrentFileUploads` افتراضي سماح اثنان عدد Worker transport معا تشغيل،Conversation خدمة في تبديل Session وقت متابعة يحتفظ ترتيب طابور و تشغيل في نقل عملية و بايت دخول درجة، إزالة مسودة مسودة سوف قفز مرور ترتيب طابور في نقل أو في توقف صحيح في تشغيل نقل.continuable فرعي بديل إدارة منع استخدام مرفق عنصر مدخل، أيضا لا إنشاء محلي عودة إظهار، لأن ذلك transport لا إبقاء متصفح request id.
 
-排队提交的本地回显在禁用的编辑、删除、插话按钮旁显示“发送中…”；折叠后的队列在标题栏保留发送状态。匹配的 Host 队列行替换回显后，各操作按原有的纯文本内容和运行状态要求启用。仅收到提示词确认不会启用队列操作。提交失败会移除回显并显示错误；输入框为空或仍保留上一次自动恢复的内容时，composer 恢复失败草稿，保留用户随后输入的文字。
+ترتيب طابور إيداع محلي عودة إظهار في منع استخدام تحرير، حذف، إدراج كلام حسب زر جانب عرض “إرسال في…” ؛ طي بعد طابور صف في عنوان شريط إبقاء إرسال حالة. مطابقة Host طابور صف سطر استبدال عودة إظهار بعد، كل عملية حسب أصل لديه صاف نص محتوى و تشغيل حالة اشتراط تفعيل. فقط استلام إلى نص التوجيه تأكيد لن تفعيل طابور صف عملية. إيداع فشل سوف إزالة عودة إظهار و عرض خطأ؛ إدخال إطار لـ فارغ أو ما زال إبقاء فوق مرة تلقائي استعادة محتوى وقت،composer استعادة فشل مسودة مسودة، إبقاء مستخدم مع بعد إدخال نص حرف.
 
-Send 和 Stop 按钮禁用时不显示提示气泡，轮次结束后由 Stop 切换成禁用 Send 的按钮也遵循此规则。普通 composer 运行时，如果草稿为空或输入不可用，主指针操作保持为 Stop。可提交的文字或附件会把同一位置切换为 Send；清空或成功提交草稿后恢复 Stop。繁忙态 Enter 设置为普通 Session 与可继续 child 选择 Queue 或 Steer 投递，运行中的 Send 按钮按 plain Enter 解析出的同一模式投递；当它在普通消息草稿上可用（没有待上传文件）时，其标签以该模式命名（排队发送或插话发送），因此该设置同时约束 Enter 与按钮，而 Cmd/Ctrl+Enter 仍使用另一模式；空闲会话、空草稿与 `/` 命令行保留普通的 Send 标签（[决策](../../../.agents/notes/implemented/bug-fix/2026-09-04-busy-send-button-follows-enter-setting.zh.md)）。它们的 QueueDock 行共享 Edit、Remove 与 Steer，空草稿也共享 steer-all 组合键。One-shot child 继续只读。Plan Mode 与 active goal 不改变附件入口。可继续 child 保留独立的 Send 与 Stop 操作，但不提供「文件」菜单项、粘贴或拖放入口；parent 离线时，Send 与 composer 手势锁定，但在线 inbox 的 QueueDock 控制仍可使用（[决策](../../../.agents/notes/archived/bug-fix/2026-08-20-running-draft-primary-send.md)、[inbox 控制](../../../.agents/notes/implemented/feature/2026-08-27-continuable-subagent-human-inbox-control.zh.md)）。
+Send و Stop حسب زر منع استخدام وقت لا عرض تلميح هواء فقاعة، جولة انتهاء بعد من Stop تبديل صار منع استخدام Send حسب زر أيضا التزام دوران هذا قاعدة. عادي composer وقت التشغيل، إذا مسودة مسودة لـ فارغ أو إدخال غير ممكن استخدام، رئيسي إشارة إبرة عملية إبقاء لـ Stop. يمكن إيداع نص حرف أو مرفق عنصر سوف يأخذ نفس موضع تبديل لـ Send؛ صاف فارغ أو نجاح إيداع مسودة مسودة بعد استعادة Stop. كثيف مشغول حالة Enter ضبط لـ عادي Session و يمكن متابعة child اختيار Queue أو Steer إلقاء تمرير، تشغيل في Send حسب زر حسب plain Enter تحليل خروج نفس نمط إلقاء تمرير؛ عند هو في عادي رسالة مسودة مسودة فوق متاح (لا يوجد انتظار فوق نقل ملف) وقت، ذلك وسم بـ هذا نمط تسمية (ترتيب طابور إرسال أو إدراج كلام إرسال) ، لذلك هذا ضبط معا قيد Enter و حسب زر، بينما Cmd/Ctrl+Enter ما زال استخدام آخر نمط؛ فارغ خامل جلسة، فارغ مسودة مسودة و `/` أمر سطر إبقاء عادي Send وسم ([قرار](../../../.agents/notes/implemented/bug-fix/2026-09-04-busy-send-button-follows-enter-setting.zh.md)). هو جمع QueueDock سطر مشترك Edit،Remove و Steer، فارغ مسودة مسودة أيضا مشترك steer-all تركيب مفتاح.One-shot child متابعة فقط قراءة.Plan Mode و active goal لا تغيير مرفق عنصر مدخل. يمكن متابعة child إبقاء مستقل Send و Stop عملية، لكن لا توفير «ملف» قائمة مفرد بند، لصق لصق أو سحب وضع مدخل؛parent مغادرة خط وقت،Send و composer يد اتجاه قفل تحديد، لكن في خط inbox QueueDock تحكم ما زال يمكن استخدام ([قرار](../../../.agents/notes/archived/bug-fix/2026-08-20-running-draft-primary-send.md) ،[inbox تحكم](../../../.agents/notes/implemented/feature/2026-08-27-continuable-subagent-human-inbox-control.zh.md)).
 
-文件标签和可编辑的 skill 引用共用覆盖整个引用的悬停背景，并跟随输入框的行高与文字基线。首次点击立即由已注册的引用来源负责打开预览，包括双击序列的第一次点击。后续点击保留原生文本选择行为；已有非折叠选区时，指针点击不打开预览。预览不改变草稿、剪贴板文本或提交内容。
+ملف وسم و يمكن تحرير skill مرجع مشترك استخدام تغطية كامل مرجع معلق توقف خلف مشهد، و تتبع مع إدخال إطار سطر عال و نص حرف أساس خط. أول مرة نقر قيام أي من قد تسجيل مرجع مصدر مسؤول فتح معاينة، يشمل مزدوج ضرب تسلسل رقم مرة نقر. لاحق نقر إبقاء أصلي نص اختيار سلوك؛ قد لديه غير طي اختيار منطقة وقت، إشارة إبرة نقر لا فتح معاينة. معاينة لا تغيير مسودة مسودة، قص لصق لوح نص أو إيداع محتوى.
 
-当会话被其他写句柄占用时，发送失败的 toast 提示用户退出其他正在运行的 DSH 后重试。
+عند جلسة يتم أخرى كتابة جملة مقبض احتلال استخدام وقت، إرسال فشل toast تلميح مستخدم خروج أخرى صحيح في تشغيل DSH بعد إعادة محاولة.
 
 <a id="temporary-composer-entries"></a>
-## 临时 composer entry
+## مؤقت composer entry
 
-`conversation.composer` 是通用 chain，其完整 owner currency 为：
+`conversation.composer` هو عام chain، ذلك كامل owner currency لـ:
 
 ```ts type-equiv
 /** Owner values used to elect a composer takeover. */
@@ -87,7 +87,7 @@ interface ComposerChainProps {
 }
 ```
 
-业务包仅可在一个 Remote waterfall request pending 期间安装 entry：
+عمل خدمة حزمة فقط يمكن في واحد Remote waterfall request pending خلال تثبيت entry:
 
 ```tsx
 import type { ComposerChainProps } from '@deepseek-ai/dsh-client-ui-conversation/client'
@@ -116,33 +116,33 @@ try {
 }
 ```
 
-selector 必须是 owner currency 的纯函数。非 null 返回值作为 `matched` 传给组件；`PropsRuntime<'conversation.composer'>` 提供标准 Session 与 global props。Chain 顺序仍按 `priority` 升序，再按注册顺序；首个返回非 null 的 selector 获选。Shell 会在 takeover 下保持默认 composer 挂载。Request 状态、listener、response encoding 和任何 request-specific child slot 都属于业务 package，不进入 `SessionSnapshot`，也不由 core 包声明。
+selector يجب هو owner currency صاف دالة. غير null قيمة راجعة بصفة `matched` نقل إعطاء مكون؛`PropsRuntime<'conversation.composer'>` توفير معيار Session و global props.Chain ترتيب ما زال حسب `priority` رفع ترتيب، مجددا حسب تسجيل ترتيب؛ أول عدد إرجاع غير null selector نيل اختيار.Shell سوف في takeover تحت إبقاء افتراضي composer تركيب.Request حالة،listener،response encoding و أي request-specific child slot كل يخص عمل خدمة package، لا دخول `SessionSnapshot`، أيضا لا من core حزمة إعلان.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为本包渲染浏览器状态，并通过 Session Controller API 发送用户确认提交的输入，而不构造模型请求。
+بلا، لأن هذه الحزمة تصيير متصفح حالة، و عبر Session Controller API إرسال مستخدم تأكيد إيداع إدخال، بينما لا بنية صنع نموذج طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；Conversation 组装和浏览器输入状态不会改变提供方侧的 prompt cache。
+بلا؛Conversation تجميع و متصفح إدخال حالة لن تغيير مزود جانب prompt cache.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **只有已注册 target 可以渲染**——除已注册的 `chat` 偏好外，shell 刻意不提供隐式 fallback target。
-- **Factory occurrence 继承渲染位置的 Session**——`conversation.content` 不接受独立寻址的 Session；该能力需要单独的 Session provider。
+- **فقط لديه قد تسجيل target يمكن تصيير**——حذف قد تسجيل `chat` انحراف جيد خارج،shell لحظة معنى لا توفير خفي صيغة fallback target.
+- **Factory occurrence وراثة تصيير موضع Session**——`conversation.content` لا قبول مستقل بحث عنوان Session؛ هذا قدرة حاجة مفرد وحيد Session provider.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。Conversation Definition、target builder 与 View 已由其所属注册表和 Slot ledger 校验。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.Conversation Definition،target builder و View قد من ذلك الذي تابع سجل التسجيل و Slot ledger تحقق.

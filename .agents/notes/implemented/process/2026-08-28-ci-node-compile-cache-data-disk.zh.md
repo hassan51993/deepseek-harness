@@ -1,43 +1,43 @@
-# Agent Note: 将 Node 编译缓存重定向到数据卷 runner 临时目录
+# Agent Note: سوف Node تحرير ترجمة ذاكرة مؤقتة إعادة تحديد نحو إلى بيانات لفة runner مؤقت دليل
 
 Status: implemented
 
-[English](2026-08-28-ci-node-compile-cache-data-disk.md) | 中文
+[English](2026-08-28-ci-node-compile-cache-data-disk.md) | العربية
 
-## 问题
+## مشكلة
 
-自托管 Linux CI 虚拟机（`vm-backup` 池，32 个 runner 实例共宿一机）的根分区 inode 正在耗尽。issue #3134 的残留（`/tmp/dsh-*`）是来源之一；第二个、更大的来源是 Node.js 模块编译缓存。CI 工具链中的工具显式调用 `module.enableCompileCache()`：pnpm 11.7.0 在入口（`bin/pnpm.mjs` 中的 `module.enableCompileCache?.()`）每次调用都启用缓存，TypeScript 在 `tsc`/`tsserver` 中启用；vitest 转发该 API 但自身不启用。每次这样的调用都把序列化 V8 字节码缓存写到 `os.tmpdir()/node-compile-cache`。在共享虚拟机上即根分区的 `/tmp`：2026-08-28 实测为 **697,389 个 inode、9.2 GB**，其中 34,110 个文件不足 1 小时——缓存每次 CI 运行都在增长且从不清理，即使 `dsh-*` 残留被控制，根分区 3,276,800 个 inode 仍趋向耗尽。
+ذاتي حمل إدارة Linux CI وهمي محاكاة آلة (`vm-backup` حوض،32 عدد runner نسخة مشترك مضيف واحد آلة) أصل قسم منطقة inode صحيح في استهلاك كل.issue #3134 ناقص إبقاء (`/tmp/dsh-*`) هو مصدر لـ واحد؛ ثاني عدد، أكثر كبير مصدر هو Node.js وحدة تحرير ترجمة ذاكرة مؤقتة.CI أداة سلسلة في أداة صريح استدعاء `module.enableCompileCache()`:pnpm 11.7.0 في مدخل (`bin/pnpm.mjs` في `module.enableCompileCache?.()`) كل مرة استدعاء كل تفعيل ذاكرة مؤقتة،TypeScript في `tsc`/`tsserver` في تفعيل؛vitest تحويل إرسال هذا API لكن ذاته لا تفعيل. كل مرة هذا مثال استدعاء كل يأخذ تسلسل تحويل V8 بايت رمز ذاكرة مؤقتة كتابة إلى `os.tmpdir()/node-compile-cache`. في مشترك وهمي محاكاة آلة فوق أي أصل قسم منطقة `/tmp`:2026-08-28 فعلي قياس لـ **697,389 عدد inode،9.2 GB**، منها 34,110 عدد ملف لا كاف 1 صغير وقت——ذاكرة مؤقتة كل مرة CI تشغيل كل في زيادة طويل كما من لا تنظيف، أي جعل `dsh-*` ناقص إبقاء يتم تحكم، أصل قسم منطقة 3,276,800 عدد inode ما زال اتجاه نحو استهلاك كل.
 
-## 决策
+## قرار
 
-每个可能运行在 `vm-backup` 池的 Linux lane（`ci.yml` static/coverage/snapshots——默认 hosted，仅 `DSH_CI_FAILOVER_LINUX=selfhosted` 时自托管；`ci-master.yml` serial standby——始终自托管）都把 `NODE_COMPILE_CACHE` 重定向到 per-runner 数据卷临时目录 `${{ runner.temp }}/node-compile-cache`。`runner.temp` 在 `/data_local`（1 TB，inode 用量约 1%）上，per-runner（`_workNN/_temp`），因此缓存不再消耗根分区 inode。
+كل ممكن تشغيل في `vm-backup` حوض Linux lane(`ci.yml` static/coverage/snapshots——افتراضي hosted، فقط `DSH_CI_FAILOVER_LINUX=selfhosted` وقت ذاتي حمل إدارة؛`ci-master.yml` serial standby——بداية نهاية ذاتي حمل إدارة) كل يأخذ `NODE_COMPILE_CACHE` إعادة تحديد نحو إلى per-runner بيانات لفة مؤقت دليل `${{ runner.temp }}/node-compile-cache`.`runner.temp` في `/data_local`(1 TB،inode استخدام كمية نحو 1%) فوق،per-runner(`_workNN/_temp`) ، لذلك ذاكرة مؤقتة لم يعد إزالة استهلاك أصل قسم منطقة inode.
 
-重定向是在 `actions/checkout` 之后的一个 step，把 `NODE_COMPILE_CACHE=${{ runner.temp }}/node-compile-cache` 写入 `$GITHUB_ENV`，因此 lane 中后续每个 step——`pnpm/action-setup`、store 路径探测、安装、Playwright 安装和测试门禁——都会继承该变量。必须用注入而非 job 级 env：`runner` 上下文在 job 级 `env` 不可用（与早前 TMPDIR 工作相同的约束）；而仅给门禁 step 设 step 级 env 会让更早的 pnpm 调用继续写根分区 `/tmp`。sandbox（bwrap/Landlock）未授权 `runner.temp` 路径的受限子进程会继承该变量但**静默跳过缓存**——已在虚拟机上验证：`NODE_COMPILE_CACHE` 指向 bwrap 内未授权路径时，`node` 正常运行（exit 0），与 `mkdtemp` 的只读文件系统硬失败不同。编译缓存按设计是尽力而为；写失败只是缓存未命中，不是崩溃。
+إعادة تحديد نحو هو في `actions/checkout` بعد واحد step، يأخذ `NODE_COMPILE_CACHE=${{ runner.temp }}/node-compile-cache` كتابة `$GITHUB_ENV`، لذلك lane في لاحق كل step——`pnpm/action-setup`،store مسار استكشاف قياس، تثبيت،Playwright تثبيت و اختبار بوابة——كل سوف وراثة هذا متغير. يجب استخدام حقن بينما غير job درجة env:`runner` سياق في job درجة `env` غير ممكن استخدام (و مبكر قبل TMPDIR عمل نفسه قيد) ؛ بينما فقط إعطاء بوابة step ضبط step درجة env سوف يجعل أكثر مبكر pnpm استدعاء متابعة كتابة أصل قسم منطقة `/tmp`.sandbox(bwrap/Landlock) لم تخويل `runner.temp` مسار تلقي حد عملية فرعية سوف وراثة هذا متغير لكن**ساكن صامت قفز مرور ذاكرة مؤقتة**——قد في وهمي محاكاة آلة فوق تحقق:`NODE_COMPILE_CACHE` إشارة نحو bwrap داخل لم تخويل مسار وقت،`node` صحيح معتاد تشغيل (exit 0) ، و `mkdtemp` فقط قراءة نظام الملفات صلب فشل مختلف. تحرير ترجمة ذاكرة مؤقتة حسب تصميم هو كل قوة بينما لـ؛ كتابة فشل فقط هو ذاكرة مؤقتة لم أمر في، لا هو انهيار انهيار.
 
-## 验证
+## تحقق
 
-- VM 探针：`NODE_COMPILE_CACHE=/data_local/ci/compile-cache-probe node -e 'require("node:fs")'` 在数据盘写出了 `v22.23.2-x64-*` 缓存子目录（位置切换生效）。
-- VM 探针（bwrap）：`NODE_COMPILE_CACHE` 指向 bwrap profile 未授权的路径时，`node` 正常运行（exit 0）——缓存写失败被容忍。
-- `scripts/ci-workflow.spec.ts` 断言每个 Linux lane 都在 `pnpm/action-setup` 之前把 `NODE_COMPILE_CACHE=${{ runner.temp }}/node-compile-cache`（`$GITHUB_ENV` 的 `KEY=VALUE` 行）注入 `$GITHUB_ENV`；位置断言在注入移出首次 pnpm 调用之后时会失败。
-- CI lane：三个必需的 Linux job（默认 hosted，`DSH_CI_FAILOVER_LINUX` 时自托管 `vm-backup`）会在新 env 下跑完整套件；缓存处理回归会表现为 lane 失败。
+- VM استكشاف إبرة:`NODE_COMPILE_CACHE=/data_local/ci/compile-cache-probe node -e 'require("node:fs")'` في بيانات قرص كتابة خروج `v22.23.2-x64-*` ذاكرة مؤقتة فرعي دليل (موضع تبديل توليد فاعلية).
+- VM استكشاف إبرة (bwrap):`NODE_COMPILE_CACHE` إشارة نحو bwrap profile لم تخويل مسار وقت،`node` صحيح معتاد تشغيل (exit 0)——ذاكرة مؤقتة كتابة فشل يتم سعة تحمل.
+- `scripts/ci-workflow.spec.ts` تأكيد كل Linux lane كل في `pnpm/action-setup` قبل يأخذ `NODE_COMPILE_CACHE=${{ runner.temp }}/node-compile-cache`(`$GITHUB_ENV` `KEY=VALUE` سطر) حقن `$GITHUB_ENV`؛ موضع تأكيد في حقن نقل خروج أول مرة pnpm استدعاء بعد وقت سوف فشل.
+- CI lane: ثلاثة عدد مطلوب Linux job(افتراضي hosted،`DSH_CI_FAILOVER_LINUX` وقت ذاتي حمل إدارة `vm-backup`) سوف في جديد env تحت ركض كامل طقم عنصر؛ ذاكرة مؤقتة معالجة ارتداد سوف جدول الآن لـ lane فشل.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-### 为什么不彻底禁用编译缓存？
+### لـ ماذا لا تام قاع منع استخدام تحرير ترجمة ذاكرة مؤقتة؟
 
-`NODE_DISABLE_COMPILE_CACHE=1` 会立即停止根分区增长，但会放弃每次运行的启动加速，而缓存是 Node 正当有用的特性（由 pnpm 和 TypeScript 显式启用）。重定向在保留收益的同时把成本移出受限分区。
+`NODE_DISABLE_COMPILE_CACHE=1` سوف قيام أي إيقاف أصل قسم منطقة زيادة طويل، لكن سوف وضع ترك كل مرة تشغيل بدء إضافة سرعة، بينما ذاكرة مؤقتة هو Node صحيح عند لديه استخدام خاص صفة (من pnpm و TypeScript صريح تفعيل). إعادة تحديد نحو في إبقاء استلام فائدة معا يأخذ صار هذا نقل خروج تلقي حد قسم منطقة.
 
-### 为什么不把 `node-compile-cache` 纳入 `dsh-*` 清理？
+### لـ ماذا لا يأخذ `node-compile-cache` قبول دخول `dsh-*` تنظيف؟
 
-CI 清理（残留清理改动中新增）针对测试残留；编译缓存是缓存而非残留。每次运行删掉它会丢弃缓存本要提供的加速。重定向是结构性修复：缓存的增长移到为它准备的卷上。
+CI تنظيف (ناقص إبقاء تنظيف تعديل في إضافة جديدة) إبرة مقابل اختبار ناقص إبقاء؛ تحرير ترجمة ذاكرة مؤقتة هو ذاكرة مؤقتة بينما غير ناقص إبقاء. كل مرة تشغيل حذف إسقاط هو سوف إسقاط ذاكرة مؤقتة هذا يلزم توفير إضافة سرعة. إعادة تحديد نحو هو بنية صفة إصلاح: ذاكرة مؤقتة زيادة طويل نقل إلى لـ هو دقيق تجهيز لفة فوق.
 
-### 为什么不用 job 级 env 或只给门禁 step 设 env？
+### لـ ماذا لا استخدام job درجة env أو فقط إعطاء بوابة step ضبط env؟
 
-`runner` 上下文只在 step 级 `env` 可用；job 级 `env` 会求值为空字符串（GitHub contexts-availability），静默让缓存留在根分区。只给门禁 step 设 step 级 env 也只覆盖那一个 step：lane 中更早的每次 pnpm 调用（setup、store 路径探测、安装）仍会写根分区 `/tmp`。在 checkout 与 `pnpm/action-setup` 之间的 step 注入 `$GITHUB_ENV`，使变量在 lane 首次 pnpm 调用之前生效，一个 step 即可覆盖整条 lane。
+`runner` سياق فقط في step درجة `env` متاح؛job درجة `env` سوف طلب قيمة لـ فارغ نص (GitHub contexts-availability) ، ساكن صامت يجعل ذاكرة مؤقتة إبقاء في أصل قسم منطقة. فقط إعطاء بوابة step ضبط step درجة env أيضا فقط تغطية ذلك واحد step:lane في أكثر مبكر كل مرة pnpm استدعاء (setup،store مسار استكشاف قياس، تثبيت) ما زال سوف كتابة أصل قسم منطقة `/tmp`. في checkout و `pnpm/action-setup` بين step حقن `$GITHUB_ENV`، جعل متغير في lane أول مرة pnpm استدعاء قبل توليد فاعلية، واحد step يكفي تغطية كامل بند lane.
 
-## 后果
+## عاقبة
 
-- **买到**：Node 编译缓存不再消耗根分区 inode；该来源的 inode 压力被移除且不损失缓存的启动收益。缓存现在位于数据卷上的 per-runner `_workNN/_temp`。
-- **代价**：缓存在 `runner.temp` 累积，而 runner 不会在 job 之间清空它（早前实测）——但在数据卷（inode 用量约 1%）上无碍。
-- **代价**：没有 `runner.temp` 授权的受限子进程会为其自身的 `node` 调用跳过缓存；这是缓存未命中而非失败，符合 Node 的尽力而为契约。
-- **代价**：改动只涉及 CI 配置；本地开发保持默认 `os.tmpdir()` 位置。
+- **شراء إلى**:Node تحرير ترجمة ذاكرة مؤقتة لم يعد إزالة استهلاك أصل قسم منطقة inode؛ هذا مصدر inode ضغط قوة يتم إزالة كما لا ضرر فقد ذاكرة مؤقتة بدء استلام فائدة. ذاكرة مؤقتة الآن يقع في بيانات لفة فوق per-runner `_workNN/_temp`.
+- **بديل قيمة**: ذاكرة مؤقتة في `runner.temp` تراكم تراكم، بينما runner لن في job بين صاف فارغ هو (مبكر قبل فعلي قياس)——لكن في بيانات لفة (inode استخدام كمية نحو 1%) فوق بلا عائق.
+- **بديل قيمة**: لا يوجد `runner.temp` تخويل تلقي حد عملية فرعية سوف لـ ذلك ذاته `node` استدعاء قفز مرور ذاكرة مؤقتة؛ هذا هو ذاكرة مؤقتة لم أمر في بينما غير فشل، رمز دمج Node كل قوة بينما لـ عقد نحو.
+- **بديل قيمة**: تعديل فقط تعلق و CI إعداد؛ محلي تطوير إبقاء افتراضي `os.tmpdir()` موضع.

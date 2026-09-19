@@ -1,14 +1,14 @@
-# 工具
+# أداة
 
-[English](tools.md) | 中文
+[English](tools.md) | العربية
 
-[dsh-tools](../../packages/core/tools) 的工具流水线。[core.md](core.zh.md) 介绍了核心包共用、用于编写流水线的类型 `ToolDefinition`；面向模型的 [`ToolSchema`](llm-streaming.zh.md#the-model-request-and-result) 协议类型与模型请求一起声明。本页记录 `ToolDefinition` 的每个字段、用于构建它的类型化 schema DSL、带守卫的执行类型和 UI 展示类型。
+[dsh-tools](../../packages/core/tools) أداة خط الإنتاج.[core.md](core.zh.md) وسيط تعريف نواة قلب حزمة مشترك استخدام، لأجل تحرير كتابة خط الإنتاج نوع `ToolDefinition`؛ موجه إلى نموذج [`ToolSchema`](llm-streaming.zh.md#the-model-request-and-result) بروتوكول نوع و نموذج طلب واحد بدء إعلان. هذا صفحة سجل `ToolDefinition` كل حقل، لأجل بناء هو نوع تحويل schema DSL، حمل حراسة حماية تنفيذ نوع و UI عرض نوع.
 
-源码：[`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts) · [`packages/core/tools/src/schema.ts`](../../packages/core/tools/src/schema.ts) · [`packages/core/tools/src/presentation.ts`](../../packages/core/tools/src/presentation.ts)
+شفرة المصدر:[`packages/core/tools/src/index.ts`](../../packages/core/tools/src/index.ts) · [`packages/core/tools/src/schema.ts`](../../packages/core/tools/src/schema.ts) · [`packages/core/tools/src/presentation.ts`](../../packages/core/tools/src/presentation.ts)
 
-## `ToolDefinition` — 一个已注册的工具
+## `ToolDefinition` — واحد قد تسجيل أداة
 
-由一个 `ToolSchema`（面向模型的字段）、必需的规范输出声明、`execute` 函数、仅供宿主使用的调度器元数据、可选的最终内容回调和可选 UI 展示函数组成。注册表持有这些定义，循环通过它们分派调用。注册表的 `schemas()` 通过显式允许列表构建面向模型的 `ToolSchema[]`；`output`/`execute`/`finalizeContent`/`timeoutMs`/`isConcurrencySafe`/`presentCall`/`presentResult` 绝不能泄漏到模型请求中。
+من واحد `ToolSchema`(موجه إلى نموذج حقل) ، مطلوب مواصفة إخراج إعلان،`execute` دالة، فقط توفير مضيف استخدام مجدول بيانات وصفية، اختياري نهائي محتوى عودة ضبط و اختياري UI عرض دالة مجموعة صار. سجل التسجيل يحتفظ هذه تعريف، حلقة عبر هو جمع قسم إرسال استدعاء. سجل التسجيل `schemas()` عبر صريح سماح قائمة بناء موجه إلى نموذج `ToolSchema[]`؛`output`/`execute`/`finalizeContent`/`timeoutMs`/`isConcurrencySafe`/`presentCall`/`presentResult` أبدا قدرة تسرب تسرب إلى نموذج طلب في.
 
 ```ts type-equiv
 /** Tool-owned canonical output contract used after the body returns a JSON value. */
@@ -93,13 +93,13 @@ interface ToolDefinition extends ToolSchema {
 }
 ```
 
-`execute` 接收 `args: unknown`——原始的 `ToolDefinition` 自行校验输入。第一方工具不需要手写校验；它们使用 `defineTool`，由后者代为校验并收窄参数类型、根据 `output.schema` 推导函数体返回类型，并为两个输出投影器提供类型约束。`finalizeContent` 特意接收不可变的执行对象而非类型化参数，因为无效输入和外层流水线失败也会到达该回调；它可以施加工具自有的内容限制，同时保留 `isError`、规范值、结构化错误身份、延迟上下文与展示元数据。
+`execute` استقبال `args: unknown`——أصلي `ToolDefinition` ذاتي سطر تحقق إدخال. رقم واحد جهة أداة لا حاجة يد كتابة تحقق؛ هو جمع استخدام `defineTool`، من بعد من بديل لـ تحقق و استلام ضيق معامل نوع، أصل حسب `output.schema` دفع توجيه دالة جسم إرجاع نوع، و لـ اثنان عدد إخراج إسقاط جهاز توفير نوع قيد.`finalizeContent` خاص معنى استقبال غير ممكن تغيير تنفيذ كائن بينما غير نوع تحويل معامل، لأن بلا فاعلية إدخال و خارج طبقة خط الإنتاج فشل أيضا سوف وصول هذا عودة ضبط؛ هو يمكن تطبيق إضافة أداة ذاتي لديه محتوى حد، معا إبقاء `isError`، مواصفة قيمة، بنية تحويل خطأ هوية، تأخير متأخر سياق و عرض بيانات وصفية.
 
-## 统一的 JSON 值 schema DSL
+## موحد واحد JSON قيمة schema DSL
 
-插件作者使用同一套词汇描述类型化参数和类型化输出值。`ValueSchemaSpec` 支持 `string`、`number`、`integer`、`boolean`、`null`、`array`、`object`、仅作者侧可用的 `json`，以及要求恰好命中一个分支的 `oneOf`；标量 `enum` 和 `const` 值必须与节点类型匹配。显式对象节点始终声明 `additionalProperties: true | false`。参数定义仍是隐式的开放对象属性映射，每个必填属性都附带 `required: true`。
+إضافة عمل من استخدام نفس طقم مفردات وصف نوع تحويل معامل و نوع تحويل إخراج قيمة.`ValueSchemaSpec` دعم حمل `string`،`number`،`integer`،`boolean`،`null`،`array`،`object`، فقط عمل من جانب متاح `json`، و اشتراط تماما جيد أمر في واحد فرع `oneOf`؛ علامة كمية `enum` و `const` قيمة يجب و عقدة نوع مطابقة. صريح كائن عقدة بداية نهاية إعلان `additionalProperties: true | false`. معامل تعريف ما زال هو خفي صيغة فتح وضع كائن خاصية خريطة، كل لا بد ملء خاصية كل مرفق حمل `required: true`.
 
-源码：[`packages/core/tools/src/schema.ts`](../../packages/core/tools/src/schema.ts)
+شفرة المصدر:[`packages/core/tools/src/schema.ts`](../../packages/core/tools/src/schema.ts)
 
 ```ts type-equiv
 /** One author-facing schema for any lossless JSON value root. */
@@ -131,7 +131,7 @@ type ParameterSchemaSpec = {
 }
 ```
 
-`{ type: 'json' }` 推导为 `JsonValue`，并编译成仅含注解、不施加约束的原始 schema。输出根可以是对象、数组、标量或 null。`InferValue<S>` 在 16 层容器内保留字面量约束与对象开放性，之后回退为 `JsonValue`，避免耗尽 TypeScript 的类型实例化栈。`InferArgs<P>` 依据逐属性的必填标记生成必填和可选的字符串键：
+`{ type: 'json' }` دفع توجيه لـ `JsonValue`، و تحرير ترجمة صار فقط يحتوي ملاحظة حل، لا تطبيق إضافة قيد أصلي schema. إخراج أصل يمكن هو كائن، عدد مجموعة، علامة كمية أو null.`InferValue<S>` في 16 طبقة حاوية داخل إبقاء حرف وجه كمية قيد و كائن فتح وضع صفة، بعد رجوع لـ `JsonValue`، تجنب تجنب استهلاك كل TypeScript نوع نسخة تحويل مكدس.`InferArgs<P>` اعتماد حسب تدريجي خاصية لا بد ملء علامة توليد لا بد ملء و اختياري نص مفتاح:
 
 ```ts type-equiv
 /**
@@ -146,13 +146,13 @@ type InferValue<S> = InferValueAt<S, []>
 type InferArgs<S> = InferProperties<S, []>
 ```
 
-`defineTool({ name, description, parameters, output, execute, … })` 将参数推导与 `parameterSchemaSpecToJsonSchema()` 和 `validateArgs()` 绑定，并将 `execute`/`render`/`presentationMeta` 与 `InferValue<OutputSchema>` 绑定。schema 记录只包含自有且可枚举的字符串键，schema 数组是稠密的内建数组，因此推导、编译与校验观察到的是同一份声明。精确推导保持到 16 层容器，之后放宽为 `JsonValue`；运行时校验仍会继续遍历完整 schema。`valueSchemaSpecToJsonSchema()` 通过同一套已强制执行的原始子集编译输出声明。参数不匹配时抛出 `ToolArgsError`（`INVALID_ARGS`）；函数体或后置策略产生的值无效时抛出 `ToolOutputError`（`INVALID_TOOL_OUTPUT`）。两者都经由常规工具错误路径处理。原始 JSON Schema 默认保持开放；不支持的关键字会被拒绝，而不会在未强制执行的情况下获准进入。
+`defineTool({ name, description, parameters, output, execute, … })` سوف معامل دفع توجيه و `parameterSchemaSpecToJsonSchema()` و `validateArgs()` ربط، و سوف `execute`/`render`/`presentationMeta` و `InferValue<OutputSchema>` ربط.schema سجل فقط يتضمن ذاتي لديه كما يمكن قطعة رفع نص مفتاح،schema عدد مجموعة هو كثيف سري داخل بناء عدد مجموعة، لذلك دفع توجيه، تحرير ترجمة و تحقق مراقبة إلى هو نفس نسخة إعلان. دقيق دفع توجيه إبقاء إلى 16 طبقة حاوية، بعد وضع عرض لـ `JsonValue`؛ وقت التشغيل تحقق ما زال سوف متابعة مرة تاريخ كامل schema.`valueSchemaSpecToJsonSchema()` عبر نفس طقم قد قوي صنع تنفيذ أصلي فرعي تجميع تحرير ترجمة إخراج إعلان. معامل لا مطابقة وقت رمي خروج `ToolArgsError`(`INVALID_ARGS`) ؛ دالة جسم أو بعد وضع سياسة إنتاج قيمة بلا فاعلية وقت رمي خروج `ToolOutputError`(`INVALID_TOOL_OUTPUT`). اثنان من كل مرور من معتاد قاعدة أداة خطأ مسار معالجة. أصلي JSON Schema افتراضي إبقاء فتح وضع؛ لا دعم حمل صلة مفتاح حرف سوف يتم رفض، بينما لن في لم قوي صنع تنفيذ حال حال تحت نيل دقيق دخول.
 
-注册是一项受信任的同进程约定。注册表以 readonly 输入借用已类型化定义，要求它声明 `output`，校验其原始 schema，并检查 `timeoutMs` 必须为正有限值等语义要求；`schemas()` 在构建请求时生成面向模型的投影，使执行和展示共享同一份已解析定义，而不会将回调泄漏到协议上。
+تسجيل هو واحد بند تلقي معلومة مهمة نفس عملية اتفاق. سجل التسجيل بـ readonly إدخال استعارة استخدام قد نوع تحويل تعريف، اشتراط هو إعلان `output`، تحقق ذلك أصلي schema، و فحص `timeoutMs` يجب لـ صحيح لديه حد قيمة انتظار دلالة اشتراط؛`schemas()` في بناء طلب وقت توليد موجه إلى نموذج إسقاط، جعل تنفيذ و عرض مشترك نفس نسخة قد تحليل تعريف، بينما لن سوف عودة ضبط تسرب تسرب إلى بروتوكول فوق.
 
-## `ToolRestriction` — 单个作用域对其继承内容的实时过滤器
+## `ToolRestriction` — مفرد عدد أثر مجال مقابل ذلك وراثة محتوى فوري مرور ترشيح جهاز
 
-`ToolRestriction` 作用于该作用域继承来的工具：部署全局层，加上其链上的每个祖先作用域。注册表将 readonly 名称编译为私有集合，对多个限制取交集，再叠加该作用域**自身**的注册——后者不受约束，因此被委派的子 agent 会保留其回报所依赖的工具。仅 deny 的过滤器允许后续未列出的继承工具通过，而 allow 列表则排除它们。
+`ToolRestriction` أثر في هذا أثر مجال وراثة قدوم أداة: نشر عام طبقة، إضافة فوق ذلك سلسلة فوق كل أصل أولا أثر مجال. سجل التسجيل سوف readonly اسم تحرير ترجمة لـ خاص تجميع دمج، مقابل كثير عدد حد أخذ تسليم تجميع، مجددا تراكم إضافة هذا أثر مجال**ذاته**تسجيل——بعد من لا تلقي قيد، لذلك يتم تفويض إرسال فرعي agent سوف إبقاء ذلك عودة تقرير الذي اعتماد أداة. فقط deny مرور ترشيح جهاز سماح لاحق لم صف خروج وراثة أداة عبر، بينما allow قائمة فإن ترتيب حذف هو جمع.
 
 ```ts type-equiv
 /**
@@ -167,9 +167,9 @@ interface ToolRestriction {
 }
 ```
 
-## 执行：可扩展的 waterfall（瀑布式事件）加单调策略
+## تنفيذ: يمكن توسيع waterfall(شلال نشر صيغة حدث) إضافة مفرد ضبط سياسة
 
-`ctx.tools.execute()` 接受由调用方拥有且包含必需 readonly `signal` 的 `ToolExecutionInput`，将其解析后的 JSON 参数一次性物化为流水线拥有的 `ToolExecution`，然后让调用依次经过 `tools/pre-execute`（可重排的 allow/deny/ask waterfall）→ 已注册的单调 guard → `tools/execute`（环绕分派包装层）→ `tools/post-execute`（检查/替换结果）→ 可选且由定义拥有的 `finalizeContent` → `tools/result`（不可变的权威结果）。只有 `tools/execute` 视图可以替换必需的 signal。最终产出为 `ToolExecutionResult`。
+`ctx.tools.execute()` قبول من استدعاء جهة يملك كما يتضمن مطلوب readonly `signal` `ToolExecutionInput`، سوف ذلك تحليل بعد JSON معامل مرة صفة شيء تحويل لـ خط الإنتاج يملك `ToolExecution`، لكن بعد يجعل استدعاء اعتماد مرة مرور مرور `tools/pre-execute`(يمكن إعادة ترتيب allow/deny/ask waterfall)→ قد تسجيل مفرد ضبط guard → `tools/execute`(حلقة التفاف قسم إرسال حزمة تركيب طبقة)→ `tools/post-execute`(فحص/استبدال نتيجة)→ اختياري كما من تعريف يملك `finalizeContent` → `tools/result`(غير ممكن تغيير مرجعي نتيجة). فقط لديه `tools/execute` عرض يمكن استبدال مطلوب signal. نهائي إنتاج خروج لـ `ToolExecutionResult`.
 
 ```ts type-equiv
 /** Opaque call identity that permits correlation without exposing mutable execution state. */
@@ -211,7 +211,7 @@ interface ToolExecutionInput {
 }
 ```
 
-工具函数体接收运行时扩展。`deferContext()` 把上下文附着到本次执行自己的结果上——既是组合工具转运嵌套分派上下文的通道，也可供叶子工具铸造插件来源指令——而不会在外层调用尚未结束时注入这些上下文。
+أداة دالة جسم استقبال وقت التشغيل توسيع.`deferContext()` يأخذ سياق مرفق حال إلى هذا مرة تنفيذ ذاتي ذات نتيجة فوق——حيث هو تركيب أداة تحويل تشغيل تضمين طقم قسم إرسال سياق عبر طريق، أيضا يمكن توفير ورقة فرعي أداة صب صنع إضافة مصدر إشارة أمر——بينما لن في خارج طبقة استدعاء بعد لم انتهاء وقت حقن هذه سياق.
 
 ```ts type-equiv
 /**
@@ -242,7 +242,7 @@ interface ToolRunContext extends ToolExecution {
 }
 ```
 
-agent loop（智能体循环）向注册表查询每个待处理调用的执行模式，并据此形成独占屏障和滚动池并行执行：
+agent loop(ذكي جسم حلقة) نحو سجل التسجيل استعلام كل انتظار معالجة استدعاء تنفيذ نمط، و حسب هذا شكل صار وحيد احتلال شاشة عائق و تمرير حوض و سطر تنفيذ:
 
 ```ts type-equiv
 /**
@@ -254,7 +254,7 @@ type ToolExecutionMode =
   | { kind: 'exclusive' }
 ```
 
-PTC 绑定在构造时冻结 ToolSchema，经由调度器传入 `ToolExecution.schema`；它只是临时执行元数据。每个实际开始的子分派在策略之前只记录配对 id、名称与规范化参数。开始和结算事件都不序列化描述、参数 schema 或 schema 字段。桥接层随后把已结算调用交给 `tools/ptc-dispatch-log` waterfall；它可以改变持久内容副本，但会保留程序取得的值、模型可见的外层结果和结构化失败身份：
+PTC ربط في بنية صنع وقت تجميد ربط ToolSchema، مرور من مجدول نقل دخول `ToolExecution.schema`؛ هو فقط هو مؤقت تنفيذ بيانات وصفية. كل فعلي بدء فرعي قسم إرسال في سياسة قبل فقط سجل إعداد مقابل id، اسم و مواصفة تحويل معامل. بدء و تسوية حدث كل لا تسلسل تحويل وصف، معامل schema أو schema حقل. جسر وصل طبقة مع بعد يأخذ قد تسوية استدعاء تسليم إعطاء `tools/ptc-dispatch-log` waterfall؛ هو يمكن تغيير حمل دائم محتوى فرعي هذا، لكن سوف إبقاء برنامج أخذ نيل قيمة، نموذج مرئي خارج طبقة نتيجة و بنية تحويل فشل هوية:
 
 ```ts type-equiv
 /**
@@ -310,9 +310,9 @@ interface ToolDispatchExecution extends Omit<ToolExecution, 'signal'> {
 }
 ```
 
-`ToolExecutionToken` 是不透明的运行时 `Symbol`，仅用于身份比较。策略执行前，`execute()` 会物化并冻结参数、拒绝非 JSON 输入并分配 token。身份字段、调用方必需的 signal 和可选的 parent token 均保持 readonly。`ToolDispatchExecution` 包装层可以替换 signal 但不能移除；注册表会在调用工具函数体前重新融合调用方的 signal。最终观察者接收冻结的执行身份。
+`ToolExecutionToken` هو لا نفاذ واضح وقت التشغيل `Symbol`، فقط لأجل هوية مقارنة مقارنة. سياسة تنفيذ قبل،`execute()` سوف شيء تحويل و تجميد ربط معامل، رفض غير JSON إدخال و قسم إعداد token. هوية حقل، استدعاء جهة مطلوب signal و اختياري parent token متساو إبقاء readonly.`ToolDispatchExecution` حزمة تركيب طبقة يمكن استبدال signal لكن لا يستطيع إزالة؛ سجل التسجيل سوف في استدعاء أداة دالة جسم قبل إعادة دمج دمج استدعاء جهة signal. نهائي مراقبة من استقبال تجميد ربط تنفيذ هوية.
 
-`ToolGuard` 是感知作用域的最终预分派策略。其返回类型有意不包含 allow 结果：`undefined` 保留 waterfall 的决策，而返回的 reason 只能缩减权限，因此后续监听器无法撤销它。
+`ToolGuard` هو شعور معرفة أثر مجال نهائي مسبق قسم إرسال سياسة. ذلك إرجاع نوع متعمد لا يتضمن allow نتيجة:`undefined` إبقاء waterfall قرار، بينما إرجاع reason فقط قدرة تقليص نقص إذن، لذلك لاحق مستمع لا يمكن سحب إلغاء هو.
 
 ```ts type-equiv
 /**
@@ -379,13 +379,13 @@ interface ToolErrorInfo {
 }
 ```
 
-结果仅承载产出。调用身份保留在不可变的 `ToolExecution` 上，后者伴随结果经过每个钩子，并出现在持久化的 `tool/call` / `tool/result` 会话事件上，因此包装层无法创建第二个相互矛盾的身份。规范的 `value` 仅存在于执行期间：循环只持久化 `content`、`error` 和 `meta`，`tool/ptc-dispatch` 则存储子调用渲染后的 `content`、`isError` 与可选结构化 `error`。回放可以重现展示，却无法重建规范的中间值。可选的 `ToolErrorInfo.reason` 保留面向用户的原始详情，不将其加入模型可见内容。
+نتيجة فقط تحمل تحميل إنتاج خروج. استدعاء هوية إبقاء في غير ممكن تغيير `ToolExecution` فوق، بعد من مرافق مع نتيجة مرور مرور كل خطاف، و ظهور في حفظ دائم `tool/call` / `tool/result` جلسة حدث فوق، لذلك حزمة تركيب طبقة لا يمكن إنشاء ثاني عدد متبادل متبادل تناقض درع هوية. مواصفة `value` فقط وجود في تنفيذ خلال: حلقة فقط حفظ دائم `content`،`error` و `meta`،`tool/ptc-dispatch` فإن تخزين فرعي استدعاء تصيير بعد `content`،`isError` و اختياري بنية تحويل `error`. إعادة تشغيل يمكن إعادة الآن عرض، لكن لا يمكن إعادة بناء مواصفة في بين قيمة. اختياري `ToolErrorInfo.reason` إبقاء موجه إلى مستخدم أصلي تفصيل حال، لا سوف ذلك إضافة دخول نموذج مرئي محتوى.
 
-成功时，注册表会快照并校验函数体返回值，将其冻结，然后调用纯渲染器；对于直接的外层调用，还会调用可选的元数据投影器。注册表会在 `tools/result` 之前另行物化持久展示字段；无效值、渲染器/投影器失败或非 JSON 展示都会转为 JSON 安全的 `isError`。因此，最终实时观察者能看到精确的执行期值，以及可安全用于后续持久追加的字段。
+نجاح وقت، سجل التسجيل سوف لقطة و تحقق دالة جسم قيمة راجعة، سوف ذلك تجميد ربط، لكن بعد استدعاء صاف مصير؛ مقابل في مباشر خارج طبقة استدعاء، أيضا سوف استدعاء اختياري بيانات وصفية إسقاط جهاز. سجل التسجيل سوف في `tools/result` قبل آخر سطر شيء تحويل حمل دائم عرض حقل؛ بلا فاعلية قيمة، مصير/إسقاط جهاز فشل أو غير JSON عرض كل سوف تحويل لـ JSON أمان `isError`. لذلك، نهائي فوري مراقبة من قدرة يرى دقيق تنفيذ مدة قيمة، و يمكن أمان لأجل لاحق حمل دائم إلحاق حقل.
 
-在得到最终内容之前，注册表会物化候选结果；若内容、结构化错误、附加上下文或展示元数据无法物化，则会转为仍可到达 `finalizeContent` 的 JSON 安全 `isError` 结果。注册表恰好调用该回调一次，随后在 `tools/result` 之前立即物化并冻结已接受的结果，因此实时观察到的产出可安全用于后续持久化的 `tool/result` 追加。
+في نيل إلى نهائي محتوى قبل، سجل التسجيل سوف شيء تحويل مرشح نتيجة؛ إذا محتوى، بنية تحويل خطأ، مرفق إضافة سياق أو عرض بيانات وصفية لا يمكن شيء تحويل، فإن سوف تحويل لـ ما زال يمكن وصول `finalizeContent` JSON أمان `isError` نتيجة. سجل التسجيل تماما جيد استدعاء هذا عودة ضبط مرة، مع بعد في `tools/result` قبل قيام أي شيء تحويل و تجميد ربط قد قبول نتيجة، لذلك فوري مراقبة إلى إنتاج خروج يمكن أمان لأجل لاحق حفظ دائم `tool/result` إلحاق.
 
-每个拦截 waterfall 返回一个类型化的 **Decision**（与 `agent/*` waterfall 共享的惯用模式）。`tools/pre-execute` 监听器接收 `(exec, next)` 并返回 `PreToolDecision`；`tools/execute` 包装层返回 `ToolExecutionResult`；`tools/post-execute` 监听器接收 `(exec, result, next)` 并返回 `PostToolDecision`：
+كل اعتراض قطع waterfall إرجاع واحد نوع تحويل **Decision**(و `agent/*` waterfall مشترك معتاد استخدام نمط).`tools/pre-execute` مستمع استقبال `(exec, next)` و إرجاع `PreToolDecision`؛`tools/execute` حزمة تركيب طبقة إرجاع `ToolExecutionResult`؛`tools/post-execute` مستمع استقبال `(exec, result, next)` و إرجاع `PostToolDecision`:
 
 ```ts type-equiv
 /**
@@ -414,13 +414,13 @@ type PostToolDecision =
   | { kind: 'block'; feedback: ContentBlock[]; additionalContexts?: UserMessage[] }
 ```
 
-调用 `next()` 获取默认决策，或直接返回一个决策以短路。前置策略可以 deny 或 ask；只有 `allowed-once` 才继续执行，而未授权、缺少审批通道或服务、或无 agent 的请求都会变为拒绝。拒绝可以附带结构化身份与用户可见详情，而不改变其模型可见原因。Guard 仍可施加最终拒绝。参数不可被改写，因为历史记录、审计、UI 和执行必须保持一致。
+استدعاء `next()` نيل أخذ افتراضي قرار، أو مباشر إرجاع واحد قرار بـ قصير مسار. قبل وضع سياسة يمكن deny أو ask؛ فقط لديه `allowed-once` عندئذ متابعة تنفيذ، بينما لم تخويل، نقص قليل مراجعة دفعة عبر طريق أو خدمة، أو بلا agent طلب كل سوف تغيير لـ رفض. رفض يمكن مرفق حمل بنية تحويل هوية و مستخدم مرئي تفصيل حال، بينما لا تغيير ذلك نموذج مرئي سبب.Guard ما زال يمكن تطبيق إضافة نهائي رفض. معامل غير ممكن يتم تعديل كتابة، لأن تاريخ سجل، مراجعة حساب،UI و تنفيذ يجب إبقاء متسق.
 
-后置策略可以替换内容或值，但不能同时替换两者。替换内容会保留规范值和现有元数据；替换值会重新校验并重新计算内容/元数据；阻止会移除值，并转为包含纠正反馈的 `isError`。内容替换是展示策略，而非保密策略；需要隐藏程序化值的监听器必须阻止或替换该值。`tools/result` 在归一化后接收冻结的执行和结果；观察者无法对其进行变换，观察者的失败也会被隔离。未知工具和抛出异常的工具都会变为结构化错误（`ToolNotFoundError` 映射为 `UNKNOWN_TOOL`），调用失败但不终止当前轮次。
+بعد وضع سياسة يمكن استبدال محتوى أو قيمة، لكن لا يستطيع معا استبدال اثنان من. استبدال محتوى سوف إبقاء مواصفة قيمة و قائم بيانات وصفية؛ استبدال قيمة سوف إعادة تحقق و إعادة حساب حساب محتوى/بيانات وصفية؛ منع توقف سوف إزالة قيمة، و تحويل لـ يتضمن تصحيح صحيح عكس تغذية `isError`. محتوى استبدال هو عرض سياسة، بينما غير حفظ سري سياسة؛ حاجة إخفاء برنامج تحويل قيمة مستمع يجب منع توقف أو استبدال هذا قيمة.`tools/result` في عودة واحد تحويل بعد استقبال تجميد ربط تنفيذ و نتيجة؛ مراقبة من لا يمكن مقابل ذلك إجراء تغيير تبديل، مراقبة من فشل أيضا سوف يتم عزل. لم معرفة أداة و رمي خروج استثناء أداة كل سوف تغيير لـ بنية تحويل خطأ (`ToolNotFoundError` خريطة لـ `UNKNOWN_TOOL`) ، استدعاء فشل لكن لا إنهاء حالي جولة.
 
-## 已强制执行的原始 JSON Schema 子集
+## قد قوي صنع تنفيذ أصلي JSON Schema فرعي تجميع
 
-subagent、工作流、MCP 和动态注册提供的原始 schema 使用作者侧 DSL 在协议层的对应表示。`assertSupportedJsonSchema()` 接受任意 JSON 根，`validateJsonSchemaValue()` 强制执行该 schema，`JsonSchemaError` 则报告每条不受支持或格式错误的 schema 路径。仅含注解的空节点表示不受约束的无损 JSON。`oneOf` 至少要求两个分支，且一个值必须恰好匹配其中一个。仍要求对象根的消费方调用 `assertObjectJsonSchema()` 并携带 `ObjectJsonSchema`；这样，subagent/工作流中由调用方定义的结构化输出可以继续以对象为根，而不会限制共享词汇。
+subagent، سير العمل،MCP و حركة حالة تسجيل توفير أصلي schema استخدام عمل من جانب DSL في بروتوكول طبقة مقابل يمثل.`assertSupportedJsonSchema()` قبول مهمة معنى JSON أصل،`validateJsonSchemaValue()` قوي صنع تنفيذ هذا schema،`JsonSchemaError` فإن تقرير إبلاغ كل بند لا تلقي دعم حمل أو صيغة خطأ schema مسار. فقط يحتوي ملاحظة حل فارغ عقدة يمثل لا تلقي قيد بلا ضرر JSON.`oneOf` حتى قليل اشتراط اثنان عدد فرع، كما واحد قيمة يجب تماما جيد مطابقة منها واحد. ما زال اشتراط كائن أصل مستهلك استدعاء `assertObjectJsonSchema()` و يحمل `ObjectJsonSchema`؛ هذا مثال،subagent/سير العمل في من استدعاء جهة تعريف بنية تحويل إخراج يمكن متابعة بـ كائن لـ أصل، بينما لن حد مشترك مفردات.
 
 ```ts type-equiv
 /** Scalar JSON values supported by `enum` and `const`. */
@@ -471,16 +471,16 @@ interface JsonSchemaNode {
 type ObjectJsonSchema = JsonSchemaNode & { type: 'object' }
 ```
 
-## 工具展示 UI 词汇
+## أداة عرض UI مفردات
 
-工具希望其调用在 UI 中如何呈现（编辑器工具调用卡片、CLI（命令行界面）日志行），提供方无关，使工具在不依赖任何客户端协议的情况下描述自身。`presentCall`/`presentResult` 返回一个 **`card` 标签的渲染意图**——一个可辨识联合类型，UI 桥接层据此分发：
+أداة أمل نظر ذلك استدعاء في UI في مثل أي عرض (تحرير جهاز أداة استدعاء بطاقة،CLI(أمر سطر واجهة) سجل سطر) ، مزود غير متصل، جعل أداة في لا اعتماد أي عميل بروتوكول حال حال تحت وصف ذاته.`presentCall`/`presentResult` إرجاع واحد **`card` وسم تصيير معنى رسم**——واحد يمكن تمييز تعرف ربط دمج نوع،UI جسر وصل طبقة حسب هذا توزيع:
 
-- `ToolCallView`（待执行）：`{ card: 'generic', title, kind?, rawInput?, content?, locations? }`（默认卡片；`locations` 是 `{ path, line? }[]`，表示调用读取/修改的文件，供编辑器跟随）、`{ card: 'terminal', title, description?, cwd? }`（shell 命令→终端卡片）、或 `{ card: 'diff', title, diffs, locations? }`（文件创建/修改→行内 diff 卡片；`diffs` 是 `{ path, oldText, newText }[]`，新文件时 `oldText: null`）。
-- `ToolResultView`（已完成）：`{ card: 'generic', title?, content? }`、`{ card: 'terminal', title?, output?, exitCode?, signal? }`（捕获的运行输出 + 退出状态；有能力的 UI 显示退出状态标签，其他 UI 可以派生围栏 ` ```console ` 回退）、`{ card: 'diff', title?, diffs }`（已完成的文件变更→要展示的变更，通常是从变更前后内容计算出带上下文行的已应用 hunk，或在没有前像时的整文件 diff）、`{ card: 'search', shape, title?, truncated, total, … }`（已完成的发现型搜索→`shape: 'matches'`（grep）为按文件分组的匹配，`shape: 'paths'`（glob）为扁平路径列表；`truncated`/`total` 报告内联结果是否被截断，使 UI 永不把部分结果当作完整结果呈现；该视图不携带结果文本——无 search 卡片的 UI 回退到原始结果内容）、`{ card: 'read', title?, path, offset, lines, totalLines, lang?, content? }`（已完成的文件读取→带行号、可选语法高亮的代码视图；`offset` 是窗口请求的 1-based 起始行，即使 `lines` 为空也保留；`lang` 是从扩展名推得的语言提示，`content` 是无读取能力的 UI 回退时使用的去信封文本）、或 `{ card: 'web', kind: 'search' | 'fetch', title?, … }`（已完成的 web 检索；`kind: 'search'` 携带结构化的 `sources`/`answer?`/`truncated`，`kind: 'fetch'` 携带 `url`/`statusCode`/`truncated`，不具备 `web` 能力的 UI 回退到原始结果内容——正文不会重复进视图）。已完成视图会替换待执行视图，因此变更工具即使与调用时的片段重复也要返回 diff 结果；搜索和 web 检索都没有 `card` 的调用时对应视图（其 pending 状态保持为 generic 卡片，因为结构化结果只在 `execute` 之后才存在）。
+- `ToolCallView`(انتظار تنفيذ):`{ card: 'generic', title, kind?, rawInput?, content?, locations? }`(افتراضي بطاقة؛`locations` هو `{ path, line? }[]`، يمثل استدعاء قراءة/تعديل ملف، توفير تحرير جهاز تتبع مع) ،`{ card: 'terminal', title, description?, cwd? }`(shell أمر→طرفية بطاقة) ، أو `{ card: 'diff', title, diffs, locations? }`(ملف إنشاء/تعديل→سطر داخل diff بطاقة؛`diffs` هو `{ path, oldText, newText }[]`، جديد ملف وقت `oldText: null`).
+- `ToolResultView`(قد إتمام):`{ card: 'generic', title?, content? }`،`{ card: 'terminal', title?, output?, exitCode?, signal? }`(التقاط تشغيل إخراج + خروج حالة؛ لديه قدرة UI عرض خروج حالة وسم، أخرى UI يمكن إرسال توليد محيط شريط ` ```console ` رجوع) ،`{ card: 'diff', title?, diffs }`(قد إتمام ملف تغيير→يلزم عرض تغيير، عبر معتاد هو من تغيير قبل بعد محتوى حساب حساب خروج حمل سياق سطر قد تطبيق hunk، أو في لا يوجد قبل مثل وقت كامل ملف diff) ،`{ card: 'search', shape, title?, truncated, total, … }`(قد إتمام اكتشاف نوع بحث→`shape: 'matches'`(grep) لـ حسب ملف قسم مجموعة مطابقة،`shape: 'paths'`(glob) لـ مسطح مستو مسار قائمة؛`truncated`/`total` تقرير إبلاغ داخل ربط نتيجة هل يتم قطع قطع، جعل UI دائم لا يأخذ جزء نتيجة عند عمل كامل نتيجة عرض؛ هذا عرض لا يحمل نتيجة نص——بلا search بطاقة UI رجوع إلى أصلي نتيجة محتوى) ،`{ card: 'read', title?, path, offset, lines, totalLines, lang?, content? }`(قد إتمام ملف قراءة→حمل سطر رقم، اختياري لغة قاعدة عال مضيء شفرة عرض؛`offset` هو نافذة طلب 1-based بدء بداية سطر، أي جعل `lines` لـ فارغ أيضا إبقاء؛`lang` هو من توسيع اسم دفع نيل لغة تلميح،`content` هو بلا قراءة قدرة UI رجوع وقت استخدام ذهاب معلومة غلاف نص) ، أو `{ card: 'web', kind: 'search' | 'fetch', title?, … }`(قد إتمام web فحص بحث؛`kind: 'search'` يحمل بنية تحويل `sources`/`answer?`/`truncated`،`kind: 'fetch'` يحمل `url`/`statusCode`/`truncated`، لا أداة تجهيز `web` قدرة UI رجوع إلى أصلي نتيجة محتوى——متن لن تكرار دخول عرض). قد إتمام عرض سوف استبدال انتظار تنفيذ عرض، لذلك تغيير أداة أي جعل و استدعاء وقت قطعة مقطع تكرار أيضا يلزم إرجاع diff نتيجة؛ بحث و web فحص بحث كل لا يوجد `card` استدعاء وقت مقابل عرض (ذلك pending حالة إبقاء لـ generic بطاقة، لأن بنية تحويل نتيجة فقط في `execute` بعد عندئذ وجود).
 
-`ToolCallKind`（`'read' | 'edit' | 'delete' | 'move' | 'search' | 'execute' | 'fetch' | 'other'`）用于为通用卡片选择图标。`FileLocation`（`{ path, line? }`）、`FileDiff`（`{ path, oldText, newText }`）与 `ReadFileLine`（`{ number, text }`，读取窗口中一行带 1-based 行号的内容）是共享的文件卡片词汇。该设计由[渲染意图联合类型 Agent Note](../../.agents/notes/implemented/architecture/2026-07-02-tool-render-intent-union.zh.md)固定；host/client 运行时将这套中性词汇投影为各自的视图。
+`ToolCallKind`(`'read' | 'edit' | 'delete' | 'move' | 'search' | 'execute' | 'fetch' | 'other'`) لأجل لـ عام بطاقة اختيار رسم علامة.`FileLocation`(`{ path, line? }`) ،`FileDiff`(`{ path, oldText, newText }`) و `ReadFileLine`(`{ number, text }`، قراءة نافذة في واحد سطر حمل 1-based سطر رقم محتوى) هو مشترك ملف بطاقة مفردات. هذا تصميم من[تصيير معنى رسم ربط دمج نوع Agent Note](../../.agents/notes/implemented/architecture/2026-07-02-tool-render-intent-union.zh.md) ثابت؛host/client وقت التشغيل سوف هذا طقم في صفة مفردات إسقاط لـ كل منها عرض.
 
-完整的展示字段文档见 [`packages/core/tools/src/presentation.ts`](../../packages/core/tools/src/presentation.ts)。`bash` schema 与执行器见 [shell.md](shell.zh.md)；通用后台控制见 [jobs.md](jobs.zh.md)。
+كامل عرض حقل وثيقة رؤية [`packages/core/tools/src/presentation.ts`](../../packages/core/tools/src/presentation.ts).`bash` schema و منفذ رؤية [shell.md](shell.zh.md) ؛ عام خلفية تحكم رؤية [jobs.md](jobs.zh.md).
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

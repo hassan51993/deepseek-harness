@@ -1,56 +1,56 @@
 ---
-description: "人机协作能力族的包映射：斜杠命令、一次性审批、权限预设，以及让运行中的 agent（智能体）暂停等待人类决定的问答 seam。"
+description: "شخص آلة تنسيق عمل قدرة عائلة حزمة خريطة: مائل عمود أمر، مرة صفة مراجعة دفعة، إذن مسبق ضبط، و يجعل تشغيل في agent(ذكي جسم) مؤقت توقف انتظار شخص صنف قرار سؤال جواب seam."
 kind: "package-group"
 ---
 
-# interaction/：人机协作平面
+# interaction/: شخص آلة تنسيق عمل مستو وجه
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`interaction/` 组覆盖用户引导运行中 agent 的各种方式。斜杠命令适合无需模型往返的即时操作；一次性审批用于敏感操作；权限预设可以同时选择沙箱与审批行为；当 agent 需要信息或决定时，它还可以向用户提问。交互式应用向用户提供这些能力；自动化则通过 ACP（Agent Client Protocol）处理自己的审批。下方包映射说明了每项能力的区别，并链接其完整行为与配置。
+`interaction/` مجموعة تغطية مستخدم جذب توجيه تشغيل في agent كل نوع طريقة. مائل عمود أمر ملائم دمج بلا حاجة نموذج نحو إرجاع أي وقت عملية؛ مرة صفة مراجعة دفعة لأجل حساس شعور عملية؛ إذن مسبق ضبط يمكن معا اختيار صندوق رملي و مراجعة دفعة سلوك؛ عند agent حاجة معلومة أو قرار وقت، هو أيضا يمكن نحو مستخدم رفع سؤال. تفاعل صيغة تطبيق نحو مستخدم توفير هذه قدرة؛ تلقائي تحويل فإن عبر ACP(Agent Client Protocol) معالجة ذاتي ذات مراجعة دفعة. تحت جهة حزمة خريطة شرح كل بند قدرة منطقة آخر، و رابط ذلك كامل سلوك و إعداد.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-每个包的完整约定以其 README 和对应的子系统参考为准。
+كل حزمة كامل اتفاق بـ ذلك README و مقابل فرعي نظام مشاركة اعتبار لـ دقيق.
 
-| 包 | 角色 | ctx 键 |
+| حزمة | زاوية لون | ctx مفتاح |
 |---|---|---|
-| [`commands/`](commands/README.zh.md) | 让用户输入斜杠命令，直接针对 agent 执行，无需模型往返 | `ctx.commands` |
-| [`user-approval/`](user-approval/README.zh.md) | 向组合后的应答者征求一次性允许／拒绝决定；若未获得决定，则默认拒绝 | `ctx.approval` |
-| [`permission-presets/`](permission-presets/README.zh.md) | 把沙箱模式与审批策略捆绑为一个面向用户的权限选择器 | `ctx.permissionPresets` |
-| [`user-questions/`](user-questions/README.zh.md) | 定义经过校验的问题 schema 与作用域 answerer waterfall，agent 可暂停等待 | `ctx.userQuestions` |
-| [`tool-ask-user/`](tool-ask-user/README.zh.md) | 暴露 `ask_user_question` 工具，让模型可以向用户提问并请求其作出决定 | 注册到 `ctx.tools` |
+| [`commands/`](commands/README.zh.md) | يجعل مستخدم إدخال مائل عمود أمر، مباشر إبرة مقابل agent تنفيذ، بلا حاجة نموذج نحو إرجاع | `ctx.commands` |
+| [`user-approval/`](user-approval/README.zh.md) | نحو تركيب بعد ينبغي جواب من سمة طلب مرة صفة سماح/رفض قرار؛ إذا لم نيل نيل قرار، فإن افتراضي رفض | `ctx.approval` |
+| [`permission-presets/`](permission-presets/README.zh.md) | يأخذ صندوق رملي نمط و مراجعة دفعة سياسة ربط ربط لـ واحد موجه إلى مستخدم إذن اختيار جهاز | `ctx.permissionPresets` |
+| [`user-questions/`](user-questions/README.zh.md) | تعريف مرور مرور تحقق مشكلة schema و أثر مجال answerer waterfall،agent يمكن مؤقت توقف انتظار | `ctx.userQuestions` |
+| [`tool-ask-user/`](tool-ask-user/README.zh.md) | كشف `ask_user_question` أداة، يجعل نموذج يمكن نحو مستخدم رفع سؤال و طلب ذلك عمل خروج قرار | تسجيل إلى `ctx.tools` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解共享词汇，再看相邻的自动化与组合面。
+أولا من فرعي نظام مشاركة اعتبار حل مشترك مفردات، مجددا نظر متبادل مجاور تلقائي تحويل و تركيب وجه.
 
-- [命令子系统](../../docs/subsystems/commands.zh.md)——命令注册表语义与 `ctx.commands` 的 Cordis 接口面。
-- [审批子系统](../../docs/subsystems/approval.zh.md)——请求／结果词汇、应答者瀑布与按会话策略。
-- [权限预设子系统](../../docs/subsystems/permission-presets.zh.md)——预设表与旋钮写穿。
-- [用户交互子系统](../../docs/subsystems/user-questions.zh.md)——问题词汇、answerer waterfall 与呈现意图。
-- [ACP 组](../acp/README.zh.md)——仅自动化的传输，为其自有 agent 回答审批请求。
+- [أمر فرعي نظام](../../docs/subsystems/commands.zh.md)——أمر سجل التسجيل دلالة و `ctx.commands` Cordis واجهة وجه.
+- [مراجعة دفعة فرعي نظام](../../docs/subsystems/approval.zh.md)——طلب/نتيجة مفردات، ينبغي جواب من شلال نشر و حسب جلسة سياسة.
+- [إذن مسبق ضبط فرعي نظام](../../docs/subsystems/permission-presets.zh.md)——مسبق ضبط جدول و دوران زر كتابة اختراق.
+- [مستخدم تفاعل فرعي نظام](../../docs/subsystems/user-questions.zh.md)——مشكلة مفردات،answerer waterfall و عرض معنى رسم.
+- [ACP مجموعة](../acp/README.zh.md)——فقط تلقائي تحويل نقل، لـ ذلك ذاتي لديه agent عودة جواب مراجعة دفعة طلب.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

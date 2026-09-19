@@ -1,36 +1,36 @@
-# Agent Note: 工作区文件统一为 API 双面包
+# Agent Note: مساحة العمل ملف موحد واحد لـ API مزدوج وجه حزمة
 
 Status: implemented
 
-[English](2026-09-07-workspace-files-dual-face-package.md) | 中文
+[English](2026-09-07-workspace-files-dual-face-package.md) | العربية
 
 ## Problem
 
-工作区文件服务与浏览器资源提供者共同演进，但其编译图包含指向 Remote 装配和 Sidebar UI 的反向依赖。拆包避开了这些环，却分离了线路协议与其 Client 模型的归属。只有 Host 实现、Client 编译入口仅含类型的包，也缺少 Client 目录分析用于区分运行时导出的 `dsh.client` 与 `./client` 声明。
+مساحة العمل ملف خدمة و متصفح مورد توفير من مشترك نفس عرض دخول، لكن ذلك تحرير ترجمة رسم يتضمن إشارة نحو Remote تركيب إعداد و Sidebar UI عكس نحو اعتماد. تفكيك حزمة تجنب فتح هذه حلقة، لكن قسم مغادرة خط مسار بروتوكول و ذلك Client نموذج ملكية. فقط لديه Host تنفيذ،Client تحرير ترجمة مدخل فقط يحتوي نوع حزمة، أيضا نقص قليل Client دليل قسم تحليل لأجل منطقة قسم وقت التشغيل توجيه خروج `dsh.client` و `./client` إعلان.
 
 ## Decision
 
-`packages/api/workspace-files` 拥有两面的实现。Host 与 Client 叶配置仍由各自的根聚合直接引用，solution 根配置引用两片叶子。Host 导出文件服务，`./client` 导出实际的资源提供者插件，`dsh.client` 声明浏览器插件。web-app 的一个条目加载两面。这只取代[工作区文件服务记录](2026-09-05-workspace-files-service.zh.md)中的拆包决定，其授权、分页与流语义保持不变。
+`packages/api/workspace-files` يملك اثنان وجه تنفيذ.Host و Client ورقة إعداد ما زال من كل منها أصل تجمع دمج مباشر مرجع،solution أصل إعداد مرجع اثنان قطعة ورقة فرعي.Host توجيه خروج ملف خدمة،`./client` توجيه خروج فعلي مورد توفير من إضافة،`dsh.client` إعلان متصفح إضافة.web-app واحد بند تحميل اثنان وجه. هذا فقط يحل محل[مساحة العمل ملف خدمة سجل](2026-09-05-workspace-files-service.zh.md) في تفكيك حزمة قرار، ذلك تخويل، قسم صفحة و تدفق دلالة إبقاء ثابت.
 
-两条依赖方向使编译图保持无环：
+اثنان بند اعتماد جهة نحو جعل تحرير ترجمة رسم إبقاء بلا حلقة:
 
-- `client/resources` 从定义 `RemoteResult` 与 `RemoteFailure` 的 `typert/protocol` 包导入它们，不依赖 `api/remotes`；后者负责装配消费资源模型的提供者。
-- 文本预览使用文件包导出的参数类型声明 `SidebarRightResourceParamsMap.file`。文件提供者声明其资源值，但不导入 Sidebar UI。调用方需要该导航声明时，导入查看器的类型入口。
+- `client/resources` من تعريف `RemoteResult` و `RemoteFailure` `typert/protocol` حزمة استيراد هو جمع، لا اعتماد `api/remotes`؛ بعد من مسؤول تركيب إعداد إزالة استهلاك مورد نموذج توفير من.
+- نص معاينة استخدام ملف حزمة توجيه خروج معامل نوع إعلان `SidebarRightResourceParamsMap.file`. ملف توفير من إعلان ذلك مورد قيمة، لكن لا استيراد Sidebar UI. استدعاء جهة حاجة هذا تنقل إعلان وقت، استيراد فحص نظر جهاز نوع مدخل.
 
-这消除了 `remotes → workspace-files → resources → remotes` 和 `remotes → workspace-files → sidebar-right → ui-conversation → remotes`。Cordis 运行时服务注入仍独立于 TypeScript 工程引用。
+هذا إزالة حذف `remotes → workspace-files → resources → remotes` و `remotes → workspace-files → sidebar-right → ui-conversation → remotes`.Cordis وقت التشغيل خدمة حقن ما زال مستقل في TypeScript عمل مسار مرجع.
 
 ## Alternatives considered
 
-**保留两个包。** 这隔离了编译环，却拆开同一文件能力的 Host 与 Client 归属。删除反向类型依赖后，可以采用与其它 API Controller 相同的双面组织。
+**إبقاء اثنان عدد حزمة.** هذا عزل تحرير ترجمة حلقة، لكن تفكيك فتح نفس ملف قدرة Host و Client ملكية. حذف عكس نحو نوع اعتماد بعد، يمكن اعتماد و ذلك هو API Controller نفسه مزدوج وجه مجموعة نسج.
 
-**删除根 Client 引用。** 传递引用仍会编译该叶子，但两个根聚合必须显式命名本包对应的编译面。
+**حذف أصل Client مرجع.** نقل تمرير مرجع ما زال سوف تحرير ترجمة هذا ورقة فرعي، لكن اثنان عدد أصل تجمع دمج يجب صريح تسمية هذه الحزمة مقابل تحرير ترجمة وجه.
 
-**修改目录分析或增加空 Client 插件。** 两者都不能提供要求的浏览器实现。实际的 `./client` 导出和 `dsh.client` 使用分析器已有的双面支持路径。
+**تعديل دليل قسم تحليل أو زيادة فارغ Client إضافة.** اثنان من كل لا يستطيع توفير اشتراط متصفح تنفيذ. فعلي `./client` توجيه خروج و `dsh.client` استخدام قسم تحليل جهاز قد لديه مزدوج وجه دعم حمل مسار.
 
 ## Consequences
 
-Host 线路方法和浏览器资源行为不变。浏览器实现、测试与文档归同一个包所有；Client 类型依赖止于协议和资源模型层，不反向触及 UI 或 Remote 装配。
+Host خط مسار طريقة و متصفح مورد سلوك ثابت. متصفح تنفيذ، اختبار و وثيقة عودة نفس عدد حزمة كل؛Client نوع اعتماد توقف في بروتوكول و مورد نموذج طبقة، لا عكس نحو لمس و UI أو Remote تركيب إعداد.
 
 ## Verification
 
-Cordis inspect 目录检查分析声明的 Client 导出，两个编译聚合保留其叶引用，Host 与 Client 文件服务测试覆盖相同的实现。现有依赖与工程引用检查约束这些编译关系。
+Cordis inspect دليل فحص قسم تحليل إعلان Client توجيه خروج، اثنان عدد تحرير ترجمة تجمع دمج إبقاء ذلك ورقة مرجع،Host و Client ملف خدمة اختبار تغطية نفسه تنفيذ. قائم اعتماد و عمل مسار مرجع فحص قيد هذه تحرير ترجمة علاقة.

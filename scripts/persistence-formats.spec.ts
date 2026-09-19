@@ -102,10 +102,10 @@ function prepareFacts(root: string, currentVersion = 3): void {
   for (const suffix of ['.md', '.zh.md']) {
     for (let version = 0; version < currentVersion; version += 1) {
       const path = `docs/persistence-changes/historical-formats/v${version}${suffix}`
-      const switcher = suffix === '.md' ? `English | [中文](v${version}.zh.md)` : `[English](v${version}.md) | 中文`
+      const switcher = suffix === '.md' ? `English | [العربية](v${version}.zh.md)` : `[English](v${version}.md) | العربية`
       write(root, path, readFileSync(join(root, path), 'utf8') + `\n${switcher}\n\n<!-- persistence-format-schema:start -->\n\nPending schemas.\n\n<!-- persistence-format-schema:end -->\n`)
     }
-    const switcher = suffix === '.md' ? 'English | [中文](README.zh.md)' : '[English](README.md) | 中文'
+    const switcher = suffix === '.md' ? 'English | [العربية](README.zh.md)' : '[English](README.md) | العربية'
     write(root, `docs/persistence-changes/historical-formats/README${suffix}`, `# Session formats\n\n${switcher}\n\nAuthored context.\n\n<!-- persistence-format-index:start -->\n\nPending formats.\n\n<!-- persistence-format-index:end -->\n`)
   }
 }
@@ -414,7 +414,7 @@ describe('complete persistence format references', () => {
     expect(index).toContain('[Current catalog](../../persistence-catalog.md) | [JSON](../../persistence-schema.json)')
     const translatedIndex = readFileSync(join(root, 'docs/persistence-changes/historical-formats/README.zh.md'), 'utf8')
     expect(translatedIndex).toContain('[V1](v1.zh.md) | [JSON](v1.schema.json)')
-    expect(translatedIndex).toContain('[当前目录](../../persistence-catalog.zh.md) | [JSON](../../persistence-schema.json)')
+    expect(translatedIndex).toContain('[حالي دليل](../../persistence-catalog.zh.md) | [JSON](../../persistence-schema.json)')
     const english = readFileSync(join(root, 'docs/persistence-changes/historical-formats/v1.md'), 'utf8')
     expect(english).toContain('pullRequest: 3349')
     const [visible, collapsed] = english.split('<details>')

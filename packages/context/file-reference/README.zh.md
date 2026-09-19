@@ -1,112 +1,112 @@
 ---
-description: "面向宿主驱动 UI 的文件引用发现与 @file mention 语法，供选择该 seam 或为其搭配提供方的用户与维护者阅读。"
+description: "موجه إلى مضيف قيادة UI ملف مرجع اكتشاف و @file mention لغة قاعدة، توفير اختيار هذا seam أو لـ ذلك تركيب إعداد مزود مستخدم و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-file-reference
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-宿主驱动 UI 使用 `dsh-file-reference` 提供 `@file` 补全：UI 为指定 agent（智能体）请求路径候选，模型输入 `@path` 或 `@"path with spaces"`，选中候选后，匹配的 mention 作为普通提示词文本插入。seam 本身不拥有文件系统访问——具体提供方（如 `@deepseek-ai/dsh-file-reference-local`）负责提供候选、排序、缓存与失效。选中候选绝不读取或附带文件内容；模型必须调用文件系统工具才能查看文件。Session Controller 通过 `fileReferences/list` Remote 向浏览器消费方暴露同一发现能力。
+مضيف قيادة UI استخدام `dsh-file-reference` توفير `@file` تكملة كل:UI لـ إشارة تحديد agent(ذكي جسم) طلب مسار مرشح، نموذج إدخال `@path` أو `@"path with spaces"`، اختيار في مرشح بعد، مطابقة mention بصفة عادي نص التوجيه نص إدراج دخول.seam ذاته لا يملك نظام الملفات وصول——أداة جسم مزود (مثل `@deepseek-ai/dsh-file-reference-local`) مسؤول توفير مرشح، ترتيب ترتيب، ذاكرة مؤقتة و بطلان. اختيار في مرشح أبدا قراءة أو مرفق حمل ملف محتوى؛ نموذج يجب استدعاء نظام الملفات أداة عندئذ قدرة فحص نظر ملف.Session Controller عبر `fileReferences/list` Remote نحو متصفح مستهلك كشف نفس اكتشاف قدرة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-当宿主驱动 UI（Web 或终端）需要提供 `@file` 补全时选择本包，并搭配一个命名空间与 agent 实际生效的 `read` 工具一致的提供方。单独挂载该 seam 而没有提供方时，UI 只能得到空的补全列表。
+عند مضيف قيادة UI(Web أو طرفية) حاجة توفير `@file` تكملة كل وقت اختيار هذه الحزمة، و تركيب إعداد واحد نطاق الأسماء و agent فعلي توليد فاعلية `read` أداة متسق مزود. مفرد وحيد تركيب هذا seam بينما لا يوجد مزود وقت،UI فقط قدرة نيل إلى فارغ تكملة كل قائمة.
 
-### mention 语法
+### mention لغة قاعدة
 
-输入开头或空白后的 `@path` token 会触发补全；其他 token 内部的 `@`（如电子邮件地址）不会。`@"path with spaces"` 打开带引号的 mention，目录候选在其尾斜杠后保持引号打开，使补全可以继续深入下一层。格式化器会拒绝含有语法无法安全表示的控制字符或内嵌引号的路径。
+إدخال فتح رأس أو فارغ أبيض بعد `@path` token سوف إطلاق تكملة كل؛ أخرى token داخلي `@`(مثل كهرباء فرعي بريد عنصر عنوان) لن.`@"path with spaces"` فتح حمل جذب رقم mention، دليل مرشح في ذلك ذيل مائل عمود بعد إبقاء جذب رقم فتح، جعل تكملة كل يمكن متابعة عميق دخول تحت واحد طبقة. صيغة تحويل جهاز سوف رفض يحتوي لديه لغة قاعدة لا يمكن أمان يمثل تحكم محرف أو داخل تضمين جذب رقم مسار.
 
-### 获取候选
+### نيل أخذ مرشح
 
-`ctx.fileReferences.list(agent, query, signal)` 返回指定 agent 工作目录中仅含路径的文件与目录候选，由提供方确定性地排序。目录 mention 呈现时带尾随 `/`，使补全可以继续深入下一层。浏览器消费方通过 Session Controller 适配器的 `ctx.remote.fileReferences.list` 调用同一发现能力；末位 signal 参数可取消慢速自动补全。
+`ctx.fileReferences.list(agent, query, signal)` إرجاع إشارة تحديد agent عمل دليل في فقط يحتوي مسار ملف و دليل مرشح، من مزود تحديد صفة أرض ترتيب ترتيب. دليل mention عرض وقت حمل ذيل مع `/`، جعل تكملة كل يمكن متابعة عميق دخول تحت واحد طبقة. متصفح مستهلك عبر Session Controller مهايئ `ctx.remote.fileReferences.list` استدعاء نفس اكتشاف قدرة؛ نهاية موضع signal معامل يمكن إلغاء بطيء سرعة تلقائي تكملة كل.
 
-### 搭配提供方
+### تركيب إعداد مزود
 
-本地文件系统请挂载 `@deepseek-ai/dsh-file-reference-local`；其他命名空间（远程或虚拟文件系统）需要发现能力与生效工具一致的提供方。当指定 agent 可以调用 `read` 时，提供方可以安装稳定的 `FILE_REFERENCE_PROMPT` 指引，告诉模型先读取被引用文件、再声称检查过它。
+محلي نظام الملفات طلب تركيب `@deepseek-ai/dsh-file-reference-local`؛ أخرى نطاق الأسماء (بعيد مسار أو وهمي محاكاة نظام الملفات) حاجة اكتشاف قدرة و توليد فاعلية أداة متسق مزود. عند إشارة تحديد agent يمكن استدعاء `read` وقت، مزود يمكن تثبيت مستقر `FILE_REFERENCE_PROMPT` إشارة جذب، إبلاغ إبلاغ نموذج أولا قراءة يتم مرجع ملف، مجددا صوت تسمية فحص مرور هو.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释该 seam 的设计；可观察行为见[使用本包](#use-this-package)。
+هذا عقدة حل تفسير هذا seam تصميم؛ يمكن مراقبة سلوك رؤية[استخدام هذه الحزمة](#use-this-package).
 
-### 设计理念
+### تصميم إدارة فكرة
 
-本包把抽象发现服务与共享、浏览器安全的 mention 语法分开，由提供方负责命名空间访问、排序、缓存与失效。该服务保持 wire 中立；`dsh-api-session-controller` 持有 `fileReferences/list` Remote 适配器，并在解析 Agent 后委派给当前提供方。
+هذه الحزمة يأخذ سحب كائن اكتشاف خدمة و مشترك، متصفح أمان mention لغة قاعدة قسم فتح، من مزود مسؤول نطاق الأسماء وصول، ترتيب ترتيب، ذاكرة مؤقتة و بطلان. هذا خدمة إبقاء wire في قيام؛`dsh-api-session-controller` يحتفظ `fileReferences/list` Remote مهايئ، و في تحليل Agent بعد تفويض إرسال إعطاء حالي مزود.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 抽象 `FileReferenceService` 与 `FILE_REFERENCE_PROMPT` |
-| [`src/grammar.ts`](src/grammar.ts) | `activeAtToken` 识别与 `formatFileMention` 渲染 |
-| [`src/types.ts`](src/types.ts) | 仅含路径的结果类型 `FileReferenceCandidate` |
-| — | 不发布运行时不变式伴生入口；接口不保留 candidate 或 lifecycle 状态；具体提供方负责自己的 cache 与 invalidation 关系。 |
+| [`src/index.ts`](src/index.ts) | سحب كائن `FileReferenceService` و `FILE_REFERENCE_PROMPT` |
+| [`src/grammar.ts`](src/grammar.ts) | `activeAtToken` تعرف آخر و `formatFileMention` تصيير |
+| [`src/types.ts`](src/types.ts) | فقط يحتوي مسار نتيجة نوع `FileReferenceCandidate` |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ واجهة لا إبقاء candidate أو lifecycle حالة؛ أداة جسم مزود مسؤول ذاتي ذات cache و invalidation علاقة. |
 
-### 主要流程
+### رئيسي يلزم مسار
 
-UI 通过 `activeAtToken` 识别活动 `@` token，用查询文本调用 `list`，再渲染排序后的候选。选中后，`formatFileMention` 发出匹配的提示词写法（`@path`、`@"path with spaces"`，或带引号目录的开放形式 `@"dir/`）。任何环节都不读取文件内容；当指定 agent 拥有 `read` 工具时，提供方还可以安装稳定的 `FILE_REFERENCE_PROMPT` 提示词段。
+UI عبر `activeAtToken` تعرف آخر نشط حركة `@` token، استخدام استعلام نص استدعاء `list`، مجددا تصيير ترتيب ترتيب بعد مرشح. اختيار في بعد،`formatFileMention` إرسال خروج مطابقة نص التوجيه كتابة قاعدة (`@path`،`@"path with spaces"`، أو حمل جذب رقم دليل فتح وضع شكل صيغة `@"dir/`). أي حلقة عقدة كل لا قراءة ملف محتوى؛ عند إشارة تحديد agent يملك `read` أداة وقت، مزود أيضا يمكن تثبيت مستقر `FILE_REFERENCE_PROMPT` نص التوجيه مقطع.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-包级约定不够用时阅读以下页面。它们从随附提供方进入共享引用表面，以及候选所指向的工具。
+حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مع مرفق مزود دخول مشترك مرجع جدول وجه، و مرشح الذي إشارة نحو أداة.
 
-- [本地文件引用提供方](../file-reference-local/README.zh.md)——本 seam 的随附本地工作区实现。
-- [会话引用子系统](../../../docs/subsystems/session-reference.zh.md)——宿主 UI 背后的共享文件引用与会话引用约定。
-- [上下文组地图](../README.zh.md)——相邻的请求上下文包。
-- [文件系统工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)——被引用路径所对应的 `read` 工具。
+- [محلي ملف مرجع مزود](../file-reference-local/README.zh.md)——هذا seam مع مرفق محلي مساحة العمل تنفيذ.
+- [جلسة مرجع فرعي نظام](../../../docs/subsystems/session-reference.zh.md)——مضيف UI خلف بعد مشترك ملف مرجع و جلسة مرجع اتفاق.
+- [سياق مجموعة أرض رسم](../README.zh.md)——متبادل مجاور طلب سياق حزمة.
+- [نظام الملفات أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-fs)——يتم مرجع مسار الذي مقابل `read` أداة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-间接影响模型体验：本包的发现 seam 与语法把文件引用指引委托给组合的提供方，由它负责呈现。
+بين وصل أثر تجربة النموذج: هذه الحزمة اكتشاف seam و لغة قاعدة يأخذ ملف مرجع إشارة جذب تفويض حمل إعطاء تركيب مزود، من هو مسؤول عرض.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-接口与语法本身不增加请求 token；提供方拥有的提示词段决定可复用前缀是否改变。
+واجهة و لغة قاعدة ذاته لا زيادة طلب token؛ مزود يملك نص التوجيه مقطع قرار يمكن إعادة استخدام بادئة هل تغيير.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明该 seam 何时不合适。它们是当前包约束。
+هذه حد شرح هذا seam أي وقت لا دمج ملائم. هو جمع هو حالي حزمة قيد.
 
-- **路径候选仅供参考**：该 seam 不保证后续面向模型的文件系统工具能够访问同一命名空间；部署时必须让提供方与实际生效的 `read` 实现对齐。
-- **没有文件内容引用对象**：所选文件仍是普通提示词文本，其内容必须经过模型显式调用工具后才对模型可见。
+- **مسار مرشح فقط توفير مشاركة اعتبار**: هذا seam لا حفظ إثبات لاحق موجه إلى نموذج نظام الملفات أداة قدرة كاف وصول نفس نطاق الأسماء؛ نشر وقت يجب يجعل مزود و فعلي توليد فاعلية `read` تنفيذ مقابل متساو.
+- **لا يوجد ملف محتوى مرجع كائن**: الذي اختيار ملف ما زال هو عادي نص التوجيه نص، ذلك محتوى يجب مرور مرور نموذج صريح استدعاء أداة بعد عندئذ مقابل نموذج مرئي.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

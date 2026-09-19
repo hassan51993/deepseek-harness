@@ -1,58 +1,58 @@
 ---
-description: "Host 与 Client 工作区控制：修改工作区导航并跟随其完整投影。"
+description: "Host و Client مساحة العمل تحكم: تعديل مساحة العمل تنقل و تتبع مع ذلك كامل إسقاط."
 kind: "package-reference"
 ---
 # Workspace Controller
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`@deepseek-ai/dsh-api-workspace-controller` 拥有 Host 的 `ctx.workspaceController` 服务和生成的 Client `ctx.remote.workspace` namespace。它的 Remote 方法负责创建、重命名、移除和重排 Workspace，在 Workspace 内重排 Session，归档与取消归档 Session，以及跟随完整的 Workspace 投影。当 Client 必须修改或跟随 Workspace 导航时，请通过 API 网关使用它。本包同时拥有 `ctx.directoryPickerController` 与生成的 `ctx.remote.directoryPicker` namespace，因为它承载的选目录 seam 是抽象的，自身从不作为 Loader entry。
+`@deepseek-ai/dsh-api-workspace-controller` يملك Host `ctx.workspaceController` خدمة و توليد Client `ctx.remote.workspace` namespace. هو Remote طريقة مسؤول إنشاء، إعادة تسمية، إزالة و إعادة ترتيب Workspace، في Workspace داخل إعادة ترتيب Session، عودة ملف و إلغاء عودة ملف Session، و تتبع مع كامل Workspace إسقاط. عند Client يجب تعديل أو تتبع مع Workspace تنقل وقت، طلب عبر API شبكة صلة استخدام هو. هذه الحزمة معا يملك `ctx.directoryPickerController` و توليد `ctx.remote.directoryPicker` namespace، لأن هو تحمل تحميل اختيار دليل seam هو سحب كائن، ذاته من لا بصفة Loader entry.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-Host 控制器会串行执行正确性取决于当前注册表状态的变更，并为预期失败抛出带有稳定 `workspace/*` 或 `directory-picker/*` 错误码的 `RemoteError`。它的 `follow()` 流会同步订阅持久 Workspace 变更，先发出一份完整 baseline，再按顺序发出 `upsert`、`remove`、`order` 和 `archived` 增量。重连会以替换 baseline 开始新一代，因此消费方不依赖收到断线期间的每个增量。
+Host تحكم جهاز سوف سلسلة سطر تنفيذ صحيح تأكيد صفة أخذ قرار في حالي سجل التسجيل حالة تغيير، و لـ مسبق مدة فشل رمي خروج حمل لديه مستقر `workspace/*` أو `directory-picker/*` رمز خطأ `RemoteError`. هو `follow()` تدفق سوف تزامن حجز قراءة حمل دائم Workspace تغيير، أولا إرسال خروج واحد نسخة كامل baseline، مجددا حسب ترتيب إرسال خروج `upsert`،`remove`،`order` و `archived` زيادة كمية. إعادة وصل سوف بـ استبدال baseline بدء جديد واحد بديل، لذلك مستهلك لا اعتماد استلام إلى قطع خط خلال كل زيادة كمية.
 
-Client 入口提供 `ClientWorkspaceModel` 和 `createWorkspaceStateStream()`。该模型拥有 Workspace 行、registry 顺序、已归档 Session id、一元变更回显，以及流与一元调用的竞态处理。较新的 Host 行按 `updatedAt` 获胜；已提交的流顺序优先于较旧的一元响应；已经移除的 Workspace id 不会被延迟数据复活。该包公开与框架无关的快照和订阅，把导航策略与 React 钩子留给 UI owner。
+Client مدخل توفير `ClientWorkspaceModel` و `createWorkspaceStateStream()`. هذا نموذج يملك Workspace سطر،registry ترتيب، قد عودة ملف Session id، واحد عنصر تغيير عودة إظهار، و تدفق و واحد عنصر استدعاء تنافس حالة معالجة. مقارنة جديد Host سطر حسب `updatedAt` نيل فوز؛ قد إيداع تدفق ترتيب أولوية في مقارنة قديم واحد عنصر استجابة؛ قد إزالة Workspace id لن يتم تأخير متأخر بيانات تكرار نشط. هذا حزمة عام و إطار هيكل غير متصل لقطة و حجز قراءة، يأخذ تنقل سياسة و React خطاف إبقاء إعطاء UI owner.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为 Workspace 组织属于浏览器和 Host 的控制状态，并且不注册提示词、工具或会话事件。
+بلا، لأن Workspace مجموعة نسج يخص متصفح و Host تحكم حالة، و كما لا تسجيل نص التوجيه، أداة أو جلسة حدث.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；Workspace 变更不会改变模型请求。
+بلا مباشر أثر؛Workspace تغيير لن تغيير نموذج طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- `follow()` 在重连后替换完整投影，不提供持久 cursor 或增量追赶协议。
-- 进程内删除标记只会在 Client 模型生命周期内阻止延迟数据复活已移除的 Workspace。
+- `follow()` في إعادة وصل بعد استبدال كامل إسقاط، لا توفير حمل دائم cursor أو زيادة كمية تتبع لحاق بروتوكول.
+- عملية داخل حذف علامة فقط سوف في Client نموذج دورة الحياة داخل منع توقف تأخير متأخر بيانات تكرار نشط قد إزالة Workspace.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。Workspace 注册表负责持久化，每次流生成都是完整投影。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.Workspace سجل التسجيل مسؤول حفظ دائم، كل مرة تدفق توليد كل هو كامل إسقاط.

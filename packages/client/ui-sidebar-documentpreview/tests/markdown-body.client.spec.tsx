@@ -90,8 +90,8 @@ describe('MarkdownBody', () => {
     expect(view.getByRole('button', { name: 'Copy' })).toBeDefined()
     dictionary = zh
     view.rerender(<MarkdownBody {...props(value, t)} />)
-    expect(view.getByRole('button', { name: '复制' })).toBeDefined()
-    expect(view.getByRole('heading', { name: '脚注' })).toBeDefined()
+    expect(view.getByRole('button', { name: 'نسخ' })).toBeDefined()
+    expect(view.getByRole('heading', { name: 'قدم ملاحظة' })).toBeDefined()
   })
 
   it('renders empty text and leaves non-text deliveries to their selected implementation', () => {

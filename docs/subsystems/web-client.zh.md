@@ -1,95 +1,95 @@
-# Web Client 架构
+# Web Client هيكل بنية
 
-[English](web-client.md) | 中文
+[English](web-client.md) | العربية
 
-Web Client 是由独立加载插件组装而成的浏览器侧 Cordis 应用。它有四个可复用底座：[Client Modules](client-modules.zh.md) 加载插件图，[API Gateway](../api-gateway.zh.md) 提供类型化 Host 通信，[Slots](slots.zh.md) 组合 React UI，[Conversation](conversation.zh.md) 把 Session 历史窗口变成各 target 自有的视图。本文串联这些系统，并规定 Client model 与功能包各自所在的位置。
+Web Client هو من مستقل تحميل إضافة تجميع بينما صار متصفح جانب Cordis تطبيق. هو لديه أربعة عدد يمكن إعادة استخدام قاع مقعد:[Client Modules](client-modules.zh.md) تحميل إضافة رسم،[API Gateway](../api-gateway.zh.md) توفير نوع تحويل Host عبر معلومة،[Slots](slots.zh.md) تركيب React UI،[Conversation](conversation.zh.md) يأخذ Session تاريخ نافذة تغيير صار كل target ذاتي لديه عرض. هذا نص سلسلة ربط هذه نظام، و قاعدة تحديد Client model و وظيفة حزمة كل منها الذي في موضع.
 
-## 分层与所有权
+## قسم طبقة و كل حق
 
-| 层 | 主要 owner | 职责 |
+| طبقة | رئيسي يلزم owner | مسؤولية |
 |---|---|---|
-| Host 应用 | 业务 service 与 `packages/api/*-controller` Host entry | 拥有权威状态、持久化、mutation 顺序、访问策略与 stream 生产。 |
-| 传输与 API assembly | `client/connection`、`api/gateway`、`api/remotes` | 建立 Client generation，公开生成的 `ctx.remote` method 与 stream，转发选定的 Cordis event，并承载取消和结果。 |
-| Client model | `api/session-controller/client`、`api/workspace-controller/client` | 维护不依赖 React 的 Host 状态镜像，处理 stream/unary 竞态，拥有对象 identity 与订阅，并公开收窄的 command service。 |
-| UI adapter | `client/ui-session`、`client/ui-workspace` | 把 model observable 转换为 root 或 Provider 绑定的 Session Slot source，并拥有视图级导航与状态策略。 |
-| Conversation 数据 | `client/ui-conversation`、`ui-chat` 与 `ui-trajectory` 等 target package | 把标准 event 与紧凑的 Assistant 历史批次组装成相互独立的 target snapshot，并拥有共享的 Conversation shell 与输入流程。 |
-| 组合与渲染 | `client/ui-slots`、`client/ui-renderer`、`client/ui-layout`、各 UI 功能包 | 声明扩展位置、推导组件 props、把 observable 绑定成 React hook，并挂载最终组件树。 |
+| Host تطبيق | عمل خدمة service و `packages/api/*-controller` Host entry | يملك مرجعي حالة، حفظ دائم،mutation ترتيب، وصول سياسة و stream إنتاج. |
+| نقل و API assembly | `client/connection`،`api/gateway`،`api/remotes` | بناء قيام Client generation، عام توليد `ctx.remote` method و stream، تحويل إرسال اختيار تحديد Cordis event، و تحمل تحميل إلغاء و نتيجة. |
+| Client model | `api/session-controller/client`،`api/workspace-controller/client` | صيانة لا اعتماد React Host حالة مرآة مثل، معالجة stream/unary تنافس حالة، يملك كائن identity و حجز قراءة، و عام استلام ضيق command service. |
+| UI adapter | `client/ui-session`،`client/ui-workspace` | يأخذ model observable تحويل لـ root أو Provider ربط Session Slot source، و يملك عرض درجة تنقل و حالة سياسة. |
+| Conversation بيانات | `client/ui-conversation`،`ui-chat` و `ui-trajectory` انتظار target package | يأخذ معيار event و ضيق تجميع Assistant تاريخ دفعة مرة تجميع صار متبادل متبادل مستقل target snapshot، و يملك مشترك Conversation shell و إدخال مسار. |
+| تركيب و تصيير | `client/ui-slots`،`client/ui-renderer`،`client/ui-layout`، كل UI وظيفة حزمة | إعلان توسيع موضع، دفع توجيه مكون props، يأخذ observable ربط صار React hook، و تركيب نهائي مكون شجرة. |
 
-依赖方向是 Host 状态 → Remote 传输 → Client model → UI adapter → Conversation 或 presentation → Slots → React。用户操作通过 callback 反向进入注入的 Client service 或生成的 Remote namespace。Presentation component 绝不接收 Cordis `ctx`、transport object 或其他功能插件的实现。
+اعتماد جهة نحو هو Host حالة → Remote نقل → Client model → UI adapter → Conversation أو presentation → Slots → React. مستخدم عملية عبر callback عكس نحو دخول حقن Client service أو توليد Remote namespace.Presentation component أبدا استقبال Cordis `ctx`،transport object أو أخرى وظيفة إضافة تنفيذ.
 
-## 浏览器启动
+## متصفح بدء
 
-Host 把组合后的 `WebBootGraph` 写入 `window.__DSH_BOOT__`，并在 parser-preloaded script 执行前安装浏览器 module-loader facade。模块系统是一张 lazy CommonJS 表：加载 bundle 只注册 factory；materialize entry 时才以同步 `require` 运行 factory，并解析 platform module 和已声明的动态依赖。
+Host يأخذ تركيب بعد `WebBootGraph` كتابة `window.__DSH_BOOT__`، و في parser-preloaded script تنفيذ قبل تثبيت متصفح module-loader facade. وحدة نظام هو واحد ورقة lazy CommonJS جدول: تحميل bundle فقط تسجيل factory؛materialize entry وقت عندئذ بـ تزامن `require` تشغيل factory، و تحليل platform module و قد إعلان حركة حالة اعتماد.
 
-Web boot kernel 创建模块系统、预取 `immediately` entry、挂载 vendored Cordis Loader，再创建图中的每个 entry。Cordis service injection 决定激活顺序；module graph 顺序只决定同步 import 能否被 materialize。完整 roster 到达 settled 状态后，`ui-renderer` hydrate 不依赖框架的 boot DOM，并调用唯一一次 context 级 `renderSlot('root')`。[Client Modules](client-modules.zh.md)负责 graph、bundle route、cache revision 与 loader 细节。
+Web boot kernel إنشاء وحدة نظام، مسبق أخذ `immediately` entry، تركيب vendored Cordis Loader، مجددا إنشاء رسم في كل entry.Cordis service injection قرار تنشيط ترتيب؛module graph ترتيب فقط قرار تزامن import قدرة لا يتم materialize. كامل roster وصول settled حالة بعد،`ui-renderer` hydrate لا اعتماد إطار هيكل boot DOM، و استدعاء وحيد مرة context درجة `renderSlot('root')`.[Client Modules](client-modules.zh.md) مسؤول graph،bundle route،cache revision و loader دقيق عقدة.
 
-## Remote 通信
+## Remote عبر معلومة
 
-Host 业务 service 使用 Typert Remote decorator 标记可调用 method。Host generation 产出严格 descriptor、runtime codec、declaration merge 与 source map。Client 侧 `api-remotes` assembly 选择这些生成贡献，并把具体 method 挂到 `ctx.remote.<namespace>` 与 Session scope 的 `agentCtx.remote.<namespace>`。功能包依赖生成的 service face，而不依赖 Gateway 实现或 Host 包的运行时 entry。
+Host عمل خدمة service استخدام Typert Remote decorator علامة يمكن استدعاء method.Host generation إنتاج خروج صارم إطار descriptor،runtime codec،declaration merge و source map.Client جانب `api-remotes` assembly اختيار هذه توليد مساهمة، و يأخذ أداة جسم method تعليق إلى `ctx.remote.<namespace>` و Session scope `agentCtx.remote.<namespace>`. وظيفة حزمة اعتماد توليد service face، بينما لا اعتماد Gateway تنفيذ أو Host حزمة وقت التشغيل entry.
 
-Connection 拥有 request correlation、`/api` carrier、trust check、精确 Fetch 路由与 connection generation。API Gateway 拥有 Remote dispatch、取消、logical stream 与选定 Host event 的转发。Controller 操作应进入生成的 Remote method 或显式 Remote stream；功能自有的下载则注册精确 Fetch 路由。[API Gateway 参考](../api-gateway.zh.md)定义 generation 与调用，[Connection README](../../packages/client/connection/README.zh.md)定义物理 carrier 与信任策略。
+Connection يملك request correlation،`/api` carrier،trust check، دقيق Fetch توجيه و connection generation.API Gateway يملك Remote dispatch، إلغاء،logical stream و اختيار تحديد Host event تحويل إرسال.Controller عملية ينبغي دخول توليد Remote method أو صريح Remote stream؛ وظيفة ذاتي لديه تحت تحميل فإن تسجيل دقيق Fetch توجيه.[API Gateway مشاركة اعتبار](../api-gateway.zh.md) تعريف generation و استدعاء،[Connection README](../../packages/client/connection/README.zh.md) تعريف شيء إدارة carrier و معلومة مهمة سياسة.
 
-内部 `$events` logical stream 是 Connection generation source。它的 opening `ready` frame 携带用于路径显示的 Host home，并在 Host listener 已挂载、任何 controller 开始 baseline read 之前建立 generation。`ctx.remote.$on()` 把 allowlist 内的普通 event 交付给 root Client Context，并把 scoped waterfall event 交付给已解析的 Session Context；waterfall listener 可以返回结果、调用 `next()` 或拒绝。
+داخلي `$events` logical stream هو Connection generation source. هو opening `ready` frame يحمل لأجل مسار عرض Host home، و في Host listener قد تركيب، أي controller بدء baseline read قبل بناء قيام generation.`ctx.remote.$on()` يأخذ allowlist داخل عادي event تسليم إعطاء root Client Context، و يأخذ scoped waterfall event تسليم إعطاء قد تحليل Session Context؛waterfall listener يمكن إرجاع نتيجة، استدعاء `next()` أو رفض.
 
 ## Client models
 
-每个 API controller 包都拥有配对的 Host face 与 Client face。Host 侧拥有权威 mutation 与 stream 生产；Client 侧基于相同的生成 wire type 维护 identity 稳定、与 React 无关的 model，并公开 observable snapshot 与 command。UI 包消费这些 Client service，不在 component store 中复制 transport state。
+كل API controller حزمة كل يملك إعداد مقابل Host face و Client face.Host جانب يملك مرجعي mutation و stream إنتاج؛Client جانب أساس في نفسه توليد wire type صيانة identity مستقر، و React غير متصل model، و عام observable snapshot و command.UI حزمة إزالة استهلاك هذه Client service، لا في component store في نسخ transport state.
 
 ### Sessions
 
-[`api/session-controller`](../../packages/api/session-controller/README.zh.md)公开 Session list、search、creation、prompt、queue、cancellation、pagination 及 follow/control stream 等 Host command。其 Client 侧按 `ClientSessions → SessionManager → Session` 组织：
+[`api/session-controller`](../../packages/api/session-controller/README.zh.md) عام Session list،search،creation،prompt،queue،cancellation،pagination و follow/control stream انتظار Host command. ذلك Client جانب حسب `ClientSessions → SessionManager → Session` مجموعة نسج:
 
-- `ClientSessions` 提供 `ctx.sessions`，拥有 reference、source count、Session scope 与稳定的 `SessionBinding` object，并投影不含全局 current Session 选择的 catalog state。
-- `SessionManager` 拥有 list baseline、实时 list/control update、惰性 Session instance、queue、projection store、subagent catalog，以及 pull 与后到 update 之间的冲突顺序。
-- 每个 `Session` 拥有一段由 `SessionEventLikeEntry` value 表示的连续逻辑 event window、pagination、follow、prompt/control state 与供 adapter 消费的 observable snapshot。
+- `ClientSessions` توفير `ctx.sessions`، يملك reference،source count،Session scope و مستقر `SessionBinding` object، و إسقاط لا يحتوي عام current Session اختيار catalog state.
+- `SessionManager` يملك list baseline، فوري list/control update، كسول صفة Session instance،queue،projection store،subagent catalog، و pull و بعد إلى update بين اندفاع مفاجئ ترتيب.
+- كل `Session` يملك واحد مقطع من `SessionEventLikeEntry` value يمثل وصل متابعة منطق event window،pagination،follow،prompt/control state و توفير adapter إزالة استهلاك observable snapshot.
 
-持久 event 路径打开 `follow()`，其首帧包含当前 header、tail page、cursor 与完整 projection baseline。历史 record 带有显式 `event` 或 `chunks` 判别字段和字段对齐的内部 `event`；journal 先校验每条 record 的逻辑 seq 闭区间，Client 再直接把这些 record 保留为 `SessionEventLikeEntry`，无需逐 record 转换。每个物理 generation 都根据该 snapshot 原子替换保留窗口，随后按 seq append 标准实时 event。`page()` 只用于更早历史与 gap repair。瞬态 control stream 每代以完整 baseline 开始，随后应用 queue、job 与 projection update。
+حمل دائم event مسار فتح `follow()`، ذلك أول لقطة يتضمن حالي header،tail page،cursor و كامل projection baseline. تاريخ record حمل لديه صريح `event` أو `chunks` حكم آخر حقل و حقل مقابل متساو داخلي `event`؛journal أولا تحقق كل بند record منطق seq إغلاق منطقة بين،Client مجددا مباشر يأخذ هذه record إبقاء لـ `SessionEventLikeEntry`، بلا حاجة تدريجي record تحويل. كل شيء إدارة generation كل أصل حسب هذا snapshot أصل فرعي استبدال إبقاء نافذة، مع بعد حسب seq append معيار فوري event.`page()` فقط لأجل أكثر مبكر تاريخ و gap repair. لحظة حالة control stream كل بديل بـ كامل baseline بدء، مع بعد تطبيق queue،job و projection update.
 
 ### Workspaces
 
-[`api/workspace-controller`](../../packages/api/workspace-controller/README.zh.md)把 Workspace mutation policy 与权威 follow feed 留在 Host。`ClientWorkspaceModel` 拥有浏览器侧 row、order、archived Session id、command echo，以及 stream/unary 竞态合并。每代 stream 先给出完整 baseline，再给出 `upsert`、`remove`、`order` 和 `archived` increment；重连时以新 baseline 替换 model。`WorkspaceController` 把该 model 作为 `ctx.workspaces` 公开，而 `ui-workspace` 向 UI 提供 `useWorkspaces` 与 navigation callback。archived Session id 过滤每一个分组视图，并驱动「已归档会话」设置页；该页把该集合与已加载的 Session summary 合并，为每行提供一个取消归档操作。恢复会调用 `workspace.unarchiveSession` Remote，返回的完整集合则经 `archived` increment 到达每个 Client。
+[`api/workspace-controller`](../../packages/api/workspace-controller/README.zh.md) يأخذ Workspace mutation policy و مرجعي follow feed إبقاء في Host.`ClientWorkspaceModel` يملك متصفح جانب row،order،archived Session id،command echo، و stream/unary تنافس حالة دمج. كل بديل stream أولا إعطاء خروج كامل baseline، مجددا إعطاء خروج `upsert`،`remove`،`order` و `archived` increment؛ إعادة وصل وقت بـ جديد baseline استبدال model.`WorkspaceController` يأخذ هذا model بصفة `ctx.workspaces` عام، بينما `ui-workspace` نحو UI توفير `useWorkspaces` و navigation callback.archived Session id مرور ترشيح كل واحد قسم مجموعة عرض، و قيادة «قد عودة ملف جلسة» ضبط صفحة؛ هذا صفحة يأخذ هذا تجميع دمج و قد تحميل Session summary دمج، لـ كل سطر توفير واحد إلغاء عودة ملف عملية. استعادة سوف استدعاء `workspace.unarchiveSession` Remote، إرجاع كامل تجميع دمج فإن مرور `archived` increment وصول كل Client.
 
-这种配对不会产生第二份业务真相。Host controller 决定持久状态与 mutation outcome；Client model 维护最新可用的本地 projection，在有利于渲染时保持 object identity，并明确 delayed response 与 replacement baseline 的合并规则。
+هذا نوع إعداد مقابل لن إنتاج ثاني نسخة عمل خدمة حق متبادل.Host controller قرار حمل دائم حالة و mutation outcome؛Client model صيانة الأكثر جديد متاح محلي projection، في لديه فائدة في تصيير وقت إبقاء object identity، و واضح delayed response و replacement baseline دمج قاعدة.
 
-## Conversation 与 presentation
+## Conversation و presentation
 
-`ui-session` 安装 Session scope adapter，并提供 `useSessions`、`useSessionStatus`、`useSessionRetainInfo`、`useSession`、`sessionId` 和 `useProjection`。`SessionProvider` 可以继承外围 binding，也可以绑定显式 `SessionReference`，因此并存子树可以指向不同 Session。领域 adapter 可以继续添加标准 source，但不会把 React hook 放进 model object。
+`ui-session` تثبيت Session scope adapter، و توفير `useSessions`،`useSessionStatus`،`useSessionRetainInfo`،`useSession`،`sessionId` و `useProjection`.`SessionProvider` يمكن وراثة خارج محيط binding، أيضا يمكن ربط صريح `SessionReference`، لذلك و تخزين فرعي شجرة يمكن إشارة نحو مختلف Session. مجال adapter يمكن متابعة إضافة معيار source، لكن لن يأخذ React hook وضع دخول model object.
 
-`ui-conversation` 对每个 `SessionBinding.eventSource` 只绑定一次。它的 event registry 把持久 Session event 与 Client-only `assistant/live-chunk` update 关联成稳定的业务 Context，view registry 则 materialize target snapshot。Chat Assistant、Trajectory Assistant 与 Turn Tail 同时解释 live chunk 和持久 settlement 中嵌入的紧凑 stream，因此重连与分页历史无需持久 token 行即可复现相同 Assistant 状态。`ui-chat` 与 `ui-trajectory` 分别注册自己的 Definition 和 builder：它们可以解释同一 event family，但不会导入或共享彼此的最终 display model。Shell 选择一个已注册 view，再通过标准 hook 与 Slot 交付其 snapshot。[Conversation](conversation.zh.md)定义 Context identity、replay、Location data、target builder 与 keyed renderer。
+`ui-conversation` مقابل كل `SessionBinding.eventSource` فقط ربط مرة. هو event registry يأخذ حمل دائم Session event و Client-only `assistant/live-chunk` update صلة ربط صار مستقر عمل خدمة Context،view registry فإن materialize target snapshot.Chat Assistant،Trajectory Assistant و Turn Tail معا حل تفسير live chunk و حمل دائم settlement في تضمين دخول ضيق تجميع stream، لذلك إعادة وصل و قسم صفحة تاريخ بلا حاجة حمل دائم token سطر يكفي تكرار الآن نفسه Assistant حالة.`ui-chat` و `ui-trajectory` قسم آخر تسجيل ذاتي ذات Definition و builder: هو جمع يمكن حل تفسير نفس event family، لكن لن استيراد أو مشترك ذاك هذا نهائي display model.Shell اختيار واحد قد تسجيل view، مجددا عبر معيار hook و Slot تسليم ذلك snapshot.[Conversation](conversation.zh.md) تعريف Context identity،replay،Location data،target builder و keyed renderer.
 
-`ui-slots` 提供类型化 registry 与 lifecycle ledger；`ui-renderer` 是唯一通过 `useSyncExternalStore` 绑定裸 observable、拥有 React context 并渲染 root tree 的包。功能 component 通过推导出的 props 接收 framework hook、owner prop、store action 与显式 injection。[Web Client Slots](slots.zh.md)列出这些输入、扩展 API 与当前 Slot 层级。
+`ui-slots` توفير نوع تحويل registry و lifecycle ledger؛`ui-renderer` هو وحيد عبر `useSyncExternalStore` ربط عار observable، يملك React context و تصيير root tree حزمة. وظيفة component عبر دفع توجيه خروج props استقبال framework hook،owner prop،store action و صريح injection.[Web Client Slots](slots.zh.md) صف خروج هذه إدخال، توسيع API و حالي Slot طبقة درجة.
 
-## 数据通路
+## بيانات عبر مسار
 
-| 路径 | 顺序 |
+| مسار | ترتيب |
 |---|---|
-| 持久 Session 展示 | Host Session log → packed Remote `follow`/`page` 历史 → Client `SessionEventLikeEntry` window → Conversation Context → target snapshot（`chat`、`trajectory` 或其他已注册 target）→ Slot view → React |
-| 瞬态 Session control | Host control baseline → Remote snapshot stream → `SessionManager` queue/job/projection store → Session 与 list snapshot → 标准 hook → component |
-| Workspace 状态 | Host Workspace baseline 与 increment → `ClientWorkspaceModel` → `ctx.workspaces.list` → `useWorkspaces` → sidebar、hero 与 navigation entry |
-| scoped interaction | Host Cordis waterfall → API Remotes `$events` → Session Context 上的 `ctx.remote.$on()` → 所属 UI 包 → result 或 `next()` |
-| 用户 command | component callback → 注册项 inject face 或 Slot owner → `ctx.sessions`、`ctx.workspaces` 或生成的 scoped Remote → Host Controller → 权威 update → stream 或 event projection 回到 Client |
+| حمل دائم Session عرض | Host Session log → packed Remote `follow`/`page` تاريخ → Client `SessionEventLikeEntry` window → Conversation Context → target snapshot(`chat`،`trajectory` أو أخرى قد تسجيل target)→ Slot view → React |
+| لحظة حالة Session control | Host control baseline → Remote snapshot stream → `SessionManager` queue/job/projection store → Session و list snapshot → معيار hook → component |
+| Workspace حالة | Host Workspace baseline و increment → `ClientWorkspaceModel` → `ctx.workspaces.list` → `useWorkspaces` → sidebar،hero و navigation entry |
+| scoped interaction | Host Cordis waterfall → API Remotes `$events` → Session Context فوق `ctx.remote.$on()` → الذي تابع UI حزمة → result أو `next()` |
+| مستخدم command | component callback → تسجيل بند inject face أو Slot owner → `ctx.sessions`،`ctx.workspaces` أو توليد scoped Remote → Host Controller → مرجعي update → stream أو event projection عودة إلى Client |
 
-## 重连
+## إعادة وصل
 
-物理恢复与逻辑恢复彼此独立。Gateway mux 恢复物理 WebSocket；Connection 发布可用 generation 后，每个 `RemoteStream` 分别重开自己的 logical source。Carrier failure 可以重试；business error、非法 opening item 或 protocol violation 会令所属 logical stream 终止。
+شيء إدارة استعادة و منطق استعادة ذاك هذا مستقل.Gateway mux استعادة شيء إدارة WebSocket؛Connection إصدار متاح generation بعد، كل `RemoteStream` قسم آخر إعادة فتح ذاتي ذات logical source.Carrier failure يمكن إعادة محاولة؛business error، غير قاعدة opening item أو protocol violation سوف أمر الذي تابع logical stream إنهاء.
 
-恢复方式由数据语义决定：
+استعادة طريقة من بيانات دلالة قرار:
 
-- 持久 Session journal 校验逻辑 seq range，并根据每个 generation 的 opening snapshot 替换窗口；`page()` 提供更早历史并修复后续 range gap。
-- Session control 与 Workspace stream 在断开期间保留最后一次发布的值，再用新的 opening baseline 原子替换。
-- 普通 forwarded notification 不会 replay。需要可靠恢复的 stateful domain 必须提供 baseline、cursor 或显式 query；scoped waterfall 保留自身的 request lifetime。
+- حمل دائم Session journal تحقق منطق seq range، و أصل حسب كل generation opening snapshot استبدال نافذة؛`page()` توفير أكثر مبكر تاريخ و إصلاح لاحق range gap.
+- Session control و Workspace stream في قطع فتح خلال إبقاء الأكثر بعد مرة إصدار قيمة، مجددا استخدام جديد opening baseline أصل فرعي استبدال.
+- عادي forwarded notification لن replay. حاجة يمكن اعتماد استعادة stateful domain يجب توفير baseline،cursor أو صريح query؛scoped waterfall إبقاء ذاته request lifetime.
 
-架构中没有统一的 Client `Runtime`、`HostFrame`、`events.mux`、`events.host` 或通用 `resync()` API。Connection 公开 generation state，Gateway 管理 logical stream，Client model 则按自身数据定义 replacement 或 resume 语义。
+هيكل بنية في لا يوجد موحد واحد Client `Runtime`،`HostFrame`،`events.mux`،`events.host` أو عام `resync()` API.Connection عام generation state،Gateway إدارة logical stream،Client model فإن حسب ذاته بيانات تعريف replacement أو resume دلالة.
 
-## 包边界
+## حزمة حد
 
-功能插件包可以通过 `import type` 共享声明；不得运行时导入或转发另一个功能插件的值。跨包行为使用注入的 Cordis service，跨包 UI 使用 Slots。特定 target 的 Conversation Definition、projection helper 与最终 view data 留在所属 target 包中，即使 Chat 和 Trajectory 有意实现平行逻辑。
+وظيفة إضافة حزمة يمكن عبر `import type` مشترك إعلان؛ لا نيل وقت التشغيل استيراد أو تحويل إرسال آخر عدد وظيفة إضافة قيمة. عبر حزمة سلوك استخدام حقن Cordis service، عبر حزمة UI استخدام Slots. خاص تحديد target Conversation Definition،projection helper و نهائي view data إبقاء في الذي تابع target حزمة في، أي جعل Chat و Trajectory متعمد تنفيذ مستو سطر منطق.
 
-共享运行时值需要一个职责收窄、没有功能生命周期的静态 owner，例如 `client/store`、`ui-primitives` 或浏览器安全的 util 包。Transport 与生成 API assembly 可以导入运行时 contribution，因为组装同一个 protocol 正是它们的显式职责。功能包不能只为绕过此规则而添加 `dsh.client.external`。
+مشترك وقت التشغيل قيمة حاجة واحد مسؤولية استلام ضيق، لا يوجد وظيفة دورة الحياة ساكن حالة owner، مثال مثل `client/store`،`ui-primitives` أو متصفح أمان util حزمة.Transport و توليد API assembly يمكن استيراد وقت التشغيل contribution، لأن تجميع نفس عدد protocol صحيح هو هو جمع صريح مسؤولية. وظيفة حزمة لا يستطيع فقط لـ التفاف مرور هذا قاعدة بينما إضافة `dsh.client.external`.
 
-根据所添加的扩展查阅四篇详细参考：
+أصل حسب الذي إضافة توسيع فحص قراءة أربعة مقالة تفصيل دقيق مشاركة اعتبار:
 
-- [Client Modules](client-modules.zh.md)：package discovery、loading、共享 module identity 与 boot order。
-- [API Gateway](../api-gateway.zh.md)：Host method、生成的 Remote contribution、stream 与 forwarded event。
-- [Web Client Slots](slots.zh.md)：component、hook、store、injection 与 placement。
-- [Conversation](conversation.zh.md)：持久 event correlation、target snapshot，以及 Chat 或 Trajectory view contribution。
+- [Client Modules](client-modules.zh.md):package discovery،loading، مشترك module identity و boot order.
+- [API Gateway](../api-gateway.zh.md):Host method، توليد Remote contribution،stream و forwarded event.
+- [Web Client Slots](slots.zh.md):component،hook،store،injection و placement.
+- [Conversation](conversation.zh.md): حمل دائم event correlation،target snapshot، و Chat أو Trajectory view contribution.

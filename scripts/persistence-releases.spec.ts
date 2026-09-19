@@ -59,7 +59,7 @@ interface Fixture {
 function saveRecord(directory: string, record: PersistenceReleaseRecord): void {
   const block = dump(record, { lineWidth: -1, noRefs: true })
   for (const suffix of ['.md', '.zh.md']) {
-    const switcher = suffix === '.md' ? `English | [中文](${record.tag}.zh.md)` : `[English](${record.tag}.md) | 中文`
+    const switcher = suffix === '.md' ? `English | [العربية](${record.tag}.zh.md)` : `[English](${record.tag}.md) | العربية`
     writeFileSync(join(directory, record.tag + suffix), [
       '---', 'kind: persistence-release', '---', '', '# Archived release', '', switcher, '',
       '## Summary', '', 'Authored summary and evidence.', '',
@@ -77,7 +77,7 @@ function fixture(): Fixture {
   const directory = join(root, 'docs/persistence-changes/releases')
   mkdirSync(directory, { recursive: true })
   for (const suffix of ['.md', '.zh.md']) {
-    const switcher = suffix === '.md' ? 'English | [中文](README.zh.md)' : '[English](README.md) | 中文'
+    const switcher = suffix === '.md' ? 'English | [العربية](README.zh.md)' : '[English](README.md) | العربية'
     writeFileSync(join(directory, 'README' + suffix), [
       '# Releases', '', switcher, '', 'Authored introduction.', '',
       '<!-- persistence-release-index:start -->', '', 'Pending index.', '', '<!-- persistence-release-index:end -->', '',
@@ -359,7 +359,7 @@ describe('release facts', () => {
     const path = join(data.directory, TAGS[1] + '.zh.md')
     writeFileSync(path, readFileSync(path, 'utf8').replace('Authored summary and evidence.', 'Revised authored explanation.'))
     expect(() => runPersistenceReleases([], data.root)).not.toThrow()
-    writeFileSync(path, readFileSync(path, 'utf8').replace('4 个根类型 / 7 种类型', '4 个根类型 / 999 种类型'))
+    writeFileSync(path, readFileSync(path, 'utf8').replace('4 عدد أصل نوع / 7 نوع نوع', '4 عدد أصل نوع / 999 نوع نوع'))
     expect(() => runPersistenceReleases([], data.root)).toThrow('Stale persistence release facts')
   })
 

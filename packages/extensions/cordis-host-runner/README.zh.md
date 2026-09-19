@@ -1,33 +1,33 @@
 ---
-description: "动态 Cordis 包的 host 半说明，供选择、组合或排查注册表、沙箱与运行往返的 agent（智能体）与维护者阅读。"
+description: "حركة حالة Cordis حزمة host نصف شرح، توفير اختيار، تركيب أو ترتيب فحص سجل التسجيل، صندوق رملي و تشغيل نحو إرجاع agent(ذكي جسم) و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-cordis-host-runner
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-cordis-host-runner` 提供运行时检查，并为程序调用方和浏览器控件保留进程内动态定义。Host 部分在 `node:vm` 中运行；浏览器部分使用 Client runner 和审批 UI。定义在重启后消失。Agent 通过 `tool-cordis` 发现 API，通过 Plugin Manager 安装持久化 bundle；没有模型工具创建动态定义。
+`dsh-cordis-host-runner` توفير وقت التشغيل فحص، و لـ برنامج استدعاء جهة و متصفح تحكم عنصر إبقاء عملية داخل حركة حالة تعريف.Host جزء في `node:vm` في تشغيل؛ متصفح جزء استخدام Client runner و مراجعة دفعة UI. تعريف في إعادة بدء بعد إزالة فقد.Agent عبر `tool-cordis` اكتشاف API، عبر Plugin Manager تثبيت حفظ دائم bundle؛ لا يوجد نموذج أداة إنشاء حركة حالة تعريف.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-需要检查注册表或程序侧动态包生命周期时挂载此插件。浏览器生命周期消费者还需要 Client runner 和 UI 包。内置 Creator 流程使用已安装 bundle，不使用此定义注册表。
+حاجة فحص سجل التسجيل أو برنامج جانب حركة حالة حزمة دورة الحياة وقت تركيب هذا إضافة. متصفح دورة الحياة إزالة استهلاك من أيضا حاجة Client runner و UI حزمة. داخل وضع Creator مسار استخدام قد تثبيت bundle، لا استخدام هذا تعريف سجل التسجيل.
 
-### 最小配置
+### الأكثر صغير إعداد
 
 ```yaml
 - name: '@deepseek-ai/dsh-cordis-host-runner'
@@ -35,112 +35,112 @@ kind: "package-reference"
     vmTimeoutMs: 5000
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `vmTimeoutMs` | `5000` | host 半在 vm 中同步执行的那部分被中止求值前可运行的毫秒数 |
+| `vmTimeoutMs` | `5000` | host نصف في vm في تزامن تنفيذ ذلك جزء يتم في توقف طلب قيمة قبل يمكن تشغيل جزء ثانية عدد |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-cordis-host-runner)是每个受支持字段的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-cordis-host-runner) هو كل تلقي دعم حمل حقل نفاد كل صيغة حق مصدر.
 
-### run 会做什么
+### run سوف فعل ماذا
 
-程序调用方使用 `define`、`run`、`stop` 和 `undefine`；浏览器面板操作已有定义。仅含 Host 的包在本进程激活。带浏览器部分的包等待审批或取消，批准后先加载 Host 再加载 Client。`mode: "run"` 启动当前版本，`mode: "update"` 替换版本。Stop 释放运行中的 effect 并保留定义；undefine 还会移除定义。
+برنامج استدعاء جهة استخدام `define`،`run`،`stop` و `undefine`؛ متصفح وجه لوح عملية قد لديه تعريف. فقط يحتوي Host حزمة في هذا عملية تنشيط. حمل متصفح جزء حزمة انتظار مراجعة دفعة أو إلغاء، دفعة دقيق بعد أولا تحميل Host مجددا تحميل Client.`mode: "run"` بدء حالي إصدار،`mode: "update"` استبدال إصدار.Stop تحرير تشغيل في effect و إبقاء تعريف؛undefine أيضا سوف إزالة تعريف.
 
-### 定义的去向
+### تعريف ذهاب نحو
 
-定义按会话隔离且仅在进程内存在：其他会话无法读取，重启会清空。历史日志保留工具参数和回执，但不会恢复注册表。浏览器页面重载后，需要再次显式运行才能加载 Client 部分。
+تعريف حسب جلسة عزل كما فقط في عملية داخل وجود: أخرى جلسة لا يمكن قراءة، إعادة بدء سوف صاف فارغ. تاريخ سجل إبقاء أداة معامل و عودة تنفيذ، لكن لن استعادة سجل التسجيل. متصفح صفحة إعادة تحميل بعد، حاجة مجددا مرة صريح تشغيل عندئذ قدرة تحميل Client جزء.
 
-### 信任立场
+### معلومة مهمة قيام ساحة
 
-沙箱隔离全局变量，但不是安全边界：Node 全局变量不存在，或重定向到 Cordis 服务（`ctx.fs`、`ctx.web`、`ctx.bash` 与定时器 helper），host 半收到的是不含框架内部机制的 façade，但它声明的服务仍会触达存活运行时。对待动态包要像对待 bash 访问一样，参见[自引用工具集 Agent Note](../../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.zh.md)。
+صندوق رملي عزل عام متغير، لكن لا هو أمان حد:Node عام متغير لا وجود، أو إعادة تحديد نحو إلى Cordis خدمة (`ctx.fs`،`ctx.web`،`ctx.bash` و تحديد وقت جهاز helper) ،host نصف استلام إلى هو لا يحتوي إطار هيكل داخلي آلية façade، لكن هو إعلان خدمة ما زال سوف لمس بلوغ تخزين نشط وقت التشغيل. مقابل انتظار حركة حالة حزمة يلزم مثل مقابل انتظار bash وصول واحد مثال، مشاركة رؤية[ذاتي مرجع أداة تجميع Agent Note](../../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.zh.md).
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释 runner 背后的设计；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير runner خلف بعد تصميم؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-runner 基于两项职责划分。**注册表与沙箱是同一个服务。** `DynamicCordisRunnerService` 拥有定义注册表、vm 沙箱、host 半 fiber 生命周期与 invoke handler 表，因此一个定义的整个生命周期只有一个 owner。**版本是不可变的包。** 插件持有 `define` 之后永不变化的包；`currentPackageId` 与 `nextPackageId` 指向运行中与目标版本，`mode: "run"` 与 `"update"` 编码目标是否等于当前版本。浏览器往返之所以存在，是因为浏览器半只能由页面执行：服务 emit 请求并挂起，由页面的结论结算，调用方的 `AbortSignal` 是唯一的另一条出路。
+runner أساس في اثنان بند مسؤولية تخطيط قسم.**سجل التسجيل و صندوق رملي هو نفس عدد خدمة.** `DynamicCordisRunnerService` يملك تعريف سجل التسجيل،vm صندوق رملي،host نصف fiber دورة الحياة و invoke handler جدول، لذلك واحد تعريف كامل دورة الحياة فقط لديه واحد owner.**إصدار هو غير ممكن تغيير حزمة.** إضافة يحتفظ `define` بعد دائم ثابت تحويل حزمة؛`currentPackageId` و `nextPackageId` إشارة نحو تشغيل في و هدف إصدار،`mode: "run"` و `"update"` تحرير رمز هدف هل انتظار في حالي إصدار. متصفح نحو إرجاع لـ الذي بـ وجود، هو لأن متصفح نصف فقط قدرة من صفحة تنفيذ: خدمة emit طلب و تعليق بدء، من صفحة ربط نقاش تسوية، استدعاء جهة `AbortSignal` هو وحيد آخر بند خروج مسار.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 服务入口：`Config`、注册表接线、生命周期动词、steering（中途引导）消息 |
-| [`src/registry.ts`](src/registry.ts) | 定义存储：插件与包标识、运行尝试、审批请求 |
-| [`src/sandbox.ts`](src/sandbox.ts) | `node:vm` 求值：全局变量、Node API 陷阱、define 时语法预检 |
-| [`src/guard.ts`](src/guard.ts) | 注册边界：schema 规范化、沙箱 `ctx` façade、插件形态检查 |
-| [`src/lifecycle.ts`](src/lifecycle.ts) | 在 `cordis-dynamic` fiber 组下启动 host 半 |
-| [`src/inspect-registry.ts`](src/inspect-registry.ts) | `ctx.cordisInspect` 注册表：host 提供方加镜像的 client manifest（元数据清单） |
-| [`src/types.ts`](src/types.ts) | `dynamicCordisRunner` remote namespace 与转发事件共享的 client 安全载荷形态 |
+| [`src/index.ts`](src/index.ts) | خدمة مدخل:`Config`، سجل التسجيل وصل خط، دورة الحياة حركة كلمة،steering(في طريق جذب توجيه) رسالة |
+| [`src/registry.ts`](src/registry.ts) | تعريف تخزين: إضافة و حزمة معرف، تشغيل محاولة تجربة، مراجعة دفعة طلب |
+| [`src/sandbox.ts`](src/sandbox.ts) | `node:vm` طلب قيمة: عام متغير،Node API وقوع فخ،define وقت لغة قاعدة مسبق فحص |
+| [`src/guard.ts`](src/guard.ts) | تسجيل حد:schema مواصفة تحويل، صندوق رملي `ctx` façade، إضافة شكل فحص |
+| [`src/lifecycle.ts`](src/lifecycle.ts) | في `cordis-dynamic` fiber مجموعة تحت بدء host نصف |
+| [`src/inspect-registry.ts`](src/inspect-registry.ts) | `ctx.cordisInspect` سجل التسجيل:host مزود إضافة مرآة مثل client manifest(بيانات وصفية بيان) |
+| [`src/types.ts`](src/types.ts) | `dynamicCordisRunner` remote namespace و تحويل إرسال حدث مشترك client أمان تحميل حمل شكل |
 
-### 一次 run 的流程
+### مرة run مسار
 
-`define` 对元数据做首尾去空白与必填校验，用编译预检每一半的语法（不执行任何代码），铸出插件与包标识，并把定义登记在发起调用的会话名下。`run` 对照 `currentPackageId` 与 `nextPackageId` 解析目标：纯 host 包在沙箱中求值并立即提交，带浏览器半的包则建立一次审批请求、emit `cordis/request-run` 并挂起。作答页面依次走 `runHostHalf`、`getClientCode` 与 `resolveRequestRun`；命名存活 revision 的成功会提交激活、设置 `currentPackageId`，`cordis/request-run-resolved` 让其他每个页面撤下待作答入口。`stop` 回退存活下发——handler disposer、fiber dispose（资源释放）与 `cordis/dynamic-retract` 广播——并让定义保持可运行。四条转发事件（`cordis/request-run`、`cordis/request-run-resolved`、`cordis/dynamic-package`、`cordis/dynamic-retract`）声明在 client 安全的 `./types` 子路径上，并由 `@deepseek-ai/dsh-api-remotes` 的白名单准许投递——正是这一点让浏览器能经 `ctx.remote.$on` 收到它们。
+`define` مقابل بيانات وصفية فعل أول ذيل ذهاب فارغ أبيض و لا بد ملء تحقق، استخدام تحرير ترجمة مسبق فحص كل واحد نصف لغة قاعدة (لا تنفيذ أي شفرة) ، صب خروج إضافة و حزمة معرف، و يأخذ تعريف تسجيل تسجيل في إرسال بدء استدعاء جلسة اسم تحت.`run` مقابل وفق `currentPackageId` و `nextPackageId` تحليل هدف: صاف host حزمة في صندوق رملي في طلب قيمة و قيام أي إيداع، حمل متصفح نصف حزمة فإن بناء قيام مرة مراجعة دفعة طلب،emit `cordis/request-run` و تعليق بدء. عمل جواب صفحة اعتماد مرة مشي `runHostHalf`،`getClientCode` و `resolveRequestRun`؛ تسمية تخزين نشط revision نجاح سوف إيداع تنشيط، ضبط `currentPackageId`،`cordis/request-run-resolved` يجعل أخرى كل صفحة سحب تحت انتظار عمل جواب مدخل.`stop` رجوع تخزين نشط تحت إرسال——handler disposer،fiber dispose(مورد تحرير) و `cordis/dynamic-retract` واسع بث——و يجعل تعريف إبقاء يمكن تشغيل. أربعة بند تحويل إرسال حدث (`cordis/request-run`،`cordis/request-run-resolved`،`cordis/dynamic-package`،`cordis/dynamic-retract`) إعلان في client أمان `./types` فرعي مسار فوق، و من `@deepseek-ai/dsh-api-remotes` أبيض اسم مفرد دقيق سماح إلقاء تمرير——صحيح هو هذا واحد نقطة يجعل متصفح قدرة مرور `ctx.remote.$on` استلام إلى هو جمع.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从 runner 逐步进入调用它的工具、应答它的浏览器半与生成的表面。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من runner تدريجي خطوة دخول استدعاء هو أداة، ينبغي جواب هو متصفح نصف و توليد جدول وجه.
 
-- [工具包](../tool-cordis/README.zh.md)——使用其检查注册表的只读工具。
-- [Client runner](../cordis-client-runner/README.zh.md)——应答运行请求并装载浏览器半代码的浏览器半。
-- [UI 包](../ui-cordis/README.zh.md)——用户批准并操作运行的面板。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-cordis-host-runner)——每个受支持配置字段。
-- [extensions 子系统](../../../docs/subsystems/extensions.zh.md)——生成的 `ctx.cordisInspect` 与 `ctx.dynamicCordisRunner` API 及 `cordis/*` 事件。
-- [自引用 Cordis 工具集 Agent Note](../../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.zh.md)——沙箱语义、生命周期与组合的理由。
+- [أداة حزمة](../tool-cordis/README.zh.md)——استخدام ذلك فحص سجل التسجيل فقط قراءة أداة.
+- [Client runner](../cordis-client-runner/README.zh.md)——ينبغي جواب تشغيل طلب و تركيب تحميل متصفح نصف شفرة متصفح نصف.
+- [UI حزمة](../ui-cordis/README.zh.md)——مستخدم دفعة دقيق و عملية تشغيل وجه لوح.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-cordis-host-runner)——كل تلقي دعم حمل إعداد حقل.
+- [extensions فرعي نظام](../../../docs/subsystems/extensions.zh.md)——توليد `ctx.cordisInspect` و `ctx.dynamicCordisRunner` API و `cordis/*` حدث.
+- [ذاتي مرجع Cordis أداة تجميع Agent Note](../../../.agents/notes/implemented/feature/2026-07-08-self-referential-cordis-toolset.zh.md)——صندوق رملي دلالة، دورة الحياة و تركيب إدارة من.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 转达给所属会话的运行结果、拒绝与诊断
+### تحويل بلوغ إعطاء الذي تابع جلسة تشغيل نتيجة، رفض و تشخيص
 
-#### 模型看到的内容
+#### نموذج يرى محتوى
 
-本包不注册工具或提示。程序侧 `run` 调用和浏览器控件可向所属会话发送结果与诊断；停止和移除操作注入用户消息。内置模型工具无法创建或更新动态定义。
+هذه الحزمة لا تسجيل أداة أو تلميح. برنامج جانب `run` استدعاء و متصفح تحكم عنصر يمكن نحو الذي تابع جلسة إرسال نتيجة و تشخيص؛ إيقاف و إزالة عملية حقن مستخدم رسالة. داخل وضع نموذج أداة لا يمكن إنشاء أو تحديث حركة حالة تعريف.
 
-#### Token 影响
+#### Token أثر
 
-有条件且随数据而定：消息只在事件发生时到达，每条都携带一段有界的说明；没有固定的每请求成本。
+لديه شرط كما مع بيانات بينما تحديد: رسالة فقط في حدث حدوث وقت وصول، كل بند كل يحمل واحد مقطع محدود شرح؛ لا يوجد ثابت كل طلب صار هذا.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-本包自身没有。注册工具的 host 半会改变下一次请求的工具视图，从第一个变化的 schema token 起使前缀复用失效；运行或停止一个不注册任何工具的包对前缀不产生影响。
+هذه الحزمة ذاته لا يوجد. تسجيل أداة host نصف سوف تغيير تحت مرة طلب أداة عرض، من رقم واحد تغير schema token بدء جعل بادئة إعادة استخدام بطلان؛ تشغيل أو إيقاف واحد لا تسجيل أي أداة حزمة مقابل بادئة لا إنتاج أثر.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明 runner 何时需要特别小心。它们是当前包约束，不是任务积压。
+هذه حد شرح runner أي وقت حاجة خاص آخر صغير قلب. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **运行成功不代表 UI 已渲染**——React 在加载回执之后渲染；失败通过 steering 发送到所属会话，并显示在浏览器面板中。
-- **带浏览器半的包在没有页面连接的地方挂起**——headless 与 ACP（Agent Client Protocol）部署会把 run 一直挂到提问的轮次被取消；纯 host 包不受影响。
-- **挂起的 run 请求没有超时**——它一直等人，直到提问的轮次被取消，因此无人值守的自动化用不了带浏览器半的包。
-- **`vmTimeoutMs` 只约束同步求值**——async 的 host 半函数体会逃出该上限，这与工具集基于协作的信任立场一致。
-- **陈旧成功的拒绝会让请求继续挂起**——作答页面点名的 revision 已被注册表越过时，该结论会被拒绝（`accepted: false`），请求保持可作答，直到另一个页面作答或调用方取消；浏览器半不读这个 ack。
-- **运行播报不携带服务声明**——浏览器半声明的 `inject` 是从它在页面里返回的插件上读出的，因此 `cordis/request-run` 只携带元数据，绝无代码或服务清单。
-- **`zod` 是生成的 Typert 契约面的运行时依赖，不是 `src` 的依赖**——`./typert` 与 `./remote` 解析到未打包的 `lib` 文件，其中带有裸的 `import { z } from 'zod'`，所以即使 `src` 里没有任何代码 import zod，本包也要声明它。
+- **تشغيل نجاح لا بديل جدول UI قد تصيير**——React في تحميل عودة تنفيذ بعد تصيير؛ فشل عبر steering إرسال إلى الذي تابع جلسة، و عرض في متصفح وجه لوح في.
+- **حمل متصفح نصف حزمة في لا يوجد صفحة اتصال أرض جهة تعليق بدء**——headless و ACP(Agent Client Protocol) نشر سوف يأخذ run واحد مباشر تعليق إلى رفع سؤال جولة يتم إلغاء؛ صاف host حزمة لا تلقي أثر.
+- **تعليق بدء run طلب لا يوجد مهلة**——هو واحد مباشر انتظار شخص، مباشر إلى رفع سؤال جولة يتم إلغاء، لذلك بلا شخص قيمة حراسة تلقائي تحويل استخدام لا حمل متصفح نصف حزمة.
+- **`vmTimeoutMs` فقط قيد تزامن طلب قيمة**——async host نصف دالة جسم سوف هروب خروج هذا حد أعلى، هذا و أداة تجميع أساس في تنسيق عمل معلومة مهمة قيام ساحة متسق.
+- **قديم قديم نجاح رفض سوف يجعل طلب متابعة تعليق بدء**——عمل جواب صفحة نقطة اسم revision قد يتم سجل التسجيل تجاوز مرور وقت، هذا ربط نقاش سوف يتم رفض (`accepted: false`) ، طلب إبقاء يمكن عمل جواب، مباشر إلى آخر عدد صفحة عمل جواب أو استدعاء جهة إلغاء؛ متصفح نصف لا قراءة هذا عدد ack.
+- **تشغيل بث تقرير لا يحمل خدمة إعلان**——متصفح نصف إعلان `inject` هو من هو في صفحة داخل إرجاع إضافة فوق قراءة خروج، لذلك `cordis/request-run` فقط يحمل بيانات وصفية، قطعا بلا شفرة أو خدمة بيان.
+- **`zod` هو توليد Typert عقد نحو وجه وقت التشغيل اعتماد، لا هو `src` اعتماد**——`./typert` و `./remote` تحليل إلى لم تحزيم `lib` ملف، منها حمل لديه عار `import { z } from 'zod'`، الذي بـ أي جعل `src` داخل لا يوجد أي شفرة import zod، هذه الحزمة أيضا يلزم إعلان هو.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。definition registry 位于进程内存中且没有可观察的事件流；它唯一负责的关系是运行中的 definition 拥有已结算的 host-half fiber 及其 handler table，该关系在单个等待完成的操作中建立和解除，因此由包测试直接断言。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.definition registry يقع في عملية داخل تخزين في كما لا يوجد يمكن مراقبة حدث تدفق؛ هو وحيد مسؤول علاقة هو تشغيل في definition يملك قد تسوية host-half fiber و ذلك handler table، هذا علاقة في مفرد عدد انتظار إتمام عملية في بناء قيام و حل حذف، لذلك من حزمة اختبار مباشر تأكيد.

@@ -1,17 +1,17 @@
-<!-- 英文源文件由 scripts/gen-cordis-catalog.ts 生成；本中文文件是通过双语配对维护的经评审对侧。
-     更新时先运行 `pnpm run gen-cordis-catalog` 更新英文，再更新本文件并运行 `pnpm run verify-translation-pairing --write docs/cordis-api/context.md` 重新记录配对。 -->
+<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
+     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/context.md` إعادة سجل إعداد مقابل. -->
 
-# 上下文
+# سياق
 
-[English](context.md) | 中文
+[English](context.md) | العربية
 
-上下文是 Cordis 的核心对象：所有服务、事件和生命周期 API 都通过 `ctx` 访问。事件方法见[事件](events.zh.md)，副作用与当前 fiber 见 [Fiber](fiber.zh.md)，插件加载见[注册表](registry.zh.md)。
+سياق هو Cordis نواة قلب كائن: كل خدمة، حدث و دورة الحياة API كل عبر `ctx` وصول. حدث طريقة رؤية[حدث](events.zh.md) ، فرعي أثر و حالي fiber رؤية [Fiber](fiber.zh.md) ، إضافة تحميل رؤية[سجل التسجيل](registry.zh.md).
 
-Cordis 插件的根依赖容器和子依赖容器。
+Cordis إضافة أصل اعتماد حاوية و فرعي اعتماد حاوية.
 
-上下文是一个代理：普通属性读取通过服务解析器进行，而 `extend()`、`isolate()` 和 `intercept()` 会创建有作用域的子上下文，且不修改其父上下文。
+سياق هو واحد بديل إدارة: عادي خاصية قراءة عبر خدمة محلل إجراء، بينما `extend()`،`isolate()` و `intercept()` سوف إنشاء لديه أثر مجال فرعي سياق، كما لا تعديل ذلك أب سياق.
 
-[源码](../../vendor/cordis/src/context.ts#L42)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L42)
 
 ### ctx.extend(meta?)
 
@@ -28,15 +28,15 @@ Cordis 插件的根依赖容器和子依赖容器。
 extend(meta = {}): this
 ```
 
-在当前作用域之上创建一个带有额外元数据的子上下文。
+في حالي أثر مجال لـ فوق إنشاء واحد حمل لديه مقدار خارج بيانات وصفية فرعي سياق.
 
-子上下文通过原型继承当前上下文的所有属性；`meta` 的自有属性会遮蔽继承的同名属性。父上下文不会被修改。
+فرعي سياق عبر أصل نوع وراثة حالي سياق كل خاصية؛`meta` ذاتي لديه خاصية سوف حجب حجب وراثة نفس اسم خاصية. أب سياق لن يتم تعديل.
 
-- `meta`：要在子上下文上定义的自有属性，包括以 symbol 为键的属性。
+- `meta`: يلزم في فرعي سياق فوق تعريف ذاتي لديه خاصية، يشمل بـ symbol لـ مفتاح خاصية.
 
-**返回**继承自当前上下文的子上下文。
+**إرجاع**وراثة ذاتي حالي سياق فرعي سياق.
 
-[源码](../../vendor/cordis/src/context.ts#L99)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L99)
 
 ### ctx.isolate(name, label?)
 
@@ -56,16 +56,16 @@ extend(meta = {}): this
 isolate(name: string, label?: symbol)
 ```
 
-创建一个子上下文，使 `name` 拥有独立的服务作用域。
+إنشاء واحد فرعي سياق، جعل `name` يملك مستقل خدمة أثر مجال.
 
-在返回的上下文之下，对服务 `name` 的读写会根据新标签解析，而不再根据父上下文的标签解析，因此可以提供不同的实现而不影响父作用域。将同一个 `label` 传给两次 `isolate()` 调用，可使二者加入同一作用域。
+في إرجاع سياق لـ تحت، مقابل خدمة `name` قراءة كتابة سوف أصل حسب جديد وسم تحليل، بينما لم يعد أصل حسب أب سياق وسم تحليل، لذلك يمكن توفير مختلف تنفيذ بينما لا أثر أب أثر مجال. سوف نفس عدد `label` نقل إعطاء اثنان مرة `isolate()` استدعاء، يمكن جعل اثنان من إضافة دخول نفس أثر مجال.
 
-- `name`：要隔离的服务名称。
-- `label`：要加入的作用域标签；默认为一个新建的唯一 symbol。
+- `name`: يلزم عزل خدمة اسم.
+- `label`: يلزم إضافة دخول أثر مجال وسم؛ افتراضي لـ واحد جديد بناء وحيد symbol.
 
-**返回**一个子上下文，其 `name` 服务在新作用域中解析。
+**إرجاع**واحد فرعي سياق، ذلك `name` خدمة في جديد أثر مجال في تحليل.
 
-[源码](../../vendor/cordis/src/context.ts#L121)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L121)
 
 ### ctx.intercept(name, config)
 
@@ -86,16 +86,16 @@ intercept<K extends InjectKey>(name: K, config: Context[K] extends { [symbols.co
 intercept(name: string, config: any): this
 ```
 
-为在此上下文之下启动的插件添加服务专属的拦截配置。
+لـ في هذا سياق لـ تحت بدء إضافة إضافة خدمة مخصص تابع اعتراض قطع إعداد.
 
-在返回的上下文下加载的插件会看到 `config` 已合并到服务解析后的配置中（祖先条目在前；见 `Service[symbols.resolveConfig]`）。父上下文不受影响。
+في إرجاع سياق تحت تحميل إضافة سوف يرى `config` قد دمج إلى خدمة تحليل بعد إعداد في (أصل أولا بند في قبل؛ رؤية `Service[symbols.resolveConfig]`). أب سياق لا تلقي أثر.
 
-- `name`：要拦截其配置的服务名称。
-- `config`：要为该服务合并的拦截配置。
+- `name`: يلزم اعتراض قطع ذلك إعداد خدمة اسم.
+- `config`: يلزم لـ هذا خدمة دمج اعتراض قطع إعداد.
 
-**返回**一个携带额外拦截条目的子上下文。
+**إرجاع**واحد يحمل مقدار خارج اعتراض قطع بند فرعي سياق.
 
-[源码](../../vendor/cordis/src/context.ts#L139)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L139)
 
 ### ctx.root
 
@@ -104,9 +104,9 @@ intercept(name: string, config: any): this
 root: this
 ```
 
-应用的根上下文，所有子上下文均共享它。@experimental
+تطبيق أصل سياق، كل فرعي سياق متساو مشترك هو.@experimental
 
-[源码](../../vendor/cordis/src/context.ts#L22)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L22)
 
 ### ctx.baseUrl
 
@@ -115,9 +115,9 @@ root: this
 baseUrl?: string
 ```
 
-用于解析相对插件／模块说明符的基础 URL，前提是运行时设置了该值。
+لأجل تحليل متبادل مقابل إضافة/وحدة شرح رمز أساس أساس URL، قبل رفع هو وقت التشغيل ضبط هذا قيمة.
 
-[源码](../../vendor/cordis/src/context.ts#L24)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L24)
 
 ### ctx.events
 
@@ -126,9 +126,9 @@ baseUrl?: string
 events: EventsService
 ```
 
-事件总线。它的方法也会混入 `ctx`（`ctx.on`、`ctx.emit` 等）。
+حدث مجموع خط. هو طريقة أيضا سوف خلط دخول `ctx`(`ctx.on`،`ctx.emit` انتظار).
 
-[源码](../../vendor/cordis/src/context.ts#L26)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L26)
 
 ### ctx.logger
 
@@ -137,9 +137,9 @@ events: EventsService
 logger: LoggerService
 ```
 
-日志服务。调用 `ctx.logger(name)` 可获取具名 logger。
+سجل خدمة. استدعاء `ctx.logger(name)` يمكن نيل أخذ أداة اسم logger.
 
-[源码](../../vendor/cordis/src/context.ts#L28)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L28)
 
 ### ctx.reflect
 
@@ -148,9 +148,9 @@ logger: LoggerService
 reflect: ReflectService
 ```
 
-为上下文代理提供支持的反射层（`ctx.get`、`ctx.provide` 等）。
+لـ سياق بديل إدارة توفير دعم حمل عكس إطلاق طبقة (`ctx.get`،`ctx.provide` انتظار).
 
-[源码](../../vendor/cordis/src/context.ts#L30)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L30)
 
 ### ctx.registry
 
@@ -159,11 +159,11 @@ reflect: ReflectService
 registry: RegistryService
 ```
 
-插件注册表。它的方法会混入 `ctx`（`ctx.plugin`、`ctx.inject`）。
+إضافة سجل التسجيل. هو طريقة سوف خلط دخول `ctx`(`ctx.plugin`،`ctx.inject`).
 
-[源码](../../vendor/cordis/src/context.ts#L32)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L32)
 
-## 静态成员
+## ساكن حالة عضو
 
 ### Context.effect
 
@@ -172,9 +172,9 @@ registry: RegistryService
 static readonly effect: unique symbol
 ```
 
-资源释放函数用于公开其 EffectMeta 诊断树的 symbol 键。
+مورد تحرير دالة لأجل عام ذلك EffectMeta تشخيص شجرة symbol مفتاح.
 
-[源码](../../vendor/cordis/src/context.ts#L44)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L44)
 
 ### Context.filter
 
@@ -183,9 +183,9 @@ static readonly effect: unique symbol
 static readonly filter: unique symbol
 ```
 
-上下文监听器过滤器的 symbol 键，每次分派事件时都会查询该过滤器。
+سياق مستمع مرور ترشيح جهاز symbol مفتاح، كل مرة قسم إرسال حدث وقت كل سوف استعلام هذا مرور ترشيح جهاز.
 
-[源码](../../vendor/cordis/src/context.ts#L46)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L46)
 
 ### Context.isolate
 
@@ -194,9 +194,9 @@ static readonly filter: unique symbol
 static readonly isolate: unique symbol
 ```
 
-隔离映射的 symbol 键（见 `Context[symbols.isolate]` 属性）。
+عزل خريطة symbol مفتاح (رؤية `Context[symbols.isolate]` خاصية).
 
-[源码](../../vendor/cordis/src/context.ts#L48)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L48)
 
 ### Context.intercept
 
@@ -205,9 +205,9 @@ static readonly isolate: unique symbol
 static readonly intercept: unique symbol
 ```
 
-拦截映射的 symbol 键（见 `Context[symbols.intercept]` 属性）。
+اعتراض قطع خريطة symbol مفتاح (رؤية `Context[symbols.intercept]` خاصية).
 
-[源码](../../vendor/cordis/src/context.ts#L50)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L50)
 
 ### Context.is(value)
 
@@ -224,17 +224,17 @@ static readonly intercept: unique symbol
 static is(value: any): value is Context
 ```
 
-对于 Cordis 上下文代理和上下文原型，返回 true。
+مقابل في Cordis سياق بديل إدارة و سياق أصل نوع، إرجاع true.
 
-此方法可跨 realm 和多个 cordis 副本工作，因为其品牌标识以全局 symbol 为键，而不是通过 `instanceof` 判断。
+هذا طريقة يمكن عبر realm و كثير عدد cordis فرعي هذا عمل، لأن ذلك صنف لوحة معرف بـ عام symbol لـ مفتاح، بينما لا هو عبر `instanceof` حكم قطع.
 
-- `value`：要测试的值。
+- `value`: يلزم اختبار قيمة.
 
-**返回** `true` 时，`value` 是 Cordis 上下文，并会收窄其类型。
+**إرجاع** `true` وقت،`value` هو Cordis سياق، و سوف استلام ضيق ذلك نوع.
 
-[源码](../../vendor/cordis/src/context.ts#L61)
+[شفرة المصدر](../../vendor/cordis/src/context.ts#L61)
 
-## 服务存储与混入
+## خدمة تخزين و خلط دخول
 
 ### ctx.get(name, strict?)
 
@@ -251,14 +251,14 @@ get<K extends string & keyof this>(name: K, strict?: boolean): undefined | this[
 get(name: string, strict?: boolean): any
 ```
 
-从存储中读取服务，无需满足注入要求。
+من تخزين في قراءة خدمة، بلا حاجة ممتلئ كاف حقن اشتراط.
 
-- `name`：服务名称。
-- `strict`：设为 `true`（默认值）时，仅返回其提供方 fiber 当前处于活动状态的实现。
+- `name`: خدمة اسم.
+- `strict`: ضبط لـ `true`(قيمة افتراضية) وقت، فقط إرجاع ذلك مزود fiber حالي موضع في نشط حركة حالة تنفيذ.
 
-**返回**服务值；如果尚未提供，则返回 `undefined`。
+**إرجاع**خدمة قيمة؛ إذا بعد لم توفير، فإن إرجاع `undefined`.
 
-[源码](../../vendor/cordis/src/reflect.ts#L17)
+[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L17)
 
 ### ctx.set(name, value)
 
@@ -276,14 +276,14 @@ set<K extends string & keyof this>(name: K, value: undefined | this[K]): void
 set(name: string, value: any): void
 ```
 
-覆盖已提供服务的值。
+تغطية قد توفير خدمة قيمة.
 
-只有提供该服务的 fiber 才能设置它；设置尚未提供的名称会抛出异常。
+فقط لديه توفير هذا خدمة fiber عندئذ قدرة ضبط هو؛ ضبط بعد لم توفير اسم سوف رمي خروج استثناء.
 
-- `name`：服务名称。
-- `value`：新的服务值。
+- `name`: خدمة اسم.
+- `value`: جديد خدمة قيمة.
 
-[源码](../../vendor/cordis/src/reflect.ts#L29)
+[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L29)
 
 ### ctx.provide(name, value)
 
@@ -304,16 +304,16 @@ provide<K extends string & keyof this>(name: K, value: undefined | this[K]): () 
 provide(name: string, value?: any): () => void
 ```
 
-注册一个归当前 fiber 所有的服务实现。
+تسجيل واحد عودة حالي fiber كل خدمة تنفيذ.
 
-fiber 激活后，该服务对同一隔离作用域内的依赖方可见；当返回的资源释放函数运行或 fiber 卸载时，该服务会被取消注册，并唤醒依赖方。如果该名称已在此作用域中被提供，或已声明为访问器，则抛出异常。
+fiber تنشيط بعد، هذا خدمة مقابل نفس عزل أثر مجال داخل اعتماد جهة مرئي؛ عند إرجاع مورد تحرير دالة تشغيل أو fiber إزالة وقت، هذا خدمة سوف يتم إلغاء تسجيل، و نداء تنبيه اعتماد جهة. إذا هذا اسم قد في هذا أثر مجال في يتم توفير، أو قد إعلان لـ وصول جهاز، فإن رمي خروج استثناء.
 
-- `name`：服务名称。
-- `value`：服务值。
+- `name`: خدمة اسم.
+- `value`: خدمة قيمة.
 
-**返回**一个用于取消注册该服务的资源释放函数。
+**إرجاع**واحد لأجل إلغاء تسجيل هذا خدمة مورد تحرير دالة.
 
-[源码](../../vendor/cordis/src/reflect.ts#L44)
+[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L44)
 
 ### ctx.accessor(name, options)
 
@@ -330,14 +330,14 @@ fiber 激活后，该服务对同一隔离作用域内的依赖方可见；当�
 accessor(name: string, options: Omit<Property.Accessor, 'type'>): void
 ```
 
-定义一个由 get/set 钩子支持的计算型上下文属性。
+تعريف واحد من get/set خطاف دعم حمل حساب حساب نوع سياق خاصية.
 
-当前 fiber 卸载时会移除该访问器。如果该名称已被声明，则抛出异常。
+حالي fiber إزالة وقت سوف إزالة هذا وصول جهاز. إذا هذا اسم قد يتم إعلان، فإن رمي خروج استثناء.
 
-- `name`：上下文属性名称。
-- `options`：`get` 钩子和可选的 `set` 钩子。
+- `name`: سياق خاصية اسم.
+- `options`:`get` خطاف و اختياري `set` خطاف.
 
-[源码](../../vendor/cordis/src/reflect.ts#L56)
+[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L56)
 
 ### ctx.mixin(name, mixins)
 
@@ -356,11 +356,11 @@ mixin<K extends string & keyof this>(name: K, mixins: (keyof this & keyof this[K
 mixin<T extends {}>(source: T, mixins: (keyof this & keyof T)[] | Dict<string>): void
 ```
 
-直接在 `ctx` 上公开服务的指定成员。
+مباشر في `ctx` فوق عام خدمة إشارة تحديد عضو.
 
-每个混入的键都会成为一个转发到该服务的访问器，并将方法绑定到该服务。例如，`ctx.on` 会转发到 `ctx.events.on`。当前 fiber 卸载时会移除这些混入。
+كل خلط دخول مفتاح كل سوف يصبح واحد تحويل إرسال إلى هذا خدمة وصول جهاز، و سوف طريقة ربط إلى هذا خدمة. مثال مثل،`ctx.on` سوف تحويل إرسال إلى `ctx.events.on`. حالي fiber إزالة وقت سوف إزالة هذه خلط دخول.
 
-- `name`：存放源服务的上下文属性。
-- `mixins`：要转发的键，或从源键到 ctx 键的映射。
+- `name`: تخزين وضع مصدر خدمة سياق خاصية.
+- `mixins`: يلزم تحويل إرسال مفتاح، أو من مصدر مفتاح إلى ctx مفتاح خريطة.
 
-[源码](../../vendor/cordis/src/reflect.ts#L67)
+[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L67)

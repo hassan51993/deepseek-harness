@@ -1,8 +1,8 @@
-# 扩展
+# توسيع
 
-[English](extensions.md) | 中文
+[English](extensions.md) | العربية
 
-extensions 子系统允许 agent（智能体）定义带版本的 Cordis 包、运行其 host 与浏览器两半，并在编写代码前查询获准公开的运行时元数据。包生命周期与沙箱行为由 [`packages/extensions`](../../packages/extensions/README.zh.md) 包组说明。
+extensions فرعي نظام سماح agent(ذكي جسم) تعريف حمل إصدار Cordis حزمة، تشغيل ذلك host و متصفح اثنان نصف، و في تحرير كتابة شفرة قبل استعلام نيل دقيق عام وقت التشغيل بيانات وصفية. حزمة دورة الحياة و صندوق رملي سلوك من [`packages/extensions`](../../packages/extensions/README.zh.md) حزمة مجموعة شرح.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

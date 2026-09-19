@@ -1,39 +1,39 @@
 ---
-description: "面向部署方与维护者的本地 PowerShell 执行器说明，用于选择、配置或排查基于 shell seam 的非隔离 PowerShell 命令执行。"
+description: "موجه إلى نشر جهة و صيانة من محلي PowerShell منفذ شرح، لأجل اختيار، إعداد أو ترتيب فحص أساس في shell seam غير عزل PowerShell أمر تنفيذ."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-pwsh-local
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-pwsh-local` 是 PowerShell 执行器：每条命令都以全新的非交互 `pwsh -Command` 进程运行，不加载 profile 文件，因此调用之间不会残留任何 shell 状态。它逐调用镜像 `dsh-bash-local` 的语义，并额外负责 PowerShell 层事项：可执行文件解析、UTF-8 输出固定与面向模型的终端环境。命令以 harness 进程自身的权限运行——本执行器不做任何隔离；需要沙箱能力时请组合 `dsh-pwsh-sandbox`。挂载后，面向模型的 `pwsh` 工具会与它对接。
+`dsh-pwsh-local` هو PowerShell منفذ: كل بند أمر كل بـ كل جديد غير تفاعل `pwsh -Command` عملية تشغيل، لا تحميل profile ملف، لذلك استدعاء بين لن ناقص إبقاء أي shell حالة. هو تدريجي استدعاء مرآة مثل `dsh-bash-local` دلالة، و مقدار خارج مسؤول PowerShell طبقة أمر بند: يمكن تنفيذ ملف تحليل،UTF-8 إخراج ثابت و موجه إلى نموذج طرفية بيئة. أمر بـ harness عملية ذاته إذن تشغيل——هذا منفذ لا فعل أي عزل؛ حاجة صندوق رملي قدرة وقت طلب تركيب `dsh-pwsh-sandbox`. تركيب بعد، موجه إلى نموذج `pwsh` أداة سوف و هو مقابل وصل.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-当组合需要执行 PowerShell 命令——通常是在 Windows 上——且不需要隔离时，挂载此执行器。它注册为 `ctx.shell`，面向模型的 `pwsh` 工具会立即基于它工作：agent（智能体）调用工具，命令即以全新 `pwsh -Command` 进程按下面的预算运行。
+عند تركيب حاجة تنفيذ PowerShell أمر——عبر معتاد هو في Windows فوق——كما لا حاجة عزل وقت، تركيب هذا منفذ. هو تسجيل لـ `ctx.shell`، موجه إلى نموذج `pwsh` أداة سوف قيام أي أساس في هو عمل:agent(ذكي جسم) استدعاء أداة، أمر أي بـ كل جديد `pwsh -Command` عملية حسب تحت وجه ميزانية تشغيل.
 
-### 何时选择
+### أي وقت اختيار
 
-它是 `dsh-bash-local` 的 Windows 对应实现：当 `pwsh` 是平台 shell 时选择它，组合即可把 POSIX 行换成 pwsh 行并保持相同的语义。执行器从显式 `pwshPath`、常见的 Windows 安装位置、PATH 条目，或作为最后手段的 Windows PowerShell 5.1 解析 `pwsh` 可执行文件。非隔离执行时它就是默认选择；需要沙箱能力时组合 `dsh-pwsh-sandbox`。
+هو هو `dsh-bash-local` Windows مقابل تنفيذ: عند `pwsh` هو منصة shell وقت اختيار هو، تركيب يكفي يأخذ POSIX سطر تبديل صار pwsh سطر و إبقاء نفسه دلالة. منفذ من صريح `pwshPath`، معتاد رؤية Windows تثبيت موضع،PATH بند، أو بصفة الأكثر بعد يد مقطع Windows PowerShell 5.1 تحليل `pwsh` يمكن تنفيذ ملف. غير عزل تنفيذ وقت هو حينئذ هو افتراضي اختيار؛ حاجة صندوق رملي قدرة وقت تركيب `dsh-pwsh-sandbox`.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-按你需要的预算加载执行器；每个字段都有默认值，因此最小的组合就是单独一个插件条目。当组合了设置提供方时，用户段会叠加在该条目之上，预算无需重载即可在运行时变更（见[运行时调整预算](#adjusting-budgets-at-runtime)）。
+حسب أنت حاجة ميزانية تحميل منفذ؛ كل حقل كل لديه قيمة افتراضية، لذلك الأكثر صغير تركيب حينئذ هو مفرد وحيد واحد إضافة بند. عند تركيب ضبط مزود وقت، مستخدم مقطع سوف تراكم إضافة في هذا بند لـ فوق، ميزانية بلا حاجة إعادة تحميل يكفي في وقت التشغيل تغيير (رؤية[وقت التشغيل ضبط كامل ميزانية](#adjusting-budgets-at-runtime)).
 
 ```yaml
 - id: bash
@@ -43,119 +43,119 @@ kind: "package-reference"
     timeoutMs: 120000
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `cwd` | `process.cwd()` | 命令的默认工作目录 |
-| `timeoutMs` | `120,000` | 默认前台超时，单位为毫秒 |
-| `maxTimeoutMs` | `600,000` | 每次调用超时覆盖值的上限 |
-| `maxOutputBytes` | `64,000` | 每流内存输出上限；溢出后 spill 到临时文件 |
-| `maxSpillBytes` | `67,108,864` | 每流完整输出的 spill 上限 |
-| `graceMs` | `3,000` | 终止升级与退出后管道排空的宽限时间 |
-| `pwshPath` | 自动解析 | 显式 pwsh 可执行文件；否则依次探测常见位置，再查 PATH |
+| `cwd` | `process.cwd()` | أمر افتراضي عمل دليل |
+| `timeoutMs` | `120,000` | افتراضي قبل منصة مهلة، مفرد موضع لـ جزء ثانية |
+| `maxTimeoutMs` | `600,000` | كل مرة استدعاء مهلة تغطية قيمة حد أعلى |
+| `maxOutputBytes` | `64,000` | كل تدفق داخل تخزين إخراج حد أعلى؛ فيض خروج بعد spill إلى مؤقت ملف |
+| `maxSpillBytes` | `67,108,864` | كل تدفق كامل إخراج spill حد أعلى |
+| `graceMs` | `3,000` | إنهاء ترقية و خروج بعد إدارة طريق ترتيب فارغ عرض حد وقت |
+| `pwshPath` | تلقائي تحليل | صريح pwsh يمكن تنفيذ ملف؛ لا فإن اعتماد مرة استكشاف قياس معتاد رؤية موضع، مجددا فحص PATH |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-pwsh-local)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-pwsh-local) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
-### 运行命令
+### تشغيل أمر
 
-用 `run` 运行命令并从结果读取输出；非零退出、超时或取消都会返回描述性结果，只有基础设施失败才会导致调用被拒绝。命令字符串作为单个参数传给 `-Command`：由 PowerShell 自己解析文本，不存在中间 shell，因此没有需要转义的 shell 引号层，原生 Win32 路径也原样通过。每条命令都先固定 UTF-8 输出，因此即使在 Windows PowerShell 5.1 兜底上，非 ASCII 输出也不会乱码。环境默认面向模型：`NO_COLOR=1 PAGER=cat GIT_PAGER=cat`（没有 `TERM=dumb`——那是 POSIX 概念），调用方显式提供的条目仍然优先。
+استخدام `run` تشغيل أمر و من نتيجة قراءة إخراج؛ غير صفر خروج، مهلة أو إلغاء كل سوف إرجاع وصف صفة نتيجة، فقط لديه أساس أساس ضبط تطبيق فشل عندئذ سوف توجيه يؤدي استدعاء يتم رفض. أمر نص بصفة مفرد عدد معامل نقل إعطاء `-Command`: من PowerShell ذاتي ذات تحليل نص، لا وجود في بين shell، لذلك لا يوجد حاجة تحويل معنى shell جذب رقم طبقة، أصلي Win32 مسار أيضا أصل مثال عبر. كل بند أمر كل أولا ثابت UTF-8 إخراج، لذلك أي جعل في Windows PowerShell 5.1 التقاط قاع فوق، غير ASCII إخراج أيضا لن فوضى رمز. بيئة افتراضي موجه إلى نموذج:`NO_COLOR=1 PAGER=cat GIT_PAGER=cat`(لا يوجد `TERM=dumb`——ذلك هو POSIX عام فكرة) ، استدعاء جهة صريح توفير بند ما زال أولوية.
 
 ```text
 const result = await ctx.shell.run(ctx.shell.resolve({ command: 'Get-ChildItem' }))
 if (result.timedOut) console.log('timed out after', result.timeoutMs)
 ```
 
-### 后台进程
+### خلفية عملية
 
-等待 `start` 即可在后台运行命令；它完成准备后返回进程句柄，且不应用执行超时。取消或准备失败会在发布句柄前拒绝调用。`readOutput()` 把流增量合并为一次消费式读取，并在 `[stderr]` 分段下标记 stderr；`kill()` 终止由提供方管理的 range；`done` 在 direct command 关闭时结算且绝不 reject。job id、所有权、轮询与通知属于通用 `ctx.jobs` 运行时，工具层会把句柄注册进去。
+انتظار `start` يكفي في خلفية تشغيل أمر؛ هو إتمام دقيق تجهيز بعد إرجاع عملية جملة مقبض، كما لا تطبيق تنفيذ مهلة. إلغاء أو دقيق تجهيز فشل سوف في إصدار جملة مقبض قبل رفض استدعاء.`readOutput()` يأخذ تدفق زيادة كمية دمج لـ مرة إزالة استهلاك صيغة قراءة، و في `[stderr]` قسم مقطع تحت علامة stderr؛`kill()` إنهاء من مزود إدارة range؛`done` في direct command إغلاق وقت تسوية كما أبدا reject.job id، كل حق، جولة استفسار و إشعار يخص عام `ctx.jobs` وقت التشغيل، أداة طبقة سوف يأخذ جملة مقبض تسجيل دخول ذهاب.
 
 <a id="adjusting-budgets-at-runtime"></a>
-### 运行时调整预算
+### وقت التشغيل ضبط كامل ميزانية
 
-当组合了设置提供方时，本执行器注册该能力共享的 `shell` 设置命名空间——与 POSIX 家族共用同一个，因为一个宿主只组装一个 `ctx.shell` 提供方——因此 `settings.yaml` 中的用户段会叠加在组合条目之上，下一条命令即按新预算运行。schema 无法判定的值——正有限数字与 `graceMs` 的定时器上界——会在写入时被拒绝，运行中的执行器保持它最后一份可用的段。
+عند تركيب ضبط مزود وقت، هذا منفذ تسجيل هذا قدرة مشترك `shell` ضبط نطاق الأسماء——و POSIX بيت عائلة مشترك استخدام نفس عدد، لأن واحد مضيف فقط تجميع واحد `ctx.shell` مزود——لذلك `settings.yaml` في مستخدم مقطع سوف تراكم إضافة في تركيب بند لـ فوق، تحت واحد بند أمر أي حسب جديد ميزانية تشغيل.schema لا يمكن حكم تحديد قيمة——صحيح لديه حد عدد حرف و `graceMs` تحديد وقت جهاز فوق حد——سوف في كتابة وقت يتم رفض، تشغيل في منفذ إبقاء هو الأكثر بعد واحد نسخة متاح مقطع.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释执行器的设计并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير منفذ تصميم و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计概念
+### تصميم عام فكرة
 
-本执行器是基于 subprocess 能力的 `ctx.shell` seam 的 PowerShell Service Provider：它负责所有 pwsh 层职责——可执行文件解析、命令默认化与上限、deadline 融合与原因分类、UTF-8 输出固定、面向模型的终端环境，以及后台读取合并——而 managed-range 机制（有界 spill 输出、凭据清除、终止升级、完全停稳与 dispose（资源释放））属于 subprocess 服务。每次调用都 spawn 全新的非交互 `pwsh -Command`，并带 `-NoLogo -NoProfile -NonInteractive`，因此命令是确定性的，profile 状态绝不会在调用之间泄漏。
+هذا منفذ هو أساس في subprocess قدرة `ctx.shell` seam PowerShell Service Provider: هو مسؤول كل pwsh طبقة مسؤولية——يمكن تنفيذ ملف تحليل، أمر افتراضي تحويل و حد أعلى،deadline دمج دمج و سبب تصنيف،UTF-8 إخراج ثابت، موجه إلى نموذج طرفية بيئة، و خلفية قراءة دمج——بينما managed-range آلية (محدود spill إخراج، اعتماد صاف حذف، إنهاء ترقية، تماما توقف مستقر و dispose(مورد تحرير)) يخص subprocess خدمة. كل مرة استدعاء كل spawn كل جديد غير تفاعل `pwsh -Command`، و حمل `-NoLogo -NoProfile -NonInteractive`، لذلك أمر هو تحديد صفة،profile حالة أبدا سوف في استدعاء بين تسرب تسرب.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`PwshLocalExecutor`、`Config`、设置接线、argv seam |
-| [`src/resolve.ts`](src/resolve.ts) | 纯函数 `resolvePwshPath`/`candidatePwshPaths` 可执行文件解析 |
-| — | 不发布运行时不变式伴生入口；除所属 seam 强制执行的约定外，本包不公开独立的事件序列或可变数据关系。 |
-| `tests/` | 已演练的行为：预算、分类、解析、后台句柄 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`PwshLocalExecutor`،`Config`، ضبط وصل خط،argv seam |
+| [`src/resolve.ts`](src/resolve.ts) | صاف دالة `resolvePwshPath`/`candidatePwshPaths` يمكن تنفيذ ملف تحليل |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ حذف الذي تابع seam قوي صنع تنفيذ اتفاق خارج، هذه الحزمة لا عام مستقل حدث تسلسل أو متغير بيانات علاقة. |
+| `tests/` | قد عرض تدريب سلوك: ميزانية، تصنيف، تحليل، خلفية جملة مقبض |
 
-### 主要流程
+### رئيسي يلزم مسار
 
-一次调用分三步：`resolve()` 从配置填充 `workdir`/`timeoutMs`/`stdoutMaxBytes`（并限制每次调用的 `timeoutMs` 覆盖值）；执行器构建 pwsh argv——`pwsh -NoLogo -NoProfile -NonInteractive -Command <编码 preamble + 命令>`——把按配置钳位的超时与调用方的中止信号融合为一个 deadline，再以显式字节上限与 `graceMs` 通过 `ctx.subprocess` spawn；结算的结果被分类并投影为 `ShellRunResult`。Windows 把强制终止报告为退出码 1 且无信号，因此带信号标记的事实在那里仅限 POSIX；超时/取消分类则与平台无关。
+مرة استدعاء قسم ثلاثة خطوة:`resolve()` من إعداد ملء ملء `workdir`/`timeoutMs`/`stdoutMaxBytes`(و حد كل مرة استدعاء `timeoutMs` تغطية قيمة) ؛ منفذ بناء pwsh argv——`pwsh -NoLogo -NoProfile -NonInteractive -Command <تحرير رمز preamble + أمر>`——يأخذ حسب إعداد ملقط موضع مهلة و استدعاء جهة في توقف إشارة دمج دمج لـ واحد deadline، مجددا بـ صريح بايت حد أعلى و `graceMs` عبر `ctx.subprocess` spawn؛ تسوية نتيجة يتم تصنيف و إسقاط لـ `ShellRunResult`.Windows يأخذ قوي صنع إنهاء تقرير إبلاغ لـ خروج رمز 1 كما بلا إشارة، لذلك حمل إشارة علامة واقع في ذلك داخل فقط حد POSIX؛ مهلة/إلغاء تصنيف فإن و منصة غير متصل.
 
-前台 deadline 从 argv 准备开始，并在准备与执行之间保持同一信号和剩余预算。准备阶段超时返回空输出、`timedOut: true`，且 `exitCode` 和 `signal` 均为 `null`；调用方在发布进程前取消仍会拒绝调用。准备晚到的成功或失败不会触发 spawn。
+قبل منصة deadline من argv دقيق تجهيز بدء، و في دقيق تجهيز و تنفيذ بين إبقاء نفس إشارة و باق بقية ميزانية. دقيق تجهيز مرحلة مقطع مهلة إرجاع فارغ إخراج،`timedOut: true`، كما `exitCode` و `signal` متساو لـ `null`؛ استدعاء جهة في إصدار عملية قبل إلغاء ما زال سوف رفض استدعاء. دقيق تجهيز متأخر إلى نجاح أو فشل لن إطلاق spawn.
 
-### 不变式与归属
+### ثابت صيغة و ملكية
 
-- `graceMs` 预算必须为正有限值且不大于 `MAX_TIMER_DELAY_MS`，这样 Node 就能用一个定时器表示它；无效值在写入处被拒绝。
-- 环境分层固定：先是终端覆盖值，然后是调用方的 `env`，最后才是受信任的 `dshEnv` 快照；subprocess 服务独立清除环境中的凭据与继承的 `DSH_*` 名称。
-- 可执行文件解析是 `(configured, env, platform)` 的纯函数，仅当存储的 `pwshPath` 与当前可执行文件所依据的值不同时才重新探测文件系统。
-- 后台进程属于 subprocess 服务：它能在仅重载执行器后存活，并在服务 dispose 时被终止并 join。
+- `graceMs` ميزانية يجب لـ صحيح لديه حد قيمة كما لا كبير في `MAX_TIMER_DELAY_MS`، هذا مثال Node حينئذ قدرة استخدام واحد تحديد وقت جهاز يمثل هو؛ بلا فاعلية قيمة في كتابة موضع يتم رفض.
+- بيئة قسم طبقة ثابت: أولا هو طرفية تغطية قيمة، لكن بعد هو استدعاء جهة `env`، الأكثر بعد عندئذ هو تلقي معلومة مهمة `dshEnv` لقطة؛subprocess خدمة مستقل صاف حذف بيئة في اعتماد و وراثة `DSH_*` اسم.
+- يمكن تنفيذ ملف تحليل هو `(configured, env, platform)` صاف دالة، فقط عند تخزين `pwshPath` و حالي يمكن تنفيذ ملف الذي اعتماد حسب قيمة مختلف وقت عندئذ إعادة استكشاف قياس نظام الملفات.
+- خلفية عملية يخص subprocess خدمة: هو قدرة في فقط إعادة تحميل منفذ بعد تخزين نشط، و في خدمة dispose وقت يتم إنهاء و join.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当执行器约定不够用时阅读以下页面。它们从 seam 延伸到提供隔离的同类包与 PowerShell 工具。
+عند منفذ اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من seam تأخير امتداد إلى توفير عزل نفس صنف حزمة و PowerShell أداة.
 
-- [shell seam](../shell/README.zh.md) —— 本提供方实现的执行器约定，包括请求/spec 拆分。
-- [bash-local](../bash-local/README.zh.md) —— 本执行器逐调用镜像的 POSIX 对应实现。
-- [pwsh-sandbox](../pwsh-sandbox/README.zh.md) —— 需要沙箱能力时改为组合的隔离执行器。
-- [tool-pwsh](../tool-pwsh/README.zh.md) —— 基于本执行器的面向模型 `pwsh` 工具。
-- [Bash 执行器子系统](../../../docs/subsystems/shell.zh.md) —— 请求/spec 词汇、结果与完整的服务约定。
+- [shell seam](../shell/README.zh.md) —— هذا مزود تنفيذ منفذ اتفاق، يشمل طلب/spec تفكيك قسم.
+- [bash-local](../bash-local/README.zh.md) —— هذا منفذ تدريجي استدعاء مرآة مثل POSIX مقابل تنفيذ.
+- [pwsh-sandbox](../pwsh-sandbox/README.zh.md) —— حاجة صندوق رملي قدرة وقت تعديل لـ تركيب عزل منفذ.
+- [tool-pwsh](../tool-pwsh/README.zh.md) —— أساس في هذا منفذ موجه إلى نموذج `pwsh` أداة.
+- [Bash منفذ فرعي نظام](../../../docs/subsystems/shell.zh.md) —— طلب/spec مفردات، نتيجة و كامل خدمة اتفاق.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过 `dsh-tool-pwsh` 间接影响；该工具会渲染本执行器有界的 stdout/stderr 尾部、后台进程增量（经通用任务运行时）、spill 文件路径与基础设施失败。
+عبر `dsh-tool-pwsh` بين وصل أثر؛ هذا أداة سوف تصيير هذا منفذ محدود stdout/stderr ذيل جزء، خلفية عملية زيادة كمية (مرور عام مهمة وقت التشغيل) ،spill ملف مسار و أساس أساس ضبط تطبيق فشل.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-不会直接导致 KV Cache 失效；请求前缀的任何变更由具名消费方负责。
+لن مباشر توجيه يؤدي KV Cache بطلان؛ طلب بادئة أي تغيير من أداة اسم مستهلك مسؤول.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明本执行器何时不合适。它们是当前包约束，不是路线图。
+هذه حد شرح هذا منفذ أي وقت لا دمج ملائم. هو جمع هو حالي حزمة قيد، لا هو مسار خط رسم.
 
-- **自身不提供隔离**——命令以 harness 进程的权限运行；需要隔离的部署组合沙箱执行器或策略。
-- **没有持久 shell 或 PTY**——每次调用都启动全新的 `pwsh -Command`。
-- **命令字符串是 PowerShell 文本**——`-Command` 域没有 shell 引号层，但面向模型的命令由 PowerShell 自己解析，因此 PowerShell 语法错误是命令失败，而非启动失败。
-- **后台提供方失败提示只投递一次**——`SubprocessHandle.done` 可能在目标开始执行前或后被拒绝，因此执行器会将不指明失败阶段的 `subprocess failed before reporting an outcome: …` 注入且仅注入一个 `readOutput()` 增量；丢弃该增量的读取方无法恢复它。
-- **Windows 终止不报告信号**——被强制终止的进程以退出码 1、`signal: null` 结算，因此基于信号的状态分类在 Windows 上不适用；`kill()` 发起的停止仍会直接标记为 `killed`。
-- **编码 preamble 位于命令之前**——PowerShell 要求 `param(...)`、`#requires` 与 `using` 语句位于脚本最顶部，因此以其中一种开头的命令无法在 UTF-8 输出 preamble 下运行；`param(...)` 脚本请包进 `& { … }`，`using`/`#requires` 脚本请改从文件运行。
-- **Windows PowerShell 5.1 下的非 ASCII stdin 可能被错误解码**——preamble 只固定输出编码；`[Console]::InputEncoding` 保持主机默认，因为在重定向 stdin 下设置它会抛出异常；pwsh 7 默认 UTF-8，不受影响。
+- **ذاته لا توفير عزل**——أمر بـ harness عملية إذن تشغيل؛ حاجة عزل نشر تركيب صندوق رملي منفذ أو سياسة.
+- **لا يوجد حمل دائم shell أو PTY**——كل مرة استدعاء كل بدء كل جديد `pwsh -Command`.
+- **أمر نص هو PowerShell نص**——`-Command` مجال لا يوجد shell جذب رقم طبقة، لكن موجه إلى نموذج أمر من PowerShell ذاتي ذات تحليل، لذلك PowerShell لغة قاعدة خطأ هو أمر فشل، بينما غير بدء فشل.
+- **خلفية مزود فشل تلميح فقط إلقاء تمرير مرة**——`SubprocessHandle.done` ممكن في هدف بدء تنفيذ قبل أو بعد يتم رفض، لذلك منفذ سوف سوف لا إشارة واضح فشل مرحلة مقطع `subprocess failed before reporting an outcome: …` حقن كما فقط حقن واحد `readOutput()` زيادة كمية؛ إسقاط هذا زيادة كمية قراءة جهة لا يمكن استعادة هو.
+- **Windows إنهاء لا تقرير إبلاغ إشارة**——يتم قوي صنع إنهاء عملية بـ خروج رمز 1،`signal: null` تسوية، لذلك أساس في إشارة حالة تصنيف في Windows فوق لا ملائم استخدام؛`kill()` إرسال بدء إيقاف ما زال سوف مباشر علامة لـ `killed`.
+- **تحرير رمز preamble يقع في أمر قبل**——PowerShell اشتراط `param(...)`،`#requires` و `using` لغة جملة يقع في نص برمجي الأكثر قمة جزء، لذلك بـ منها واحد نوع فتح رأس أمر لا يمكن في UTF-8 إخراج preamble تحت تشغيل؛`param(...)` نص برمجي طلب حزمة دخول `& { … }`،`using`/`#requires` نص برمجي طلب تعديل من ملف تشغيل.
+- **Windows PowerShell 5.1 تحت غير ASCII stdin ممكن يتم خطأ حل رمز**——preamble فقط ثابت إخراج تحرير رمز؛`[Console]::InputEncoding` إبقاء رئيسي آلة افتراضي، لأن في إعادة تحديد نحو stdin تحت ضبط هو سوف رمي خروج استثناء؛pwsh 7 افتراضي UTF-8، لا تلقي أثر.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

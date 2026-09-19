@@ -1,35 +1,35 @@
-# Agent Note: 嵌套 terminal 卡片
+# Agent Note: تضمين طقم terminal بطاقة
 
 Status: implemented
 
-[English](2026-09-05-nested-terminal-cards.md) | 中文
+[English](2026-09-05-nested-terminal-cards.md) | العربية
 
-## 问题
+## مشكلة
 
-经 `run_code` 分发的 shell 命令携带 terminal 卡片所需的参数与渲染输出，但对所有带有 `parentCallId` 的块一律拒绝，会仅因调用嵌套而隐藏这类展示。该拒绝也影响运行中的命令提示行与选中子调用的 Details。
+مرور `run_code` توزيع shell أمر يحمل terminal بطاقة الذي يحتاج معامل و تصيير إخراج، لكن مقابل كل حمل لديه `parentCallId` كتلة واحد قاعدة رفض، سوف فقط بسبب استدعاء تضمين طقم بينما إخفاء هذا صنف عرض. هذا رفض أيضا أثر تشغيل في أمر تلميح سطر و اختيار في فرعي استدعاء Details.
 
-## 决策
+## قرار
 
-`terminalCardModel` 对根调用与 PTC dispatch 调用应用相同的适用检查，不因 `parentCallId` 拒绝调用。受支持的运行中与已完成的 `bash`、`pwsh` 和 `terminal_send` 调用使用现有 terminal 卡片。后台调用、工具错误、格式错误的输入、缺失的调用头和不受支持的结果内容保留通用回退。持久 shell 在运行中仍可使用 terminal，完成后使用通用展示；非零进程退出仍是 terminal 结果数据，而非工具错误。
+`terminalCardModel` مقابل أصل استدعاء و PTC dispatch استدعاء تطبيق نفسه ملائم استخدام فحص، لا بسبب `parentCallId` رفض استدعاء. تلقي دعم حمل تشغيل في و قد إتمام `bash`،`pwsh` و `terminal_send` استدعاء استخدام قائم terminal بطاقة. خلفية استدعاء، أداة خطأ، صيغة خطأ إدخال، ناقص استدعاء رأس و لا تلقي دعم حمل نتيجة محتوى إبقاء عام رجوع. حمل دائم shell في تشغيل في ما زال يمكن استخدام terminal، إتمام بعد استخدام عام عرض؛ غير صفر عملية خروج ما زال هو terminal نتيجة بيانات، بينما غير أداة خطأ.
 
-本文仅部分取代 [Client 派生工具展示](../architecture/2026-08-23-client-derived-tool-presentation.zh.md)中的 terminal 子调用卡片禁令。该文继续负责 Client 展示所有权及 diff/read/search/web 子调用限制。无需更改 Host 展示转换器、事件、schema、元数据、调用树或模型上下文。[规范工具输出](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)与 [PTC 类型化返回值](../feature/2026-07-20-ptc-typed-tool-returns.zh.md)中的元数据和执行期值决策保持不变；省略元数据不禁止 Client 派生 terminal 卡片。
+هذا نص فقط جزء يحل محل [Client إرسال توليد أداة عرض](../architecture/2026-08-23-client-derived-tool-presentation.zh.md) في terminal فرعي استدعاء بطاقة منع أمر. هذا نص متابعة مسؤول Client عرض كل حق و diff/read/search/web فرعي استدعاء حد. بلا حاجة أكثر تعديل Host عرض تحويل جهاز، حدث،schema، بيانات وصفية، استدعاء شجرة أو نموذج سياق.[مواصفة أداة إخراج](../architecture/2026-07-20-canonical-tool-output-contract.zh.md) و [PTC نوع تحويل قيمة راجعة](../feature/2026-07-20-ptc-typed-tool-returns.zh.md) في بيانات وصفية و تنفيذ مدة قيمة قرار إبقاء ثابت؛ حذف بيانات وصفية لا منع توقف Client إرسال توليد terminal بطاقة.
 
-以已识别的 spill 策略提示结尾的 shell 输出使用通用展示：在 `BashRow` 中可展开，在 Details 中使用原始回退。提示可能位于退出标记之后或取代它，因此末尾缺少退出标记不能作为 terminal 成功状态的依据。浏览器安全入口 `@deepseek-ai/dsh-spill-policy/notice` 负责文本约定：生产方调用 `formatSpillNotice(omitted, ref)`，Client 调用 `hasSpillNotice(text)`。两者共用分隔符，省略信息校验复用 `describeOmitted`，不复制其文案。格式化函数逐字节保留持久化拼写；现有 Session 结果字节保持不变，不更改 Session 格式，也不执行迁移。
+بـ قد تعرف آخر spill سياسة تلميح ربط ذيل shell إخراج استخدام عام عرض: في `BashRow` في يمكن توسيع، في Details في استخدام أصلي رجوع. تلميح ممكن يقع في خروج علامة بعد أو يحل محل هو، لذلك نهاية ذيل نقص قليل خروج علامة لا يستطيع بصفة terminal نجاح حالة اعتماد حسب. متصفح أمان مدخل `@deepseek-ai/dsh-spill-policy/notice` مسؤول نص اتفاق: إنتاج جهة استدعاء `formatSpillNotice(omitted, ref)`،Client استدعاء `hasSpillNotice(text)`. اثنان من مشترك استخدام قسم فصل رمز، حذف معلومة تحقق إعادة استخدام `describeOmitted`، لا نسخ ذلك نص سجل. صيغة تحويل دالة تدريجي بايت إبقاء حفظ دائم تجميع كتابة؛ قائم Session نتيجة بايت إبقاء ثابت، لا أكثر تعديل Session صيغة، أيضا لا تنفيذ ترحيل.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留对嵌套调用的一律拒绝。** 不予采用，因为嵌套不会移除 terminal model 已消费的原始事实。这会隐藏可用的 shell 输出，而同一调用位于根时却可渲染为 terminal。
+**إبقاء مقابل تضمين طقم استدعاء واحد قاعدة رفض.** لا إعطاء اعتماد، لأن تضمين طقم لن إزالة terminal model قد إزالة استهلاك أصلي واقع. هذا سوف إخفاء متاح shell إخراج، بينما نفس استدعاء يقع في أصل وقت لكن يمكن تصيير لـ terminal.
 
-**启用所有嵌套结构化卡片。** 不予采用，因为其他 card model 有独立的元数据要求与子调用限制。本修复只改变 terminal 适用性。
+**تفعيل كل تضمين طقم بنية تحويل بطاقة.** لا إعطاء اعتماد، لأن أخرى card model لديه مستقل بيانات وصفية اشتراط و فرعي استدعاء حد. هذا إصلاح فقط تغيير terminal ملائم استخدام صفة.
 
-**解析 spill 后缀附近的退出标记。** 不予采用，因为截断可能移除真实状态；保守的通用输出避免从不完整结果猜测成功。
+**تحليل spill بعد لاحقة مرفق قريب خروج علامة.** لا إعطاء اعتماد، لأن قطع قطع ممكن إزالة حقيقي حالة؛ حفظ حراسة عام إخراج تجنب تجنب من لا كامل نتيجة تخمين قياس نجاح.
 
-**维护独立的 UI 通知正则表达式。** 不予采用，因为它复制生产方的文本约定，可能与持久化输出偏离。共享的浏览器安全模块统一负责格式化与识别，无需在浏览器中加载 Host 插件。
+**صيانة مستقل UI إشعار صحيح فإن جدول بلوغ صيغة.** لا إعطاء اعتماد، لأن هو نسخ إنتاج جهة نص اتفاق، ممكن و حفظ دائم إخراج انحراف مغادرة. مشترك متصفح أمان وحدة موحد واحد مسؤول صيغة تحويل و تعرف آخر، بلا حاجة في متصفح في تحميل Host إضافة.
 
-## 后果
+## عاقبة
 
-行与 Details 对嵌套调用共享 terminal 派生，不增加第二个渲染器或展示提示字段。通用回退与已完成持久 shell 的行为仍独立于 terminal 卡片适用性。父子关系仍控制树中的位置，而非 terminal 渲染。文本识别无法认证输出来源：工具也能打印相同的提示。匹配结果只选择保守的通用展示，不能证明 spill 来源或进程状态。
+سطر و Details مقابل تضمين طقم استدعاء مشترك terminal إرسال توليد، لا زيادة ثاني عدد مصير أو عرض تلميح حقل. عام رجوع و قد إتمام حمل دائم shell سلوك ما زال مستقل في terminal بطاقة ملائم استخدام صفة. أب فرعي علاقة ما زال تحكم شجرة في موضع، بينما غير terminal تصيير. نص تعرف آخر لا يمكن إقرار إثبات إخراج مصدر: أداة أيضا قدرة ضرب طبع نفسه تلميح. مطابقة نتيجة فقط اختيار حفظ حراسة عام عرض، لا يستطيع إثبات spill مصدر أو عملية حالة.
 
-## 验证
+## تحقق
 
-[Terminal 卡片测试](../../../../packages/client/ui-tool/tests/terminal-card.client.spec.tsx)覆盖根／子调用适用性、运行中与已完成的 Details 以及回退情况。[组装后的 PTC dispatch 测试](../../../../packages/client/ui-tool/tests/chat-ptc-subcalls.client.spec.tsx)覆盖经对话树渲染的嵌套 terminal。[通知测试](../../../../packages/spill/spill-policy/tests/notice.spec.ts)使用独立于格式化函数的字面量 fixture（测试前置数据）固定历史拼写。[spill-policy 到 UI 的测试](../../../../packages/client/ui-tool/tests/spill-policy-terminal.client.spec.ts)覆盖真实的根调用与 PTC spill 生成、保持不变的完整文本和程序化值、字节上限、仅含通知的输出以及 terminal 回退。浏览器回放负责验证可见的嵌套卡片变化；非 terminal 子调用行为不属于本修复。
+[Terminal بطاقة اختبار](../../../../packages/client/ui-tool/tests/terminal-card.client.spec.tsx) تغطية أصل/فرعي استدعاء ملائم استخدام صفة، تشغيل في و قد إتمام Details و رجوع حال حال.[تجميع بعد PTC dispatch اختبار](../../../../packages/client/ui-tool/tests/chat-ptc-subcalls.client.spec.tsx) تغطية مرور محادثة شجرة تصيير تضمين طقم terminal.[إشعار اختبار](../../../../packages/spill/spill-policy/tests/notice.spec.ts) استخدام مستقل في صيغة تحويل دالة حرف وجه كمية fixture(اختبار قبل وضع بيانات) ثابت تاريخ تجميع كتابة.[spill-policy إلى UI اختبار](../../../../packages/client/ui-tool/tests/spill-policy-terminal.client.spec.ts) تغطية حقيقي أصل استدعاء و PTC spill توليد، إبقاء ثابت كامل نص و برنامج تحويل قيمة، بايت حد أعلى، فقط يحتوي إشعار إخراج و terminal رجوع. متصفح إعادة تشغيل مسؤول تحقق مرئي تضمين طقم بطاقة تغير؛ غير terminal فرعي استدعاء سلوك لا يخص هذا إصلاح.

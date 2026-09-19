@@ -1,28 +1,28 @@
-# Agent Note: Agent 作用域事件 dispatch 单个 payload 对象
+# Agent Note: Agent أثر مجال حدث dispatch مفرد عدد payload كائن
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-06-agent-event-payload-objects.md) | 中文
+[English](2026-08-06-agent-event-payload-objects.md) | العربية
 
-## 问题
+## مشكلة
 
-Agent 作用域事件历来采用位置参数：开头的 `agent` 主体、事件专属字段，以及末尾用于 waterfall（瀑布式事件）/serial 事件的 `next`。新增字段或退役上下文类型（如 `PreStepContext` 与 `RequestFailureContext`）都会迫使跨包重写每个监听器和 emitter，约定也一直分散在参数列表中，而不是集中在一个具名 payload 中。
+Agent أثر مجال حدث تاريخ قدوم اعتماد موضع معامل: فتح رأس `agent` رئيسي جسم، حدث مخصص تابع حقل، و نهاية ذيل لأجل waterfall(شلال نشر صيغة حدث)/serial حدث `next`. إضافة جديدة حقل أو تراجع دور سياق نوع (مثل `PreStepContext` و `RequestFailureContext`) كل سوف إجبار جعل عبر حزمة إعادة كتابة كل مستمع و emitter، اتفاق أيضا واحد مباشر قسم تفرق في معامل قائمة في، بينما لا هو تجميع في في واحد أداة اسم payload في.
 
-## 决策
+## قرار
 
-每个 agent 作用域事件都将恰好一个 payload 对象作为其第一个参数。payload 始终携带主体（`agent`）、事件的字段，以及事件有取消信号时的取消 `signal`；`next` 仍然是 waterfall/serial 事件的最后一个参数。受影响的事件是十二个 `agent/*` 事件、`agent-loop/config-start-failed`（唯一没有主体的事件）以及 `goal/changed`。
+كل agent أثر مجال حدث كل سوف تماما جيد واحد payload كائن بصفة ذلك رقم واحد معامل.payload بداية نهاية يحمل رئيسي جسم (`agent`) ، حدث حقل، و حدث لديه إلغاء إشارة وقت إلغاء `signal`؛`next` ما زال هو waterfall/serial حدث الأكثر بعد واحد معامل. تلقي أثر حدث هو عشرة اثنان عدد `agent/*` حدث،`agent-loop/config-start-failed`(وحيد لا يوجد رئيسي جسم حدث) و `goal/changed`.
 
-`PreStepContext` 与 `RequestFailureContext` 已退役；它们的字段直接存在于 `agent/pre-step` 与 `agent/request-error` 的 payload 中。
+`PreStepContext` و `RequestFailureContext` قد تراجع دور؛ هو جمع حقل مباشر وجود في `agent/pre-step` و `agent/request-error` payload في.
 
-dispatch 是融合的：`agentEvents(ctx, agent)`（以及一次性 `emitAgentEvent`）注入主体，使作用域载体键与 payload 的 `agent` 不可能分叉；即使某个结构上可接受的 payload 恰好携带 `agent` 字段，注入的主体仍然优先。`ReactLoopAgent` 在构造函数中构建一次 dispatcher，并将每个 emit、serial 和 waterfall 都经由它路由，因此热路径上的 dispatch 不产生任何分配。
+dispatch هو دمج دمج:`agentEvents(ctx, agent)`(و مرة صفة `emitAgentEvent`) حقن رئيسي جسم، جعل أثر مجال تحميل جسم مفتاح و payload `agent` غير ممكن قدرة قسم تقاطع؛ أي جعل بعض عدد بنية فوق يمكن قبول payload تماما جيد يحمل `agent` حقل، حقن رئيسي جسم ما زال أولوية.`ReactLoopAgent` في بنية صنع دالة في بناء مرة dispatcher، و سوف كل emit،serial و waterfall كل مرور من هو توجيه، لذلك حار مسار فوق dispatch لا إنتاج أي قسم إعداد.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留位置签名。** 新增字段或退役上下文类型依旧会重写每个监听器和 emitter，约定也会继续分散在参数列表中，而不是集中在一个具名 payload 中。
+**إبقاء موضع توقيع.** إضافة جديدة حقل أو تراجع دور سياق نوع اعتماد قديم سوف إعادة كتابة كل مستمع و emitter، اتفاق أيضا سوف متابعة قسم تفرق في معامل قائمة في، بينما لا هو تجميع في في واحد أداة اسم payload في.
 
-**在每个 dispatch 位置手工构造主体。** loop 的中间设计调用 `ctx.waterfall(this.carrier, …)`，传入手工构造的 `{ agent: this, … }` payload；它避免了每次 dispatch 的分配，却重复了主体注入，并让作用域键与 payload 主体分叉。融合的 dispatcher 是每种 dispatch 模式的唯一注入点。
+**في كل dispatch موضع يد عمل بنية صنع رئيسي جسم.** loop في بين تصميم استدعاء `ctx.waterfall(this.carrier, …)`، نقل دخول يد عمل بنية صنع `{ agent: this, … }` payload؛ هو تجنب تجنب كل مرة dispatch قسم إعداد، لكن تكرار رئيسي جسم حقن، و يجعل أثر مجال مفتاح و payload رئيسي جسم قسم تقاطع. دمج دمج dispatcher هو كل نوع dispatch نمط وحيد حقن نقطة.
 
-## 后果
+## عاقبة
 
-监听器签名一次性命名完整 payload，因此扩展 payload 或退役上下文类型，对所有监听器和 emitter 都是一次形状变更。主体/作用域耦合由 dispatcher 在每种 dispatch 模式下强制执行，且 loop 的热路径保持零分配。
+مستمع توقيع مرة صفة تسمية كامل payload، لذلك توسيع payload أو تراجع دور سياق نوع، مقابل كل مستمع و emitter كل هو مرة شكل حالة تغيير. رئيسي جسم/أثر مجال اقتران دمج من dispatcher في كل نوع dispatch نمط تحت قوي صنع تنفيذ، كما loop حار مسار إبقاء صفر قسم إعداد.

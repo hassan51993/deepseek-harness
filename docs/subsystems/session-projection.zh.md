@@ -1,14 +1,14 @@
-# 会话投影
+# جلسة إسقاط
 
-[English](session-projection.md) | 中文
+[English](session-projection.md) | العربية
 
-会话投影 seam 是一项[能力 seam](../capability-seams.zh.md)：领域 host 插件经由它向客户端载体供给按会话的日志派生状态的当前全量值；三方分别是 Service Definition 与注册表（[dsh-session-projection](../../packages/session/session-projection)，`ctx.sessionProjections`）、领域贡献方（每个领域注册一个纯单元）与载体（[dsh-session-controller](../../packages/api/session-controller) 的历史尾页与 `session/projection` 推送帧）。它是一项可选能力，不属于 agent loop（智能体循环）主干。框架负责驱动，领域负责计算：注册表只订阅一次 `session/event`，并把每个已提交事件折叠进每个单元；领域不持有任何订阅，客户端也从不折叠领域事件——它们收到的是成品值。设计权威：[session-projection RFC](../../.agents/notes/proposed/architecture/2026-07-27-session-projection-and-command-log.zh.md)；驱动、缓存与变更流约定：[包 README](../../packages/session/session-projection/README.zh.md)。
+جلسة إسقاط seam هو واحد بند[قدرة seam](../capability-seams.zh.md): مجال host إضافة مرور من هو نحو عميل تحميل جسم توفير إعطاء حسب جلسة سجل إرسال توليد حالة حالي كل كمية قيمة؛ ثلاثة جهة قسم آخر هو Service Definition و سجل التسجيل ([dsh-session-projection](../../packages/session/session-projection) ،`ctx.sessionProjections`) ، مجال مساهمة جهة (كل مجال تسجيل واحد صاف وحدة) و تحميل جسم ([dsh-session-controller](../../packages/api/session-controller) تاريخ ذيل صفحة و `session/projection` دفع إرسال لقطة). هو هو واحد بند اختياري قدرة، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف. إطار هيكل مسؤول قيادة، مجال مسؤول حساب حساب: سجل التسجيل فقط حجز قراءة مرة `session/event`، و يأخذ كل قد إيداع حدث طي دخول كل وحدة؛ مجال لا يحتفظ أي حجز قراءة، عميل أيضا من لا طي مجال حدث——هو جمع استلام إلى هو صار صنف قيمة. تصميم مرجعي:[session-projection RFC](../../.agents/notes/proposed/architecture/2026-07-27-session-projection-and-command-log.zh.md) ؛ قيادة، ذاكرة مؤقتة و تغيير تدفق اتفاق:[حزمة README](../../packages/session/session-projection/README.zh.md).
 
-源码：[`packages/session/session-projection/src/index.ts`](../../packages/session/session-projection/src/index.ts)
+شفرة المصدر:[`packages/session/session-projection/src/index.ts`](../../packages/session/session-projection/src/index.ts)
 
-## 投影单元
+## إسقاط وحدة
 
-`SessionProjectionStateMap` 是 host 侧折叠状态的 merge-extensible 类型表，`SessionProjectionMap` 则继续表示客户端可见的全量值。领域为每个状态 key 贡献一个 `ProjectionDefinition`；`wire` 块使该 key 对客户端可见，渲染归 slot 体系管，永远不归本层：
+`SessionProjectionStateMap` هو host جانب طي حالة merge-extensible نوع جدول،`SessionProjectionMap` فإن متابعة يمثل عميل مرئي كل كمية قيمة. مجال لـ كل حالة key مساهمة واحد `ProjectionDefinition`؛`wire` كتلة جعل هذا key مقابل عميل مرئي، تصيير عودة slot جسم نظام إدارة، دائم بعيد لا عودة هذا طبقة:
 
 ```ts type-equiv
 /**
@@ -67,9 +67,9 @@ interface ProjectionDefinition<
 }
 ```
 
-每个对外投影值都是完整读模型。源事件可以携带完整值，也可以携带领域拥有的操作；单元的确定性 `apply` 负责回放，checkpoint 加前向 tail replay 会重建出同一状态。
+كل مقابل خارج إسقاط قيمة كل هو كامل قراءة نموذج. مصدر حدث يمكن يحمل كامل قيمة، أيضا يمكن يحمل مجال يملك عملية؛ وحدة تحديد صفة `apply` مسؤول إعادة تشغيل،checkpoint إضافة قبل نحو tail replay سوف إعادة بناء خروج نفس حالة.
 
-## 快照与变更流
+## لقطة و تغيير تدفق
 
 ```ts type-equiv
 /**
@@ -99,11 +99,11 @@ type ProjectionChangeListener = (
 ) => void
 ```
 
-`snapshot(session)` 完全同步：载体在切出页面切片的同一 tick 内读取它，因此 `asOfSeq` 使两次读取使用同一个序号。它只返回客户端视图，并在返回前通过各单元的 `viewSchema` 校验。`stateOf(session, key)` 可在不计算无关视图的情况下读取一份实时 host 状态；调用方不得修改这一借用引用。state 引用变化时，注册表计算并缓存一次原始 view；只有该结果通过 `Object.is` 判定为变化时才触发变更流，对象 view 若要在仅内部 state 变化时抑制发布就必须保留引用。
+`snapshot(session)` تماما تزامن: تحميل جسم في قطع خروج صفحة قطع قطعة نفس tick داخل قراءة هو، لذلك `asOfSeq` جعل اثنان مرة قراءة استخدام نفس عدد ترتيب رقم. هو فقط إرجاع عميل عرض، و في إرجاع قبل عبر كل وحدة `viewSchema` تحقق.`stateOf(session, key)` يمكن في لا حساب حساب غير متصل عرض حال حال تحت قراءة واحد نسخة فوري host حالة؛ استدعاء جهة لا نيل تعديل هذا واحد استعارة استخدام مرجع.state مرجع تغير وقت، سجل التسجيل حساب حساب و ذاكرة مؤقتة مرة أصلي view؛ فقط لديه هذا نتيجة عبر `Object.is` حكم تحديد لـ تغير وقت عندئذ إطلاق تغيير تدفق، كائن view إذا يلزم في فقط داخلي state تغير وقت كبح صنع إصدار حينئذ يجب إبقاء مرجع.
 
-## 注册表：`ctx.sessionProjections`
+## سجل التسجيل:`ctx.sessionProjections`
 
-`SessionProjectionRegistry`（[签名](#ctxsessionprojections--sessionprojectionregistry)）拥有驱动权：一份 `session/event` 订阅、对每个已注册单元即时调用 `apply`，以及每会话每单元的水位线（watermark）cell。cell 惰性构建：在事件流过之后才注册的单元，或比注册表更早的会话，都在首次触达（事件或读取）时从 `init` 出发在内存日志上折叠。注册是一个 effect，其 disposer 随调用方 fiber 走：领域插件卸载后，其 key（连同缓存的 cell）从后续驱动与快照中消失，客户端将其读作能力缺失；key 以不同 `stateVersion` 重复时直接 throw，同版本注册方则共享一个单元并被计数。领域插件在 `ctx.inject(['sessionProjections'], …)` 下注册，因此不带注册表的 headless 组装完全不受影响。
+`SessionProjectionRegistry`([توقيع](#ctxsessionprojections--sessionprojectionregistry)) يملك قيادة حق: واحد نسخة `session/event` حجز قراءة، مقابل كل قد تسجيل وحدة أي وقت استدعاء `apply`، و كل جلسة كل وحدة ماء موضع خط (watermark)cell.cell كسول صفة بناء: في حدث تدفق مرور بعد عندئذ تسجيل وحدة، أو مقارنة سجل التسجيل أكثر مبكر جلسة، كل في أول مرة لمس بلوغ (حدث أو قراءة) وقت من `init` خروج إرسال في داخل تخزين سجل فوق طي. تسجيل هو واحد effect، ذلك disposer مع استدعاء جهة fiber مشي: مجال إضافة إزالة بعد، ذلك key(وصل نفس ذاكرة مؤقتة cell) من لاحق قيادة و لقطة في إزالة فقد، عميل سوف ذلك قراءة عمل قدرة ناقص؛key بـ مختلف `stateVersion` تكرار وقت مباشر throw، نفس إصدار تسجيل جهة فإن مشترك واحد وحدة و يتم حساب عدد. مجال إضافة في `ctx.inject(['sessionProjections'], …)` تحت تسجيل، لذلك لا حمل سجل التسجيل headless تجميع تماما لا تلقي أثر.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

@@ -1,54 +1,54 @@
 ---
-description: "进程沙箱包组：隔离 seam、各平台后端、共享策略解析器与 Windows 写入限制档。"
+description: "عملية صندوق رملي حزمة مجموعة: عزل seam، كل منصة خلفية، مشترك سياسة محلل و Windows كتابة حد ملف."
 kind: "package-group"
 ---
 
 # packages/sandbox
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`sandbox/` 组将子进程执行限制在文件效果策略之下：命令以 `read-only` 运行、只能写入会话工作区（`workspace-write`）或不受限制地运行（`danger-full-access`）。四个包交付该能力：隔离服务（`sandbox/`）、面向 Linux、macOS 与 Windows 的各平台后端（`sandbox-local/`）、共享策略解析器（`sandbox-policy/`）与 Windows 写入限制后端（`sandbox-windows-acl/`）。被策略拒绝的受限调用可以通过用户批准的一次性升权重试。隔离仅适用于与宿主共享文件系统和内核的子进程；容器、microVM 与远程执行器会替换整个能力，而不是在此注册。
+`sandbox/` مجموعة سوف عملية فرعية تنفيذ حد في ملف فاعلية نتيجة سياسة لـ تحت: أمر بـ `read-only` تشغيل، فقط قدرة كتابة جلسة مساحة العمل (`workspace-write`) أو لا تلقي حد أرض تشغيل (`danger-full-access`). أربعة عدد حزمة تسليم هذا قدرة: عزل خدمة (`sandbox/`) ، موجه إلى Linux،macOS و Windows كل منصة خلفية (`sandbox-local/`) ، مشترك سياسة محلل (`sandbox-policy/`) و Windows كتابة حد خلفية (`sandbox-windows-acl/`). يتم سياسة رفض تلقي حد استدعاء يمكن عبر مستخدم دفعة دقيق مرة صفة رفع حق إعادة محاولة. عزل فقط ملائم لأجل و مضيف مشترك نظام الملفات و داخل نواة عملية فرعية؛ حاوية،microVM و بعيد مسار منفذ سوف استبدال كامل قدرة، بينما لا هو في هذا تسجيل.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-四个包承担隔离角色；完整约定和逐调用策略语义以子系统参考文档为准。
+أربعة عدد حزمة تحمل تحمل عزل زاوية لون؛ كامل اتفاق و تدريجي استدعاء سياسة دلالة بـ فرعي نظام مشاركة اعتبار وثيقة لـ دقيق.
 
-| 包 | 职责 | ctx key |
+| حزمة | مسؤولية | ctx key |
 |---|---|---|
-| [`sandbox/`](sandbox/README.zh.md) | 隔离服务约定：模式、强制执行、逐调用策略与升权词汇 | `ctx.sandbox` |
-| [`sandbox-local/`](sandbox-local/README.zh.md) | 各平台隔离后端：Linux 先使用 bwrap，再使用 Landlock；macOS 使用 Seatbelt；Windows 使用受限令牌 | 注册到 `ctx.sandbox` |
-| [`sandbox-policy/`](sandbox-policy/README.zh.md) | 共享策略归属：供所有实施隔离的家族使用的部署默认值与逐会话模式覆盖 | `ctx.sandboxPolicy` |
-| [`sandbox-windows-acl/`](sandbox-windows-acl/README.zh.md) | Windows 写入限制：受限子进程只能写入工作区与私有临时目录 | —（由 `sandbox-local` 挂载为 win32 后端） |
+| [`sandbox/`](sandbox/README.zh.md) | عزل خدمة اتفاق: نمط، قوي صنع تنفيذ، تدريجي استدعاء سياسة و رفع حق مفردات | `ctx.sandbox` |
+| [`sandbox-local/`](sandbox-local/README.zh.md) | كل منصة عزل خلفية:Linux أولا استخدام bwrap، مجددا استخدام Landlock؛macOS استخدام Seatbelt؛Windows استخدام تلقي حد أمر لوحة | تسجيل إلى `ctx.sandbox` |
+| [`sandbox-policy/`](sandbox-policy/README.zh.md) | مشترك سياسة ملكية: توفير كل فعلي تطبيق عزل بيت عائلة استخدام نشر قيمة افتراضية و تدريجي جلسة نمط تغطية | `ctx.sandboxPolicy` |
+| [`sandbox-windows-acl/`](sandbox-windows-acl/README.zh.md) | Windows كتابة حد: تلقي حد عملية فرعية فقط قدرة كتابة مساحة العمل و خاص مؤقت دليل | —(من `sandbox-local` تركيب لـ win32 خلفية) |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考文档了解共享词汇，再看隔离决策及其跨家族扩展。
+أولا من فرعي نظام مشاركة اعتبار وثيقة حل مشترك مفردات، مجددا نظر عزل قرار و ذلك عبر بيت عائلة توسيع.
 
-- [进程沙箱子系统](../../docs/subsystems/sandbox.zh.md)——模式、逐调用策略、包装 argv 方言与故障关闭错误。
-- [子进程沙箱决策](../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md)——能力边界、升权编排与延期阶段。
-- [跨家族文件沙箱决策](../../.agents/notes/implemented/feature/2026-07-14-cross-family-fs-sandbox.zh.md)——统一的共享策略归属与沙箱化文件系统提供方。
-- [Windows ACL 受限令牌沙箱决策](../../.agents/notes/implemented/feature/2026-08-08-windows-acl-restricted-token-sandbox.zh.md)——为何选择原始 ACL 受限令牌而非 mxc 与 AppContainer。
+- [عملية صندوق رملي فرعي نظام](../../docs/subsystems/sandbox.zh.md)——نمط، تدريجي استدعاء سياسة، حزمة تركيب argv جهة قول و لذا عائق إغلاق خطأ.
+- [عملية فرعية صندوق رملي قرار](../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md)——قدرة حد، رفع حق تحرير ترتيب و تأجيل مرحلة مقطع.
+- [عبر بيت عائلة ملف صندوق رملي قرار](../../.agents/notes/implemented/feature/2026-07-14-cross-family-fs-sandbox.zh.md)——موحد واحد مشترك سياسة ملكية و صندوق رملي تحويل نظام الملفات مزود.
+- [Windows ACL تلقي حد أمر لوحة صندوق رملي قرار](../../.agents/notes/implemented/feature/2026-08-08-windows-acl-restricted-token-sandbox.zh.md)——لـ أي اختيار أصلي ACL تلقي حد أمر لوحة بينما غير mxc و AppContainer.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

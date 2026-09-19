@@ -1,50 +1,50 @@
-# Agent Note: 内嵌 Assistant 流的消费方直接读取紧凑记录
+# Agent Note: داخل تضمين Assistant تدفق مستهلك مباشر قراءة ضيق تجميع سجل
 
 Status: implemented
 
-[English](2026-09-06-embedded-stream-record-readers.md) | 中文
+[English](2026-09-06-embedded-stream-record-readers.md) | العربية
 
-## 问题
+## مشكلة
 
-Session 格式 v2 将每次模型尝试的紧凑流（`AssistantStreamRecord[]`：打包的 `text-chunks`、`reasoning-chunks`、`tool-call-chunks` run 加上带时间戳的原始 `chunk` 记录）嵌入 `assistant/message` 与 `assistant/attempt`。折叠这些 settlement 的消费方会先调用 `expandAssistantStream()`；它会物化完整的逐成员数组，因此只需一个事实的消费方（find 首个 token、最后一个 usage chunk、拼接文本、一个 block-end）也要付出 O(members) 的分配与时间：在紧凑形式之上每个成员约两个对象。
+Session صيغة v2 سوف كل مرة نموذج محاولة تجربة ضيق تجميع تدفق (`AssistantStreamRecord[]`: تحزيم `text-chunks`،`reasoning-chunks`،`tool-call-chunks` run إضافة فوق حمل ختم الوقت أصلي `chunk` سجل) تضمين دخول `assistant/message` و `assistant/attempt`. طي هذه settlement مستهلك سوف أولا استدعاء `expandAssistantStream()`؛ هو سوف شيء تحويل كامل تدريجي عضو عدد مجموعة، لذلك فقط يحتاج واحد واقع مستهلك (find أول عدد token، الأكثر بعد واحد usage chunk، تجميع وصل نص، واحد block-end) أيضا يلزم دفع خروج O(members) قسم إعداد و وقت: في ضيق تجميع شكل صيغة لـ فوق كل عضو نحو اثنان عدد كائن.
 
-在 v2 内嵌流 settlement 随消息内容扩展、Chat 与 Trajectory 区块直接由内容结算之后，剩余的 expand 消费方是 Host 与客户端折叠：Session Stats 读取每个 `assistant/attempt` 与 `assistant/message` 的首 token 时间（每次打开 Session 的 projection 阶段）、token 计量重建提供商内容并扫描每个流到最后一个 usage chunk（projection 单元仍扫描到末尾）、子代理输出折叠拼接纯文本、Session Controller 镜像查找扫描 block-end chunk。
+في v2 داخل تضمين تدفق settlement مع رسالة محتوى توسيع،Chat و Trajectory منطقة كتلة مباشر من محتوى تسوية بعد، باق بقية expand مستهلك هو Host و عميل طي:Session Stats قراءة كل `assistant/attempt` و `assistant/message` أول token وقت (كل مرة فتح Session projection مرحلة مقطع) ،token حساب كمية إعادة بناء توفير تجارة محتوى و مسح كل تدفق إلى الأكثر بعد واحد usage chunk(projection وحدة ما زال مسح إلى نهاية ذيل) ، فرعي بديل إدارة إخراج طي تجميع وصل صاف نص،Session Controller مرآة مثل فحص بحث مسح block-end chunk.
 
-## 决策
+## قرار
 
-`@deepseek-ai/dsh-llm` 直接从紧凑记录回答消费方问题；剩余消费方对记录做一次带提前退出的折叠。
+`@deepseek-ai/dsh-llm` مباشر من ضيق تجميع سجل عودة جواب مستهلك مشكلة؛ باق بقية مستهلك مقابل سجل فعل مرة حمل رفع قبل خروج طي.
 
-`packages/llm/llm/src/assistant-stream.ts` 在累加器与 `expandAssistantStream` 之外导出记录级读取器：
+`packages/llm/llm/src/assistant-stream.ts` في تراكم إضافة جهاز و `expandAssistantStream` خارج توجيه خروج سجل درجة قراءة جهاز:
 
-- Chunk 规则：`isTokenDelta`（非空文本、reasoning 或 Tool-call 参数片段，或任何带名称的 Tool-call delta）、`isVisibleChunk`（非空白文本或 reasoning，或 text/reasoning/Tool call 之外的任意块开始或结束）、`chunkHasVisibleText`（非空白文本 delta 或完成的文本块）。
-- Run 读取器：`runFirstTokenTime` 与 `runFirstVisibleTime` 从 `time0` 与 `dt` 间隔重建首个合格成员的时间并停止扫描；带名称的 Tool-call run 直接产出 `time0`，不读片段。
-- 流读取器：`assistantStreamFirstTokenTime`、`assistantStreamHasVisibleContent`、`assistantStreamHasVisibleText`、`lastAssistantStreamChunk(stream, type)`（逆向扫描）、`assistantStreamChunks(stream, type)`、`joinAssistantStreamText` 与 `assembleAssistantStream`（每个 run 向 `BlockAssembler` 喂入一个拼接后的 delta；组装只做拼接，因此 blocks、usage、finish 与 replay state 与逐成员结果一致）。`RawStreamChunkType` 排除 delta 类型，因此原始 chunk 查找不可能静默跳过打包成员。
+- Chunk قاعدة:`isTokenDelta`(غير فارغ نص،reasoning أو Tool-call معامل قطعة مقطع، أو أي حمل اسم Tool-call delta) ،`isVisibleChunk`(غير فارغ أبيض نص أو reasoning، أو text/reasoning/Tool call خارج مهمة معنى كتلة بدء أو انتهاء) ،`chunkHasVisibleText`(غير فارغ أبيض نص delta أو إتمام نص كتلة).
+- Run قراءة جهاز:`runFirstTokenTime` و `runFirstVisibleTime` من `time0` و `dt` بين فصل إعادة بناء أول عدد دمج إطار عضو وقت و إيقاف مسح؛ حمل اسم Tool-call run مباشر إنتاج خروج `time0`، لا قراءة قطعة مقطع.
+- تدفق قراءة جهاز:`assistantStreamFirstTokenTime`،`assistantStreamHasVisibleContent`،`assistantStreamHasVisibleText`،`lastAssistantStreamChunk(stream, type)`(عكس نحو مسح) ،`assistantStreamChunks(stream, type)`،`joinAssistantStreamText` و `assembleAssistantStream`(كل run نحو `BlockAssembler` تغذية دخول واحد تجميع وصل بعد delta؛ تجميع فقط فعل تجميع وصل، لذلك blocks،usage،finish و replay state و تدريجي عضو نتيجة متسق).`RawStreamChunkType` ترتيب حذف delta نوع، لذلك أصلي chunk فحص بحث غير ممكن قدرة ساكن صامت قفز مرور تحزيم عضو.
 
-Session Stats 与 Trajectory 从 `assistant/attempt` 和 `assistant/message` 读取 `assistantStreamFirstTokenTime`，跨重试保留步骤的首个 token。Trajectory 从组装后的消息结算内容，并独立读取计时，因此重新打开历史时无需展开流便能保留 TTFT 与解码指标。Chat 遵循[已结算回复的计时策略](../bug-fix/2026-09-14-chat-presentation-defaults.zh.md)。token 计量读取 `lastAssistantStreamChunk(stream, 'usage')` 并通过 `assembleAssistantStream` 组装提供商输出；子代理输出折叠追加 `joinAssistantStreamText`；Session Controller 用 `assistantStreamChunks(stream, 'block-end')` 扫描镜像。
+Session Stats و Trajectory من `assistant/attempt` و `assistant/message` قراءة `assistantStreamFirstTokenTime`، عبر إعادة محاولة إبقاء خطوة أول عدد token.Trajectory من تجميع بعد رسالة تسوية محتوى، و مستقل قراءة حساب وقت، لذلك إعادة فتح تاريخ وقت بلا حاجة توسيع تدفق سهل قدرة إبقاء TTFT و حل رمز إشارة علامة.Chat التزام دوران[قد تسوية عودة تكرار حساب وقت سياسة](../bug-fix/2026-09-14-chat-presentation-defaults.zh.md).token حساب كمية قراءة `lastAssistantStreamChunk(stream, 'usage')` و عبر `assembleAssistantStream` تجميع توفير تجارة إخراج؛ فرعي بديل إدارة إخراج طي إلحاق `joinAssistantStreamText`؛Session Controller استخدام `assistantStreamChunks(stream, 'block-end')` مسح مرآة مثل.
 
-`expandAssistantStream` 保留其严格校验与其余调用方（需要每个成员或在持久边界校验流）：Session 恢复校验、v1-to-v2 迁移校验器与发布 Worker 重放、重连基线、测试支撑。
+`expandAssistantStream` إبقاء ذلك صارم إطار تحقق و ذلك بقية استدعاء جهة (حاجة كل عضو أو في حمل دائم حد تحقق تدفق):Session استعادة تحقق،v1-to-v2 ترحيل تحقق جهاز و إصدار Worker إعادة وضع، إعادة وصل أساس خط، اختبار دعم دعم.
 
-### 测量
+### قياس كمية
 
-仓库的合成 first-open 基准（200 循环、127,400 个 released-v0 事件、1,600 条紧凑记录中的 500,000 个流式 delta；五次采样取中位数）：
+مستودع دمج صار first-open أساس دقيق (200 حلقة،127,400 عدد released-v0 حدث،1,600 بند ضيق تجميع سجل في 500,000 عدد تدفق صيغة delta؛ خمسة مرة أخذ مثال أخذ في موضع عدد):
 
-| 阶段 | 之前 | 之后 |
+| مرحلة مقطع | قبل | بعد |
 |---|---|---|
 | first-open projection | 28.0 ms | 5.9 ms |
-| first-open 总计 | 76.9 ms | 53.8 ms |
-| first-open 峰值 RSS | 137.2 MB | 94.6 MB |
+| first-open مجموع حساب | 76.9 ms | 53.8 ms |
+| first-open ذروة قيمة RSS | 137.2 MB | 94.6 MB |
 | reopen projection | 17.8 ms | 6.5 ms |
 
-Open、read、restore 阶段不变；读取器按构造保持相同的首 token 时间（首个合格成员即首条记录的首个合格片段，且 delta 保持有序）。
+Open،read،restore مرحلة مقطع ثابت؛ قراءة جهاز حسب بنية صنع إبقاء نفسه أول token وقت (أول عدد دمج إطار عضو أي أول بند سجل أول عدد دمج إطار قطعة مقطع، كما delta إبقاء لديه ترتيب).
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**按输入数组记忆化 `expandAssistantStream`。** 展开全部流只需几十毫秒，但保留展开结果在事件生命周期内约花费紧凑流的十倍内存——这是本变更移除的瞬时分配的永久版本。读取器完全消除了对保留展开的需求。
+**حسب إدخال عدد مجموعة تسجيل ذاكرة تحويل `expandAssistantStream`.** توسيع الكل تدفق فقط يحتاج بضعة عشرة جزء ثانية، لكن إبقاء توسيع نتيجة في حدث دورة الحياة داخل نحو زهرة استهلاك ضيق تجميع تدفق عشرة ضعف داخل تخزين——هذا هو هذا تغيير إزالة لحظة وقت قسم إعداد دائم دائم إصدار. قراءة جهاز تماما إزالة حذف مقابل إبقاء توسيع يحتاج طلب.
 
-**保留逐成员折叠。** 提前退出的 `.find` 仍然先物化整个数组，因此分配与 O(members) 时间仍在。
+**إبقاء تدريجي عضو طي.** رفع قبل خروج `.find` ما زال أولا شيء تحويل كامل عدد مجموعة، لذلك قسم إعداد و O(members) وقت ما زال في.
 
-## 后果
+## عاقبة
 
-Host 与客户端折叠一次内嵌结算的代价为 O(records) 加每个 run 一次拼接，且除非在持久边界校验或需要每个成员，消费方不再物化成员。token、可见性与可见文本规则在 `dsh-llm` 中只有一处，因此记录读取器与累加器的打包规则不可能漂移。
+Host و عميل طي مرة داخل تضمين تسوية بديل قيمة لـ O(records) إضافة كل run مرة تجميع وصل، كما حذف غير في حمل دائم حد تحقق أو حاجة كل عضو، مستهلك لم يعد شيء تحويل عضو.token، مرئي صفة و مرئي نص قاعدة في `dsh-llm` في فقط لديه واحد موضع، لذلك سجل قراءة جهاز و تراكم إضافة جهاز تحزيم قاعدة غير ممكن قدرة عائم نقل.
 
-发布校验（`assertCurrentAssistantStreams`）仍在发布时重放每个 settlement；因为它必须按 chunk 证明内容一致，将其转为不入成员的 run 感知组装仍是未完成工作。
+إصدار تحقق (`assertCurrentAssistantStreams`) ما زال في إصدار وقت إعادة وضع كل settlement؛ لأن هو يجب حسب chunk إثبات محتوى متسق، سوف ذلك تحويل لـ لا دخول عضو run شعور معرفة تجميع ما زال هو لم إتمام عمل.

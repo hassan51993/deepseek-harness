@@ -1,30 +1,30 @@
-# Agent Note: 会话历史、控制状态与 Remote 事件传输
+# Agent Note: جلسة تاريخ، تحكم حالة و Remote حدث نقل
 
 Status: implemented
 
-[English](2026-08-18-session-history-and-event-transport.md) | 中文
+[English](2026-08-18-session-history-and-event-transport.md) | العربية
 
-## 问题
+## مشكلة
 
-浏览器同时消费三类生命周期不同的数据：可持久化并分页的 Session 日志、需要 opening baseline 才能在重连后收敛的进程内状态，以及无需重放的即时通知。
+متصفح معا إزالة استهلاك ثلاثة صنف دورة الحياة مختلف بيانات: يمكن حفظ دائم و قسم صفحة Session سجل، حاجة opening baseline عندئذ قدرة في إعادة وصل بعد استلام جمع عملية داخل حالة، و بلا حاجة إعادة وضع أي وقت إشعار.
 
-这三类数据不能共用一种恢复规则。Session 日志有稳定 seq 和 persistence，可以按 cursor 补齐缺口；jobs、projection 值和 Workspace 列表等状态需要以完整 snapshot 替换旧镜像；普通通知只保证当前 Connection generation 内投递。
+هذا ثلاثة صنف بيانات لا يستطيع مشترك استخدام واحد نوع استعادة قاعدة.Session سجل لديه مستقر seq و persistence، يمكن حسب cursor تكملة متساو نقص فتحة؛jobs،projection قيمة و Workspace قائمة انتظار حالة حاجة بـ كامل snapshot استبدال قديم مرآة مثل؛ عادي إشعار فقط حفظ إثبات حالي Connection generation داخل إلقاء تمرير.
 
-观察 Session 历史、列表和投影必须允许冷读取。若 transport 因参数中出现 Session 或 Agent 就触发通用 Typert lookup，打开页面、切换标签或网络重连都会隐式恢复 Agent，观察操作因此产生执行副作用。
+مراقبة Session تاريخ، قائمة و إسقاط يجب سماح بارد قراءة. إذا transport بسبب معامل في ظهور Session أو Agent حينئذ إطلاق عام Typert lookup، فتح صفحة، تبديل وسم أو شبكة شبكة إعادة وصل كل سوف خفي صيغة استعادة Agent، مراقبة عملية لذلك إنتاج تنفيذ فرعي أثر.
 
-prompt、create、fork、模型选择等命令又确实需要按各自语义创建或恢复 Agent。激活权限必须属于具体 Remote 方法，而不能由 carrier、参数类型或共享 lookup 暗中决定。
+prompt،create،fork، نموذج اختيار انتظار أمر أيضا تأكيد فعلي حاجة حسب كل منها دلالة إنشاء أو استعادة Agent. تنشيط إذن يجب يخص أداة جسم Remote طريقة، بينما لا يستطيع من carrier، معامل نوع أو مشترك lookup داكن في قرار.
 
-旧 API Proxy 的全 Session mux、`HostFrame` 与 Workspace 通知把领域数据、baseline、错误和连接生命周期编码进同一手写协议。每增加一种状态都要复制帧定义、Client bridge、重连和清理逻辑，API Proxy 也无法退回只承接尚未迁移的业务方法。
+قديم API Proxy كل Session mux،`HostFrame` و Workspace إشعار يأخذ مجال بيانات،baseline، خطأ و اتصال دورة الحياة تحرير رمز دخول نفس يد كتابة بروتوكول. كل زيادة واحد نوع حالة كل يلزم نسخ لقطة تعريف،Client bridge، إعادة وصل و تنظيف منطق،API Proxy أيضا لا يمكن تراجع عودة فقط تحمل وصل بعد لم ترحيل عمل خدمة طريقة.
 
-Host 向 Client 的 Cordis 事件还有两种调用语义。普通通知只需要广播；Approval 与 Question 一类 Agent-scoped waterfall 必须允许 Client claim、调用 `next()` 委托、返回结果或拒绝，并在多 Client、断线和取消下保持一次 Host 调用的身份。
+Host نحو Client Cordis حدث أيضا لديه اثنان نوع استدعاء دلالة. عادي إشعار فقط حاجة واسع بث؛Approval و Question واحد صنف Agent-scoped waterfall يجب سماح Client claim، استدعاء `next()` تفويض حمل، إرجاع نتيجة أو رفض، و في كثير Client، قطع خط و إلغاء تحت إبقاء مرة Host استدعاء هوية.
 
-这些需求需要一个通用 transport 生命周期，但不能让 Gateway 理解 Session、Workspace、Approval 或 Question 的业务数据。
+هذه يحتاج طلب حاجة واحد عام transport دورة الحياة، لكن لا يستطيع يجعل Gateway إدارة حل Session،Workspace،Approval أو Question عمل خدمة بيانات.
 
-## 决定
+## قرار
 
-API Gateway 拥有 Remote transport、stream 生命周期和 Remote Event 协调；Session Controller 与 Workspace Controller 拥有各自的 Host API、wire 类型和 Client 领域 adapter；Client Runtime 只装配并消费这些对象，不再实现另一套 carrier 状态机。
+API Gateway يملك Remote transport،stream دورة الحياة و Remote Event تنسيق ضبط؛Session Controller و Workspace Controller يملك كل منها Host API،wire نوع و Client مجال adapter؛Client Runtime فقط تركيب إعداد و إزالة استهلاك هذه كائن، لم يعد تنفيذ آخر طقم carrier حالة آلة.
 
-当前所有权如下：
+حالي كل حق مثل تحت:
 
 ```text
 [client/connection]
@@ -56,36 +56,36 @@ API Gateway 拥有 Remote transport、stream 生命周期和 Remote Event 协调
 `-- compose Session and Workspace domain state for consumers
 ```
 
-API Proxy 不拥有 Session 或 Workspace Remote namespace，也不拥有 Host 下行事件 carrier。`/api/events.host`、`HostFrame`、`stream/error`、`ServerRequest` 及其 WebSocket／SSE 分支不参与这条数据链路。
+API Proxy لا يملك Session أو Workspace Remote namespace، أيضا لا يملك Host تحت سطر حدث carrier.`/api/events.host`،`HostFrame`،`stream/error`،`ServerRequest` و ذلك WebSocket/SSE فرع لا مشاركة و هذا بند بيانات سلسلة مسار.
 
-### Connection generation 与物理连接
+### Connection generation و شيء إدارة اتصال
 
-浏览器的 Client Remote 插件激活时幂等启动 `RemoteStreamMuxClient`，并立即连接 `/api/remote.mux`。没有业务 logical stream 时物理 WebSocket 仍保持常驻，但 mux 不运行独立的 retry 调度。
+متصفح Client Remote إضافة تنشيط وقت قوة انتظار بدء `RemoteStreamMuxClient`، و قيام أي اتصال `/api/remote.mux`. لا يوجد عمل خدمة logical stream وقت شيء إدارة WebSocket ما زال إبقاء معتاد إقامة، لكن mux لا تشغيل مستقل retry ضبط درجة.
 
-Host 按配置的 `websocketHeartbeatIntervalMs` 间隔（默认 2 秒）向每条已打开的 mux socket 发送一个 RFC 6455 Ping 控制帧；浏览器在协议层回复 Pong。两种控制帧都不进入 Remote stream JSON union，也不改变 Connection generation 状态。每次 Ping 前，Host 把 socket 标记为等待 Pong；若到下一间隔仍未收到 Pong，Host 会终止该 socket。
+Host حسب إعداد `websocketHeartbeatIntervalMs` بين فصل (افتراضي 2 ثانية) نحو كل بند قد فتح mux socket إرسال واحد RFC 6455 Ping تحكم لقطة؛ متصفح في بروتوكول طبقة عودة تكرار Pong. اثنان نوع تحكم لقطة كل لا دخول Remote stream JSON union، أيضا لا تغيير Connection generation حالة. كل مرة Ping قبل،Host يأخذ socket علامة لـ انتظار Pong؛ إذا إلى تحت واحد بين فصل ما زال لم استلام إلى Pong،Host سوف إنهاء هذا socket.
 
-首次建连失败或已连接 socket 丢失后，已打开的 logical stream 会以 `RemoteStreamCarrierError` 结束当前物理 generation。`ConnectionController` 拥有持续且间隔封顶的指数 retry 调度；每次尝试都要求 mux 恰好一次替换候选或活动 socket，再重开 `$events`。用户要求的重连通过同一路径重置 attempt 序列并跳过等待（见[决策](../../archived/feature/2026-08-28-web-connection-recovery-control.md)）。
+أول مرة بناء وصل فشل أو قد اتصال socket فقد فقد بعد، قد فتح logical stream سوف بـ `RemoteStreamCarrierError` انتهاء حالي شيء إدارة generation.`ConnectionController` يملك حمل متابعة كما بين فصل غلاف قمة إشارة عدد retry ضبط درجة؛ كل مرة محاولة تجربة كل اشتراط mux تماما جيد مرة استبدال مرشح أو نشط حركة socket، مجددا إعادة فتح `$events`. مستخدم اشتراط إعادة وصل عبر نفس مسار إعادة وضع attempt تسلسل و قفز مرور انتظار (رؤية[قرار](../../archived/feature/2026-08-28-web-connection-recovery-control.md)).
 
 
-浏览器网络状态事件是同一 Controller 的输入。`offline` 会撤回 Connection generation 并暂停自动 retry；下一次 `online` 转换会从基础退避档重新开始。这些事件不会建立连接；只有新的 `$events` ready 帧才会发布 Connection generation。
+متصفح شبكة شبكة حالة حدث هو نفس Controller إدخال.`offline` سوف سحب عودة Connection generation و مؤقت توقف تلقائي retry؛ تحت مرة `online` تحويل سوف من أساس أساس تراجع تجنب ملف إعادة بدء. هذه حدث لن بناء قيام اتصال؛ فقط لديه جديد `$events` ready لقطة عندئذ سوف إصدار Connection generation.
 
-进程内 `connection.rpc.open` 使用同一 logical endpoint 语义，但绕过浏览器 WebSocket mux。
+عملية داخل `connection.rpc.open` استخدام نفس logical endpoint دلالة، لكن التفاف مرور متصفح WebSocket mux.
 
-Gateway 内部 `$events` logical stream 是 `ConnectionHandle` 唯一的 generation source。它不依赖是否已有业务 `$on` 订阅，因此连接健康状态不会随 UI listener 数量变化。
+Gateway داخلي `$events` logical stream هو `ConnectionHandle` وحيد generation source. هو لا اعتماد هل قد لديه عمل خدمة `$on` حجز قراءة، لذلك اتصال سليم سليم حالة لن مع UI listener عدد كمية تغير.
 
-Host event source 在返回首帧前同步安装增量 listener。Gateway 随后发送 `{ type: 'ready', clientId, host: { home } }`；该 frame 证明当前 generation 已经能够接收增量，并携带稳定的 Host 路径显示信息。
+Host event source في إرجاع أول لقطة قبل تزامن تثبيت زيادة كمية listener.Gateway مع بعد إرسال `{ type: 'ready', clientId, host: { home } }`؛ هذا frame إثبات حالي generation قد قدرة كاف استقبال زيادة كمية، و يحمل مستقر Host مسار عرض معلومة.
 
-`ConnectionController` 只有在 `$events` ready 后才发布 `connected`，所以 Session 或 Workspace baseline 不会在 Host 增量 listener 就绪前开始读取。
+`ConnectionController` فقط لديه في `$events` ready بعد عندئذ إصدار `connected`، الذي بـ Session أو Workspace baseline لن في Host زيادة كمية listener حينئذ خيط قبل بدء قراءة.
 
-`$events` 正常意外结束、Host 错误、畸形首帧或 carrier 失败都会结束当前 Connection generation。Connection 撤回该 generation，随后按有界退避重新建立 `$events`；浏览器离线时暂停，用户要求立即重试时则跳过等待。
+`$events` صحيح معتاد معنى خارج انتهاء،Host خطأ، شاذ شكل أول لقطة أو carrier فشل كل سوف انتهاء حالي Connection generation.Connection سحب عودة هذا generation، مع بعد حسب محدود تراجع تجنب إعادة بناء قيام `$events`؛ متصفح مغادرة خط وقت مؤقت توقف، مستخدم اشتراط قيام أي إعادة محاولة وقت فإن قفز مرور انتظار.
 
-Gateway stream、Connection generation 与 Session 业务 open epoch 是三个独立计数：前者表示某条 logical stream 的物理替换，第二个表示 Host 可用性握手，最后一个防止已淘汰的 Session open 写回当前状态。
+Gateway stream،Connection generation و Session عمل خدمة open epoch هو ثلاثة عدد مستقل حساب عدد: قبل من يمثل بعض بند logical stream شيء إدارة استبدال، ثاني عدد يمثل Host متاح صفة إمساك يد، الأكثر بعد واحد منع توقف قد تصفية استبعاد Session open كتابة عودة حالي حالة.
 
-Host 插件销毁会停止心跳定时器、终止 mux socket，并等待活跃 iterator 完成。Client 插件销毁会停止重试等待，取消候选与活动 socket，终止 logical stream，并等待后台循环和 consumer 完全停稳。
+Host إضافة إلغاء تدمير سوف إيقاف قلب قفز تحديد وقت جهاز، إنهاء mux socket، و انتظار نشط وثب iterator إتمام.Client إضافة إلغاء تدمير سوف إيقاف إعادة محاولة انتظار، إلغاء مرشح و نشط حركة socket، إنهاء logical stream، و انتظار خلفية حلقة و consumer تماما توقف مستقر.
 
-### 通用 Remote stream 模型
+### عام Remote stream نموذج
 
-Gateway Client 提供三个不依赖 React、只允许一个 consumer 的生命周期对象：
+Gateway Client توفير ثلاثة عدد لا اعتماد React، فقط سماح واحد consumer دورة الحياة كائن:
 
 ```text
 RemoteStream<Item>
@@ -93,99 +93,99 @@ RemoteStream<Item>
 `-- RemoteJournalStream<Page, Entry, Cursor>
 ```
 
-领域 Controller 通过组合或薄 adapter 使用它们；Session 与 Workspace 不继承一个知道领域帧的共同 Controller 基类。
+مجال Controller عبر تركيب أو رقيق adapter استخدام هو جمع؛Session و Workspace لا وراثة واحد معرفة طريق مجال لقطة مشترك نفس Controller أساس صنف.
 
 #### `RemoteStream`
 
-`ctx.remote.$stream(options)` 返回 `RemoteStream<Item>`，负责一个 logical stream 跨物理 generation 的重开、取消和 dispose。
+`ctx.remote.$stream(options)` إرجاع `RemoteStream<Item>`، مسؤول واحد logical stream عبر شيء إدارة generation إعادة فتح، إلغاء و dispose.
 
-每个 item 携带单调 generation、该 generation 的 `AbortSignal` 与 `accept()`。领域 consumer 只有在验证 opening cursor 或 baseline 后才调用 `accept()`。
+كل item يحمل مفرد ضبط generation، هذا generation `AbortSignal` و `accept()`. مجال consumer فقط لديه في تحقق opening cursor أو baseline بعد عندئذ استدعاء `accept()`.
 
-只有 `RemoteStreamCarrierError` 可触发重试。Host 仍可用时允许一次独立重开；否则等待新的 Connection generation。业务错误、协议错误和 opening 失败直接终止。
+فقط لديه `RemoteStreamCarrierError` يمكن إطلاق إعادة محاولة.Host ما زال متاح وقت سماح مرة مستقل إعادة فتح؛ لا فإن انتظار جديد Connection generation. عمل خدمة خطأ، بروتوكول خطأ و opening فشل مباشر إنهاء.
 
-`restart()` 只淘汰当前物理 generation，保留 logical stream；`dispose()` 永久结束 logical stream、pending retry 与 iterator，并等待 quiescence。
+`restart()` فقط تصفية استبعاد حالي شيء إدارة generation، إبقاء logical stream؛`dispose()` دائم دائم انتهاء logical stream،pending retry و iterator، و انتظار quiescence.
 
-`RemoteStream` 不理解 baseline、delta、page、cursor、seq 或任何领域 frame。
+`RemoteStream` لا إدارة حل baseline،delta،page،cursor،seq أو أي مجال frame.
 
 #### `RemoteSnapshotStream`
 
-`RemoteSnapshotStream<Snapshot, Delta>` 要求每个 generation 恰好以一份完整 snapshot 开始，之后只能出现 delta。
+`RemoteSnapshotStream<Snapshot, Delta>` اشتراط كل generation تماما جيد بـ واحد نسخة كامل snapshot بدء، بعد فقط قدرة ظهور delta.
 
-update 早于 snapshot 或同 generation 出现第二份 snapshot 都是 terminal protocol error。
+update مبكر في snapshot أو نفس generation ظهور ثاني نسخة snapshot كل هو terminal protocol error.
 
-snapshot 成功应用后才接受该 generation。carrier 重连期间保留上一份已发布状态，新 generation 的 snapshot 一次性替换旧镜像。
+snapshot نجاح تطبيق بعد عندئذ قبول هذا generation.carrier إعادة وصل خلال إبقاء فوق واحد نسخة قد إصدار حالة، جديد generation snapshot مرة صفة استبدال قديم مرآة مثل.
 
-领域 adapter 提供 frame 判别、snapshot replacement、delta reducer、carrier 状态和 terminal failure sink；通用层不解析 Session 或 Workspace 字段。
+مجال adapter توفير frame حكم آخر،snapshot replacement،delta reducer،carrier حالة و terminal failure sink؛ عام طبقة لا تحليل Session أو Workspace حقل.
 
-Session control 与 Workspace state 各使用一个独立的 `RemoteSnapshotStream`。
+Session control و Workspace state كل استخدام واحد مستقل `RemoteSnapshotStream`.
 
 #### `RemoteJournalStream`
 
-`RemoteJournalStream<Page, Entry, Cursor>` 组合一个 live follow 与同 namespace 的 page 方法，适用于有稳定顺序、可分页历史和 live tail 的 append-only journal。
+`RemoteJournalStream<Page, Entry, Cursor>` تركيب واحد live follow و نفس namespace page طريقة، ملائم لأجل لديه مستقر ترتيب، يمكن قسم صفحة تاريخ و live tail append-only journal.
 
-首次打开先建立 follow 并取得 opening cursor，再读取 initial page。page 请求期间产生的 live entries 已进入 follow 队列，因此不会落在“先读历史、后订阅”的竞态窗口中。
+أول مرة فتح أولا بناء قيام follow و أخذ نيل opening cursor، مجددا قراءة initial page.page طلب خلال إنتاج live entries قد دخول follow طابور صف، لذلك لن سقوط في “أولا قراءة تاريخ، بعد حجز قراءة” تنافس حالة نافذة في.
 
-通用层按 cursor 去除 page 与 queued entries 的重叠，验证连续性，并在 page 覆盖 opening cursor 后发布一份完整 window。
+عام طبقة حسب cursor ذهاب حذف page و queued entries إعادة تراكم، تحقق وصل متابعة صفة، و في page تغطية opening cursor بعد إصدار واحد نسخة كامل window.
 
-连续 live entry 发布 `append`，更早的历史页发布 `prepend`。重连、cursor 跳跃或无法证明连续性时触发 tail page repair。
+وصل متابعة live entry إصدار `append`، أكثر مبكر تاريخ صفحة إصدار `prepend`. إعادة وصل،cursor قفز وثب أو لا يمكن إثبات وصل متابعة صفة وقت إطلاق tail page repair.
 
-repair 期间旧 window 保持可读；page 与期间积累的 live entries 拼成连续窗口后只发布一次 `replace`，不会把半修复状态暴露给消费者。
+repair خلال قديم window إبقاء يمكن قراءة؛page و خلال تراكم تراكم live entries تجميع صار وصل متابعة نافذة بعد فقط إصدار مرة `replace`، لن يأخذ نصف إصلاح حالة كشف إعطاء إزالة استهلاك من.
 
-若 page 请求随物理 carrier generation 一起取消，journal 等待下一 generation 的 opening cursor，再以新 cursor 重读 page；该取消不会作为 terminal page failure 泄漏给领域对象。
+إذا page طلب مع شيء إدارة carrier generation واحد بدء إلغاء،journal انتظار تحت واحد generation opening cursor، مجددا بـ جديد cursor إعادة قراءة page؛ هذا إلغاء لن بصفة terminal page failure تسرب تسرب إعطاء مجال كائن.
 
-`RemoteJournalStream` 拥有 opening cursor、resume cursor、分页、重连 catch-up、重叠去重和 gap repair。领域 Session 对象不复制这些状态机。
+`RemoteJournalStream` يملك opening cursor،resume cursor، قسم صفحة، إعادة وصل catch-up، إعادة تراكم ذهاب إعادة و gap repair. مجال Session كائن لا نسخ هذه حالة آلة.
 
 ### Session Controller
 
-`packages/api/session-controller` 提供 Host `ctx.sessionController` 与生成的 `ctx.remote.session` namespace。
+`packages/api/session-controller` توفير Host `ctx.sessionController` و توليد `ctx.remote.session` namespace.
 
-它拥有 Session list、search、create、selectModel、rename、fork、prompt、attachment、updateQueue、cancel、page、follow 与 control。Host generation 的 model catalog 通过独立的 `session/modelCatalog` 公开，因为它不属于特定 Session。
+هو يملك Session list،search،create،selectModel،rename،fork،prompt،attachment،updateQueue،cancel،page،follow و control.Host generation model catalog عبر مستقل `session/modelCatalog` عام، لأن هو لا يخص خاص تحديد Session.
 
-包内的 agent、commands、control、history 与 list controller 分开实现，但 Session 身份解析、激活策略、subagent ownership 和 Remote 错误投影只有一个公开 owner。
+حزمة داخل agent،commands،control،history و list controller قسم فتح تنفيذ، لكن Session هوية تحليل، تنشيط سياسة،subagent ownership و Remote خطأ إسقاط فقط لديه واحد عام owner.
 
-其他 Host Remote namespace 通过 `ctx.sessionController.inspect()` 或 `resolveAgent()` 复用同一身份规则，不保留第二份 Session resolver。
+أخرى Host Remote namespace عبر `ctx.sessionController.inspect()` أو `resolveAgent()` إعادة استخدام نفس هوية قاعدة، لا إبقاء ثاني نسخة Session resolver.
 
-#### 激活策略
+#### تنشيط سياسة
 
-Session Remote 方法传递 `SessionId` 或 `SessionAddress`，不靠参数类型触发通用 Typert Session lookup。
+Session Remote طريقة نقل تمرير `SessionId` أو `SessionAddress`، لا اعتماد معامل نوع إطلاق عام Typert Session lookup.
 
-每个方法显式选择冷检查、live-only 查找或允许 resume 的解析方式：
+كل طريقة صريح اختيار بارد فحص،live-only فحص بحث أو سماح resume تحليل طريقة:
 
-| 操作 | 无 live Agent 时的数据来源或结果 | 激活规则 |
+| عملية | بلا live Agent وقت بيانات مصدر أو نتيجة | تنشيط قاعدة |
 |---|---|---|
-| `session.list`、`search` | header 与投影缓存；可通过有界的小日志读取判断不确定的 blank 状态 | 永不恢复 Agent |
-| `session.page(address)` | attached Session 或 persistence 日志 | 永不恢复 Agent |
-| `session.follow(address)` | 一份携带 opening page 与 projection 的 live 或 prepared observation | 先发布 snapshot，再在后台把普通冷 Session 提升一次 |
-| `session.control()` | 当前 attached Agent、pending registry 与进程内 registry | baseline 与重连不恢复 Agent |
-| `session.attachment`、fork 源读取 | 已授权的持久 Session 数据 | 读取不恢复 Agent |
-| `session.updateQueue` | live Agent 或普通持久 Session | 修改 Inbox 前恢复普通冷 Session |
-| `session.cancel` | 仅命中当前 live Agent | 不为已消失状态恢复 Agent |
-| `models`、`selectModel`、`rename`、`prompt` | 命令解析目标 Session | 仅按方法约定显式恢复 |
-| `create` 与 fork 目标 | 新 Session／Agent | 用户命令提供创建授权 |
+| `session.list`،`search` | header و إسقاط ذاكرة مؤقتة؛ يمكن عبر محدود صغير سجل قراءة حكم قطع لا تحديد blank حالة | دائم لا استعادة Agent |
+| `session.page(address)` | attached Session أو persistence سجل | دائم لا استعادة Agent |
+| `session.follow(address)` | واحد نسخة يحمل opening page و projection live أو prepared observation | أولا إصدار snapshot، مجددا في خلفية يأخذ عادي بارد Session رفع رفع مرة |
+| `session.control()` | حالي attached Agent،pending registry و عملية داخل registry | baseline و إعادة وصل لا استعادة Agent |
+| `session.attachment`،fork مصدر قراءة | قد تخويل حمل دائم Session بيانات | قراءة لا استعادة Agent |
+| `session.updateQueue` | live Agent أو عادي حمل دائم Session | تعديل Inbox قبل استعادة عادي بارد Session |
+| `session.cancel` | فقط أمر في حالي live Agent | لا لـ قد إزالة فقد حالة استعادة Agent |
+| `models`،`selectModel`،`rename`،`prompt` | أمر تحليل هدف Session | فقط حسب طريقة اتفاق صريح استعادة |
+| `create` و fork هدف | جديد Session/Agent | مستخدم أمر توفير إنشاء تخويل |
 
-读取 title、列表和投影不要求 Agent。观察操作不能因为另一个 Remote endpoint 使用了 Agent lookup 而继承其恢复权限。
+قراءة title، قائمة و إسقاط لا اشتراط Agent. مراقبة عملية لا يستطيع لأن آخر عدد Remote endpoint استخدام Agent lookup بينما وراثة ذلك استعادة إذن.
 
-`SessionQuery.observeSession()` 选择 attached Session，或从读取方自己的 prepared cache——经由持久化读句柄填充——提供冷 Session。该 cache 共享并发冷读取，并在所有 observation lease 释放前固定同一条目。一次 observation 要么计算所有已注册 projection，要么完全不计算；调用方可以只公开其中一部分，但不会建立只计算部分 projection 的中间状态。
+`SessionQuery.observeSession()` اختيار attached Session، أو من قراءة جهة ذاتي ذات prepared cache——مرور من حفظ دائم قراءة جملة مقبض ملء ملء——توفير بارد Session. هذا cache مشترك تزامن بارد قراءة، و في كل observation lease تحرير قبل ثابت نفس بند. مرة observation يلزم ما حساب حساب كل قد تسجيل projection، يلزم ما تماما لا حساب حساب؛ استدعاء جهة يمكن فقط عام منها واحد جزء، لكن لن بناء قيام فقط حساب حساب جزء projection في بين حالة.
 
-`session.list` 不会无界扫描冷日志。它优先使用缓存的 projection hint，仅在独立存储 artifact 不超过配置的小日志字节上限时，才可能完整观察日志以判断不确定的 blank 状态。hint 缺失或不可读时，列表仍保留该行，并把 metadata 视为未知。
+`session.list` لن بلا حد مسح بارد سجل. هو أولوية استخدام ذاكرة مؤقتة projection hint، فقط في مستقل تخزين artifact لا تجاوز مرور إعداد صغير سجل بايت حد أعلى وقت، عندئذ ممكن كامل مراقبة سجل بـ حكم قطع لا تحديد blank حالة.hint ناقص أو غير ممكن قراءة وقت، قائمة ما زال إبقاء هذا سطر، و يأخذ metadata نظر لـ لم معرفة.
 
-`model/selection` 是 required-on-read 的持久 event，因为它改变下一次请求使用的 model route。对应 projection 同时记录最近一次 request selection 与之后的 pending selection；prompt assembly 在提交匹配的 `request/header` 时消费 pending value。
+`model/selection` هو required-on-read حمل دائم event، لأن هو تغيير تحت مرة طلب استخدام model route. مقابل projection معا سجل الأكثر قريب مرة request selection و بعد pending selection؛prompt assembly في إيداع مطابقة `request/header` وقت إزالة استهلاك pending value.
 
-#### Session 日志
+#### Session سجل
 
-`session.page` 返回一段按消息边界裁剪、内部 seq 连续的历史窗口。每个请求必须显式携带 `throughSeq`；该值来自对应 `session.follow` generation 的 opening cursor，并把本次读取固定在同一个日志切点。无 `beforeSeq` 的 tail page 必须精确结束于 `throughSeq`，其中 `-1` 表示空日志；`beforeSeq` 只选择该切点之前的更早页面，不能替代同步 cursor。`maxMessages` 限制 user／assistant 消息数，不丢弃这些消息之间的 chunk、tool 或状态事件。
+`session.page` إرجاع واحد مقطع حسب رسالة حد قطع قص، داخلي seq وصل متابعة تاريخ نافذة. كل طلب يجب صريح يحمل `throughSeq`؛ هذا قيمة قدوم ذاتي مقابل `session.follow` generation opening cursor، و يأخذ هذا مرة قراءة ثابت في نفس عدد سجل قطع نقطة. بلا `beforeSeq` tail page يجب دقيق انتهاء في `throughSeq`، منها `-1` يمثل فارغ سجل؛`beforeSeq` فقط اختيار هذا قطع نقطة قبل أكثر مبكر صفحة، لا يستطيع بديل تزامن cursor.`maxMessages` حد user/assistant رسالة عدد، لا إسقاط هذه رسالة بين chunk،tool أو حالة حدث.
 
-tail page 同时携带不晚于 `throughSeq` 的 projection baseline；旧页只携带历史 entries。Client 以 projection watermark 合并 page 与后续 live control 更新。
+tail page معا يحمل لا متأخر في `throughSeq` projection baseline؛ قديم صفحة فقط يحمل تاريخ entries.Client بـ projection watermark دمج page و لاحق live control تحديث.
 
-普通 Session 与 direct subagent 使用同一个 `SessionAddress` 协议。direct subagent 地址同时携带父 Session、子 Session 与 mode，Host 冷读时验证持久 ownership 和 descriptor，不能只凭 child id 越权读取。
+عادي Session و direct subagent استخدام نفس عدد `SessionAddress` بروتوكول.direct subagent عنوان معا يحمل أب Session، فرعي Session و mode،Host بارد قراءة وقت تحقق حمل دائم ownership و descriptor، لا يستطيع فقط سند child id تجاوز حق قراءة.
 
-`session.follow` 在观察 attached 或 prepared Session 前先安装 `session/event` 与 `session/created` listener。
+`session.follow` في مراقبة attached أو prepared Session قبل أولا تثبيت `session/event` و `session/created` listener.
 
-首次 follow 返回完整的 `{ type: 'snapshot', header, cursor, events, hasMore, projections }` frame。每次重连都发送另一份完整 snapshot replacement；协议不含 `afterSeq`。观察期间提交的 event 会保留在缓冲区，并在 snapshot 之后按 seq 发出。
+أول مرة follow إرجاع كامل `{ type: 'snapshot', header, cursor, events, hasMore, projections }` frame. كل مرة إعادة وصل كل إرسال آخر نسخة كامل snapshot replacement؛ بروتوكول لا يحتوي `afterSeq`. مراقبة خلال إيداع event سوف إبقاء في مؤقت اندفاع منطقة، و في snapshot بعد حسب seq إرسال خروج.
 
-普通冷 Session 可以立即发布 prepared snapshot。首帧之后，Controller 把 retained observation 交给一次后台 promotion；follow 不等待激活。Direct-subagent 地址不会进入该 promotion 路径。
+عادي بارد Session يمكن قيام أي إصدار prepared snapshot. أول لقطة بعد،Controller يأخذ retained observation تسليم إعطاء مرة خلفية promotion؛follow لا انتظار تنشيط.Direct-subagent عنوان لن دخول هذا promotion مسار.
 
-Client 的 `SessionEventStream` 继承 `RemoteJournalStream`，只提供 `session.follow`、`session.page`、Session seq 算法与 repair request。通用层直接校验并发布 opening snapshot；仅在读取更早历史或后续 event 暴露 seq gap 时调用 `session.page({ throughSeq })`。
+Client `SessionEventStream` وراثة `RemoteJournalStream`، فقط توفير `session.follow`،`session.page`،Session seq حساب قاعدة و repair request. عام طبقة مباشر تحقق تزامن نشر opening snapshot؛ فقط في قراءة أكثر مبكر تاريخ أو لاحق event كشف seq gap وقت استدعاء `session.page({ throughSeq })`.
 
 ```text
 ctx.remote.session.follow(address, pageArgs) ----------------|
@@ -195,43 +195,43 @@ ctx.remote.session.page(address, throughSeq, pageArgs) -------|    |-- replace(w
                                                                   `-- append(live entry)
 ```
 
-每个 Client Session 只持有一个当前 `events: SessionEventStream | undefined`。只读 `SessionEventSource` 把已物化 event window 交给 Conversation consumer。
+كل Client Session فقط يحتفظ واحد حالي `events: SessionEventStream | undefined`. فقط قراءة `SessionEventSource` يأخذ قد شيء تحويل event window تسليم إعطاء Conversation consumer.
 
-Session 的 `openGeneration` 只阻止被 resync、地址替换或 dispose 淘汰的异步结果写回；它不参与 transport retry。
+Session `openGeneration` فقط منع توقف يتم resync، عنوان استبدال أو dispose تصفية استبعاد مختلف خطوة نتيجة كتابة عودة؛ هو لا مشاركة و transport retry.
 
-initial page、repair page 或 follow 的 terminal failure 进入当前 Session 的 `openError`。旧业务 epoch 或旧 stream 的失败不能覆盖新状态。
+initial page،repair page أو follow terminal failure دخول حالي Session `openError`. قديم عمل خدمة epoch أو قديم stream فشل لا يستطيع تغطية جديد حالة.
 
 #### Session live control
 
-`session.control()` 是 Host 范围的 snapshot stream，一个浏览器可观察所有当前 live Session 的瞬态状态，而不必为每个 transcript 打开 journal。
+`session.control()` هو Host نطاق snapshot stream، واحد متصفح يمكن مراقبة كل حالي live Session لحظة حالة حالة، بينما لا لا بد لـ كل transcript فتح journal.
 
-每个 generation 先发完整 baseline，再发 jobs 与 projection 增量帧。baseline 读取进程内 registry 和已折叠的 projection 值，不恢复冷 Agent。
+كل generation أولا إرسال كامل baseline، مجددا إرسال jobs و projection زيادة كمية لقطة.baseline قراءة عملية داخل registry و قد طي projection قيمة، لا استعادة بارد Agent.
 
-jobs 使用完整 replacement 值并按 last-wins 应用。Projection update 携带单调递增 revision，新 baseline 则替换完整 projection map。Session 与 owner disposal 会清理陈旧镜像。
+jobs استخدام كامل replacement قيمة و حسب last-wins تطبيق.Projection update يحمل مفرد ضبط تمرير زيادة revision، جديد baseline فإن استبدال كامل projection map.Session و owner disposal سوف تنظيف قديم قديم مرآة مثل.
 
-原始 `approval/request` 与 `user-questions/request` 是可转发 waterfall。若某个 Agent-scoped Client listener claim，请求直接返回；若所有已投递 Client 都调用 `next()`，原 Cordis waterfall 继续到后续 Host listener。Session control 不保存或重放这些请求。
+أصلي `approval/request` و `user-questions/request` هو يمكن تحويل إرسال waterfall. إذا بعض عدد Agent-scoped Client listener claim، طلب مباشر إرجاع؛ إذا كل قد إلقاء تمرير Client كل استدعاء `next()`، أصل Cordis waterfall متابعة إلى لاحق Host listener.Session control لا حفظ أو إعادة وضع هذه طلب.
 
-projection baseline 与 tail page 的日志切点独立产生，Client 总是保留较高 seq 的值。订阅 live projection 不会为取得值而启动 Agent。
+projection baseline و tail page سجل قطع نقطة مستقل إنتاج،Client مجموع هو إبقاء مقارنة عال seq قيمة. حجز قراءة live projection لن لـ أخذ نيل قيمة بينما بدء Agent.
 
-Session added、removed、activity、running status 与无 turn 位置的 Agent error 不进入 stateful control stream；它们是可由列表 baseline 修复或无需重放的 `ctx.remote.$on` 通知。
+Session added،removed،activity،running status و بلا turn موضع Agent error لا دخول stateful control stream؛ هو جمع هو يمكن من قائمة baseline إصلاح أو بلا حاجة إعادة وضع `ctx.remote.$on` إشعار.
 
-Session 列表的 `updatedAt` 取 `max(header.createdAt, sessionListMetadata.lastPromptAt)`。`lastPromptAt` 只由用户来源的 `user/message` 更新，可从冷 projection 恢复，不依赖浏览器是否正在跟随该 Session。
+Session قائمة `updatedAt` أخذ `max(header.createdAt, sessionListMetadata.lastPromptAt)`.`lastPromptAt` فقط من مستخدم مصدر `user/message` تحديث، يمكن من بارد projection استعادة، لا اعتماد متصفح هل صحيح في تتبع مع هذا Session.
 
 ### Workspace Controller
 
-`packages/api/workspace-controller` 提供 Host `ctx.workspaceController` 与生成的 `ctx.remote.workspace` namespace。
+`packages/api/workspace-controller` توفير Host `ctx.workspaceController` و توليد `ctx.remote.workspace` namespace.
 
-它拥有 create、rename、delete、insertBefore、insertSessionBefore、archiveSession、unarchiveSession 与 `follow`。Workspace registry 仍是持久事实来源，Controller 负责 Remote 命令、投影和错误映射。
+هو يملك create،rename،delete،insertBefore،insertSessionBefore،archiveSession،unarchiveSession و `follow`.Workspace registry ما زال هو حمل دائم واقع مصدر،Controller مسؤول Remote أمر، إسقاط و خطأ خريطة.
 
-`WorkspaceFeed` 同步观察 storage `domain/changed`，并为每个 follow generation 先发送完整 baseline，再发送 `upsert`、`remove`、`order` 与 `archived` 增量。
+`WorkspaceFeed` تزامن مراقبة storage `domain/changed`، و لـ كل follow generation أولا إرسال كامل baseline، مجددا إرسال `upsert`،`remove`،`order` و `archived` زيادة كمية.
 
-完整 `order` frame 是 Workspace 排序的权威值。它避免 Client 根据 upsert 到达顺序猜测展示顺序，也能在重连 baseline 后收敛。
+كامل `order` frame هو Workspace ترتيب ترتيب مرجعي قيمة. هو تجنب تجنب Client أصل حسب upsert وصول ترتيب تخمين قياس عرض ترتيب، أيضا قدرة في إعادة وصل baseline بعد استلام جمع.
 
-`createWorkspaceStateStream()` 把 `workspace.follow` 装配为 `RemoteSnapshotStream`。Client Runtime 只负责启动和持有该 stream。
+`createWorkspaceStateStream()` يأخذ `workspace.follow` تركيب إعداد لـ `RemoteSnapshotStream`.Client Runtime فقط مسؤول بدء و يحتفظ هذا stream.
 
-`ClientWorkspaceModel` 位于 Workspace Controller 的 Client 面，拥有 baseline／increment 解析、已物化列表、归档集合、命令结果回显及 unary 与 stream 到达竞态的合并规则。
+`ClientWorkspaceModel` يقع في Workspace Controller Client وجه، يملك baseline/increment تحليل، قد شيء تحويل قائمة، عودة ملف تجميع دمج، أمر نتيجة عودة إظهار و unary و stream وصول تنافس حالة دمج قاعدة.
 
-成功的 unary 命令可以立即更新本地模型；后到的 stream commit 仍以 Host projection 与完整 order 校正状态。已删除 Workspace 的 id 被记录，延迟结果不能把它重新插回列表。
+نجاح unary أمر يمكن قيام أي تحديث محلي نموذج؛ بعد إلى stream commit ما زال بـ Host projection و كامل order تدقيق صحيح حالة. قد حذف Workspace id يتم سجل، تأخير متأخر نتيجة لا يستطيع يأخذ هو إعادة إدراج عودة قائمة.
 
 ```text
 ctx.remote.workspace.follow() -|[]> RemoteSnapshotStream
@@ -241,17 +241,17 @@ ctx.remote.workspace.follow() -|[]> RemoteSnapshotStream
                                       `-- replace(archived ids)
 ```
 
-Workspace Remote 方法、状态 feed 和 Client 数据模型均不经过 API Proxy，也不依赖 `host/workspace-*` 通知。
+Workspace Remote طريقة، حالة feed و Client بيانات نموذج متساو لا مرور مرور API Proxy، أيضا لا اعتماد `host/workspace-*` إشعار.
 
 ### Remote Event
 
-Remote Event 复用 owner 包的 Cordis `Events` 声明。Host 原事件是唯一业务签名，Client `ctx.remote.$on(event, listener)` 从同一声明推导参数、waterfall 结果与 `next()`。
+Remote Event إعادة استخدام owner حزمة Cordis `Events` إعلان.Host أصل حدث هو وحيد عمل خدمة توقيع،Client `ctx.remote.$on(event, listener)` من نفس إعلان دفع توجيه معامل،waterfall نتيجة و `next()`.
 
-`packages/api/remotes` 的 allowlist 是应用选择的唯一来源。每项显式标注 `emit` 或 `waterfall`，该 mode 同时决定 Host 监听方式、Client 合法键集和 wire frame 类型。
+`packages/api/remotes` allowlist هو تطبيق اختيار وحيد مصدر. كل بند صريح علامة ملاحظة `emit` أو `waterfall`، هذا mode معا قرار Host استماع طريقة،Client دمج قاعدة مفتاح تجميع و wire frame نوع.
 
-系统不声明 `RemoteInvocationMap`，不要求 Client 再写一份 `@Remote`，也不以最后一个运行时参数是否为函数来猜测调用模式。
+نظام لا إعلان `RemoteInvocationMap`، لا اشتراط Client مجددا كتابة واحد نسخة `@Remote`، أيضا لا بـ الأكثر بعد واحد وقت التشغيل معامل هل لـ دالة قدوم تخمين قياس استدعاء نمط.
 
-Remote Event 下行帧是显式 discriminated union：
+Remote Event تحت سطر لقطة هو صريح discriminated union:
 
 ```text
 ready     { type, clientId }
@@ -260,126 +260,126 @@ waterfall { type, event, eventId, agentId, request }
 cancel    { type, eventId }
 ```
 
-WebSocket JSON 与进程内 carrier 的入口都从 `unknown` 开始按 `type` 和精确字段验证；验证完成后的分发只接收 typed union。TypeScript 静态类型不替代 wire 校验。
+WebSocket JSON و عملية داخل carrier مدخل كل من `unknown` بدء حسب `type` و دقيق حقل تحقق؛ تحقق إتمام بعد توزيع فقط استقبال typed union.TypeScript ساكن حالة نوع لا بديل wire تحقق.
 
-普通 `emit` 参数必须是无损 JSON。Client 在每个 Remote 实例私有的 Cordis key 上调用 `parallel()`，保留注册顺序、调用方 fiber 所有权和 listener 错误隔离。
+عادي `emit` معامل يجب هو بلا ضرر JSON.Client في كل Remote نسخة خاص Cordis key فوق استدعاء `parallel()`، إبقاء تسجيل ترتيب، استدعاء جهة fiber كل حق و listener خطأ عزل.
 
-私有 key 防止 Host 事件与 Client 本地同名 Cordis 事件互相触发。Client Remote 不维护自己的 subscription registry 或手写 listener chain。
+خاص key منع توقف Host حدث و Client محلي نفس اسم Cordis حدث متبادل متبادل إطلاق.Client Remote لا صيانة ذاتي ذات subscription registry أو يد كتابة listener chain.
 
-可返回的 waterfall 当前只支持 Agent scope。事件签名必须是一个含直接 `agent` 字段的 request，加一个返回同类型结果的 `next()`，整体返回 Promise。
+يمكن إرجاع waterfall حالي فقط دعم حمل Agent scope. حدث توقيع يجب هو واحد يحتوي مباشر `agent` حقل request، إضافة واحد إرجاع نفس نوع نتيجة `next()`، كامل جسم إرجاع Promise.
 
-Host 只投影 request 一级的 `agent` 与 `signal`：`agent` 变为 frame 的一级 `agentId`，`signal` 成为 delivery lifetime，其余字段必须整体为无损 JSON。
+Host فقط إسقاط request واحد درجة `agent` و `signal`:`agent` تغيير لـ frame واحد درجة `agentId`،`signal` يصبح delivery lifetime، ذلك بقية حقل يجب كامل جسم لـ بلا ضرر JSON.
 
-Client 用 `agentId` 同步解析或物化 Agent Context，把当前 delivery signal 放回 request 的直接 `signal` 字段，再在目标 Context 的私有 key 上调用 Cordis `waterfall()`。Session-backed adapter 在首个成功 Session 列表 baseline 到达前允许 transport 先物化 scope；baseline 到达后由列表生命周期接管 scope 存活判断。
+Client استخدام `agentId` تزامن تحليل أو شيء تحويل Agent Context، يأخذ حالي delivery signal وضع عودة request مباشر `signal` حقل، مجددا في هدف Context خاص key فوق استدعاء Cordis `waterfall()`.Session-backed adapter في أول عدد نجاح Session قائمة baseline وصول قبل سماح transport أولا شيء تحويل scope؛baseline وصول بعد من قائمة دورة الحياة وصل إدارة scope تخزين نشط حكم قطع.
 
-系统不扫描任意深度对象，不传 path array 或 placeholder，不 deep clone／restore Context 和 AbortSignal，也不等待未来出现的 Agent Context。
+نظام لا مسح مهمة معنى عميق درجة كائن، لا نقل path array أو placeholder، لا deep clone/restore Context و AbortSignal، أيضا لا انتظار لم قدوم ظهور Agent Context.
 
-Client adapter 未注册、resolver 未返回 Context 或解析抛错时，本 Client 立即返回 `next`。它不订阅 registry、不做 resolve 后竞态复查，也不为一次 delivery 创建临时 Fiber。
+Client adapter لم تسجيل،resolver لم إرجاع Context أو تحليل رمي خطأ وقت، هذا Client قيام أي إرجاع `next`. هو لا حجز قراءة registry، لا فعل resolve بعد تنافس حالة تكرار فحص، أيضا لا لـ مرة delivery إنشاء مؤقت Fiber.
 
-Gateway Host 为每个未完成 waterfall 保存 `eventId`、Host continuation 与已投递 Client generation。新 Client generation 会收到同一 pending event 的重放。
+Gateway Host لـ كل لم إتمام waterfall حفظ `eventId`،Host continuation و قد إلقاء تمرير Client generation. جديد Client generation سوف استلام إلى نفس pending event إعادة وضع.
 
-每个 generation 的队列保证一次投递，因此 Client 不保存 `seen` 集合。`clientId + eventId` 绑定结果与当前 generation，旧连接的回包不能完成新连接上的 delivery。
+كل generation طابور صف حفظ إثبات مرة إلقاء تمرير، لذلك Client لا حفظ `seen` تجميع دمج.`clientId + eventId` ربط نتيجة و حالي generation، قديم اتصال عودة حزمة لا يستطيع إتمام جديد اتصال فوق delivery.
 
-多 Client 同时接收 waterfall 时，第一个 result 或 rejection 完成 Host 调用，并向其余 Client 发送 `cancel`。只有所有已投递 Client 都返回 `next` 时，Gateway 才继续原 Cordis chain。
+كثير Client معا استقبال waterfall وقت، رقم واحد result أو rejection إتمام Host استدعاء، و نحو ذلك بقية Client إرسال `cancel`. فقط لديه كل قد إلقاء تمرير Client كل إرجاع `next` وقت،Gateway عندئذ متابعة أصل Cordis chain.
 
-Host caller signal 取消、Agent Context 释放、Client generation 结束和 losing-client cancellation 都会终止对应的等待。
+Host caller signal إلغاء،Agent Context تحرير،Client generation انتهاء و losing-client cancellation كل سوف إنهاء مقابل انتظار.
 
-Client 通过现有 HTTP unary RPC `$events/result` 回送 `next`、result 或 rejection；下行事件仍复用 Remote WebSocket mux，不为应答建立 duplex WebSocket。
+Client عبر قائم HTTP unary RPC `$events/result` عودة إرسال `next`،result أو rejection؛ تحت سطر حدث ما زال إعادة استخدام Remote WebSocket mux، لا لـ ينبغي جواب بناء قيام duplex WebSocket.
 
-Gateway 只验证 waterfall 返回值能无损表示为 JSON，不解释业务字段。Question 回答的 option 归属等语义由请求方或 UI 领域承担，transport 不重复校验。
+Gateway فقط تحقق waterfall قيمة راجعة قدرة بلا ضرر يمثل لـ JSON، لا حل تفسير عمل خدمة حقل.Question عودة جواب option ملكية انتظار دلالة من طلب جهة أو UI مجال تحمل تحمل،transport لا تكرار تحقق.
 
-`UserQuestionService` 在请求期间观察到调用方 `AbortSignal` 已取消、且 provider 抛出普通错误时，将其归一为 `UserQuestionError` 的 `ASK_ABORTED`，并把原错误保留为 `cause`；provider 已给出的领域错误保持不变。
+`UserQuestionService` في طلب خلال مراقبة إلى استدعاء جهة `AbortSignal` قد إلغاء، كما provider رمي خروج عادي خطأ وقت، سوف ذلك عودة واحد لـ `UserQuestionError` `ASK_ABORTED`، و يأخذ أصل خطأ إبقاء لـ `cause`؛provider قد إعطاء خروج مجال خطأ إبقاء ثابت.
 
-`$events/result` 失败会令当前 Connection generation 失败。Host 随 generation 撤销该 Client 的 delivery，pending event 在下一 generation 重放，Client 不维护第二套结果重试队列。
+`$events/result` فشل سوف أمر حالي Connection generation فشل.Host مع generation سحب إلغاء هذا Client delivery،pending event في تحت واحد generation إعادة وضع،Client لا صيانة ثاني طقم نتيجة إعادة محاولة طابور صف.
 
-普通 `$on` 通知在断线后不重放。凡正确性依赖恢复的数据必须有 query、cursor 或 opening baseline，不能依赖 Remote Event 恰好送达。
+عادي `$on` إشعار في قطع خط بعد لا إعادة وضع. كل صحيح تأكيد صفة اعتماد استعادة بيانات يجب لديه query،cursor أو opening baseline، لا يستطيع اعتماد Remote Event تماما جيد إرسال بلوغ.
 
-Client listener 晚于事件到达才注册时不补送；HMR 也没有专用补投语义。
+Client listener متأخر في حدث وصول عندئذ تسجيل وقت لا تكملة إرسال؛HMR أيضا لا يوجد مخصص استخدام تكملة إلقاء دلالة.
 
-### API Proxy 的剩余边界
+### API Proxy باق بقية حد
 
-Session Controller 与 Workspace Controller 直接提供生成 Remote namespace；API Remotes 与 API Gateway 直接提供 Host-to-Client 事件。
+Session Controller و Workspace Controller مباشر توفير توليد Remote namespace؛API Remotes و API Gateway مباشر توفير Host-to-Client حدث.
 
-Client Connection 只维护 Host generation、description 与通用 RPC，不解析领域 frame。
+Client Connection فقط صيانة Host generation،description و عام RPC، لا تحليل مجال frame.
 
-Client Runtime 只接收 Controller adapter 产出的领域变更，不识别 `HostFrame`、`session/subscribed`、`session/event` mux frame 或 `host/workspace-*` frame。
+Client Runtime فقط استقبال Controller adapter إنتاج خروج مجال تغيير، لا تعرف آخر `HostFrame`،`session/subscribed`،`session/event` mux frame أو `host/workspace-*` frame.
 
-API Proxy 只承接自身拥有的独立业务 API，不是 Session、Workspace、Remote Event 或 Connection generation 的依赖。
+API Proxy فقط تحمل وصل ذاته يملك مستقل عمل خدمة API، لا هو Session،Workspace،Remote Event أو Connection generation اعتماد.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**建立任意 Session stream 时自动恢复 Agent。** 这会让查看历史、读取 title、重连标签页或观察后台状态产生执行副作用，也会让多个浏览器触发重复恢复；冷日志和投影已有 persistence 来源。
+**بناء قيام مهمة معنى Session stream وقت تلقائي استعادة Agent.** هذا سوف يجعل فحص نظر تاريخ، قراءة title، إعادة وصل وسم صفحة أو مراقبة خلفية حالة إنتاج تنفيذ فرعي أثر، أيضا سوف يجعل كثير عدد متصفح إطلاق تكرار استعادة؛ بارد سجل و إسقاط قد لديه persistence مصدر.
 
-**只允许 live Agent 使用 `session.follow`。** 这会迫使 transcript 首屏恢复 Agent，或重新引入 unary history 与 live subscription 之间的竞态；按 identity 先 follow 再冷读能同时覆盖历史和未来的显式激活。
+**فقط سماح live Agent استخدام `session.follow`.** هذا سوف إجبار جعل transcript أول شاشة استعادة Agent، أو إعادة جذب دخول unary history و live subscription بين تنافس حالة؛ حسب identity أولا follow مجددا بارد قراءة قدرة معا تغطية تاريخ و لم قدوم صريح تنشيط.
 
-**把 Session transport 与 Session commands 拆成两个公开包。** 两者共同依赖 Session address、Agent 激活策略、subagent ownership、错误映射和 Client 挂载顺序；一个公开 Controller 保持统一所有权，内部 class 仍可独立演化。
+**يأخذ Session transport و Session commands تفكيك صار اثنان عدد عام حزمة.** اثنان من مشترك نفس اعتماد Session address،Agent تنشيط سياسة،subagent ownership، خطأ خريطة و Client تركيب ترتيب؛ واحد عام Controller إبقاء موحد واحد كل حق، داخلي class ما زال يمكن مستقل عرض تحويل.
 
-**把 jobs、projection、Workspace 与日志都改成普通 `$on`。** 普通事件没有 reconnect baseline、cursor 或 gap repair，漏掉一次推送就会留下永久陈旧状态；只有无需恢复、可由独立查询修复，或以 waterfall 本身持有请求生命周期的通知适合 `$on`。
+**يأخذ jobs،projection،Workspace و سجل كل تعديل صار عادي `$on`.** عادي حدث لا يوجد reconnect baseline،cursor أو gap repair، تسرب إسقاط مرة دفع إرسال حينئذ سوف إبقاء تحت دائم دائم قديم قديم حالة؛ فقط لديه بلا حاجة استعادة، يمكن من مستقل استعلام إصلاح، أو بـ waterfall ذاته يحتفظ طلب دورة الحياة إشعار ملائم دمج `$on`.
 
-**让每个领域 Controller 继承一个 page／follow／retry 基类。** Session journal 与 Workspace snapshot 的 opening、恢复和排序规则不同；Gateway 的三个组合式 stream 对象复用 transport 生命周期，同时让领域 adapter 只声明自己的 frame 语义。
+**يجعل كل مجال Controller وراثة واحد page/follow/retry أساس صنف.** Session journal و Workspace snapshot opening، استعادة و ترتيب ترتيب قاعدة مختلف؛Gateway ثلاثة عدد تركيب صيغة stream كائن إعادة استخدام transport دورة الحياة، معا يجعل مجال adapter فقط إعلان ذاتي ذات frame دلالة.
 
-**给 Remote Event 新建一份 Client invocation 声明。** 第二张 map 或 Client `@Remote` 会复制 owner Cordis 事件签名并形成漂移点；从同一 `Events` 声明推导 `$on` listener 和结果类型可以构造性地保持一致。
+**إعطاء Remote Event جديد بناء واحد نسخة Client invocation إعلان.** ثاني ورقة map أو Client `@Remote` سوف نسخ owner Cordis حدث توقيع و شكل صار عائم نقل نقطة؛ من نفس `Events` إعلان دفع توجيه `$on` listener و نتيجة نوع يمكن بنية صنع صفة أرض إبقاء متسق.
 
-**把 Agent scope 做成任意深度对象投影。** 递归扫描 Context 与 AbortSignal 需要 path、placeholder、clone 和 restore 协议，并把偶然对象结构升级成 wire 约定；一级 `agent` 与 `signal` 足以覆盖当前 waterfall。
+**يأخذ Agent scope فعل صار مهمة معنى عميق درجة كائن إسقاط.** تمرير عودة مسح Context و AbortSignal حاجة path،placeholder،clone و restore بروتوكول، و يأخذ أحيانا لكن كائن بنية ترقية صار wire اتفاق؛ واحد درجة `agent` و `signal` كاف بـ تغطية حالي waterfall.
 
-**等待 Client Agent Context 或 adapter 后再分发。** registry waiter、竞态复查和临时 delivery Fiber 会为一个可同步解析或物化目标的 Client 增加额外生命周期；resolver 当下不能提供目标时立即 `next` 保持 Cordis waterfall 语义。
+**انتظار Client Agent Context أو adapter بعد مجددا توزيع.** registry waiter، تنافس حالة تكرار فحص و مؤقت delivery Fiber سوف لـ واحد يمكن تزامن تحليل أو شيء تحويل هدف Client زيادة مقدار خارج دورة الحياة؛resolver عند تحت لا يستطيع توفير هدف وقت قيام أي `next` إبقاء Cordis waterfall دلالة.
 
-**给 Remote Event 使用独立物理 WebSocket 或 duplex stream。** Gateway mux 已提供认证升级、复用、取消、错误映射和重连；下行 `$events` 加上 HTTP `$events/result` 足以表达 request／response，不需要第三条连接。
+**إعطاء Remote Event استخدام مستقل شيء إدارة WebSocket أو duplex stream.** Gateway mux قد توفير إقرار إثبات ترقية، إعادة استخدام، إلغاء، خطأ خريطة و إعادة وصل؛ تحت سطر `$events` إضافة فوق HTTP `$events/result` كاف بـ جدول بلوغ request/response، لا حاجة رقم ثلاثة بند اتصال.
 
-**发送应用层 JSON 心跳帧。** 这会扩展严格的 Remote stream message union，并要求浏览器处理没有业务含义的流量。WebSocket Ping/Pong 无需改变 logical stream 语义即可保持 carrier 活跃。
+**إرسال تطبيق طبقة JSON قلب قفز لقطة.** هذا سوف توسيع صارم إطار Remote stream message union، و اشتراط متصفح معالجة لا يوجد عمل خدمة يحتوي معنى تدفق كمية.WebSocket Ping/Pong بلا حاجة تغيير logical stream دلالة يكفي إبقاء carrier نشط وثب.
 
-**继续保留 API Proxy 的 Host mux。** 这会保留手写 union、schema、响应 envelope 和第二套 stream 生命周期，并使 Session 与 Workspace Controller 不能独立拥有自己的数据协议。
+**متابعة إبقاء API Proxy Host mux.** هذا سوف إبقاء يد كتابة union،schema، استجابة envelope و ثاني طقم stream دورة الحياة، و جعل Session و Workspace Controller لا يستطيع مستقل يملك ذاتي ذات بيانات بروتوكول.
 
-**从聚合 `session/event` 更新 Session 列表时间。** 列表正确性会依赖浏览器正在消费哪些 Session，并把任意插件事件误判为用户活跃；持久 `lastPromptAt` 投影直接表达排序事实。
+**من تجمع دمج `session/event` تحديث Session قائمة وقت.** قائمة صحيح تأكيد صفة سوف اعتماد متصفح صحيح في إزالة استهلاك أي بعض Session، و يأخذ مهمة معنى إضافة حدث خطأ حكم لـ مستخدم نشط وثب؛ حمل دائم `lastPromptAt` إسقاط مباشر جدول بلوغ ترتيب ترتيب واقع.
 
-## 验证
+## تحقق
 
-Gateway mux 测试固定无 logical stream 时建连、空闲常驻、每次请求只做一次物理尝试、可配置且不产生应用消息的 Ping/Pong、活动 stream carrier failure、取消和 dispose 后不再重连。
+Gateway mux اختبار ثابت بلا logical stream وقت بناء وصل، فارغ خامل معتاد إقامة، كل مرة طلب فقط فعل مرة شيء إدارة محاولة تجربة، يمكن إعداد كما لا إنتاج تطبيق رسالة Ping/Pong، نشط حركة stream carrier failure، إلغاء و dispose بعد لم يعد إعادة وصل.
 
-Connection 测试固定 generation source 缺失、重复注册、撤回、ready 超时，以及 generation 失败后的撤回和重建。
+Connection اختبار ثابت generation source ناقص، تكرار تسجيل، سحب عودة،ready مهلة، و generation فشل بعد سحب عودة و إعادة بناء.
 
-`RemoteStream` 测试固定单 consumer、opening acceptance 后清零 retry、`restart()` 只替换 generation、terminal error 不重试和 dispose quiescence。
+`RemoteStream` اختبار ثابت مفرد consumer،opening acceptance بعد صاف صفر retry،`restart()` فقط استبدال generation،terminal error لا إعادة محاولة و dispose quiescence.
 
-`RemoteSnapshotStream` 测试固定每 generation 恰好一份 opening snapshot、update-before-snapshot 拒绝、重复 snapshot 拒绝和重连 replacement。
+`RemoteSnapshotStream` اختبار ثابت كل generation تماما جيد واحد نسخة opening snapshot،update-before-snapshot رفض، تكرار snapshot رفض و إعادة وصل replacement.
 
-`RemoteJournalStream` 测试固定 snapshot-first opening、连续 append、历史 prepend、重连 replacement、gap repair 与一次性 replacement。
+`RemoteJournalStream` اختبار ثابت snapshot-first opening، وصل متابعة append، تاريخ prepend، إعادة وصل replacement،gap repair و مرة صفة replacement.
 
-Session Host 测试固定 cold page／follow 不增加 attached Agent、显式 prompt 后 cold follow 收到连续事件、direct subagent ownership、message-aligned pagination 和终止错误投影。
+Session Host اختبار ثابت cold page/follow لا زيادة attached Agent، صريح prompt بعد cold follow استلام إلى وصل متابعة حدث،direct subagent ownership،message-aligned pagination و إنهاء خطأ إسقاط.
 
-Session control 测试固定 baseline-first、冷 Session 不恢复、jobs replacement 与 projection watermark。
+Session control اختبار ثابت baseline-first، بارد Session لا استعادة،jobs replacement و projection watermark.
 
-Session Client 测试固定每 Session 单一 journal owner、旧 open epoch 不写回、control 与 journal 独立取消，以及 carrier retry 期间保留已发布窗口。
+Session Client اختبار ثابت كل Session مفرد واحد journal owner، قديم open epoch لا كتابة عودة،control و journal مستقل إلغاء، و carrier retry خلال إبقاء قد إصدار نافذة.
 
-Workspace Host 测试固定 baseline-first、upsert／remove、权威 order、archived set 和 follower disposal。
+Workspace Host اختبار ثابت baseline-first،upsert/remove، مرجعي order،archived set و follower disposal.
 
-Workspace Client 测试固定 snapshot replacement、unary／stream 竞态、删除不复活、稳定排序和 terminal failure。
+Workspace Client اختبار ثابت snapshot replacement،unary/stream تنافس حالة، حذف لا تكرار نشط، مستقر ترتيب ترتيب و terminal failure.
 
-Remote Event 类型测试拒绝未选择事件、非 void 的 unscoped 事件、非 Agent-scoped waterfall 和签名不匹配的 mode。
+Remote Event نوع اختبار رفض لم اختيار حدث، غير void unscoped حدث، غير Agent-scoped waterfall و توقيع لا مطابقة mode.
 
-Remote Event Host 测试固定 listener-before-ready、payload 校验、pending replay、多 Client first-result、all-next delegation、rejection、Host cancellation、Context release 和 losing-client cancel。
+Remote Event Host اختبار ثابت listener-before-ready،payload تحقق،pending replay، كثير Client first-result،all-next delegation،rejection،Host cancellation،Context release و losing-client cancel.
 
-Remote Event Client 测试固定实例私有 key、Cordis 注册顺序、Agent Context 解析、`next`、result、rejection、cancel、旧 generation 回包拒绝和 `$events/result` 失败导致 generation 结束；User Question 测试固定进行中 signal 取消的错误归一化及 cause 保留。
+Remote Event Client اختبار ثابت نسخة خاص key،Cordis تسجيل ترتيب،Agent Context تحليل،`next`،result،rejection،cancel، قديم generation عودة حزمة رفض و `$events/result` فشل توجيه يؤدي generation انتهاء؛User Question اختبار ثابت إجراء في signal إلغاء خطأ عودة واحد تحويل و cause إبقاء.
 
-缺失 source、重复 source、撤回 source、非 ready 首项、未知 discriminant、额外字段与非 JSON 值都在各自 wire 入口响亮失败。
+ناقص source، تكرار source، سحب عودة source، غير ready أول بند، لم معرفة discriminant، مقدار خارج حقل و غير JSON قيمة كل في كل منها wire مدخل صدى مضيء فشل.
 
-静态检查固定 API Proxy 不再导出 Session／Workspace Host frame carrier，Client Runtime 不再包含对应 bridge。
+ساكن حالة فحص ثابت API Proxy لم يعد توجيه خروج Session/Workspace Host frame carrier،Client Runtime لم يعد يتضمن مقابل bridge.
 
-## 后果
+## عاقبة
 
-浏览器可以在 Agent 停止时读取持久 Session。打开普通 Session 时先发布 prepared snapshot，再开始一次后台 promotion；list、search、page 及其他只读 observation 不会激活 Agent。
+متصفح يمكن في Agent إيقاف وقت قراءة حمل دائم Session. فتح عادي Session وقت أولا إصدار prepared snapshot، مجددا بدء مرة خلفية promotion؛list،search،page و أخرى فقط قراءة observation لن تنشيط Agent.
 
-持久日志用 seq 与 page 修复缺失后缀；Session control 和 Workspace state 用 opening snapshot 收敛；普通 Remote Event 不承诺重放。恢复语义由数据类型决定，不再互相模拟。
+حمل دائم سجل استخدام seq و page إصلاح ناقص بعد لاحقة؛Session control و Workspace state استخدام opening snapshot استلام جمع؛ عادي Remote Event لا تحمل وعد إعادة وضع. استعادة دلالة من بيانات نوع قرار، لم يعد متبادل متبادل نموذج محاكاة.
 
-Gateway 只拥有 transport、generation、pending waterfall 和严格 wire 校验，不拥有 Session 或 Workspace 业务字段。领域 Controller 只提供 opener、cursor 规则、baseline reducer 和错误呈现。
+Gateway فقط يملك transport،generation،pending waterfall و صارم إطار wire تحقق، لا يملك Session أو Workspace عمل خدمة حقل. مجال Controller فقط توفير opener،cursor قاعدة،baseline reducer و خطأ عرض.
 
-每条常驻浏览器连接会按配置间隔增加一次空载荷 Ping/Pong 交换。面对更严格的空闲超时，部署方可缩短间隔，而无需改变 Remote stream 协议或浏览器代码。
+كل بند معتاد إقامة متصفح اتصال سوف حسب إعداد بين فصل زيادة مرة فارغ تحميل حمل Ping/Pong تسليم تبديل. وجه مقابل أكثر صارم إطار فارغ خامل مهلة، نشر جهة يمكن تقليص قصير بين فصل، بينما بلا حاجة تغيير Remote stream بروتوكول أو متصفح شفرة.
 
-Session 与 Workspace 的 Host API、stream adapter 和 Client 数据模型各有明确 owner；API Proxy 不再是它们之间的中介。
+Session و Workspace Host API،stream adapter و Client بيانات نموذج كل لديه واضح owner؛API Proxy لم يعد هو هو جمع بين في وسيط.
 
-通用 stream 对象增加了三个明确层级，但删除了每个 Controller 各自复制的 retry、cancel、generation、baseline 和 gap-repair 外壳。
+عام stream كائن زيادة ثلاثة عدد واضح طبقة درجة، لكن حذف كل Controller كل منها نسخ retry،cancel،generation،baseline و gap-repair خارج قشرة.
 
-Remote waterfall 保留多 Client 首个 claim、全体 `next` 后继续 Host chain、断线重放 pending 和端到端取消；代价是当前协议只支持一级 Agent scope 与无损 JSON 请求／结果。
+Remote waterfall إبقاء كثير Client أول عدد claim، كل جسم `next` بعد متابعة Host chain، قطع خط إعادة وضع pending و طرف إلى طرف إلغاء؛ بديل قيمة هو حالي بروتوكول فقط دعم حمل واحد درجة Agent scope و بلا ضرر JSON طلب/نتيجة.
 
-本决定扩展[Remote 事件投递](2026-08-10-remote-event-delivery.zh.md)的 allowlist 与单一 Cordis 签名设计：普通通知继续使用 `emit`，Agent-scoped async waterfall 使用同一 `ctx.remote.$on` 面和显式 `waterfall` mode；不建立第二套 invocation map。
+هذا قرار توسيع[Remote حدث إلقاء تمرير](2026-08-10-remote-event-delivery.zh.md) allowlist و مفرد واحد Cordis توقيع تصميم: عادي إشعار متابعة استخدام `emit`،Agent-scoped async waterfall استخدام نفس `ctx.remote.$on` وجه و صريح `waterfall` mode؛ لا بناء قيام ثاني طقم invocation map.
 
-本决定接管[简单一元 API Proxy 迁移](../../archived/architecture/2026-08-10-unary-apiproxy-remote-migration.md)中保留的 Session、Workspace 与 Host event carrier，并保留[后台任务展示](../feature/2026-08-08-web-background-job-display.zh.md)所要求的完整 jobs snapshot、进程内生命周期和“观察不恢复 Agent”语义。
+هذا قرار وصل إدارة[بسيط مفرد واحد عنصر API Proxy ترحيل](../../archived/architecture/2026-08-10-unary-apiproxy-remote-migration.md) في إبقاء Session،Workspace و Host event carrier، و إبقاء[خلفية مهمة عرض](../feature/2026-08-08-web-background-job-display.zh.md) الذي اشتراط كامل jobs snapshot، عملية داخل دورة الحياة و “مراقبة لا استعادة Agent” دلالة.

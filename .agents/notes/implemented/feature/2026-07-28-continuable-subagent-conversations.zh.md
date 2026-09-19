@@ -1,24 +1,24 @@
-# Agent Note: 可继续的 subagent
+# Agent Note: يمكن متابعة subagent
 
 Status: implemented
 
-[English](2026-07-28-continuable-subagent-conversations.md) | 中文
+[English](2026-07-28-continuable-subagent-conversations.md) | العربية
 
-本记录取代[可继续的后台 subagent](../../archived/feature/2026-07-21-continuable-background-subagents.md)中由 Task 支撑的继续执行管理器。它保留[将 subagent 控制合并到 subagent 服务](../../archived/simplification/2026-07-26-merge-subagent-control-service.md)确立的单一 `ctx.subagents` 服务，以及[以意图命名的 subagent 继续执行操作](../../archived/simplification/2026-07-27-intent-named-subagent-continuation-operations.md)确立的 `followup` 操作。
+هذا سجل يحل محل[يمكن متابعة خلفية subagent](../../archived/feature/2026-07-21-continuable-background-subagents.md) في من Task دعم دعم متابعة تنفيذ إدارة جهاز. هو إبقاء[سوف subagent تحكم دمج إلى subagent خدمة](../../archived/simplification/2026-07-26-merge-subagent-control-service.md) تأكيد قيام مفرد واحد `ctx.subagents` خدمة، و[بـ معنى رسم تسمية subagent متابعة تنفيذ عملية](../../archived/simplification/2026-07-27-intent-named-subagent-continuation-operations.md) تأكيد قيام `followup` عملية.
 
-## 问题
+## مشكلة
 
-以前的继续执行管理器让一个 Task、一次提供方执行和一个结果边界共享同一生命周期。Task 结算会 dispose（资源释放）child Agent，Task 完成会注入完成通知，后续输入则重建另一个 Agent。这曾使通用后台工作抽象与会话投递耦合，而可继续 subagent 已经具备会话和 Agent inbox。
+بـ قبل متابعة تنفيذ إدارة جهاز يجعل واحد Task، مرة مزود تنفيذ و واحد نتيجة حد مشترك نفس دورة الحياة.Task تسوية سوف dispose(مورد تحرير)child Agent،Task إتمام سوف حقن إتمام إشعار، لاحق إدخال فإن إعادة بناء آخر عدد Agent. هذا سبق جعل عام خلفية عمل سحب كائن و جلسة إلقاء تمرير اقتران دمج، بينما يمكن متابعة subagent قد أداة تجهيز جلسة و Agent inbox.
 
-如果继续执行管理器为继续执行请求排队，而 Agent 保留自己的 inbox，系统就会出现两个 FIFO，且没有唯一的顺序权威。而把所有消息都交给 Task，则重复了 agent loop（智能体循环）已有的准入、取消和完全停稳机制。`Agent.whenIdle()` 无法恢复单项请求的 Task 结果，因为一个运行区间可能清空多个排队轮次；宽泛的 `Agent.cancel()` 也不能精确移除一项排队请求。
+إذا متابعة تنفيذ إدارة جهاز لـ متابعة تنفيذ طلب ترتيب طابور، بينما Agent إبقاء ذاتي ذات inbox، نظام حينئذ سوف ظهور اثنان عدد FIFO، كما لا يوجد وحيد ترتيب مرجعي. بينما يأخذ كل رسالة كل تسليم إعطاء Task، فإن تكرار agent loop(ذكي جسم حلقة) قد لديه دقيق دخول، إلغاء و تماما توقف مستقر آلية.`Agent.whenIdle()` لا يمكن استعادة مفرد بند طلب Task نتيجة، لأن واحد تشغيل منطقة بين ممكن صاف فارغ كثير عدد ترتيب طابور جولة؛ عرض عام `Agent.cancel()` أيضا لا يستطيع دقيق إزالة واحد بند ترتيب طابور طلب.
 
-运行时生命周期也比单个轮次更长。subagent 可能已经结束自身轮次，但它创建的 child 仍在运行。此时 dispose parent 运行时，会移除仍负责后代拆卸的 Agent。反之，如果让所有历史 subagent 始终驻留，内存使用就会失去上界。
+وقت التشغيل دورة الحياة أيضا مقارنة مفرد عدد جولة أكثر طويل.subagent ممكن قد انتهاء ذاته جولة، لكن هو إنشاء child ما زال في تشغيل. هذا وقت dispose parent وقت التشغيل، سوف إزالة ما زال مسؤول بعد بديل تفكيك إزالة Agent. عكس لـ، إذا يجعل كل تاريخ subagent بداية نهاية إقامة إبقاء، داخل تخزين استخدام حينئذ سوف فقد ذهاب فوق حد.
 
-parent Agent 还需要在不改变当前轮次的前提下，向同一个在线 child 发送后续工作。将每条继续执行消息作为 follow-up 排队，可以保留唯一的排序规则。
+parent Agent أيضا حاجة في لا تغيير حالي جولة قبل رفع تحت، نحو نفس عدد في خط child إرسال لاحق عمل. سوف كل بند متابعة تنفيذ رسالة بصفة follow-up ترتيب طابور، يمكن إبقاء وحيد ترتيب ترتيب قاعدة.
 
-## 决策
+## قرار
 
-一个可继续 subagent 拥有一个持久化会话，并且至多拥有一个进程内激活：
+واحد يمكن متابعة subagent يملك واحد حفظ دائم جلسة، و كما حتى كثير يملك واحد عملية داخل تنشيط:
 
 ```text
 persisted Session
@@ -28,37 +28,37 @@ persisted Session
        -> zero or more owned child Activations
 ```
 
-激活是重建 child Agent 的一次驻留周期。它可以执行多个 FIFO 轮次，并在等待后代时保持驻留。它不是请求、结果、取消或 Task 边界。
+تنشيط هو إعادة بناء child Agent مرة إقامة إبقاء دورة مدة. هو يمكن تنفيذ كثير عدد FIFO جولة، و في انتظار بعد بديل وقت إبقاء إقامة إبقاء. هو لا هو طلب، نتيجة، إلغاء أو Task حد.
 
-继续执行管理器负责激活准入、权限检查、在线所有权图、冷恢复和 child-first dispose。Agent loop 负责全部轮次排序与执行。没有任何可继续 subagent 拥有 Task、激活 FIFO 或 queued 激活状态。
+متابعة تنفيذ إدارة جهاز مسؤول تنشيط دقيق دخول، إذن فحص، في خط كل حق رسم، بارد استعادة و child-first dispose.Agent loop مسؤول الكل جولة ترتيب ترتيب و تنفيذ. لا يوجد أي يمكن متابعة subagent يملك Task، تنشيط FIFO أو queued تنشيط حالة.
 
-### 物化与公开操作
+### شيء تحويل و عام عملية
 
-具名 subagent 提供方只参与准备初始创建规格，此时 `spawn` 与 `fork` 有所区别。其可选的 `prepareContinuable(request): Promise<ContinuableCreateSpec>` 方法就是可继续创建能力。返回的规格只包含与 Agent 实例分离且由提供方决定的创建输入，例如可选的 parent 历史种子；它不包含 Agent、`AgentHandle`、提示词投递、结果、dispose 或恢复操作。管理器会预留 child 身份，解析持久化描述符和通用 Agent 配置，通过私有 activation-owner 作用域调用 `ctx.agents.create()`，将返回的 `AgentHandle` 安装到激活中，建立适用的可继续 parent 所有权，然后调用 `Agent.followup(initialPrompt)`。inbox 接受消息后会产生一个 `MessageId`；`ctx.subagents.startContinuable()` 在此边界返回 `{ childId, messageId }`，不等待轮次开始，也不等待消息写入会话日志。
+أداة اسم subagent مزود فقط مشاركة و دقيق تجهيز ابتدائي إنشاء قاعدة إطار، هذا وقت `spawn` و `fork` لديه الذي منطقة آخر. ذلك اختياري `prepareContinuable(request): Promise<ContinuableCreateSpec>` طريقة حينئذ هو يمكن متابعة إنشاء قدرة. إرجاع قاعدة إطار فقط يتضمن و Agent نسخة قسم مغادرة كما من مزود قرار إنشاء إدخال، مثال مثل اختياري parent تاريخ نوع فرعي؛ هو لا يتضمن Agent،`AgentHandle`، نص التوجيه إلقاء تمرير، نتيجة،dispose أو استعادة عملية. إدارة جهاز سوف مسبق إبقاء child هوية، تحليل حفظ دائم وصف رمز و عام Agent إعداد، عبر خاص activation-owner أثر مجال استدعاء `ctx.agents.create()`، سوف إرجاع `AgentHandle` تثبيت إلى تنشيط في، بناء قيام ملائم استخدام يمكن متابعة parent كل حق، لكن بعد استدعاء `Agent.followup(initialPrompt)`.inbox قبول رسالة بعد سوف إنتاج واحد `MessageId`؛`ctx.subagents.startContinuable()` في هذا حد إرجاع `{ childId, messageId }`، لا انتظار جولة بدء، أيضا لا انتظار رسالة كتابة جلسة سجل.
 
-inbox 接受消息前发生任何失败，操作都会在不返回任何 id 的情况下被拒绝。Agent 创建流程负责 handle 移交前的回滚；移交后，管理器会保留一个对并发投递和 drain 可见的关闭事务，dispose 已创建的 handle、移除激活并回滚 parent `ownedChildren` 中的任何成员关系，再拒绝操作。在驻留 start 事件发布前失败不会发布终止事件，start 发布后失败则通过正常 dispose 闭合生命周期配对。
+inbox قبول رسالة قبل حدوث أي فشل، عملية كل سوف في لا إرجاع أي id حال حال تحت يتم رفض.Agent إنشاء مسار مسؤول handle نقل تسليم قبل تراجع؛ نقل تسليم بعد، إدارة جهاز سوف إبقاء واحد مقابل تزامن إلقاء تمرير و drain مرئي إغلاق أمر خدمة،dispose قد إنشاء handle، إزالة تنشيط و تراجع parent `ownedChildren` في أي عضو علاقة، مجددا رفض عملية. في إقامة إبقاء start حدث إصدار قبل فشل لن إصدار إنهاء حدث،start إصدار بعد فشل فإن عبر صحيح معتاد dispose إغلاق دمج دورة الحياة إعداد مقابل.
 
-`backgroundMode: 'one-shot' | 'continuable'` 仍是部署策略。配置为 continuable 时要求存在 `prepareContinuable`；该方法是否存在会取代 `SubagentProvider.resume?()` 成为能力检查，而具备该能力的提供方仍可运行 one-shot 工作。
+`backgroundMode: 'one-shot' | 'continuable'` ما زال هو نشر سياسة. إعداد لـ continuable وقت اشتراط وجود `prepareContinuable`؛ هذا طريقة هل وجود سوف يحل محل `SubagentProvider.resume?()` يصبح قدرة فحص، بينما أداة تجهيز هذا قدرة مزود ما زال يمكن تشغيل one-shot عمل.
 
-冷恢复不会通过 subagent 提供方分发。继续执行管理器会归并通用的进程内描述符，通过同一个 activation-owner 作用域调用 `ctx.agents.resume()`，安装返回的 `AgentHandle`，并提交等待中的 `next-turn`。`SubagentProvider.resume?()` 和 `SubagentProviderResumeRequest` 均不存在。初始提供方注销后，描述符仍保留其名称；该名称不赋予恢复能力，也不要求后续驻留时该提供方存在。远程提供方需要单独设计。
+بارد استعادة لن عبر subagent مزود توزيع. متابعة تنفيذ إدارة جهاز سوف عودة و عام عملية داخل وصف رمز، عبر نفس عدد activation-owner أثر مجال استدعاء `ctx.agents.resume()`، تثبيت إرجاع `AgentHandle`، و إيداع انتظار في `next-turn`.`SubagentProvider.resume?()` و `SubagentProviderResumeRequest` متساو لا وجود. ابتدائي مزود ملاحظة إلغاء بعد، وصف رمز ما زال إبقاء ذلك اسم؛ هذا اسم لا منح إعطاء استعادة قدرة، أيضا لا اشتراط لاحق إقامة إبقاء وقت هذا مزود وجود. بعيد مسار مزود حاجة مفرد وحيد تصميم.
 
-`SubagentProvider.start()` 和 `SubagentRun` 只保留在不变的 one-shot 路径上。可继续激活直接持有自身的 `AgentHandle`，绝不创建、包装或保留 `SubagentRun`；因此，`SubagentRun.steer?()` 不存在。
+`SubagentProvider.start()` و `SubagentRun` فقط إبقاء في ثابت one-shot مسار فوق. يمكن متابعة تنشيط مباشر يحتفظ ذاته `AgentHandle`، أبدا إنشاء، حزمة تركيب أو إبقاء `SubagentRun`؛ لذلك،`SubagentRun.steer?()` لا وجود.
 
-`ctx.subagents.sendMessage(sender, targetId, content, { signal })` 是唯一由模型编写的继续执行消息操作。确切在线 sender 授权向其直接 parent 或直接可继续 child 投递；冷恢复会在重建前检查直接 child 权限，每条路径还会在最终无 await 的 inbox 准入区间再次检查，因此在物化期间被注销或替换的 Agent 无法授权投递。服务从该 sender 推导持久化 `agent-message` 来源信息。面向模型的 `send_message` 工具只保留 `agent_id` 和 `message`，并使用固定 Steer 调度。start 与 send 都返回已接受的 `MessageId`，两者都不报告管理器如何物化 Activation。
+`ctx.subagents.sendMessage(sender, targetId, content, { signal })` هو وحيد من نموذج تحرير كتابة متابعة تنفيذ رسالة عملية. تأكيد قطع في خط sender تخويل نحو ذلك مباشر parent أو مباشر يمكن متابعة child إلقاء تمرير؛ بارد استعادة سوف في إعادة بناء قبل فحص مباشر child إذن، كل بند مسار أيضا سوف في نهائي بلا await inbox دقيق دخول منطقة بين مجددا مرة فحص، لذلك في شيء تحويل خلال يتم ملاحظة إلغاء أو استبدال Agent لا يمكن تخويل إلقاء تمرير. خدمة من هذا sender دفع توجيه حفظ دائم `agent-message` مصدر معلومة. موجه إلى نموذج `send_message` أداة فقط إبقاء `agent_id` و `message`، و استخدام ثابت Steer ضبط درجة.start و send كل إرجاع قد قبول `MessageId`، اثنان من كل لا تقرير إبلاغ إدارة جهاز مثل أي شيء تحويل Activation.
 
-对于 start 和 follow-up，调用方 signal 只在 inbox 接受消息前持有查找、物化和准入。操作返回 `MessageId` 后，管理器会独立持有该激活；调用方之后的取消不会取消已接受的轮次，也不会 dispose child。
+مقابل في start و follow-up، استدعاء جهة signal فقط في inbox قبول رسالة قبل يحتفظ فحص بحث، شيء تحويل و دقيق دخول. عملية إرجاع `MessageId` بعد، إدارة جهاز سوف مستقل يحتفظ هذا تنشيط؛ استدعاء جهة بعد إلغاء لن إلغاء قد قبول جولة، أيضا لن dispose child.
 
-### 持久化会话与在线激活
+### حفظ دائم جلسة و في خط تنشيط
 
-会话持有稳定的 child 身份、transcript（文本记录）、直接 parent 谱系、委派深度和带版本的继续执行描述符。`SessionHeader.parentSession` 记录直接 parent，并作为鉴权输入；它不是在线路由能力，也不表示记录的 parent 仍然驻留。
+جلسة يحتفظ مستقر child هوية،transcript(نص سجل) ، مباشر parent جدول نظام، تفويض إرسال عميق درجة و حمل إصدار متابعة تنفيذ وصف رمز.`SessionHeader.parentSession` سجل مباشر parent، و بصفة تمييز حق إدخال؛ هو لا هو في خط توجيه قدرة، أيضا لا يمثل سجل parent ما زال إقامة إبقاء.
 
-空闲的历史会话没有 `AgentHandle`。第一条通过鉴权的 `next-turn` 投递会根据持久化会话恢复激活，并将消息提交到其 inbox。冷恢复使用经过身份认证的确切在线 parent Agent 执行鉴权；当该 parent 有激活时，还使用它建立所有权，但绝不使用 parent 执行重建。
+فارغ خامل تاريخ جلسة لا يوجد `AgentHandle`. رقم واحد بند عبر تمييز حق `next-turn` إلقاء تمرير سوف أصل حسب حفظ دائم جلسة استعادة تنشيط، و سوف رسالة إيداع إلى ذلك inbox. بارد استعادة استخدام مرور مرور هوية إقرار إثبات تأكيد قطع في خط parent Agent تنفيذ تمييز حق؛ عند هذا parent لديه تنشيط وقت، أيضا استخدام هو بناء قيام كل حق، لكن أبدا استخدام parent تنفيذ إعادة بناء.
 
-激活会直接持有已发布的 `AgentHandle` 直至结算，而管理器的私有 activation-owner 作用域则是其 Cordis 结构化所有者。可继续 subagent 路径不创建任何中间的带结果执行包装层，包括 `SubagentRun`；一次性委派保持不变，且不属于该生命周期。远程提供方不在此处的范围内，引入时需要单独的激活所有权约定。激活 dispose 后，历史会话不消耗运行时内存。
+تنشيط سوف مباشر يحتفظ قد إصدار `AgentHandle` مباشر حتى تسوية، بينما إدارة جهاز خاص activation-owner أثر مجال فإن هو ذلك Cordis بنية تحويل كل من. يمكن متابعة subagent مسار لا إنشاء أي في بين حمل نتيجة تنفيذ حزمة تركيب طبقة، يشمل `SubagentRun`؛ مرة صفة تفويض إرسال إبقاء ثابت، كما لا يخص هذا دورة الحياة. بعيد مسار مزود لا في هذا موضع نطاق داخل، جذب دخول وقت حاجة مفرد وحيد تنشيط كل حق اتفاق. تنشيط dispose بعد، تاريخ جلسة لا إزالة استهلاك وقت التشغيل داخل تخزين.
 
-### 激活生命周期
+### تنشيط دورة الحياة
 
-内部驻留生命周期有三个条件，没有单独的 `queued` 状态：
+داخلي إقامة إبقاء دورة الحياة لديه ثلاثة عدد شرط، لا يوجد مفرد وحيد `queued` حالة:
 
 ```text
 running
@@ -77,138 +77,138 @@ settled
 no Activation
 ```
 
-`running` 表示 Agent 正在执行准入或轮次。`waiting` 表示 Agent 已经完全停稳，但其 Inbox 非空，或激活仍持有至少一个尚未完成 dispose 的 child 激活。`settled` 表示 Agent 已经完全停稳、其 Inbox 为空且所有持有的 child 都已 dispose；随后管理器会 dispose `AgentHandle` 并移除激活。
+`running` يمثل Agent صحيح في تنفيذ دقيق دخول أو جولة.`waiting` يمثل Agent قد تماما توقف مستقر، لكن ذلك Inbox غير فارغ، أو تنشيط ما زال يحتفظ حتى قليل واحد بعد لم إتمام dispose child تنشيط.`settled` يمثل Agent قد تماما توقف مستقر، ذلك Inbox لـ فارغ كما كل يحتفظ child كل قد dispose؛ مع بعد إدارة جهاز سوف dispose `AgentHandle` و إزالة تنشيط.
 
-管理器根据 Agent 是否完全停稳、Inbox 的待处理状态以及所持 child 集合派生这些状态，而不是维护第二套执行状态机。在 `running` 时投递的 `next-turn` 会进入 Agent inbox。在 `waiting` 时到达的唤醒投递会唤醒同一个 Agent，并使激活回到 `running`。在 dispose 完成后投递消息则会冷恢复新激活。
+إدارة جهاز أصل حسب Agent هل تماما توقف مستقر،Inbox انتظار معالجة حالة و الذي حمل child تجميع دمج إرسال توليد هذه حالة، بينما لا هو صيانة ثاني طقم تنفيذ حالة آلة. في `running` وقت إلقاء تمرير `next-turn` سوف دخول Agent inbox. في `waiting` وقت وصول نداء تنبيه إلقاء تمرير سوف نداء تنبيه نفس عدد Agent، و جعل تنشيط عودة إلى `running`. في dispose إتمام بعد إلقاء تمرير رسالة فإن سوف بارد استعادة جديد تنشيط.
 
-管理器会针对每个持久化 child，将 manager 所有的投递、child 释放和 dispose 线性化。私有 `SubagentInbox` 会把 Queue 与 Steer 委托给 Agent inbox，并持有 Activation 既有的关闭事务。如果 manager 投递与最终 dispose 发生竞争，只有一方能越过这条准入截止点：投递要么进入仍在线的 Agent inbox，要么观察到正在关闭，并遵循该操作特有的拒绝或冷恢复路径。直接操作 Agent 的工作不经过这层包装，因此自然结算会通过短暂的 maintenance 占用，在最终 flush 与最终 dispose 决策之前验证 idle 阶段，并在 child lock 内重新验证 Session 序号、Inbox 待处理状态、wake generation 与 owned-child set。仍然活跃或改变 Session、Inbox 或所有权状态的已接受工作会让本次结算尝试失效，而不会被它取消；完全在 flush 期间开始并结束的 maintenance 已在截止点前完成。
+إدارة جهاز سوف إبرة مقابل كل حفظ دائم child، سوف manager كل إلقاء تمرير،child تحرير و dispose خط صفة تحويل. خاص `SubagentInbox` سوف يأخذ Queue و Steer تفويض حمل إعطاء Agent inbox، و يحتفظ Activation قائم إغلاق أمر خدمة. إذا manager إلقاء تمرير و نهائي dispose حدوث تنافس تنازع، فقط لديه واحد جهة قدرة تجاوز مرور هذا بند دقيق دخول قطع توقف نقطة: إلقاء تمرير يلزم ما دخول ما زال في خط Agent inbox، يلزم ما مراقبة إلى صحيح في إغلاق، و التزام دوران هذا عملية خاص لديه رفض أو بارد استعادة مسار. مباشر عملية Agent عمل لا مرور مرور هذا طبقة حزمة تركيب، لذلك ذاتي لكن تسوية سوف عبر قصير مؤقت maintenance احتلال استخدام، في نهائي flush و نهائي dispose قرار قبل تحقق idle مرحلة مقطع، و في child lock داخل إعادة تحقق Session ترتيب رقم،Inbox انتظار معالجة حالة،wake generation و owned-child set. ما زال نشط وثب أو تغيير Session،Inbox أو كل حق حالة قد قبول عمل سوف يجعل هذا مرة تسوية محاولة تجربة بطلان، بينما لن يتم هو إلغاء؛ تماما في flush خلال بدء و انتهاء maintenance قد في قطع توقف نقطة قبل إتمام.
 
-### 一个 inbox 与 follow-up 投递
+### واحد inbox و follow-up إلقاء تمرير
 
-Agent inbox 是唯一队列。每条继续执行消息都使用 `Agent.followup()`，并成为一个 FIFO 轮次；继续执行管理器和宿主都不维护另一条消息队列。每个待处理 Inbox occurrence 都会让当前激活保持在线，直到它被 claim 或 discard。这条保守规则也会保留注入 context：完全停稳后仍存在的静默注入可以让 Activation 及其在线祖先继续驻留，直到唤醒投递将其 claim、queue 变更将其移除，或 manager teardown dispose 整棵树。
+Agent inbox هو وحيد طابور صف. كل بند متابعة تنفيذ رسالة كل استخدام `Agent.followup()`، و يصبح واحد FIFO جولة؛ متابعة تنفيذ إدارة جهاز و مضيف كل لا صيانة آخر بند رسالة طابور صف. كل انتظار معالجة Inbox occurrence كل سوف يجعل حالي تنشيط إبقاء في خط، مباشر إلى هو يتم claim أو discard. هذا بند حفظ حراسة قاعدة أيضا سوف إبقاء حقن context: تماما توقف مستقر بعد ما زال وجود ساكن صامت حقن يمكن يجعل Activation و ذلك في خط أصل أولا متابعة إقامة إبقاء، مباشر إلى نداء تنبيه إلقاء تمرير سوف ذلك claim،queue تغيير سوف ذلك إزالة، أو manager teardown dispose كامل شجرة شجرة.
 
-路由只取决于激活的驻留状态：
+توجيه فقط أخذ قرار في تنشيط إقامة إبقاء حالة:
 
-| 激活状态 | `followup` |
+| تنشيط حالة | `followup` |
 |---|---|
-| `running` | 在同一激活中排队 |
-| `waiting` | 唤醒同一激活 |
-| 无激活 | 冷恢复新激活 |
+| `running` | في نفس تنشيط في ترتيب طابور |
+| `waiting` | نداء تنبيه نفس تنشيط |
+| بلا تنشيط | بارد استعادة جديد تنشيط |
 
-继续执行层不定义单独的投递路由结果。成功投递 `ctx.subagents.followup()` 或 `send_message` 时会返回已接受的 `MessageId`，投递失败则会抛出异常。现有的 `agent/inbox/enqueue`、`agent/inbox/dequeue` 和 `agent/inbox/discard` 事件仍用于观测消息生命周期；适配器可以呈现通用的接受确认，但不暴露 `started`、`queued`、`resumed` 或其他 subagent 专属路由词汇。
+متابعة تنفيذ طبقة لا تعريف مفرد وحيد إلقاء تمرير توجيه نتيجة. نجاح إلقاء تمرير `ctx.subagents.followup()` أو `send_message` وقت سوف إرجاع قد قبول `MessageId`، إلقاء تمرير فشل فإن سوف رمي خروج استثناء. قائم `agent/inbox/enqueue`،`agent/inbox/dequeue` و `agent/inbox/discard` حدث ما زال لأجل مراقبة قياس رسالة دورة الحياة؛ مهايئ يمكن عرض عام قبول تأكيد، لكن لا كشف `started`،`queued`،`resumed` أو أخرى subagent مخصص تابع توجيه مفردات.
 
-### child 所有权
+### child كل حق
 
-每次激活都持有自身的 `AgentHandle` 和一个 `ownedChildren: Set<SessionId>`。由于一个会话至多有一次在线激活，child 会话 id 足以标识在线 child，无需另一个运行时 incarnation 引用。`SessionHeader.parentSession` 记录持久化的直接 parent 身份，`ownedChildren` 中的成员关系则记录进程内所有权关系。
+كل مرة تنشيط كل يحتفظ ذاته `AgentHandle` و واحد `ownedChildren: Set<SessionId>`. من في واحد جلسة حتى كثير لديه مرة في خط تنشيط،child جلسة id كاف بـ معرف في خط child، بلا حاجة آخر عدد وقت التشغيل incarnation مرجع.`SessionHeader.parentSession` سجل حفظ دائم مباشر parent هوية،`ownedChildren` في عضو علاقة فإن سجل عملية داخل كل حق علاقة.
 
-当经过身份认证的 parent 自身是由继续执行管理器管理的激活时，启动 child 或提交由 parent 发起的工作，会在 child 可以运行或消息可以进入其 inbox 前，将 child 会话 id 加入该 parent 的 `ownedChildren`。该集合非空时，这个 parent 不能结算或 dispose。顶层 Agent 或其他非继续执行 Agent 没有激活，也不会加入该等待图。
+عند مرور مرور هوية إقرار إثبات parent ذاته هو من متابعة تنفيذ إدارة جهاز إدارة تنشيط وقت، بدء child أو إيداع من parent إرسال بدء عمل، سوف في child يمكن تشغيل أو رسالة يمكن دخول ذلك inbox قبل، سوف child جلسة id إضافة دخول هذا parent `ownedChildren`. هذا تجميع دمج غير فارغ وقت، هذا عدد parent لا يستطيع تسوية أو dispose. قمة طبقة Agent أو أخرى غير متابعة تنفيذ Agent لا يوجد تنشيط، أيضا لن إضافة دخول هذا انتظار رسم.
 
-只有在 child Agent 完全停稳、其 Inbox 为空、该 child 持有的每个 child 都已 dispose、best-effort 的最终会话 flush 结算、相同结算事实通过 child-lock 重验且 child 的 `AgentHandle` 完成 dispose 后，系统才释放 child。管理器会在关闭准入前等待 `ctx.sessions.flush(child.session)`，但不解释其参与布尔值：任意 listener 都无法证明所选持久化后端已存储该状态。系统会记录 rejection，但不会让它阻止重验、handle dispose 或释放所有权，因为保留 child 会让其祖先永久固定在 `waiting`。如果 child 归 parent 所有，管理器随后会通过 `SessionHeader.parentSession` 解析在线 parent，并从其 `ownedChildren` 中移除 child 会话 id。Manager teardown 使用相同的 child-first 顺序，但会立即关闭准入并停止工作，而不执行自然结算重验。
+فقط لديه في child Agent تماما توقف مستقر، ذلك Inbox لـ فارغ، هذا child يحتفظ كل child كل قد dispose،best-effort نهائي جلسة flush تسوية، نفسه تسوية واقع عبر child-lock إعادة تحقق كما child `AgentHandle` إتمام dispose بعد، نظام عندئذ تحرير child. إدارة جهاز سوف في إغلاق دقيق دخول قبل انتظار `ctx.sessions.flush(child.session)`، لكن لا حل تفسير ذلك مشاركة و قيمة منطقية: مهمة معنى listener كل لا يمكن إثبات الذي اختيار حفظ دائم خلفية قد تخزين هذا حالة. نظام سوف سجل rejection، لكن لن يجعل هو منع توقف إعادة تحقق،handle dispose أو تحرير كل حق، لأن إبقاء child سوف يجعل ذلك أصل أولا دائم دائم ثابت في `waiting`. إذا child عودة parent كل، إدارة جهاز مع بعد سوف عبر `SessionHeader.parentSession` تحليل في خط parent، و من ذلك `ownedChildren` في إزالة child جلسة id.Manager teardown استخدام نفسه child-first ترتيب، لكن سوف قيام أي إغلاق دقيق دخول و إيقاف عمل، بينما لا تنفيذ ذاتي لكن تسوية إعادة تحقق.
 
-系统会一直保留所有权，直至 child 激活完成 dispose。后续改进可以更早释放限定到请求的 lease，但这需要精确关联轮次完成，而本 Task-free 设计特意不增加该机制。
+نظام سوف واحد مباشر إبقاء كل حق، مباشر حتى child تنشيط إتمام dispose. لاحق تعديل دخول يمكن أكثر مبكر تحرير حد تحديد إلى طلب lease، لكن هذا حاجة دقيق صلة ربط جولة إتمام، بينما هذا Task-free تصميم خاص معنى لا زيادة هذا آلية.
 
-顶层拆卸由宿主负责，而不表示为另一次激活。管理器卸载会调用其内部的管理器全局 drain，同步关闭准入，等待每个已获准的物化过程完成发布或回滚，停止稳定的在线森林，并按 child-first 顺序释放。拥有选定顶层 Agent 的宿主使用 `drainContinuableDescendants(parents)`：确切的 Agent 身份只关闭这些根之下的准入，直到每个身份离开注册表，而无关森林和管理器全局准入保持在线；管理器会在第一次 await 之前停止其可见后代，只等待这些根之下已获准的物化过程，并且只释放选定分支。每个已物化的 start 和在线投递都会在与 inbox 提交相同的同步区间内重新检查调用方取消、适用的 draining 作用域、Activation dispose 和确切的 parent 权限，因此只要拆卸或 parent 替换先于接受发生，就会阻止向正在关闭的 handle 投递。只有适用的 drain 结算后，宿主才能 dispose 自己的顶层 Agent；只有管理器全局 drain 会先于管理器作用域 dispose。
+قمة طبقة تفكيك إزالة من مضيف مسؤول، بينما لا يمثل لـ آخر مرة تنشيط. إدارة جهاز إزالة سوف استدعاء ذلك داخلي إدارة جهاز عام drain، تزامن إغلاق دقيق دخول، انتظار كل قد نيل دقيق شيء تحويل مرور مسار إتمام إصدار أو تراجع، إيقاف مستقر في خط غابة حرج، و حسب child-first ترتيب تحرير. يملك اختيار تحديد قمة طبقة Agent مضيف استخدام `drainContinuableDescendants(parents)`: تأكيد قطع Agent هوية فقط إغلاق هذه أصل لـ تحت دقيق دخول، مباشر إلى كل هوية مغادرة فتح سجل التسجيل، بينما غير متصل غابة حرج و إدارة جهاز عام دقيق دخول إبقاء في خط؛ إدارة جهاز سوف في رقم مرة await قبل إيقاف ذلك مرئي بعد بديل، فقط انتظار هذه أصل لـ تحت قد نيل دقيق شيء تحويل مرور مسار، و كما فقط تحرير اختيار تحديد فرع. كل قد شيء تحويل start و في خط إلقاء تمرير كل سوف في و inbox إيداع نفسه تزامن منطقة بين داخل إعادة فحص استدعاء جهة إلغاء، ملائم استخدام draining أثر مجال،Activation dispose و تأكيد قطع parent إذن، لذلك فقط يلزم تفكيك إزالة أو parent استبدال أولا في قبول حدوث، حينئذ سوف منع توقف نحو صحيح في إغلاق handle إلقاء تمرير. فقط لديه ملائم استخدام drain تسوية بعد، مضيف عندئذ قدرة dispose ذاتي ذات قمة طبقة Agent؛ فقط لديه إدارة جهاز عام drain سوف أولا في إدارة جهاز أثر مجال dispose.
 
-activation-owner 作用域之所以存在，是因为普通 Cordis owner effect 按注册逆序撤销，无法表达动态 child 图。管理器初始化时先注册私有作用域的结构化 disposer，再注册自身的 drain disposer，使逆序撤销先执行 drain、再释放该作用域；如果只在与后续 Agent handle 相同的作用域上注册 cleanup effect，结构化 handle dispose 就可能绕过 child-first 顺序。每个物化过程都会在启动内部事务前注册其屏障参与项，并对其确切的在线祖先建立快照，然后保持跟踪，直到安装 Activation 或完全回滚。Activation 会保留其在这组祖先中的弱成员关系，因此中间 Agent 即使离开注册表，也不会让仍在线的后代脱离宿主根节点的可见范围。其私有 `SubagentInbox` 会在取消或递归回调前安装一个记忆化的 closing promise，使限定作用域的宿主关闭、全局管理器卸载、child 释放和正常结算能够汇合，而不会重复释放。取消会在等待缓慢的后代清理之前自顶向下传播；handle 释放仍是 child-first。同级分支独立 drain；系统会记录单次 dispose 失败，但仍会尝试其余选中 handle，聚合 drain 则在所有选中分支结算后报告失败。这次进程内拆卸不会销毁持久化 child 会话。
+activation-owner أثر مجال لـ الذي بـ وجود، هو لأن عادي Cordis owner effect حسب تسجيل عكس ترتيب سحب إلغاء، لا يمكن جدول بلوغ حركة حالة child رسم. إدارة جهاز ابتدائي تحويل وقت أولا تسجيل خاص أثر مجال بنية تحويل disposer، مجددا تسجيل ذاته drain disposer، جعل عكس ترتيب سحب إلغاء أولا تنفيذ drain، مجددا تحرير هذا أثر مجال؛ إذا فقط في و لاحق Agent handle نفسه أثر مجال فوق تسجيل cleanup effect، بنية تحويل handle dispose حينئذ ممكن التفاف مرور child-first ترتيب. كل شيء تحويل مرور مسار كل سوف في بدء داخلي أمر خدمة قبل تسجيل ذلك شاشة عائق مشاركة و بند، و مقابل ذلك تأكيد قطع في خط أصل أولا بناء قيام لقطة، لكن بعد إبقاء تتبع أثر، مباشر إلى تثبيت Activation أو تماما تراجع.Activation سوف إبقاء ذلك في هذا مجموعة أصل أولا في ضعيف عضو علاقة، لذلك في بين Agent أي جعل مغادرة فتح سجل التسجيل، أيضا لن يجعل ما زال في خط بعد بديل انفصال مغادرة مضيف أصل عقدة مرئي نطاق. ذلك خاص `SubagentInbox` سوف في إلغاء أو تمرير عودة عودة ضبط قبل تثبيت واحد تسجيل ذاكرة تحويل closing promise، جعل حد تحديد أثر مجال مضيف إغلاق، عام إدارة جهاز إزالة،child تحرير و صحيح معتاد تسوية قدرة كاف تجميع دمج، بينما لن تكرار تحرير. إلغاء سوف في انتظار مؤقت بطيء بعد بديل تنظيف قبل ذاتي قمة نحو تحت نقل بث؛handle تحرير ما زال هو child-first. نفس درجة فرع مستقل drain؛ نظام سوف سجل مفرد مرة dispose فشل، لكن ما زال سوف محاولة تجربة ذلك بقية اختيار في handle، تجمع دمج drain فإن في كل اختيار في فرع تسوية بعد تقرير إبلاغ فشل. هذا مرة عملية داخل تفكيك إزالة لن إلغاء تدمير حفظ دائم child جلسة.
 
-### 相邻 Agent 消息
+### متبادل مجاور Agent رسالة
 
-共享的 `sendMessage(sender, targetId, content, options)` 服务操作不会增加第二条队列。它接收确切在线 sender，只允许其直接 parent 或直接可继续 child，并通过 Agent inbox 使用固定 Steer 调度。全局 `send_message({ agent_id, message })` 工具在两个方向暴露同一个操作；当 child 可以看到该工具时，其初始任务会标明直接 parent。[相邻 Agent 消息 Agent Note](../architecture/2026-08-27-adjacent-agent-steer-messaging.zh.md)规定其 schema、权限、来源信息与提示词位置。
+مشترك `sendMessage(sender, targetId, content, options)` خدمة عملية لن زيادة ثاني بند طابور صف. هو استقبال تأكيد قطع في خط sender، فقط سماح ذلك مباشر parent أو مباشر يمكن متابعة child، و عبر Agent inbox استخدام ثابت Steer ضبط درجة. عام `send_message({ agent_id, message })` أداة في اثنان عدد جهة نحو كشف نفس عدد عملية؛ عند child يمكن يرى هذا أداة وقت، ذلك ابتدائي مهمة سوف علامة واضح مباشر parent.[متبادل مجاور Agent رسالة Agent Note](../architecture/2026-08-27-adjacent-agent-steer-messaging.zh.md) قاعدة تحديد ذلك schema، إذن، مصدر معلومة و نص التوجيه موضع.
 
-### Agent 与人类调度
+### Agent و شخص صنف ضبط درجة
 
-每条已接受的 Agent 消息都使用 `Agent.steer()`。运行中的目标会在最近的 step 边界领取消息；空闲或冷恢复的目标会启动一个轮次。浏览器编写的人类输入会另行通过 `subagent.prompt` 携带 `delivery: 'queue' | 'steer'`：Queue 开启后续 FIFO 轮次，Steer 使用相同的 best-effort 最近 step 调度，并保留消息的人类来源。公开服务不为 Agent 消息提供调用方可选的调度模式。
+كل بند قد قبول Agent رسالة كل استخدام `Agent.steer()`. تشغيل في هدف سوف في الأكثر قريب step حد قيادة إلغاء خبر؛ فارغ خامل أو بارد استعادة هدف سوف بدء واحد جولة. متصفح تحرير كتابة شخص صنف إدخال سوف آخر سطر عبر `subagent.prompt` يحمل `delivery: 'queue' | 'steer'`:Queue فتح بدء لاحق FIFO جولة،Steer استخدام نفسه best-effort الأكثر قريب step ضبط درجة، و إبقاء رسالة شخص صنف مصدر. عام خدمة لا لـ Agent رسالة توفير استدعاء جهة اختياري ضبط درجة نمط.
 
-### 权限与已记录的发送方身份
+### إذن و قد سجل إرسال جهة هوية
 
-权限来自确切的在线 Agent 工具上下文。准入后，`MessageSource` 和 `senderSessionId` 记录谁提供了消息；调用方不能用这些字段取得权限。
+إذن قدوم ذاتي تأكيد قطع في خط Agent أداة سياق. دقيق دخول بعد،`MessageSource` و `senderSessionId` سجل من توفير رسالة؛ استدعاء جهة لا يستطيع استخدام هذه حقل أخذ نيل إذن.
 
-本版本只授权持久化 child 的直接 parent。管理器会在将 child 注册到该 parent 的 `ownedChildren` 之前，于最终无 await 的 inbox 准入边界根据确切的在线 parent Agent 检查 `SessionHeader.parentSession`；冷恢复还会在重建前执行一次更早的检查，以便快速失败。其他 Agent、祖先、宿主、团队和工作流仍被拒绝，直至有具体消费方证明另一种权限协议合理。
+هذا إصدار فقط تخويل حفظ دائم child مباشر parent. إدارة جهاز سوف في سوف child تسجيل إلى هذا parent `ownedChildren` قبل، في نهائي بلا await inbox دقيق دخول حد أصل حسب تأكيد قطع في خط parent Agent فحص `SessionHeader.parentSession`؛ بارد استعادة أيضا سوف في إعادة بناء قبل تنفيذ مرة أكثر مبكر فحص، بـ سهل سريع سرعة فشل. أخرى Agent، أصل أولا، مضيف، مجموعة طابور و سير العمل ما زال يتم رفض، مباشر حتى لديه أداة جسم مستهلك إثبات آخر نوع إذن بروتوكول دمج إدارة.
 
-由 parent 发起的投递要求 parent 在准入时在线，并通过所有权关系使其继续在线。
+من parent إرسال بدء إلقاء تمرير اشتراط parent في دقيق دخول وقت في خط، و عبر كل حق علاقة جعل ذلك متابعة في خط.
 
-### 持久性、dispose 与恢复
+### حمل دائم صفة،dispose و استعادة
 
-没有 Task 后，系统不再提供 `job_output`、`job_kill`、Task 状态或逐消息结果 promise。调用方 signal 只能在 inbox 接受消息前中止 start 或 follow-up。消息被接受后，parent 不能通过 `ctx.subagents` 取消已接受的消息或 dispose 激活；唯一的公开停止操作是后来的[当前轮次中断](2026-08-06-continuable-subagent-interrupt.zh.md)，它以 `keepInbox` 取消在线目标的当前轮次，驻留、待处理工作与后代均保持不变。
+لا يوجد Task بعد، نظام لم يعد توفير `job_output`،`job_kill`،Task حالة أو تدريجي رسالة نتيجة promise. استدعاء جهة signal فقط قدرة في inbox قبول رسالة قبل في توقف start أو follow-up. رسالة يتم قبول بعد،parent لا يستطيع عبر `ctx.subagents` إلغاء قد قبول رسالة أو dispose تنشيط؛ وحيد عام إيقاف عملية هو بعد قدوم[حالي جولة في قطع](2026-08-06-continuable-subagent-interrupt.zh.md) ، هو بـ `keepInbox` إلغاء في خط هدف حالي جولة، إقامة إبقاء، انتظار معالجة عمل و بعد بديل متساو إبقاء ثابت.
 
-宿主和管理器拆卸仍是生命周期停止路径。管理器卸载会全局应用它；宿主只会在自己确切拥有的顶层 Agent 之下应用它。两种形式都会关闭适用的准入作用域，停止选中的可见 Activation，等待该作用域中已获准的物化过程，按 child-first 顺序释放，并保留持久化 Session。
+مضيف و إدارة جهاز تفكيك إزالة ما زال هو دورة الحياة إيقاف مسار. إدارة جهاز إزالة سوف عام تطبيق هو؛ مضيف فقط سوف في ذاتي ذات تأكيد قطع يملك قمة طبقة Agent لـ تحت تطبيق هو. اثنان نوع شكل صيغة كل سوف إغلاق ملائم استخدام دقيق دخول أثر مجال، إيقاف اختيار في مرئي Activation، انتظار هذا أثر مجال في قد نيل دقيق شيء تحويل مرور مسار، حسب child-first ترتيب تحرير، و إبقاء حفظ دائم Session.
 
-每个轮次都会请求执行会话持久性检查点，而 Activation 最终结算还会在关闭准入前等待 `ctx.sessions.flush()`，将其作为 best-effort 屏障。管理器随后会重新验证 await 期间没有 Agent、Inbox、Session 或 owned-child 状态发生变化；观察发生变化时，系统会重试结算并 flush 更新后的状态。管理器特意忽略 flush 布尔结果，因为 listener 是否参与无法标识持久化后端。系统会记录 rejection，但不会改变生命周期结果或宿主 drain 的结果；管理器仍会执行最终重验，在重验成功时 dispose handle 并释放所有权，后续恢复时持久化 child 状态可能缺失或陈旧。
+كل جولة كل سوف طلب تنفيذ جلسة حمل دائم صفة فحص نقطة، بينما Activation نهائي تسوية أيضا سوف في إغلاق دقيق دخول قبل انتظار `ctx.sessions.flush()`، سوف ذلك بصفة best-effort شاشة عائق. إدارة جهاز مع بعد سوف إعادة تحقق await خلال لا يوجد Agent،Inbox،Session أو owned-child حالة حدوث تغير؛ مراقبة حدوث تغير وقت، نظام سوف إعادة محاولة تسوية و flush تحديث بعد حالة. إدارة جهاز خاص معنى تجاهل اختصار flush نشر ذلك نتيجة، لأن listener هل مشاركة و لا يمكن معرف حفظ دائم خلفية. نظام سوف سجل rejection، لكن لن تغيير دورة الحياة نتيجة أو مضيف drain نتيجة؛ إدارة جهاز ما زال سوف تنفيذ نهائي إعادة تحقق، في إعادة تحقق نجاح وقت dispose handle و تحرير كل حق، لاحق استعادة وقت حفظ دائم child حالة ممكن ناقص أو قديم قديم.
 
-只有实际写入 child 会话日志的消息，才能在重建时保留提供它的来源；仅被 inbox 接受并不提供重启保证。
+فقط لديه فعلي كتابة child جلسة سجل رسالة، عندئذ قدرة في إعادة بناء وقت إبقاء توفير هو مصدر؛ فقط يتم inbox قبول و لا توفير إعادة بدء حفظ إثبات.
 
-会话和描述符的持久化状态可在重启后保留。激活状态、Agent inbox 内容和所有权图都是进程内状态。进程崩溃可能丢失已被接受但仍留在 inbox、尚未写入会话日志的初始提示词或 follow-up。会话和描述符可能保留，因此后续获得授权的消息仍可冷恢复 child，但丢失的消息不会自动回放。恢复已接受但未完成或未写入日志的消息需要持久化 inbox 协议，本提案不隐含该能力。
+جلسة و وصف رمز حفظ دائم حالة يمكن في إعادة بدء بعد إبقاء. تنشيط حالة،Agent inbox محتوى و كل حق رسم كل هو عملية داخل حالة. عملية انهيار انهيار ممكن فقد فقد قد يتم قبول لكن ما زال إبقاء في inbox، بعد لم كتابة جلسة سجل ابتدائي نص التوجيه أو follow-up. جلسة و وصف رمز ممكن إبقاء، لذلك لاحق نيل نيل تخويل رسالة ما زال يمكن بارد استعادة child، لكن فقد فقد رسالة لن تلقائي إعادة تشغيل. استعادة قد قبول لكن لم إتمام أو لم كتابة سجل رسالة حاجة حفظ دائم inbox بروتوكول، هذا رفع سجل لا خفي يحتوي هذا قدرة.
 
-### 范围
+### نطاق
 
-本版本覆盖可继续的进程内 child，一次性委派保持不变。远程提供方必须具备单独的激活 handle，以及等价的认证控制与 child-first 完全停稳约定，才能支持同样的行为。
+هذا إصدار تغطية يمكن متابعة عملية داخل child، مرة صفة تفويض إرسال إبقاء ثابت. بعيد مسار مزود يجب أداة تجهيز مفرد وحيد تنشيط handle، و انتظار قيمة إقرار إثبات تحكم و child-first تماما توقف مستقر اتفاق، عندئذ قدرة دعم حمل نفس مثال سلوك.
 
-它不新增 host-user 继续执行、subagent steering 操作、持久化邮箱、跨进程 lease、中断 inbox 工作的自动回放、团队权限、工作流权限、公开驻留查询、以及运行时缓存；后来的[当前轮次中断](2026-08-06-continuable-subagent-interrupt.zh.md)在此生命周期之上补充了唯一的公开停止操作。现有委派深度策略保持不变。可选的 child 到 parent 报告是后续消费该生命周期的功能，不属于基础可继续能力。
+هو لا إضافة جديدة host-user متابعة تنفيذ،subagent steering عملية، حفظ دائم بريد صندوق، عبر عملية lease، في قطع inbox عمل تلقائي إعادة تشغيل، مجموعة طابور إذن، سير العمل إذن، عام إقامة إبقاء استعلام، و وقت التشغيل ذاكرة مؤقتة؛ بعد قدوم[حالي جولة في قطع](2026-08-06-continuable-subagent-interrupt.zh.md) في هذا دورة الحياة لـ فوق تكملة ملء وحيد عام إيقاف عملية. قائم تفويض إرسال عميق درجة سياسة إبقاء ثابت. اختياري child إلى parent تقرير إبلاغ هو لاحق إزالة استهلاك هذا دورة الحياة وظيفة، لا يخص أساس أساس يمكن متابعة قدرة.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**保留由 Task 支撑的激活。** Task 可以提供通用状态、结果收集和取消，但使用 Task 投递会话会产生第二条队列，并重复轮次所有权。本设计放弃这些通用 Task 控制，让 Agent inbox 成为唯一执行顺序。
+**إبقاء من Task دعم دعم تنشيط.** Task يمكن توفير عام حالة، نتيجة استلام تجميع و إلغاء، لكن استخدام Task إلقاء تمرير جلسة سوف إنتاج ثاني بند طابور صف، و تكرار جولة كل حق. هذا تصميم وضع ترك هذه عام Task تحكم، يجعل Agent inbox يصبح وحيد تنفيذ ترتيب.
 
-**每个 `next-turn` 创建一次激活。** 这会恢复独立的结果与取消边界，但需要在 Agent inbox 旁维护管理器 FIFO，还会使所保留的 Agent 跨越人为划分的激活边界。每个驻留周期对应一次激活更小，也直接跟随 `AgentHandle` 生命周期。
+**كل `next-turn` إنشاء مرة تنشيط.** هذا سوف استعادة مستقل نتيجة و إلغاء حد، لكن حاجة في Agent inbox جانب صيانة إدارة جهاز FIFO، أيضا سوف جعل الذي إبقاء Agent عبر تجاوز شخص لـ تخطيط قسم تنشيط حد. كل إقامة إبقاء دورة مدة مقابل مرة تنشيط أكثر صغير، أيضا مباشر تتبع مع `AgentHandle` دورة الحياة.
 
-**等待期间 dispose Agent。** child 仍属于上一个进程内所有权图时重建 parent，需要持久化所有权与拆卸协议。只为尚未完成的所有权图保留 `AgentHandle`，可以在不让已结算历史驻留的前提下，保留 child-first 拆卸。
+**انتظار خلال dispose Agent.** child ما زال يخص فوق واحد عملية داخل كل حق رسم وقت إعادة بناء parent، حاجة حفظ دائم كل حق و تفكيك إزالة بروتوكول. فقط لـ بعد لم إتمام كل حق رسم إبقاء `AgentHandle`، يمكن في لا يجعل قد تسوية تاريخ إقامة إبقاء قبل رفع تحت، إبقاء child-first تفكيك إزالة.
 
-**让提供方通过 Agent handle 创建、恢复 child 或投递消息。** 初始提供方只持有 `prepareContinuable()` 及其分离式创建规格这一项差异：child 是全新启动，还是带有 parent 前缀。管理器必须通过私有 activation-owner 作用域自行调用 `ctx.agents.create()`，使该作用域成为每个 handle 的结构化所有者。持久化的进程内会话已经包含初始前缀及通用重建描述符，消息投递则属于 Agent inbox。让提供方持有任何后续 handle、`SubagentRun` 或消息所有权，会让提供方保留所有权，却没有已发布行为需要它。
+**يجعل مزود عبر Agent handle إنشاء، استعادة child أو إلقاء تمرير رسالة.** ابتدائي مزود فقط يحتفظ `prepareContinuable()` و ذلك قسم مغادرة صيغة إنشاء قاعدة إطار هذا واحد بند فرق مختلف:child هو كل جديد بدء، أيضا هو حمل لديه parent بادئة. إدارة جهاز يجب عبر خاص activation-owner أثر مجال ذاتي سطر استدعاء `ctx.agents.create()`، جعل هذا أثر مجال يصبح كل handle بنية تحويل كل من. حفظ دائم عملية داخل جلسة قد يتضمن ابتدائي بادئة و عام إعادة بناء وصف رمز، رسالة إلقاء تمرير فإن يخص Agent inbox. يجعل مزود يحتفظ أي لاحق handle،`SubagentRun` أو رسالة كل حق، سوف يجعل مزود إبقاء كل حق، لكن لا يوجد قد إصدار سلوك حاجة هو.
 
-**将报告投递纳入基础生命周期。** 可重复的 child 到 parent 报告与该生命周期兼容，但静默投递还是 next-step 投递、确认、持久性和重试行为都是独立的产品决策。后续的 report 包保持可选，并消费一个显式的 child 设置钩子，因此可继续驻留不会默认授予返回通道。
+**سوف تقرير إبلاغ إلقاء تمرير قبول دخول أساس أساس دورة الحياة.** يمكن تكرار child إلى parent تقرير إبلاغ و هذا دورة الحياة توافق، لكن ساكن صامت إلقاء تمرير أيضا هو next-step إلقاء تمرير، تأكيد، حمل دائم صفة و إعادة محاولة سلوك كل هو مستقل منتج قرار. لاحق report حزمة إبقاء اختياري، و إزالة استهلاك واحد صريح child ضبط خطاف، لذلك يمكن متابعة إقامة إبقاء لن افتراضي منح إعطاء إرجاع عبر طريق.
 
-**将 `SessionHeader.parentSession` 视为在线所有权。** 持久化谱系不能证明已记录的 parent 当前持有 child。在线 parent 的 `ownedChildren` 成员关系会记录进程内关系，而不改变持久化 parent id。
+**سوف `SessionHeader.parentSession` نظر لـ في خط كل حق.** حفظ دائم جدول نظام لا يستطيع إثبات قد سجل parent حالي يحتفظ child. في خط parent `ownedChildren` عضو علاقة سوف سجل عملية داخل علاقة، بينما لا تغيير حفظ دائم parent id.
 
-**在单独的 link 中保留确切的 parent Agent。** parent 激活已经持有自身 `AgentHandle`，而且 `ownedChildren` 会在 child 仍然在线时阻止该激活 dispose。因此，通过会话 id 解析 parent 已经足够，也可以避免冗余的运行时引用。
+**في مفرد وحيد link في إبقاء تأكيد قطع parent Agent.** parent تنشيط قد يحتفظ ذاته `AgentHandle`، بينما كما `ownedChildren` سوف في child ما زال في خط وقت منع توقف هذا تنشيط dispose. لذلك، عبر جلسة id تحليل parent قد كاف كاف، أيضا يمكن تجنب تجنب زائد بقية وقت التشغيل مرجع.
 
-**为继续执行消息维护单独队列。** 第二个 FIFO 会让它和 Agent 已接受消息之间顺序不明确。单个 Agent inbox 为每个已接受轮次提供唯一且可观察的顺序。
+**لـ متابعة تنفيذ رسالة صيانة مفرد وحيد طابور صف.** ثاني عدد FIFO سوف يجعل هو و Agent قد قبول رسالة بين ترتيب لا واضح. مفرد عدد Agent inbox لـ كل قد قبول جولة توفير وحيد كما يمكن مراقبة ترتيب.
 
-**现在就暴露 subagent steering。** parent steering 需要当前轮次控制方状态，以及不同于 follow-up 投递的单独准入策略。首个版本将每条继续执行消息都排队，可以避免引入该状态及其准入竞争。
+**الآن حينئذ كشف subagent steering.** parent steering حاجة حالي جولة تحكم جهة حالة، و مختلف في follow-up إلقاء تمرير مفرد وحيد دقيق دخول سياسة. أول عدد إصدار سوف كل بند متابعة تنفيذ رسالة كل ترتيب طابور، يمكن تجنب تجنب جذب دخول هذا حالة و ذلك دقيق دخول تنافس تنازع.
 
-**在没有 host 消费方的情况下暴露 host-user follow-up。** 公开的权限铸造方法和用户分支可以在没有历史 parent 的情况下实现冷恢复，但没有生产 host 适配器调用该操作。在具体的经认证宿主交互能够收到私有能力之前，继续执行 API 只接受确切的在线 parent。
+**في لا يوجد host مستهلك حال حال تحت كشف host-user follow-up.** عام إذن صب صنع طريقة و مستخدم فرع يمكن في لا يوجد تاريخ parent حال حال تحت تنفيذ بارد استعادة، لكن لا يوجد إنتاج host مهايئ استدعاء هذا عملية. في أداة جسم مرور إقرار إثبات مضيف تفاعل قدرة كاف استلام إلى خاص قدرة قبل، متابعة تنفيذ API فقط قبول تأكيد قطع في خط parent.
 
-**返回 subagent 专属的投递路由。** `started`、`queued` 和 `resumed` 等标签重复了激活与 inbox 状态，却没有给调用方提供独立结果。复用 `MessageId` 和现有 inbox 事件，可以让投递关联继续由其所属的 Agent 约定承载。
+**إرجاع subagent مخصص تابع إلقاء تمرير توجيه.** `started`،`queued` و `resumed` انتظار وسم تكرار تنشيط و inbox حالة، لكن لا يوجد إعطاء استدعاء جهة توفير مستقل نتيجة. إعادة استخدام `MessageId` و قائم inbox حدث، يمكن يجعل إلقاء تمرير صلة ربط متابعة من ذلك الذي تابع Agent اتفاق تحمل تحميل.
 
-**使用 child 引用计数。** 计数无法识别哪个 child 仍持有拆卸工作，也允许重复递减错误。身份集合会显式保留取消和 dispose 义务。
+**استخدام child مرجع حساب عدد.** حساب عدد لا يمكن تعرف آخر أي عدد child ما زال يحتفظ تفكيك إزالة عمل، أيضا سماح تكرار تمرير نقص خطأ. هوية تجميع دمج سوف صريح إبقاء إلغاء و dispose معنى خدمة.
 
-## 影响
+## أثر
 
-本实现固定了以下行为：
+هذا تنفيذ ثابت التالي سلوك:
 
-- 可继续 child 至多拥有一个在线激活和一个 Agent inbox；继续执行管理器没有激活 FIFO 或 queued 激活状态。
-- `SubagentProvider.prepareContinuable?()` 只返回分离式 `ContinuableCreateSpec`；配置为 continuable 时要求具备该能力，而 `backgroundMode` 仍是独立的策略选择。
-- 管理器通过私有 activation-owner 作用域调用 `ctx.agents.create()`，安装返回的 `AgentHandle` 并建立 parent 所有权，调用 `Agent.followup(initialPrompt)`，然后在 inbox 接受消息并产生 `MessageId` 时返回 `{ childId, messageId }`，而不等待轮次开始或消息写入会话日志。
-- 初始提示词被 inbox 接受前的每条失败路径都会导致操作被拒绝且不返回 id，并通过一个对并发投递和 drain 可见的关闭事务回滚已创建的任何 handle、激活和 parent `ownedChildren` 成员关系；生命周期发布失败不会产生无配对的终止事件。
-- 冷恢复由继续执行管理器调用 `ctx.agents.resume()`，绝不通过或依赖初始 subagent 提供方；提供方移除后，描述符仍保留初始提供方名称，且 `SubagentProvider.resume?()` 和 `SubagentProviderResumeRequest` 均不存在。
-- 可继续激活直接持有 `AgentHandle`，绝不创建、包装或保留 `SubagentRun`；`SubagentProvider.start()` 和 `SubagentRun` 只用于 one-shot，且没有 `SubagentRun.steer?()`。
-- `followup()` 只接受确切的在线直接 parent，并在任何物化之后的最终无 await 的 inbox 准入边界再次检查该身份；持久化消息来源信息不能授权投递。
-- 继续执行消息始终使用 `Agent.followup()` 并共享其 inbox FIFO，包括 child 已有开放轮次的情况。
-- `ctx.subagents.followup()` 及其 `send_message` 适配器只返回已接受的 `MessageId`；继续执行层不接受投递 target，也不定义 subagent 专属路由结果。
-- 调用方 signal 只能在 inbox 接受消息前停止 start 和 follow-up，限定到宿主的拆卸与管理器全局拆卸则保留 child-first 清理；[当前轮次中断](2026-08-06-continuable-subagent-interrupt.zh.md)是唯一的公开停止操作，且不进入拆卸流程。
-- 本版本不暴露 subagent steering 操作或当前轮次控制方状态。
-- 带有在线所持 child 的空闲 Agent 会产生 `waiting` 激活，其 `AgentHandle` 继续保留。
-- 向 `waiting` 投递 `next-turn` 会唤醒同一个激活；完成 dispose 后投递消息会冷恢复新激活。
-- 每个由继续执行管理器管理的 parent 激活只会在直接持有的所有 child 激活完成 `AgentHandle` dispose 后进行 dispose；顶层 Agent 不加入等待图。
-- Activation 最终结算会在准入开放时等待 `ctx.sessions.flush(child.session)`，将其作为 best-effort 屏障；它会记录 rejection，但不会把 listener 参与解释为持久性证明，随后在 child lock 内重新验证最终状态，再关闭准入、dispose child handle 并释放 parent 所有权，使 flush 失败不会泄漏 `waiting` Activation。
-- 管理器拆卸会全局关闭准入；拥有选定顶层 Agent 的宿主则只关闭这些确切身份之下的准入，直到这些根离开注册表。两者都会按确切祖先关系跟踪已获准的物化过程，为每个选中的可见 Activation 安装一个记忆化 dispose 截止点，自顶向下传播取消，按 child-first 顺序释放 handle，即使个别分支失败也会等待所有选中分支，之后才 dispose 对应的顶层 Agent 或管理器作用域。
-- 基础生命周期不暴露隐式报告行为；可选的 report 包通过 setup 钩子贡献一个显式的 child 作用域工具。
-- 会话日志只会重建实际写入的消息，并保留每条消息的提供来源；已被 inbox 接受但未写入日志的消息没有重启保证。
-- 可继续 subagent 路径不创建或依赖 Task、`JobId`、Task 完成通知、Task 取消或中间的带结果执行包装层。
-- 单元覆盖固定 `startContinuable()` 在 inbox 接受消息时的返回边界、每条接受前和生命周期发布失败路径的完整回滚、全局和限定到 parent 作用域的 drain 都会等待夹在 Agent 发布与 Activation 注册之间的物化过程完全停稳、同级森林隔离、中间 Agent 离开注册表后的确切祖先关系、不依赖提供方的冷恢复、冷恢复物化后的最终确切 parent 再授权、接受前后两个阶段的调用方 signal 与拆卸所有权，以及已接受但未写入日志的消息不会自动回放。
-- 单元覆盖固定仅由驻留状态决定的路由表、单 inbox 顺序、通过 inbox 事件关联 `MessageId`、在开放轮次期间 follow-up、等待唤醒、冷恢复、所有权注册与释放、child-first dispose、发送与 dispose 的竞争、在最终 flush await 期间接受的直接 Agent 轮次、仅修改 Session 的工作与 maintenance、没有 listener 和 listener 失败时的 best-effort 最终 flush，以及不存在公开 subagent 取消和 steering。
-- report 包的单元覆盖会分别固定仅 child 可见性、setup 撤销、权限、投递模式、稳定消息身份和生命周期竞争。
-- 一项无密钥整套应用快照覆盖 parent 委派和 follow-up 排队、不存在 subagent steering 和隐式 report 投递、保留 waiting 中的 `AgentHandle` 以及 child-first dispose。另一项 report 快照覆盖可选的显式返回通道。
+- يمكن متابعة child حتى كثير يملك واحد في خط تنشيط و واحد Agent inbox؛ متابعة تنفيذ إدارة جهاز لا يوجد تنشيط FIFO أو queued تنشيط حالة.
+- `SubagentProvider.prepareContinuable?()` فقط إرجاع قسم مغادرة صيغة `ContinuableCreateSpec`؛ إعداد لـ continuable وقت اشتراط أداة تجهيز هذا قدرة، بينما `backgroundMode` ما زال هو مستقل سياسة اختيار.
+- إدارة جهاز عبر خاص activation-owner أثر مجال استدعاء `ctx.agents.create()`، تثبيت إرجاع `AgentHandle` و بناء قيام parent كل حق، استدعاء `Agent.followup(initialPrompt)`، لكن بعد في inbox قبول رسالة و إنتاج `MessageId` وقت إرجاع `{ childId, messageId }`، بينما لا انتظار جولة بدء أو رسالة كتابة جلسة سجل.
+- ابتدائي نص التوجيه يتم inbox قبول قبل كل بند فشل مسار كل سوف توجيه يؤدي عملية يتم رفض كما لا إرجاع id، و عبر واحد مقابل تزامن إلقاء تمرير و drain مرئي إغلاق أمر خدمة تراجع قد إنشاء أي handle، تنشيط و parent `ownedChildren` عضو علاقة؛ دورة الحياة إصدار فشل لن إنتاج بلا إعداد مقابل إنهاء حدث.
+- بارد استعادة من متابعة تنفيذ إدارة جهاز استدعاء `ctx.agents.resume()`، أبدا عبر أو اعتماد ابتدائي subagent مزود؛ مزود إزالة بعد، وصف رمز ما زال إبقاء ابتدائي مزود اسم، كما `SubagentProvider.resume?()` و `SubagentProviderResumeRequest` متساو لا وجود.
+- يمكن متابعة تنشيط مباشر يحتفظ `AgentHandle`، أبدا إنشاء، حزمة تركيب أو إبقاء `SubagentRun`؛`SubagentProvider.start()` و `SubagentRun` فقط لأجل one-shot، كما لا يوجد `SubagentRun.steer?()`.
+- `followup()` فقط قبول تأكيد قطع في خط مباشر parent، و في أي شيء تحويل بعد نهائي بلا await inbox دقيق دخول حد مجددا مرة فحص هذا هوية؛ حفظ دائم رسالة مصدر معلومة لا يستطيع تخويل إلقاء تمرير.
+- متابعة تنفيذ رسالة بداية نهاية استخدام `Agent.followup()` و مشترك ذلك inbox FIFO، يشمل child قد لديه فتح وضع جولة حال حال.
+- `ctx.subagents.followup()` و ذلك `send_message` مهايئ فقط إرجاع قد قبول `MessageId`؛ متابعة تنفيذ طبقة لا قبول إلقاء تمرير target، أيضا لا تعريف subagent مخصص تابع توجيه نتيجة.
+- استدعاء جهة signal فقط قدرة في inbox قبول رسالة قبل إيقاف start و follow-up، حد تحديد إلى مضيف تفكيك إزالة و إدارة جهاز عام تفكيك إزالة فإن إبقاء child-first تنظيف؛[حالي جولة في قطع](2026-08-06-continuable-subagent-interrupt.zh.md) هو وحيد عام إيقاف عملية، كما لا دخول تفكيك إزالة مسار.
+- هذا إصدار لا كشف subagent steering عملية أو حالي جولة تحكم جهة حالة.
+- حمل لديه في خط الذي حمل child فارغ خامل Agent سوف إنتاج `waiting` تنشيط، ذلك `AgentHandle` متابعة إبقاء.
+- نحو `waiting` إلقاء تمرير `next-turn` سوف نداء تنبيه نفس عدد تنشيط؛ إتمام dispose بعد إلقاء تمرير رسالة سوف بارد استعادة جديد تنشيط.
+- كل من متابعة تنفيذ إدارة جهاز إدارة parent تنشيط فقط سوف في مباشر يحتفظ كل child تنشيط إتمام `AgentHandle` dispose بعد إجراء dispose؛ قمة طبقة Agent لا إضافة دخول انتظار رسم.
+- Activation نهائي تسوية سوف في دقيق دخول فتح وضع وقت انتظار `ctx.sessions.flush(child.session)`، سوف ذلك بصفة best-effort شاشة عائق؛ هو سوف سجل rejection، لكن لن يأخذ listener مشاركة و حل تفسير لـ حمل دائم صفة إثبات، مع بعد في child lock داخل إعادة تحقق نهائي حالة، مجددا إغلاق دقيق دخول،dispose child handle و تحرير parent كل حق، جعل flush فشل لن تسرب تسرب `waiting` Activation.
+- إدارة جهاز تفكيك إزالة سوف عام إغلاق دقيق دخول؛ يملك اختيار تحديد قمة طبقة Agent مضيف فإن فقط إغلاق هذه تأكيد قطع هوية لـ تحت دقيق دخول، مباشر إلى هذه أصل مغادرة فتح سجل التسجيل. اثنان من كل سوف حسب تأكيد قطع أصل أولا علاقة تتبع أثر قد نيل دقيق شيء تحويل مرور مسار، لـ كل اختيار في مرئي Activation تثبيت واحد تسجيل ذاكرة تحويل dispose قطع توقف نقطة، ذاتي قمة نحو تحت نقل بث إلغاء، حسب child-first ترتيب تحرير handle، أي جعل عدد آخر فرع فشل أيضا سوف انتظار كل اختيار في فرع، بعد عندئذ dispose مقابل قمة طبقة Agent أو إدارة جهاز أثر مجال.
+- أساس أساس دورة الحياة لا كشف خفي صيغة تقرير إبلاغ سلوك؛ اختياري report حزمة عبر setup خطاف مساهمة واحد صريح child أثر مجال أداة.
+- جلسة سجل فقط سوف إعادة بناء فعلي كتابة رسالة، و إبقاء كل بند رسالة توفير مصدر؛ قد يتم inbox قبول لكن لم كتابة سجل رسالة لا يوجد إعادة بدء حفظ إثبات.
+- يمكن متابعة subagent مسار لا إنشاء أو اعتماد Task،`JobId`،Task إتمام إشعار،Task إلغاء أو في بين حمل نتيجة تنفيذ حزمة تركيب طبقة.
+- وحدة تغطية ثابت `startContinuable()` في inbox قبول رسالة وقت إرجاع حد، كل بند قبول قبل و دورة الحياة إصدار فشل مسار كامل تراجع، عام و حد تحديد إلى parent أثر مجال drain كل سوف انتظار مشبك في Agent إصدار و Activation تسجيل بين شيء تحويل مرور مسار تماما توقف مستقر، نفس درجة غابة حرج عزل، في بين Agent مغادرة فتح سجل التسجيل بعد تأكيد قطع أصل أولا علاقة، لا اعتماد مزود بارد استعادة، بارد استعادة شيء تحويل بعد نهائي تأكيد قطع parent مجددا تخويل، قبول قبل بعد اثنان عدد مرحلة مقطع استدعاء جهة signal و تفكيك إزالة كل حق، و قد قبول لكن لم كتابة سجل رسالة لن تلقائي إعادة تشغيل.
+- وحدة تغطية ثابت فقط من إقامة إبقاء حالة قرار توجيه جدول، مفرد inbox ترتيب، عبر inbox حدث صلة ربط `MessageId`، في فتح وضع جولة خلال follow-up، انتظار نداء تنبيه، بارد استعادة، كل حق تسجيل و تحرير،child-first dispose، إرسال و dispose تنافس تنازع، في نهائي flush await خلال قبول مباشر Agent جولة، فقط تعديل Session عمل و maintenance، لا يوجد listener و listener فشل وقت best-effort نهائي flush، و لا وجود عام subagent إلغاء و steering.
+- report حزمة وحدة تغطية سوف قسم آخر ثابت فقط child مرئي صفة،setup سحب إلغاء، إذن، إلقاء تمرير نمط، مستقر رسالة هوية و دورة الحياة تنافس تنازع.
+- واحد بند بلا مفتاح كامل طقم تطبيق لقطة تغطية parent تفويض إرسال و follow-up ترتيب طابور، لا وجود subagent steering و خفي صيغة report إلقاء تمرير، إبقاء waiting في `AgentHandle` و child-first dispose. آخر بند report لقطة تغطية اختياري صريح إرجاع عبر طريق.
 
-### 已接受的代价
+### قد قبول بديل قيمة
 
-移除 Task 会放弃通用后台工作检查、结果收集和精确 Task 取消。如果这些产品功能成为需求，就需要不会重新引入第二条执行队列的请求 ticket 或 inbox 能力。
+إزالة Task سوف وضع ترك عام خلفية عمل فحص، نتيجة استلام تجميع و دقيق Task إلغاء. إذا هذه منتج وظيفة يصبح يحتاج طلب، حينئذ حاجة لن إعادة جذب دخول ثاني بند تنفيذ طابور صف طلب ticket أو inbox قدرة.
 
-在后代运行期间保留激活，会按尚未完成所有权图的规模消耗 Agent 资源。现有委派深度策略仍会限制嵌套层级，而[共享 Activation 容量](2026-09-15-continuable-activation-capacity.zh.md)限制存活的可续接后代数；已结算的历史会话不保留 `AgentHandle`。
+في بعد بديل تشغيل خلال إبقاء تنشيط، سوف حسب بعد لم إتمام كل حق رسم قاعدة نموذج إزالة استهلاك Agent مورد. قائم تفويض إرسال عميق درجة سياسة ما زال سوف حد تضمين طقم طبقة درجة، بينما[مشترك Activation سعة كمية](2026-09-15-continuable-activation-capacity.zh.md) حد تخزين نشط يمكن متابعة وصل بعد بديل عدد؛ قد تسوية تاريخ جلسة لا إبقاء `AgentHandle`.
 
-进程内 inbox 和所有权图无法协调两个 harness 进程。允许多个进程并发访问同一持久化存储的部署，仍需要持久化 lease 和邮箱协议。
+عملية داخل inbox و كل حق رسم لا يمكن تنسيق ضبط اثنان عدد harness عملية. سماح كثير عدد عملية تزامن وصول نفس حفظ دائم تخزين نشر، ما زال حاجة حفظ دائم lease و بريد صندوق بروتوكول.
 
-未安装可选 report 包时，完成 child 轮次既不会把内容发送给历史 parent，也不会唤醒它。安装后，只有显式调用 `report` 才会发送选中内容；静默投递不唤醒 parent，next-step 投递则会唤醒它并加入最近的 step 边界。无论如何，child 的详细输出都会保留在其持久化会话中。
+لم تثبيت اختياري report حزمة وقت، إتمام child جولة حيث لن يأخذ محتوى إرسال إعطاء تاريخ parent، أيضا لن نداء تنبيه هو. تثبيت بعد، فقط لديه صريح استدعاء `report` عندئذ سوف إرسال اختيار في محتوى؛ ساكن صامت إلقاء تمرير لا نداء تنبيه parent،next-step إلقاء تمرير فإن سوف نداء تنبيه هو و إضافة دخول الأكثر قريب step حد. بلا نقاش مثل أي،child تفصيل دقيق إخراج كل سوف إبقاء في ذلك حفظ دائم جلسة في.
 
-将每条继续执行消息排队，意味着 parent 无法立即纠正正在进行的 child 轮次；纠正操作会在下一个轮次执行。后续 UI steering 操作可以缩短该延迟，而不改变 follow-up 排序。
+سوف كل بند متابعة تنفيذ رسالة ترتيب طابور، معنى طعم حال parent لا يمكن قيام أي تصحيح صحيح صحيح في إجراء child جولة؛ تصحيح صحيح عملية سوف في تحت واحد جولة تنفيذ. لاحق UI steering عملية يمكن تقليص قصير هذا تأخير متأخر، بينما لا تغيير follow-up ترتيب ترتيب.
 
-best-effort 最终 flush 失败时会记录日志，同时运行时所有权图继续 drain；持久化 child 状态可能缺失或陈旧。重试与修复需要单独的恢复设计。
+best-effort نهائي flush فشل وقت سوف سجل سجل، معا وقت التشغيل كل حق رسم متابعة drain؛ حفظ دائم child حالة ممكن ناقص أو قديم قديم. إعادة محاولة و إصلاح حاجة مفرد وحيد استعادة تصميم.

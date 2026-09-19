@@ -1,10 +1,10 @@
-# 实操手册：添加 workspace 包
+# فعلي تشغيل يد سجل: إضافة workspace حزمة
 
-[English](adding-a-package.md) | 中文
+[English](adding-a-package.md) | العربية
 
-为新建 `@deepseek-ai/dsh-<name>` 包提供的逐文件清单。本清单以 bash 和适配器这两个包为模板进行验证；如果清单与模板有出入，请在此修正。
+لـ جديد بناء `@deepseek-ai/dsh-<name>` حزمة توفير تدريجي ملف بيان. هذا بيان بـ bash و مهايئ هذا اثنان عدد حزمة لـ نموذج لوح إجراء تحقق؛ إذا بيان و نموذج لوح لديه خروج دخول، طلب في هذا إصلاح صحيح.
 
-## 1. 创建包
+## 1. إنشاء حزمة
 
 ```
 packages/<group>/<pkg>/
@@ -20,60 +20,60 @@ packages/<group>/<pkg>/
                    # (or a whitelist entry in scripts/verify-package-readme-limitations.ts)
 ```
 
-当已有分组与包的角色匹配时，选择该分组（`core`、`llm`、`shell`、`compaction`、`subagent`、`todo`、`session`、`client`/`host`、`util` 或 `test-support`）。允许新建分组，但分组只是纯容器：没有 `package.json`，没有源文件，包仍然恰好位于其下一层。
+عند قد لديه قسم مجموعة و حزمة زاوية لون مطابقة وقت، اختيار هذا قسم مجموعة (`core`،`llm`،`shell`،`compaction`،`subagent`،`todo`،`session`،`client`/`host`،`util` أو `test-support`). سماح جديد بناء قسم مجموعة، لكن قسم مجموعة فقط هو صاف حاوية: لا يوجد `package.json`، لا يوجد مصدر ملف، حزمة ما زال تماما جيد يقع في ذلك تحت واحد طبقة.
 
-package.json 不变式（由 `pnpm run constraints` / `scripts/check-workspace-constraints.ts` 强制执行）：`private: true`，`version` 与根 `package.json` 一致，`type: module`，`main: "lib/index.js"`，`types: "lib/types/index.d.ts"`，`exports["."].types: "./lib/types/index.d.ts"`，`exports["."].default: "./lib/index.js"`，`@deepseek-ai/cordis` 同时出现在 peerDependencies 和 devDependencies 中（相同范围）。每个 dsh 对等依赖（peer dependency）都要在 devDependencies 中镜像。`@deepseek-ai/schemastery` 放在 `dependencies` 中（它是运行时校验器），与 agent-loop 保持一致。`files` 列表精确包含 `lib/index.js`、`lib/types/**/*.d.ts` 以及门禁认可的包专用运行时产物；发布 `./invariant` 的包还要包含 `lib/invariant.js`。如果包的运行时 export 指向输出树，还要包含 `lib/types/**/*.js`。不要发布 `src`、声明映射、JS map 或陈旧的根声明文件。带有 `bin` 的 CLI 应用包在 `files` 中将 `lib/bin.js` 紧跟在 `lib/index.js` 之后。
+package.json ثابت صيغة (من `pnpm run constraints` / `scripts/check-workspace-constraints.ts` قوي صنع تنفيذ):`private: true`،`version` و أصل `package.json` متسق،`type: module`،`main: "lib/index.js"`،`types: "lib/types/index.d.ts"`،`exports["."].types: "./lib/types/index.d.ts"`،`exports["."].default: "./lib/index.js"`،`@deepseek-ai/cordis` معا ظهور في peerDependencies و devDependencies في (نفسه نطاق). كل dsh مقابل انتظار اعتماد (peer dependency) كل يلزم في devDependencies في مرآة مثل.`@deepseek-ai/schemastery` وضع في `dependencies` في (هو هو وقت التشغيل تحقق جهاز) ، و agent-loop إبقاء متسق.`files` قائمة دقيق يتضمن `lib/index.js`،`lib/types/**/*.d.ts` و بوابة إقرار يمكن حزمة مخصص استخدام وقت التشغيل ناتج؛ إصدار `./invariant` حزمة أيضا يلزم يتضمن `lib/invariant.js`. إذا حزمة وقت التشغيل export إشارة نحو إخراج شجرة، أيضا يلزم يتضمن `lib/types/**/*.js`. لا يلزم إصدار `src`، إعلان خريطة،JS map أو قديم قديم أصل إعلان ملف. حمل لديه `bin` CLI تطبيق حزمة في `files` في سوف `lib/bin.js` ضيق تتبع في `lib/index.js` بعد.
 
-包内的相对导入在源码中使用显式 `.ts` 后缀（例如 `export * from './types.ts'`）。编译器在输出的 JS 中将其重写为 `.js`，在声明文件中保留显式 `.ts` 后缀；标准的 NodeNext/Node16 TypeScript 消费方会将其解析到同目录的 `.d.ts` 文件。
+حزمة داخل متبادل مقابل استيراد في شفرة المصدر في استخدام صريح `.ts` بعد لاحقة (مثال مثل `export * from './types.ts'`). تحرير ترجمة جهاز في إخراج JS في سوف ذلك إعادة كتابة لـ `.js`، في إعلان ملف في إبقاء صريح `.ts` بعد لاحقة؛ معيار NodeNext/Node16 TypeScript مستهلك سوف سوف ذلك تحليل إلى نفس دليل `.d.ts` ملف.
 
-## 2. 在根配置中注册
+## 2. في أصل إعداد في تسجيل
 
-| 文件 | 变更 |
+| ملف | تغيير |
 |---|---|
-| `tsconfig.base.json` | 已有分组无需编辑；新分组需为 `@deepseek-ai/dsh-*` 通配符添加 `./packages/<group>/*/src` 候选路径 |
-| `tsconfig.host.json`（Host 包）或 `tsconfig.client.json`（Client 包） | 在 `references` 中添加 `{ "path": "./packages/<group>/<pkg>" }`——普通包恰好属于一个 aggregate，绝不两个都加。`api/remotes` 因 Host 生成约定与 Client 消费约定之间存在顺序依赖而使用仓库专属拆分，新增包不得仿照（[布局](../development.zh.md#typescript-project-layout)） |
+| `tsconfig.base.json` | قد لديه قسم مجموعة بلا حاجة تحرير؛ جديد قسم مجموعة يحتاج لـ `@deepseek-ai/dsh-*` عبر إعداد رمز إضافة `./packages/<group>/*/src` مرشح مسار |
+| `tsconfig.host.json`(Host حزمة) أو `tsconfig.client.json`(Client حزمة) | في `references` في إضافة `{ "path": "./packages/<group>/<pkg>" }`——عادي حزمة تماما جيد يخص واحد aggregate، أبدا اثنان عدد كل إضافة.`api/remotes` بسبب Host توليد اتفاق و Client إزالة استهلاك اتفاق بين وجود ترتيب اعتماد بينما استخدام مستودع مخصص تابع تفكيك قسم، إضافة جديدة حزمة لا نيل محاكاة وفق ([تخطيط](../development.zh.md#typescript-project-layout)) |
 
-`packages/client/*` 包改为 extends `tsconfig.base.client.json`（而非 `tsconfig.base.json`）；client 插件包还需在 package.json 声明 `dsh.client`、导出 `./client`、调用共享 tsdown preset（`packages/client/tsdown.client.ts`）——client 侧见 [packages/client/AGENTS.md](../../packages/client/AGENTS.md)。
+`packages/client/*` حزمة تعديل لـ extends `tsconfig.base.client.json`(بينما غير `tsconfig.base.json`) ؛client إضافة حزمة أيضا يحتاج في package.json إعلان `dsh.client`، توجيه خروج `./client`، استدعاء مشترك tsdown preset(`packages/client/tsdown.client.ts`)——client جانب رؤية [packages/client/AGENTS.md](../../packages/client/AGENTS.md).
 
-以下内容由 glob 或包 manifest（元数据清单）发现机制自动覆盖，无需手动编辑：根 `package.json` workspaces、`scripts/publint-all.ts`、`tsdown.config.ts`、`.oxlintrc.json`、`scripts/check-workspace-constraints.ts`。
+التالي محتوى من glob أو حزمة manifest(بيانات وصفية بيان) اكتشاف آلية تلقائي تغطية، بلا حاجة يد حركة تحرير: أصل `package.json` workspaces،`scripts/publint-all.ts`،`tsdown.config.ts`،`.oxlintrc.json`،`scripts/check-workspace-constraints.ts`.
 
-## 3. 确定包拓扑
+## 3. تحديد حزمة توسيع اندفاع
 
-对于可替换的能力，当 Service Definition／Service Provider／Consumer 角色需要独立演进时，将它们拆分到不同包中（见 docs/architecture.md § "Capability seams"——shell 三组件是模板）。单一用途的插件保持为一个包。
+مقابل في يمكن استبدال قدرة، عند Service Definition/Service Provider/Consumer زاوية لون حاجة مستقل عرض دخول وقت، سوف هو جمع تفكيك قسم إلى مختلف حزمة في (رؤية docs/architecture.md § "Capability seams"——shell ثلاثة مكون هو نموذج لوح). مفرد واحد استخدام طريق إضافة إبقاء لـ واحد حزمة.
 
-### 使用符合实际的角色名称
+### استخدام رمز دمج فعلي زاوية لون اسم
 
-名称必须描述当前稳定职责。不要用首个实现、可能的未来扩展或 Cordis 基类命名。接口包使用能力名称。实现包加上能够区分实现的机制、协议、环境或厂商限定词。只有同主机执行属于约定时，才使用 `local`。
+اسم يجب وصف حالي مستقر مسؤولية. لا يلزم استخدام أول عدد تنفيذ، ممكن لم قدوم توسيع أو Cordis أساس صنف تسمية. واجهة حزمة استخدام قدرة اسم. تنفيذ حزمة إضافة فوق قدرة كاف منطقة قسم تنفيذ آلية، بروتوكول، بيئة أو مصنع تجارة حد تحديد كلمة. فقط لديه نفس رئيسي آلة تنفيذ يخص اتفاق وقت، عندئذ استخدام `local`.
 
-一个 engine、runtime、policy、controller、resolver、store 或当前配置使用单数 `ctx` key。registry 或拥有多个具名成员的服务使用复数 key。类的角色与 key 的单复数必须一致。不得让不兼容的 host 与 client 声明复用同一个 Cordis `Context` key。即使二者使用独立的运行时 context，TypeScript 声明合并仍会同时看到两种类型。如果自然复数已经属于另一个端面，就增加职责后缀。
+واحد engine،runtime،policy،controller،resolver،store أو حالي إعداد استخدام مفرد عدد `ctx` key.registry أو يملك كثير عدد أداة اسم عضو خدمة استخدام تكرار عدد key. صنف زاوية لون و key مفرد تكرار عدد يجب متسق. لا نيل يجعل لا توافق host و client إعلان إعادة استخدام نفس عدد Cordis `Context` key. أي جعل اثنان من استخدام مستقل وقت التشغيل context،TypeScript إعلان دمج ما زال سوف معا يرى اثنان نوع نوع. إذا ذاتي لكن تكرار عدد قد يخص آخر عدد طرف وجه، حينئذ زيادة مسؤولية بعد لاحقة.
 
-| 词 | 适用条件 | 不适用条件 |
+| كلمة | ملائم استخدام شرط | لا ملائم استخدام شرط |
 |---|---|---|
-| `Controller` | 接受命令或用户意图，并改变一项既有领域状态或展示状态。 | 执行任意工作、拥有一组 provider，或只把值转换为展示形式。 |
-| `Store` | 拥有一组数据，主要提供该数据的 CRUD、snapshot 或 subscription 操作。 | 校验状态机、裁决权限、分派工作或拥有 provider 优先级。类中有 map 不等于 store。 |
-| `Directory` | 暴露供发现或选择的条目及其元数据。 | producer 向其中注册任意实现，或调用方通过它执行工作。 |
-| `Presenter` | 将领域值或工具参数纯转换为渲染意图。 | 执行 I/O、订阅、修改状态或拥有生命周期。 |
-| `Registry` | 拥有一组动态具名注册，以及查询、重复项或优先级规则、生命周期和释放。 | 主要约定是分派、执行、取消、策略或编排。 |
-| `Runtime` | 运行实时工作，并跨调用拥有分派、取消、provider 协调或操作生命周期。 | 只存储记录、返回目录、解析一个值或保存配置。 |
-| `Resolver` | 根据输入计算或定位一个答案，但不拥有该答案的生命周期。 | 拥有可变集合或长时间运行的执行过程。 |
-| `Binder` | 把一个已声明接口绑定到调用方的 context 或生命周期，并返回绑定值。 | 把该值作为集合持有、控制其领域状态，或只转换数据。 |
-| `Engine` | 实现领域算法或有状态执行模型。 | 只选择 provider 或跨协议边界转发请求。 |
-| `Policy` | 决定允许、选择、限制或观察什么。 | 执行该决定所允许的机制。 |
-| `Executor` | 在一项能力中运行一个明确请求或已解析 spec。 | 拥有广泛应用生命周期或 provider 目录。 |
-| `Gateway` | 适配进程、网络、RPC 或 API 边界。 | 只注册同进程服务或存储元数据。 |
-| `Provider` | 提供一项能力定义的一个实现。存在多个实现时，加上机制或厂商限定词。 | 表示能力定义、provider registry 或消费方 runtime。 |
-| `Backend` | 在已定义接口之后实现可替换的底层持久化、传输或执行。 | 表示面向用户的服务或一个已返回的实时资源引用。 |
-| `Handle` | 引用一个实时资源，并控制或观察该资源。 | 创建并管理完整资源池。 |
-| `Config` | 拥有一个已解析配置值，或一项边界严格的配置记录及其更新约定。 | 存储通用集合、执行工作或暴露无关设置。 |
-| `Service` | 拥有一项无法用以上更精确角色诚实描述的内聚领域服务。 | 只因为类继承 Cordis `Service` 而使用该名称。 |
+| `Controller` | قبول أمر أو مستخدم معنى رسم، و تغيير واحد بند قائم مجال حالة أو عرض حالة. | تنفيذ مهمة معنى عمل، يملك واحد مجموعة provider، أو فقط يأخذ قيمة تحويل لـ عرض شكل صيغة. |
+| `Store` | يملك واحد مجموعة بيانات، رئيسي يلزم توفير هذا بيانات CRUD،snapshot أو subscription عملية. | تحقق حالة آلة، قطع قرار إذن، قسم إرسال عمل أو يملك provider أولوية درجة. صنف في لديه map لا انتظار في store. |
+| `Directory` | كشف توفير اكتشاف أو اختيار بند و ذلك بيانات وصفية. | producer نحو منها تسجيل مهمة معنى تنفيذ، أو استدعاء جهة عبر هو تنفيذ عمل. |
+| `Presenter` | سوف مجال قيمة أو أداة معامل صاف تحويل لـ تصيير معنى رسم. | تنفيذ I/O، حجز قراءة، تعديل حالة أو يملك دورة الحياة. |
+| `Registry` | يملك واحد مجموعة حركة حالة أداة اسم تسجيل، و استعلام، تكرار بند أو أولوية درجة قاعدة، دورة الحياة و تحرير. | رئيسي يلزم اتفاق هو قسم إرسال، تنفيذ، إلغاء، سياسة أو تحرير ترتيب. |
+| `Runtime` | تشغيل فوري عمل، و عبر استدعاء يملك قسم إرسال، إلغاء،provider تنسيق ضبط أو عملية دورة الحياة. | فقط تخزين سجل، إرجاع دليل، تحليل واحد قيمة أو حفظ إعداد. |
+| `Resolver` | أصل حسب إدخال حساب حساب أو تحديد موضع واحد جواب سجل، لكن لا يملك هذا جواب سجل دورة الحياة. | يملك متغير تجميع دمج أو طويل وقت تشغيل تنفيذ مرور مسار. |
+| `Binder` | يأخذ واحد قد إعلان واجهة ربط إلى استدعاء جهة context أو دورة الحياة، و إرجاع ربط قيمة. | يأخذ هذا قيمة بصفة تجميع دمج يحتفظ، تحكم ذلك مجال حالة، أو فقط تحويل بيانات. |
+| `Engine` | تنفيذ مجال حساب قاعدة أو لديه حالة تنفيذ نموذج. | فقط اختيار provider أو عبر بروتوكول حد تحويل إرسال طلب. |
+| `Policy` | قرار سماح، اختيار، حد أو مراقبة ماذا. | تنفيذ هذا قرار الذي سماح آلية. |
+| `Executor` | في واحد بند قدرة في تشغيل واحد واضح طلب أو قد تحليل spec. | يملك واسع عام تطبيق دورة الحياة أو provider دليل. |
+| `Gateway` | ملائم إعداد عملية، شبكة شبكة،RPC أو API حد. | فقط تسجيل نفس عملية خدمة أو تخزين بيانات وصفية. |
+| `Provider` | توفير واحد بند قدرة تعريف واحد تنفيذ. وجود كثير عدد تنفيذ وقت، إضافة فوق آلية أو مصنع تجارة حد تحديد كلمة. | يمثل قدرة تعريف،provider registry أو مستهلك runtime. |
+| `Backend` | في قد تعريف واجهة بعد تنفيذ يمكن استبدال قاع طبقة حفظ دائم، نقل أو تنفيذ. | يمثل موجه إلى مستخدم خدمة أو واحد قد إرجاع فوري مورد مرجع. |
+| `Handle` | مرجع واحد فوري مورد، و تحكم أو مراقبة هذا مورد. | إنشاء و إدارة كامل مورد حوض. |
+| `Config` | يملك واحد قد تحليل إعداد قيمة، أو واحد بند حد صارم إطار إعداد سجل و ذلك تحديث اتفاق. | تخزين عام تجميع دمج، تنفيذ عمل أو كشف غير متصل ضبط. |
+| `Service` | يملك واحد بند لا يمكن استخدام بـ فوق أكثر دقيق زاوية لون صدق فعلي وصف داخل تجمع مجال خدمة. | فقط لأن صنف وراثة Cordis `Service` بينما استخدام هذا اسم. |
 
-只对受支持的 Python 与 TypeScript SDK 所使用的 JSON-RPC 客户端／服务器协议使用 `SDK`。DeepSeek Harness 本身是 agent harness，不是 SDK 项目。产品拼写统一使用 `Typert`，不得使用 `TypeRT` 或 `typeRT`。
+فقط مقابل تلقي دعم حمل Python و TypeScript SDK الذي استخدام JSON-RPC عميل/خادم بروتوكول استخدام `SDK`.DeepSeek Harness ذاته هو agent harness، لا هو SDK مشروع. منتج تجميع كتابة موحد واحد استخدام `Typert`، لا نيل استخدام `TypeRT` أو `typeRT`.
 
 <a id="4-write-the-package-readme"></a>
 
-## 4. 编写包 README
+## 4. تحرير كتابة حزمة README
 
-将包特有的服务 API、配置、事件、扩展点和设计说明放在前面。根据 [dsh-doc 元数据参考](../../.agents/skills/dsh-doc/references/metadata-links-i18n.md#the-kind-system)中的四种 kind 标签——组、参考、库或 bundle——选择 frontmatter 的 `kind`，使其匹配包在仓库中的位置与入口形态；每个 kind 恰好对应一个 README 模板。limitations 部分记录持久的消费方缺口和本包拥有的非显而易见的维护者约束；日常清理事项留在源码 TODO 或 Agent Note 中。间接的 Model Experience 语句可以点名暴露本包贡献的消费方，但不重述该消费方的实现。包 README 以如下规范序列结尾：
+سوف حزمة خاص لديه خدمة API، إعداد، حدث، نقطة توسيع و تصميم شرح وضع في قبل وجه. أصل حسب [dsh-doc بيانات وصفية مشاركة اعتبار](../../.agents/skills/dsh-doc/references/metadata-links-i18n.md#the-kind-system) في أربعة نوع kind وسم——مجموعة، مشاركة اعتبار، مكتبة أو bundle——اختيار frontmatter `kind`، جعل ذلك مطابقة حزمة في مستودع في موضع و مدخل شكل؛ كل kind تماما جيد مقابل واحد README نموذج لوح.limitations جزء سجل حمل دائم مستهلك نقص فتحة و هذه الحزمة يملك غير إظهار بينما سهل رؤية صيانة من قيد؛ يوم معتاد تنظيف أمر بند إبقاء في شفرة المصدر TODO أو Agent Note في. بين وصل Model Experience لغة جملة يمكن نقطة اسم كشف هذه الحزمة مساهمة مستهلك، لكن لا إعادة وصف هذا مستهلك تنفيذ. حزمة README بـ مثل تحت مواصفة تسلسل ربط ذيل:
 
 ````markdown
 ## Model Experience
@@ -103,11 +103,11 @@ Append-only, prefix-stable, replacing, or independent behavior, including the ex
 - **Consumer-visible gap** — exact missing operation or case, its consequence, and any maintainer constraint.
 ````
 
-根据实现填写 Model Experience。每个直接、条件、上限、生命周期或辅助的模型上下文条目使用一个 H3，包含上述三个有序 H4 字段，每个字段下有一个正文段落。引用包拥有的稳定文本：系统提示词放在引出它的字段下，用带标题的 H5 加 `markdown` 围栏表示，通常归入 `What the model sees`；其他短文本以命名占位符内联，其他长文本使用相同的嵌套形式。仅概述数据依赖或提供方拥有的文本。工具 schema 条目链接到生成的[工具目录](../tool-catalog.zh.md)中对应的锚定章节，仅说明该处缺失的差异。当作用域可以隐藏 prompt 或 schema 其中之一而不影响另一个时，将二者分开。填写 `KV Cache effect` 时，应区分仅追加增长、稳定重复的前缀、替换既有请求 token 和独立模型请求，并列出会使缓存复用失效、且由本包拥有的变化。“不使缓存失效”仅表示本包保留了已有的可复用前缀；缓存是否可用以及何时淘汰不属于本包约定。[行文标准](../../.agents/skills/dsh-prose-standard/SKILL.md)约束完整性与归属；验证器强制执行所需章节结构。
+أصل حسب تنفيذ ملء كتابة Model Experience. كل مباشر، شرط، حد أعلى، دورة الحياة أو مساعد مساعدة نموذج سياق بند استخدام واحد H3، يتضمن فوق وصف ثلاثة عدد لديه ترتيب H4 حقل، كل حقل تحت لديه واحد متن مقطع سقوط. مرجع حزمة يملك مستقر نص: توجيه النظام وضع في جذب خروج هو حقل تحت، استخدام حمل عنوان H5 إضافة `markdown` محيط شريط يمثل، عبر معتاد عودة دخول `What the model sees`؛ أخرى قصير نص بـ تسمية احتلال موضع رمز داخل ربط، أخرى طويل نص استخدام نفسه تضمين طقم شكل صيغة. فقط عام وصف بيانات اعتماد أو مزود يملك نص. أداة schema بند رابط إلى توليد[أداة دليل](../tool-catalog.zh.md) في مقابل مرساة تحديد فصل عقدة، فقط شرح هذا موضع ناقص فرق مختلف. عند أثر مجال يمكن إخفاء prompt أو schema منها لـ واحد بينما لا أثر آخر عدد وقت، سوف اثنان من قسم فتح. ملء كتابة `KV Cache effect` وقت، ينبغي منطقة قسم فقط إلحاق زيادة طويل، مستقر تكرار بادئة، استبدال قائم طلب token و مستقل نموذج طلب، و صف خروج سوف جعل ذاكرة مؤقتة إعادة استخدام بطلان، كما من هذه الحزمة يملك تغير.“لا جعل ذاكرة مؤقتة بطلان” فقط يمثل هذه الحزمة إبقاء قد لديه يمكن إعادة استخدام بادئة؛ ذاكرة مؤقتة هل متاح و أي وقت تصفية استبعاد لا يخص هذه الحزمة اتفاق.[سطر نص معيار](../../.agents/skills/dsh-prose-standard/SKILL.md) قيد كامل صفة و ملكية؛ تحقق جهاز قوي صنع تنفيذ الذي يحتاج فصل عقدة بنية.
 
-没有上下文效果或仅有消费方拥有路径的包使用 [`SENTENCE_MODEL_EXPERIENCE`](../../scripts/verify-package-readme-model-experience.ts) 中经过审计的 `None, as ` 或 `Indirectly, through ` 语句，随后添加 `KV Cache effect` H4 和一个非空正文段落；与模型无关的通用包可以改为加入 `NO_MODEL_EXPERIENCE_SECTION`。两种情况都不要展开为对另一个包工作的描述。limitations [allowlist](../../scripts/verify-package-readme-limitations.ts) 独立管理。[Model Experience Agent Note](../../.agents/notes/implemented/process/2026-07-12-package-model-experience-contract.zh.md) 记录了设计动机。
+لا يوجد سياق فاعلية نتيجة أو فقط لديه مستهلك يملك مسار حزمة استخدام [`SENTENCE_MODEL_EXPERIENCE`](../../scripts/verify-package-readme-model-experience.ts) في مرور مرور مراجعة حساب `None, as ` أو `Indirectly, through ` لغة جملة، مع بعد إضافة `KV Cache effect` H4 و واحد غير فارغ متن مقطع سقوط؛ و نموذج غير متصل عام حزمة يمكن تعديل لـ إضافة دخول `NO_MODEL_EXPERIENCE_SECTION`. اثنان نوع حال حال كل لا يلزم توسيع لـ مقابل آخر عدد حزمة عمل وصف.limitations [allowlist](../../scripts/verify-package-readme-limitations.ts) مستقل إدارة.[Model Experience Agent Note](../../.agents/notes/implemented/process/2026-07-12-package-model-experience-contract.zh.md) سجل تصميم حركة آلة.
 
-## 5. 验证
+## 5. تحقق
 
 ```sh
 pnpm install        # registers the workspace
@@ -116,4 +116,4 @@ pnpm run constraints && pnpm run typecheck && pnpm run lint
 pnpm run build && pnpm run hygiene
 ```
 
-请遵循[仓库测试政策](../testing.zh.md)，执行新包所需的行为专项检查并达到相应覆盖率。
+طلب التزام دوران[مستودع اختبار سياسة سياسة](../testing.zh.md) ، تنفيذ جديد حزمة الذي يحتاج سلوك مخصص بند فحص و بلوغ إلى متبادل ينبغي نسبة التغطية.

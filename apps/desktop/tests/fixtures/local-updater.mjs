@@ -276,7 +276,7 @@ async function main() {
             throw error
           }
         }
-        await until("document.getElementById('title')?.textContent === '需要更新'")
+        await until("document.getElementById('title')?.textContent === 'حاجة تحديث'")
         assert.equal(await window.webContents.executeJavaScript("document.querySelector('#title b') === null"), true)
         if (process.platform === 'win32') {
           assert.equal(window.isMovable(), true)
@@ -294,11 +294,11 @@ async function main() {
         assert.equal(window.isDestroyed(), false)
         assert.equal(f.installations.length, 0)
         await window.webContents.executeJavaScript("document.getElementById('page').click()")
-        await until("document.getElementById('browser-message').textContent.includes('无法打开浏览器')")
+        await until("document.getElementById('browser-message').textContent.includes('لا يمكن فتح متصفح')")
         assert.deepEqual(opened, ['https://downloads.example.com/desktop'])
         await window.webContents.executeJavaScript("document.getElementById('copy').click()")
         await copyComplete.promise
-        await until("document.getElementById('copy').textContent === '已复制链接'")
+        await until("document.getElementById('copy').textContent === 'قد نسخ رابط'")
         assert.deepEqual(copied, opened)
         await f.coordinator.check()
         modal.sync()
@@ -308,7 +308,7 @@ async function main() {
         assert.equal(f.coordinator.state.phase, 'downloading')
         assert.equal(await window.webContents.executeJavaScript("document.getElementById('page').hidden"), true)
         server.release()
-        await until("document.getElementById('update').textContent === '停止任务并更新' && !document.getElementById('update').disabled")
+        await until("document.getElementById('update').textContent === 'إيقاف مهمة و تحديث' && !document.getElementById('update').disabled")
         assert.equal(f.installations.length, 0)
         assert.equal(modal.confirmationWindow, window)
         server.policy('stall')
@@ -322,7 +322,7 @@ async function main() {
         })`)
         assert.deepEqual(snapshot, JSON.parse(await readFile(new URL('../expected/mandatory-update-zh.json', import.meta.url), 'utf8')))
         await window.webContents.executeJavaScript("document.getElementById('later').click()")
-        await until("document.getElementById('update').textContent === '继续安装更新' && !document.getElementById('update').disabled")
+        await until("document.getElementById('update').textContent === 'متابعة تثبيت تحديث' && !document.getElementById('update').disabled")
         assert.equal(f.installations.length, 0)
         let capture
         try { capture = await window.webContents.capturePage() }

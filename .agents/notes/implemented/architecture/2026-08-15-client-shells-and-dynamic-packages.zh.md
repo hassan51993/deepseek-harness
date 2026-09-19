@@ -1,90 +1,90 @@
-# Agent Note: 客户端壳分层与动态包边界
+# Agent Note: عميل قشرة قسم طبقة و حركة حالة حزمة حد
 
 Status: implemented
 
-[English](2026-08-15-client-shells-and-dynamic-packages.md) | 中文
+[English](2026-08-15-client-shells-and-dynamic-packages.md) | العربية
 
-> [Client 插件装载模型](2026-07-23-client-plugin-loading-model.zh.md)负责模块到达、Cordis 生命周期和 HMR。本 Note 负责包归属、构建 face、共享模块请求及 npm 依赖声明；这些决定取代装载 Note 中较早的包分类和 import 边规则。
+> [Client إضافة تركيب تحميل نموذج](2026-07-23-client-plugin-loading-model.zh.md) مسؤول وحدة وصول،Cordis دورة الحياة و HMR. هذا Note مسؤول حزمة ملكية، بناء face، مشترك وحدة طلب و npm اعتماد إعلان؛ هذه قرار يحل محل تركيب تحميل Note في مقارنة مبكر حزمة تصنيف و import حافة قاعدة.
 
 ## Problem
 
-Client npm 依赖区段描述安装和开发关系，但不能可靠描述 bundle 内容。把 `dependencies`、`peerDependencies` 或 `devDependencies` 当作隐式 bundler 指令，可能内联本应共享的 React 或 workspace 身份，也可能让构建后的库携带未解析子 import，却没有交给预期的宿主组装。
+Client npm اعتماد منطقة مقطع وصف تثبيت و تطوير علاقة، لكن لا يستطيع يمكن اعتماد وصف bundle محتوى. يأخذ `dependencies`،`peerDependencies` أو `devDependencies` عند عمل خفي صيغة bundler إشارة أمر، ممكن داخل ربط هذا ينبغي مشترك React أو workspace هوية، أيضا ممكن يجعل بناء بعد مكتبة يحمل لم تحليل فرعي import، لكن لا يوجد تسليم إعطاء مسبق مدة مضيف تجميع.
 
-浏览器应用还包含不同角色：HTML/Vite 编译入口、不依赖框架的 Cordis 启动内核、静态装配库，以及由 Loader 治理的插件。HTML 提前执行属于到达策略，不定义包类别。Modules 必须先于 Vite 主模块到达，同时继续使用普通 `lib/client.js` 产物和动态图 row。
+متصفح تطبيق أيضا يتضمن مختلف زاوية لون:HTML/Vite تحرير ترجمة مدخل، لا اعتماد إطار هيكل Cordis بدء داخل نواة، ساكن حالة تركيب إعداد مكتبة، و من Loader معالجة إدارة إضافة.HTML رفع قبل تنفيذ يخص وصول سياسة، لا تعريف حزمة صنف آخر.Modules يجب أولا في Vite رئيسي وحدة وصول، معا متابعة استخدام عادي `lib/client.js` ناتج و حركة حالة رسم row.
 
-共享 UI 库仍向大量消费者暴露同步 TypeScript 与 React 实体。在这些实体进入 service 或 slot 前，形式上把库改为动态 entry 只会保留实体耦合，并模糊外壳必须共享的模块身份。
+مشترك UI مكتبة ما زال نحو كبير كمية إزالة استهلاك من كشف تزامن TypeScript و React فعلي جسم. في هذه فعلي جسم دخول service أو slot قبل، شكل صيغة فوق يأخذ مكتبة تعديل لـ حركة حالة entry فقط سوف إبقاء فعلي جسم اقتران دمج، و نموذج غامض خارج قشرة يجب مشترك وحدة هوية.
 
 ## Decision
 
-### 分层与构建形态
+### قسم طبقة و بناء شكل
 
-| 层 | 成员 | 职责 | 构建与加载形态 |
+| طبقة | عضو | مسؤولية | بناء و تحميل شكل |
 | --- | --- | --- | --- |
-| Web 编译壳 | `apps/web` | 拥有 `index.html`、Vite 配置、dist chunk 和静态资源 | 从已构建 package export 组装最终浏览器产物 |
-| 启动内核 | `packages/client/web` | 拥有纯 DOM 启动页、模块系统接线、Cordis settle 和 renderer handoff | `staticLinked` `lib/index.js`；无 `dsh.client` row |
-| 静态装配库 | Cordis、`ui-primitives`、`ui-slots` | 提供共享模块身份和直接实体 API | ESM `lib/index.js`，由 Vite 合并拆分；不是 Loader entry |
-| 模块自举包 | `packages/client/modules` | 提供 client 模块表及其 Cordis wrapper | 带一个普通 `lib/client.js` 的动态包；host 提前送达其 factory |
-| 动态 client 包 | connection、`ui-renderer`、主题和功能插件 | 通过 Cordis service、slot 和 effect 参与应用 | 声明 `dsh.client`，产出自注册 `lib/client.js`，并保留 host graph entry |
+| Web تحرير ترجمة قشرة | `apps/web` | يملك `index.html`،Vite إعداد،dist chunk و ساكن حالة مورد | من قد بناء package export تجميع نهائي متصفح ناتج |
+| بدء داخل نواة | `packages/client/web` | يملك صاف DOM بدء صفحة، وحدة نظام وصل خط،Cordis settle و renderer handoff | `staticLinked` `lib/index.js`؛ بلا `dsh.client` row |
+| ساكن حالة تركيب إعداد مكتبة | Cordis،`ui-primitives`،`ui-slots` | توفير مشترك وحدة هوية و مباشر فعلي جسم API | ESM `lib/index.js`، من Vite دمج تفكيك قسم؛ لا هو Loader entry |
+| وحدة ذاتي رفع حزمة | `packages/client/modules` | توفير client وحدة جدول و ذلك Cordis wrapper | حمل واحد عادي `lib/client.js` حركة حالة حزمة؛host رفع قبل إرسال بلوغ ذلك factory |
+| حركة حالة client حزمة | connection،`ui-renderer`، رئيسي عنوان و وظيفة إضافة | عبر Cordis service،slot و effect مشاركة و تطبيق | إعلان `dsh.client`، إنتاج خروج ذاتي تسجيل `lib/client.js`، و إبقاء host graph entry |
 
-`packages/client/web` 把 Cordis 保持为 matching peer 与开发依赖，并把 modules 和静态 UI 包作为开发期编译输入。`apps/web` 消费已构建 package export，不通过 alias 读取 workspace 源码。
+`packages/client/web` يأخذ Cordis إبقاء لـ matching peer و تطوير اعتماد، و يأخذ modules و ساكن حالة UI حزمة بصفة تطوير مدة تحرير ترجمة إدخال.`apps/web` إزالة استهلاك قد بناء package export، لا عبر alias قراءة workspace شفرة المصدر.
 
-`staticLinked` 预设让 `lib/index.js` 中每个 bare specifier 保持 external import，并在旁边输出相对 CSS 资产。Vite 宿主负责解析和去重这些 import，并决定最终 chunk 边界。静态库不会把宿主打包策略复制进自身产物。
+`staticLinked` مسبق ضبط يجعل `lib/index.js` في كل bare specifier إبقاء external import، و في جانب حافة إخراج متبادل مقابل CSS مورد إنتاج.Vite مضيف مسؤول تحليل و ذهاب إعادة هذه import، و قرار نهائي chunk حد. ساكن حالة مكتبة لن يأخذ مضيف تحزيم سياسة نسخ دخول ذاته ناتج.
 
-### 共享模块请求
+### مشترك وحدة طلب
 
-动态浏览器 bundle 会隐式 external 统一基座：`PLATFORM_MODULES` 命名由外壳播种的 React、Cordis 和静态 UI 身份，`PRELOADED_CLIENT_EXTERNALS` 则为必须先于 shell 启动到达的动态身份预留，当前为空。包只在精确请求基座外实体时使用 `dsh.client.external`。纯类型 import 会被擦除，不产生请求；允许的第三方实现库保留为 bundle 私有内容。
+حركة حالة متصفح bundle سوف خفي صيغة external موحد واحد أساس مقعد:`PLATFORM_MODULES` تسمية من خارج قشرة بث نوع React،Cordis و ساكن حالة UI هوية،`PRELOADED_CLIENT_EXTERNALS` فإن لـ يجب أولا في shell بدء وصول حركة حالة هوية مسبق إبقاء، حالي لـ فارغ. حزمة فقط في دقيق طلب أساس مقعد خارج فعلي جسم وقت استخدام `dsh.client.external`. صاف نوع import سوف يتم مسح حذف، لا إنتاج طلب؛ سماح رقم ثلاثة جهة تنفيذ مكتبة إبقاء لـ bundle خاص محتوى.
 
-请求只有两种提供方：
+طلب فقط لديه اثنان نوع مزود:
 
-1. 请求所命名的 dynamic package row；末尾 `/client` 会别名到该 package row。
-2. 外壳静态模块表中的精确 key。
+1. طلب الذي تسمية dynamic package row؛ نهاية ذيل `/client` سوف آخر اسم إلى هذا package row.
+2. خارج قشرة ساكن حالة وحدة جدول في دقيق key.
 
-不存在通用 `dsh.client.provide` 别名机制。动态 row 和静态 key 已穷尽实际提供方，Cordis service provide 与此相互独立。图组合会拒绝畸形或缺失请求、自请求和同步请求环，并把动态提供方排在消费者之前。`ClientModuleSystem.import()` 与 `prefetch()` 会在消费者能够物化前递归登记这些动态提供方的 factory，因此网络时序无法破坏同步请求图。
+لا وجود عام `dsh.client.provide` آخر اسم آلية. حركة حالة row و ساكن حالة key قد نفاد كل فعلي مزود،Cordis service provide و هذا متبادل متبادل مستقل. رسم تركيب سوف رفض شاذ شكل أو ناقص طلب، ذاتي طلب و تزامن طلب حلقة، و يأخذ حركة حالة مزود ترتيب في إزالة استهلاك من قبل.`ClientModuleSystem.import()` و `prefetch()` سوف في إزالة استهلاك من قدرة كاف شيء تحويل قبل تمرير عودة تسجيل تسجيل هذه حركة حالة مزود factory، لذلك شبكة شبكة وقت ترتيب لا يمكن كسر تالف تزامن طلب رسم.
 
-### Parser 预载与 React 移交
+### Parser مسبق تحميل و React نقل تسليم
 
-Modules Node 半按以下顺序向实际返回的 HTML 注入启动协议：
+Modules Node نصف حسب التالي ترتيب نحو فعلي إرجاع HTML حقن بدء بروتوكول:
 
-1. 以 queue 模式安装 `window.__ModuleLoader__`，包含 `pendingQueue`、`load()` 与 `create()`。
-2. 开始预加载所有带 revision 的 application combo URL，其中包含 modules 之外的 row。
-3. 执行所有阻塞式 bootstrap combo URL；当前其中包含普通的 modules factory registration。
-4. 赋值 `window.__DSH_BOOT__`，其中包含全部调度描述及每个 row 的单资源 HMR combo URL。
-5. 执行 Vite 主模块。
+1. بـ queue نمط تثبيت `window.__ModuleLoader__`، يتضمن `pendingQueue`،`load()` و `create()`.
+2. بدء مسبق تحميل كل حمل revision application combo URL، منها يتضمن modules خارج row.
+3. تنفيذ كل منع سد صيغة bootstrap combo URL؛ حالي منها يتضمن عادي modules factory registration.
+4. منح قيمة `window.__DSH_BOOT__`، منها يتضمن الكل ضبط درجة وصف و كل row مفرد مورد HMR combo URL.
+5. تنفيذ Vite رئيسي وحدة.
 
-Bootstrap combo 当前只登记 modules factory。启动内核把原始图与外壳 seed 传给 `__ModuleLoader__.create()`。Facade 移除 modules registration，用拒绝全部 external 的 `require` 函数将其物化，再调用其 `createClientModuleSystem` 导出。Modules bundle 解析图、构造并返回 `ClientModuleSystem`、把自身 exports 缓存为 modules row，并把同一 facade 切换到 live 模式。内核把该实例装成自身 Loader 的 `internal`，modules 插件从这里读取并提供 `ctx.modules`。因此 modules client face 保持零 external 的自举要求，也没有模块级系统身份。
+Bootstrap combo حالي فقط تسجيل تسجيل modules factory. بدء داخل نواة يأخذ أصلي رسم و خارج قشرة seed نقل إعطاء `__ModuleLoader__.create()`.Facade إزالة modules registration، استخدام رفض الكل external `require` دالة سوف ذلك شيء تحويل، مجددا استدعاء ذلك `createClientModuleSystem` توجيه خروج.Modules bundle تحليل رسم، بنية صنع و إرجاع `ClientModuleSystem`، يأخذ ذاته exports ذاكرة مؤقتة لـ modules row، و يأخذ نفس facade تبديل إلى live نمط. داخل نواة يأخذ هذا نسخة تركيب صار ذاته Loader `internal`،modules إضافة من هذا داخل قراءة و توفير `ctx.modules`. لذلك modules client face إبقاء صفر external ذاتي رفع اشتراط، أيضا لا يوجد وحدة درجة نظام هوية.
 
-Host 发布 graph 与 combo descriptor 时不会拼接响应 body。每个脚本 URL 共用一个惰性 Promise，在首次 `GET` 时拼接捕获的 bundle 字节并追加对应的 map URL；每个 map URL 使用另一个惰性 Promise，只在首次 `GET` 时读取并组合 source map。`HEAD` 不触发任一 body。Web URL 仍由 Loader 结算和 required-entry audit 控制，但这个就绪点不会物化 combo body；index 请求读取当时的最新 graph。
+Host إصدار graph و combo descriptor وقت لن تجميع وصل استجابة body. كل نص برمجي URL مشترك استخدام واحد كسول صفة Promise، في أول مرة `GET` وقت تجميع وصل التقاط bundle بايت و إلحاق مقابل map URL؛ كل map URL استخدام آخر عدد كسول صفة Promise، فقط في أول مرة `GET` وقت قراءة و تركيب source map.`HEAD` لا إطلاق مهمة واحد body.Web URL ما زال من Loader تسوية و required-entry audit تحكم، لكن هذا عدد حينئذ خيط نقطة لن شيء تحويل combo body؛index طلب قراءة عند وقت الأكثر جديد graph.
 
-Theme 的 Host 贡献会前置到 index 收集顺序。head 中的 CSS 选择初始文档画布调色板，`system` 偏好直接使用 `prefers-color-scheme`；body 脚本在加载页面和应用模块之前应用既有的调色板属性与字号变量。
+Theme Host مساهمة سوف قبل وضع إلى index استلام تجميع ترتيب.head في CSS اختيار ابتدائي وثيقة رسم نشر ضبط لون لوح،`system` انحراف جيد مباشر استخدام `prefers-color-scheme`؛body نص برمجي في تحميل صفحة و تطبيق وحدة قبل تطبيق قائم ضبط لون لوح خاصية و حرف رقم متغير.
 
-`immediately` 层级完成 factory 注册后，内核创建全部 Loader entry，等待 Cordis 静止，并要求每个 fiber 都进入 ACTIVE。随后调用 `ctx.uiRenderer.mount(container)`。动态 `ui-renderer` 包拥有 React、slot 渲染、已有启动 DOM 的 hydrate 和 React root 生命周期；启动内核与失败页保持 React-free。
+`immediately` طبقة درجة إتمام factory تسجيل بعد، داخل نواة إنشاء الكل Loader entry، انتظار Cordis ساكن توقف، و اشتراط كل fiber كل دخول ACTIVE. مع بعد استدعاء `ctx.uiRenderer.mount(container)`. حركة حالة `ui-renderer` حزمة يملك React،slot تصيير، قد لديه بدء DOM hydrate و React root دورة الحياة؛ بدء داخل نواة و فشل صفحة إبقاء React-free.
 
-### 依赖声明
+### اعتماد إعلان
 
-每个 Client 包都把 Cordis 保持为范围一致的 `peerDependencies` 和 `devDependencies`；Cordis 是唯一的 peer。Browser import、类型引用、模块扩充与 `dsh.client.inject` 都是开发输入，因为 Client 构建与发布 profile 会提供其运行期身份。同时发布 Host 入口的包把该入口的运行期 value import 放在 `dependencies`。[发布依赖门面](../process/2026-08-26-published-dependency-faces.zh.md)负责包发现、例外与显式 Host 名册。
+كل Client حزمة كل يأخذ Cordis إبقاء لـ نطاق متسق `peerDependencies` و `devDependencies`؛Cordis هو وحيد peer.Browser import، نوع مرجع، وحدة توسيع ملء و `dsh.client.inject` كل هو تطوير إدخال، لأن Client بناء و إصدار profile سوف توفير ذلك تشغيل مدة هوية. معا إصدار Host مدخل حزمة يأخذ هذا مدخل تشغيل مدة value import وضع في `dependencies`.[إصدار اعتماد باب وجه](../process/2026-08-26-published-dependency-faces.zh.md) مسؤول حزمة اكتشاف، مثال خارج و صريح Host اسم سجل.
 
-普通安装库仍放在 `dependencies`：动态构建可以内联私有实现，而 `staticLinked` 库会保留 bare import 交给最终宿主。各构建 face 独立决定 external，不由 npm 区段推导。发布文件列表覆盖产物实际可达的每个运行期入口、相对资产和声明文件。
+عادي تثبيت مكتبة ما زال وضع في `dependencies`: حركة حالة بناء يمكن داخل ربط خاص تنفيذ، بينما `staticLinked` مكتبة سوف إبقاء bare import تسليم إعطاء نهائي مضيف. كل بناء face مستقل قرار external، لا من npm منطقة مقطع دفع توجيه. إصدار ملف قائمة تغطية ناتج فعلي يمكن بلوغ كل تشغيل مدة مدخل، متبادل مقابل مورد إنتاج و إعلان ملف.
 
-`verify-package-dependencies` 检查并修复依赖区段。`verify-client-packages` 检查构建形态、parser preload 对齐、共享模块请求和模块图无环性。仓库 publint pass 负责检查发布闭包。
+`verify-package-dependencies` فحص و إصلاح اعتماد منطقة مقطع.`verify-client-packages` فحص بناء شكل،parser preload مقابل متساو، مشترك وحدة طلب و وحدة رسم بلا حلقة صفة. مستودع publint pass مسؤول فحص إصدار إغلاق حزمة.
 
 ## Alternatives considered
 
-**立即把所有 client 包改为动态插件。** `ui-primitives` 与 `ui-slots` 仍提供同步实体，且没有独立 service 或 slot 生命周期；只加 manifest 声明不会移除这些 import。
+**قيام أي يأخذ كل client حزمة تعديل لـ حركة حالة إضافة.** `ui-primitives` و `ui-slots` ما زال توفير تزامن فعلي جسم، كما لا يوجد مستقل service أو slot دورة الحياة؛ فقط إضافة manifest إعلان لن إزالة هذه import.
 
-**为 modules 生成单独的 `client-static.js`。** 该包仍是动态图 row 和 Cordis 插件，只有 factory 提前到达。第二份产物会把宿主策略编码进文件名，并让同一源码产生两个运行期产品。
+**لـ modules توليد مفرد وحيد `client-static.js`.** هذا حزمة ما زال هو حركة حالة رسم row و Cordis إضافة، فقط لديه factory رفع قبل وصول. ثاني نسخة ناتج سوف يأخذ مضيف سياسة تحرير رمز دخول ملف اسم، و يجعل نفس شفرة المصدر إنتاج اثنان عدد تشغيل مدة منتج.
 
-**把全部共享模块编进 Vite entry。** 这会让业务插件失去部署组合与插件级替换能力，包括 renderer 和主题。
+**يأخذ الكل مشترك وحدة تحرير دخول Vite entry.** هذا سوف يجعل عمل خدمة إضافة فقد ذهاب نشر تركيب و إضافة درجة استبدال قدرة، يشمل renderer و رئيسي عنوان.
 
-**保留通用模块 provider 声明。** Package row 和精确静态 key 已命名全部提供方；别名会增加另一套归属协议，却没有第三种供给来源。
+**إبقاء عام وحدة provider إعلان.** Package row و دقيق ساكن حالة key قد تسمية الكل مزود؛ آخر اسم سوف زيادة آخر طقم ملكية بروتوكول، لكن لا يوجد رقم ثلاثة نوع توفير إعطاء مصدر.
 
-**在 `apps/web/index.html` 中硬编码预载 URL。** URL 与 `rev` 属于 host 当前 graph。改写实际返回的 HTML 才能让 queue、bundle URL 和 manifest 使用同一 graph revision。
+**في `apps/web/index.html` في صلب تحرير رمز مسبق تحميل URL.** URL و `rev` يخص host حالي graph. تعديل كتابة فعلي إرجاع HTML عندئذ قدرة يجعل queue،bundle URL و manifest استخدام نفس graph revision.
 
 ## Consequences
 
-内部 DSH 关系仅放在开发区段时，bundle 内容仍保持稳定，因为每个构建 face 都直接声明 external。静态库继续由宿主装配，动态包则保留统一产物与生命周期治理。发布 profile 拥有完整 Client 包名册，因此各 Client 包不再要求 npm 通过 peer placement 重复求解同一张图。
+داخلي DSH علاقة فقط وضع في تطوير منطقة مقطع وقت،bundle محتوى ما زال إبقاء مستقر، لأن كل بناء face كل مباشر إعلان external. ساكن حالة مكتبة متابعة من مضيف تركيب إعداد، حركة حالة حزمة فإن إبقاء موحد واحد ناتج و دورة الحياة معالجة إدارة. إصدار profile يملك كامل Client حزمة اسم سجل، لذلك كل Client حزمة لم يعد اشتراط npm عبر peer placement تكرار طلب حل نفس ورقة رسم.
 
-启动协议依赖 modules 的 package id，modules 还必须保持运行期自包含。Combo 生成保留其普通 package 产物，并为其他全部 row 提供一条共享初始传输；HMR 使用同一条路由，并只把该 row 作为资源。响应 body 的延迟生成会把拼接移到首次访问，而 map 的独立延迟生成会让仅供调试器使用的工作不进入脚本交付路径。缺少 bootstrap registration 会在 Cordis 启动前失败；后续插件 import、apply 与 service 等待失败仍由启动页的 ACTIVE 扫描呈现。
+بدء بروتوكول اعتماد modules package id،modules أيضا يجب إبقاء تشغيل مدة ذاتي يتضمن.Combo توليد إبقاء ذلك عادي package ناتج، و لـ أخرى الكل row توفير واحد بند مشترك ابتدائي نقل؛HMR استخدام نفس بند توجيه، و فقط يأخذ هذا row بصفة مورد. استجابة body تأخير متأخر توليد سوف يأخذ تجميع وصل نقل إلى أول مرة وصول، بينما map مستقل تأخير متأخر توليد سوف يجعل فقط توفير ضبط تجربة جهاز استخدام عمل لا دخول نص برمجي تسليم مسار. نقص قليل bootstrap registration سوف في Cordis بدء قبل فشل؛ لاحق إضافة import،apply و service انتظار فشل ما زال من بدء صفحة ACTIVE مسح عرض.
 
-外壳消费已构建 `lib/` 产品，因此在相关 build 或 watcher 运行前，源码与浏览器产物可能漂移。仅源码 typecheck 通过不能证明实际服务的应用使用同一份代码。
+خارج قشرة إزالة استهلاك قد بناء `lib/` منتج، لذلك في متبادل صلة build أو watcher تشغيل قبل، شفرة المصدر و متصفح ناتج ممكن عائم نقل. فقط شفرة المصدر typecheck عبر لا يستطيع إثبات فعلي خدمة تطبيق استخدام نفس نسخة شفرة.
 
-两个静态 UI 库仍是明确例外。把其中任一项转换为动态包时，必须在同一变更中把全部实体消费者迁移到 service 或 slot，并从静态 seed 删除对应身份。
+اثنان عدد ساكن حالة UI مكتبة ما زال هو واضح مثال خارج. يأخذ منها مهمة واحد بند تحويل لـ حركة حالة حزمة وقت، يجب في نفس تغيير في يأخذ الكل فعلي جسم إزالة استهلاك من ترحيل إلى service أو slot، و من ساكن حالة seed حذف مقابل هوية.

@@ -1,44 +1,44 @@
-# Agent Note: 遥测匿名用户 id（$DSH_HOME/.anonymous-user-id）与 OTel Resource 的 user.id
+# Agent Note: بعيد قياس مجهول اسم مستخدم id($DSH_HOME/.anonymous-user-id) و OTel Resource user.id
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-31-telemetry-anonymous-user-id.md) | 中文
+[English](2026-07-31-telemetry-anonymous-user-id.md) | العربية
 
-## 问题
+## مشكلة
 
-session telemetry 已默认挂载（[默认挂载 Note](2026-07-31-web-telemetry-default-mount.zh.md)），但 OTel Resource 只有 `service.name`/`service.version`，没有任何用户级标识——接收端无法按用户聚合、无法数活跃用户。此前唯一相关口径是一条未实现的「hostname/本机 IP 哈希派生 user.id」裁定。需要给 OTel 回流一个语义干净的匿名用户身份。
+session telemetry قد افتراضي تركيب ([افتراضي تركيب Note](2026-07-31-web-telemetry-default-mount.zh.md)) ، لكن OTel Resource فقط لديه `service.name`/`service.version`، لا يوجد أي مستخدم درجة معرف——استقبال طرف لا يمكن حسب مستخدم تجمع دمج، لا يمكن عدد نشط وثب مستخدم. هذا قبل وحيد متبادل صلة فتحة مسار هو واحد بند لم تنفيذ «hostname/هذا آلة IP ها أمل إرسال توليد user.id» قطع تحديد. حاجة إعطاء OTel عودة تدفق واحد دلالة جاف صاف مجهول اسم مستخدم هوية.
 
-## 决策
+## قرار
 
-`getOrCreateAnonymousUserId()` 返回 `$DSH_HOME/.anonymous-user-id`（`resolveDshHome` 解析，`$DSH_HOME` > `~/.dsh`）中的裸 UUID 行，首用生成随机 UUID v4 并落盘；后端构造时把它作为 Resource 的 `user.id`（OTel semconv 标准用户属性）随每批导出携带一次。原始实现位于 `session-telemetry-otel`，因为当时不存在第二个真实消费方。`/feedback` 后来成为该消费方，因此[共享 id 决策](../architecture/2026-08-07-shared-feedback-telemetry-user-id.zh.md)将所有权移交给 `@deepseek-ai/dsh-anonymous-user-id`，但不改变本 Note 记录的存储、匿名、并发与丢失语义。[直连 DeepSeek 请求身份](2026-08-11-deepseek-request-user-id-header.zh.md)是同一 id 的第三个消费方。
+`getOrCreateAnonymousUserId()` إرجاع `$DSH_HOME/.anonymous-user-id`(`resolveDshHome` تحليل،`$DSH_HOME` > `~/.dsh`) في عار UUID سطر، أول استخدام توليد مع آلة UUID v4 و سقوط قرص؛ خلفية بنية صنع وقت يأخذ هو بصفة Resource `user.id`(OTel semconv معيار مستخدم خاصية) مع كل دفعة توجيه خروج يحمل مرة. أصلي تنفيذ يقع في `session-telemetry-otel`، لأن عند وقت لا وجود ثاني عدد حقيقي مستهلك.`/feedback` بعد قدوم يصبح هذا مستهلك، لذلك[مشترك id قرار](../architecture/2026-08-07-shared-feedback-telemetry-user-id.zh.md) سوف كل حق نقل تسليم إعطاء `@deepseek-ai/dsh-anonymous-user-id`، لكن لا تغيير هذا Note سجل تخزين، مجهول اسم، تزامن و فقد فقد دلالة.[مباشر وصل DeepSeek طلب هوية](2026-08-11-deepseek-request-user-id-header.zh.md) هو نفس id رقم ثلاثة عدد مستهلك.
 
-| 裁定 | 取值 | 理由 |
+| قطع تحديد | أخذ قيمة | إدارة من |
 |---|---|---|
-| id 来源 | 随机 UUID v4，绝不从 hostname/网络地址/git remote 派生 | 派生 id 可反查，「匿名」名不副实 |
-| 存储形态 | `.anonymous-user-id` 裸 UUID 行 + 换行，无 JSON 包装 | 身份是独立事实，不挂在某条遥测链路的文件命名/格式下 |
-| 读写形态 | 同步 IO + 进程内按解析后文件路径 memo | `OpenTelemetrySessionBackend` 构造函数是同步的（async 迫使插件装载改形）；一进程一次盘 IO，运行中删文件不影响本进程 |
-| 并发首启 | `wx` 独占写裁决，落败方重读胜者 id | 覆盖常见并发（重读撞进胜者建档-写入微秒窗仍可能导致该次运行中每个进程各持一个 id，下次启动收敛到落盘值——遥测级后果，接受） |
-| 丢失语义 | 文件被删 → 下次启动换新 id，接受丢失 | 匿名身份无恢复价值；可恢复性要求派生材料，与匿名冲突 |
-| 写失败 | best-effort 返回内存 id | 遥测绝不因 home 只读被阻塞 |
-| 上报位置 | Resource 属性，非逐条 attributes | 每批一次即够接收端按 Resource 维度聚合；逐条注入要动 seam 约定且涨 wire 体积 |
-| semconv 依赖 | 不引 `@opentelemetry/semantic-conventions` 包 | 一个字符串常量不值一个依赖 |
-| 落点 | `@deepseek-ai/dsh-anonymous-user-id`，由 OTel 后端、`/feedback` 与直连 DeepSeek 请求共享 | 消费方共用同一存储契约，且不依赖导出后端 |
-| 单独开关 | 无 | 任一消费方都可创建该身份；`DSH_TELEMETRY_DISABLED` 会停止遥测上报，但不会禁用反馈确认或 DeepSeek 请求头 |
+| id مصدر | مع آلة UUID v4، أبدا من hostname/شبكة شبكة عنوان/git remote إرسال توليد | إرسال توليد id يمكن عكس فحص، «مجهول اسم» اسم لا فرعي فعلي |
+| تخزين شكل | `.anonymous-user-id` عار UUID سطر + تبديل سطر، بلا JSON حزمة تركيب | هوية هو مستقل واقع، لا تعليق في بعض بند بعيد قياس سلسلة مسار ملف تسمية/صيغة تحت |
+| قراءة كتابة شكل | تزامن IO + عملية داخل حسب تحليل بعد ملف مسار memo | `OpenTelemetrySessionBackend` بنية صنع دالة هو تزامن (async إجبار جعل إضافة تركيب تحميل تعديل شكل) ؛ واحد عملية مرة قرص IO، تشغيل في حذف ملف لا أثر هذا عملية |
+| تزامن أول بدء | `wx` وحيد احتلال كتابة قطع قرار، سقوط فشل جهة إعادة قراءة فوز من id | تغطية معتاد رؤية تزامن (إعادة قراءة اصطدام دخول فوز من بناء ملف-كتابة دقيق ثانية نافذة ما زال ممكن توجيه يؤدي هذا مرة تشغيل في كل عملية كل حمل واحد id، تحت مرة بدء استلام جمع إلى سقوط قرص قيمة——بعيد قياس درجة عاقبة، قبول) |
+| فقد فقد دلالة | ملف يتم حذف → تحت مرة بدء تبديل جديد id، قبول فقد فقد | مجهول اسم هوية بلا استعادة قيمة قيمة؛ يمكن استعادة صفة اشتراط إرسال توليد مادة مادة، و مجهول اسم اندفاع مفاجئ |
+| كتابة فشل | best-effort إرجاع داخل تخزين id | بعيد قياس أبدا بسبب home فقط قراءة يتم منع سد |
+| فوق تقرير موضع | Resource خاصية، غير تدريجي بند attributes | كل دفعة مرة أي كاف استقبال طرف حسب Resource صيانة درجة تجمع دمج؛ تدريجي بند حقن يلزم حركة seam اتفاق كما ارتفاع wire جسم تراكم |
+| semconv اعتماد | لا جذب `@opentelemetry/semantic-conventions` حزمة | واحد نص معتاد كمية لا قيمة واحد اعتماد |
+| سقوط نقطة | `@deepseek-ai/dsh-anonymous-user-id`، من OTel خلفية،`/feedback` و مباشر وصل DeepSeek طلب مشترك | مستهلك مشترك استخدام نفس تخزين عقد نحو، كما لا اعتماد توجيه خروج خلفية |
+| مفرد وحيد فتح صلة | بلا | مهمة واحد مستهلك كل يمكن إنشاء هذا هوية؛`DSH_TELEMETRY_DISABLED` سوف إيقاف بعيد قياس فوق تقرير، لكن لن منع استخدام عكس تغذية تأكيد أو DeepSeek طلب رأس |
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-| 被拒 | 一句话理由 |
+| يتم رفض | واحد جملة كلام إدارة من |
 |---|---|
-| hostname/IP 哈希派生 id（此前口径） | 可反查即非匿名；随机 UUID 语义干净，用户已裁定取代此前口径 |
-| user.id 放每条 record 的 attributes（Claude Code 形态） | 要动 session-telemetry seam 约定或逐条注入，wire 体积涨；Resource 每批一次已满足聚合 |
-| 在 `/feedback` 需要该 id 之前抽取共享包（初版实现） | 当时唯一的真实消费方是 OTel 后端；只有直接反馈需要同一个关联 id 后，抽取才具备依据 |
-| AppCLIEntry 读好 id 经 config patch 注入 | 每个 surface 入口都要接线；config 里传运行时事实与部署配置混淆 |
-| 挂进 `@deepseek-ai/dsh-home-paths` | paths 是纯路径计算零 IO；带持久化的身份能力会污染包边界 |
+| hostname/IP ها أمل إرسال توليد id(هذا قبل فتحة مسار) | يمكن عكس فحص أي غير مجهول اسم؛ مع آلة UUID دلالة جاف صاف، مستخدم قد قطع تحديد يحل محل هذا قبل فتحة مسار |
+| user.id وضع كل بند record attributes(Claude Code شكل) | يلزم حركة session-telemetry seam اتفاق أو تدريجي بند حقن،wire جسم تراكم ارتفاع؛Resource كل دفعة مرة قد ممتلئ كاف تجمع دمج |
+| في `/feedback` حاجة هذا id قبل سحب أخذ مشترك حزمة (أول إصدار تنفيذ) | عند وقت وحيد حقيقي مستهلك هو OTel خلفية؛ فقط لديه مباشر عكس تغذية حاجة نفس عدد صلة ربط id بعد، سحب أخذ عندئذ أداة تجهيز اعتماد حسب |
+| AppCLIEntry قراءة جيد id مرور config patch حقن | كل surface مدخل كل يلزم وصل خط؛config داخل نقل وقت التشغيل واقع و نشر إعداد خلط خلط |
+| تعليق دخول `@deepseek-ai/dsh-home-paths` | paths هو صاف مسار حساب حساب صفر IO؛ حمل حفظ دائم هوية قدرة سوف تلوث صبغ حزمة حد |
 
-## 后果
+## عاقبة
 
-- 一个 `$DSH_HOME` 在 OTel 回流中是一个稳定用户；不同 home 在构造上就是不同用户，无跨 home 关联机制。
-- OTel 回流、`/feedback` 与直连 DeepSeek 请求共享 `.anonymous-user-id`。
-- 删除 `.anonymous-user-id` 即重置身份（下次启动生效）；home 不可写时每进程各自持有一个内存 id 直至恢复可写。
-- [默认挂载 Note](2026-07-31-web-telemetry-default-mount.zh.md) 的身份 follow-up 中「匿名用户 id」项由本决定关闭；hostname/surface 维度与脱敏规则、usage-metrics track 仍是待办。
+- واحد `$DSH_HOME` في OTel عودة تدفق في هو واحد مستقر مستخدم؛ مختلف home في بنية صنع فوق حينئذ هو مختلف مستخدم، بلا عبر home صلة ربط آلية.
+- OTel عودة تدفق،`/feedback` و مباشر وصل DeepSeek طلب مشترك `.anonymous-user-id`.
+- حذف `.anonymous-user-id` أي إعادة وضع هوية (تحت مرة بدء توليد فاعلية) ؛home غير ممكن كتابة وقت كل عملية كل منها يحتفظ واحد داخل تخزين id مباشر حتى استعادة يمكن كتابة.
+- [افتراضي تركيب Note](2026-07-31-web-telemetry-default-mount.zh.md) هوية follow-up في «مجهول اسم مستخدم id» بند من هذا قرار إغلاق؛hostname/surface صيانة درجة و انفصال حساس قاعدة،usage-metrics track ما زال هو انتظار إنجاز.

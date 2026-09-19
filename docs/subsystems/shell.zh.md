@@ -1,18 +1,18 @@
-# Shell 执行器
+# Shell منفذ
 
-[English](shell.md) | 中文
+[English](shell.md) | العربية
 
-shell 执行 seam 由 [dsh-shell](../../packages/shell/shell) 在 `ctx.shell` 上提供 Service Definition。[shell 包组](../../packages/shell/README.zh.md)列出其 Bash 与 PowerShell 提供方以及面向模型的 Consumer。通用后台任务的 id、所有权与控制位于 [jobs.md](jobs.zh.md)；本 seam 返回进程句柄，不注册后台任务。managed-range 机制封装在[子进程 seam](subprocess.zh.md)之后。
+shell تنفيذ seam من [dsh-shell](../../packages/shell/shell) في `ctx.shell` فوق توفير Service Definition.[shell حزمة مجموعة](../../packages/shell/README.zh.md) صف خروج ذلك Bash و PowerShell مزود و موجه إلى نموذج Consumer. عام خلفية مهمة id، كل حق و تحكم يقع في [jobs.md](jobs.zh.md) ؛ هذا seam إرجاع عملية جملة مقبض، لا تسجيل خلفية مهمة.managed-range آلية غلاف تركيب في[عملية فرعية seam](subprocess.zh.md) بعد.
 
-源码：[`packages/shell/shell/src/types.ts`](../../packages/shell/shell/src/types.ts)
+شفرة المصدر:[`packages/shell/shell/src/types.ts`](../../packages/shell/shell/src/types.ts)
 
-## 受管 shell 环境命名空间
+## تلقي إدارة shell بيئة نطاق الأسماء
 
-`DSH_*` 变量是归 Harness 所有的子进程事实。面向模型的 bash 工具通过 `ctx.shellEnv` 收集它们，再经由 `ShellExecRequest.dshEnv` 传递；子进程服务在合并当前快照之前会移除继承而来的 `DSH_*` 名称。`DshEnvironmentKey`／`DshEnvironment` 词汇归[子进程 seam](subprocess.zh.md)所有，由 `dsh-shell` 重导出。
+`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع. موجه إلى نموذج bash أداة عبر `ctx.shellEnv` استلام تجميع هو جمع، مجددا مرور من `ShellExecRequest.dshEnv` نقل تمرير؛ عملية فرعية خدمة في دمج حالي لقطة قبل سوف إزالة وراثة بينما قدوم `DSH_*` اسم.`DshEnvironmentKey`/`DshEnvironment` مفردات عودة[عملية فرعية seam](subprocess.zh.md) كل، من `dsh-shell` إعادة توجيه خروج.
 
-## 请求与规格：`resolve()` 拆分
+## طلب و قاعدة إطار:`resolve()` تفكيك قسم
 
-该 seam 将**面向模型/插件的请求**（`workdir`/`timeoutMs`/`stdoutMaxBytes` 可选，由配置或请求策略补全）与执行器实际使用的**完全解析后的 spec**（这些字段均为必填）分开。工具层在二者之间调用 `ctx.shell.resolve(request)`（仓库的「包边界处显式优于隐式」规则）；`ShellExecSpec` 携带的是已解析的值。
+هذا seam سوف**موجه إلى نموذج/إضافة طلب**(`workdir`/`timeoutMs`/`stdoutMaxBytes` اختياري، من إعداد أو طلب سياسة تكملة كل) و منفذ فعلي استخدام**تماما تحليل بعد spec**(هذه حقل متساو لـ لا بد ملء) قسم فتح. أداة طبقة في اثنان من بين استدعاء `ctx.shell.resolve(request)`(مستودع «حزمة حد موضع صريح أفضل في خفي صيغة» قاعدة) ؛`ShellExecSpec` يحمل هو قد تحليل قيمة.
 
 ```ts type-equiv
 /**
@@ -98,13 +98,13 @@ interface ShellExecSpec {
 }
 ```
 
-`stdin` 和 `env` 是受信任的进程内插件输入，不由 `dsh-tool-bash` 暴露。本地执行器会先清除环境中的凭据，再合并调用方显式提供的 env。
+`stdin` و `env` هو تلقي معلومة مهمة عملية داخل إضافة إدخال، لا من `dsh-tool-bash` كشف. محلي منفذ سوف أولا صاف حذف بيئة في اعتماد، مجددا دمج استدعاء جهة صريح توفير env.
 
-`stdoutMaxBytes` 同样仅供受信任插件使用。它让前台消费方能在有界解析预算内请求完整 stdout，而不会改变 stderr、后台任务或面向模型的 bash 工具的常规输出上限。
+`stdoutMaxBytes` نفس مثال فقط توفير تلقي معلومة مهمة إضافة استخدام. هو يجعل قبل منصة مستهلك قدرة في محدود تحليل ميزانية داخل طلب كامل stdout، بينما لن تغيير stderr، خلفية مهمة أو موجه إلى نموذج bash أداة معتاد قاعدة إخراج حد أعلى.
 
-## 前台运行：`ShellRunResult`
+## قبل منصة تشغيل:`ShellRunResult`
 
-一次已完成（或被终止）的前台运行的结果。正交的结果**独立报告**：一个进程可以同时超时并以退出码 0 退出（因为它捕获了信号），因此 `timedOut`、`aborted`、`signal` 和 `exitCode` 各自独立为一个字段；调用方永远不会把一次被提前中断的运行误读为正常成功。
+مرة قد إتمام (أو يتم إنهاء) قبل منصة تشغيل نتيجة. صحيح تسليم نتيجة**مستقل تقرير إبلاغ**: واحد عملية يمكن معا مهلة و بـ خروج رمز 0 خروج (لأن هو التقاط إشارة) ، لذلك `timedOut`،`aborted`،`signal` و `exitCode` كل منها مستقل لـ واحد حقل؛ استدعاء جهة دائم بعيد لن يأخذ مرة يتم رفع قبل في قطع تشغيل خطأ قراءة لـ صحيح معتاد نجاح.
 
 ```ts type-equiv
 /** The outcome of a foreground run, including timeout during preparation. */
@@ -136,13 +136,13 @@ interface ShellRunResult {
 }
 ```
 
-每个流是一个 `CollectedOutput`：（可能被截断的）文本加恢复信息；截断时，`text` 是**尾部**，完整流溢出到一个私有文件。这些字段归[子进程 seam](subprocess.zh.md)所有，由 `dsh-shell` 重导出。
+كل تدفق هو واحد `CollectedOutput`:(ممكن يتم قطع قطع) نص إضافة استعادة معلومة؛ قطع قطع وقت،`text` هو**ذيل جزء**، كامل تدفق فيض خروج إلى واحد خاص ملف. هذه حقل عودة[عملية فرعية seam](subprocess.zh.md) كل، من `dsh-shell` إعادة توجيه خروج.
 
-## 文件沙箱：`ShellSandboxInfo`
+## ملف صندوق رملي:`ShellSandboxInfo`
 
-使用沙箱的执行器通过 `ShellExecutor.sandboxMode` 暴露其已配置的模式回退值。工具层请求 [`@deepseek-ai/dsh-sandbox-policy`](../../packages/sandbox/sandbox-policy/README.zh.md)，把每个调用会话的持久 `sandbox/mode` 覆盖值与不可变 cwd 解析为 `ShellExecRequest.sandboxPolicy`；经用户批准、严格更宽松的调用只替换模式。模式/root/enforcement 词汇归 [`@deepseek-ai/dsh-sandbox` 沙箱 seam](sandbox.zh.md) 所有；模式仅管辖文件效果。
+استخدام صندوق رملي منفذ عبر `ShellExecutor.sandboxMode` كشف ذلك قد إعداد نمط رجوع قيمة. أداة طبقة طلب [`@deepseek-ai/dsh-sandbox-policy`](../../packages/sandbox/sandbox-policy/README.zh.md) ، يأخذ كل استدعاء جلسة حمل دائم `sandbox/mode` تغطية قيمة و غير ممكن تغيير cwd تحليل لـ `ShellExecRequest.sandboxPolicy`؛ مرور مستخدم دفعة دقيق، صارم إطار أكثر عرض رخو استدعاء فقط استبدال نمط. نمط/root/enforcement مفردات عودة [`@deepseek-ai/dsh-sandbox` صندوق رملي seam](sandbox.zh.md) كل؛ نمط فقط إدارة ولاية ملف فاعلية نتيجة.
 
-沙箱化运行会报告其模式、保守的拒绝分类与强制执行完整度。`runnerFailed` 标记命令运行前沙箱 runner 已失败；前台执行会抛出 `SANDBOX_UNAVAILABLE`，而已结束的后台进程只能通过其事实通道报告。
+صندوق رملي تحويل تشغيل سوف تقرير إبلاغ ذلك نمط، حفظ حراسة رفض تصنيف و قوي صنع تنفيذ كامل درجة.`runnerFailed` علامة أمر تشغيل قبل صندوق رملي runner قد فشل؛ قبل منصة تنفيذ سوف رمي خروج `SANDBOX_UNAVAILABLE`، بينما قد انتهاء خلفية عملية فقط قدرة عبر ذلك واقع عبر طريق تقرير إبلاغ.
 
 ```ts type-equiv
 /**
@@ -162,11 +162,11 @@ interface ShellSandboxInfo {
 }
 ```
 
-当受限模式没有可用后端时，`ctx.sandbox` 提供方会抛出、执行器会传播由[沙箱 seam](sandbox.zh.md)所有的 `SANDBOX_UNAVAILABLE` 错误码。选定的 runner 拒绝其 profile 时会触达同一个故障关闭的前台错误；已结束的后台任务则记录 `runnerFailed`。模型会在结果中收到拒绝/runner 事实，仅当拒绝标记指出生效模式时才得知该模式，并可通过 `sandbox_permissions` 加 `justification` 请求一次性、严格更宽松的重试；执行任何操作前，`ctx.approval` 必须批准该次确切调用。完整的策略与切换设计见[沙箱 Agent Note](../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md)。
+عند تلقي حد نمط لا يوجد متاح خلفية وقت،`ctx.sandbox` مزود سوف رمي خروج، منفذ سوف نقل بث من[صندوق رملي seam](sandbox.zh.md) كل `SANDBOX_UNAVAILABLE` رمز خطأ. اختيار تحديد runner رفض ذلك profile وقت سوف لمس بلوغ نفس عدد لذا عائق إغلاق قبل منصة خطأ؛ قد انتهاء خلفية مهمة فإن سجل `runnerFailed`. نموذج سوف في نتيجة في استلام إلى رفض/runner واقع، فقط عند رفض علامة إشارة خروج توليد فاعلية نمط وقت عندئذ نيل معرفة هذا نمط، و يمكن عبر `sandbox_permissions` إضافة `justification` طلب مرة صفة، صارم إطار أكثر عرض رخو إعادة محاولة؛ تنفيذ أي عملية قبل،`ctx.approval` يجب دفعة دقيق هذا مرة تأكيد قطع استدعاء. كامل سياسة و تبديل تصميم رؤية[صندوق رملي Agent Note](../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md).
 
-## 后台进程：`ShellProcess`
+## خلفية عملية:`ShellProcess`
 
-`start()` 在异步启动准备完成后返回句柄；取消或准备失败会在发布前拒绝调用。该句柄没有 id 或 owner。`dsh-tool-bash` 将它适配为 `ctx.jobs.start()` 钩子；随后由通用运行时拥有任务标识与生命周期。`done` 会在底层进程结算时完成且绝不 reject；subprocess 提供方的 rejection 会生成状态为 `killed` 的进程，并把不声明阶段的错误写入 stderr。进程结算后仍可读取，并且沙箱事实会在 `done` 完成前写入。
+`start()` في مختلف خطوة بدء دقيق تجهيز إتمام بعد إرجاع جملة مقبض؛ إلغاء أو دقيق تجهيز فشل سوف في إصدار قبل رفض استدعاء. هذا جملة مقبض لا يوجد id أو owner.`dsh-tool-bash` سوف هو ملائم إعداد لـ `ctx.jobs.start()` خطاف؛ مع بعد من عام وقت التشغيل يملك مهمة معرف و دورة الحياة.`done` سوف في قاع طبقة عملية تسوية وقت إتمام كما أبدا reject؛subprocess مزود rejection سوف توليد حالة لـ `killed` عملية، و يأخذ لا إعلان مرحلة مقطع خطأ كتابة stderr. عملية تسوية بعد ما زال يمكن قراءة، و كما صندوق رملي واقع سوف في `done` إتمام قبل كتابة.
 
 ```ts type-equiv
 /**
@@ -203,7 +203,7 @@ interface ShellProcess {
 }
 ```
 
-`readOutput()` 返回增量内容与 spill 恢复信息：
+`readOutput()` إرجاع زيادة كمية محتوى و spill استعادة معلومة:
 
 ```ts type-equiv
 /** One incremental {@link ShellProcess.readOutput} read. */
@@ -219,9 +219,9 @@ interface ShellProcessRead {
 }
 ```
 
-## 服务
+## خدمة
 
-`ShellExecutor` 拥有 `resolve`、前台 `run`、后台进程 `start` 以及 `sandboxMode` 能力事实。`dsh-bash-local` 拥有命令默认值补全、超时/中止分类、终端环境以及后台读取合并；managed-range 终止、有界收集器、spill 文件、凭据清除与 dispose（资源释放）后完全停稳归[子进程服务](subprocess.zh.md)所有。`dsh-tool-bash` 拥有面向模型的渲染，并将后台句柄适配到[通用任务运行时](jobs.zh.md)。`dsh-shell` 拥有 shell 工具共享的退出状态约定：导出的 `parseExitStatus`/`ParsedExitStatus` 是 `dsh-tool-bash` 的 `renderResult` 与 `dsh-tool-pwsh` 的 `renderPwshResult` 所追加的 `[exit code: N]` / `[killed by signal: X]` 标记的逆解析，两个工具的 `presentResult` 都用它把渲染文本拆分为 terminal 卡的输出正文与退出状态 pill。
+`ShellExecutor` يملك `resolve`، قبل منصة `run`، خلفية عملية `start` و `sandboxMode` قدرة واقع.`dsh-bash-local` يملك أمر قيمة افتراضية تكملة كل، مهلة/في توقف تصنيف، طرفية بيئة و خلفية قراءة دمج؛managed-range إنهاء، محدود استلام تجميع جهاز،spill ملف، اعتماد صاف حذف و dispose(مورد تحرير) بعد تماما توقف مستقر عودة[عملية فرعية خدمة](subprocess.zh.md) كل.`dsh-tool-bash` يملك موجه إلى نموذج تصيير، و سوف خلفية جملة مقبض ملائم إعداد إلى[عام مهمة وقت التشغيل](jobs.zh.md).`dsh-shell` يملك shell أداة مشترك خروج حالة اتفاق: توجيه خروج `parseExitStatus`/`ParsedExitStatus` هو `dsh-tool-bash` `renderResult` و `dsh-tool-pwsh` `renderPwshResult` الذي إلحاق `[exit code: N]` / `[killed by signal: X]` علامة عكس تحليل، اثنان عدد أداة `presentResult` كل استخدام هو يأخذ تصيير نص تفكيك قسم لـ terminal بطاقة إخراج متن و خروج حالة pill.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

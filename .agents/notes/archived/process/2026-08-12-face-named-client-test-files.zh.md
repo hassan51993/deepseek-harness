@@ -1,62 +1,62 @@
-# Agent Note: 用文件名标明 client 测试的编译面
+# Agent Note: استخدام ملف اسم علامة واضح client اختبار تحرير ترجمة وجه
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-12-face-named-client-test-files.md) | 中文
+[English](2026-08-12-face-named-client-test-files.md) | العربية
 
-## 问题
+## مشكلة
 
-`packages/client/*/tests/` 同时存放两个编译面的测试。多数覆盖某个 Client 包的浏览器半边，属于 `tsconfig.client.json`；少数覆盖拆分包的 Host 半边——载体的 node 半边 spec——只能在 `tsconfig.host.json` 里类型检查，因为触及 Host 源码的 Host 面 spec 需要那些文件所在的 Host 工程。
+`packages/client/*/tests/` معا تخزين وضع اثنان عدد تحرير ترجمة وجه اختبار. كثير عدد تغطية بعض عدد Client حزمة متصفح نصف حافة، يخص `tsconfig.client.json`؛ قليل عدد تغطية تفكيك قسم حزمة Host نصف حافة——تحميل جسم node نصف حافة spec——فقط قدرة في `tsconfig.host.json` داخل نوع فحص، لأن لمس و Host شفرة المصدر Host وجه spec حاجة ذلك بعض ملف الذي في Host عمل مسار.
 
-文件名不说明一个测试覆盖哪一面，两个聚合就无法按模式划分这个目录。host 聚合整体排除 `packages/client/**`，Client 聚合收下全部，于是 Host 面 spec 留在了 Client 程序里。它们随之需要 Client 聚合引用 `packages/client/connection/tsconfig.host.json`——一个 Client 配置进入拆分包的 Host 面，而 `constraints` 的工程引用规则拒绝这条边。
+ملف اسم لا شرح واحد اختبار تغطية أي واحد وجه، اثنان عدد تجمع دمج حينئذ لا يمكن حسب نمط تخطيط قسم هذا عدد دليل.host تجمع دمج كامل جسم ترتيب حذف `packages/client/**`،Client تجمع دمج استلام تحت الكل، في هو Host وجه spec إبقاء في Client برنامج داخل. هو جمع مع لـ حاجة Client تجمع دمج مرجع `packages/client/connection/tsconfig.host.json`——واحد Client إعداد دخول تفكيك قسم حزمة Host وجه، بينما `constraints` عمل مسار مرجع قاعدة رفض هذا بند حافة.
 
-没有命名规则时另有两条出路，且都更差。在 host 聚合里用 `files` 把那四个文件凿回来，与同一个文件里的整体排除自相矛盾，且每新增一个 Host 面 spec 就要加一条。放行这条跨面引用则削弱了那条把两套 `Context` 合并隔开的规则。
+لا يوجد تسمية قاعدة وقت آخر لديه اثنان بند خروج مسار، كما كل أكثر فرق. في host تجمع دمج داخل استخدام `files` يأخذ ذلك أربعة عدد ملف نقر عودة قدوم، و نفس عدد ملف داخل كامل جسم ترتيب حذف ذاتي متبادل تناقض درع، كما كل إضافة جديدة واحد Host وجه spec حينئذ يلزم إضافة واحد بند. وضع سطر هذا بند عبر وجه مرجع فإن تقليل ضعيف ذلك بند يأخذ اثنان طقم `Context` دمج فصل فتح قاعدة.
 
-## 决策
+## قرار
 
-`packages/client` 下的测试文件在文件名里说明自己覆盖哪一面：
+`packages/client` تحت اختبار ملف في ملف اسم داخل شرح ذاتي ذات تغطية أي واحد وجه:
 
-| 后缀 | 面 | 数量 |
+| بعد لاحقة | وجه | عدد كمية |
 |---|---|---|
 | `*.client.spec.ts` / `*.client.spec.tsx` | Client | 232 |
-| `*.client.ts` / `*.client.tsx`（共用辅助文件、fixture） | Client | 5 |
+| `*.client.ts` / `*.client.tsx`(مشترك استخدام مساعد مساعدة ملف،fixture) | Client | 5 |
 | `*.host.spec.ts` | Host | 4 |
 
-两组后缀互斥——谁都不是对方的后缀——因此每个聚合各保留一条宽的测试 glob，并排除对面：
+اثنان مجموعة بعد لاحقة متبادل رفض——من كل لا هو مقابل جهة بعد لاحقة——لذلك كل تجمع دمج كل إبقاء واحد بند عرض اختبار glob، و ترتيب حذف مقابل وجه:
 
-- `tsconfig.client.json` include `packages/client/*/tests/**/*.{ts,tsx}`，exclude `packages/client/*/tests/**/*.host.spec.ts`。
-- `tsconfig.host.json` 经其仓库级 `packages/*/*/tests/**/*.ts` 到达同一目录，exclude `packages/client/*/src/**` 以及四条 `*.client.*` 模式。
+- `tsconfig.client.json` include `packages/client/*/tests/**/*.{ts,tsx}`،exclude `packages/client/*/tests/**/*.host.spec.ts`.
+- `tsconfig.host.json` مرور ذلك مستودع درجة `packages/*/*/tests/**/*.ts` وصول نفس دليل،exclude `packages/client/*/src/**` و أربعة بند `*.client.*` نمط.
 
-这建立在 `exclude` 过滤 `include` 结果之上：两者同时命中时，文件留在程序外。没有文件被两个聚合同时点名，两个聚合都不需要 `files` 条目或跨面工程引用。`verify-md-links` 与 `constraints` 的工程引用规则原样通过，载体不需要任何例外。
+هذا بناء قيام في `exclude` مرور ترشيح `include` نتيجة لـ فوق: اثنان من معا أمر في وقت، ملف إبقاء في برنامج خارج. لا يوجد ملف يتم اثنان عدد تجمع دمج معا نقطة اسم، اثنان عدد تجمع دمج كل لا حاجة `files` بند أو عبر وجه عمل مسار مرجع.`verify-md-links` و `constraints` عمل مسار مرجع قاعدة أصل مثال عبر، تحميل جسم لا حاجة أي مثال خارج.
 
-`packages/client` 下新增的测试必须带面名后缀。不带后缀的文件会被 host 聚合的包级 glob 命中，并静默地把 Client 源码拖进 Host 程序。
+`packages/client` تحت إضافة جديدة اختبار يجب حمل وجه اسم بعد لاحقة. لا حمل بعد لاحقة ملف سوف يتم host تجمع دمج حزمة درجة glob أمر في، و ساكن صامت أرض يأخذ Client شفرة المصدر سحب دخول Host برنامج.
 
-## 本次改名清单
+## هذا مرة تعديل اسم بيان
 
-- 232 个 Client 面 spec，从 `*.spec.{ts,tsx}` 改为 `*.client.spec.{ts,tsx}`。
-- 5 个 Client 面辅助文件，从 `*.{ts,tsx}` 改为 `*.client.{ts,tsx}`：`connection/tests/fake-api`、`runtime/tests/fake-api`、`runtime/tests/event-script`、`ui-conversation/tests/chat-snapshot-fixture`、`ui-tool/tests/tool-details-render`。
-- `packages/client/connection/tests/` 下 4 个 Host 面 spec，从 `*.spec.ts` 改为 `*.host.spec.ts`：`api-request-trust`、`http-bridge`、`node-half`、`websocket-downlink`。
-- 2 个 snapshot 文件，跟随各自 spec 改名，内容未变。
+- 232 عدد Client وجه spec، من `*.spec.{ts,tsx}` تعديل لـ `*.client.spec.{ts,tsx}`.
+- 5 عدد Client وجه مساعد مساعدة ملف، من `*.{ts,tsx}` تعديل لـ `*.client.{ts,tsx}`:`connection/tests/fake-api`،`runtime/tests/fake-api`،`runtime/tests/event-script`،`ui-conversation/tests/chat-snapshot-fixture`،`ui-tool/tests/tool-details-render`.
+- `packages/client/connection/tests/` تحت 4 عدد Host وجه spec، من `*.spec.ts` تعديل لـ `*.host.spec.ts`:`api-request-trust`،`http-bridge`،`node-half`،`websocket-downlink`.
+- 2 عدد snapshot ملف، تتبع مع كل منها spec تعديل اسم، محتوى لم تغيير.
 
-`scripts/rescope-vendor.ts` 的精确编辑表点名了其中三个 spec，那些路径随之移动。
+`scripts/rescope-vendor.ts` دقيق تحرير جدول نقطة اسم منها ثلاثة عدد spec، ذلك بعض مسار مع لـ نقل حركة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**只给 Host 面文件加 `*.host.spec.ts` 后缀，Client 侧不动。** 第一次尝试就是这样，而它行不通：`.host.spec.ts` 同样以 `.spec.ts` 结尾，于是 host 聚合对 `*.spec.ts` 的排除把它一并吞掉，`include` 也赢不回来。让两条模式互不相交，靠的正是两面都命名。
+**فقط إعطاء Host وجه ملف إضافة `*.host.spec.ts` بعد لاحقة،Client جانب لا حركة.** رقم مرة محاولة تجربة حينئذ هو هذا مثال، بينما هو سطر لا عبر:`.host.spec.ts` نفس مثال بـ `.spec.ts` ربط ذيل، في هو host تجمع دمج مقابل `*.spec.ts` ترتيب حذف يأخذ هو واحد و ابتلاع إسقاط،`include` أيضا فوز لا عودة قدوم. يجعل اثنان بند نمط متبادل لا متبادل تسليم، اعتماد صحيح هو اثنان وجه كل تسمية.
 
-**把 Host 面文件命名为 `*.host-spec.ts`，脱离 `.spec.ts` 惯例。** 不动 Client 侧即与 `*.spec.ts` 不相交，但为了一个配置细节离开了仓库的测试命名惯例和 vitest 的发现模式。
+**يأخذ Host وجه ملف تسمية لـ `*.host-spec.ts`، انفصال مغادرة `.spec.ts` معتاد مثال.** لا حركة Client جانب أي و `*.spec.ts` لا متبادل تسليم، لكن لـ واحد إعداد دقيق عقدة مغادرة فتح مستودع اختبار تسمية معتاد مثال و vitest اكتشاف نمط.
 
-**把 Host 面 spec 移到 `tests/host/` 子目录，按路径划分。** 用 glob 同样可行，但它把一个包的测试拆到两个目录，浏览 `tests/` 的读者不再一眼看到它们在一起。
+**يأخذ Host وجه spec نقل إلى `tests/host/` فرعي دليل، حسب مسار تخطيط قسم.** استخدام glob نفس مثال يمكن سطر، لكن هو يأخذ واحد حزمة اختبار تفكيك إلى اثنان عدد دليل، تصفح تصفح `tests/` قراءة من لم يعد واحد عين يرى هو جمع في واحد بدء.
 
-**保留对 `packages/client/**` 的排除，用 `files` 把 Host 面 spec 凿回来。** `files` 不受 `exclude` 过滤，所以确实能拿到它们——代价是同一个文件一边断言该目录属于另一个聚合、一边列出这条断言的例外，且每个 Host 面 spec 都要加一条。
+**إبقاء مقابل `packages/client/**` ترتيب حذف، استخدام `files` يأخذ Host وجه spec نقر عودة قدوم.** `files` لا تلقي `exclude` مرور ترشيح، الذي بـ تأكيد فعلي قدرة أخذ إلى هو جمع——بديل قيمة هو نفس عدد ملف واحد حافة تأكيد هذا دليل يخص آخر عدد تجمع دمج، واحد حافة صف خروج هذا بند تأكيد مثال خارج، كما كل Host وجه spec كل يلزم إضافة واحد بند.
 
-## 后果
+## عاقبة
 
-这条规则的成本是每个 client 测试文件名多一个后缀，买到的是一次机械划分：一个聚合的成员资格由文件名推出，而不是由一份清单决定。`constraints` 里那条禁止跨面引用的规则保持全部强度——没有包获得豁免。
+هذا بند قاعدة صار هذا هو كل client اختبار ملف اسم كثير واحد بعد لاحقة، شراء إلى هو مرة آلة آلة تخطيط قسم: واحد تجمع دمج عضو مورد إطار من ملف اسم دفع خروج، بينما لا هو من واحد نسخة بيان قرار.`constraints` داخل ذلك بند منع توقف عبر وجه مرجع قاعدة إبقاء الكل قوي درجة——لا يوجد حزمة نيل نيل إعفاء تجنب.
 
-Host 程序现在在 `packages/client` 下看到 11 个文件（4 个 Host 面 spec，以及经工程引用解析到的载体 Host 面声明），而在排除按模式、文件名却不按模式的状态下漏进来的是 60 个。
+Host برنامج الآن في `packages/client` تحت يرى 11 عدد ملف (4 عدد Host وجه spec، و مرور عمل مسار مرجع تحليل إلى تحميل جسم Host وجه إعلان) ، بينما في ترتيب حذف حسب نمط، ملف اسم لكن لا حسب نمط حالة تحت تسرب دخول قدوم هو 60 عدد.
 
-vitest 经 `**/*.spec.{ts,tsx}` 仍能发现每个改名后的文件，因此测试配置没有变化；完整 client 套件跑 235 个文件、3181 个用例。
+vitest مرور `**/*.spec.{ts,tsx}` ما زال قدرة اكتشاف كل تعديل اسم بعد ملف، لذلك اختبار إعداد لا يوجد تغير؛ كامل client طقم عنصر ركض 235 عدد ملف،3181 عدد حالة استخدام.
 
-这条规则留下的失败模式是新增一个不带后缀的测试：它会在 Host 程序里针对 Client 源码通过类型检查，而不是显式报错。
+هذا بند قاعدة إبقاء تحت فشل نمط هو إضافة جديدة واحد لا حمل بعد لاحقة اختبار: هو سوف في Host برنامج داخل إبرة مقابل Client شفرة المصدر عبر نوع فحص، بينما لا هو صريح تقرير خطأ.

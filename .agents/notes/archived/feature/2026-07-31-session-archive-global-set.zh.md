@@ -1,34 +1,34 @@
-# Agent Note: 会话归档（注册表级全局集合）
+# Agent Note: جلسة عودة ملف (سجل التسجيل درجة عام تجميع دمج)
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-31-session-archive-global-set.md) | 中文
+[English](2026-07-31-session-archive-global-set.md) | العربية
 
-## 问题
+## مشكلة
 
-Sidebar workspace 浏览区的会话行菜单里，「Delete session」一直是纯视觉占位（无 handler）。产品口径定为**归档**而非删除：会话日志与 workspace 记账都不动，只把该会话从所有分组视图（workspace 分组、Ungrouped、搜索、平铺列表）里隐藏。归档记录需要一个落点：Ungrouped 的会话不属于任何 workspace 实体，per-workspace 字段放不下它。
+Sidebar workspace تصفح تصفح منطقة جلسة سطر قائمة مفرد داخل، «Delete session» واحد مباشر هو صاف نظر شعور احتلال موضع (بلا handler). منتج فتحة مسار تحديد لـ**عودة ملف**بينما غير حذف: جلسة سجل و workspace تسجيل حساب كل لا حركة، فقط يأخذ هذا جلسة من كل قسم مجموعة عرض (workspace قسم مجموعة،Ungrouped، بحث، مستو فرش قائمة) داخل إخفاء. عودة ملف سجل حاجة واحد سقوط نقطة:Ungrouped جلسة لا يخص أي workspace فعلي جسم،per-workspace حقل وضع لا تحت هو.
 
-## 决策
+## قرار
 
-**归档集合是 workspace domain 全局单例（`workspaceDomainState.archivedSessionIds`）上的一个新字段，覆盖在 workspace 记账之上；显示过滤全部收敛在 client 的 `tree.ts` 派生层；wire 面走全快照姿态。**
+**عودة ملف تجميع دمج هو workspace domain عام مفرد مثال (`workspaceDomainState.archivedSessionIds`) فوق واحد جديد حقل، تغطية في workspace تسجيل حساب لـ فوق؛ عرض مرور ترشيح الكل استلام جمع في client `tree.ts` إرسال توليد طبقة؛wire وجه مشي كل لقطة وضع حالة.**
 
-- 存储：`archivedSessionIds: z.array(sessionId).default([])`，domain version 保持 2——纯新增字段，旧介质经 schema default 解析为空集合，无迁移代码。被归档的会话保留其 `sessionIds` slot（未来取消归档恢复原位置），因此与「一个会话只被一个 workspace 记账」不变式零纠缠。
-- 注册表：`ctx.workspaceRegistry.archiveSession(id)` 走 `enqueueOperation` 与 create/delete 串行；未知会话（实时与持久化都查不到）抛 `WorkspaceUnknownSessionError`；已归档 id 不写盘不发事件。`archivedSessionIds` getter 暴露只读集合。
-- RPC：`workspace.archiveSession({sessionId}) → {archivedSessionIds}`（应答更新后的完整集合）；`workspace.list` 响应携带集合作为重连基线；新 host 帧 `host/archived-sessions-changed` 在每次持久变更后推完整快照（与 `host/workspace-changed` 同姿态，从 `domain/changed` 的 global put 分支比对推帧）。未知会话复用错误码 `session-not-found`。
-- client 运行时：`WorkspaceListState.archivedSessionIds`（按 Host 顺序的 `readonly SessionId[]`，成员不变不换引用——公有快照状态保持 store 引擎的纯数据词汇：immer draft 不开 MapSet 插件就不接受 Set；membership 查询在派生函数内自建临时 Set，与 expandedProjects 同款）；list 基线、unary 回声、changed 帧三路都会用完整集合整体替换现有值。投影层在当前 selection 落入归档集合时统一清空回 New Session 视图（用户拍板：归档当前打开的会话会使主视图回到 hero）——一条规则同时覆盖本地 unary 回声、其他标签页的 changed 帧、以及重连基线发现当前 selection 已在此 client 离线期间被归档的情形；帧/回声落在 in-flight `workspace.list` 期间时还会屏蔽旧基线对新集合的回滚。
-- UI：菜单项 `delete`（visual-only）改为 `archive`（label「Archive session」，非 danger 样式，无确认对话框——非破坏性操作，误触后果只是列表隐藏）；过滤实现为 `tree.ts` 的 `sessionVisible` 判据加一档，`deriveGroups`/`deriveFlat` 增加 `archived` 集合入参，四个视图（分组循环、stray 兜底、搜索、平铺）同源生效。
+- تخزين:`archivedSessionIds: z.array(sessionId).default([])`،domain version إبقاء 2——صاف إضافة جديدة حقل، قديم وسيط جودة مرور schema default تحليل لـ فارغ تجميع دمج، بلا ترحيل شفرة. يتم عودة ملف جلسة إبقاء ذلك `sessionIds` slot(لم قدوم إلغاء عودة ملف استعادة أصل موضع) ، لذلك و «واحد جلسة فقط يتم واحد workspace تسجيل حساب» ثابت صيغة صفر تصحيح التفاف.
+- سجل التسجيل:`ctx.workspaceRegistry.archiveSession(id)` مشي `enqueueOperation` و create/delete سلسلة سطر؛ لم معرفة جلسة (فوري و حفظ دائم كل فحص لا إلى) رمي `WorkspaceUnknownSessionError`؛ قد عودة ملف id لا كتابة قرص لا إرسال حدث.`archivedSessionIds` getter كشف فقط قراءة تجميع دمج.
+- RPC:`workspace.archiveSession({sessionId}) → {archivedSessionIds}`(ينبغي جواب تحديث بعد كامل تجميع دمج) ؛`workspace.list` استجابة يحمل تجميع دمج بصفة إعادة وصل أساس خط؛ جديد host لقطة `host/archived-sessions-changed` في كل مرة حمل دائم تغيير بعد دفع كامل لقطة (و `host/workspace-changed` نفس وضع حالة، من `domain/changed` global put فرع مقارنة مقابل دفع لقطة). لم معرفة جلسة إعادة استخدام رمز خطأ `session-not-found`.
+- client وقت التشغيل:`WorkspaceListState.archivedSessionIds`(حسب Host ترتيب `readonly SessionId[]`، عضو ثابت لا تبديل مرجع——عام لديه لقطة حالة إبقاء store جذب محرك صاف بيانات مفردات:immer draft لا فتح MapSet إضافة حينئذ لا قبول Set؛membership استعلام في إرسال توليد دالة داخل ذاتي بناء مؤقت Set، و expandedProjects نفس بند) ؛list أساس خط،unary عودة صوت،changed لقطة ثلاثة مسار كل سوف استخدام كامل تجميع دمج كامل جسم استبدال قائم قيمة. إسقاط طبقة في حالي selection سقوط دخول عودة ملف تجميع دمج وقت موحد واحد صاف فارغ عودة New Session عرض (مستخدم التقاط لوح: عودة ملف حالي فتح جلسة سوف جعل رئيسي عرض عودة إلى hero)——واحد بند قاعدة معا تغطية محلي unary عودة صوت، أخرى وسم صفحة changed لقطة، و إعادة وصل أساس خط اكتشاف حالي selection قد في هذا client مغادرة خط خلال يتم عودة ملف حال شكل؛ لقطة/عودة صوت سقوط في in-flight `workspace.list` خلال وقت أيضا سوف شاشة حجب قديم أساس خط مقابل جديد تجميع دمج تراجع.
+- UI: قائمة مفرد بند `delete`(visual-only) تعديل لـ `archive`(label«Archive session» ، غير danger مثال صيغة، بلا تأكيد محادثة إطار——غير كسر تالف صفة عملية، خطأ لمس عاقبة فقط هو قائمة إخفاء) ؛ مرور ترشيح تنفيذ لـ `tree.ts` `sessionVisible` حكم حسب إضافة واحد ملف،`deriveGroups`/`deriveFlat` زيادة `archived` تجميع دمج دخول مشاركة، أربعة عدد عرض (قسم مجموعة حلقة،stray التقاط قاع، بحث، مستو فرش) نفس مصدر توليد فاعلية.
 
-## 已考虑的替代方案
+## قد اعتبار بديل خطة
 
-**per-workspace archivedSessionIds（最初表述）。** 否决：Ungrouped 会话无落点；用户改口全局。
+**per-workspace archivedSessionIds(الأكثر أول جدول وصف).** مرفوض:Ungrouped جلسة بلا سقوط نقطة؛ مستخدم تعديل فتحة عام.
 
-**SessionSummary 打 archived 标（session.list 层）。** 否决：要把 workspace domain 事实 join 进 sessions domain 投影，summary 无增量帧还得另发通知，跨域耦合大于收益。
+**SessionSummary ضرب archived علامة (session.list طبقة).** مرفوض: يلزم يأخذ workspace domain واقع join دخول sessions domain إسقاط،summary بلا زيادة كمية لقطة أيضا نيل آخر إرسال إشعار، عبر مجال اقتران دمج كبير في استلام فائدة.
 
-**host 侧在 `workspaceView`/`sessionIds` getter 过滤。** 否决：归档 ≠ 改记账，投影过滤会把两个概念搅浑；未来恢复入口也需要 client 拿到全量记账。
+**host جانب في `workspaceView`/`sessionIds` getter مرور ترشيح.** مرفوض: عودة ملف ≠ تعديل تسجيل حساب، إسقاط مرور ترشيح سوف يأخذ اثنان عدد عام فكرة خلط كلي؛ لم قدوم استعادة مدخل أيضا حاجة client أخذ إلى كل كمية تسجيل حساب.
 
-**增量帧（archived/removed 单条）。** 否决：集合极小、变更频率低，全快照免去 client 侧合并逻辑与去重状态，与 workspace-changed 现有姿态一致。
+**زيادة كمية لقطة (archived/removed مفرد بند).** مرفوض: تجميع دمج أقصى صغير، تغيير تردد معدل منخفض، كل لقطة تجنب ذهاب client جانب دمج منطق و ذهاب إعادة حالة، و workspace-changed قائم وضع حالة متسق.
 
-## 后果
+## عاقبة
 
-归档后 UI 无查看/取消归档入口（本期口径，记录在 README 的 Known Limitation 中）；数据与 slot 完好，后续加恢复面只是 UI + 一个逆向 RPC。`workspace.list` 响应形状变化是 pre-release 直改（无兼容层）。e2e（workspace-management）钉住了「归档→行消失→reload 后仍隐藏、日志仍在」的全链路；domain 层测试钉住幂等、未知 id 拒绝、跨重启恢复与旧介质默认升级。
+عودة ملف بعد UI بلا فحص نظر/إلغاء عودة ملف مدخل (هذا مدة فتحة مسار، سجل في README Known Limitation في) ؛ بيانات و slot تمام جيد، لاحق إضافة استعادة وجه فقط هو UI + واحد عكس نحو RPC.`workspace.list` استجابة شكل حالة تغير هو pre-release مباشر تعديل (بلا توافق طبقة).e2e(workspace-management) تثبيت إقامة «عودة ملف→سطر إزالة فقد→reload بعد ما زال إخفاء، سجل ما زال في» كل سلسلة مسار؛domain طبقة اختبار تثبيت إقامة قوة انتظار، لم معرفة id رفض، عبر إعادة بدء استعادة و قديم وسيط جودة افتراضي ترقية.

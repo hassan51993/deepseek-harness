@@ -18,12 +18,12 @@ import { connectFreshWorkspaceZh, ZH_BROWSER_LOCALE } from './support.ts'
 const DIR = fileURLToPath(new URL('../../../snapshots/web/changed-files-turn', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
 const MODE = webSnapshotMode()
-const PROMPT = '不用先查看目录，直接做四件事：把 intro.md 里的标题「示例项目」改成「项目说明」，新建 src/util.ts 导出一个两数相加的 add 函数，新建 app.local 写一行 mode=demo，最后用 bash 在 notes.txt 末尾追加一行 done。'
+const PROMPT = 'لا استخدام أولا فحص نظر دليل، مباشر فعل أربعة عنصر أمر: يأخذ intro.md داخل عنوان «عرض مثال مشروع» تعديل صار «مشروع شرح» ، جديد بناء src/util.ts توجيه خروج واحد اثنان عدد متبادل إضافة add دالة، جديد بناء app.local كتابة واحد سطر mode=demo، الأكثر بعد استخدام bash في notes.txt نهاية ذيل إلحاق واحد سطر done.'
 
 /** Seed a committed repository so the turn's own edits are the only difference between its snapshots; `*.local` stays ignored. */
 async function seedRepository(cwd: string): Promise<void> {
   await mkdir(cwd, { recursive: true })
-  await writeFile(join(cwd, 'intro.md'), '# 示例项目\n\n一个用于演示的仓库。\n')
+  await writeFile(join(cwd, 'intro.md'), '# عرض مثال مشروع\n\nواحد لأجل عرض عرض مستودع.\n')
   await writeFile(join(cwd, 'notes.txt'), 'start\n')
   await writeFile(join(cwd, '.gitignore'), '*.local\n')
   const git = (...args: string[]) => execFileSync('git', ['-c', 'user.email=seed@example.com', '-c', 'user.name=seed', '-c', 'commit.gpgsign=false', ...args], { cwd, stdio: 'ignore' })
@@ -107,12 +107,12 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
 
     const card = page.locator('[data-changed-files]')
     await card.waitFor({ state: 'visible' })
-    expect(await card.getByText('已编辑 4 个文件', { exact: true }).count()).toBe(1)
+    expect(await card.getByText('قد تحرير 4 عدد ملف', { exact: true }).count()).toBe(1)
     expect(await card.getByRole('listitem').count()).toBe(3)
-    expect(await card.getByRole('button', { name: '展开全部 4 个改动文件' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'توسيع الكل 4 عدد تعديل ملف' }).count()).toBe(1)
     // The header and every row open the turn's review in the Sidebar, with or without a Host desktop.
-    expect(await card.getByRole('button', { name: '在侧边栏查看本轮改动' }).count()).toBe(1)
-    expect(await card.getByRole('button', { name: '查看 notes.txt 的改动' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'فحص نظر notes.txt تعديل' }).count()).toBe(1)
     expect(tripwire.pageErrors).toEqual([])
     expect(tripwire.warnings).toEqual([])
   })
@@ -124,29 +124,29 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
       root.locator('[data-diff-line]').evaluateAll(lines => lines.map(line => `${line.getAttribute('data-diff-line')}:${line.textContent}`))
     const review = column.locator('[data-changes-review]')
     // The header lands on the first listed file; a row lands on its own.
-    await card.getByRole('button', { name: '在侧边栏查看本轮改动' }).click()
+    await card.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
-    await card.getByRole('button', { name: '查看 notes.txt 的改动' }).click()
+    await card.getByRole('button', { name: 'فحص نظر notes.txt تعديل' }).click()
     await review.locator('[data-review-file="notes.txt"]').waitFor({ state: 'visible' })
-    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: '第 1 轮改动' }).count()).toBe(1)
+    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
     await expect.poll(() => drawn(review)).toEqual(['context:11 start', 'add:2+done'])
     // The ignored file has no snapshot; its comparison comes from the copies captured around the write call.
-    await review.getByRole('button', { name: '选择要查看的文件' }).click()
+    await review.getByRole('button', { name: 'اختيار يلزم فحص نظر ملف' }).click()
     await page.getByRole('menuitem').filter({ hasText: 'app.local' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
     await expect.poll(() => drawn(review)).toEqual(['add:1+mode=demo'])
-    expect(await review.getByText('本轮新建的文件').count()).toBe(1)
+    expect(await review.getByText('هذا جولة جديد بناء ملف').count()).toBe(1)
     // A card row opens the same tab on another file; the split and wrap choices switch the drawing.
-    await card.getByRole('button', { name: '查看 intro.md 的改动' }).click()
+    await card.getByRole('button', { name: 'فحص نظر intro.md تعديل' }).click()
     await review.locator('[data-review-file="intro.md"]').waitFor({ state: 'visible' })
-    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: '第 1 轮改动' }).count()).toBe(1)
-    await review.getByRole('button', { name: '左右对比' }).click()
+    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
+    await review.getByRole('button', { name: 'يسار يمين مقابل مقارنة' }).click()
     await review.locator('[data-review-view="split"]').waitFor({ state: 'visible' })
-    await expect.poll(() => drawn(review.locator('[data-diff-side="left"]'))).toEqual(['del:1# 示例项目', 'context:2', 'context:3一个用于演示的仓库。'])
-    expect(await drawn(review.locator('[data-diff-side="right"]'))).toEqual(['del:1# 项目说明', 'context:2', 'context:3一个用于演示的仓库。'])
-    await review.getByRole('button', { name: '自动换行' }).click()
+    await expect.poll(() => drawn(review.locator('[data-diff-side="left"]'))).toEqual(['del:1# عرض مثال مشروع', 'context:2', 'context:3واحد لأجل عرض عرض مستودع.'])
+    expect(await drawn(review.locator('[data-diff-side="right"]'))).toEqual(['del:1# مشروع شرح', 'context:2', 'context:3واحد لأجل عرض عرض مستودع.'])
+    await review.getByRole('button', { name: 'تلقائي تبديل سطر' }).click()
     await review.locator('[data-review-view][data-review-wrap]').waitFor({ state: 'visible' })
-    await expect.poll(() => drawn(review)).toEqual(['del:1# 示例项目1# 项目说明', 'context:22', 'context:3一个用于演示的仓库。3一个用于演示的仓库。'])
+    await expect.poll(() => drawn(review)).toEqual(['del:1# عرض مثال مشروع1# مشروع شرح', 'context:22', 'context:3واحد لأجل عرض عرض مستودع.3واحد لأجل عرض عرض مستودع.'])
     // No desktop, so the tools offer the sidebar file but no native open.
     expect(await review.locator('[data-review-tool="open-file"]').count()).toBe(1)
     expect(await review.locator('[data-review-tool="open-native"]').count()).toBe(0)

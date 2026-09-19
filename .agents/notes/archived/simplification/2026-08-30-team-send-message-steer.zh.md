@@ -1,42 +1,42 @@
-# Agent Note: Team 消息使用单一 Steer send_message 操作
+# Agent Note: Team رسالة استخدام مفرد واحد Steer send_message عملية
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-30-team-send-message-steer.md) | 中文
+[English](2026-08-30-team-send-message-steer.md) | العربية
 
-## 问题
+## مشكلة
 
-Agent Teams 为一个持久 mailbox 公开了两个模型操作：quiet `send_message` 注入 live target 而不唤醒它，`followup_task` 则排入一个独立 waking turn 并冷恢复 inactive teammate。模型必须选择调度策略，而不是只说明消息目标；quiet 消息可能为 inactive teammate 持续累积，直到无关工作恢复它。
+Agent Teams لـ واحد حمل دائم mailbox عام اثنان عدد نموذج عملية:quiet `send_message` حقن live target بينما لا نداء تنبيه هو،`followup_task` فإن ترتيب دخول واحد مستقل waking turn و بارد استعادة inactive teammate. نموذج يجب اختيار ضبط درجة سياسة، بينما لا هو فقط شرح رسالة هدف؛quiet رسالة ممكن لـ inactive teammate حمل متابعة تراكم تراكم، مباشر إلى غير متصل عمل استعادة هو.
 
-普通 continuable-Agent 控件已经使用一个方向无关、固定 Steer 调度的 `send_message`。保留独立的 Team 名称与投递模式，会让等价的模型通信因为 target 恰好是 direct child 还是 Team peer 而采用不同语义。
+عادي continuable-Agent تحكم عنصر قد استخدام واحد جهة نحو غير متصل، ثابت Steer ضبط درجة `send_message`. إبقاء مستقل Team اسم و إلقاء تمرير نمط، سوف يجعل انتظار قيمة نموذج عبر معلومة لأن target تماما جيد هو direct child أيضا هو Team peer بينما اعتماد مختلف دلالة.
 
-## 决策
+## قرار
 
-每个 Team member 都会获得一个 `send_message({ target, message })` 工具。Team 工具集包含九个操作；不存在 `followup_task` 与模型可选的 quiet 投递。持久 `TeamMessageSnapshot` 存储 sender、target、content 与 message identity，不存储调度字段。
+كل Team member كل سوف نيل نيل واحد `send_message({ target, message })` أداة.Team أداة تجميع يتضمن تسعة عدد عملية؛ لا وجود `followup_task` و نموذج اختياري quiet إلقاء تمرير. حمل دائم `TeamMessageSnapshot` تخزين sender،target،content و message identity، لا تخزين ضبط درجة حقل.
 
-每条已接受的 Team 消息都使用 Steer。running target 在最近的步骤边界收到消息，idle target 启动一个轮次，inactive teammate 则通过 continuation lifecycle 冷恢复。每次成功的 Team send 都会在开始投递前完成持久化。`accepted` 表示 target inbox 已接受消息；`queued` 表示临时 inspection、resume 或 inbox 准入失败让消息留在 Team mailbox 等待恢复。两种结果都不表示 target 已完成所请求的工作。
+كل بند قد قبول Team رسالة كل استخدام Steer.running target في الأكثر قريب خطوة حد استلام إلى رسالة،idle target بدء واحد جولة،inactive teammate فإن عبر continuation lifecycle بارد استعادة. كل مرة نجاح Team send كل سوف في بدء إلقاء تمرير قبل إتمام حفظ دائم.`accepted` يمثل target inbox قد قبول رسالة؛`queued` يمثل مؤقت inspection،resume أو inbox دقيق دخول فشل يجعل رسالة إبقاء في Team mailbox انتظار استعادة. اثنان نوع نتيجة كل لا يمثل target قد إتمام الذي طلب عمل.
 
-Lead 通过 `Agent.steer()` 接收携带 Team 归因的用户消息。teammate 通过 symbol-keyed host-only continuation adapter 接收消息；该 adapter 会授权精确的 Lead-to-direct-child edge、保留原始 `TeamMessageSource`，并执行 resident 或 cold-resume Steer 准入。因此 sibling 与 teammate-to-Lead 消息保留真实 sender；Team 运行时绝不会伪装成 Lead 调用公开的相邻 Agent `sendMessage()`。
+Lead عبر `Agent.steer()` استقبال يحمل Team عودة بسبب مستخدم رسالة.teammate عبر symbol-keyed host-only continuation adapter استقبال رسالة؛ هذا adapter سوف تخويل دقيق Lead-to-direct-child edge، إبقاء أصلي `TeamMessageSource`، و تنفيذ resident أو cold-resume Steer دقيق دخول. لذلك sibling و teammate-to-Lead رسالة إبقاء حقيقي sender؛Team وقت التشغيل أبدا سوف زائف تركيب صار Lead استدعاء عام متبادل مجاور Agent `sendMessage()`.
 
-Lead Session 继续作为 mailbox transaction owner。它在 dispatch 前 flush `team/message/queued`，按 Lead 日志顺序为每个 target 串行化即时准入，并且只有 target Session 持久包含相同 Team message id 后才记录 `team/message/delivered`。恢复按顺序重试 queued-minus-delivered 记录；target 侧 source 折叠会防止 inbox insertion 与 acknowledgement 之间的 crash window 导致重复准入。
+Lead Session متابعة بصفة mailbox transaction owner. هو في dispatch قبل flush `team/message/queued`، حسب Lead سجل ترتيب لـ كل target سلسلة سطر تحويل أي وقت دقيق دخول، و كما فقط لديه target Session حمل دائم يتضمن نفسه Team message id بعد عندئذ سجل `team/message/delivered`. استعادة حسب ترتيب إعادة محاولة queued-minus-delivered سجل؛target جانب source طي سوف منع توقف inbox insertion و acknowledgement بين crash window توجيه يؤدي تكرار دقيق دخول.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留 quiet `send_message` 与 waking `followup_task`。** 这会保留调用方对 turn 调度的控制，但要求模型选择实现策略、允许 inactive target 存在未读持久 mail，并与相邻 Agent 消息语义分叉。
+**إبقاء quiet `send_message` و waking `followup_task`.** هذا سوف إبقاء استدعاء جهة مقابل turn ضبط درجة تحكم، لكن اشتراط نموذج اختيار تنفيذ سياسة، سماح inactive target وجود لم قراءة حمل دائم mail، و و متبادل مجاور Agent رسالة دلالة قسم تقاطع.
 
-**保留 `followup_task` 作为 Steer 别名。** 两个名字表达同一行为只会保留工具选择错误，不会增加可观察能力。
+**إبقاء `followup_task` بصفة Steer آخر اسم.** اثنان عدد اسم حرف جدول بلوغ نفس سلوك فقط سوف إبقاء أداة اختيار خطأ، لن زيادة يمكن مراقبة قدرة.
 
-**通过公开的相邻 Agent `sendMessage()` 路由 sibling。** 该操作只授权精确的 direct-parent 或 direct-child 模型 sender，并派生自己的 `AgentMessageSource`。以 Lead 身份调用会错误归因 sibling mail；把它扩展到 Team membership 则会削弱相邻关系规则。
+**عبر عام متبادل مجاور Agent `sendMessage()` توجيه sibling.** هذا عملية فقط تخويل دقيق direct-parent أو direct-child نموذج sender، و إرسال توليد ذاتي ذات `AgentMessageSource`. بـ Lead هوية استدعاء سوف خطأ عودة بسبب sibling mail؛ يأخذ هو توسيع إلى Team membership فإن سوف تقليل ضعيف متبادل مجاور علاقة قاعدة.
 
-**删除 Team mailbox 并直接投递。** 直接投递会失去准入前持久入队、临时失败后的恢复、稳定 message id 与 target 侧去重。
+**حذف Team mailbox و مباشر إلقاء تمرير.** مباشر إلقاء تمرير سوف فقد ذهاب دقيق دخول قبل حمل دائم دخول طابور، مؤقت فشل بعد استعادة، مستقر message id و target جانب ذهاب إعادة.
 
-## 测试
+## اختبار
 
-包测试固定 running、idle、inactive、Lead、sibling 与 recovery 投递，target-local ordering、sender attribution、inbox／history 去重、临时失败返回 `queued`，以及九工具 schema。无密钥 Agent Teams profile snapshot 驱动 running implementer，把 researcher 消息 Steer 到其下一步骤，并验证两个 teammate 都继续完成各自任务，之后 Lead 才汇总结果。
+حزمة اختبار ثابت running،idle،inactive،Lead،sibling و recovery إلقاء تمرير،target-local ordering،sender attribution،inbox/history ذهاب إعادة، مؤقت فشل إرجاع `queued`، و تسعة أداة schema. بلا مفتاح Agent Teams profile snapshot قيادة running implementer، يأخذ researcher رسالة Steer إلى ذلك تحت واحد خطوة، و تحقق اثنان عدد teammate كل متابعة إتمام كل منها مهمة، بعد Lead عندئذ تجميع مجموع نتيجة.
 
-## 后果
+## عاقبة
 
-模型只有一种 Team 通信选择，不能有意停放 quiet information。一条消息可能扩展 target 的当前 turn，因此提示词与测试要求 teammate 整合新消息，同时不放弃已经进行的工作。
+نموذج فقط لديه واحد نوع Team عبر معلومة اختيار، لا يستطيع متعمد توقف وضع quiet information. واحد بند رسالة ممكن توسيع target حالي turn، لذلك نص التوجيه و اختبار اشتراط teammate كامل دمج جديد رسالة، معا لا وضع ترك قد إجراء عمل.
 
-host-only Steer adapter 成为 Team 投递使用的内部 continuation 集成。人类浏览器 prompt 保留独立 Queue adapter，并继续形成不同 turn。更广泛的 [Agent Teams 决策](../feature/2026-08-05-agent-teams.zh.md)继续负责 mailbox、roster、task 与共享 checkout；[相邻 Agent 消息决策](../architecture/2026-08-27-adjacent-agent-steer-messaging.zh.md)继续负责公开 direct-edge authorization 与 model-message source。
+host-only Steer adapter يصبح Team إلقاء تمرير استخدام داخلي continuation تجميع صار. شخص صنف متصفح prompt إبقاء مستقل Queue adapter، و متابعة شكل صار مختلف turn. أكثر واسع عام [Agent Teams قرار](../feature/2026-08-05-agent-teams.zh.md) متابعة مسؤول mailbox،roster،task و مشترك checkout؛[متبادل مجاور Agent رسالة قرار](../architecture/2026-08-27-adjacent-agent-steer-messaging.zh.md) متابعة مسؤول عام direct-edge authorization و model-message source.

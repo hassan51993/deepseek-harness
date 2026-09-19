@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-05-sidebar-text-preview-and-file-tree.zh.md)
+English | [العربية](2026-09-05-sidebar-text-preview-and-file-tree.zh.md)
 
 ## Problem
 
@@ -18,7 +18,7 @@ Three tab types ship with the Sidebar: the **guide** (`ui-sidebar-right`), the *
 
 [Default pages and close protection](2026-09-08-sidebar-default-pages.md) supersedes this section's default-guide selection; guide registration, replacement and uniqueness remain unchanged.
 
-The guide is what a pane shows before it holds content. Its registration is `{ id: '@deepseek-ai/dsh-client-ui-sidebar-right/guide', kind: 'guide', priority: 'builtin', title }` with no `patterns`: a guide views nothing, so it is opened by kind through `openTab` and recorded under the page address `sidebar://guide`, which is the registry's bookkeeping and never composed by a caller. The tab's title is `开始` / `Start`, captured into the layout record when the pane is seeded, so a later language change relabels the type and not tabs already open.
+The guide is what a pane shows before it holds content. Its registration is `{ id: '@deepseek-ai/dsh-client-ui-sidebar-right/guide', kind: 'guide', priority: 'builtin', title }` with no `patterns`: a guide views nothing, so it is opened by kind through `openTab` and recorded under the page address `sidebar://guide`, which is the registry's bookkeeping and never composed by a caller. The tab's title is `بدء` / `Start`, captured into the layout record when the pane is seeded, so a later language change relabels the type and not tabs already open.
 
 The body projects every registered type's `guide[]` in `order` through the registry's observable `guide()` list, so a type registering later appears without the guide knowing it. [Guide start page and stat pill refinements](2026-09-10-guide-start-page-and-stat-pill-refinements.md) owns the compass, optional descriptions, fallback glyph, and current capsule layout. Picking a capsule calls `tabActions.openTab(entry.kind, { replaceTab: true })`: the picked type opens in the guide's own tab, and the guide is gone. The guide is a doorway, not a page that stays open beside what it opened.
 
@@ -62,7 +62,7 @@ A file click is `tabActions.openResource(fileAddressFor(sessionId, root, absolut
 
 Reload is the tree's one control, an icon button (`reload`) at the right of the root's header row. It resets every level and lists again exactly the paths in `expanded`; a level that was listed and then collapsed is dropped and fetched anew the next time it opens. The control lives in the body because a type's controls belong to its body: the pane's tab strip carries only the kit's and the panel's actions, and no per-type tools seat exists. The tree does not watch the filesystem; a level changes only when reloaded or first expanded, and the `changes` stream is the text viewer's concern.
 
-Copy is the `sidebarFiles` namespace, thirteen keys. Row states: `loading` 「正在读取…」/ "Reading…", `empty` 「空目录」/ "Empty directory", `truncated` 「条目太多，只显示了一部分。」/ "Too many entries; showing only some of them.", `noWorkspace` 「这个会话没有工作区目录。」/ "This session has no workspace directory.", `entry.other` 「这不是文件或目录，没法打开。」/ "Not a file or a directory, so it cannot be opened.", `reload` 「重新读取」/ "Reload". Failure lines are one per Host code, in terms of the directory: `workspace-file/not-found` 「这个目录不在了。可能已被移动或删除。」/ "That directory is gone. It may have been moved or deleted.", `workspace-file/outside-workspace` 「这个目录在工作区之外，侧栏不会读取它。」/ "That directory is outside the workspace, so the sidebar will not read it.", `workspace-file/not-directory` 「这不是一个目录。」/ "That is not a directory."; any other failure, carrier or unclassified, shows `error.unavailable` 「读取失败：{message}」/ "Read failed: {message}" with the failure's own message, because the tree has nothing useful to add to a transport-level error.
+Copy is the `sidebarFiles` namespace, thirteen keys. Row states: `loading` «صحيح في قراءة…»/ "Reading…", `empty` «فارغ دليل»/ "Empty directory", `truncated` «بند جدا كثير، فقط عرض واحد جزء.»/ "Too many entries; showing only some of them.", `noWorkspace` «هذا عدد جلسة لا يوجد مساحة العمل دليل.»/ "This session has no workspace directory.", `entry.other` «هذا لا هو ملف أو دليل، لا قاعدة فتح.»/ "Not a file or a directory, so it cannot be opened.", `reload` «إعادة قراءة»/ "Reload". Failure lines are one per Host code, in terms of the directory: `workspace-file/not-found` «هذا عدد دليل لا في. ممكن قد يتم نقل حركة أو حذف.»/ "That directory is gone. It may have been moved or deleted.", `workspace-file/outside-workspace` «هذا عدد دليل في مساحة العمل خارج، جانب شريط لن قراءة هو.»/ "That directory is outside the workspace, so the sidebar will not read it.", `workspace-file/not-directory` «هذا لا هو واحد دليل.»/ "That is not a directory."; any other failure, carrier or unclassified, shows `error.unavailable` «قراءة فشل:{message}»/ "Read failed: {message}" with the failure's own message, because the tree has nothing useful to add to a transport-level error.
 
 ## Alternatives considered
 

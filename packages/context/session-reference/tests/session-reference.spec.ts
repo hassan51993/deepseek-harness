@@ -249,15 +249,15 @@ function promptData(text: string): unknown {
 
 describe('session reference URI and inline mentions', () => {
   it('round-trips arbitrary session ids and replaces mentions with readable labels', () => {
-    const sessionId = SessionId('unicode/引号"/slash\\/line\n')
+    const sessionId = SessionId('unicode/جذب رقم"/slash\\/line\n')
     const uri = encodeSessionReferenceUri(sessionId)
     expect(decodeSessionReferenceUri(uri)).toBe(sessionId)
 
-    const mention = formatSessionReferenceMention({ sessionId, label: '源]会话' })
+    const mention = formatSessionReferenceMention({ sessionId, label: 'مصدر]جلسة' })
     const parsed = parseSessionReferenceText(`compare ${mention} and ${uri}`)
-    expect(parsed.text).toBe(`compare @源]会话 and @${sessionId}`)
+    expect(parsed.text).toBe(`compare @مصدر]جلسة and @${sessionId}`)
     expect(parsed.references).toEqual([
-      { sessionId, label: '源]会话' },
+      { sessionId, label: 'مصدر]جلسة' },
       { sessionId, label: sessionId },
     ])
     expect(formatSessionReferenceMention({ sessionId })).toContain(`@[${sessionId.replaceAll('\\', '\\\\').replaceAll(']', '\\]')}]`)
@@ -326,8 +326,8 @@ describe('session reference spill outcomes', () => {
   })
 
   it.each([
-    ['huge single message', ['head\n' + '界😀'.repeat(10000) + '\ntail'], 360],
-    ['whole dropped messages', ['old ' + '界'.repeat(300), 'new fact'], 180],
+    ['huge single message', ['head\n' + 'حد😀'.repeat(10000) + '\ntail'], 360],
+    ['whole dropped messages', ['old ' + 'حد'.repeat(300), 'new fact'], 180],
     ['tiny preview', ['😀'.repeat(300)], 140],
     ['escaped controls', [String.fromCharCode(0, 10, 13, 9, 34, 92).repeat(300)], 180],
   ] as const)('saves the full captured transcript for %s', async (_name, texts, budget) => {
@@ -428,7 +428,7 @@ describe('session reference spill outcomes', () => {
       }
       const target = ctx.sessions.create(SessionId('target'))
       const source = ctx.sessions.create(SessionId('source'))
-      appendText(source, '界'.repeat(500))
+      appendText(source, 'حد'.repeat(500))
       const result = await ctx.sessionReferenceResolver.prepare(fakeAgent(target), [], [{ sessionId: source.id }])
       const prompt = contextText(result)
       expect(prompt).toContain('"status":"unavailable"')
@@ -1151,7 +1151,7 @@ describe('session reference discovery and preparation', () => {
         step: 1,
         message: createMessage({
           role: 'assistant',
-          content: [{ type: 'text', text: `latest-${'界'.repeat(400)}` }],
+          content: [{ type: 'text', text: `latest-${'حد'.repeat(400)}` }],
           source: {
             kind: 'model',
             ...{ provider: 'mock', model: 'mock' },
@@ -1181,7 +1181,7 @@ describe('session reference discovery and preparation', () => {
       source.append(
         'user/message',
         createUserMessage({
-          content: [{ type: 'text', text: `${id}-${'界'.repeat(400)}` }],
+          content: [{ type: 'text', text: `${id}-${'حد'.repeat(400)}` }],
           source: checkpointSource(id),
         }),
         { surfaceOp: 'append' },

@@ -1,40 +1,40 @@
 ---
-description: "用于选择并注册一个桌面提供方的计算机操作能力包。"
+description: "لأجل اختيار و تسجيل واحد طاولة وجه مزود حساب حساب آلة عملية قدرة حزمة."
 kind: "package-group"
 ---
 
 # packages/computer-use
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-计算机操作提供方让模型观察并操作桌面。本组负责提供方的独占注册。各提供方拥有自己的操作、工具和平台要求；实验性 Cua Driver 提供方位于 experimental 组。
+حساب حساب آلة عملية مزود يجعل نموذج مراقبة و عملية طاولة وجه. هذا مجموعة مسؤول مزود وحيد احتلال تسجيل. كل مزود يملك ذاتي ذات عملية، أداة و منصة اشتراط؛ فعلي تحقق صفة Cua Driver مزود يقع في experimental مجموعة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-选择一个提供方并挂载共享注册服务。
+اختيار واحد مزود و تركيب مشترك تسجيل خدمة.
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`computer-use`](computer-use/README.zh.md) | 按名称独占注册提供方 | `ctx.computerUse` |
+| [`computer-use`](computer-use/README.zh.md) | حسب اسم وحيد احتلال تسجيل مزود | `ctx.computerUse` |
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [计算机操作](../../docs/subsystems/computer-use.zh.md) — 能力归属和提供方选择。
-- [实验性包](../experimental/README.zh.md) — Cua Driver MCP 和原生提供方。
+- [حساب حساب آلة عملية](../../docs/subsystems/computer-use.zh.md) — قدرة ملكية و مزود اختيار.
+- [فعلي تحقق صفة حزمة](../experimental/README.zh.md) — Cua Driver MCP و أصلي مزود.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

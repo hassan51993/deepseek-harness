@@ -138,9 +138,9 @@ function increasedForkTitle(title: string): string {
   if (ascii?.[1] !== undefined && ascii[2] !== undefined) {
     return `${ascii[1]}(${BigInt(ascii[2]) + 1n})`
   }
-  const fullWidth = /^(.*?)（(\d+)）$/u.exec(title)
+  const fullWidth = /^(.*?)((\d+))$/u.exec(title)
   if (fullWidth?.[1] !== undefined && fullWidth[2] !== undefined) {
-    return `${fullWidth[1]}（${BigInt(fullWidth[2]) + 1n}）`
+    return `${fullWidth[1]}(${BigInt(fullWidth[2]) + 1n})`
   }
   return `${title} (1)`
 }

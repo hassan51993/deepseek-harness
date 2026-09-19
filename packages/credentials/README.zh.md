@@ -1,52 +1,52 @@
 ---
-description: "凭据能力族的包映射：凭据引用 seam、环境与文件提供方、授权 flow 注册表，以及引用如何让机密值留在配置之外。"
+description: "اعتماد قدرة عائلة حزمة خريطة: اعتماد مرجع seam، بيئة و ملف مزود، تخويل flow سجل التسجيل، و مرجع مثل أي يجعل آلة سري قيمة إبقاء في إعداد خارج."
 kind: "package-group"
 ---
 
-# credentials/：凭据与授权
+# credentials/: اعتماد و تخويل
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`credentials/` 组让配置引用机密的名字，而不嵌入机密值。使用 `credentials/` 存储、查询和移除凭据；使用 `credentials-local/` 将凭据私密地存储在本机，并支持按次运行的环境覆盖；当需要向人询问以获取凭据时，使用 `authorization/`。轮换后的存储值会作用于下一次模型请求，而 `DEEPSEEK_API_KEY=… dsh` 在该次运行中优先。配置文件只包含凭据名称；本地机密值只有同一 OS 用户可读。
+`credentials/` مجموعة يجعل إعداد مرجع آلة سري اسم حرف، بينما لا تضمين دخول آلة سري قيمة. استخدام `credentials/` تخزين، استعلام و إزالة اعتماد؛ استخدام `credentials-local/` سوف اعتماد خاص سري أرض تخزين في هذا آلة، و دعم حمل حسب مرة تشغيل بيئة تغطية؛ عند حاجة نحو شخص استفسار سؤال بـ نيل أخذ اعتماد وقت، استخدام `authorization/`. جولة تبديل بعد تخزين قيمة سوف أثر في تحت مرة نموذج طلب، بينما `DEEPSEEK_API_KEY=… dsh` في هذا مرة تشغيل في أولوية. ملف إعداد فقط يتضمن اعتماد اسم؛ محلي آلة سري قيمة فقط لديه نفس OS مستخدم يمكن قراءة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-三个包共同提供凭据功能：一个在运行时存储、查询与移除机密，而配置只写名字；第二个是默认的本机存储；第三个让插件获取必须向人请求的凭据。它们的 README 覆盖日常使用；全部约定以子系统参考为准。
+ثلاثة عدد حزمة مشترك نفس توفير اعتماد وظيفة: واحد في وقت التشغيل تخزين، استعلام و إزالة آلة سري، بينما إعداد فقط كتابة اسم حرف؛ ثاني عدد هو افتراضي هذا آلة تخزين؛ رقم ثلاثة عدد يجعل إضافة نيل أخذ يجب نحو شخص طلب اعتماد. هو جمع README تغطية يوم معتاد استخدام؛ الكل اتفاق بـ فرعي نظام مشاركة اعتبار لـ دقيق.
 
-| 包 | 角色 | ctx 键 |
+| حزمة | زاوية لون | ctx مفتاح |
 |---|---|---|
-| [`credentials/`](credentials/README.zh.md) | 在运行时存储、查询与移除机密，而配置只写名字 | `ctx.credentials` |
-| [`credentials-local/`](credentials-local/README.zh.md) | 默认本机存储：一个私有 YAML 文件，环境覆盖优先 | 注册 `ctx.credentials` |
-| [`authorization/`](authorization/README.zh.md) | 由插件拥有、通过询问人来取得凭据的 flow | `ctx.authorization` |
+| [`credentials/`](credentials/README.zh.md) | في وقت التشغيل تخزين، استعلام و إزالة آلة سري، بينما إعداد فقط كتابة اسم حرف | `ctx.credentials` |
+| [`credentials-local/`](credentials-local/README.zh.md) | افتراضي هذا آلة تخزين: واحد خاص YAML ملف، بيئة تغطية أولوية | تسجيل `ctx.credentials` |
+| [`authorization/`](authorization/README.zh.md) | من إضافة يملك، عبر استفسار سؤال شخص قدوم أخذ نيل اعتماد flow | `ctx.authorization` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解共享词汇，再看能力 seam 表与本地存储的配置面。
+أولا من فرعي نظام مشاركة اعتبار حل مشترك مفردات، مجددا نظر قدرة seam جدول و محلي تخزين إعداد وجه.
 
-- [凭据子系统参考](../../docs/subsystems/credentials.zh.md)——`CredentialRef` 与 `CredentialKey`、按操作解析、可安全用于 UI 的 `CredentialInfo`、授权 flow 与生成的 Cordis 接口面。
-- [能力 seam](../../docs/capability-seams.zh.md)——本家族遵循的 Service Definition / Service Provider / Consumer 拆分。
-- [生成配置目录](../../docs/config-catalog.zh.md#deepseek-aidsh-credentials-local)——本地存储的每个受支持字段。
+- [اعتماد فرعي نظام مشاركة اعتبار](../../docs/subsystems/credentials.zh.md)——`CredentialRef` و `CredentialKey`، حسب عملية تحليل، يمكن أمان لأجل UI `CredentialInfo`، تخويل flow و توليد Cordis واجهة وجه.
+- [قدرة seam](../../docs/capability-seams.zh.md)——هذا بيت عائلة التزام دوران Service Definition / Service Provider / Consumer تفكيك قسم.
+- [توليد إعداد دليل](../../docs/config-catalog.zh.md#deepseek-aidsh-credentials-local)——محلي تخزين كل تلقي دعم حمل حقل.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

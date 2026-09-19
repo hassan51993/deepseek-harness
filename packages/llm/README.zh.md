@@ -1,48 +1,48 @@
 ---
-description: "LLM（大语言模型）能力包组：一个提供方无关的模型调用服务、DeepSeek 与 pi-ai 提供方适配器、请求重试执行，以及具备回放感知的 token 计量。"
+description: "LLM(كبير لغة نموذج) قدرة حزمة مجموعة: واحد مزود غير متصل نموذج استدعاء خدمة،DeepSeek و pi-ai مزود مهايئ، طلب إعادة محاولة تنفيذ، و أداة تجهيز إعادة تشغيل شعور معرفة token حساب كمية."
 kind: "package-group"
 ---
 
-# llm/ — LLM 能力家族
+# llm/ — LLM قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-llm 组提供 harness 的模型调用能力：一个提供方无关的服务，任何组合都可以通过它向模型提供方发起流式请求，外加适配器、提供方专用请求元数据、重试执行与计量。核心 `llm` 包定义所有插件与会话日志使用的消息、内容块与流式分片词汇；提供方适配器把某个提供方的协议格式（wire format）翻译为该词汇；DeepSeek 请求扩展插件在模型输入之外贡献具有生命周期归属的元数据；`llm-retry` 在持久化的 agent（智能体）步骤边界上重跑失败的请求；`token-meter` 从持久化日志测量请求与上下文压力。本页列出该包组的组成；每个包 README 负责各自的包级约定。
+llm مجموعة توفير harness نموذج استدعاء قدرة: واحد مزود غير متصل خدمة، أي تركيب كل يمكن عبر هو نحو نموذج مزود إرسال بدء تدفق صيغة طلب، خارج إضافة مهايئ، مزود مخصص استخدام طلب بيانات وصفية، إعادة محاولة تنفيذ و حساب كمية. نواة قلب `llm` حزمة تعريف كل إضافة و جلسة سجل استخدام رسالة، محتوى كتلة و تدفق صيغة قسم قطعة مفردات؛ مزود مهايئ يأخذ بعض عدد مزود بروتوكول صيغة (wire format) قلب ترجمة لـ هذا مفردات؛DeepSeek طلب توسيع إضافة في نموذج إدخال خارج مساهمة أداة لديه دورة الحياة ملكية بيانات وصفية؛`llm-retry` في حفظ دائم agent(ذكي جسم) خطوة حد فوق إعادة ركض فشل طلب؛`token-meter` من حفظ دائم سجل قياس كمية طلب و سياق ضغط قوة. هذا صفحة صف خروج هذا حزمة مجموعة مجموعة صار؛ كل حزمة README مسؤول كل منها حزمة درجة اتفاق.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx key |
+| حزمة | مسؤولية | ctx key |
 |---|---|---|
-| [`llm/`](llm/README.zh.md) | 通过已注册的提供方适配器流式发起一次模型调用，并共享 harness 的消息、块与分片词汇 | `ctx.llm` |
-| [`llm-deepseek/`](llm-deepseek/README.zh.md) | 以 DeepSeek chat-completions 直连、thinking 与图片输入服务 `deepseek-official` 路由 | 注册到 `ctx.llm` |
-| [`llm-pi-ai/`](llm-pi-ai/README.zh.md) | 通过 pi-ai 目录与协议格式服务配置的提供方路由，包括手工声明的网关 | 注册到 `ctx.llm` |
-| [`deepseek-llm-api-extensions/`](deepseek-llm-api-extensions/README.zh.md) | 在官方 DeepSeek 请求上注册具有生命周期归属的顶层字段 | `ctx.deepseekLlmApiExtensions` |
-| [`plugin-package-inventory-deepseek/`](plugin-package-inventory-deepseek/README.zh.md) | 为官方 DeepSeek 请求贡献当前启用的 Loader 包清单 | 贡献 `dsh_plugin_packages` |
-| [`llm-retry/`](llm-retry/README.zh.md) | 在持久 agent 步骤边界上按各提供方策略重试失败的模型请求 | 监听 `agent/request-error` |
-| [`token-meter/`](token-meter/README.zh.md) | 用固定启发式规则从持久会话日志测量请求与上下文压力 | `ctx.tokenMeter` |
+| [`llm/`](llm/README.zh.md) | عبر قد تسجيل مزود مهايئ تدفق صيغة إرسال بدء مرة نموذج استدعاء، و مشترك harness رسالة، كتلة و قسم قطعة مفردات | `ctx.llm` |
+| [`llm-deepseek/`](llm-deepseek/README.zh.md) | بـ DeepSeek chat-completions مباشر وصل،thinking و صورة إدخال خدمة `deepseek-official` توجيه | تسجيل إلى `ctx.llm` |
+| [`llm-pi-ai/`](llm-pi-ai/README.zh.md) | عبر pi-ai دليل و بروتوكول صيغة خدمة إعداد مزود توجيه، يشمل يد عمل إعلان شبكة صلة | تسجيل إلى `ctx.llm` |
+| [`deepseek-llm-api-extensions/`](deepseek-llm-api-extensions/README.zh.md) | في رسمي جهة DeepSeek طلب فوق تسجيل أداة لديه دورة الحياة ملكية قمة طبقة حقل | `ctx.deepseekLlmApiExtensions` |
+| [`plugin-package-inventory-deepseek/`](plugin-package-inventory-deepseek/README.zh.md) | لـ رسمي جهة DeepSeek طلب مساهمة حالي تفعيل Loader حزمة بيان | مساهمة `dsh_plugin_packages` |
+| [`llm-retry/`](llm-retry/README.zh.md) | في حمل دائم agent خطوة حد فوق حسب كل مزود سياسة إعادة محاولة فشل نموذج طلب | استماع `agent/request-error` |
+| [`token-meter/`](token-meter/README.zh.md) | استخدام ثابت بدء إرسال صيغة قاعدة من حمل دائم جلسة سجل قياس كمية طلب و سياق ضغط قوة | `ctx.tokenMeter` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [LLM 流式子系统](../../docs/subsystems/llm-streaming.zh.md)——消息与块类型、组装后的模型请求、`StreamChunk` 协议与适配器约定（adapter contract）。
-- [Token 计量子系统](../../docs/subsystems/token-meter.zh.md)——`ctx.tokenMeter` 背后的测量语义。
-- [孪生 LLM 适配器](../../.agents/notes/implemented/architecture/2026-06-13-twin-llm-adapters.zh.md)——为什么 DeepSeek 路由交付两个结构不同的适配器。
-- [按路由的模型上下文](../../.agents/notes/implemented/architecture/2026-07-20-routed-model-context-and-compaction-policy.zh.md)——loop 如何路由模型请求并压缩上下文。
+- [LLM تدفق صيغة فرعي نظام](../../docs/subsystems/llm-streaming.zh.md)——رسالة و كتلة نوع، تجميع بعد نموذج طلب،`StreamChunk` بروتوكول و مهايئ اتفاق (adapter contract).
+- [Token حساب كمية فرعي نظام](../../docs/subsystems/token-meter.zh.md)——`ctx.tokenMeter` خلف بعد قياس كمية دلالة.
+- [توأم توليد LLM مهايئ](../../.agents/notes/implemented/architecture/2026-06-13-twin-llm-adapters.zh.md)——لـ ماذا DeepSeek توجيه تسليم اثنان عدد بنية مختلف مهايئ.
+- [حسب توجيه نموذج سياق](../../.agents/notes/implemented/architecture/2026-07-20-routed-model-context-and-compaction-policy.zh.md)——loop مثل أي توجيه نموذج طلب و ضغط سياق.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

@@ -1,9 +1,9 @@
 ---
-description: "为 macOS x64 POSIX 锁提供预编译 system.node。"
+description: "لـ macOS x64 POSIX قفل توفير مسبق تحرير ترجمة system.node."
 kind: "package-library"
 ---
 # @deepseek-ai/node-addon-system-darwin-x64
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-此平台包提供 `bin/system.node`，这是一个供 `@deepseek-ai/node-addon-system/flock` 使用的稳定 Node-API v8 addon。它不包含 Landlock 可执行文件、JavaScript 加载器或安装构建脚本。Native 工作流在 macOS x64 上构建它，并负责验证安装后的产物。
+هذا منصة حزمة توفير `bin/system.node`، هذا هو واحد توفير `@deepseek-ai/node-addon-system/flock` استخدام مستقر Node-API v8 addon. هو لا يتضمن Landlock يمكن تنفيذ ملف،JavaScript تحميل جهاز أو تثبيت بناء نص برمجي.Native سير العمل في macOS x64 فوق بناء هو، و مسؤول تحقق تثبيت بعد ناتج.

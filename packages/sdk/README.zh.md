@@ -1,49 +1,49 @@
 ---
-description: "SDK 家族的包映射：JSON-RPC 协议，以及供进程外 SDK 使用的 TypeScript 客户端与服务器。"
+description: "SDK بيت عائلة حزمة خريطة:JSON-RPC بروتوكول، و توفير عملية خارج SDK استخدام TypeScript عميل و خادم."
 kind: "package-group"
 ---
 
-# sdk/：从另一进程驱动 Harness 运行时
+# sdk/: من آخر عملية قيادة Harness وقت التشغيل
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-SDK 家族让另一进程通过按换行分帧的 JSON-RPC 驱动完整的 DeepSeek Harness 运行时。协议包定义公开消息，TypeScript 客户端用具名 profile 和有序 patch 启动 `dsh`，服务器则通过 stdio 接受 SDK 请求。客户端可以打开会话、发送提示词，并观察会话事件、agent（智能体）状态变化与 subagent 完成事件。TypeScript 客户端与 [Python SDK](../../python/README.zh.md) 使用同一种协议，而这些包不会创建开发者项目，也不定义其他应用。
+SDK بيت عائلة يجعل آخر عملية عبر حسب تبديل سطر قسم لقطة JSON-RPC قيادة كامل DeepSeek Harness وقت التشغيل. بروتوكول حزمة تعريف عام رسالة،TypeScript عميل استخدام أداة اسم profile و لديه ترتيب patch بدء `dsh`، خادم فإن عبر stdio قبول SDK طلب. عميل يمكن فتح جلسة، إرسال نص التوجيه، و مراقبة جلسة حدث،agent(ذكي جسم) حالة تغير و subagent إتمام حدث.TypeScript عميل و [Python SDK](../../python/README.zh.md) استخدام نفس نوع بروتوكول، بينما هذه حزمة لن إنشاء تطوير من مشروع، أيضا لا تعريف أخرى تطبيق.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-每个包的 README 都介绍了其所对应栈组件的用途。
+كل حزمة README كل وسيط تعريف ذلك الذي مقابل مكدس مكون استخدام طريق.
 
-| 包 | 职责 |
+| حزمة | مسؤولية |
 |---|---|
-| [`protocol/`](protocol/README.zh.md) | 协议格式（wire format）：按换行分帧的 JSON-RPC 传输，以及具名的请求、结果与通知类型 |
-| [`client/`](client/README.zh.md) | TypeScript 客户端：启动运行时子进程，通过高层与协议层 API 驱动 agent 轮次 |
-| [`server/`](server/README.zh.md) | `jsonrpc` 插件：通过 stdio 为进程外 SDK 客户端提供服务 |
+| [`protocol/`](protocol/README.zh.md) | بروتوكول صيغة (wire format): حسب تبديل سطر قسم لقطة JSON-RPC نقل، و أداة اسم طلب، نتيجة و إشعار نوع |
+| [`client/`](client/README.zh.md) | TypeScript عميل: بدء وقت التشغيل عملية فرعية، عبر عال طبقة و بروتوكول طبقة API قيادة agent جولة |
+| [`server/`](server/README.zh.md) | `jsonrpc` إضافة: عبر stdio لـ عملية خارج SDK عميل توفير خدمة |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从 Python SDK（客户端约定的姊妹实现）开始，再看可运行应用与组边界背后的决策记录。
+أولا من Python SDK(عميل اتفاق أخت شقيقة تنفيذ) بدء، مجددا نظر يمكن تشغيل تطبيق و مجموعة حد خلف بعد قرار سجل.
 
-- [Python SDK](../../python/README.zh.md)——采用同一种协议并附带打包运行时的 Python 对应实现。
-- [SDK 应用组合包](../bundle/sdk-app/README.zh.md)——启动 JSON-RPC 服务器的 `dsh --profile sdk` 应用。
-- [架构](../../docs/architecture.zh.md) — 打包后的 Python 客户端为何启动相同的具名 profile。
-- [SDK 项目工具链移除](../../.agents/notes/archived/simplification/2026-08-11-remove-sdk-project-toolchain.md) — 本组为何从不创建、配置或构建开发者项目。
-- [SDK subagent 提供方](../subagent/subagent-dsh-sdk/README.zh.md) — harness 内部使用 TypeScript 客户端的提供方。
+- [Python SDK](../../python/README.zh.md)——اعتماد نفس نوع بروتوكول و مرفق حمل تحزيم وقت التشغيل Python مقابل تنفيذ.
+- [SDK تطبيق تركيب حزمة](../bundle/sdk-app/README.zh.md)——بدء JSON-RPC خادم `dsh --profile sdk` تطبيق.
+- [هيكل بنية](../../docs/architecture.zh.md) — تحزيم بعد Python عميل لـ أي بدء نفسه أداة اسم profile.
+- [SDK مشروع أداة سلسلة إزالة](../../.agents/notes/archived/simplification/2026-08-11-remove-sdk-project-toolchain.md) — هذا مجموعة لـ أي من لا إنشاء، إعداد أو بناء تطوير من مشروع.
+- [SDK subagent مزود](../subagent/subagent-dsh-sdk/README.zh.md) — harness داخلي استخدام TypeScript عميل مزود.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

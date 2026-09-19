@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-26-web-trigger-menu-presentation-polish.zh.md)
+English | [العربية](2026-08-26-web-trigger-menu-presentation-polish.zh.md)
 
 ## Problem
 
@@ -11,7 +11,7 @@ The Web composer's `/` and `@` trigger menu carried several presentation defects
 
 ## Decision
 
-Candidate rows lead with a domain icon instead of a text prefix: `InputTriggerCandidate.icon` narrows from `string` to the closed union `InputTriggerCandidateIcon` (`file | folder | session`), the menu view maps it to `ReferenceIcon`, and `ui-reference` emits bare names (`folderx/`, session label). The `candidate.file`/`candidate.folder`/`candidate.session` locale keys are deleted; the session section title is `对话`/`Sessions`. The menu spans the composer card edge to edge (`left: 0; right: 0`), and a pending source renders two breathing skeleton bars in item cell metrics instead of the loading text row.
+Candidate rows lead with a domain icon instead of a text prefix: `InputTriggerCandidate.icon` narrows from `string` to the closed union `InputTriggerCandidateIcon` (`file | folder | session`), the menu view maps it to `ReferenceIcon`, and `ui-reference` emits bare names (`folderx/`, session label). The `candidate.file`/`candidate.folder`/`candidate.session` locale keys are deleted; the session section title is `محادثة`/`Sessions`. The menu spans the composer card edge to edge (`left: 0; right: 0`), and a pending source renders two breathing skeleton bars in item cell metrics instead of the loading text row.
 
 Pointer and keyboard share one highlight, last input wins: a `hover` MenuEvent parks the reducer-owned highlight on a ready row, `MenuView` routes it from `onMouseMove` (not `mouseenter`, so keyboard-scrolling rows under a resting pointer cannot steal the highlight back), and the CSS `:hover` tint is gone.
 
@@ -19,7 +19,7 @@ The drill affordance on the highlighted folder row is the library `IconChevronRi
 
 A token still carrying its trigger character is editable text, not a settled chip: the text-ref decoration colors it and nothing more, and the domain icon belongs exclusively to the settled `ReferenceChipNode`. The former appearance channel (scan `appearance` field, `TextRefNode.__appearance`, `data-ref-appearance` DOM attribute, CSS `::before` icon) is deleted end to end.
 
-Composer placeholders advertise both triggers (`描述你想要构建的内容… / 调用指令 @ 文件或对话` / `Describe what you want to build... / commands, @ files or sessions`), and the zh copy for commands is unified from 命令 to 指令 across `ui-chat`, `ui-conversation`, `ui-goal`, and `ui-input-trigger`.
+Composer placeholders advertise both triggers (`وصف أنت تفكير يلزم بناء محتوى… / استدعاء إشارة أمر @ ملف أو محادثة` / `Describe what you want to build... / commands, @ files or sessions`), and the zh copy for commands is unified from أمر to إشارة أمر across `ui-chat`, `ui-conversation`, `ui-goal`, and `ui-input-trigger`.
 
 ## Alternatives considered
 

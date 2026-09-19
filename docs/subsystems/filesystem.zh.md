@@ -1,18 +1,18 @@
-# 文件系统
+# نظام الملفات
 
-[English](filesystem.md) | 中文
+[English](filesystem.md) | العربية
 
-可选的文件系统能力由四个部分组成：[dsh-fs](../../packages/fs/fs) 拥有 `ctx.fs` 以及带可选守卫的原子文本操作；[dsh-fs-local](../../packages/fs/fs-local) 实现本地磁盘后端；[dsh-fs-observation-policy](../../packages/fs/fs-observation-policy) 记录观测到的存在或缺失状态，并通过事件（而非服务）添加新鲜度规则；[dsh-tool-fs](../../packages/fs/tool-fs) 直接执行面向模型的 read/write/edit 调用并渲染窗口。它位于 agent loop（智能体循环）主干之外；替换后端不会改变策略或工具 schema。
+اختياري نظام الملفات قدرة من أربعة عدد جزء مجموعة صار:[dsh-fs](../../packages/fs/fs) يملك `ctx.fs` و حمل اختياري حراسة حماية أصل فرعي نص عملية؛[dsh-fs-local](../../packages/fs/fs-local) تنفيذ محلي مغناطيس قرص خلفية؛[dsh-fs-observation-policy](../../packages/fs/fs-observation-policy) سجل مراقبة قياس إلى وجود أو ناقص حالة، و عبر حدث (بينما غير خدمة) إضافة جديد طازج درجة قاعدة؛[dsh-tool-fs](../../packages/fs/tool-fs) مباشر تنفيذ موجه إلى نموذج read/write/edit استدعاء و تصيير نافذة. هو يقع في agent loop(ذكي جسم حلقة) رئيسي جاف خارج؛ استبدال خلفية لن تغيير سياسة أو أداة schema.
 
-`dsh-fs-observation-policy` 是可选插件。没有该插件时，`FileSystem` 服务定义、一个提供方和 `dsh-tool-fs` 消费方组成完整且不受约束的文件系统 seam：`write` 无条件创建或覆盖，`edit` 无条件替换字面文本。策略插件通过裁决 `fs/*` waterfall（瀑布式事件）来改变这些操作。移除该插件不会破坏工具，因为工具调用 `ctx.fs` 并分发事件，而不调用策略方法。加载了 `dsh-tool-fs` 的部署也应加载 `dsh-fs-observation-policy`，使默认行为为「先读后写/编辑」。
+`dsh-fs-observation-policy` هو اختياري إضافة. لا يوجد هذا إضافة وقت،`FileSystem` خدمة تعريف، واحد مزود و `dsh-tool-fs` مستهلك مجموعة صار كامل كما لا تلقي قيد نظام الملفات seam:`write` بلا شرط إنشاء أو تغطية،`edit` بلا شرط استبدال حرف وجه نص. سياسة إضافة عبر قطع قرار `fs/*` waterfall(شلال نشر صيغة حدث) قدوم تغيير هذه عملية. إزالة هذا إضافة لن كسر تالف أداة، لأن أداة استدعاء `ctx.fs` و توزيع حدث، بينما لا استدعاء سياسة طريقة. تحميل `dsh-tool-fs` نشر أيضا ينبغي تحميل `dsh-fs-observation-policy`، جعل افتراضي سلوك لـ «أولا قراءة بعد كتابة/تحرير».
 
-提供方源码：[`packages/fs/fs/src/types.ts`](../../packages/fs/fs/src/types.ts) 与 [`packages/fs/fs/src/index.ts`](../../packages/fs/fs/src/index.ts)。策略源码：[`packages/fs/fs-observation-policy/src/types.ts`](../../packages/fs/fs-observation-policy/src/types.ts)。读取渲染源码：[`packages/fs/tool-fs/src/read-render.ts`](../../packages/fs/tool-fs/src/read-render.ts)。
+مزود شفرة المصدر:[`packages/fs/fs/src/types.ts`](../../packages/fs/fs/src/types.ts) و [`packages/fs/fs/src/index.ts`](../../packages/fs/fs/src/index.ts). سياسة شفرة المصدر:[`packages/fs/fs-observation-policy/src/types.ts`](../../packages/fs/fs-observation-policy/src/types.ts). قراءة تصيير شفرة المصدر:[`packages/fs/tool-fs/src/read-render.ts`](../../packages/fs/tool-fs/src/read-render.ts).
 
-## 目标标识与元数据（提供方约定）
+## هدف معرف و بيانات وصفية (مزود اتفاق)
 
-每个操作首先将用户提供的路径解析为不透明的后端目标。消费方可以显示 `displayPath`，但禁止解析 `targetKey`（一个品牌化的不透明 id），也不得假设它是本地绝对路径。
+كل عملية أول أولا سوف مستخدم توفير مسار تحليل لـ لا نفاذ واضح خلفية هدف. مستهلك يمكن عرض `displayPath`، لكن منع توقف تحليل `targetKey`(واحد صنف لوحة تحويل لا نفاذ واضح id) ، أيضا لا نيل زائف ضبط هو هو محلي قطعا مقابل مسار.
 
-与文件系统共享执行世界的消费方通过提供方获取跨能力坐标，而不是解释该身份：`processPath(target)` 返回子进程可以打开的规范化绝对路径；`processPathFromHostPath(hostPath)` 只在该执行世界共享相应宿主文件时映射其绝对路径；`fileUrl(target)` 返回采用提供方平台语法的 `file:` URI；`contains(parent, child)` 检查规范化身份相等或后代包含关系。
+و نظام الملفات مشترك تنفيذ عالم حد مستهلك عبر مزود نيل أخذ عبر قدرة جلوس علامة، بينما لا هو حل تفسير هذا هوية:`processPath(target)` إرجاع عملية فرعية يمكن فتح مواصفة تحويل قطعا مقابل مسار؛`processPathFromHostPath(hostPath)` فقط في هذا تنفيذ عالم حد مشترك متبادل ينبغي مضيف ملف وقت خريطة ذلك قطعا مقابل مسار؛`fileUrl(target)` إرجاع اعتماد مزود منصة لغة قاعدة `file:` URI؛`contains(parent, child)` فحص مواصفة تحويل هوية متبادل انتظار أو بعد بديل يتضمن علاقة.
 
 ```ts type-equiv
 /**
@@ -30,7 +30,7 @@ interface FsTarget {
 }
 ```
 
-后端拥有文件版本 token，即 write/edit 所守卫的新鲜度 token。策略插件存储它们以进行陈旧检查；消费方不解释其内容。两个 id 都是品牌化的不透明字符串。
+خلفية يملك ملف إصدار token، أي write/edit الذي حراسة حماية جديد طازج درجة token. سياسة إضافة تخزين هو جمع بـ إجراء قديم قديم فحص؛ مستهلك لا حل تفسير ذلك محتوى. اثنان عدد id كل هو صنف لوحة تحويل لا نفاذ واضح نص.
 
 ```ts type-equiv
 /**
@@ -52,7 +52,7 @@ type FsTargetKey = Branded<'FsTargetKey'>
 type FsVersion = Branded<'FsVersion'>
 ```
 
-`stat` 返回元数据（从不返回内容），目标不存在时返回 `undefined`。`type` 让消费方在读取前拒绝目录和特殊文件；`size` 让文本消费方无需通过失败探测即可选择 `readText` 还是 `streamText`。文本消费方在消费 `streamText` 时执行自己的保留量上限。原始字节消费方调用 `readBytes(target, signal, maxBytes)`；其必填的完整内容上限会使已知或读取中发现的超限以 `FS_TOO_LARGE` 失败，不会截断结果或无界缓冲。
+`stat` إرجاع بيانات وصفية (من لا إرجاع محتوى) ، هدف لا وجود وقت إرجاع `undefined`.`type` يجعل مستهلك في قراءة قبل رفض دليل و خاص خاص ملف؛`size` يجعل نص مستهلك بلا حاجة عبر فشل استكشاف قياس يكفي اختيار `readText` أيضا هو `streamText`. نص مستهلك في إزالة استهلاك `streamText` وقت تنفيذ ذاتي ذات إبقاء كمية حد أعلى. أصلي بايت مستهلك استدعاء `readBytes(target, signal, maxBytes)`؛ ذلك لا بد ملء كامل محتوى حد أعلى سوف جعل معروف أو قراءة في اكتشاف تجاوز حد بـ `FS_TOO_LARGE` فشل، لن قطع قطع نتيجة أو بلا حد مؤقت اندفاع.
 
 ```ts type-equiv
 /**
@@ -71,7 +71,7 @@ interface FsInfo {
 }
 ```
 
-`lstat` 是路径级、不跟随链接的元数据原语。它接收路径而不是 `FsTarget`，因为 `resolve` 会有意跟随 symlink 以产生稳定标识；需要检查信任边界的消费方可以先调用 `lstat`，在解析前拒绝 `symlink`。
+`lstat` هو مسار درجة، لا تتبع مع رابط بيانات وصفية أصل لغة. هو استقبال مسار بينما لا هو `FsTarget`، لأن `resolve` سوف متعمد تتبع مع symlink بـ إنتاج مستقر معرف؛ حاجة فحص معلومة مهمة حد مستهلك يمكن أولا استدعاء `lstat`، في تحليل قبل رفض `symlink`.
 
 ```ts type-equiv
 /**
@@ -90,7 +90,7 @@ interface FsPathInfo {
 }
 ```
 
-`listDir` 按稳定的名称顺序返回直接子条目。每个条目携带子项的 basename、类型、已解析目标，以及后端能报告时的廉价元数据。它禁止读取文件内容，因此 `size` 仅用于普通文件，`version` 来自元数据。已损坏或已消失的子项可以作为 `other` 返回且不带元数据；列出或解析子项元数据时的权限或后端 I/O 失败会以 `FS_PERMISSION_DENIED` 或 `FS_IO_ERROR` 使整个列表操作失败。
+`listDir` حسب مستقر اسم ترتيب إرجاع مباشر فرعي بند. كل بند يحمل فرعي بند basename، نوع، قد تحليل هدف، و خلفية قدرة تقرير إبلاغ وقت نزيه قيمة بيانات وصفية. هو منع توقف قراءة ملف محتوى، لذلك `size` فقط لأجل عادي ملف،`version` قدوم ذاتي بيانات وصفية. قد ضرر تالف أو قد إزالة فقد فرعي بند يمكن بصفة `other` إرجاع كما لا حمل بيانات وصفية؛ صف خروج أو تحليل فرعي بند بيانات وصفية وقت إذن أو خلفية I/O فشل سوف بـ `FS_PERMISSION_DENIED` أو `FS_IO_ERROR` جعل كامل قائمة عملية فشل.
 
 ```ts type-equiv
 /**
@@ -111,9 +111,9 @@ interface FsDirEntry {
 }
 ```
 
-## 写入与编辑守卫（提供方约定）
+## كتابة و تحرير حراسة حماية (مزود اتفاق)
 
-`writeText` 和 `editText` 的版本守卫都是可选的：省略守卫时执行无条件的裸提供方变更，提供守卫时则执行相应的条件检查。`writeText` 的守卫是 `FsWriteIntent`：`createIfAbsent` 在目标缺失时创建，目标已存在时以 `FS_NOT_OBSERVED` 拒绝；即使目标在提供方初始探测后才出现，也必须拒绝，因为发布操作本身不得替换。`replaceIfVersion` 仅在目标存在且版本匹配时替换，否则报 `FS_STALE_VERSION`。省略 `expected` 则无条件创建或覆盖。联合类型本身只包含两种有守卫的意图；「无守卫」通过省略表达，因此 write 和 edit 都使用同一个可选的 `expected` 字段。
+`writeText` و `editText` إصدار حراسة حماية كل هو اختياري: حذف حراسة حماية وقت تنفيذ بلا شرط عار مزود تغيير، توفير حراسة حماية وقت فإن تنفيذ متبادل ينبغي شرط فحص.`writeText` حراسة حماية هو `FsWriteIntent`:`createIfAbsent` في هدف ناقص وقت إنشاء، هدف قد وجود وقت بـ `FS_NOT_OBSERVED` رفض؛ أي جعل هدف في مزود ابتدائي استكشاف قياس بعد عندئذ ظهور، أيضا يجب رفض، لأن إصدار عملية ذاته لا نيل استبدال.`replaceIfVersion` فقط في هدف وجود كما إصدار مطابقة وقت استبدال، لا فإن تقرير `FS_STALE_VERSION`. حذف `expected` فإن بلا شرط إنشاء أو تغطية. ربط دمج نوع ذاته فقط يتضمن اثنان نوع لديه حراسة حماية معنى رسم؛ «بلا حراسة حماية» عبر حذف جدول بلوغ، لذلك write و edit كل استخدام نفس عدد اختياري `expected` حقل.
 
 ```ts type-equiv
 /**
@@ -148,7 +148,7 @@ interface FsWriteOutcome {
 }
 ```
 
-`editText` 是提供方级别的变更操作，而非在别处组合的 `read` 加 `write`。带守卫时，它在字面匹配之前先验证预期版本（因此对陈旧内容的编辑报 `FS_STALE_VERSION`，而非对更新内容的匹配失败）；不带守卫时，它编辑当前内容。无论哪种路径，它都应用替换并原子写入——将匹配、行尾处理、陈旧检查和原子替换保持在一个变更临界区内——目标缺失时两条路径都报 `FS_STALE_VERSION`。
+`editText` هو مزود درجة آخر تغيير عملية، بينما غير في آخر موضع تركيب `read` إضافة `write`. حمل حراسة حماية وقت، هو في حرف وجه مطابقة قبل أولا تحقق مسبق مدة إصدار (لذلك مقابل قديم قديم محتوى تحرير تقرير `FS_STALE_VERSION`، بينما غير مقابل تحديث محتوى مطابقة فشل) ؛ لا حمل حراسة حماية وقت، هو تحرير حالي محتوى. بلا نقاش أي نوع مسار، هو كل تطبيق استبدال و أصل فرعي كتابة——سوف مطابقة، سطر ذيل معالجة، قديم قديم فحص و أصل فرعي استبدال إبقاء في واحد تغيير قرب حد منطقة داخل——هدف ناقص وقت اثنان بند مسار كل تقرير `FS_STALE_VERSION`.
 
 ```ts type-equiv
 /** A literal-replacement edit request. */
@@ -178,11 +178,11 @@ interface FsEditOutcome {
 }
 ```
 
-## fs 策略事件（提供方约定词汇）
+## fs سياسة حدث (مزود اتفاق مفردات)
 
-`dsh-fs` 拥有三个事件，由工具分发、策略插件监听，使事件发出方（`dsh-tool-fs`）与监听方（`dsh-fs-observation-policy`）共享词汇，而事件发出方无需依赖策略插件。它们只携带 `dsh-fs` 词汇加一个不透明的 `object` actor，不含面向模型的概念，也不含 agent/会话所有者结构。
+`dsh-fs` يملك ثلاثة عدد حدث، من أداة توزيع، سياسة إضافة استماع، جعل حدث إرسال خروج جهة (`dsh-tool-fs`) و استماع جهة (`dsh-fs-observation-policy`) مشترك مفردات، بينما حدث إرسال خروج جهة بلا حاجة اعتماد سياسة إضافة. هو جمع فقط يحمل `dsh-fs` مفردات إضافة واحد لا نفاذ واضح `object` actor، لا يحتوي موجه إلى نموذج عام فكرة، أيضا لا يحتوي agent/جلسة كل من بنية.
 
-`fs/write-intent` 与 `fs/edit-intent` 是**单槽决策 waterfall**：工具分发时附带一个默认 thunk（返回 `undefined`，即裸提供方），监听方完全决策而不调用 `next()`。该 slot 按注册顺序先到先得——由策略插件占据是部署约定，而非强制不变式。`fs/observed` 是一个即发即弃的记录事件，携带 `FsObservation`：存在于某个版本，或确认缺失。该事件通过普通 `ctx.emit` 分发；其监听方必须是同步的、仅产生副作用，因为工具不会捕获该 emit 抛出的异常——抛出异常的监听方可能取代读取操作原本待返回的错误，或使工具在变更已经成功后返回 `isError` 结果。下方生成的 [cordis surface](#cordis-surface) 展示确切签名。
+`fs/write-intent` و `fs/edit-intent` هو**مفرد مجرى قرار waterfall**: أداة توزيع وقت مرفق حمل واحد افتراضي thunk(إرجاع `undefined`، أي عار مزود) ، استماع جهة تماما قرار بينما لا استدعاء `next()`. هذا slot حسب تسجيل ترتيب أولا إلى أولا نيل——من سياسة إضافة احتلال حسب هو نشر اتفاق، بينما غير قوي صنع ثابت صيغة.`fs/observed` هو واحد أي إرسال أي ترك سجل حدث، يحمل `FsObservation`: وجود في بعض عدد إصدار، أو تأكيد ناقص. هذا حدث عبر عادي `ctx.emit` توزيع؛ ذلك استماع جهة يجب هو تزامن، فقط إنتاج فرعي أثر، لأن أداة لن التقاط هذا emit رمي خروج استثناء——رمي خروج استثناء استماع جهة ممكن يحل محل قراءة عملية أصل هذا انتظار إرجاع خطأ، أو جعل أداة في تغيير قد نجاح بعد إرجاع `isError` نتيجة. تحت جهة توليد [cordis surface](#cordis-surface) عرض تأكيد قطع توقيع.
 
 ```ts type-equiv
 /**
@@ -195,9 +195,9 @@ type FsObservation =
   | { readonly kind: 'absent' }
 ```
 
-## 执行上下文（策略插件）
+## تنفيذ سياق (سياسة إضافة)
 
-策略插件只需要足够的执行上下文，通过收窄 `fs/*` 事件携带的不透明 `object` actor 来推导观测状态的所有者。`ToolExecution` 包含必需的字段，因此 `dsh-tool-fs` 将其执行对象作为 actor 直接传递，而无需让 `dsh-fs-observation-policy` 导入工具、agent 或会话包。
+سياسة إضافة فقط حاجة كاف كاف تنفيذ سياق، عبر استلام ضيق `fs/*` حدث يحمل لا نفاذ واضح `object` actor قدوم دفع توجيه مراقبة قياس حالة كل من.`ToolExecution` يتضمن مطلوب حقل، لذلك `dsh-tool-fs` سوف ذلك تنفيذ كائن بصفة actor مباشر نقل تمرير، بينما بلا حاجة يجعل `dsh-fs-observation-policy` استيراد أداة،agent أو جلسة حزمة.
 
 ```ts type-equiv
 /**
@@ -219,9 +219,9 @@ interface FsObservationActor {
 }
 ```
 
-## 读取结果（消费方 / 读取渲染）
+## قراءة نتيجة (مستهلك / قراءة تصيير)
 
-文本读取受行窗口、字节上限和后端限制约束。达到字节上限后，扫描仍会继续，但不再保留更多行，因此 `totalLines` 仍为精确值。面向模型的 `read` 工具渲染的结果纯粹是展示性的；不存在 `full`/`partial` 视图区分——授权基于新鲜度（工具发出表示目标存在的 `fs/observed` 事件，并直接携带 stat 的版本），因此任何窗口化读取在文件未变时都能授权后续的 write/edit。元数据未命中时，工具会在返回 `FS_NOT_FOUND` 前 emit 缺失观测，使后续带守卫的写入可以重新创建外部删除的目标，但不会授权 edit。拥有读取操作的执行器 `dsh-tool-fs` 实现读取窗口化并构造该结果；策略插件不执行这些操作。
+نص قراءة تلقي سطر نافذة، بايت حد أعلى و خلفية حد قيد. بلوغ إلى بايت حد أعلى بعد، مسح ما زال سوف متابعة، لكن لم يعد إبقاء أكثر كثير سطر، لذلك `totalLines` ما زال لـ دقيق قيمة. موجه إلى نموذج `read` أداة تصيير نتيجة صاف خالص هو عرض صفة؛ لا وجود `full`/`partial` عرض منطقة قسم——تخويل أساس في جديد طازج درجة (أداة إرسال خروج يمثل هدف وجود `fs/observed` حدث، و مباشر يحمل stat إصدار) ، لذلك أي نافذة تحويل قراءة في ملف لم تغيير وقت كل قدرة تخويل لاحق write/edit. بيانات وصفية لم أمر في وقت، أداة سوف في إرجاع `FS_NOT_FOUND` قبل emit ناقص مراقبة قياس، جعل لاحق حمل حراسة حماية كتابة يمكن إعادة إنشاء خارجي حذف هدف، لكن لن تخويل edit. يملك قراءة عملية منفذ `dsh-tool-fs` تنفيذ قراءة نافذة تحويل و بنية صنع هذا نتيجة؛ سياسة إضافة لا تنفيذ هذه عملية.
 
 ```ts type-equiv
 /** Outcome of a bounded text read — what {@link formatReadOutput} renders. */
@@ -237,13 +237,13 @@ interface FileReadOutcome {
 }
 ```
 
-## 已观测文件状态（策略插件）
+## قد مراقبة قياس ملف حالة (سياسة إضافة)
 
-已观测状态是 `dsh-fs-observation-policy` 插件内部持有的 `WeakMap<owner, Map<targetKey, FsObservation>>`。映射中没有条目表示未见；`{ kind: 'absent' }` 表示 `read` 的元数据未命中，或 `str_replace_editor` 的 `view`、`str_replace`、`insert` 命令发生元数据未命中，从而确认缺失；`{ kind: 'present', version }` 表示 read、write 或 edit 观测到该版本。写入决策把未见和缺失映射到 `createIfAbsent`，把存在映射到 `replaceIfVersion`；编辑决策把未见映射到 `FS_NOT_OBSERVED`，把缺失映射到 `FS_NOT_FOUND`，把存在映射到其版本守卫。所有者从事件 actor 推导（通常是 `exec.agent.session`），被视为不透明且从不读取。dispose（资源释放）时丢弃全部数据（HMR（热模块替换）安全），策略不执行任何文件系统 I/O。
+قد مراقبة قياس حالة هو `dsh-fs-observation-policy` إضافة داخلي يحتفظ `WeakMap<owner, Map<targetKey, FsObservation>>`. خريطة في لا يوجد بند يمثل لم رؤية؛`{ kind: 'absent' }` يمثل `read` بيانات وصفية لم أمر في، أو `str_replace_editor` `view`،`str_replace`،`insert` أمر حدوث بيانات وصفية لم أمر في، من بينما تأكيد ناقص؛`{ kind: 'present', version }` يمثل read،write أو edit مراقبة قياس إلى هذا إصدار. كتابة قرار يأخذ لم رؤية و ناقص خريطة إلى `createIfAbsent`، يأخذ وجود خريطة إلى `replaceIfVersion`؛ تحرير قرار يأخذ لم رؤية خريطة إلى `FS_NOT_OBSERVED`، يأخذ ناقص خريطة إلى `FS_NOT_FOUND`، يأخذ وجود خريطة إلى ذلك إصدار حراسة حماية. كل من من حدث actor دفع توجيه (عبر معتاد هو `exec.agent.session`) ، يتم نظر لـ لا نفاذ واضح كما من لا قراءة.dispose(مورد تحرير) وقت إسقاط الكل بيانات (HMR(حار وحدة استبدال) أمان) ، سياسة لا تنفيذ أي نظام الملفات I/O.
 
-## 错误分类体系（提供方约定）
+## خطأ تصنيف جسم نظام (مزود اتفاق)
 
-文件系统故障使用稳定的 `FsErrorCode` 字符串，由 `FsError`（`HarnessError`）携带。工具注册表在错误结果上保留 `{ name, code }`，使重试、权限和 UI 层可以按 code 分支而无需解析文本。
+نظام الملفات لذا عائق استخدام مستقر `FsErrorCode` نص، من `FsError`(`HarnessError`) يحمل. أداة سجل التسجيل في خطأ نتيجة فوق إبقاء `{ name, code }`، جعل إعادة محاولة، إذن و UI طبقة يمكن حسب code فرع بينما بلا حاجة تحليل نص.
 
 ```ts type-equiv
 /**
@@ -267,15 +267,15 @@ type FsErrorCode =
   | 'FS_ABORTED'
 ```
 
-目录列表使用 `FS_NOT_DIRECTORY`、`FS_PERMISSION_DENIED` 与 `FS_IO_ERROR` 区分已存在但并非目录的目标、被拒绝的列表操作和意外的后端 I/O 失败。`FS_SANDBOX_DENIED` 是强制执行沙箱的后端（`dsh-fs-sandbox`）所作的策略拒绝——模式边界拒绝了写入/编辑——与 `FS_PERMISSION_DENIED`（宿主内核拒绝）不同。`FS_NOT_OBSERVED` 表示策略插件没有此所有者的先前观测记录（或 `createIfAbsent` 遇到了现有文件）。`FS_NOT_FOUND` 也表示策略因确认缺失而拒绝 edit。`FS_STALE_VERSION` 表示后端版本不再与观测到的版本匹配（或提供方本身收到针对缺失目标的 edit）。新鲜度授权没有部分/完整之分，因此不存在 `FS_PARTIAL_OBSERVATION`。
+دليل قائمة استخدام `FS_NOT_DIRECTORY`،`FS_PERMISSION_DENIED` و `FS_IO_ERROR` منطقة قسم قد وجود لكن و غير دليل هدف، يتم رفض قائمة عملية و معنى خارج خلفية I/O فشل.`FS_SANDBOX_DENIED` هو قوي صنع تنفيذ صندوق رملي خلفية (`dsh-fs-sandbox`) الذي عمل سياسة رفض——نمط حد رفض كتابة/تحرير——و `FS_PERMISSION_DENIED`(مضيف داخل نواة رفض) مختلف.`FS_NOT_OBSERVED` يمثل سياسة إضافة لا يوجد هذا كل من أولا قبل مراقبة قياس سجل (أو `createIfAbsent` لقاء إلى قائم ملف).`FS_NOT_FOUND` أيضا يمثل سياسة بسبب تأكيد ناقص بينما رفض edit.`FS_STALE_VERSION` يمثل خلفية إصدار لم يعد و مراقبة قياس إلى إصدار مطابقة (أو مزود ذاته استلام إلى إبرة مقابل ناقص هدف edit). جديد طازج درجة تخويل لا يوجد جزء/كامل لـ قسم، لذلك لا وجود `FS_PARTIAL_OBSERVATION`.
 
-## 文件 IO 不设超时
+## ملف IO لا ضبط مهلة
 
-`read`/`write`/`edit` **不**接受 `timeoutMs`，提供方约定也不设置截止时间——不同于 bash 与 web（它们消费 [`@deepseek-ai/dsh-timeout`](../../packages/util/timeout/README.zh.md)）以及 subprocess 支撑的 `glob`/`grep`（其声明的 `timeoutMs` 由 `@deepseek-ai/dsh-tool-call-timeout-policy` 强制执行）：那些是进程支撑的，截止时间可以真正终止工作。本地系统调用至多是尽力中止——超时无法迫使进行中的 `fsync`/`rename` 停下，因此这里的 `timeoutMs` 会成为 seam 无法强制执行的截止时间，而且恰好落在「显式优于隐式」禁止隐式默认值的位置。取消仍通过工具执行 signal 传播，在系统调用边界尽力中止。
+`read`/`write`/`edit` **لا**قبول `timeoutMs`، مزود اتفاق أيضا لا ضبط قطع توقف وقت——مختلف في bash و web(هو جمع إزالة استهلاك [`@deepseek-ai/dsh-timeout`](../../packages/util/timeout/README.zh.md)) و subprocess دعم دعم `glob`/`grep`(ذلك إعلان `timeoutMs` من `@deepseek-ai/dsh-tool-call-timeout-policy` قوي صنع تنفيذ): ذلك بعض هو عملية دعم دعم، قطع توقف وقت يمكن حق صحيح إنهاء عمل. محلي نظام استدعاء حتى كثير هو كل قوة في توقف——مهلة لا يمكن إجبار جعل إجراء في `fsync`/`rename` توقف تحت، لذلك هذا داخل `timeoutMs` سوف يصبح seam لا يمكن قوي صنع تنفيذ قطع توقف وقت، بينما كما تماما جيد سقوط في «صريح أفضل في خفي صيغة» منع توقف خفي صيغة قيمة افتراضية موضع. إلغاء ما زال عبر أداة تنفيذ signal نقل بث، في نظام استدعاء حد كل قوة في توقف.
 
-## 服务与插件
+## خدمة و إضافة
 
-`FileSystem`（`ctx.fs`，abstract）拥有提供方原语：`resolve`、`processPath`、`processPathFromHostPath`、`fileUrl`、`contains`、`stat`、`lstat`、`readText`、`streamText`、`readBytes`、`listDir`、`writeText` 与 `editText`。`dsh-fs-observation-policy` **不注册服务**。它通过 `fs/*` 事件门禁添加策略，根据未见、缺失或存在状态对写入与编辑意图 waterfall 作出决策，并记录 `FsObservation` 值。执行器是 `dsh-tool-fs`：它通过 `ctx.fs` 读取、写入或编辑，分发 waterfall，并 emit 记录事件。下方生成的 [`ctx.fs` 小节](#ctxfs--filesystem-abstract-seam) 展示确切的 `ctx.fs` 签名。
+`FileSystem`(`ctx.fs`،abstract) يملك مزود أصل لغة:`resolve`،`processPath`،`processPathFromHostPath`،`fileUrl`،`contains`،`stat`،`lstat`،`readText`،`streamText`،`readBytes`،`listDir`،`writeText` و `editText`.`dsh-fs-observation-policy` **لا تسجيل خدمة**. هو عبر `fs/*` حدث بوابة إضافة سياسة، أصل حسب لم رؤية، ناقص أو وجود حالة مقابل كتابة و تحرير معنى رسم waterfall عمل خروج قرار، و سجل `FsObservation` قيمة. منفذ هو `dsh-tool-fs`: هو عبر `ctx.fs` قراءة، كتابة أو تحرير، توزيع waterfall، و emit سجل حدث. تحت جهة توليد [`ctx.fs` صغير عقدة](#ctxfs--filesystem-abstract-seam) عرض تأكيد قطع `ctx.fs` توقيع.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

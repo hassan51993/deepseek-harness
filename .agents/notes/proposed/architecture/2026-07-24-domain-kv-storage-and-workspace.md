@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [中文](2026-07-24-domain-kv-storage-and-workspace.zh.md)
+English | [العربية](2026-07-24-domain-kv-storage-and-workspace.zh.md)
 
 ## Problem
 
@@ -199,7 +199,7 @@ export type WorkspaceId = Branded<'WorkspaceId'>
 export function WorkspaceId(id: string): WorkspaceId
 
 const workspaceRecord = z.object({
-  path: z.string(),                              // realpath，见下
+  path: z.string(), // realpath، رؤية تحت
   title: z.string(),
   sessionIds: z.array(z.string().transform(SessionId)),
   createdAt: z.string(),                         // ISO
@@ -218,7 +218,7 @@ export interface Workspace {
   readonly id: WorkspaceId
   readonly path: string
   readonly title: string
-  readonly sessionIds: readonly SessionId[]      // 唯一真相且有序：数组序即展示序
+  readonly sessionIds: readonly SessionId[] // وحيد حق متبادل كما لديه ترتيب: عدد مجموعة ترتيب أي عرض ترتيب
   setTitle(title: string): Promise<void>
   /** Record a session under this workspace (idempotent). Rejects when the session
    *  header's cwd (realpath) differs from this workspace's path. */
@@ -231,12 +231,12 @@ export interface Workspace {
 export class WorkspaceRegistry extends Service {
   constructor(ctx: Context)                      // super(ctx, 'workspaceRegistry')
   // start(): this.domain = await ctx.storage.domain.open(workspaceDomainSpec)
-  //          实体缓存 Map<WorkspaceId, WorkspaceEntity> 重建
-  create(path: string, title?: string): Promise<Workspace>   // realpath 后撞已有 → reject
+  // فعلي جسم ذاكرة مؤقتة Map<WorkspaceId, WorkspaceEntity> إعادة بناء
+  create(path: string, title?: string): Promise<Workspace> // realpath بعد اصطدام قد لديه → reject
   get(id: WorkspaceId): Workspace | undefined
   list(): Workspace[]
-  resolveByPath(path: string): Promise<Workspace | undefined> // 同 realpath 口径，故 async
-  delete(id: WorkspaceId): Promise<boolean>      // 只删注册记录；目录与 session 日志保留
+  resolveByPath(path: string): Promise<Workspace | undefined> // نفس realpath فتحة مسار، لذا async
+  delete(id: WorkspaceId): Promise<boolean> // فقط حذف تسجيل سجل؛ دليل و session سجل إبقاء
 }
 ```
 

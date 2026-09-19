@@ -1,37 +1,37 @@
-# Agent Note: 环境事实位于可复用提示词指令之后
+# Agent Note: بيئة واقع يقع في يمكن إعادة استخدام نص التوجيه إشارة أمر بعد
 
 Status: implemented
 
-[English](2026-09-06-environment-prompt-suffix.md) | 中文
+[English](2026-09-06-environment-prompt-suffix.md) | العربية
 
-## 问题
+## مشكلة
 
-本地 Web URL、Harness checkout 路径和会话 cwd 因用户与机器而异。将这些事实放在可复用工具指令之前，会使其余内容相同的提示词在开头附近就出现差异，限制可供同模型缓存复用的前缀。模型名称介绍标识 agent（智能体），可以保留在靠前的位置。
+محلي Web URL،Harness checkout مسار و جلسة cwd بسبب مستخدم و آلة جهاز بينما مختلف. سوف هذه واقع وضع في يمكن إعادة استخدام أداة إشارة أمر قبل، سوف جعل ذلك بقية محتوى نفسه نص التوجيه في فتح رأس مرفق قريب حينئذ ظهور فرق مختلف، حد يمكن توفير نفس نموذج ذاكرة مؤقتة إعادة استخدام بادئة. نموذج اسم وسيط تعريف معرف agent(ذكي جسم) ، يمكن إبقاء في اعتماد قبل موضع.
 
-## 决策
+## قرار
 
-[系统提示词注册表](../../../../packages/core/system-prompt/README.zh.md)将固定 Harness 身份保留在最前，并将 `DEPLOYMENT_PERSONA_PREFIX` 保留在 `0`。截至 `STRUCTURED_OUTPUT` 的第一方可复用指令位于环境后缀之前：`HARNESS_SOURCE` 位于 `10000`，`WEB_SURFACE` 位于 `10100`，`DEPLOYMENT_PERSONA_SUFFIX` 位于 `10200`。
+[توجيه النظام سجل التسجيل](../../../../packages/core/system-prompt/README.zh.md) سوف ثابت Harness هوية إبقاء في الأكثر قبل، و سوف `DEPLOYMENT_PERSONA_PREFIX` إبقاء في `0`. قطع حتى `STRUCTURED_OUTPUT` رقم واحد جهة يمكن إعادة استخدام إشارة أمر يقع في بيئة بعد لاحقة قبل:`HARNESS_SOURCE` يقع في `10000`،`WEB_SURFACE` يقع في `10100`،`DEPLOYMENT_PERSONA_SUFFIX` يقع في `10200`.
 
-全局 system-prompt 配置接受 `personaPrefix` 与 `personaSuffix`，两者均默认为空。[带作用域的 persona 行](../../../../packages/preset/persona/README.zh.md)要求提供 `prefix`，并接受默认为空的 `suffix`。它们通过导出的 `PERSONA_PREFIX_SECTION` 与 `PERSONA_SUFFIX_SECTION` 名称注册 `deployment:persona-prefix` 与 `deployment:persona-suffix`。省略或为空的作用域 `suffix` 会遮蔽掉全局后缀。交付的 Web、headless、SDK、ACP bundle 以及 standard、PTC、Cordis preset 将模型介绍保留在前缀中，仅将 `Your working directory is {{cwd}}.` 放入后缀。这些名称指定位置，而不对文本分类；不添加 persona 解析或 OS 字段。
+عام system-prompt إعداد قبول `personaPrefix` و `personaSuffix`، اثنان من متساو افتراضي لـ فارغ.[حمل أثر مجال persona سطر](../../../../packages/preset/persona/README.zh.md) اشتراط توفير `prefix`، و قبول افتراضي لـ فارغ `suffix`. هو جمع عبر توجيه خروج `PERSONA_PREFIX_SECTION` و `PERSONA_SUFFIX_SECTION` اسم تسجيل `deployment:persona-prefix` و `deployment:persona-suffix`. حذف أو لـ فارغ أثر مجال `suffix` سوف حجب حجب إسقاط عام بعد لاحقة. تسليم Web،headless،SDK،ACP bundle و standard،PTC،Cordis preset سوف نموذج وسيط تعريف إبقاء في بادئة في، فقط سوف `Your working directory is {{cwd}}.` وضع دخول بعد لاحقة. هذه اسم إشارة تحديد موضع، بينما لا مقابل نص تصنيف؛ لا إضافة persona تحليل أو OS حقل.
 
-[提示词变量与工具指导归属记录](../architecture/2026-07-05-prompt-variables-and-tool-guidance-ownership.zh.md)仍保留 identity-first 的 persona 位置、单一归属规则、严格插值和工具指导职责。
+[نص التوجيه متغير و أداة إشارة توجيه ملكية سجل](../architecture/2026-07-05-prompt-variables-and-tool-guidance-ownership.zh.md) ما زال إبقاء identity-first persona موضع، مفرد واحد ملكية قاعدة، صارم إطار إدراج قيمة و أداة إشارة توجيه مسؤولية.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**将整个 persona 后移。** 这会将模型名称介绍移离开头，却无助于同模型复用。分离 cwd 可以将介绍与可复用指令一起保留。
+**سوف كامل persona بعد نقل.** هذا سوف سوف نموذج اسم وسيط تعريف نقل مغادرة فتح رأس، لكن بلا مساعدة في نفس نموذج إعادة استخدام. قسم مغادرة cwd يمكن سوف وسيط تعريف و يمكن إعادة استخدام إشارة أمر واحد بدء إبقاء.
 
-**仅移动源码路径与 Web URL。** 若 cwd 仍位于靠前的 persona 内，不同工作区之间的可复用前缀仍会被打断。
+**فقط نقل حركة شفرة المصدر مسار و Web URL.** إذا cwd ما زال يقع في اعتماد قبل persona داخل، مختلف مساحة العمل بين يمكن إعادة استخدام بادئة ما زال سوف يتم ضرب قطع.
 
-**从 persona 文本推断环境片段。** 解析部署方撰写的行文会使位置依赖措辞。显式模板让交付组合与自定义部署直接控制位置。
+**من persona نص دفع قطع بيئة قطعة مقطع.** تحليل نشر جهة تأليف كتابة سطر نص سوف جعل موضع اعتماد إجراء لفظ. صريح نموذج لوح يجعل تسليم تركيب و ذاتي تعريف نشر مباشر تحكم موضع.
 
-**将这些事实移到 runtime-context 消息。** 这会改变其消息角色和持久化位置，而不只是分离系统段落。
+**سوف هذه واقع نقل إلى runtime-context رسالة.** هذا سوف تغيير ذلك رسالة زاوية لون و حفظ دائم موضع، بينما لا فقط هو قسم مغادرة نظام مقطع سقوط.
 
-## 后果
+## عاقبة
 
-字节相同的前缀要求模型介绍、persona 前缀、工具、配置和前置段落文本一致。任意扩展顺序与组装监听器仍决定最终结果；这是一项第一方位置策略，而非通用稳定前缀保证。不测量或承诺提供方共享缓存及命中率提升。
+بايت نفسه بادئة اشتراط نموذج وسيط تعريف،persona بادئة، أداة، إعداد و قبل وضع مقطع سقوط نص متسق. مهمة معنى توسيع ترتيب و تجميع مستمع ما زال قرار نهائي نتيجة؛ هذا هو واحد بند رقم واحد جهة موضع سياسة، بينما غير عام مستقر بادئة حفظ إثبات. لا قياس كمية أو تحمل وعد مزود مشترك ذاكرة مؤقتة و أمر في معدل رفع رفع.
 
-环境与 Web／源码指导位于结构化输出指令之后。`complete: true` persona 仅使用渲染后的前缀并忽略后缀，抑制其他所有系统段落，但不禁用工具 schema 或 runtime context。源码与 Web 事实保留 Harness checkout、会话工作区和当前工作目录之间的区分。
+بيئة و Web/شفرة المصدر إشارة توجيه يقع في بنية تحويل إخراج إشارة أمر بعد.`complete: true` persona فقط استخدام تصيير بعد بادئة و تجاهل اختصار بعد لاحقة، كبح صنع أخرى كل نظام مقطع سقوط، لكن لا منع استخدام أداة schema أو runtime context. شفرة المصدر و Web واقع إبقاء Harness checkout، جلسة مساحة العمل و حالي عمل دليل بين منطقة قسم.
 
-## 测试
+## اختبار
 
-[注册表测试](../../../../packages/core/system-prompt/tests/system-prompt.spec.ts)在模型相同、checkout 路径、URL 和 cwd 值变化时比较可复用前缀；同时覆盖严格插值与完整覆盖。[循环测试](../../../../packages/core/agent-loop/tests/loop.spec.ts)固定靠前的模型身份和会话 cwd 插值。[Persona 测试](../../../../packages/preset/persona/tests/persona.spec.ts)覆盖作用域后缀替换、空值遮蔽与完整 persona。[录制的提示词快照](../../../../docs/testing.zh.md)覆盖原生工具与生成 SDK 组合发出的提示词；它们不测量提供方缓存命中。
+[سجل التسجيل اختبار](../../../../packages/core/system-prompt/tests/system-prompt.spec.ts) في نموذج نفسه،checkout مسار،URL و cwd قيمة تغير وقت مقارنة مقارنة يمكن إعادة استخدام بادئة؛ معا تغطية صارم إطار إدراج قيمة و كامل تغطية.[حلقة اختبار](../../../../packages/core/agent-loop/tests/loop.spec.ts) ثابت اعتماد قبل نموذج هوية و جلسة cwd إدراج قيمة.[Persona اختبار](../../../../packages/preset/persona/tests/persona.spec.ts) تغطية أثر مجال بعد لاحقة استبدال، فارغ قيمة حجب حجب و كامل persona.[تسجيل صنع نص التوجيه لقطة](../../../../docs/testing.zh.md) تغطية أصلي أداة و توليد SDK تركيب إرسال خروج نص التوجيه؛ هو جمع لا قياس كمية مزود ذاكرة مؤقتة أمر في.

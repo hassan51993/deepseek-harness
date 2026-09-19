@@ -1,37 +1,37 @@
 ---
-description: "identity 包组：由遥测、反馈与 DeepSeek 提供方请求共享的匿名关联 id，每个 harness home 一个。"
+description: "identity حزمة مجموعة: من بعيد قياس، عكس تغذية و DeepSeek مزود طلب مشترك مجهول اسم صلة ربط id، كل harness home واحد."
 kind: "package-group"
 ---
 
-# identity/ — 共享身份
+# identity/ — مشترك هوية
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-identity 组为每个 harness home 提供一个匿名 id，该安装的遥测、反馈与 DeepSeek 请求会把它附加到各自的记录上，因此离开同一个 home 的所有内容都能被识别为来自同一套安装，而无需识别用户身份。无需配置任何东西：id 会在这些功能之一首次运行时自动出现，并在文件被删除前保持稳定。本组只有一个包；本页列出本组的组成，包 README 负责细节。
+identity مجموعة لـ كل harness home توفير واحد مجهول اسم id، هذا تثبيت بعيد قياس، عكس تغذية و DeepSeek طلب سوف يأخذ هو مرفق إضافة إلى كل منها سجل فوق، لذلك مغادرة فتح نفس عدد home كل محتوى كل قدرة يتم تعرف آخر لـ قدوم ذاتي نفس طقم تثبيت، بينما بلا حاجة تعرف آخر مستخدم هوية. بلا حاجة إعداد أي شرق غرب:id سوف في هذه وظيفة لـ واحد أول مرة وقت التشغيل تلقائي ظهور، و في ملف يتم حذف قبل إبقاء مستقر. هذا مجموعة فقط لديه واحد حزمة؛ هذا صفحة صف خروج هذا مجموعة مجموعة صار، حزمة README مسؤول دقيق عقدة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 |
+| حزمة | مسؤولية |
 |---|---|
-| [`anonymous-user-id`](anonymous-user-id/README.zh.md) | 让每个 harness home 拥有一个匿名 id，遥测、反馈与 DeepSeek 请求把它附加到记录上，使来自同一安装的记录无需识别用户即可被辨认 |
+| [`anonymous-user-id`](anonymous-user-id/README.zh.md) | يجعل كل harness home يملك واحد مجهول اسم id، بعيد قياس، عكس تغذية و DeepSeek طلب يأخذ هو مرفق إضافة إلى سجل فوق، جعل قدوم ذاتي نفس تثبيت سجل بلا حاجة تعرف آخر مستخدم يكفي يتم تمييز إقرار |
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [会话遥测子系统](../../docs/subsystems/session-telemetry.zh.md)——在导出中携带该 id 的遥测功能。
-- [dsh-llm-deepseek](../llm/llm-deepseek/README.zh.md)——在请求中携带该 id 的 DeepSeek 提供方。
-- [dsh-command-feedback](../feedback/command-feedback/README.zh.md)——在确认文本中点名该匿名安装的反馈命令。
+- [جلسة بعيد قياس فرعي نظام](../../docs/subsystems/session-telemetry.zh.md)——في توجيه خروج في يحمل هذا id بعيد قياس وظيفة.
+- [dsh-llm-deepseek](../llm/llm-deepseek/README.zh.md)——في طلب في يحمل هذا id DeepSeek مزود.
+- [dsh-command-feedback](../feedback/command-feedback/README.zh.md)——في تأكيد نص في نقطة اسم هذا مجهول اسم تثبيت عكس تغذية أمر.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

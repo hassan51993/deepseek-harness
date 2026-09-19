@@ -1,32 +1,32 @@
-# Agent Note: Web `/export` 共用流式 Session ZIP 下载
+# Agent Note: Web `/export` مشترك استخدام تدفق صيغة Session ZIP تحت تحميل
 
 Status: implemented
 Archived: 2026-08-22
 
-[English](2026-08-11-web-export-command-and-dialog.md) | 中文
+[English](2026-08-11-web-export-command-and-dialog.md) | العربية
 
 ## Problem
 
-Session 导出需要一个稳定的 Session 级外显入口，以及语义等价的斜杠命令路径。第二套后端读取器或 Host 路径写入器会重复下载实现，并引入平台相关的文件权限和路径公开问题。
+Session توجيه خروج حاجة واحد مستقر Session درجة خارج إظهار مدخل، و دلالة انتظار قيمة مائل عمود أمر مسار. ثاني طقم خلفية قراءة جهاز أو Host مسار كتابة جهاز سوف تكرار تحت تحميل تنفيذ، و جذب دخول منصة متبادل صلة ملف إذن و مسار عام مشكلة.
 
 ## Decision
 
-`@deepseek-ai/dsh-session-log-export` 注册 Web 专用的 `/export` 用户命令，并提供浏览器 `ctx.sessionLogDownload` 控制器。该命令记录普通的 `command/run` 和 `command/done`；`command.execute` 返回成功结果后，`dsh-client-ui-commands` 会发布本地确认，请求当前浏览器的控制器下载 ApiProxy 现有的 `GET /api/session.export` ZIP。其他客户端会渲染广播的命令节点，但不会重复执行浏览器副作用。Session Header 中 111×32 的 `Session log` 胶囊按钮会直接调用该控制器。两种入口通过 `HEAD` 预检获得准备阶段错误，再把 GET URL 交给浏览器下载管理器，因此 JavaScript 不会缓冲 ZIP；两种入口共用进行中状态和 Modal。
+`@deepseek-ai/dsh-session-log-export` تسجيل Web مخصص استخدام `/export` مستخدم أمر، و توفير متصفح `ctx.sessionLogDownload` تحكم جهاز. هذا أمر سجل عادي `command/run` و `command/done`؛`command.execute` إرجاع نجاح نتيجة بعد،`dsh-client-ui-commands` سوف إصدار محلي تأكيد، طلب حالي متصفح تحكم جهاز تحت تحميل ApiProxy قائم `GET /api/session.export` ZIP. أخرى عميل سوف تصيير واسع بث أمر عقدة، لكن لن تكرار تنفيذ متصفح فرعي أثر.Session Header في 111×32 `Session log` لاصق كيس حسب زر سوف مباشر استدعاء هذا تحكم جهاز. اثنان نوع مدخل عبر `HEAD` مسبق فحص نيل نيل دقيق تجهيز مرحلة مقطع خطأ، مجددا يأخذ GET URL تسليم إعطاء متصفح تحت تحميل إدارة جهاز، لذلك JavaScript لن مؤقت اندفاع ZIP؛ اثنان نوع مدخل مشترك استخدام إجراء في حالة و Modal.
 
-Header 贡献占用最右侧的 `conversation.session.header.utilities` 列表，渲染带尾部下载图标的 `Session log` 文字 capsule 和共享 Modal。标题旁的 `conversation.session.header.actions` 列表继续承载模式、Subagent 和 Task 配置项，挂载 Session export 不会改变它们的顺序或位置。导出贡献不观察 Session 历史。逐 Session 控制器会折叠并发操作，在插件释放时取消活动预检，忽略释放后的迟到请求，并在请求后来完成时保留用户已经关闭弹窗的状态。
+Header مساهمة احتلال استخدام الأكثر يمين جانب `conversation.session.header.utilities` قائمة، تصيير حمل ذيل جزء تحت تحميل رسم علامة `Session log` نص حرف capsule و مشترك Modal. عنوان جانب `conversation.session.header.actions` قائمة متابعة تحمل تحميل نمط،Subagent و Task بند إعداد، تركيب Session export لن تغيير هو جمع ترتيب أو موضع. توجيه خروج مساهمة لا مراقبة Session تاريخ. تدريجي Session تحكم جهاز سوف طي تزامن عملية، في إضافة تحرير وقت إلغاء نشط حركة مسبق فحص، تجاهل اختصار تحرير بعد متأخر إلى طلب، و في طلب بعد قدوم إتمام وقت إبقاء مستخدم قد إغلاق نابض نافذة حالة.
 
-ZIP 端点与持久化 `readRaw` 能力仍由 `dsh-host-apiproxy` 和持久化包拥有。端点会在读取工件前 flush 活动的根 Session，因此本地确认不会早于持久命令生命周期行。本包不序列化 Session 事件、不写 Host 文件、不交付 Host 路径，也不实现 SQLite 回退。
+ZIP طرف نقطة و حفظ دائم `readRaw` قدرة ما زال من `dsh-host-apiproxy` و حفظ دائم حزمة يملك. طرف نقطة سوف في قراءة عمل عنصر قبل flush نشط حركة أصل Session، لذلك محلي تأكيد لن مبكر في حمل دائم أمر دورة الحياة سطر. هذه الحزمة لا تسلسل تحويل Session حدث، لا كتابة Host ملف، لا تسليم Host مسار، أيضا لا تنفيذ SQLite رجوع.
 
-本包是普通的 Client 聚合项目。单一 `tsconfig.json` 会一起编译 Node loader 入口与浏览器贡献；Host 侧测试仍通过源码入口验证命令与 invariant。
+هذه الحزمة هو عادي Client تجمع دمج مشروع. مفرد واحد `tsconfig.json` سوف واحد بدء تحرير ترجمة Node loader مدخل و متصفح مساهمة؛Host جانب اختبار ما زال عبر شفرة المصدر مدخل تحقق أمر و invariant.
 
 ## Alternatives considered
 
-**把外显入口放进 Trajectory。** 不采用，因为导出是 Session 级操作，用户不应先打开诊断视图才能发现它。
+**يأخذ خارج إظهار مدخل وضع دخول Trajectory.** لا اعتماد، لأن توجيه خروج هو Session درجة عملية، مستخدم لا ينبغي أولا فتح تشخيص عرض عندئذ قدرة اكتشاف هو.
 
-**让 `/export` 写入 Host 侧 JSONL 文件。** 不采用，因为这会偏离包含子 Session 与附件的 ZIP，需要处理 Windows ACL，并返回对远程浏览器可能没有意义的 Host 路径。
+**يجعل `/export` كتابة Host جانب JSONL ملف.** لا اعتماد، لأن هذا سوف انحراف مغادرة يتضمن فرعي Session و مرفق عنصر ZIP، حاجة معالجة Windows ACL، و إرجاع مقابل بعيد مسار متصفح ممكن لا يوجد معنى معنى Host مسار.
 
-**同时保留 Header 与 Trajectory 按钮。** 不采用，因为两个外显控件执行同一项 Session 操作，会形成重复归属和不一致的位置。
+**معا إبقاء Header و Trajectory حسب زر.** لا اعتماد، لأن اثنان عدد خارج إظهار تحكم عنصر تنفيذ نفس بند Session عملية، سوف شكل صار تكرار ملكية و لا متسق موضع.
 
 ## Consequences
 
-Header 操作与 `/export` 会下载同一个 ZIP，并显示相同反馈。已执行命令保留在持久文本记录中，且不创建模型轮次。预检会报告流式传输开始前发现的失败；浏览器消费 GET 时发生的失败仍属于浏览器下载失败。持久化后端没有逐 Session 原始工件时，用户会收到端点现有的失败；SQLite 支持保留为独立工作。Session 首轮前的命令可用性属于独立工作。
+Header عملية و `/export` سوف تحت تحميل نفس عدد ZIP، و عرض نفسه عكس تغذية. قد تنفيذ أمر إبقاء في حمل دائم نص سجل في، كما لا إنشاء نموذج جولة. مسبق فحص سوف تقرير إبلاغ تدفق صيغة نقل بدء قبل اكتشاف فشل؛ متصفح إزالة استهلاك GET وقت حدوث فشل ما زال يخص متصفح تحت تحميل فشل. حفظ دائم خلفية لا يوجد تدريجي Session أصلي عمل عنصر وقت، مستخدم سوف استلام إلى طرف نقطة قائم فشل؛SQLite دعم حمل إبقاء لـ مستقل عمل.Session أول جولة قبل أمر متاح صفة يخص مستقل عمل.

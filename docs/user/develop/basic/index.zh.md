@@ -1,20 +1,20 @@
-# 第一个插件
+# رقم واحد إضافة
 
-[English](index.md) | 中文
+[English](index.md) | العربية
 
-本教程会创建一个最小的 Harness 插件，并将其加载到 Web UI 中。请从已完成[从源码运行路径](../../../../README.zh.md#run-from-source)的仓库检出开始。
+هذا تعليم مسار سوف إنشاء واحد الأكثر صغير Harness إضافة، و سوف ذلك تحميل إلى Web UI في. طلب من قد إتمام[من شفرة المصدر تشغيل مسار](../../../../README.zh.md#run-from-source) مستودع فحص خروج بدء.
 
-## 创建本地项目
+## إنشاء محلي مشروع
 
-在仓库根目录创建本教程使用的临时项目：
+في مستودع أصل دليل إنشاء هذا تعليم مسار استخدام مؤقت مشروع:
 
 ```sh
 mkdir -p scratch-plugin/src
 ```
 
-## 插件是什么
+## إضافة هو ماذا
 
-在 Harness 中，插件是一个导出 `apply` 函数的 TypeScript 模块。框架在加载时调用 `apply`，传入一个 `ctx`（上下文对象），你通过 `ctx` 注册能力：
+في Harness في، إضافة هو واحد توجيه خروج `apply` دالة TypeScript وحدة. إطار هيكل في تحميل وقت استدعاء `apply`، نقل دخول واحد `ctx`(سياق كائن) ، أنت عبر `ctx` تسجيل قدرة:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -26,11 +26,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-这就是完整配置。
+هذا حينئذ هو كامل إعداد.
 
-## 创建插件文件
+## إنشاء إضافة ملف
 
-创建 `scratch-plugin/src/my-plugin.ts`：
+إنشاء `scratch-plugin/src/my-plugin.ts`:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -43,9 +43,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-## 注册到 cordis.yml
+## تسجيل إلى cordis.yml
 
-在仓库根目录运行 `pwd`，然后创建 `scratch-plugin/cordis.yml`，作为插入本地插件的 Web 覆盖层。请将下文的 `/absolute/path/to/deepseek-harness` 替换为命令打印的路径：
+في مستودع أصل دليل تشغيل `pwd`، لكن بعد إنشاء `scratch-plugin/cordis.yml`، بصفة إدراج دخول محلي إضافة Web تغطية طبقة. طلب سوف تحت نص `/absolute/path/to/deepseek-harness` استبدال لـ أمر ضرب طبع مسار:
 
 ```yaml
 - insert:
@@ -53,21 +53,21 @@ export function apply(ctx: Context) {
       name: '/absolute/path/to/deepseek-harness/scratch-plugin/src/my-plugin.ts'
 ```
 
-插件路径必须是绝对路径。patch 文件只贡献配置，不会改变 loader 解析模块路径时使用的 profile 目录。
+إضافة مسار يجب هو قطعا مقابل مسار.patch ملف فقط مساهمة إعداد، لن تغيير loader تحليل وحدة مسار وقت استخدام profile دليل.
 
-使用该覆盖层启动 Web UI：
+استخدام هذا تغطية طبقة بدء Web UI:
 
 ```sh
 pnpm dsh web --patch ./scratch-plugin/cordis.yml
 ```
 
-打开 `http://127.0.0.1:3080`。启动期间，终端会打印 `[hello-plugin] plugin loaded!`。
+فتح `http://127.0.0.1:3080`. بدء خلال، طرفية سوف ضرب طبع `[hello-plugin] plugin loaded!`.
 
-## 自动清理
+## تلقائي تنظيف
 
-通过 `ctx` 注册的任何东西——事件监听、工具、定时器——在插件卸载时都会被自动清理。你不需要手动 removeListener 或 clearInterval。
+عبر `ctx` تسجيل أي شرق غرب——حدث استماع، أداة، تحديد وقت جهاز——في إضافة إزالة وقت كل سوف يتم تلقائي تنظيف. أنت لا حاجة يد حركة removeListener أو clearInterval.
 
-如果你有需要手动清理的资源（比如一个网络连接），用 `ctx.effect()` 告诉框架怎么清理：
+إذا أنت لديه حاجة يد حركة تنظيف مورد (مقارنة مثل واحد شبكة شبكة اتصال) ، استخدام `ctx.effect()` إبلاغ إبلاغ إطار هيكل كيف ما تنظيف:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -84,9 +84,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-## 声明依赖
+## إعلان اعتماد
 
-如果你的插件需要使用其他服务（如 `tools`、`llm`），需要声明 `inject`：
+إذا أنت إضافة حاجة استخدام أخرى خدمة (مثل `tools`،`llm`) ، حاجة إعلان `inject`:
 
 ```ts ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -100,13 +100,13 @@ export function apply(ctx: Context) {
 }
 ```
 
-框架会确保依赖的服务就绪后才加载你的插件。
+إطار هيكل سوف تأكيد حفظ اعتماد خدمة حينئذ خيط بعد عندئذ تحميل أنت إضافة.
 
-## 插件的三种形态
+## إضافة ثلاثة نوع شكل
 
-除了函数形式，插件还支持对象形式和类形式：
+حذف دالة شكل صيغة، إضافة أيضا دعم حمل كائن شكل صيغة و صنف شكل صيغة:
 
-### 对象形式
+### كائن شكل صيغة
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -120,7 +120,7 @@ export default {
 }
 ```
 
-### 类形式
+### صنف شكل صيغة
 
 ```ts
 import { Service, type Context } from '@deepseek-ai/cordis'
@@ -135,10 +135,10 @@ export default class MyService extends Service {
 }
 ```
 
-大多数情况下，函数形式足够了。当插件需要向其他插件提供服务时，可使用类形式（见 [服务与依赖](../framework/service.zh.md)）。
+كبير كثير عدد حال حال تحت، دالة شكل صيغة كاف كاف. عند إضافة حاجة نحو أخرى إضافة توفير خدمة وقت، يمكن استخدام صنف شكل صيغة (رؤية [خدمة و اعتماد](../framework/service.zh.md)).
 
-## 下一步
+## تحت واحد خطوة
 
-- [开发一个工具](./tool.zh.md) — 了解工具定义 DSL
-- [插件配置](./config.zh.md) — 让插件接受用户配置
-- [Cordis 框架教程](../../../cordis-tutorial/index.zh.md) — 底层的插件框架，在临时目录中动手构建，无需 API 密钥
+- [تطوير واحد أداة](./tool.zh.md) — حل أداة تعريف DSL
+- [إضافة إعداد](./config.zh.md) — يجعل إضافة قبول مستخدم إعداد
+- [Cordis إطار هيكل تعليم مسار](../../../cordis-tutorial/index.zh.md) — قاع طبقة إضافة إطار هيكل، في مؤقت دليل في حركة يد بناء، بلا حاجة API مفتاح

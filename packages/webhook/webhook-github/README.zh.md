@@ -1,88 +1,88 @@
 ---
-description: "面向把已认证 JSON 事件路由到 webhook 运行时的部署，说明带签名的 GitHub webhook 适配器。"
+description: "موجه إلى يأخذ قد إقرار إثبات JSON حدث توجيه إلى webhook وقت التشغيل نشر، شرح حمل توقيع GitHub webhook مهايئ."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-webhook-github
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-webhook-github` 会在注入的 `ctx.webServer` 上注册一条精确 HTTP 路由。它限制并验证 GitHub 原始 JSON body，投影提供方无关的交付，调用 `ctx.webhookRuntime.dispatch()`，并在不等待规则或会话的情况下返回 `202`。部署需要为通用 webhook 运行时提供经过身份验证的 GitHub 入口时，请使用它。
+`dsh-webhook-github` سوف في حقن `ctx.webServer` فوق تسجيل واحد بند دقيق HTTP توجيه. هو حد و تحقق GitHub أصلي JSON body، إسقاط مزود غير متصل تسليم، استدعاء `ctx.webhookRuntime.dispatch()`، و في لا انتظار قاعدة أو جلسة حال حال تحت إرجاع `202`. نشر حاجة لـ عام webhook وقت التشغيل توفير مرور مرور هوية تحقق GitHub مدخل وقت، طلب استخدام هو.
 
-## 目录
+## دليل
 
-- [配置](#configuration)
-- [HTTP 约定](#http-contract)
-- [专用监听器组合](#dedicated-listener-composition)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [إعداد](#configuration)
+- [HTTP اتفاق](#http-contract)
+- [مخصص استخدام مستمع تركيب](#dedicated-listener-composition)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="configuration"></a>
-## 配置
+## إعداد
 
-| Key | 含义 |
+| Key | يحتوي معنى |
 |---|---|
-| `source` | 携带给规则的非空适配器实例，例如 `primary-github`。 |
-| `path` | 不带尾随斜杠、查询或片段的精确非根路径。 |
-| `secretEnv` | 包含 GitHub webhook 密钥的凭据引用。 |
-| `maxBodyBytes` | 未改动请求 body 的正安全整数上限。 |
+| `source` | يحمل إعطاء قاعدة غير فارغ مهايئ نسخة، مثال مثل `primary-github`. |
+| `path` | لا حمل ذيل مع مائل عمود، استعلام أو قطعة مقطع دقيق غير أصل مسار. |
+| `secretEnv` | يتضمن GitHub webhook مفتاح اعتماد مرجع. |
+| `maxBodyBytes` | لم تعديل طلب body صحيح أمان كامل عدد حد أعلى. |
 
-所有字段均为必填。每次请求都会重新解析密钥引用，因此轮换会在下一次交付生效，而无需重新加载插件。
+كل حقل متساو لـ لا بد ملء. كل مرة طلب كل سوف إعادة تحليل مفتاح مرجع، لذلك جولة تبديل سوف في تحت مرة تسليم توليد فاعلية، بينما بلا حاجة إعادة تحميل إضافة.
 
 <a id="http-contract"></a>
-## HTTP 约定
+## HTTP اتفاق
 
-只接受 `POST application/json`。适配器读取有界 UTF-8 body，要求 `X-Hub-Signature-256`、`X-GitHub-Delivery` 与 `X-GitHub-Event`，解析密钥，在 JSON 解析前验证 HMAC，并要求顶层是无损 JSON 对象。它绝不记录密钥、签名或 payload。
+فقط قبول `POST application/json`. مهايئ قراءة محدود UTF-8 body، اشتراط `X-Hub-Signature-256`،`X-GitHub-Delivery` و `X-GitHub-Event`، تحليل مفتاح، في JSON تحليل قبل تحقق HMAC، و اشتراط قمة طبقة هو بلا ضرر JSON كائن. هو أبدا سجل مفتاح، توقيع أو payload.
 
-| 状态 | 含义 |
+| حالة | يحتوي معنى |
 |---|---|
-| `202` | 已验证 JSON 已在内存中分发。 |
-| `400` | 必需 header、UTF-8、JSON 或顶层对象无效。 |
-| `401` | 签名无效。 |
-| `405` | 方法不是 `POST`。 |
-| `413` | 声明或流式 body 超过 `maxBodyBytes`。 |
-| `415` | media type 不是 `application/json`。 |
-| `503` | 凭据或 webhook 运行时不可用。 |
+| `202` | قد تحقق JSON قد في داخل تخزين في توزيع. |
+| `400` | مطلوب header،UTF-8،JSON أو قمة طبقة كائن بلا فاعلية. |
+| `401` | توقيع بلا فاعلية. |
+| `405` | طريقة لا هو `POST`. |
+| `413` | إعلان أو تدفق صيغة body تجاوز مرور `maxBodyBytes`. |
+| `415` | media type لا هو `application/json`. |
+| `503` | اعتماد أو webhook وقت التشغيل غير ممكن استخدام. |
 
-`202` 不表示任何规则已经匹配，也不表示已创建会话。GitHub 事件特定字段的验证属于各规则；适配器只保证通过身份验证的通用 JSON。
+`202` لا يمثل أي قاعدة قد مطابقة، أيضا لا يمثل قد إنشاء جلسة.GitHub حدث خاص تحديد حقل تحقق يخص كل قاعدة؛ مهايئ فقط حفظ إثبات عبر هوية تحقق عام JSON.
 
 <a id="dedicated-listener-composition"></a>
-## 专用监听器组合
+## مخصص استخدام مستمع تركيب
 
-普通 Web profile 已经拥有 `ctx.webServer`。把另一个 `dsh-host-webserver` 和此适配器挂载到仅隔离 `webServer` 的 group 内；适配器仍会继承凭据与 `webhookRuntime`。[GitHub 评审指南](../../../docs/user/guide/github-review.zh.md)在 TLS 反向代理后使用 `127.0.0.1:3081/github`，而 UI 继续位于端口 3080。
+عادي Web profile قد يملك `ctx.webServer`. يأخذ آخر عدد `dsh-host-webserver` و هذا مهايئ تركيب إلى فقط عزل `webServer` group داخل؛ مهايئ ما زال سوف وراثة اعتماد و `webhookRuntime`.[GitHub مراجعة إشارة جنوب](../../../docs/user/guide/github-review.zh.md) في TLS عكس نحو بديل إدارة بعد استخدام `127.0.0.1:3081/github`، بينما UI متابعة يقع في طرف فتحة 3080.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过 `dsh-webhook` 间接产生影响：此适配器不贡献提示词或工具 schema；匹配规则拥有会话请求与模型可见文本。
+عبر `dsh-webhook` بين وصل إنتاج أثر: هذا مهايئ لا مساهمة نص التوجيه أو أداة schema؛ مطابقة قاعدة يملك جلسة طلب و نموذج مرئي نص.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-相互独立。身份验证与 HTTP 分发不触碰模型请求；任何新会话前缀都属于消费它的规则与运行时。
+متبادل متبادل مستقل. هوية تحقق و HTTP توزيع لا لمس اصطدام نموذج طلب؛ أي جديد جلسة بادئة كل يخص إزالة استهلاك هو قاعدة و وقت التشغيل.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **无 TLS**：注入的开发 WebServer 通常只监听 loopback，并位于 TLS 反向代理或 tunnel 后。
-- **仅通用 payload 验证**：规则负责验证自己消费的 GitHub 事件字段。
-- **不向提供方确认下游工作**：`202` 先于任意规则调用与会话创建。
-- **不支持表单编码**：GitHub 必须发送 `application/json`；`application/x-www-form-urlencoded` 会被拒绝。
+- **بلا TLS**: حقن تطوير WebServer عبر معتاد فقط استماع loopback، و يقع في TLS عكس نحو بديل إدارة أو tunnel بعد.
+- **فقط عام payload تحقق**: قاعدة مسؤول تحقق ذاتي ذات إزالة استهلاك GitHub حدث حقل.
+- **لا نحو مزود تأكيد تحت تنقل عمل**:`202` أولا في مهمة معنى قاعدة استدعاء و جلسة إنشاء.
+- **لا دعم حمل جدول مفرد تحرير رمز**:GitHub يجب إرسال `application/json`؛`application/x-www-form-urlencoded` سوف يتم رفض.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。authentication 与 input validation 在对应 HTTP 操作中完成；route/disposer 对称性由 `dsh-host-webserver` 负责。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.authentication و input validation في مقابل HTTP عملية في إتمام؛route/disposer مقابل تسمية صفة من `dsh-host-webserver` مسؤول.

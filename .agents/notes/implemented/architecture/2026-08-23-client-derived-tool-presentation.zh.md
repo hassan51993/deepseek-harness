@@ -1,119 +1,119 @@
-# Agent Note: Client 从原始 Session 工具事件派生展示
+# Agent Note: Client من أصلي Session أداة حدث إرسال توليد عرض
 
 Status: implemented
 
-[English](2026-08-23-client-derived-tool-presentation.md) | 中文
+[English](2026-08-23-client-derived-tool-presentation.md) | العربية
 
 ## Problem
 
-Session 历史是持久 journal 接口，工具卡片属于 Client 展示。在 `page`／`follow` 中计算卡片 view 会让历史读取依赖 Tools registry、Agent preset、恢复后的 scope、presenter 执行和临时 UI 类型。
+Session تاريخ هو حمل دائم journal واجهة، أداة بطاقة يخص Client عرض. في `page`/`follow` في حساب حساب بطاقة view سوف يجعل تاريخ قراءة اعتماد Tools registry،Agent preset، استعادة بعد scope،presenter تنفيذ و مؤقت UI نوع.
 
-`tool/result` 不重复记录工具名称和参数。Host 端结果展示因此需要 call index 或按 `callId` 回扫；`maxMessages` 不直接限制事件数量，工具密集页面上的重复扫描可能接近二次方成本。
+`tool/result` لا تكرار سجل أداة اسم و معامل.Host طرف نتيجة عرض لذلك حاجة call index أو حسب `callId` عودة مسح؛`maxMessages` لا مباشر حد حدث عدد كمية، أداة سري تجميع صفحة فوق تكرار مسح ممكن وصل قريب اثنان مرة جهة صار هذا.
 
-Host 投影还会重复结构化数据。read、diff、search 与 web 结果已在 `tool/result.data.meta` 中持久化有界事实；另一份 view 只增加 Remote payload 与 Client 解码成本，不增加持久语义。
+Host إسقاط أيضا سوف تكرار بنية تحويل بيانات.read،diff،search و web نتيجة قد في `tool/result.data.meta` في حفظ دائم محدود واقع؛ آخر نسخة view فقط زيادة Remote payload و Client حل رمز صار هذا، لا زيادة حمل دائم دلالة.
 
-Client 已经拥有完整的工具展示入口。`ui-chat` 将 `tool/call`、`tool/result` 与 PTC dispatch 事件组装成稳定的 `ToolCallBlock`；`ui-tool` 拥有递归调用树、按工具名称分发的 `tool.call.toolview` keyed slot、Generic fallback、卡片模型和 details output；业务 Client 插件可以为自己的工具名称注册 renderer。
+Client قد يملك كامل أداة عرض مدخل.`ui-chat` سوف `tool/call`،`tool/result` و PTC dispatch حدث تجميع صار مستقر `ToolCallBlock`؛`ui-tool` يملك تمرير عودة استدعاء شجرة، حسب أداة اسم توزيع `tool.call.toolview` keyed slot،Generic fallback، بطاقة نموذج و details output؛ عمل خدمة Client إضافة يمكن لـ ذاتي ذات أداة اسم تسجيل renderer.
 
-Host presenter 与 Client keyed renderer 分担展示会形成对同一事件的两套解释。keyed renderer 是 Web 扩展点，因此中间 Host view 不提供独立 Web 能力。
+Host presenter و Client keyed renderer قسم تحمل عرض سوف شكل صار مقابل نفس حدث اثنان طقم حل تفسير.keyed renderer هو Web نقطة توسيع، لذلك في بين Host view لا توفير مستقل Web قدرة.
 
-`ToolDefinition.presentCall`／`presentResult` 仍是保留的 Host API；ACP 采用 automation-only 协议，仓库也没有生产 TUI consumer。是否删除这些定义与 Session 读取是否独立于展示是两个决定。
+`ToolDefinition.presentCall`/`presentResult` ما زال هو إبقاء Host API؛ACP اعتماد automation-only بروتوكول، مستودع أيضا لا يوجد إنتاج TUI consumer. هل حذف هذه تعريف و Session قراءة هل مستقل في عرض هو اثنان عدد قرار.
 
-所需结果是一条原始 Session journal 和一个 Client 展示 owner，且不发生可见退化或顺带增强。专用卡片、交互和 PTC dispatch 拓扑保持稳定，transport 不再携带临时 view。
+الذي يحتاج نتيجة هو واحد بند أصلي Session journal و واحد Client عرض owner، كما لا حدوث مرئي تراجع تحويل أو ترتيب حمل زيادة قوي. مخصص استخدام بطاقة، تفاعل و PTC dispatch توسيع اندفاع إبقاء مستقر،transport لم يعد يحمل مؤقت view.
 
 ## Decision
 
-下述展示对等要求不包含已独立批准的[嵌套 terminal 卡片修复](../bug-fix/2026-09-05-nested-terminal-cards.zh.md)；其他展示与所有权约束全部保留。
+تحت وصف عرض مقابل انتظار اشتراط لا يتضمن قد مستقل دفعة دقيق[تضمين طقم terminal بطاقة إصلاح](../bug-fix/2026-09-05-nested-terminal-cards.zh.md) ؛ أخرى عرض و كل حق قيد الكل إبقاء.
 
-Session Remote journal 只下发原始、已验证、可持久化的 Session event。`session.page` 和 `session.follow` 不解析工具参数，不查询 Tools registry，不恢复 presenter scope，不执行 `presentCall`／`presentResult`，也不构造或克隆任何 tool view。
+Session Remote journal فقط تحت إرسال أصلي، قد تحقق، يمكن حفظ دائم Session event.`session.page` و `session.follow` لا تحليل أداة معامل، لا استعلام Tools registry، لا استعادة presenter scope، لا تنفيذ `presentCall`/`presentResult`، أيضا لا بنية صنع أو تغلب ضخم أي tool view.
 
-Client Conversation 层继续负责工具调用与结果的 identity、配对、生命周期、PTC dispatch 拓扑和稳定 Chat Node。它不解释具体工具名称，也不生成 terminal、diff、read、search 或 web 组件 props。
+Client Conversation طبقة متابعة مسؤول أداة استدعاء و نتيجة identity، إعداد مقابل، دورة الحياة،PTC dispatch توسيع اندفاع و مستقر Chat Node. هو لا حل تفسير أداة جسم أداة اسم، أيضا لا توليد terminal،diff،read،search أو web مكون props.
 
-Client `ui-tool` 继续负责 card model 和具体 renderer。每个 card model 改为直接读取 `ToolCallBlock` 中的工具名称、原始参数、结果内容、错误、持久 metadata、Session cwd 与 Host home，并生成与现有页面相同的组件 props。
+Client `ui-tool` متابعة مسؤول card model و أداة جسم renderer. كل card model تعديل لـ مباشر قراءة `ToolCallBlock` في أداة اسم، أصلي معامل، نتيجة محتوى، خطأ، حمل دائم metadata،Session cwd و Host home، و توليد و قائم صفحة نفسه مكون props.
 
-Client 不建立第二套 presenter registry。工具名称分发只使用现有 `tool.call.toolview` keyed slot；Client 中的纯 card-model helper 属于 renderer 实现，不成为 Cordis service、公开 registry 或 wire DTO。
+Client لا بناء قيام ثاني طقم presenter registry. أداة اسم توزيع فقط استخدام قائم `tool.call.toolview` keyed slot؛Client في صاف card-model helper يخص renderer تنفيذ، لا يصبح Cordis service، عام registry أو wire DTO.
 
-Host 的 `ToolDefinition.presentCall`、`ToolDefinition.presentResult`、`ToolCallView`、`ToolResultView` 及现有 presenter 实现全部保留。Session Controller 不调用它们，Client 不导入或消费它们；未来非 Client consumer 是否使用它们不属于本决定。
+Host `ToolDefinition.presentCall`،`ToolDefinition.presentResult`،`ToolCallView`،`ToolResultView` و قائم presenter تنفيذ الكل إبقاء.Session Controller لا استدعاء هو جمع،Client لا استيراد أو إزالة استهلاك هو جمع؛ لم قدوم غير Client consumer هل استخدام هو جمع لا يخص هذا قرار.
 
-`ToolOutputDefinition.presentationMeta` 与持久 `tool/result.data.meta` 保留。它们携带模型可见结果文本无法无损表达、而现有专用卡片需要的执行结果事实。Client 直接校验并消费 `meta`，不要求 Host 在历史读取时再把它转换成 view。
+`ToolOutputDefinition.presentationMeta` و حمل دائم `tool/result.data.meta` إبقاء. هو جمع يحمل نموذج مرئي نتيجة نص لا يمكن بلا ضرر جدول بلوغ، بينما قائم مخصص استخدام بطاقة حاجة تنفيذ نتيجة واقع.Client مباشر تحقق و إزالة استهلاك `meta`، لا اشتراط Host في تاريخ قراءة وقت مجددا يأخذ هو تحويل صار view.
 
-### 目标与非目标
+### هدف و غير هدف
 
-| 类别 | 决定 |
+| صنف آخر | قرار |
 |---|---|
-| 不存在 | `SessionEventEntry.view`、`SessionToolView`、`SessionToolCallView` |
-| 不存在 | `history.ts` 的 `viewFor`、`backscanArgs`、`parseToolCall`、`jsonView` 与 presenter scope lookup |
-| 不存在 | follow 中只服务 presentation 的 `openCalls` 与 fallback event scan |
-| 不存在 | Client Session 的平行 `views` 数组、Conversation input 的 `view`、Tool block 的 `callView`／`resultView` |
-| 派生 | terminal、diff、read、search、web card model 读取 raw block/meta |
-| 派生 | Deliverables 读取成功 mutation 的名称与参数 |
-| 保留 | Host `ToolDefinition.presentCall`／`presentResult` API、类型、实现与直接测试 |
-| 保留 | `output.presentationMeta` 与持久 `tool/result.data.meta` |
-| 保留 | Session 日志格式、Remote journal 生命周期与 Conversation identity/topology |
-| 保留 | 现有 keyed slot、Generic fallback、Chat、Details 与 Trajectory 结构 |
-| 禁止 | 新 Client presenter service、平行 registry 或 wire renderer id |
-| 禁止 | 新卡片、视觉改版、交互改版或 PTC dispatch rich-card 增强，[嵌套 terminal 卡片例外](../bug-fix/2026-09-05-nested-terminal-cards.zh.md)除外 |
-| 禁止 | 为兼容保留双写、版本协商或旧 `view` 字段 |
+| لا وجود | `SessionEventEntry.view`،`SessionToolView`،`SessionToolCallView` |
+| لا وجود | `history.ts` `viewFor`،`backscanArgs`،`parseToolCall`،`jsonView` و presenter scope lookup |
+| لا وجود | follow في فقط خدمة presentation `openCalls` و fallback event scan |
+| لا وجود | Client Session مستو سطر `views` عدد مجموعة،Conversation input `view`،Tool block `callView`/`resultView` |
+| إرسال توليد | terminal،diff،read،search،web card model قراءة raw block/meta |
+| إرسال توليد | Deliverables قراءة نجاح mutation اسم و معامل |
+| إبقاء | Host `ToolDefinition.presentCall`/`presentResult` API، نوع، تنفيذ و مباشر اختبار |
+| إبقاء | `output.presentationMeta` و حمل دائم `tool/result.data.meta` |
+| إبقاء | Session سجل صيغة،Remote journal دورة الحياة و Conversation identity/topology |
+| إبقاء | قائم keyed slot،Generic fallback،Chat،Details و Trajectory بنية |
+| منع توقف | جديد Client presenter service، مستو سطر registry أو wire renderer id |
+| منع توقف | جديد بطاقة، نظر شعور تعديل إصدار، تفاعل تعديل إصدار أو PTC dispatch rich-card زيادة قوي،[تضمين طقم terminal بطاقة مثال خارج](../bug-fix/2026-09-05-nested-terminal-cards.zh.md) حذف خارج |
+| منع توقف | لـ توافق إبقاء مزدوج كتابة، إصدار تنسيق تجارة أو قديم `view` حقل |
 
-## 术语
+## فن لغة
 
-**原始 Session event**指持久日志中的 `SessionEvent` 事实，包括 `tool/call` 的 `name` 与原始 `arguments` 字符串，以及 `tool/result` 的 `content`、`isError`、结构化错误和可选 `meta`。
+**أصلي Session event**إشارة حمل دائم سجل في `SessionEvent` واقع، يشمل `tool/call` `name` و أصلي `arguments` نص، و `tool/result` `content`،`isError`، بنية تحويل خطأ و اختياري `meta`.
 
-**持久 metadata**指 `ToolOutputDefinition.presentationMeta` 在工具成功执行时生成并写入 `tool/result.data.meta` 的 JSON 值。它是结果事实的一部分，不是预先排版的 React 或 card DTO。
+**حمل دائم metadata**إشارة `ToolOutputDefinition.presentationMeta` في أداة نجاح تنفيذ وقت توليد و كتابة `tool/result.data.meta` JSON قيمة. هو هو نتيجة واقع واحد جزء، لا هو مسبق أولا ترتيب إصدار React أو card DTO.
 
-**Host tool view**指 `ToolDefinition.presentCall`／`presentResult` 返回的 `ToolCallView`／`ToolResultView`；Session Remote 不运输它。
+**Host tool view**إشارة `ToolDefinition.presentCall`/`presentResult` إرجاع `ToolCallView`/`ToolResultView`؛Session Remote لا تشغيل نقل هو.
 
-**Client card model**指 `ui-tool/src/client/tool/models/` 下直接供 `TerminalBlock`、`DiffBlock`、`ReadBlock`、`SearchBlock`、`WebBlock` 或 `ToolRow` 使用的纯 props 数据。
+**Client card model**إشارة `ui-tool/src/client/tool/models/` تحت مباشر توفير `TerminalBlock`،`DiffBlock`،`ReadBlock`،`SearchBlock`،`WebBlock` أو `ToolRow` استخدام صاف props بيانات.
 
-**专用卡片**指 terminal、diff、read、search 与 web 的结构化正文；标题、摘要、状态点和普通 IN／OUT 文本仍属于通用工具行。
+**مخصص استخدام بطاقة**إشارة terminal،diff،read،search و web بنية تحويل متن؛ عنوان، ملخص، حالة نقطة و عادي IN/OUT نص ما زال يخص عام أداة سطر.
 
-**对等**指同一受支持输入产生由现有组件、组装与浏览器证据固定的用户可见结果和交互，不要求相同的中间 TypeScript 类型或内部函数调用。
+**مقابل انتظار**إشارة نفس تلقي دعم حمل إدخال إنتاج من قائم مكون، تجميع و متصفح دليل ثابت مستخدم مرئي نتيجة و تفاعل، لا اشتراط نفسه في بين TypeScript نوع أو داخلي دالة استدعاء.
 
-**无增强**指本决定不让被固定为 Generic fallback 的输入获得新专用卡片，也不扩大已有卡片的数据或交互。
+**بلا زيادة قوي**إشارة هذا قرار لا يجعل يتم ثابت لـ Generic fallback إدخال نيل نيل جديد مخصص استخدام بطاقة، أيضا لا توسيع كبير قد لديه بطاقة بيانات أو تفاعل.
 
-## 架构与所有权
+## هيكل بنية و كل حق
 
-### 工具执行与持久化
+### أداة تنفيذ و حفظ دائم
 
-1. 工具注册 `output.schema`、`output.render` 和可选 `output.presentationMeta`。
-2. 成功执行产生 canonical JSON value。
-3. Tools runtime 对 value 做快照、schema 校验和冻结。
-4. `output.render(args, value)` 生成模型可见 `ContentBlock[]`。
-5. 顶层调用若声明 `output.presentationMeta`，runtime 同时生成 JSON-safe metadata。
-6. Agent loop 把模型可见结果与 metadata 写入 `tool/result` Session event。
-7. Session log 不保存 `ToolCallView` 或 `ToolResultView`。
+1. أداة تسجيل `output.schema`،`output.render` و اختياري `output.presentationMeta`.
+2. نجاح تنفيذ إنتاج canonical JSON value.
+3. Tools runtime مقابل value فعل لقطة،schema تحقق و تجميد ربط.
+4. `output.render(args, value)` توليد نموذج مرئي `ContentBlock[]`.
+5. قمة طبقة استدعاء إذا إعلان `output.presentationMeta`،runtime معا توليد JSON-safe metadata.
+6. Agent loop يأخذ نموذج مرئي نتيجة و metadata كتابة `tool/result` Session event.
+7. Session log لا حفظ `ToolCallView` أو `ToolResultView`.
 
-### Host journal 读取
+### Host journal قراءة
 
-1. `session.page` 取得 attached 或 persisted 事件。
-2. `paginate()` 按 append-origin user／assistant message 边界切页。
-3. tail page 通过已注册 projection 的 snapshot/restore 路径取得 baseline。
-4. 每个 page entry 只包含 `{event}`。
-5. `session.follow` 先建立 listener，再执行 catch-up read、发送 opening cursor 并流式下发连续 `{event}` frame。
-6. 两条路径都不为展示解析 preset／Tools scope、解析工具参数、调用 presenter 或建立 call index。
+1. `session.page` أخذ نيل attached أو persisted حدث.
+2. `paginate()` حسب append-origin user/assistant message حد قطع صفحة.
+3. tail page عبر قد تسجيل projection snapshot/restore مسار أخذ نيل baseline.
+4. كل page entry فقط يتضمن `{event}`.
+5. `session.follow` أولا بناء قيام listener، مجددا تنفيذ catch-up read، إرسال opening cursor و تدفق صيغة تحت إرسال وصل متابعة `{event}` frame.
+6. اثنان بند مسار كل لا لـ عرض تحليل preset/Tools scope، تحليل أداة معامل، استدعاء presenter أو بناء قيام call index.
 
-### Client 数据与展示
+### Client بيانات و عرض
 
-1. Client Session 保存一个连续 raw event window。
-2. `SessionEventSource` 发布只含 event 的 `SessionEventEntry`。
-3. `ui-conversation` 在没有 presentation companion 的情况下 fold 每个事件。
-4. Chat 与 Trajectory Tool Definition 按 callId 配对顶层 call/result，并组装 PTC dispatch 子树。
-5. `RunningToolCall` 与 `ToolResultNode` 保存 raw facts、metadata 与既有 parent identity。
-6. `ToolCallTree` 按 wire tool name 分发 `tool.call.toolview`。
-7. `ui-tool` 在 render site 从 block 派生 card component props。
+1. Client Session حفظ واحد وصل متابعة raw event window.
+2. `SessionEventSource` إصدار فقط يحتوي event `SessionEventEntry`.
+3. `ui-conversation` في لا يوجد presentation companion حال حال تحت fold كل حدث.
+4. Chat و Trajectory Tool Definition حسب callId إعداد مقابل قمة طبقة call/result، و تجميع PTC dispatch فرعي شجرة.
+5. `RunningToolCall` و `ToolResultNode` حفظ raw facts،metadata و قائم parent identity.
+6. `ToolCallTree` حسب wire tool name توزيع `tool.call.toolview`.
+7. `ui-tool` في render site من block إرسال توليد card component props.
 
-### 生产消费者审计
+### إنتاج إزالة استهلاك من مراجعة حساب
 
-| 对象 | 生产者 | 生产消费者 | 决定 |
+| كائن | إنتاج من | إنتاج إزالة استهلاك من | قرار |
 |---|---|---|---|
-| `presentCall`／`presentResult` | 各 Host 工具 | 可能存在的非 Client caller | 保留在 Session Remote 之外 |
-| `SessionEventEntry.view` | 无 | 无 | wire 不存在 |
-| `callView`／`resultView` | 无 | 无 | Client model 不存在 |
-| `presentationMeta` | Tools runtime | `tool/result`、Client card model 与 Host presenter | 保留的持久输入 |
-| fixture presenter mirror | 无 | 无 | fixture 下发 raw metadata |
+| `presentCall`/`presentResult` | كل Host أداة | ممكن وجود غير Client caller | إبقاء في Session Remote خارج |
+| `SessionEventEntry.view` | بلا | بلا | wire لا وجود |
+| `callView`/`resultView` | بلا | بلا | Client model لا وجود |
+| `presentationMeta` | Tools runtime | `tool/result`،Client card model و Host presenter | إبقاء حمل دائم إدخال |
+| fixture presenter mirror | بلا | بلا | fixture تحت إرسال raw metadata |
 
-ACP 不消费 Session tool view，也不映射 Host render intent。仓库没有生产 TUI consumer；Host presenter 保留，但 Session Remote 不作为其 transport。
+ACP لا إزالة استهلاك Session tool view، أيضا لا خريطة Host render intent. مستودع لا يوجد إنتاج TUI consumer؛Host presenter إبقاء، لكن Session Remote لا بصفة ذلك transport.
 
-## 数据流
+## بيانات تدفق
 
 ```text
 Tool execute
@@ -139,571 +139,571 @@ Client SessionEventSource
   -> existing React component
 ```
 
-这条链路保留一次持久 metadata 投影，因为它发生在 canonical result 尚在内存时；删除的是读取历史时的第二次展示投影。
+هذا بند سلسلة مسار إبقاء مرة حمل دائم metadata إسقاط، لأن هو حدوث في canonical result بعد في داخل تخزين وقت؛ حذف هو قراءة تاريخ وقت ثاني مرة عرض إسقاط.
 
-### 分层责任
+### قسم طبقة مسؤولية مهمة
 
-| 层 | 负责 | 不负责 |
+| طبقة | مسؤول | لا مسؤول |
 |---|---|---|
-| Tools runtime | 执行、canonical value、模型文本、可重放 metadata | Web 卡片选择和组件 props |
-| Session log | 持久事实、顺序、回放 | 临时 card DTO |
-| Session Controller | 地址、权限、冷读、分页、follow、projection baseline | tool lookup、presenter、展示 scope |
-| Client Session | Remote journal 生命周期与连续窗口 | 工具含义、卡片类型 |
-| Conversation Tool Definition | call/result 配对、lifecycle、root/subcall topology | 工具名到组件的解释 |
-| `ui-tool` | card model、通用 fallback、Chat/Details 展示 | Session 分页与 Host registry |
-| 业务 Client 插件 | 自有 tool name 的 keyed renderer | root/subcall 编排与全局 registry |
-| `ui-deliverables` | 当前第一方 mutation 的 produced path | UI card 或 Host render intent |
+| Tools runtime | تنفيذ،canonical value، نموذج نص، يمكن إعادة وضع metadata | Web بطاقة اختيار و مكون props |
+| Session log | حمل دائم واقع، ترتيب، إعادة تشغيل | مؤقت card DTO |
+| Session Controller | عنوان، إذن، بارد قراءة، قسم صفحة،follow،projection baseline | tool lookup،presenter، عرض scope |
+| Client Session | Remote journal دورة الحياة و وصل متابعة نافذة | أداة يحتوي معنى، بطاقة نوع |
+| Conversation Tool Definition | call/result إعداد مقابل،lifecycle،root/subcall topology | أداة اسم إلى مكون حل تفسير |
+| `ui-tool` | card model، عام fallback،Chat/Details عرض | Session قسم صفحة و Host registry |
+| عمل خدمة Client إضافة | ذاتي لديه tool name keyed renderer | root/subcall تحرير ترتيب و عام registry |
+| `ui-deliverables` | حالي رقم واحد جهة mutation produced path | UI card أو Host render intent |
 
-## Remote 与持久数据约定
+## Remote و حمل دائم بيانات اتفاق
 
 ### `SessionEventEntry`
 
-`SessionEventEntry` 保留为 journal entry envelope，只含 `event: SessionWireEvent`。本次不顺带把 page entries 改成裸事件，也不重构 `RemoteJournalStream` 的通用 entry 约定。
+`SessionEventEntry` إبقاء لـ journal entry envelope، فقط يحتوي `event: SessionWireEvent`. هذا مرة لا ترتيب حمل يأخذ page entries تعديل صار عار حدث، أيضا لا إعادة بنية `RemoteJournalStream` عام entry اتفاق.
 
-`SessionPage.events` 仍是 `SessionEventEntry[]`。
+`SessionPage.events` ما زال هو `SessionEventEntry[]`.
 
-`SessionFollowFrame` 仍是 opening frame 或带 `event` 的 event frame。
+`SessionFollowFrame` ما زال هو opening frame أو حمل `event` event frame.
 
-删除 `SessionToolCallView`、`SessionToolView` 和 `SessionEventEntry.view`。
+حذف `SessionToolCallView`،`SessionToolView` و `SessionEventEntry.view`.
 
-Client connection 不再从 `dsh-tools/presentation` 转出 `ToolCallView`／`ToolResultView` 供 Session 消费。
+Client connection لم يعد من `dsh-tools/presentation` تحويل خروج `ToolCallView`/`ToolResultView` توفير Session إزالة استهلاك.
 
-生成 catalog 与 graph 从各自 source owner 派生已收窄的 Remote 类型和 package dependency。
+توليد catalog و graph من كل منها source owner إرسال توليد قد استلام ضيق Remote نوع و package dependency.
 
-### 持久日志
+### حمل دائم سجل
 
-- `tool/call.data.name` 保持原样。
-- `tool/call.data.arguments` 保持模型产生的原始 JSON 字符串。
-- `tool/result.data.message.content` 保持模型可见结果。
-- `tool/result.data.error` 保持结构化失败身份。
-- `tool/result.data.meta` 保持工具私有 JSON 值。
-- Client card model 不写入 Session log。
-- renderer key 与 Host tool implementation id 不写入 Session log。
-- 现有持久 Session 无需迁移，`SESSION_FORMAT_VERSION` 不变。
+- `tool/call.data.name` إبقاء أصل مثال.
+- `tool/call.data.arguments` إبقاء نموذج إنتاج أصلي JSON نص.
+- `tool/result.data.message.content` إبقاء نموذج مرئي نتيجة.
+- `tool/result.data.error` إبقاء بنية تحويل فشل هوية.
+- `tool/result.data.meta` إبقاء أداة خاص JSON قيمة.
+- Client card model لا كتابة Session log.
+- renderer key و Host tool implementation id لا كتابة Session log.
+- قائم حمل دائم Session بلا حاجة ترحيل،`SESSION_FORMAT_VERSION` ثابت.
 
 ### `presentationMeta`
 
-`presentationMeta` 不是 Host tool view。它在工具执行完成时读取 canonical value，而该 value 不会持久化；删除它会使下列现有展示无法无损恢复：
+`presentationMeta` لا هو Host tool view. هو في أداة تنفيذ إتمام وقت قراءة canonical value، بينما هذا value لن حفظ دائم؛ حذف هو سوف جعل تحت صف قائم عرض لا يمكن بلا ضرر استعادة:
 
-- read 的 path、offset、lines、totalLines 与 lang；
-- write/edit 的 applied contextual hunks；
-- grep/glob 的分组结果、截断标志与总数；
-- web_search 的来源字段与 provider answer；
-- web_fetch 的最终 URL、HTTP status 与有效截断标志。
+- read path،offset،lines،totalLines و lang؛
+- write/edit applied contextual hunks؛
+- grep/glob قسم مجموعة نتيجة، قطع قطع علامة سجل و مجموع عدد؛
+- web_search مصدر حقل و provider answer؛
+- web_fetch نهائي URL،HTTP status و صالح قطع قطع علامة سجل.
 
-Client 对 `meta` 做局部运行时收窄。是否把 `presentationMeta` 改名为更中性的 result metadata 不属于本决定。
+Client مقابل `meta` فعل نطاق جزء وقت التشغيل استلام ضيق. هل يأخذ `presentationMeta` تعديل اسم لـ أكثر في صفة result metadata لا يخص هذا قرار.
 
-## Host 端设计
+## Host طرف تصميم
 
-`SessionHistoryController.page()` 在取得 source events 后只执行分页与现有 projection baseline 计算。attached Session 使用 projection registry snapshot；detached Session 使用该 registry 对 inspected log 的 restore 路径。history 不通过挂载 preset 改变已注册的 projection 集合。
+`SessionHistoryController.page()` في أخذ نيل source events بعد فقط تنفيذ قسم صفحة و قائم projection baseline حساب حساب.attached Session استخدام projection registry snapshot؛detached Session استخدام هذا registry مقابل inspected log restore مسار.history لا عبر تركيب preset تغيير قد تسجيل projection تجميع دمج.
 
-`SessionHistoryController.follow()` 保留 listener-first、opening cursor、gap-free replay、live buffering、取消和 teardown；它不为工具事件维护额外状态。
+`SessionHistoryController.follow()` إبقاء listener-first،opening cursor،gap-free replay،live buffering، إلغاء و teardown؛ هو لا لـ أداة حدث صيانة مقدار خارج حالة.
 
-Controller 不存在 `presenterScopeFor()`、`viewFor()`、`backscanArgs()`、`parseToolCall()` 或 `jsonView()` 路径。page state 不含 presenter scope 或参数 resolver；follow state 不含 `openCalls`、`fallbackEvents` 或 presentation 参数 resolver。每个 page/follow event 只包装成 `{event}`，地址、ownership、cursor、seq 与 projection 逻辑保持完整。
+Controller لا وجود `presenterScopeFor()`،`viewFor()`،`backscanArgs()`،`parseToolCall()` أو `jsonView()` مسار.page state لا يحتوي presenter scope أو معامل resolver؛follow state لا يحتوي `openCalls`،`fallbackEvents` أو presentation معامل resolver. كل page/follow event فقط حزمة تركيب صار `{event}`، عنوان،ownership،cursor،seq و projection منطق إبقاء كامل.
 
-不可变 event 转换 helper 可以保持窄实现或内联；只要 history 不执行 presentation 工作，其名称没有语义。
+غير ممكن تغيير event تحويل helper يمكن إبقاء ضيق تنفيذ أو داخل ربط؛ فقط يلزم history لا تنفيذ presentation عمل، ذلك اسم لا يوجد دلالة.
 
-Session Controller dependency 只在其他 package responsibility 需要时保留；manifest 与 project reference 不含 presentation-only dependency。
+Session Controller dependency فقط في أخرى package responsibility حاجة وقت إبقاء؛manifest و project reference لا يحتوي presentation-only dependency.
 
-### 性能约束
+### صفة قدرة قيد
 
-- `page()` 的工具相关工作为零。
-- 页面增加 tool result 不增加对既有页面事件的重复扫描。
-- `follow()` 不维护展示索引。
-- history 不触发 Cordis `tools` service proxy。
-- history 不等待 presenter standing scope。
-- history 不执行工具参数 JSON parse。
-- history 不执行 tool view JSON clone。
-- Remote payload 不重复携带 `meta` 已表达的结构化数据。
-- Client 不扫描完整 Session event window 生成单个卡片。
-- Client 只在对应 immutable Tool block 变化时重新派生 card model。
+- `page()` أداة متبادل صلة عمل لـ صفر.
+- صفحة زيادة tool result لا زيادة مقابل قائم صفحة حدث تكرار مسح.
+- `follow()` لا صيانة عرض بحث جذب.
+- history لا إطلاق Cordis `tools` service proxy.
+- history لا انتظار presenter standing scope.
+- history لا تنفيذ أداة معامل JSON parse.
+- history لا تنفيذ tool view JSON clone.
+- Remote payload لا تكرار يحمل `meta` قد جدول بلوغ بنية تحويل بيانات.
+- Client لا مسح كامل Session event window توليد مفرد عدد بطاقة.
+- Client فقط في مقابل immutable Tool block تغير وقت إعادة إرسال توليد card model.
 
-## Client Session 与 Conversation
+## Client Session و Conversation
 
-Client Session 不含与 raw event window 平行的私有 `views` 数组。`installWindow()`、`prependWindow()` 和 `appendLive()` 只处理 event entries、cursor/hasMore、queue、projection 与通知。
+Client Session لا يحتوي و raw event window مستو سطر خاص `views` عدد مجموعة.`installWindow()`،`prependWindow()` و `appendLive()` فقط معالجة event entries،cursor/hasMore،queue،projection و إشعار.
 
-`ConversationEventInput` 只携带 `event`。Conversation assembler 不认识 `SessionToolView`，其 replace/prepend/append、Context identity、Location 与 publication cadence 不变。
+`ConversationEventInput` فقط يحمل `event`.Conversation assembler لا إقرار تعرف `SessionToolView`، ذلك replace/prepend/append،Context identity،Location و publication cadence ثابت.
 
-Chat 和 Trajectory 的 Tool Definition 都不读取 view，而从事件生成以下数据：
+Chat و Trajectory Tool Definition كل لا قراءة view، بينما من حدث توليد التالي بيانات:
 
-- callId；
-- tool name；
-- raw arguments；
-- turn、step、seq 与 time；
-- result content；
-- isError 与 structured error；
-- result metadata；
-- root/subcall parent-child topology；
-- interruption synthetic result。
+- callId؛
+- tool name؛
+- raw arguments؛
+- turn،step،seq و time؛
+- result content؛
+- isError و structured error؛
+- result metadata؛
+- root/subcall parent-child topology؛
+- interruption synthetic result.
 
-`RunningToolCall` 不含 `callView`。
+`RunningToolCall` لا يحتوي `callView`.
 
-`ToolResultNode` 不含 `callView` 与 `resultView`。
+`ToolResultNode` لا يحتوي `callView` و `resultView`.
 
-`ToolCallBlock` 不新增通用 `view`、`card`、`kind` 或 `locations` 字段替代被删除字段。具体展示仍只属于 `ui-tool` 与 keyed renderer。
+`ToolCallBlock` لا إضافة جديدة عام `view`،`card`،`kind` أو `locations` حقل بديل يتم حذف حقل. أداة جسم عرض ما زال فقط يخص `ui-tool` و keyed renderer.
 
-### Root 与 PTC dispatch 子调用
+### Root و PTC dispatch فرعي استدعاء
 
-Host presenter API 描述顶层 call/result。本决定覆盖的 diff、read、search 和 web model 对 PTC dispatch 子调用保留 Generic/flattened 展示；受支持的 terminal 调用使用与根调用相同的适用规则。
+Host presenter API وصف قمة طبقة call/result. هذا قرار تغطية diff،read،search و web model مقابل PTC dispatch فرعي استدعاء إبقاء Generic/flattened عرض؛ تلقي دعم حمل terminal استدعاء استخدام و أصل استدعاء نفسه ملائم استخدام قاعدة.
 
-PTC dispatch start 与 result event 已经携带 `parentCallId`。Conversation 在每个 child `ToolCallBlock` 上保留这项现有事实，root Session call 则不携带它。diff、read、search 和 web model 只接受没有 `parentCallId` 的 block；terminal model 与原本有意支持嵌套调用的 renderer 接受 child block。
+PTC dispatch start و result event قد يحمل `parentCallId`.Conversation في كل child `ToolCallBlock` فوق إبقاء هذا بند قائم واقع،root Session call فإن لا يحمل هو.diff،read،search و web model فقط قبول لا يوجد `parentCallId` block؛terminal model و أصل هذا متعمد دعم حمل تضمين طقم استدعاء renderer قبول child block.
 
-共享的 card model 在 block 渲染到哪里都施加同样的终端资格与非终端子调用限制，因此不需要第二个展示面带 placement 字段；曾经原样委托选中 block 的详情面板已随右侧详情列一并删除（[决策](../feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md)）。
+مشترك card model في block تصيير إلى أي داخل كل تطبيق إضافة نفس مثال طرفية مورد إطار و غير طرفية فرعي استدعاء حد، لذلك لا حاجة ثاني عدد عرض وجه حمل placement حقل؛ سبق مرور أصل مثال تفويض حمل اختيار في block تفصيل حال وجه لوح قد مع يمين جانب تفصيل حال صف واحد و حذف ([قرار](../feature/2026-09-04-right-sidebar-docking-infrastructure.zh.md)).
 
-keyed slot 仍按每个子调用的真实 tool name 分发；`parentCallId` 只限制本决定覆盖的 diff/read/search/web 结构化模型。Skill、Cordis 等已经直接读取 raw block 的专用 renderer 保持现状。
+keyed slot ما زال حسب كل فرعي استدعاء حقيقي tool name توزيع؛`parentCallId` فقط حد هذا قرار تغطية diff/read/search/web بنية تحويل نموذج.Skill،Cordis انتظار قد مباشر قراءة raw block مخصص استخدام renderer إبقاء الآن حالة.
 
-### 缺失调用头
+### ناقص استدعاء رأس
 
-结果节点在当前窗口没有配对 call 时，`ToolResultNode.call` 保持 `null`。Client 不扫描窗口、不发额外 RPC，也不根据 result 文本猜测工具名称。
+نتيجة عقدة في حالي نافذة لا يوجد إعداد مقابل call وقت،`ToolResultNode.call` إبقاء `null`.Client لا مسح نافذة، لا إرسال مقدار خارج RPC، أيضا لا أصل حسب result نص تخمين قياس أداة اسم.
 
-需要名称或参数的专用派生在 `call === null` 时走当前 Generic fallback。只依赖 result metadata 的模型也不借机增强，因为当前 Host `presentResult` 必须先取得配对调用。
+حاجة اسم أو معامل مخصص استخدام إرسال توليد في `call === null` وقت مشي حالي Generic fallback. فقط اعتماد result metadata نموذج أيضا لا استعارة آلة زيادة قوي، لأن حالي Host `presentResult` يجب أولا أخذ نيل إعداد مقابل استدعاء.
 
-older page 后续补入调用头时，Conversation Context 按既有 replay 规则重建，届时才允许生成当前已有的专用卡片。
+older page لاحق تكملة دخول استدعاء رأس وقت،Conversation Context حسب قائم replay قاعدة إعادة بناء، دورة وقت عندئذ سماح توليد حالي قد لديه مخصص استخدام بطاقة.
 
-### 参数与 metadata 收窄
+### معامل و metadata استلام ضيق
 
-Client 从 `argsRaw` 解析 JSON，解析失败返回 Generic，不抛出 React render 错误。
+Client من `argsRaw` تحليل JSON، تحليل فشل إرجاع Generic، لا رمي خروج React render خطأ.
 
-Chat 与 Details 通过纯 helper 复用同一 block 的解析。未来缓存必须使用 immutable block identity，不能按 callId 建立跨 Session 全局状态。
+Chat و Details عبر صاف helper إعادة استخدام نفس block تحليل. لم قدوم ذاكرة مؤقتة يجب استخدام immutable block identity، لا يستطيع حسب callId بناء قيام عبر Session عام حالة.
 
-每个专用模型只检查它需要的字段。Client 不复制完整 Host tool schema，也不调用 Host `defineTool` validator。
+كل مخصص استخدام نموذج فقط فحص هو حاجة حقل.Client لا نسخ كامل Host tool schema، أيضا لا استدعاء Host `defineTool` validator.
 
-合法第一方事件必须与当前 presenter 输出等价。畸形、旧版本或手工修改日志只承诺不崩溃并使用 Generic fallback。
+دمج قاعدة رقم واحد جهة حدث يجب و حالي presenter إخراج انتظار قيمة. شاذ شكل، قديم إصدار أو يد عمل تعديل سجل فقط تحمل وعد لا انهيار انهيار و استخدام Generic fallback.
 
-## Client card-model 设计
+## Client card-model تصميم
 
-现有 `ui-tool/src/client/tool/models/` 继续是 Chat 与 Details 共享派生的唯一位置。helper 直接返回组件 props，不返回 `ToolCallView`／`ToolResultView`，也不创建同构的 `ClientToolView` union。
+قائم `ui-tool/src/client/tool/models/` متابعة هو Chat و Details مشترك إرسال توليد وحيد موضع.helper مباشر إرجاع مكون props، لا إرجاع `ToolCallView`/`ToolResultView`، أيضا لا إنشاء نفس بنية `ClientToolView` union.
 
-工具名称分支只存在于 `ui-tool` card model、现有 row 分类表，或拥有该工具 keyed renderer 的 Client 插件；不得进入 Session Controller、Client Session、Conversation assembler 或通用 Slot renderer。
+أداة اسم فرع فقط وجود في `ui-tool` card model، قائم row تصنيف جدول، أو يملك هذا أداة keyed renderer Client إضافة؛ لا نيل دخول Session Controller،Client Session،Conversation assembler أو عام Slot renderer.
 
-未知工具继续由 `GenericToolCard` 显示 name、原始 args、结果 content 与错误。
+لم معرفة أداة متابعة من `GenericToolCard` عرض name، أصلي args، نتيجة content و خطأ.
 
-### 通用工具行
+### عام أداة سطر
 
-`toolRowModel()` 直接从 `toolName`、`argsRaw`、result content、error、cwd 与 home 派生通用行，并保持以下行为：
+`toolRowModel()` مباشر من `toolName`،`argsRaw`،result content،error،cwd و home إرسال توليد عام سطر، و إبقاء التالي سلوك:
 
-- `search`、`read`、`bash`、`write`、`edit`、`code` 与 `others` 分类；
-- 现有标题与工具专用标题；
-- summary 字段优先级和单行截断；
-- 多 query 的逗号拼接；
-- cwd 相对化与 home 缩写；
-- file path 点击；
-- args pretty JSON 与非 JSON 原文 fallback；
-- result content flatten 与 structured error fallback；
-- running、ok、error 与 stopped 状态。
+- `search`،`read`،`bash`،`write`،`edit`،`code` و `others` تصنيف؛
+- قائم عنوان و أداة مخصص استخدام عنوان؛
+- summary حقل أولوية درجة و مفرد سطر قطع قطع؛
+- كثير query فاصلة رقم تجميع وصل؛
+- cwd متبادل مقابل تحويل و home تقليص كتابة؛
+- file path نقر؛
+- args pretty JSON و غير JSON أصل نص fallback؛
+- result content flatten و structured error fallback؛
+- running،ok،error و stopped حالة.
 
-Generic Host `presentCall` 的 title、kind、rawInput、content 与 locations 当前并不驱动普通 Web 行；Generic `presentResult.content` 也不驱动 Web 输出，因此无需把这些未消费值复制到 Client。
+Generic Host `presentCall` title،kind،rawInput،content و locations حالي و لا قيادة عادي Web سطر؛Generic `presentResult.content` أيضا لا قيادة Web إخراج، لذلك بلا حاجة يأخذ هذه لم إزالة استهلاك قيمة نسخ إلى Client.
 
-### Terminal 卡片
+### Terminal بطاقة
 
-Client terminal model 从工具名称、调用参数、结果 content、error 与 Session cwd 派生现有 `TerminalBlock` props，不依赖 `parentCallId`。
+Client terminal model من أداة اسم، استدعاء معامل، نتيجة content،error و Session cwd إرسال توليد قائم `TerminalBlock` props، لا اعتماد `parentCallId`.
 
-| 输入 | 保持的结果 |
+| إدخال | إبقاء نتيجة |
 |---|---|
-| 标准 `bash`／`pwsh` 前台 running | terminal prompt、description、cwd、running 状态 |
-| 标准前台 success | terminal output、exit code/signal、成功或失败状态点 |
-| `run_in_background:true` | Generic 行与原始结果 |
-| 工具执行 error | Generic IN／OUT 与错误摘要 |
-| persistent `bash`／`pwsh` running | terminal prompt |
-| persistent `bash`／`pwsh` settled | Generic flattened result，不新增 exit card |
-| `terminal_send` 前台 | terminal prompt 与 output |
-| `terminal_send` background/error | Generic 结果 |
-| PTC dispatch child | 与根调用相同的 terminal 适用规则与 fallback 规则 |
+| معيار `bash`/`pwsh` قبل منصة running | terminal prompt،description،cwd،running حالة |
+| معيار قبل منصة success | terminal output،exit code/signal، نجاح أو فشل حالة نقطة |
+| `run_in_background:true` | Generic سطر و أصلي نتيجة |
+| أداة تنفيذ error | Generic IN/OUT و خطأ ملخص |
+| persistent `bash`/`pwsh` running | terminal prompt |
+| persistent `bash`/`pwsh` settled | Generic flattened result، لا إضافة جديدة exit card |
+| `terminal_send` قبل منصة | terminal prompt و output |
+| `terminal_send` background/error | Generic نتيجة |
+| PTC dispatch child | و أصل استدعاء نفسه terminal ملائم استخدام قاعدة و fallback قاعدة |
 
-标准 shell 结果解析末尾 `[exit code: N]` 与 `[killed by signal: X]`。末尾已识别的 spill 策略提示会改用 Generic 输出：在 shell 行中可展开，在 Details 中显示原文，因为退出标记可能被移位或省略。已解析的 marker 从 terminal 正文移除；timeout、sandbox denial 与没有 pill 的 marker 留在正文。
+معيار shell نتيجة تحليل نهاية ذيل `[exit code: N]` و `[killed by signal: X]`. نهاية ذيل قد تعرف آخر spill سياسة تلميح سوف تعديل استخدام Generic إخراج: في shell سطر في يمكن توسيع، في Details في عرض أصل نص، لأن خروج علامة ممكن يتم نقل موضع أو حذف. قد تحليل marker من terminal متن إزالة؛timeout،sandbox denial و لا يوجد pill marker إبقاء في متن.
 
-调用 `description` 继续显示在 card 上方并覆盖折叠摘要。workdir 继续按绝对、相对和缺失三种情况处理；相对路径基于 Session cwd，且保留 `.`、`..`、盘符与 UNC root 的归一化。
+استدعاء `description` متابعة عرض في card فوق جهة و تغطية طي ملخص.workdir متابعة حسب قطعا مقابل، متبادل مقابل و ناقص ثلاثة نوع حال حال معالجة؛ متبادل مقابل مسار أساس في Session cwd، كما إبقاء `.`،`..`، قرص رمز و UNC root عودة واحد تحويل.
 
-对于 `terminal_send`，非空 input 与 session id 保持为逐字工具数据；空 input fallback 与 session label 通过 render site 的 conversation locale 解析。
+مقابل في `terminal_send`، غير فارغ input و session id إبقاء لـ تدريجي حرف أداة بيانات؛ فارغ input fallback و session label عبر render site conversation locale تحليل.
 
-同名普通与 persistent provider 是特殊兼容点。Client 使用当前有效参数与结果特征保留已交付差异；不足以无歧义识别的输入选择 Generic settled 结果，不增加新表现。
+نفس اسم عادي و persistent provider هو خاص خاص توافق نقطة.Client استخدام حالي صالح معامل و نتيجة خاص سمة إبقاء قد تسليم فرق مختلف؛ لا كاف بـ بلا اختلاف معنى تعرف آخر إدخال اختيار Generic settled نتيجة، لا زيادة جديد جدول الآن.
 
-TerminalBlock 的 ANSI、光标重放、宽字符、行数上限、展开、复制与辅助技术文本完全不变。
+TerminalBlock ANSI، ضوء علامة إعادة وضع، عرض محرف، سطر عدد حد أعلى، توسيع، نسخ و مساعد مساعدة تقنية فن نص تماما ثابت.
 
-### Diff 卡片
+### Diff بطاقة
 
-| 输入 | 保持的结果 |
+| إدخال | إبقاء نتيجة |
 |---|---|
-| running `write` | 从 `file_path` 与 `content` 生成 intended added-only diff |
-| running `edit` | 从 `file_path`、`old_string`、`new_string` 生成 intended replacement diff |
-| running `str_replace_editor create` | 从 `path` 与 `file_text` 生成 intended added-only diff |
-| running `str_replace_editor str_replace` | 从 `path`、`old_str` 与 `new_str` 生成 intended replacement diff |
-| settled `write`／`edit` success | 从 `meta.diffs` 生成 applied contextual hunks |
-| settled `str_replace_editor` | Generic，因为该工具没有 result presenter |
-| write create 或 applied metadata 缺失、畸形、为空 | 当前 args fallback |
-| error、畸形 args、edit 的 metadata 畸形、PTC dispatch child | Generic |
+| running `write` | من `file_path` و `content` توليد intended added-only diff |
+| running `edit` | من `file_path`،`old_string`،`new_string` توليد intended replacement diff |
+| running `str_replace_editor create` | من `path` و `file_text` توليد intended added-only diff |
+| running `str_replace_editor str_replace` | من `path`،`old_str` و `new_str` توليد intended replacement diff |
+| settled `write`/`edit` success | من `meta.diffs` توليد applied contextual hunks |
+| settled `str_replace_editor` | Generic، لأن هذا أداة لا يوجد result presenter |
+| write create أو applied metadata ناقص، شاذ شكل، لـ فارغ | حالي args fallback |
+| error، شاذ شكل args،edit metadata شاذ شكل،PTC dispatch child | Generic |
 
-路径、`oldText:null`、`newText`、结果覆盖调用时 diff、Chat 8 行上限、Details 全高显示和文件打开行为不变。
+مسار،`oldText:null`،`newText`، نتيجة تغطية استدعاء وقت diff،Chat 8 سطر حد أعلى،Details كل عال عرض و ملف فتح سلوك ثابت.
 
-### Read 卡片
+### Read بطاقة
 
-running `read` 继续只有摘要行。成功 settled `read` 从 result meta 读取 path、offset、lines、totalLines 与 lang，并确认结果是单个文本块且符合 read envelope。
+running `read` متابعة فقط لديه ملخص سطر. نجاح settled `read` من result meta قراءة path،offset،lines،totalLines و lang، و تأكيد نتيجة هو مفرد عدد نص كتلة كما رمز دمج read envelope.
 
-meta 缺失、字段畸形、result envelope 不匹配、error、缺失 call head 或 PTC dispatch child 都走 Generic。路径 label 的 cwd 相对化、home 缩写、语法语言、总行数、Chat 8 行上限与 Details 全高显示不变。
+meta ناقص، حقل شاذ شكل،result envelope لا مطابقة،error، ناقص call head أو PTC dispatch child كل مشي Generic. مسار label cwd متبادل مقابل تحويل،home تقليص كتابة، لغة قاعدة لغة، مجموع سطر عدد،Chat 8 سطر حد أعلى و Details كل عال عرض ثابت.
 
-Client 不需要构造 Host `ReadResultView.content`；Generic fallback 始终可直接读取原始 result content。
+Client لا حاجة بنية صنع Host `ReadResultView.content`؛Generic fallback بداية نهاية يمكن مباشر قراءة أصلي result content.
 
-### Search 卡片
+### Search بطاقة
 
-running `grep`／`glob` 继续只有参数摘要。成功结果分别从 `meta.shape:'matches'` 与 `meta.shape:'paths'` 生成 grouped matches 或 path list。
+running `grep`/`glob` متابعة فقط لديه معامل ملخص. نجاح نتيجة قسم آخر من `meta.shape:'matches'` و `meta.shape:'paths'` توليد grouped matches أو path list.
 
-Client 校验 path、lineNumber、line、truncated 与 total。空 matches/paths 是有效卡片；缺失/畸形 meta、未知 shape、error、缺失 call head 与 PTC dispatch child 走 Generic。
+Client تحقق path،lineNumber،line،truncated و total. فارغ matches/paths هو صالح بطاقة؛ ناقص/شاذ شكل meta، لم معرفة shape،error، ناقص call head و PTC dispatch child مشي Generic.
 
-`truncated:true` 时继续从原始 result content 显示 recovery locator；未截断时不显示。Chat 8 行上限、Details 全高显示和展开行为不变。
+`truncated:true` وقت متابعة من أصلي result content عرض recovery locator؛ لم قطع قطع وقت لا عرض.Chat 8 سطر حد أعلى،Details كل عال عرض و توسيع سلوك ثابت.
 
-### Web 卡片
+### Web بطاقة
 
-running `web_search`／`web_fetch` 继续只有摘要行。成功 search 从 `meta.sources`、`meta.answer`、`meta.truncated` 生成卡片；成功 fetch 从 `meta.url`、`meta.statusCode`、`meta.truncated` 生成卡片。
+running `web_search`/`web_fetch` متابعة فقط لديه ملخص سطر. نجاح search من `meta.sources`،`meta.answer`،`meta.truncated` توليد بطاقة؛ نجاح fetch من `meta.url`،`meta.statusCode`،`meta.truncated` توليد بطاقة.
 
-Client 校验每个 source 的 url、title、snippet 与 publishedAt，并继续只把 http/https URL 渲染为链接。meta 缺失或畸形、error、缺失 call head 与 PTC dispatch child 走 Generic。
+Client تحقق كل source url،title،snippet و publishedAt، و متابعة فقط يأخذ http/https URL تصيير لـ رابط.meta ناقص أو شاذ شكل،error، ناقص call head و PTC dispatch child مشي Generic.
 
-search 的 answer、来源顺序、label fallback 与截断提示不变；fetch 的最终 URL、状态、截断提示与 Details 下方原始正文不变。
+search answer، مصدر ترتيب،label fallback و قطع قطع تلميح ثابت؛fetch نهائي URL، حالة، قطع قطع تلميح و Details تحت جهة أصلي متن ثابت.
 
-### 已直接使用 raw block 的 renderer
+### قد مباشر استخدام raw block renderer
 
-- Todo row 继续从 args 计算 completed/active 摘要。
-- Question row 继续从 result content 与 error 计算等待、回答、取消和中止状态。
-- Skill row 继续从 args/result 计算名称与状态。
-- Cordis define/run/action rows 继续从 args/result 与各自 Client service 计算。
-- 这些 renderer 的 props、slot key、注册顺序与可见结果不变。
+- Todo row متابعة من args حساب حساب completed/active ملخص.
+- Question row متابعة من result content و error حساب حساب انتظار، عودة جواب، إلغاء و في توقف حالة.
+- Skill row متابعة من args/result حساب حساب اسم و حالة.
+- Cordis define/run/action rows متابعة من args/result و كل منها Client service حساب حساب.
+- هذه renderer props،slot key، تسجيل ترتيب و مرئي نتيجة ثابت.
 
 ## Deliverables
 
-`ui-deliverables` 独立于展示意图派生 mutation 业务事实，因此 produced-file 行为不与卡片截图耦合。
+`ui-deliverables` مستقل في عرض معنى رسم إرسال توليد mutation عمل خدمة واقع، لذلك produced-file سلوك لا و بطاقة قطع رسم اقتران دمج.
 
-Deliverables Definition 按 callId 观察 root `tool/call` 与成功 `tool/result`，保存最小的 Client-owned mutation candidate，不扫描 Session window，也不依赖 UI renderer。
+Deliverables Definition حسب callId مراقبة root `tool/call` و نجاح `tool/result`، حفظ الأكثر صغير Client-owned mutation candidate، لا مسح Session window، أيضا لا اعتماد UI renderer.
 
-| 工具 | mutation 判定 | path 来源 |
+| أداة | mutation حكم تحديد | path مصدر |
 |---|---|---|
-| `write` | 任意成功调用 | `file_path` |
-| `edit` | 任意成功调用 | `file_path` |
-| `str_replace_editor` | `create`、`str_replace`、`insert` | `path` |
-| `str_replace_editor` | `view` | 不产生 path |
-| 其他 | 无当前第一方 mutation 语义 | 不产生 path |
+| `write` | مهمة معنى نجاح استدعاء | `file_path` |
+| `edit` | مهمة معنى نجاح استدعاء | `file_path` |
+| `str_replace_editor` | `create`،`str_replace`،`insert` | `path` |
+| `str_replace_editor` | `view` | لا إنتاج path |
+| أخرى | بلا حالي رقم واحد جهة mutation دلالة | لا إنتاج path |
 
-失败、interrupted、orphan result、缺失 path 与畸形 args 不产生 deliverable。同一路径保持 first-seen 去重，closing Assistant seq 之后落定的结果继续排除。
+فشل،interrupted،orphan result، ناقص path و شاذ شكل args لا إنتاج deliverable. نفس مسار إبقاء first-seen ذهاب إعادة،closing Assistant seq بعد سقوط تحديد نتيجة متابعة ترتيب حذف.
 
-本次不新增通用“工具副作用”注册表。Host-only 第三方 presenter 通过 `kind:'edit'`／`locations` 自动加入 Deliverables 的能力被有意移除；未来若有真实第三方 mutation 需求，应由 Client 业务贡献表达，不能恢复 Session view。
+هذا مرة لا إضافة جديدة عام “أداة فرعي أثر” سجل التسجيل.Host-only رقم ثلاثة جهة presenter عبر `kind:'edit'`/`locations` تلقائي إضافة دخول Deliverables قدرة يتم متعمد إزالة؛ لم قدوم إذا لديه حقيقي رقم ثلاثة جهة mutation يحتاج طلب، ينبغي من Client عمل خدمة مساهمة جدول بلوغ، لا يستطيع استعادة Session view.
 
-## Fixture 与测试数据
+## Fixture و اختبار بيانات
 
-组装 RemoteMock 场景不包含手写 `presentCall()`、`presentResult()`、`viewFor()` 或 tool-view 类型。它提供与真实日志相同的 raw call、result content 和 result meta。
+تجميع RemoteMock مشهد لا يتضمن يد كتابة `presentCall()`،`presentResult()`،`viewFor()` أو tool-view نوع. هو توفير و حقيقي سجل نفسه raw call،result content و result meta.
 
-| Fixture | 必须保留的原始事实 |
+| Fixture | يجب إبقاء أصلي واقع |
 |---|---|
-| terminal | 参数与真实结果 status marker |
-| diff | 参数与 result `meta.diffs` |
-| read | result meta 的 path/offset/lines/totalLines/lang |
-| grep/glob | result meta 的 shape/files 或 paths/truncated/total |
-| web | result meta 的 sources/answer 或 url/statusCode/truncated |
-| generic/custom | name、argsRaw、content、error |
+| terminal | معامل و حقيقي نتيجة status marker |
+| diff | معامل و result `meta.diffs` |
+| read | result meta path/offset/lines/totalLines/lang |
+| grep/glob | result meta shape/files أو paths/truncated/total |
+| web | result meta sources/answer أو url/statusCode/truncated |
+| generic/custom | name،argsRaw،content،error |
 
-该场景不导入 Host 工具包来计算页面展示，也不保留 presenter 镜像。同一 raw 场景在 jsdom 下驱动 built Web snapshot；真实 Host 浏览器用例独立覆盖网络路径。
+هذا مشهد لا استيراد Host أداة حزمة قدوم حساب حساب صفحة عرض، أيضا لا إبقاء presenter مرآة مثل. نفس raw مشهد في jsdom تحت قيادة built Web snapshot؛ حقيقي Host متصفح حالة استخدام مستقل تغطية شبكة شبكة مسار.
 
-## 展示等价矩阵
+## عرض انتظار قيمة مستطيل دفعة
 
-“当前展示”由已提交的组件测试、组装测试与 Web browser expected 共同定义。transport 或 ownership 重构不能作为 refresh snapshot 的理由；获批产品变化需要独立证据。
+“حالي عرض” من قد إيداع مكون اختبار، تجميع اختبار و Web browser expected مشترك نفس تعريف.transport أو ownership إعادة بنية لا يستطيع بصفة refresh snapshot إدارة من؛ نيل دفعة منتج تغير حاجة مستقل دليل.
 
-| 场景 | 必须保持的展示 |
+| مشهد | يجب إبقاء عرض |
 |---|---|
-| 未知工具 running | Generic 行，工具名与 args 摘要 |
-| 未知工具 settled | Generic 行与原始 output |
-| malformed args | 安全 Generic fallback |
-| orphan result | callId 标题与 Generic output |
-| interrupted call | warning/stopped 状态 |
-| bash/pwsh 前台 | 当前 terminal prompt、正文、cwd 与状态 |
-| bash/pwsh background/error | 当前 Generic IN／OUT |
-| persistent shell | 当前 running terminal、settled Generic |
-| terminal_send | 当前前台 terminal、后台/error Generic |
-| write/edit | 当前 intended/applied diff 与 error fallback |
-| read | 当前 running 摘要、settled ReadBlock 与 error fallback |
-| grep/glob | 当前 grouped/path card、截断与 recovery |
-| web_search/web_fetch | 当前来源/摘要 card 与原始正文 |
-| Todo/Question/Skill/Cordis | 当前专用行 |
-| PTC dispatch subcall | 满足条件时显示 terminal 卡片；diff/read/search/web 保持 Generic/flattened |
-| Chat 与 Details | 同一调用使用相同 card fields |
-| Trajectory | 当前 identity、树、选择和 details |
-| Deliverables | 当前成功 mutation chips 与链接 |
+| لم معرفة أداة running | Generic سطر، أداة اسم و args ملخص |
+| لم معرفة أداة settled | Generic سطر و أصلي output |
+| malformed args | أمان Generic fallback |
+| orphan result | callId عنوان و Generic output |
+| interrupted call | warning/stopped حالة |
+| bash/pwsh قبل منصة | حالي terminal prompt، متن،cwd و حالة |
+| bash/pwsh background/error | حالي Generic IN/OUT |
+| persistent shell | حالي running terminal،settled Generic |
+| terminal_send | حالي قبل منصة terminal، خلفية/error Generic |
+| write/edit | حالي intended/applied diff و error fallback |
+| read | حالي running ملخص،settled ReadBlock و error fallback |
+| grep/glob | حالي grouped/path card، قطع قطع و recovery |
+| web_search/web_fetch | حالي مصدر/ملخص card و أصلي متن |
+| Todo/Question/Skill/Cordis | حالي مخصص استخدام سطر |
+| PTC dispatch subcall | ممتلئ كاف شرط وقت عرض terminal بطاقة؛diff/read/search/web إبقاء Generic/flattened |
+| Chat و Details | نفس استدعاء استخدام نفسه card fields |
+| Trajectory | حالي identity، شجرة، اختيار و details |
+| Deliverables | حالي نجاح mutation chips و رابط |
 
-## Client 扩展约定
+## Client توسيع اتفاق
 
-`tool.call.toolview` 继续是唯一工具 UI 注册机制。一个工具若要在 Client 获得专用表现，必须由 Client 插件注册自己的 wire tool name。
+`tool.call.toolview` متابعة هو وحيد أداة UI تسجيل آلية. واحد أداة إذا يلزم في Client نيل نيل مخصص استخدام جدول الآن، يجب من Client إضافة تسجيل ذاتي ذات wire tool name.
 
-注册方接收 raw `ToolCallBlock`、Session path 信息和宿主动作，自行校验它认识的 args/meta 字段。注册方不调用 Host tool registry，不依赖 `presentCall`／`presentResult`，也不能要求 `SessionEventEntry.view`。
+تسجيل جهة استقبال raw `ToolCallBlock`،Session path معلومة و مضيف حركة عمل، ذاتي سطر تحقق هو إقرار تعرف args/meta حقل. تسجيل جهة لا استدعاء Host tool registry، لا اعتماد `presentCall`/`presentResult`، أيضا لا يستطيع اشتراط `SessionEventEntry.view`.
 
-没有 Client renderer 的工具稳定降级为 Generic。同一 tool name 只能有一个生效 keyed registration，重复 key 继续 loud failure。
+لا يوجد Client renderer أداة مستقر تخفيض لـ Generic. نفس tool name فقط قدرة لديه واحد توليد فاعلية keyed registration، تكرار key متابعة loud failure.
 
-Session-scoped slot 可以表达 Client 侧会话差异，但不从 preset 推断 renderer 变体。Host-only presenter 不自动赋予 Web rich card，这是“Host 描述展示”与“Client 插件拥有展示”的明确边界。
+Session-scoped slot يمكن جدول بلوغ Client جانب جلسة فرق مختلف، لكن لا من preset دفع قطع renderer تغيير جسم.Host-only presenter لا تلقائي منح إعطاء Web rich card، هذا هو “Host وصف عرض” و “Client إضافة يملك عرض” واضح حد.
 
-## 失败与 fallback
+## فشل و fallback
 
-- Client 把 args 与 meta 当作 wire JSON，在消费点收窄。
-- 参数 JSON 解析失败走 Generic。
-- 已知工具缺少必要字段走 Generic。
-- metadata 缺失或畸形走 Generic；成功 `write` 例外，它按当前 presenter 行为保留由参数派生的整文件 diff。
-- error result 不因 metadata 存在而显示成功卡片。
-- 缺失 call head 不猜测工具名称或参数。
-- 未知 metadata 字段被忽略。
-- 新 metadata variant 在旧 Client 中走 Generic。
-- card-model helper 捕获可预期解析失败，不依赖 React error boundary 完成普通 fallback。
-- keyed renderer 自身的意外异常仍由现有 Slot error isolation 处理。
+- Client يأخذ args و meta عند عمل wire JSON، في إزالة استهلاك نقطة استلام ضيق.
+- معامل JSON تحليل فشل مشي Generic.
+- معروف أداة نقص قليل لا بد يلزم حقل مشي Generic.
+- metadata ناقص أو شاذ شكل مشي Generic؛ نجاح `write` مثال خارج، هو حسب حالي presenter سلوك إبقاء من معامل إرسال توليد كامل ملف diff.
+- error result لا بسبب metadata وجود بينما عرض نجاح بطاقة.
+- ناقص call head لا تخمين قياس أداة اسم أو معامل.
+- لم معرفة metadata حقل يتم تجاهل اختصار.
+- جديد metadata variant في قديم Client في مشي Generic.
+- card-model helper التقاط يمكن مسبق مدة تحليل فشل، لا اعتماد React error boundary إتمام عادي fallback.
+- keyed renderer ذاته معنى خارج استثناء ما زال من قائم Slot error isolation معالجة.
 
-## 同名 Host provider
+## نفس اسم Host provider
 
-Host registry 允许不同 scope 为同一 tool name 提供不同定义；Session view 通过 presenter scope 理论上可以按 preset 选择不同 render intent。删除 view 后，Client keyed slot 只观察 wire name，不能观察 Host definition identity。
+Host registry سماح مختلف scope لـ نفس tool name توفير مختلف تعريف؛Session view عبر presenter scope إدارة نقاش فوق يمكن حسب preset اختيار مختلف render intent. حذف view بعد،Client keyed slot فقط مراقبة wire name، لا يستطيع مراقبة Host definition identity.
 
-当前第一方显著实例是普通与 persistent `bash`／`pwsh`。Client 派生使用有效参数与结果特征保持它们的已交付差异，不增加 provider-id wire 字段；无法判别的畸形或自定义同名 provider 输入采用 Generic。
+حالي رقم واحد جهة إظهار بارز نسخة هو عادي و persistent `bash`/`pwsh`.Client إرسال توليد استخدام صالح معامل و نتيجة خاص سمة إبقاء هو جمع قد تسليم فرق مختلف، لا زيادة provider-id wire حقل؛ لا يمكن حكم آخر شاذ شكل أو ذاتي تعريف نفس اسم provider إدخال اعتماد Generic.
 
-本次不承诺保留第三方同名 provider 仅通过 Host presenter 表达的差异。若未来产品确需同名 provider 的不同 Client 展示，必须定义稳定、非展示性的 Client identity；不得恢复按页 Host view 计算。
+هذا مرة لا تحمل وعد إبقاء رقم ثلاثة جهة نفس اسم provider فقط عبر Host presenter جدول بلوغ فرق مختلف. إذا لم قدوم منتج تأكيد يحتاج نفس اسم provider مختلف Client عرض، يجب تعريف مستقر، غير عرض صفة Client identity؛ لا نيل استعادة حسب صفحة Host view حساب حساب.
 
-## 已交付范围
+## قد تسليم نطاق
 
 ### Session Controller
 
-- `SessionEventEntry` 只包含 raw event。
-- 两个 Session tool-view 类型都不存在。
-- history 不含 presentation import、helper 或 page/follow presentation state。
-- 地址、分页、follow 与 projection 逻辑仍由 Session owner 负责。
-- Host 测试固定 raw journal 约定。
+- `SessionEventEntry` فقط يتضمن raw event.
+- اثنان عدد Session tool-view نوع كل لا وجود.
+- history لا يحتوي presentation import،helper أو page/follow presentation state.
+- عنوان، قسم صفحة،follow و projection منطق ما زال من Session owner مسؤول.
+- Host اختبار ثابت raw journal اتفاق.
 
 ### Session Controller Client
 
-- `Session.views` 不存在。
-- EventSource replace/prepend/append delta 保持不变。
-- transport、fixture 与 test-support 类型携带 raw entry。
-- event identity 与引用稳定性保持不变。
+- `Session.views` لا وجود.
+- EventSource replace/prepend/append delta إبقاء ثابت.
+- transport،fixture و test-support نوع يحمل raw entry.
+- event identity و مرجع مستقر صفة إبقاء ثابت.
 
-### UI Conversation、Chat 与 Trajectory
+### UI Conversation،Chat و Trajectory
 
-- Conversation input 与 Tool block 不含 view 字段。
-- Chat/Trajectory Tool Definition 读取 raw event。
-- event pairing、Context replay、树与 target snapshot 保持不变。
-- child Tool block 保留现有 PTC dispatch `parentCallId`；row 与 Details slot owner props 都不增加独立 placement 字段。
+- Conversation input و Tool block لا يحتوي view حقل.
+- Chat/Trajectory Tool Definition قراءة raw event.
+- event pairing،Context replay، شجرة و target snapshot إبقاء ثابت.
+- child Tool block إبقاء قائم PTC dispatch `parentCallId`؛row و Details slot owner props كل لا زيادة مستقل placement حقل.
 
-### UI Tool 与 Deliverables
+### UI Tool و Deliverables
 
-- card model 从 raw block/meta 派生。
-- Chat 与 Details 复用相同 helper。
-- Generic fallback 与 keyed dispatch 保持不变。
-- Deliverables 识别第一方 mutation args。
+- card model من raw block/meta إرسال توليد.
+- Chat و Details إعادة استخدام نفسه helper.
+- Generic fallback و keyed dispatch إبقاء ثابت.
+- Deliverables تعرف آخر رقم واحد جهة mutation args.
 
-### Fixture、文档与生成物
+### Fixture، وثيقة و توليد شيء
 
-- fixture 只发 raw event/meta。
-- Session Controller 与 Client README/JSDoc 描述 raw journal 和 Client presentation owner。
-- 工具 cookbook 记录 Web Client 接入路径。
-- 本文是该决定的 owner；保留的 Host presenter Note 继续拥有各自决定。
-- 手写 Remote 类型、dependency、README、pairing record 与 generated reference 保持同步。
+- fixture فقط إرسال raw event/meta.
+- Session Controller و Client README/JSDoc وصف raw journal و Client presentation owner.
+- أداة cookbook سجل Web Client وصل دخول مسار.
+- هذا نص هو هذا قرار owner؛ إبقاء Host presenter Note متابعة يملك كل منها قرار.
+- يد كتابة Remote نوع،dependency،README،pairing record و generated reference إبقاء تزامن.
 
-## 验证矩阵
+## تحقق مستطيل دفعة
 
 ### Host
 
-- page 返回连续 raw event entries。
-- follow 返回 opening cursor 与连续 raw event entries。
-- page/follow 在无 Tools service 时行为相同。
-- cold page 不解析或挂载 preset。
-- tail page 通过标准 projection registry 计算 baseline；provider 是否存在由 projection composition 决定，不引入 history 侧 setup 路径。
-- 地址、ownership、message-aligned boundary 与 tail projection 不变。
-- listener-before-read、reconnect catch-up 与 gap repair 不变。
-- 大量 tool results 不触发每结果回扫。
-- wire 结果不含 view。
+- page إرجاع وصل متابعة raw event entries.
+- follow إرجاع opening cursor و وصل متابعة raw event entries.
+- page/follow في بلا Tools service وقت سلوك نفسه.
+- cold page لا تحليل أو تركيب preset.
+- tail page عبر معيار projection registry حساب حساب baseline؛provider هل وجود من projection composition قرار، لا جذب دخول history جانب setup مسار.
+- عنوان،ownership،message-aligned boundary و tail projection ثابت.
+- listener-before-read،reconnect catch-up و gap repair ثابت.
+- كبير كمية tool results لا إطلاق كل نتيجة عودة مسح.
+- wire نتيجة لا يحتوي view.
 
-`session-history-journal.host.spec.ts` 负责分页、连续性和 history error 行为，不含 presenter 断言。
+`session-history-journal.host.spec.ts` مسؤول قسم صفحة، وصل متابعة صفة و history error سلوك، لا يحتوي presenter تأكيد.
 
 ### Client Conversation
 
-- replace、prepend 与 append 接受无 view entry。
-- Chat 与 Trajectory root call/result 配对不变。
-- PTC dispatch 树不变。
-- result-only fallback 不变。
-- interruption synthetic result 不复制 view。
-- registry rebuild、older prepend 与 live append 的 Node identity 不变。
+- replace،prepend و append قبول بلا view entry.
+- Chat و Trajectory root call/result إعداد مقابل ثابت.
+- PTC dispatch شجرة ثابت.
+- result-only fallback ثابت.
+- interruption synthetic result لا نسخ view.
+- registry rebuild،older prepend و live append Node identity ثابت.
 
 ### Client card model
 
-- terminal 用 raw args/content 得到已固定的 props。
-- diff 用 args/meta 得到已固定的 diffs。
-- read 用 meta/content 得到已固定的 lines。
-- search 用 meta/content 得到已固定的 grouped/path card 与 recovery。
-- web 用 meta/content 得到已固定的 sources/fetch summary。
-- unknown、malformed、error、missing-call 与 missing-meta 继续 Generic。
-- `parentCallId` 缺失与存在的用例证明 terminal 适用规则一致，并保留 diff、read、search 和 web descendant 的 Generic fallback。
-- Chat 与 Details 对同一 block 得到相同 card fields。
+- terminal استخدام raw args/content نيل إلى قد ثابت props.
+- diff استخدام args/meta نيل إلى قد ثابت diffs.
+- read استخدام meta/content نيل إلى قد ثابت lines.
+- search استخدام meta/content نيل إلى قد ثابت grouped/path card و recovery.
+- web استخدام meta/content نيل إلى قد ثابت sources/fetch summary.
+- unknown،malformed،error،missing-call و missing-meta متابعة Generic.
+- `parentCallId` ناقص و وجود حالة استخدام إثبات terminal ملائم استخدام قاعدة متسق، و إبقاء diff،read،search و web descendant Generic fallback.
+- Chat و Details مقابل نفس block نيل إلى نفسه card fields.
 
 ### Deliverables
 
-- write/edit 成功产生 `file_path`。
-- str_replace_editor create/str_replace/insert 产生 `path`。
-- str_replace_editor view 不产生 path。
-- failure、interrupted、malformed 与 orphan 不产生 path。
-- first-seen 去重与 closing seq cut 不变。
+- write/edit نجاح إنتاج `file_path`.
+- str_replace_editor create/str_replace/insert إنتاج `path`.
+- str_replace_editor view لا إنتاج path.
+- failure،interrupted،malformed و orphan لا إنتاج path.
+- first-seen ذهاب إعادة و closing seq cut ثابت.
 
-### 组装与浏览器
+### تجميع و متصفح
 
-- terminal、diff、read、search、web browser expected 不刷新并全部通过。
-- tool tree、details、trajectory 与 deliverables 的可见断言不改预期。
-- built Client 通过真实 Remote page/follow 取得 raw events 后仍显示同样卡片。
-- fixture 与真实 Host 使用同一 Client derivation。
-- minimal preset 单独固定 persistent shell 行为。
+- terminal،diff،read،search،web browser expected لا تحديث جديد و الكل عبر.
+- tool tree،details،trajectory و deliverables مرئي تأكيد لا تعديل مسبق مدة.
+- built Client عبر حقيقي Remote page/follow أخذ نيل raw events بعد ما زال عرض نفس مثال بطاقة.
+- fixture و حقيقي Host استخدام نفس Client derivation.
+- minimal preset مفرد وحيد ثابت persistent shell سلوك.
 
-### 静态与文档
+### ساكن حالة و وثيقة
 
-- 生产代码不存在 `SessionToolView`／`SessionToolCallView`。
-- Session history 不引用 `dsh-tools/presentation`、`ctx.tools`、`presenterScopeFor` 或 `backscanArgs`。
-- Client Conversation 不引用 `ToolCallView`／`ToolResultView`。
-- Client model 不读取 `callView`／`resultView`。
-- fixture 不定义 presenter mirror。
-- Host `presentCall`／`presentResult` 与 `presentationMeta` 仍存在。
-- 没有新增 Client registry 或 Host→Client presentation hint。
-- 受影响的手写类型、README、Agent Note、catalog 与 graph 保持同步。
+- إنتاج شفرة لا وجود `SessionToolView`/`SessionToolCallView`.
+- Session history لا مرجع `dsh-tools/presentation`،`ctx.tools`،`presenterScopeFor` أو `backscanArgs`.
+- Client Conversation لا مرجع `ToolCallView`/`ToolResultView`.
+- Client model لا قراءة `callView`/`resultView`.
+- fixture لا تعريف presenter mirror.
+- Host `presentCall`/`presentResult` و `presentationMeta` ما زال وجود.
+- لا يوجد إضافة جديدة Client registry أو Host→Client presentation hint.
+- تلقي أثر يد كتابة نوع،README،Agent Note،catalog و graph إبقاء تزامن.
 
-## 验证命令
+## تحقق أمر
 
-修改本决定时使用 `dsh-pre-push-checks` 按最终 diff 选择命令；所需证据包括：
+تعديل هذا قرار وقت استخدام `dsh-pre-push-checks` حسب نهائي diff اختيار أمر؛ الذي يحتاج دليل يشمل:
 
-- Session Controller history/transport 聚焦测试；
-- ui-chat 与 ui-trajectory Tool Definition 测试；
-- ui-tool terminal、diff、read、search、web、row、tree 与 details 测试；
-- ui-deliverables produced-files 测试；
-- 组装 RemoteMock 与 Client runtime 测试；
-- 受影响 Host/Client TypeScript face；
-- lint 与 duplication；
-- 受影响源文件 per-file 100% coverage；
-- `DSH_SNAPSHOT=replay pnpm run test:web`，不得 refresh 现有展示 golden；
-- 手写 Remote 类型与 TypeScript 检查；
-- `pnpm run doc-sync`；
-- `git diff --check`。
+- Session Controller history/transport تجمع تركيز اختبار؛
+- ui-chat و ui-trajectory Tool Definition اختبار؛
+- ui-tool terminal،diff،read،search،web،row،tree و details اختبار؛
+- ui-deliverables produced-files اختبار؛
+- تجميع RemoteMock و Client runtime اختبار؛
+- تلقي أثر Host/Client TypeScript face؛
+- lint و duplication؛
+- تلقي أثر مصدر ملف per-file 100% coverage؛
+- `DSH_SNAPSHOT=replay pnpm run test:web`، لا نيل refresh قائم عرض golden؛
+- يد كتابة Remote نوع و TypeScript فحص؛
+- `pnpm run doc-sync`؛
+- `git diff --check`.
 
-## 已交付不变量
+## قد تسليم ثابت كمية
 
-- Session page/follow 不读取 Tools registry 或 presenter scope。
-- Session history 不存在 callId backscan、presentation cache 或 view clone。
-- Remote Session entry 不携带 view。
-- Session 日志与 `SESSION_FORMAT_VERSION` 不变。
-- result meta 逐字节通过日志与 Remote 到达 Client。
-- Conversation 只从 raw event 组装 ToolCallBlock。
-- ToolCallBlock 不含 Host render-intent 字段。
-- 五类结构化 card model 只读 raw block 与 Session path facts；只有 diff、read、search 和 web 使用 `parentCallId` 拒绝子调用。
-- Generic、Todo、Question、Skill 与 Cordis 行行为不变。
-- Deliverables 不依赖 render intent 且保持当前 paths。
-- 所有第一方顶层工具的文本、组件、展开内容、状态、链接与排序不变。
-- malformed、missing-meta、error、orphan 与 unknown-tool 继续安全 fallback。
-- PTC dispatch 的 diff、read、search 和 web 子调用保持 Generic/flattened；terminal 子调用遵循根调用适用规则。
-- Chat、Details 与 Trajectory 行为不变。
-- 现有 Web browser expected 无需刷新即可通过。
-- Host presenter API、实现与直接测试不变。
-- ACP 输出不变。
-- 没有新下行展示字段或第二套 Client registry。
-- 分页成本不再随 result 数量乘以页面事件数增长。
-- 下行 payload 不再重复 result meta 的 card DTO。
+- Session page/follow لا قراءة Tools registry أو presenter scope.
+- Session history لا وجود callId backscan،presentation cache أو view clone.
+- Remote Session entry لا يحمل view.
+- Session سجل و `SESSION_FORMAT_VERSION` ثابت.
+- result meta تدريجي بايت عبر سجل و Remote وصول Client.
+- Conversation فقط من raw event تجميع ToolCallBlock.
+- ToolCallBlock لا يحتوي Host render-intent حقل.
+- خمسة صنف بنية تحويل card model فقط قراءة raw block و Session path facts؛ فقط لديه diff،read،search و web استخدام `parentCallId` رفض فرعي استدعاء.
+- Generic،Todo،Question،Skill و Cordis سطر سلوك ثابت.
+- Deliverables لا اعتماد render intent كما إبقاء حالي paths.
+- كل رقم واحد جهة قمة طبقة أداة نص، مكون، توسيع محتوى، حالة، رابط و ترتيب ترتيب ثابت.
+- malformed،missing-meta،error،orphan و unknown-tool متابعة أمان fallback.
+- PTC dispatch diff،read،search و web فرعي استدعاء إبقاء Generic/flattened؛terminal فرعي استدعاء التزام دوران أصل استدعاء ملائم استخدام قاعدة.
+- Chat،Details و Trajectory سلوك ثابت.
+- قائم Web browser expected بلا حاجة تحديث جديد يكفي عبر.
+- Host presenter API، تنفيذ و مباشر اختبار ثابت.
+- ACP إخراج ثابت.
+- لا يوجد جديد تحت سطر عرض حقل أو ثاني طقم Client registry.
+- قسم صفحة صار هذا لم يعد مع result عدد كمية ركوب بـ صفحة حدث عدد زيادة طويل.
+- تحت سطر payload لم يعد تكرار result meta card DTO.
 
 ## Alternatives considered
 
-### 只优化 `backscanArgs`，保留 view
+### فقط أفضل تحويل `backscanArgs`، إبقاء view
 
-page 前建立一次 `callId → {name,args}` Map 可以把回扫降为线性，live 已有 `openCalls` 快路径；但 Host lookup、preset scope、presenter、JSON clone、重复 payload 和双重所有权仍存在，因此拒绝。
+page قبل بناء قيام مرة `callId → {name,args}` Map يمكن يأخذ عودة مسح خفض لـ خط صفة،live قد لديه `openCalls` سريع مسار؛ لكن Host lookup،preset scope،presenter،JSON clone، تكرار payload و مزدوج إعادة كل حق ما زال وجود، لذلك رفض.
 
-### 在 Client 建 presenter registry
+### في Client بناء presenter registry
 
-把 `presentCall`／`presentResult` 接口复制到浏览器会与 `tool.call.toolview` slot 重复注册、生命周期、fallback 和覆盖语义；renderer 仍需把 presenter DTO 转成组件 props，因此拒绝。
+يأخذ `presentCall`/`presentResult` واجهة نسخ إلى متصفح سوف و `tool.call.toolview` slot تكرار تسجيل، دورة الحياة،fallback و تغطية دلالة؛renderer ما زال يحتاج يأخذ presenter DTO تحويل صار مكون props، لذلك رفض.
 
-### 让 Conversation Tool Definition 生成统一 view
+### يجعل Conversation Tool Definition توليد موحد واحد view
 
-这会把工具名称和 UI card 语义放进 target-neutral Conversation owner，并重建与 Host view 同构的中间 DTO，因此拒绝。
+هذا سوف يأخذ أداة اسم و UI card دلالة وضع دخول target-neutral Conversation owner، و إعادة بناء و Host view نفس بنية في بين DTO، لذلك رفض.
 
-### 删除 `presentationMeta`
+### حذف `presentationMeta`
 
-read 行结构、applied diff、search 分组、web sources 和有效 truncation 无法从模型文本无损恢复；解析自由文本也会把 UI 绑到输出措辞，因此拒绝。
+read سطر بنية،applied diff،search قسم مجموعة،web sources و صالح truncation لا يمكن من نموذج نص بلا ضرر استعادة؛ تحليل ذاتي من نص أيضا سوف يأخذ UI ربط إلى إخراج إجراء لفظ، لذلك رفض.
 
-### 持久化 canonical tool result
+### حفظ دائم canonical tool result
 
-这会扩大 Session log、暴露内部结果结构、改变持久格式，并可能保存远超展示所需的大对象；已有 metadata 足够，因此拒绝。
+هذا سوف توسيع كبير Session log، كشف داخلي نتيجة بنية، تغيير حمل دائم صيغة، و ممكن حفظ بعيد تجاوز عرض الذي يحتاج كبير كائن؛ قد لديه metadata كاف كاف، لذلك رفض.
 
-### 删除 Host presenter API
+### حذف Host presenter API
 
-一并删除可以继续收缩代码，但本决定保留 Host `presentCall`／`presentResult`；其 API、实现、测试与类型独立于 Session Remote。
+واحد و حذف يمكن متابعة استلام تقليص شفرة، لكن هذا قرار إبقاء Host `presentCall`/`presentResult`؛ ذلك API، تنفيذ، اختبار و نوع مستقل في Session Remote.
 
-### Client 导入 Host 工具实现
+### Client استيراد Host أداة تنفيذ
 
-工具包包含 Node、filesystem、subprocess 或 provider 依赖，不能进入浏览器 bundle；Client 只消费 raw JSON，并在自己的 renderer 内维护窄解析，因此拒绝。
+أداة حزمة يتضمن Node،filesystem،subprocess أو provider اعتماد، لا يستطيع دخول متصفح bundle؛Client فقط إزالة استهلاك raw JSON، و في ذاتي ذات renderer داخل صيانة ضيق تحليل، لذلك رفض.
 
-### 按结果向 Host 查询 presentation
+### حسب نتيجة نحو Host استعلام presentation
 
-按需 RPC 会把一页读取变成 N 次网络调用，仍需 Host lookup、scope、callId 查找与错误协调，因此拒绝。
+حسب يحتاج RPC سوف يأخذ واحد صفحة قراءة تغيير صار N مرة شبكة شبكة استدعاء، ما زال يحتاج Host lookup،scope،callId فحص بحث و خطأ تنسيق ضبط، لذلك رفض.
 
-### 允许展示增强
+### سماح عرض زيادة قوي
 
-将更丰富的 PTC dispatch 卡片、缺失 call head 的推断或其他历史展示增强与所有权变更捆绑，会使快照无法证明对等。本决定拒绝这种捆绑；[嵌套 terminal 卡片例外](../bug-fix/2026-09-05-nested-terminal-cards.zh.md)不放宽非 terminal 子调用限制。
+سوف أكثر وفير غني PTC dispatch بطاقة، ناقص call head دفع قطع أو أخرى تاريخ عرض زيادة قوي و كل حق تغيير ربط ربط، سوف جعل لقطة لا يمكن إثبات مقابل انتظار. هذا قرار رفض هذا نوع ربط ربط؛[تضمين طقم terminal بطاقة مثال خارج](../bug-fix/2026-09-05-nested-terminal-cards.zh.md) لا وضع عرض غير terminal فرعي استدعاء حد.
 
-### 接受临时 Generic 退化
+### قبول مؤقت Generic تراجع تحويل
 
-先停发 view 再逐步补 Client card 会让 terminal、diff、read、search、web 与 Deliverables 在中间版本退化。Client 对等实现与 Host 删除必须在同一可发布变更中完成。
+أولا توقف إرسال view مجددا تدريجي خطوة تكملة Client card سوف يجعل terminal،diff،read،search،web و Deliverables في في بين إصدار تراجع تحويل.Client مقابل انتظار تنفيذ و Host حذف يجب في نفس يمكن إصدار تغيير في إتمام.
 
 ## Consequences
 
-本决定从 Session 读取中删除 presentation 工作、重复扫描和重复 view payload；代价是保留的 Host presenter 与 Client card derivation 可以独立演进，因此两侧都需要 owner 专属测试，Web 展示对等仍是明确产品约束。
+هذا قرار من Session قراءة في حذف presentation عمل، تكرار مسح و تكرار view payload؛ بديل قيمة هو إبقاء Host presenter و Client card derivation يمكن مستقل عرض دخول، لذلك اثنان جانب كل حاجة owner مخصص تابع اختبار،Web عرض مقابل انتظار ما زال هو واضح منتج قيد.
 
-### Client 与 Host 逻辑漂移
+### Client و Host منطق عائم نقل
 
-同一工具可以有一份 Host render intent 和一份 Client card derivation。两者面向不同消费方，不共享运行路径；不刷新的 browser expected 固定第一方 Web 视觉对等，Host presenter 测试只约束 Host API。
+نفس أداة يمكن لديه واحد نسخة Host render intent و واحد نسخة Client card derivation. اثنان من موجه إلى مختلف مستهلك، لا مشترك تشغيل مسار؛ لا تحديث جديد browser expected ثابت رقم واحد جهة Web نظر شعور مقابل انتظار،Host presenter اختبار فقط قيد Host API.
 
-### 同名 provider 无稳定 identity
+### نفس اسم provider بلا مستقر identity
 
-raw event 只记录 tool name，不记录具体 ToolDefinition。Client 使用有效事件字段保留普通与 persistent shell 的差异；无法判别的自定义或畸形输入回退 Generic，wire 不为理论扩展性增加 hint。
+raw event فقط سجل tool name، لا سجل أداة جسم ToolDefinition.Client استخدام صالح حدث حقل إبقاء عادي و persistent shell فرق مختلف؛ لا يمكن حكم آخر ذاتي تعريف أو شاذ شكل إدخال رجوع Generic،wire لا لـ إدارة نقاش توسيع صفة زيادة hint.
 
-### Metadata 是未知 JSON
+### Metadata هو لم معرفة JSON
 
-旧 Session 可能缺字段，手工修改日志可能带畸形值。每个 Client model 必须局部收窄，不能把未知数组或对象直接传给 UI primitive。
+قديم Session ممكن نقص حقل، يد عمل تعديل سجل ممكن حمل شاذ شكل قيمة. كل Client model يجب نطاق جزء استلام ضيق، لا يستطيع يأخذ لم معرفة عدد مجموعة أو كائن مباشر نقل إعطاء UI primitive.
 
-### preset-owned projection 可用性
+### preset-owned projection متاح صفة
 
-history 不为当前组合中缺失的 projection unit 补偿。需要在冷读中保持可见的 preset-owned unit，必须由共享的 Session preparation/projection 组合在 restore 前提供其定义；history 不得重新增加 preset mount 或 presenter setup 分支。
+history لا لـ حالي تركيب في ناقص projection unit تكملة تعويض. حاجة في بارد قراءة في إبقاء مرئي preset-owned unit، يجب من مشترك Session preparation/projection تركيب في restore قبل توفير ذلك تعريف؛history لا نيل إعادة زيادة preset mount أو presenter setup فرع.
 
-### 双 target 同步
+### مزدوج target تزامن
 
-Chat 与 Trajectory 各有独立 Tool Definition，两者都携带 raw fields；card derivation 只能留在 `ui-tool`，不能复制进两个 Definition。
+Chat و Trajectory كل لديه مستقل Tool Definition، اثنان من كل يحمل raw fields؛card derivation فقط قدرة إبقاء في `ui-tool`، لا يستطيع نسخ دخول اثنان عدد Definition.
 
-### Deliverables 隐性依赖
+### Deliverables خفي صفة اعتماد
 
-Deliverables 不是视觉组件，因此 mutation parser 必须与受支持的第一方写工具保持同步；专用测试独立于卡片截图固定 file chips 与 Markdown links。
+Deliverables لا هو نظر شعور مكون، لذلك mutation parser يجب و تلقي دعم حمل رقم واحد جهة كتابة أداة إبقاء تزامن؛ مخصص استخدام اختبار مستقل في بطاقة قطع رسم ثابت file chips و Markdown links.
 
-### Fixture 假绿
+### Fixture زائف أخضر
 
-fixture 下发 raw event/meta，不下发手写 view。真实 Host 组装覆盖仍然必要，因为 fixture-only snapshot 不能证明 transport 路径。
+fixture تحت إرسال raw event/meta، لا تحت إرسال يد كتابة view. حقيقي Host تجميع تغطية ما زال لا بد يلزم، لأن fixture-only snapshot لا يستطيع إثبات transport مسار.
 
-### 错误刷新快照
+### خطأ تحديث جديد لقطة
 
-本次承诺用户可见输出不变。出现 snapshot diff 时必须修 Client 派生；除非 owner 单独批准具体视觉变化，否则不得 refresh expected。
+هذا مرة تحمل وعد مستخدم مرئي إخراج ثابت. ظهور snapshot diff وقت يجب إصلاح Client إرسال توليد؛ حذف غير owner مفرد وحيد دفعة دقيق أداة جسم نظر شعور تغير، لا فإن لا نيل refresh expected.
 
-### 文档漂移
+### وثيقة عائم نقل
 
-raw journal 或 Client presentation owner 变化时，Agent Note、package README、cookbook、根规则与 generated reference 必须一起更新；Host API 文档保持独立。
+raw journal أو Client presentation owner تغير وقت،Agent Note،package README،cookbook، أصل قاعدة و generated reference يجب واحد بدء تحديث؛Host API وثيقة إبقاء مستقل.
 
-### Remote 协议收缩
+### Remote بروتوكول استلام تقليص
 
-optional `view` 的缺失是所有 consumer 共同遵守的预发布 wire 类型决定；没有兼容 shim、双写或版本协商。
+optional `view` ناقص هو كل consumer مشترك نفس التزام حراسة مسبق إصدار wire نوع قرار؛ لا يوجد توافق shim، مزدوج كتابة أو إصدار تنسيق تجارة.
 
-## 与现有决策的关系
+## و قائم قرار علاقة
 
-[嵌套 terminal 卡片](../bug-fix/2026-09-05-nested-terminal-cards.zh.md)仅部分取代 terminal 子调用卡片禁令及其展示对等要求。本文继续负责原始 journal 所有权、Client 派生以及 diff/read/search/web 子调用限制。
+[تضمين طقم terminal بطاقة](../bug-fix/2026-09-05-nested-terminal-cards.zh.md) فقط جزء يحل محل terminal فرعي استدعاء بطاقة منع أمر و ذلك عرض مقابل انتظار اشتراط. هذا نص متابعة مسؤول أصلي journal كل حق،Client إرسال توليد و diff/read/search/web فرعي استدعاء حد.
 
-本文部分取代 [Client 工具展示所有权](../../archived/architecture/2026-08-08-client-tool-presentation-ownership.md) 中“card model 接收 Host view”的实现事实；`ui-tool` 拥有展示、业务插件使用 keyed slot、Conversation 只拥有生命周期与拓扑的核心决定保持不变。
+هذا نص جزء يحل محل [Client أداة عرض كل حق](../../archived/architecture/2026-08-08-client-tool-presentation-ownership.md) في “card model استقبال Host view” تنفيذ واقع؛`ui-tool` يملك عرض، عمل خدمة إضافة استخدام keyed slot،Conversation فقط يملك دورة الحياة و توسيع اندفاع نواة قلب قرار إبقاء ثابت.
 
-本文保留 [toolview 溶解](../../archived/architecture/2026-07-23-toolview-dissolution.md) 的决定：Client 仍只有 slot 注册模型，不恢复 `ToolViewRegistry`。
+هذا نص إبقاء [toolview ذوبان حل](../../archived/architecture/2026-07-23-toolview-dissolution.md) قرار:Client ما زال فقط لديه slot تسجيل نموذج، لا استعادة `ToolViewRegistry`.
 
-本文收窄 [render-intent union](2026-07-02-tool-render-intent-union.zh.md) 的消费范围：Host API 与类型保留，Session Remote 与 Web Client 不消费它。本文独自规定 transport 拆分，不改写该 presenter 决策。
+هذا نص استلام ضيق [render-intent union](2026-07-02-tool-render-intent-union.zh.md) إزالة استهلاك نطاق:Host API و نوع إبقاء،Session Remote و Web Client لا إزالة استهلاك هو. هذا نص وحيد ذاتي قاعدة تحديد transport تفكيك قسم، لا تعديل كتابة هذا presenter قرار.
 
-本文更新 [Session 历史与 Remote 事件传输](2026-08-18-session-history-and-event-transport.zh.md) 的 entry 约定：journal 只运输原始 event 与独立 projection baseline，不承载临时 tool view。
+هذا نص تحديث [Session تاريخ و Remote حدث نقل](2026-08-18-session-history-and-event-transport.zh.md) entry اتفاق:journal فقط تشغيل نقل أصلي event و مستقل projection baseline، لا تحمل تحميل مؤقت tool view.
 
-本文遵循 [Conversation Node 组装](2026-08-09-client-conversation-node-assembly.zh.md)：Tool Definition 负责事件配对与调用树，具体 card model 留在 `ui-tool`。
+هذا نص التزام دوران [Conversation Node تجميع](2026-08-09-client-conversation-node-assembly.zh.md):Tool Definition مسؤول حدث إعداد مقابل و استدعاء شجرة، أداة جسم card model إبقاء في `ui-tool`.
 
-本文保留 [规范工具输出约定](2026-07-20-canonical-tool-output-contract.zh.md) 的 result metadata，因为它是无损、可重放 Client 派生的输入。
+هذا نص إبقاء [مواصفة أداة إخراج اتفاق](2026-07-20-canonical-tool-output-contract.zh.md) result metadata، لأن هو هو بلا ضرر، يمكن إعادة وضع Client إرسال توليد إدخال.
 
 ## Deferred
 
-- Host presenter 若长期没有生产消费者，可由另一项明确决策评估删除；本决定不预判。
-- PTC dispatch 子调用的 diff、read、search 和 web 专用卡片仍需独立设计并更新可见快照；terminal 调用由链接的部分取代决策负责。
-- 第三方 mutation tool 若要加入 Deliverables，需新增 Client-owned 贡献；本决定不为尚无消费者的扩展性建 registry。
-- 同名 provider 若要不同 Client 展示，需先定义稳定、非展示性的 identity；不得恢复按页 Host view。
-- Client card model 若需量化性能，可以增加 immutable-block 微基准；已交付架构禁止扫描 Session window。
+- Host presenter إذا طويل مدة لا يوجد إنتاج إزالة استهلاك من، يمكن من آخر بند واضح قرار تقييم تقدير حذف؛ هذا قرار لا مسبق حكم.
+- PTC dispatch فرعي استدعاء diff،read،search و web مخصص استخدام بطاقة ما زال يحتاج مستقل تصميم و تحديث مرئي لقطة؛terminal استدعاء من رابط جزء يحل محل قرار مسؤول.
+- رقم ثلاثة جهة mutation tool إذا يلزم إضافة دخول Deliverables، يحتاج إضافة جديدة Client-owned مساهمة؛ هذا قرار لا لـ بعد بلا إزالة استهلاك من توسيع صفة بناء registry.
+- نفس اسم provider إذا يلزم مختلف Client عرض، يحتاج أولا تعريف مستقر، غير عرض صفة identity؛ لا نيل استعادة حسب صفحة Host view.
+- Client card model إذا يحتاج كمية تحويل صفة قدرة، يمكن زيادة immutable-block دقيق أساس دقيق؛ قد تسليم هيكل بنية منع توقف مسح Session window.

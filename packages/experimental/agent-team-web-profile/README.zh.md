@@ -1,98 +1,98 @@
 ---
-description: "在 Host Team 层之后，为 Web profile 添加公开发布的实验性 Agent Teams 面板。"
+description: "في Host Team طبقة بعد، لـ Web profile إضافة عام إصدار فعلي تحقق صفة Agent Teams وجه لوح."
 kind: "package-bundle"
 ---
 
 # @deepseek-ai/dsh-experimental-agent-team-web-profile
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-experimental-agent-team-web-profile` 是 [Agent Teams](../agent-team/README.zh.md) 公开发布的实验性 Web 层。把它放在 `@deepseek-ai/dsh-web-app` 与 [`@deepseek-ai/dsh-experimental-agent-team-profile`](../agent-team-profile/README.zh.md) 之后，即可在浏览器中显示 Team roster、任务板与 teammate 导航。移除任一实验层都会让稳定的 base 与 Web composition 保持不变。dsh 安装随附本包作为可选组合包，随附 Web profile 不会启用它；在开启 Host 层后可在 Web 侧栏的插件页开启。
+`dsh-experimental-agent-team-web-profile` هو [Agent Teams](../agent-team/README.zh.md) عام إصدار فعلي تحقق صفة Web طبقة. يأخذ هو وضع في `@deepseek-ai/dsh-web-app` و [`@deepseek-ai/dsh-experimental-agent-team-profile`](../agent-team-profile/README.zh.md) بعد، يكفي في متصفح في عرض Team roster، مهمة لوح و teammate تنقل. إزالة مهمة واحد فعلي تحقق طبقة كل سوف يجعل مستقر base و Web composition إبقاء ثابت.dsh تثبيت مع مرفق هذه الحزمة بصفة اختياري تركيب حزمة، مع مرفق Web profile لن تفعيل هو؛ في فتح بدء Host طبقة بعد يمكن في Web جانب شريط إضافة صفحة فتح بدء.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 安装到 profile
+### تثبيت إلى profile
 
-按以下顺序把 Host 与 Web Agent Teams 层添加到已初始化的 `web` profile：
+حسب التالي ترتيب يأخذ Host و Web Agent Teams طبقة إضافة إلى قد ابتدائي تحويل `web` profile:
 
 ```sh
 dsh plugin --profile web add @deepseek-ai/dsh-experimental-agent-team-profile
 dsh plugin --profile web add @deepseek-ai/dsh-experimental-agent-team-web-profile
 ```
 
-第一条命令提供 Team domain、生成的 Remote 方法与模型工具。第二条命令激活本包声明的 patch 及其浏览器 presentation。执行 `dsh plugin --profile web remove @deepseek-ai/dsh-experimental-agent-team-web-profile` 移除本包时，Web 层也会从 profile 的有序 bundle 列表中移除。
+رقم واحد بند أمر توفير Team domain، توليد Remote طريقة و نموذج أداة. ثاني بند أمر تنشيط هذه الحزمة إعلان patch و ذلك متصفح presentation. تنفيذ `dsh plugin --profile web remove @deepseek-ai/dsh-experimental-agent-team-web-profile` إزالة هذه الحزمة وقت،Web طبقة أيضا سوف من profile لديه ترتيب bundle قائمة في إزالة.
 
-### 获得的功能
+### نيل نيل وظيفة
 
-对话标题栏会获得 Team roster、共享任务板与 teammate 导航。[`@deepseek-ai/dsh-experimental-client-ui-agent-team`](../client-ui-agent-team/README.zh.md) 负责这些浏览器交互，并挂载用于访问 Host Team service 的生成 Client Remote namespace。
+محادثة عنوان شريط سوف نيل نيل Team roster، مشترك مهمة لوح و teammate تنقل.[`@deepseek-ai/dsh-experimental-client-ui-agent-team`](../client-ui-agent-team/README.zh.md) مسؤول هذه متصفح تفاعل، و تركيب لأجل وصول Host Team service توليد Client Remote namespace.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本包的运行时内容是 [`cordis.patch.yml`](cordis.patch.yml)。在 `dsh-web-app` 与 Host Agent Teams 层之后应用时，它唯一的 `insert` 条目会为 `@deepseek-ai/dsh-experimental-client-ui-agent-team` 添加 `ui-agent-team` 行。插入的 Client 插件负责生成的 Remote assembly 与 Team UI；这个静态 bundle 不持有可变状态，也不安装运行时不变式。
+هذه الحزمة وقت التشغيل محتوى هو [`cordis.patch.yml`](cordis.patch.yml). في `dsh-web-app` و Host Agent Teams طبقة بعد تطبيق وقت، هو وحيد `insert` بند سوف لـ `@deepseek-ai/dsh-experimental-client-ui-agent-team` إضافة `ui-agent-team` سطر. إدراج دخول Client إضافة مسؤول توليد Remote assembly و Team UI؛ هذا عدد ساكن حالة bundle لا يحتفظ متغير حالة، أيضا لا تثبيت وقت التشغيل ثابت صيغة.
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`cordis.patch.yml`](cordis.patch.yml) | 包含 `ui-agent-team` 行的有序 Web patch |
-| [`src/index.ts`](src/index.ts) | 空模块入口；patch 是运行时内容 |
-| — | 不发布运行时不变式伴生入口；本包只携带静态 profile patch，Remote assembly 与 Team UI 负责各自的激活要求。 |
+| [`cordis.patch.yml`](cordis.patch.yml) | يتضمن `ui-agent-team` سطر لديه ترتيب Web patch |
+| [`src/index.ts`](src/index.ts) | فارغ وحدة مدخل؛patch هو وقت التشغيل محتوى |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذه الحزمة فقط يحمل ساكن حالة profile patch،Remote assembly و Team UI مسؤول كل منها تنشيط اشتراط. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [实验性包](../README.zh.md)——孵化状态与发布规则。
-- [Agent Teams Host profile](../agent-team-profile/README.zh.md)——所需的 domain、Remote 与模型工具层。
-- [Agent Teams 浏览器 UI](../client-ui-agent-team/README.zh.md)——roster、任务板与 teammate 导航行为。
-- [Web bundle](../../bundle/web-app/README.zh.md)——本 patch 扩展的稳定浏览器层。
+- [فعلي تحقق صفة حزمة](../README.zh.md)——تفريخ تحويل حالة و إصدار قاعدة.
+- [Agent Teams Host profile](../agent-team-profile/README.zh.md)——الذي يحتاج domain،Remote و نموذج أداة طبقة.
+- [Agent Teams متصفح UI](../client-ui-agent-team/README.zh.md)——roster، مهمة لوح و teammate تنقل سلوك.
+- [Web bundle](../../bundle/web-app/README.zh.md)——هذا patch توسيع مستقر متصفح طبقة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过与本 Web 层同时选择的 Host-side Agent Teams profile 间接产生影响。
+عبر و هذا Web طبقة معا اختيار Host-side Agent Teams profile بين وصل إنتاج أثر.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-本 Web bundle 不添加任何模型请求内容；Host-side Team 工具负责提示词、schema 与缓存影响。
+هذا Web bundle لا إضافة أي نموذج طلب محتوى؛Host-side Team أداة مسؤول نص التوجيه،schema و ذاكرة مؤقتة أثر.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **有序组合**——`dsh-base`、`dsh-web-app`、`dsh-experimental-agent-team-profile` 与本包必须保持这个顺序。
-- **Preset-scoped 旧控制项**——稳定 Web preset 仍会在 preset scope 内挂载 continuable Subagent 控制项。顶层 Host profile override 不会替换这些 scoped registration，因此在 Web 获得 Team-aware preset 前，Team roster 与旧 child 控制项可能同时出现。[Web Agent Teams 决策](../../../.agents/notes/archived/feature/2026-08-06-agent-teams-web.md)记录了这项暂缓的 composition 工作。
-- **仅显式启用**——本包随安装提供但默认关闭；随附 Web profile 不会启用任何 Agent Teams 层。
+- **لديه ترتيب تركيب**——`dsh-base`،`dsh-web-app`،`dsh-experimental-agent-team-profile` و هذه الحزمة يجب إبقاء هذا عدد ترتيب.
+- **Preset-scoped قديم تحكم بند**——مستقر Web preset ما زال سوف في preset scope داخل تركيب continuable Subagent تحكم بند. قمة طبقة Host profile override لن استبدال هذه scoped registration، لذلك في Web نيل نيل Team-aware preset قبل،Team roster و قديم child تحكم بند ممكن معا ظهور.[Web Agent Teams قرار](../../../.agents/notes/archived/feature/2026-08-06-agent-teams-web.md) سجل هذا بند مؤقت مؤقت composition عمل.
+- **فقط صريح تفعيل**——هذه الحزمة مع تثبيت توفير لكن افتراضي إغلاق؛ مع مرفق Web profile لن تفعيل أي Agent Teams طبقة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

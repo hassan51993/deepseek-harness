@@ -1,37 +1,37 @@
 ---
-description: "在 agent 运行期间使用你现有的 Claude Code hooks.json 或 settings 钩子配置——阻塞提示词与工具、附加上下文或强制继续——供本桥接的用户与维护者阅读。"
+description: "في agent تشغيل خلال استخدام أنت قائم Claude Code hooks.json أو settings خطاف إعداد——منع سد نص التوجيه و أداة، مرفق إضافة سياق أو قوي صنع متابعة——توفير هذا جسر وصل مستخدم و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-hooks-claude-code
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-hooks-claude-code` 在 agent（智能体）运行期间执行你现有 Claude Code `hooks.json` 或 settings 文件中的 command 钩子，无需重写。受支持的钩子会在会话、提示词、工具、停止或 subagent 到达对应时刻时运行。它们可以带模型可见的原因阻塞提示词或工具调用、添加对话上下文，或强制模型再执行一个轮次。需要在 harness 中复用 Claude Code command 钩子时选择本包；没有 Claude Code 对应物的行为应使用原生插件。
+`dsh-hooks-claude-code` في agent(ذكي جسم) تشغيل خلال تنفيذ أنت قائم Claude Code `hooks.json` أو settings ملف في command خطاف، بلا حاجة إعادة كتابة. تلقي دعم حمل خطاف سوف في جلسة، نص التوجيه، أداة، إيقاف أو subagent وصول مقابل وقت لحظة وقت تشغيل. هو جمع يمكن حمل نموذج مرئي سبب منع سد نص التوجيه أو أداة استدعاء، إضافة محادثة سياق، أو قوي صنع نموذج مجددا تنفيذ واحد جولة. حاجة في harness في إعادة استخدام Claude Code command خطاف وقت اختيار هذه الحزمة؛ لا يوجد Claude Code مقابل شيء سلوك ينبغي استخدام أصلي إضافة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-挂载本包并把 `configPath` 指向你的钩子配置，你已有的钩子就会在 agent 运行中的对应时刻开始触发。在第一个钩子生效之前无需其他设置。
+تركيب هذه الحزمة و يأخذ `configPath` إشارة نحو أنت خطاف إعداد، أنت قد لديه خطاف حينئذ سوف في agent تشغيل في مقابل وقت لحظة بدء إطلاق. في رقم واحد خطاف توليد فاعلية قبل بلا حاجة أخرى ضبط.
 
-### 何时选择
+### أي وقت اختيار
 
-当你持有 Claude Code `hooks.json`（或 `hooks` key 存放配置的 settings 文件）、且其中的 command 钩子需要把关提示词、工具与轮次时，使用它。没有 Claude Code 对应物的行为请跳过它：原生插件拥有完整的 harness API，而本桥接只运行参考工具的 command hook 子集。
+عند أنت يحتفظ Claude Code `hooks.json`(أو `hooks` key تخزين وضع إعداد settings ملف) ، كما منها command خطاف حاجة يأخذ صلة نص التوجيه، أداة و جولة وقت، استخدام هو. لا يوجد Claude Code مقابل شيء سلوك طلب قفز مرور هو: أصلي إضافة يملك كامل harness API، بينما هذا جسر وصل فقط تشغيل مشاركة اعتبار أداة command hook فرعي تجميع.
 
-### 最小配置
+### الأكثر صغير إعداد
 
 ```yaml
 - name: '@deepseek-ai/dsh-hooks-claude-code'
@@ -41,154 +41,154 @@ kind: "package-reference"
     projectDir: .
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `configPath` | 必填 | `hooks.json` 或 `hooks` key 存放配置的 settings 文件路径 |
-| `pluginRoot` | — | 替换命令字符串中的 `${CLAUDE_PLUGIN_ROOT}` |
-| `projectDir` | 会话工作区 | 替换 `${CLAUDE_PROJECT_DIR}` 并设置 `CLAUDE_PROJECT_DIR` 环境变量 |
-| `defaultTimeoutMs` | `600,000` | hook 未设置时的每 hook 超时（即 Claude Code 默认值） |
-| `stderrSummaryMaxChars` | `500` | 持久化 `hook/result` stderr 摘要的字符上限 |
+| `configPath` | لا بد ملء | `hooks.json` أو `hooks` key تخزين وضع إعداد settings ملف مسار |
+| `pluginRoot` | — | استبدال أمر نص في `${CLAUDE_PLUGIN_ROOT}` |
+| `projectDir` | جلسة مساحة العمل | استبدال `${CLAUDE_PROJECT_DIR}` و ضبط `CLAUDE_PROJECT_DIR` بيئة متغير |
+| `defaultTimeoutMs` | `600,000` | hook لم ضبط وقت كل hook مهلة (أي Claude Code قيمة افتراضية) |
+| `stderrSummaryMaxChars` | `500` | حفظ دائم `hook/result` stderr ملخص محرف حد أعلى |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code)是每个受支持字段的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code) هو كل تلقي دعم حمل حقل نفاد كل صيغة حق مصدر.
 
-### 你的钩子能做什么
+### أنت خطاف قدرة فعل ماذا
 
-| 你的钩子 | 运行时机 | 能做什么 |
+| أنت خطاف | وقت التشغيل آلة | قدرة فعل ماذا |
 |---|---|---|
-| `SessionStart` | 会话开始时 | 附加该会话中模型可见的上下文 |
-| `UserPromptSubmit` | agent 收到提示词时 | 阻塞提示词，或附加上下文 |
-| `PreToolUse` | 工具运行前 | 阻塞工具，或在运行前请求批准 |
-| `PostToolUse` | 工具运行后 | 带反馈阻塞结果，或附加上下文 |
-| `Stop` | 运行即将停止时 | 带原因强制再执行一步 |
-| `SubagentStart` | subagent 启动时 | 向仍在运行的 subagent 附加上下文（仅限同进程） |
-| `SubagentStop` | subagent 结束时 | 只观测——不能阻塞或添加上下文 |
+| `SessionStart` | جلسة بدء وقت | مرفق إضافة هذا جلسة في نموذج مرئي سياق |
+| `UserPromptSubmit` | agent استلام إلى نص التوجيه وقت | منع سد نص التوجيه، أو مرفق إضافة سياق |
+| `PreToolUse` | أداة تشغيل قبل | منع سد أداة، أو في تشغيل قبل طلب دفعة دقيق |
+| `PostToolUse` | أداة تشغيل بعد | حمل عكس تغذية منع سد نتيجة، أو مرفق إضافة سياق |
+| `Stop` | تشغيل أي سوف إيقاف وقت | حمل سبب قوي صنع مجددا تنفيذ واحد خطوة |
+| `SubagentStart` | subagent بدء وقت | نحو ما زال في تشغيل subagent مرفق إضافة سياق (فقط حد نفس عملية) |
+| `SubagentStop` | subagent انتهاء وقت | فقط مراقبة قياس——لا يستطيع منع سد أو إضافة سياق |
 
-### 钩子如何运行与失败
+### خطاف مثل أي تشغيل و فشل
 
-- 钩子在你的项目目录（agent 的会话工作区）中运行，因此钩子里的 `pwd` 与相对路径指向你的项目，而非服务器启动目录。
-- 命令字符串中的 `${CLAUDE_PLUGIN_ROOT}` 与 `${CLAUDE_PROJECT_DIR}` 会按你的配置替换，且每个钩子进程都会设置 `CLAUDE_PROJECT_DIR`。
-- 一份配置应用于整个进程：启动时只读取一次，相对 `configPath` 从启动进程的目录解析。
-- 同一事件上的钩子按配置顺序逐个运行。
-- 如果配置无法读取或解析，桥接会记录警告且不运行任何钩子——agent 仍会启动。
-- 运行失败的钩子（命令错误或崩溃）会被记录，agent 继续运行。
+- خطاف في أنت مشروع دليل (agent جلسة مساحة العمل) في تشغيل، لذلك خطاف داخل `pwd` و متبادل مقابل مسار إشارة نحو أنت مشروع، بينما غير خادم بدء دليل.
+- أمر نص في `${CLAUDE_PLUGIN_ROOT}` و `${CLAUDE_PROJECT_DIR}` سوف حسب أنت إعداد استبدال، كما كل خطاف عملية كل سوف ضبط `CLAUDE_PROJECT_DIR`.
+- واحد نسخة إعداد تطبيق في كامل عملية: بدء وقت فقط قراءة مرة، متبادل مقابل `configPath` من بدء عملية دليل تحليل.
+- نفس حدث فوق خطاف حسب إعداد ترتيب تدريجي عدد تشغيل.
+- إذا إعداد لا يمكن قراءة أو تحليل، جسر وصل سوف سجل تحذير إبلاغ كما لا تشغيل أي خطاف——agent ما زال سوف بدء.
+- تشغيل فشل خطاف (أمر خطأ أو انهيار انهيار) سوف يتم سجل،agent متابعة تشغيل.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释桥接背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير جسر وصل خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### Hook 点映射
+### Hook نقطة خريطة
 
-每个受支持事件都面向一个 harness 扩展点：`SessionStart` 在首个轮次前通过需等待的 `agent/created` 初始化加入上下文，`UserPromptSubmit` 与 `PreToolUse` 是能拒绝传入动作的 waterfall（瀑布式事件）（`agent/pre-step`、`tools/pre-execute`），`PostToolUse` 是能带反馈阻塞或向下游决策添加上下文的 waterfall（`tools/post-execute`），`Stop` 是串行监听器，其阻塞结果通过 `steer()` 强制再执行一步（`agent/turn-stopping`）。两个 subagent 事件面向 child 生命周期发射（`subagent/start`、`subagent/end`）：start 向仍在运行的同进程 child 注入上下文，stop 只观测。仅提供上下文的 hook 总是先通过 `next()` 委托，再把带来源的消息折叠进下游决策，因此后续监听器仍可拒绝或改写；阻塞决策映射为 `deny`（`PreToolUse` 为 `ask`）。逐事件接线位于 [`src/index.ts`](src/index.ts)。
+كل تلقي دعم حمل حدث كل موجه إلى واحد harness نقطة توسيع:`SessionStart` في أول عدد جولة قبل عبر يحتاج انتظار `agent/created` ابتدائي تحويل إضافة دخول سياق،`UserPromptSubmit` و `PreToolUse` هو قدرة رفض نقل دخول حركة عمل waterfall(شلال نشر صيغة حدث)(`agent/pre-step`،`tools/pre-execute`) ،`PostToolUse` هو قدرة حمل عكس تغذية منع سد أو نحو تحت تنقل قرار إضافة سياق waterfall(`tools/post-execute`) ،`Stop` هو سلسلة سطر مستمع، ذلك منع سد نتيجة عبر `steer()` قوي صنع مجددا تنفيذ واحد خطوة (`agent/turn-stopping`). اثنان عدد subagent حدث موجه إلى child دورة الحياة إرسال إطلاق (`subagent/start`،`subagent/end`):start نحو ما زال في تشغيل نفس عملية child حقن سياق،stop فقط مراقبة قياس. فقط توفير سياق hook مجموع هو أولا عبر `next()` تفويض حمل، مجددا يأخذ حمل مصدر رسالة طي دخول تحت تنقل قرار، لذلك لاحق مستمع ما زال يمكن رفض أو تعديل كتابة؛ منع سد قرار خريطة لـ `deny`(`PreToolUse` لـ `ask`). تدريجي حدث وصل خط يقع في [`src/index.ts`](src/index.ts).
 
-### 载荷与环境
+### تحميل حمل و بيئة
 
-桥接从 `session_id`、字符串形态的 `transcript_path`、`cwd` 与 `hook_event_name` 的基础字段加逐事件字段构建每个事件的 stdin payload。`transcript_path` 出于兼容性保留在 payload 中，但始终为 `''`：持久化 seam 不暴露产物路径，且默认使用 Zstandard 压缩的会话日志无法被 hook 脚本读取。省略 `projectDir` 时，`CLAUDE_PROJECT_DIR` 按次默认到会话工作区，与钩子运行的目录一致；`${CLAUDE_PLUGIN_ROOT}` 与 `${CLAUDE_PROJECT_DIR}` 替换在配置解析时进行。
+جسر وصل من `session_id`، نص شكل `transcript_path`،`cwd` و `hook_event_name` أساس أساس حقل إضافة تدريجي حدث حقل بناء كل حدث stdin payload.`transcript_path` خروج في توافق صفة إبقاء في payload في، لكن بداية نهاية لـ `''`: حفظ دائم seam لا كشف ناتج مسار، كما افتراضي استخدام Zstandard ضغط جلسة سجل لا يمكن يتم hook نص برمجي قراءة. حذف `projectDir` وقت،`CLAUDE_PROJECT_DIR` حسب مرة افتراضي إلى جلسة مساحة العمل، و خطاف تشغيل دليل متسق؛`${CLAUDE_PLUGIN_ROOT}` و `${CLAUDE_PROJECT_DIR}` استبدال في إعداد تحليل وقت إجراء.
 
-### Matcher subject 与串行执行
+### Matcher subject و سلسلة سطر تنفيذ
 
-matcher subject 是工具名称（`PreToolUse`／`PostToolUse`）、会话源（`SessionStart`），或常量 `agent_type` `general-purpose`（`SubagentStart`／`SubagentStop`——subagent seam 不携带每 kind 标签）；`UserPromptSubmit` 与 `Stop` 忽略 matcher。匹配 hook 按配置顺序串行运行，这使每个 hook 的 `hook/invoked`／`hook/result` 对在日志中相邻，且最严格折叠与顺序无关（`deny > ask > allow`）。
+matcher subject هو أداة اسم (`PreToolUse`/`PostToolUse`) ، جلسة مصدر (`SessionStart`) ، أو معتاد كمية `agent_type` `general-purpose`(`SubagentStart`/`SubagentStop`——subagent seam لا يحمل كل kind وسم) ؛`UserPromptSubmit` و `Stop` تجاهل اختصار matcher. مطابقة hook حسب إعداد ترتيب سلسلة سطر تشغيل، هذا جعل كل hook `hook/invoked`/`hook/result` مقابل في سجل في متبادل مجاور، كما الأكثر صارم إطار طي و ترتيب غير متصل (`deny > ask > allow`).
 
-### 脱离运行与释放
+### انفصال مغادرة تشغيل و تحرير
 
-三个 emit 点（`SessionStart`、`SubagentStart`、`SubagentStop`）以脱离方式运行——没有扩展点等待它们。每条运行链都会被跟踪，对桥接执行 dispose（资源释放）时会中止仍在运行的 hook 进程，并在 dispose 完成前排空 continuation（`createDetachedRuns`，位于 `dsh-hook-protocol`）。
+ثلاثة عدد emit نقطة (`SessionStart`،`SubagentStart`،`SubagentStop`) بـ انفصال مغادرة طريقة تشغيل——لا يوجد نقطة توسيع انتظار هو جمع. كل بند تشغيل سلسلة كل سوف يتم تتبع أثر، مقابل جسر وصل تنفيذ dispose(مورد تحرير) وقت سوف في توقف ما زال في تشغيل hook عملية، و في dispose إتمام قبل ترتيب فارغ continuation(`createDetachedRuns`، يقع في `dsh-hook-protocol`).
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **兼容适配器，而非强力工具。** 桥接的存在意义是运行现有 Claude Code 配置中显式受支持的 command hook 子集；定制行为应放在同一批扩展点上的原生插件中。
-- **添加上下文不是否决。** 仅提供上下文的 hook 会先通过 `next()` 委托，再把其消息折叠进下游 enter 决策，因此后续 `agent/pre-step` 或 `tools/post-execute` 监听器仍可拒绝或改写。
-- **每个失败点都受控。** 配置读取／解析失败与无效 matcher 不注册任何内容；抛异常的脱离注入会被捕获并记录，而不是破坏会话启动或循环。
-- **dispose 必须达到完全停稳。** 脱离运行会被跟踪并在释放时排空，因此不会有 hook 进程或迟到回调超出 fiber 存活。
-- **串行而非并发。** 匹配 hook 按配置顺序串行运行：每个 `hook/invoked`／`hook/result` 对在日志中保持相邻，且决策折叠与顺序无关，因此结果与参考引擎的并发启动一致，代价是串行化的延迟。
+- **توافق مهايئ، بينما غير قوي قوة أداة.** جسر وصل وجود معنى معنى هو تشغيل قائم Claude Code إعداد في صريح تلقي دعم حمل command hook فرعي تجميع؛ تحديد صنع سلوك ينبغي وضع في نفس دفعة نقطة توسيع فوق أصلي إضافة في.
+- **إضافة سياق لا هل قرار.** فقط توفير سياق hook سوف أولا عبر `next()` تفويض حمل، مجددا يأخذ ذلك رسالة طي دخول تحت تنقل enter قرار، لذلك لاحق `agent/pre-step` أو `tools/post-execute` مستمع ما زال يمكن رفض أو تعديل كتابة.
+- **كل فشل نقطة كل تلقي تحكم.** إعداد قراءة/تحليل فشل و بلا فاعلية matcher لا تسجيل أي محتوى؛ رمي استثناء انفصال مغادرة حقن سوف يتم التقاط و سجل، بينما لا هو كسر تالف جلسة بدء أو حلقة.
+- **dispose يجب بلوغ إلى تماما توقف مستقر.** انفصال مغادرة تشغيل سوف يتم تتبع أثر و في تحرير وقت ترتيب فارغ، لذلك لن لديه hook عملية أو متأخر إلى عودة ضبط تجاوز خروج fiber تخزين نشط.
+- **سلسلة سطر بينما غير تزامن.** مطابقة hook حسب إعداد ترتيب سلسلة سطر تشغيل: كل `hook/invoked`/`hook/result` مقابل في سجل في إبقاء متبادل مجاور، كما قرار طي و ترتيب غير متصل، لذلك نتيجة و مشاركة اعتبار جذب محرك تزامن بدء متسق، بديل قيمة هو سلسلة سطر تحويل تأخير متأخر.
 
-[hook-bridges Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md) 记录了桥接设计与延期缺口；[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) 记录了共享与逐方言的划分。
+[hook-bridges Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md) سجل جسر وصل تصميم و تأجيل نقص فتحة؛[hook-protocol-lib Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-protocol-lib.md) سجل مشترك و تدريجي جهة قول تخطيط قسم.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：配置校验、监听器注册、逐事件 payload、决策映射 |
-| [`src/config.ts`](src/config.ts) | Claude Code 配置解析：受支持事件、matcher 校验、命令替换 |
-| — | 不发布运行时不变式伴生入口；本桥接发布 hook-protocol 会话事件，既有 companion 负责校验每个结果所引用的调用事件。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: إعداد تحقق، مستمع تسجيل، تدريجي حدث payload، قرار خريطة |
+| [`src/config.ts`](src/config.ts) | Claude Code إعداد تحليل: تلقي دعم حمل حدث،matcher تحقق، أمر استبدال |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذا جسر وصل إصدار hook-protocol جلسة حدث، قائم companion مسؤول تحقق كل نتيجة الذي مرجع استدعاء حدث. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享协议进入桥接设计，以及桥接所面向的扩展点。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك بروتوكول دخول جسر وصل تصميم، و جسر وصل الذي موجه إلى نقطة توسيع.
 
-- [hooks 组地图](../README.zh.md)——同级组页面及其包表。
-- [hook 协议库](../hook-protocol/README.zh.md)——本桥接应用的共享钩子规则。
-- [钩子桥接 Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——桥接设计、决策映射与延期缺口。
-- [拦截扩展点 Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——桥接所映射的类型化 Decision 接口面。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code)——每个受支持配置字段及其源声明。
+- [hooks مجموعة أرض رسم](../README.zh.md)——نفس درجة مجموعة صفحة و ذلك حزمة جدول.
+- [hook بروتوكول مكتبة](../hook-protocol/README.zh.md)——هذا جسر وصل تطبيق مشترك خطاف قاعدة.
+- [خطاف جسر وصل Agent Note](../../../.agents/notes/archived/feature/2026-06-30-hook-bridges.md)——جسر وصل تصميم، قرار خريطة و تأجيل نقص فتحة.
+- [اعتراض قطع نقطة توسيع Agent Note](../../../.agents/notes/implemented/feature/2026-06-30-interception-extension-points.zh.md)——جسر وصل الذي خريطة نوع تحويل Decision واجهة وجه.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-hooks-claude-code)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### Hook 提供的上下文
+### Hook توفير سياق
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-`SessionStart`、已接受提示词、工具后与实时同进程 subagent-start hook 可以添加带源归因的上下文消息；阻塞 `Stop` hook 将原因添加为下一步 steering（中途引导）。远程 child 注入没有本地目标。
+`SessionStart`، قد قبول نص التوجيه، أداة بعد و فوري نفس عملية subagent-start hook يمكن إضافة حمل مصدر عودة بسبب سياق رسالة؛ منع سد `Stop` hook سوف سبب إضافة لـ تحت واحد خطوة steering(في طريق جذب توجيه). بعيد مسار child حقن لا يوجد محلي هدف.
 
-#### Token 影响
+#### Token أثر
 
-hook 不返回上下文时没有成本。Hook 文本取决于数据，会被记录，并在后续会话请求中重发，直到压缩（compaction）。
+hook لا إرجاع سياق وقت لا يوجد صار هذا.Hook نص أخذ قرار في بيانات، سوف يتم سجل، و في لاحق جلسة طلب في إعادة إرسال، مباشر إلى ضغط (compaction).
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV Cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV Cache بند بطلان.
 
-### 已阻塞提示词或工具结果
+### قد منع سد نص التوجيه أو أداة نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-提供方提供的原因逐字传递。缺失原因时，已拒绝工具变为 `Error: blocked by PreToolUse hook`，已阻塞工具后反馈精确为 `blocked by PostToolUse hook`，阻塞 stop 则精确添加 steering `continue: blocked by Stop hook`；已阻塞提示词不会产生任何模型可见消息，而是以 `blocked` 结束该轮次。`systemMessage` 与 `updatedInput` 会被记录或警告，但在此实现中对模型不可见。
+مزود توفير سبب تدريجي حرف نقل تمرير. ناقص سبب وقت، قد رفض أداة تغيير لـ `Error: blocked by PreToolUse hook`، قد منع سد أداة بعد عكس تغذية دقيق لـ `blocked by PostToolUse hook`، منع سد stop فإن دقيق إضافة steering `continue: blocked by Stop hook`؛ قد منع سد نص التوجيه لن إنتاج أي نموذج مرئي رسالة، بينما هو بـ `blocked` انتهاء هذا جولة.`systemMessage` و `updatedInput` سوف يتم سجل أو تحذير إبلاغ، لكن في هذا تنفيذ في مقابل نموذج غير ممكن رؤية.
 
-#### Token 影响
+#### Token أثر
 
-阻塞提示词不会产生该提示词对应的模型请求 token；拒绝或反馈会添加保留的回退或提供方文本；强制 continuation 需要另一个完整请求。
+منع سد نص التوجيه لن إنتاج هذا نص التوجيه مقابل نموذج طلب token؛ رفض أو عكس تغذية سوف إضافة إبقاء رجوع أو مزود نص؛ قوي صنع continuation حاجة آخر عدد كامل طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-已阻塞提示词不发送请求，不会导致失效。拒绝、反馈与强制 continuation 上下文会追加在可复用前缀之后，不改写前缀。
+قد منع سد نص التوجيه لا إرسال طلب، لن توجيه يؤدي بطلان. رفض، عكس تغذية و قوي صنع continuation سياق سوف إلحاق في يمكن إعادة استخدام بادئة بعد، لا تعديل كتابة بادئة.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制描述你的 Claude Code 钩子目前还无法通过本桥接做到的事情，以及行为与参考工具的差异。它们是当前包约束，而非任务积压。
+هذه حد وصف أنت Claude Code خطاف هدف قبل أيضا لا يمكن عبر هذا جسر وصل فعل إلى أمر حال، و سلوك و مشاركة اعتبار أداة فرق مختلف. هو جمع هو حالي حزمة قيد، بينما غير مهمة تراكم ضغط.
 
-- **不支持的 hook 事件（Claude Code 当前 30 项中的 23 项）**——`Setup`、`InstructionsLoaded`、`UserPromptExpansion`、`MessageDisplay`、`PermissionRequest`、`PostToolUseFailure`、`PostToolBatch`、`PermissionDenied`、`Notification`、`TaskCreated`、`TaskCompleted`、`StopFailure`、`TeammateIdle`、`ConfigChange`、`CwdChanged`、`FileChanged`、`WorktreeCreate`、`WorktreeRemove`、`PreCompact`、`PostCompact`、`SessionEnd`、`Elicitation` 与 `ElicitationResult`。这些事件的配置会在配置组解析前被忽略，因此不支持的事件既不会使配置失效，也不会注册 hook。比较基线是 Claude Code [官方 hook 事件参考](https://code.claude.com/docs/en/hooks#hook-events)。
-- **`SessionStart` 只支持部分功能**——会消费 JSON `additionalContext`，但不支持纯 stdout 上下文、`initialUserMessage`、`sessionTitle`、`watchPaths`、`reloadSkills` 与 `CLAUDE_ENV_FILE`。hook 脱离运行，因此上下文可能错过第一个请求，payload 会省略 `model`、`agent_type` 与 `session_title` 等可选字段。
-- **`UserPromptSubmit` 只支持部分功能**——支持阻塞与 JSON `additionalContext`，但不支持纯 stdout 上下文、`sessionTitle` 与 `suppressOriginalPrompt`。除非被覆盖，否则桥接还会使用自身 600 秒默认值，而非 Claude Code 的事件特定 30 秒 command 超时。
-- **`PreToolUse` 只支持部分功能**——`deny` 与 `ask` 决策可用；`allow` 不会预审批，`defer` 不受支持，`additionalContext` 会被忽略，`updatedInput` 会被记录 + 警告但不应用（见 [pre-tool-input-rewrite Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)）。
-- **`PostToolUse` 只支持部分功能**——支持阻塞反馈与 JSON `additionalContext`，但不支持 `updatedToolOutput` 与 `updatedMCPToolOutput`，`tool_response` 会展平为文本。
-- **`SubagentStart` 与 `SubagentStop` 只支持部分功能**——两者均报告常量 `agent_type` `general-purpose`，并在 Claude Code 报告父会话的位置使用 child 会话 id。Start 上下文是尽力而为，且只能到达仍在运行的同进程 child；stop 只观测，无法阻塞 subagent 或向其提供上下文。Stop 省略 `agent_transcript_path`、`last_assistant_message`、`background_tasks` 与 `session_crons`，并始终报告 `stop_hook_active: false`。
-- **`Stop` 只支持部分功能**——阻塞会强制另一个模型轮次，但 `stop_hook_active` 始终为 `false`，会省略 `last_assistant_message`、`background_tasks` 与 `session_crons`，且未实现连续阻塞上限。因此，无条件阻塞 hook 会在每个步骤中强制 continuation，除非它自我限制。
-- **通用 payload 与输出字段只支持部分功能**——已映射事件会省略 Claude Code 原本会提供的 `prompt_id`、`permission_mode` 与 `effort`，且 `transcript_path` 永不填充：它始终为空字符串，因为持久化 seam 不暴露产物路径，且默认使用 Zstandard 压缩的会话日志无法被 hook 脚本读取。`systemMessage` 会被记录 + 警告但不呈现；`{"continue": false}` 会被记录但不会停止运行；`suppressOutput`、`stopReason` 与 `terminalSequence` 不会被应用。
-- **Handler 与配置只支持部分功能**——只运行 shell 形态 command handler。会跳过 `http`、`mcp_tool`、`prompt` 与 `agent` handler；`args`、`async`、`asyncRewake`、`shell`、`if`、`once` 与 `statusMessage` 等 command handler 选项不会被遵循。匹配 handler 串行运行且不去重，而 Claude Code 会并行运行并对相同 handler 去重。一个进程级 `configPath` 会在加载时解析一次；尚未实现 Claude Code 的分层项目、用户、插件与策略发现以及实时重新加载。
+- **لا دعم حمل hook حدث (Claude Code حالي 30 بند في 23 بند)**——`Setup`،`InstructionsLoaded`،`UserPromptExpansion`،`MessageDisplay`،`PermissionRequest`،`PostToolUseFailure`،`PostToolBatch`،`PermissionDenied`،`Notification`،`TaskCreated`،`TaskCompleted`،`StopFailure`،`TeammateIdle`،`ConfigChange`،`CwdChanged`،`FileChanged`،`WorktreeCreate`،`WorktreeRemove`،`PreCompact`،`PostCompact`،`SessionEnd`،`Elicitation` و `ElicitationResult`. هذه حدث إعداد سوف في إعداد مجموعة تحليل قبل يتم تجاهل اختصار، لذلك لا دعم حمل حدث حيث لن جعل إعداد بطلان، أيضا لن تسجيل hook. مقارنة مقارنة أساس خط هو Claude Code [رسمي جهة hook حدث مشاركة اعتبار](https://code.claude.com/docs/en/hooks#hook-events).
+- **`SessionStart` فقط دعم حمل جزء وظيفة**——سوف إزالة استهلاك JSON `additionalContext`، لكن لا دعم حمل صاف stdout سياق،`initialUserMessage`،`sessionTitle`،`watchPaths`،`reloadSkills` و `CLAUDE_ENV_FILE`.hook انفصال مغادرة تشغيل، لذلك سياق ممكن خطأ مرور رقم واحد طلب،payload سوف حذف `model`،`agent_type` و `session_title` انتظار اختياري حقل.
+- **`UserPromptSubmit` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد و JSON `additionalContext`، لكن لا دعم حمل صاف stdout سياق،`sessionTitle` و `suppressOriginalPrompt`. حذف غير يتم تغطية، لا فإن جسر وصل أيضا سوف استخدام ذاته 600 ثانية قيمة افتراضية، بينما غير Claude Code حدث خاص تحديد 30 ثانية command مهلة.
+- **`PreToolUse` فقط دعم حمل جزء وظيفة**——`deny` و `ask` قرار متاح؛`allow` لن مسبق مراجعة دفعة،`defer` لا تلقي دعم حمل،`additionalContext` سوف يتم تجاهل اختصار،`updatedInput` سوف يتم سجل + تحذير إبلاغ لكن لا تطبيق (رؤية [pre-tool-input-rewrite Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)).
+- **`PostToolUse` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد عكس تغذية و JSON `additionalContext`، لكن لا دعم حمل `updatedToolOutput` و `updatedMCPToolOutput`،`tool_response` سوف عرض مستو لـ نص.
+- **`SubagentStart` و `SubagentStop` فقط دعم حمل جزء وظيفة**——اثنان من متساو تقرير إبلاغ معتاد كمية `agent_type` `general-purpose`، و في Claude Code تقرير إبلاغ أب جلسة موضع استخدام child جلسة id.Start سياق هو كل قوة بينما لـ، كما فقط قدرة وصول ما زال في تشغيل نفس عملية child؛stop فقط مراقبة قياس، لا يمكن منع سد subagent أو نحو ذلك توفير سياق.Stop حذف `agent_transcript_path`،`last_assistant_message`،`background_tasks` و `session_crons`، و بداية نهاية تقرير إبلاغ `stop_hook_active: false`.
+- **`Stop` فقط دعم حمل جزء وظيفة**——منع سد سوف قوي صنع آخر عدد نموذج جولة، لكن `stop_hook_active` بداية نهاية لـ `false`، سوف حذف `last_assistant_message`،`background_tasks` و `session_crons`، كما لم تنفيذ وصل متابعة منع سد حد أعلى. لذلك، بلا شرط منع سد hook سوف في كل خطوة في قوي صنع continuation، حذف غير هو ذاتي أنا حد.
+- **عام payload و إخراج حقل فقط دعم حمل جزء وظيفة**——قد خريطة حدث سوف حذف Claude Code أصل هذا سوف توفير `prompt_id`،`permission_mode` و `effort`، كما `transcript_path` دائم لا ملء ملء: هو بداية نهاية لـ فارغ نص، لأن حفظ دائم seam لا كشف ناتج مسار، كما افتراضي استخدام Zstandard ضغط جلسة سجل لا يمكن يتم hook نص برمجي قراءة.`systemMessage` سوف يتم سجل + تحذير إبلاغ لكن لا عرض؛`{"continue": false}` سوف يتم سجل لكن لن إيقاف تشغيل؛`suppressOutput`،`stopReason` و `terminalSequence` لن يتم تطبيق.
+- **Handler و إعداد فقط دعم حمل جزء وظيفة**——فقط تشغيل shell شكل command handler. سوف قفز مرور `http`،`mcp_tool`،`prompt` و `agent` handler؛`args`،`async`،`asyncRewake`،`shell`،`if`،`once` و `statusMessage` انتظار command handler خيار لن يتم التزام دوران. مطابقة handler سلسلة سطر تشغيل كما لا ذهاب إعادة، بينما Claude Code سوف و سطر تشغيل و مقابل نفسه handler ذهاب إعادة. واحد عملية درجة `configPath` سوف في تحميل وقت تحليل مرة؛ بعد لم تنفيذ Claude Code قسم طبقة مشروع، مستخدم، إضافة و سياسة اكتشاف و فوري إعادة تحميل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文、包代码和相关 Agent Note 为准。
+هذا ملاحظة تطوير هو صيانة من عمل سياق: فتح وضع مشكلة و بعد لم قرار استكشاف جهة نحو. هو واضح لا أداة مرجعي صفة——قد تسليم سلوك، حد و حيث تحديد إدارة من بـ فوق نص، حزمة شفرة و متبادل صلة Agent Note لـ دقيق.
 
-上面的延期缺口就是工作队列：按会话的 hook 配置发现、会话启动投递门、stop 循环防护，以及 `continue: false` 的运行级停止。目前均无设计；官方 Claude Code 参考是实现其中任何一项的基线。
+فوق وجه تأجيل نقص فتحة حينئذ هو عمل طابور صف: حسب جلسة hook إعداد اكتشاف، جلسة بدء إلقاء تمرير باب،stop حلقة منع حماية، و `continue: false` تشغيل درجة إيقاف. هدف قبل متساو بلا تصميم؛ رسمي جهة Claude Code مشاركة اعتبار هو تنفيذ منها أي واحد بند أساس خط.
 
 </details>

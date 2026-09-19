@@ -1,107 +1,107 @@
 ---
-description: "叠加在 dsh-base 上公开发布的实验性 Agent Teams profile 层，提供 teammate 委派与 fresh workflow 子代理。"
+description: "تراكم إضافة في dsh-base فوق عام إصدار فعلي تحقق صفة Agent Teams profile طبقة، توفير teammate تفويض إرسال و fresh workflow فرعي بديل إدارة."
 kind: "package-bundle"
 ---
 
 # @deepseek-ai/dsh-experimental-agent-team-profile
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-experimental-agent-team-profile` 是在 `@deepseek-ai/dsh-base` 之上启用 [Agent Teams](../agent-team/README.zh.md) 的公开实验性 profile 层。它的 patch 会插入 Team domain 与 Team-scoped 工具，并禁用普通 subagent 委派和名称重叠的全局 continuable-child control。Workflow 仍可创建 fresh 子代理。dsh 安装随附本包作为可选组合包，随附 profile 都不会启用它；可在 Web 侧栏的插件页开启，或显式添加到已初始化的 profile。
+`dsh-experimental-agent-team-profile` هو في `@deepseek-ai/dsh-base` لـ فوق تفعيل [Agent Teams](../agent-team/README.zh.md) عام فعلي تحقق صفة profile طبقة. هو patch سوف إدراج دخول Team domain و Team-scoped أداة، و منع استخدام عادي subagent تفويض إرسال و اسم إعادة تراكم عام continuable-child control.Workflow ما زال يمكن إنشاء fresh فرعي بديل إدارة.dsh تثبيت مع مرفق هذه الحزمة بصفة اختياري تركيب حزمة، مع مرفق profile كل لن تفعيل هو؛ يمكن في Web جانب شريط إضافة صفحة فتح بدء، أو صريح إضافة إلى قد ابتدائي تحويل profile.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 安装到 profile
+### تثبيت إلى profile
 
-将本包添加到已初始化的 profile，然后运行一个要求 Lead 委派工作的任务：
+سوف هذه الحزمة إضافة إلى قد ابتدائي تحويل profile، لكن بعد تشغيل واحد اشتراط Lead تفويض إرسال عمل مهمة:
 
 ```sh
 dsh plugin --profile headless add @deepseek-ai/dsh-experimental-agent-team-profile
 dsh --profile headless "Use Agent Teams to split this task between two teammates, wait, and summarize."
 ```
 
-profile 必须已经包含 `@deepseek-ai/dsh-base`，本层会使用其中的 Subagent 服务与提供方配置行。执行 `dsh plugin --profile <name> remove @deepseek-ai/dsh-experimental-agent-team-profile` 移除本包时，bundle 也会从 profile 的有序层列表中移除。
+profile يجب قد يتضمن `@deepseek-ai/dsh-base`، هذا طبقة سوف استخدام منها Subagent خدمة و مزود إعداد سطر. تنفيذ `dsh plugin --profile <name> remove @deepseek-ai/dsh-experimental-agent-team-profile` إزالة هذه الحزمة وقت،bundle أيضا سوف من profile لديه ترتيب طبقة قائمة في إزالة.
 
-### 获得的功能
+### نيل نيل وظيفة
 
-本层会添加 Agent Teams domain，以及 Team-scoped 创建、roster、消息、interrupt、等待与任务板工具。直接委派使用支持 fresh 和 fork 上下文的 `spawn_teammate`。`subagent`、`subagent_fork` 工具和名称重叠的全局 child control 均被禁用。Workflow 保留 base profile 的 `spawn` 提供方，底层 Subagent 服务和两个提供方仍供 teammate 与 workflow 使用。
+هذا طبقة سوف إضافة Agent Teams domain، و Team-scoped إنشاء،roster، رسالة،interrupt، انتظار و مهمة لوح أداة. مباشر تفويض إرسال استخدام دعم حمل fresh و fork سياق `spawn_teammate`.`subagent`،`subagent_fork` أداة و اسم إعادة تراكم عام child control متساو يتم منع استخدام.Workflow إبقاء base profile `spawn` مزود، قاع طبقة Subagent خدمة و اثنان عدد مزود ما زال توفير teammate و workflow استخدام.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本包的运行时内容是 [`cordis.patch.yml`](cordis.patch.yml)。在 `dsh-base` 之后应用时，patch 会禁用 `tool-subagent-control`、`tool-subagent-list-agents`、`tool-subagent` 和 `tool-subagent-fork`，并以显式 provider 和限制插入 Team 服务与工具行。
+هذه الحزمة وقت التشغيل محتوى هو [`cordis.patch.yml`](cordis.patch.yml). في `dsh-base` بعد تطبيق وقت،patch سوف منع استخدام `tool-subagent-control`،`tool-subagent-list-agents`،`tool-subagent` و `tool-subagent-fork`، و بـ صريح provider و حد إدراج دخول Team خدمة و أداة سطر.
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`cordis.patch.yml`](cordis.patch.yml) | 叠加在 `dsh-base` 之上的有序 patch |
-| [`src/index.ts`](src/index.ts) | 空模块入口；patch 是运行时内容 |
-| — | 不发布运行时不变式伴生入口；本包是静态 bundle，不持有可独立观察的运行时关系。 |
+| [`cordis.patch.yml`](cordis.patch.yml) | تراكم إضافة في `dsh-base` لـ فوق لديه ترتيب patch |
+| [`src/index.ts`](src/index.ts) | فارغ وحدة مدخل؛patch هو وقت التشغيل محتوى |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذه الحزمة هو ساكن حالة bundle، لا يحتفظ يمكن مستقل مراقبة وقت التشغيل علاقة. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [实验性包](../README.zh.md)——孵化状态与发布规则。
-- [Agent Teams service](../agent-team/README.zh.md)——持久 roster、消息与任务板行为。
-- [Agent Teams 工具](../tool-agent-team/README.zh.md)——Team-scoped 模型工具表层。
-- [Base bundle](../../bundle/base/README.zh.md)——本 patch 扩展的 profile 层。
+- [فعلي تحقق صفة حزمة](../README.zh.md)——تفريخ تحويل حالة و إصدار قاعدة.
+- [Agent Teams service](../agent-team/README.zh.md)——حمل دائم roster، رسالة و مهمة لوح سلوك.
+- [Agent Teams أداة](../tool-agent-team/README.zh.md)——Team-scoped نموذج أداة جدول طبقة.
+- [Base bundle](../../bundle/base/README.zh.md)——هذا patch توسيع profile طبقة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### Team 策略与工具
+### Team سياسة و أداة
 
-#### 模型会看到什么
+#### نموذج سوف يرى ماذا
 
-Team 策略与 schema 由 [`@deepseek-ai/dsh-experimental-tool-agent-team`](../tool-agent-team/README.zh.md) 所有。本 bundle 只改变 composition：Team-scoped `list_agents`、`send_message` 与 `interrupt_agent` 会替代已禁用的全局 continuable-child control。`spawn_teammate` 是直接委派工具。Workflow 的 `agent()` 调用创建 fresh 一次性子代理；其提示词必须包含任务所需的上下文。
+Team سياسة و schema من [`@deepseek-ai/dsh-experimental-tool-agent-team`](../tool-agent-team/README.zh.md) كل. هذا bundle فقط تغيير composition:Team-scoped `list_agents`،`send_message` و `interrupt_agent` سوف بديل قد منع استخدام عام continuable-child control.`spawn_teammate` هو مباشر تفويض إرسال أداة.Workflow `agent()` استدعاء إنشاء fresh مرة صفة فرعي بديل إدارة؛ ذلك نص التوجيه يجب يتضمن مهمة الذي يحتاج سياق.
 
-#### Token 影响
+#### Token أثر
 
-本 bundle 会加入 `@deepseek-ai/dsh-experimental-tool-agent-team` 描述的 Team 策略与工具 schema；它自身不增加提示词文本。
+هذا bundle سوف إضافة دخول `@deepseek-ai/dsh-experimental-tool-agent-team` وصف Team سياسة و أداة schema؛ هو ذاته لا زيادة نص التوجيه نص.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要 bundle patch、Team identity 与配置的工具 schema 不变，本 bundle 的 composition 就保持前缀稳定。
+فقط يلزم bundle patch،Team identity و إعداد أداة schema ثابت، هذا bundle composition حينئذ إبقاء بادئة مستقر.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **仅显式启用**——本包随安装提供但默认关闭；随附 CLI、Web、SDK、ACP 与 Python profile 都不会启用它。
-- **Workflow 子代理工具**——[Team 工具可见性限制](../tool-agent-team/README.zh.md#known-limitations-and-deferred-work)也适用于 workflow 子代理。
-- **共享 checkout**——所有 teammate 都观察同一个工作目录；本 bundle 不提供 worktree 隔离或文件系统锁。
-- **需要 base profile**——本 patch 依赖 `dsh-base` 提供的配置行 id 与 Subagent 提供方；它不是独立 profile。
+- **فقط صريح تفعيل**——هذه الحزمة مع تثبيت توفير لكن افتراضي إغلاق؛ مع مرفق CLI،Web،SDK،ACP و Python profile كل لن تفعيل هو.
+- **Workflow فرعي بديل إدارة أداة**——[Team أداة مرئي صفة حد](../tool-agent-team/README.zh.md#known-limitations-and-deferred-work) أيضا ملائم لأجل workflow فرعي بديل إدارة.
+- **مشترك checkout**——كل teammate كل مراقبة نفس عدد عمل دليل؛ هذا bundle لا توفير worktree عزل أو نظام الملفات قفل.
+- **حاجة base profile**——هذا patch اعتماد `dsh-base` توفير إعداد سطر id و Subagent مزود؛ هو لا هو مستقل profile.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

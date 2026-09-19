@@ -1,35 +1,35 @@
 ---
-description: "冻结的已发布 v0 会话标头、事件与打包行解码器，以及到 v1 的恒等转换。"
+description: "تجميد ربط قد إصدار v0 جلسة علامة رأس، حدث و تحزيم سطر حل رمز جهاز، و إلى v1 ثابت انتظار تحويل."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-session-format-v0-to-v1
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-本包逐个物理行解码已发布的 v0 会话 JSONL，并生成共享布局的 v1 格式，以还原历史会话。除把版本从 0 改为 1 外，它会保留经过校验的标头与事件，并仅应用 v0 持久化接受的有限旧格式规范化。畸形或不支持的历史记录会在当前还原器运行前使迁移失败，同时保留源文件以便恢复。该迁移只接受冻结的第一方事件清单，且不发布或选择后续格式迁移。
+هذه الحزمة تدريجي عدد شيء إدارة سطر حل رمز قد إصدار v0 جلسة JSONL، و توليد مشترك تخطيط v1 صيغة، بـ أيضا أصل تاريخ جلسة. حذف يأخذ إصدار من 0 تعديل لـ 1 خارج، هو سوف إبقاء مرور مرور تحقق علامة رأس و حدث، و فقط تطبيق v0 حفظ دائم قبول لديه حد قديم صيغة مواصفة تحويل. شاذ شكل أو لا دعم حمل تاريخ سجل سوف في حالي أيضا أصل جهاز تشغيل قبل جعل ترحيل فشل، معا إبقاء مصدر ملف بـ سهل استعادة. هذا ترحيل فقط قبول تجميد ربط رقم واحد جهة حدث بيان، كما لا إصدار أو اختيار لاحق صيغة ترحيل.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 何时使用
+### أي وقت استخدام
 
-持久化通过 `dsh-session-format-catalog` 获取该迁移边；功能组合不会挂载它。只有在装配或测试静态已发布格式目录时，才直接导入本包。它不发布运行时不变式伴生入口，因为本包没有状态可能彼此分歧的、可独立观测的运行时注册项；decoder 与 migration stage 的状态只属于一次还原。
+حفظ دائم عبر `dsh-session-format-catalog` نيل أخذ هذا ترحيل حافة؛ وظيفة تركيب لن تركيب هو. فقط لديه في تركيب إعداد أو اختبار ساكن حالة قد إصدار صيغة دليل وقت، عندئذ مباشر استيراد هذه الحزمة. هو لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل، لأن هذه الحزمة لا يوجد حالة ممكن ذاك هذا قسم اختلاف، يمكن مستقل مراقبة قياس وقت التشغيل تسجيل بند؛decoder و migration stage حالة فقط يخص مرة أيضا أصل.
 
-### 入口
+### مدخل
 
 ```text
 const decoder = releasedV0SessionFormatCodec.createDecoder(physicalHeader, 'recoverable')
@@ -40,74 +40,74 @@ stage.transformEvent(event, migrationContext)
 const targetInheritedEventCount = stage.finish(migrationContext)
 ```
 
-`releasedV0SessionFormatCodec` 读取精确的 v0 header 与物理行，包括打包的 Assistant 增量和范围编码的来源序号。它的 decoder 通过 `emitEvent()` 与 `emitRun()` 发出单个事件或 codec 自有的紧凑 run。`sessionFormatV0ToV1` 为每次还原创建一个有状态 Stage；静态 catalog 连接该 decoder 与 Stage，使迁移无需保留物理行数组。`releasedV1SessionFormatCodec` 为 v1 物理布局暴露相同的逐行 decoder，同时不冻结普通事件词表。
+`releasedV0SessionFormatCodec` قراءة دقيق v0 header و شيء إدارة سطر، يشمل تحزيم Assistant زيادة كمية و نطاق تحرير رمز مصدر ترتيب رقم. هو decoder عبر `emitEvent()` و `emitRun()` إرسال خروج مفرد عدد حدث أو codec ذاتي لديه ضيق تجميع run.`sessionFormatV0ToV1` لـ كل مرة أيضا أصل إنشاء واحد لديه حالة Stage؛ ساكن حالة catalog اتصال هذا decoder و Stage، جعل ترحيل بلا حاجة إبقاء شيء إدارة سطر عدد مجموعة.`releasedV1SessionFormatCodec` لـ v1 شيء إدارة تخطيط كشف نفسه تدريجي سطر decoder، معا لا تجميد ربط عادي حدث كلمة جدول.
 
-Alpha 迁移边会拒绝冻结清单之外的所有事件类型，包括带有 `ignorable: true` 标记的未知事件。它也会拒绝意外的 payload 成员。`tool/result.meta` 与嵌套 PTC `arguments` 是显式的不透明 JSON 字段；迁移会原样保留它们，不把其中的数字解释为会话序号。内容块中未知的 `type` 分支、消息来源中未知的 `kind` 分支、assistant 结束原因中未知的 `kind` 分支与 `turn/end` 原因中未知的 `kind` 分支保持 owner-opaque JSON，已知分支则接受结构校验。
+Alpha ترحيل حافة سوف رفض تجميد ربط بيان خارج كل حدث نوع، يشمل حمل لديه `ignorable: true` علامة لم معرفة حدث. هو أيضا سوف رفض معنى خارج payload عضو.`tool/result.meta` و تضمين طقم PTC `arguments` هو صريح لا نفاذ واضح JSON حقل؛ ترحيل سوف أصل مثال إبقاء هو جمع، لا يأخذ منها عدد حرف حل تفسير لـ جلسة ترتيب رقم. محتوى كتلة في لم معرفة `type` فرع، رسالة مصدر في لم معرفة `kind` فرع،assistant انتهاء سبب في لم معرفة `kind` فرع و `turn/end` سبب في لم معرفة `kind` فرع إبقاء owner-opaque JSON، معروف فرع فإن قبول بنية تحقق.
 
-有限的历史规范化会把 `steering/message` 转换为 `user/message`、把 `compact/*` 事件重命名为 `compaction/*`、移除 `turn/start.trigger`、转换已停用的 `turn/end` reason、添加当前消息包装层，并为旧消息、retry chain 与压缩（compaction）组补充确定性 id，同时移除已停用且重复的 `request/header.header.messagePrefix`。已停用的 `request/header-delta`、`mode/set` 和 `request/header` fallback reason 会使迁移失败。除此之外，任何事件、引用、来源或 payload 事实都不得改变。
+لديه حد تاريخ مواصفة تحويل سوف يأخذ `steering/message` تحويل لـ `user/message`، يأخذ `compact/*` حدث إعادة تسمية لـ `compaction/*`، إزالة `turn/start.trigger`، تحويل قد توقف استخدام `turn/end` reason، إضافة حالي رسالة حزمة تركيب طبقة، و لـ قديم رسالة،retry chain و ضغط (compaction) مجموعة تكملة ملء تحديد صفة id، معا إزالة قد توقف استخدام كما تكرار `request/header.header.messagePrefix`. قد توقف استخدام `request/header-delta`،`mode/set` و `request/header` fallback reason سوف جعل ترحيل فشل. حذف هذا خارج، أي حدث، مرجع، مصدر أو payload واقع كل لا نيل تغيير.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-物理 codec 会以行为原子单位校验每个打包行，以紧凑 run 发出它，且绝不修改已解析输入。可恢复解码会丢弃完整的故障行并保留此前前缀，除非后续成功解码的 `turn/end` 证明故障区域已经提交。增量 normalizer 只保留 message、retry 与未结束的压缩 identity；catalog 会在最终当前产物上执行完整关系校验。
+شيء إدارة codec سوف بـ سلوك أصل فرعي مفرد موضع تحقق كل تحزيم سطر، بـ ضيق تجميع run إرسال خروج هو، كما أبدا تعديل قد تحليل إدخال. يمكن استعادة حل رمز سوف إسقاط كامل لذا عائق سطر و إبقاء هذا قبل بادئة، حذف غير لاحق نجاح حل رمز `turn/end` إثبات لذا عائق منطقة مجال قد إيداع. زيادة كمية normalizer فقط إبقاء message،retry و لم انتهاء ضغط identity؛catalog سوف في نهائي حالي ناتج فوق تنفيذ كامل علاقة تحقق.
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/codec.ts`](src/codec.ts) | 冻结的 v0/v1 物理标头、打包行与来源序号范围 |
-| [`src/dispositions.ts`](src/dispositions.ts) | 已发布 v0 事件与 payload 成员清单 |
-| [`src/payload-validation.ts`](src/payload-validation.ts) | 每种已发布 v0/v1 事件类型的冻结嵌套 payload 语义 |
-| [`src/relationships.ts`](src/relationships.ts) | 冻结的跨事件配对：轮次、步骤、工具开始与结果、重试、压缩、标题 |
-| [`src/migration.ts`](src/migration.ts) | 恒等迁移边与旧格式规范化 |
-| [`src/validation.ts`](src/validation.ts) | 精确的源与目标校验 |
+| [`src/codec.ts`](src/codec.ts) | تجميد ربط v0/v1 شيء إدارة علامة رأس، تحزيم سطر و مصدر ترتيب رقم نطاق |
+| [`src/dispositions.ts`](src/dispositions.ts) | قد إصدار v0 حدث و payload عضو بيان |
+| [`src/payload-validation.ts`](src/payload-validation.ts) | كل نوع قد إصدار v0/v1 حدث نوع تجميد ربط تضمين طقم payload دلالة |
+| [`src/relationships.ts`](src/relationships.ts) | تجميد ربط عبر حدث إعداد مقابل: جولة، خطوة، أداة بدء و نتيجة، إعادة محاولة، ضغط، عنوان |
+| [`src/migration.ts`](src/migration.ts) | ثابت انتظار ترحيل حافة و قديم صيغة مواصفة تحويل |
+| [`src/validation.ts`](src/validation.ts) | دقيق مصدر و هدف تحقق |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [迁移机制](../session-format/README.zh.md)——纯迁移链与编解码约定。
-- [静态目录](../session-format-catalog/README.zh.md)——由构建负责的装配。
-- [会话子系统](../../../docs/subsystems/session.zh.md)——当前逻辑会话语义。
+- [ترحيل آلية](../session-format/README.zh.md)——صاف ترحيل سلسلة و تحرير حل رمز اتفاق.
+- [ساكن حالة دليل](../session-format-catalog/README.zh.md)——من بناء مسؤول تركيب إعداد.
+- [جلسة فرعي نظام](../../../docs/subsystems/session.zh.md)——حالي منطق جلسة دلالة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 历史还原
+### تاريخ أيضا أصل
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-没有直接内容。还原后，`deriveMessages()` 会看到在 v1 下保持不变的规范已发布 v0 事件；有限历史结构会通过规定的当前包装层产生相同的模型可见内容。
+لا يوجد مباشر محتوى. أيضا أصل بعد،`deriveMessages()` سوف يرى في v1 تحت إبقاء ثابت مواصفة قد إصدار v0 حدث؛ لديه حد تاريخ بنية سوف عبر قاعدة تحديد حالي حزمة تركيب طبقة إنتاج نفسه نموذج مرئي محتوى.
 
-#### Token 影响
+#### Token أثر
 
-不直接产生 token。
+لا مباشر إنتاج token.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-对规范 v0 历史没有直接影响。有限 normalizer 会在生成当前包装层与确定性标识时保留模型可见内容。
+مقابل مواصفة v0 تاريخ لا يوجد مباشر أثر. لديه حد normalizer سوف في توليد حالي حزمة تركيب طبقة و تحديد صفة معرف وقت إبقاء نموذج مرئي محتوى.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **封闭的第一方清单**——按照当前 Alpha 策略，未知的外部插件事件会使迁移失败。
-- **单个相邻迁移边**——本包不执行发布，也不选择后续迁移。
+- **غلاف إغلاق رقم واحد جهة بيان**——حسب وفق حالي Alpha سياسة، لم معرفة خارجي إضافة حدث سوف جعل ترحيل فشل.
+- **مفرد عدد متبادل مجاور ترحيل حافة**——هذه الحزمة لا تنفيذ إصدار، أيضا لا اختيار لاحق ترحيل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -605,17 +605,17 @@ describe('ChangedFiles card', () => {
     const { openFile, props, view } = renderCard(controller, zh)
     controller.host.set('error')
     view.rerender(<Deliverables {...props} matched={{ changes, presented: [] }} openFile={openFile} sessionId={SessionId('child-session')} t={makeTranslate(zh)} />)
-    expect(view.getByRole('button', { name: '在侧边栏查看本轮改动' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' })).toBeTruthy()
     controller.host.set({ name: 'server', available: false, fileManager: null })
     view.rerender(<Deliverables {...props} matched={{ changes, presented: [] }} openFile={openFile} sessionId={SessionId('child-session')} t={makeTranslate(zh)} />)
-    expect(view.getByText('已编辑 11 个文件')).toBeTruthy()
-    fireEvent.click(view.getByRole('button', { name: '在侧边栏查看本轮改动' }))
+    expect(view.getByText('قد تحرير 11 عدد ملف')).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' }))
     expect(props.openChangesReview).toHaveBeenLastCalledWith({ sessionId: 'child-session', seq: 5, turn: 1 }, 0)
-    fireEvent.click(view.getByRole('button', { name: '查看 config/design-token 的改动' }))
+    fireEvent.click(view.getByRole('button', { name: 'فحص نظر config/design-token تعديل' }))
     expect(props.openChangesReview).toHaveBeenLastCalledWith({ sessionId: 'child-session', seq: 5, turn: 1 }, 0)
     expect(openFile).not.toHaveBeenCalled()
     expect(props.openChanged).not.toHaveBeenCalled()
-    expect(view.getByRole('button', { name: '展开全部 5 个改动文件' }).textContent).toContain('全部 5 个文件')
+    expect(view.getByRole('button', { name: 'توسيع الكل 5 عدد تعديل ملف' }).textContent).toContain('الكل 5 عدد ملف')
   })
 
   it('keeps every count in place whatever the native-open gestures of the review tab are doing', () => {
@@ -645,7 +645,7 @@ describe('ChangedFiles card', () => {
 })
 
 describe('producedFileMentions resolver', () => {
-  const label = (path: string) => `打开 ${path}`
+  const label = (path: string) => `فتح ${path}`
 
   it('resolves exact paths and unique basenames; ambiguity and unknowns stay unresolved', () => {
     const opened: string[] = []
@@ -656,7 +656,7 @@ describe('producedFileMentions resolver', () => {
     )
     // Unique basename resolves to its full path; the full path rides title.
     const byBasename = resolver.resolve('index.html')
-    expect(byBasename?.label).toBe('打开 out/index.html')
+    expect(byBasename?.label).toBe('فتح out/index.html')
     expect(byBasename?.title).toBe('out/index.html')
     byBasename?.open()
     expect(opened).toEqual(['out/index.html'])

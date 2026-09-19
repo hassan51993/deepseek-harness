@@ -1,15 +1,15 @@
 ---
-description: "预编译 Landlock 启动器与异步 POSIX flock 的 JavaScript 入口。"
+description: "مسبق تحرير ترجمة Landlock بدء جهاز و مختلف خطوة POSIX flock JavaScript مدخل."
 kind: "package-library"
 ---
 # @deepseek-ai/node-addon-system
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-`./landlock-run` 入口导出 Landlock 启动器路径、强制执行探测、授权参数和协议常量。独立的 `./flock` 入口导出 `tryLockExclusive(fd): Promise<void>`；导入任一入口都不会加载 `system.node`。包不提供根导出。
+`./landlock-run` مدخل توجيه خروج Landlock بدء جهاز مسار، قوي صنع تنفيذ استكشاف قياس، تخويل معامل و بروتوكول معتاد كمية. مستقل `./flock` مدخل توجيه خروج `tryLockExclusive(fd): Promise<void>`؛ استيراد مهمة واحد مدخل كل لن تحميل `system.node`. حزمة لا توفير أصل توجيه خروج.
 
-锁操作异步尝试 `LOCK_EX | LOCK_NB`。在完成前保持调用方拥有的描述符打开；竞争以 `EAGAIN`/`EWOULDBLOCK` 拒绝，其他系统调用失败也会拒绝，错误携带 code、值为正数的 errno 和 `syscall: 'flock'`。原生调用准备阶段的错误也会拒绝同一个 promise。关闭指向该打开文件描述的最后一个描述符即释放锁。绑定不打开、复制、关闭或显式解锁描述符。
+قفل عملية مختلف خطوة محاولة تجربة `LOCK_EX | LOCK_NB`. في إتمام قبل إبقاء استدعاء جهة يملك وصف رمز فتح؛ تنافس تنازع بـ `EAGAIN`/`EWOULDBLOCK` رفض، أخرى نظام استدعاء فشل أيضا سوف رفض، خطأ يحمل code، قيمة لـ صحيح عدد errno و `syscall: 'flock'`. أصلي استدعاء دقيق تجهيز مرحلة مقطع خطأ أيضا سوف رفض نفس عدد promise. إغلاق إشارة نحو هذا فتح ملف وصف الأكثر بعد واحد وصف رمز أي تحرير قفل. ربط لا فتح، نسخ، إغلاق أو صريح حل قفل وصف رمز.
 
-可选操作系统/CPU 平台包携带二进制。Linux 包含 `bin/landlock-run` 和分别用于两种 libc 的 `bin/glibc/system.node` / `bin/musl/system.node`；macOS 包含 `bin/system.node`。flock 绑定缺失或无法加载时，锁获取请求会被拒绝，不在安装时编译。Landlock 仍是遵循既有失败关闭协议的独立可执行文件；不支持的内核或平台探测结果为不可用。
+اختياري عملية نظام/CPU منصة حزمة يحمل اثنان دخول صنع.Linux يتضمن `bin/landlock-run` و قسم آخر لأجل اثنان نوع libc `bin/glibc/system.node` / `bin/musl/system.node`؛macOS يتضمن `bin/system.node`.flock ربط ناقص أو لا يمكن تحميل وقت، قفل نيل أخذ طلب سوف يتم رفض، لا في تثبيت وقت تحرير ترجمة.Landlock ما زال هو التزام دوران قائم فشل إغلاق بروتوكول مستقل يمكن تنفيذ ملف؛ لا دعم حمل داخل نواة أو منصة استكشاف قياس نتيجة لـ غير ممكن استخدام.
 
-两个 C 源文件随包分发以供审计。参见工作区[架构](../../docs/architecture.md)、[支持矩阵](../../docs/support-matrix.md)和 [CLI 约定](../../docs/cli-contract.md)。
+اثنان عدد C مصدر ملف مع حزمة توزيع بـ توفير مراجعة حساب. مشاركة رؤية مساحة العمل[هيكل بنية](../../docs/architecture.md) ،[دعم حمل مستطيل دفعة](../../docs/support-matrix.md) و [CLI اتفاق](../../docs/cli-contract.md).

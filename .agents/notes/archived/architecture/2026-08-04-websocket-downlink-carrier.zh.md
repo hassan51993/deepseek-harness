@@ -1,40 +1,40 @@
-# Agent Note: 浏览器下行 WebSocket 载体
+# Agent Note: متصفح تحت سطر WebSocket تحميل جسم
 
 Status: implemented
 Archived: 2026-08-27
 
-[English](2026-08-04-websocket-downlink-carrier.md) | 中文
+[English](2026-08-04-websocket-downlink-carrier.md) | العربية
 
 ## Problem
 
-浏览器 Web GUI 的 `events.mux` 与 `events.host` 长期使用两条 SSE（Server-Sent Events）响应。HTTP/1.1 浏览器通常只允许每个来源约六条并发连接；每个页面永久占住两条会让同源多标签页、插件资源和普通 RPC 争抢连接槽，达到上限后不是降速而是排队阻塞。RPC 协议本身是通道无关的，约束来自浏览器物理载体，不应渗入会话/运行时对象层。
+متصفح Web GUI `events.mux` و `events.host` طويل مدة استخدام اثنان بند SSE(Server-Sent Events) استجابة.HTTP/1.1 متصفح عبر معتاد فقط سماح كل مصدر نحو ستة بند تزامن اتصال؛ كل صفحة دائم دائم احتلال إقامة اثنان بند سوف يجعل نفس مصدر كثير وسم صفحة، إضافة مورد و عادي RPC تنازع انتزاع اتصال مجرى، بلوغ إلى حد أعلى بعد لا هو خفض سرعة بينما هو ترتيب طابور منع سد.RPC بروتوكول ذاته هو عبر طريق غير متصل، قيد قدوم ذاتي متصفح شيء إدارة تحميل جسم، لا ينبغي تسرب دخول جلسة/وقت التشغيل كائن طبقة.
 
 ## Decision
 
-浏览器真实载体为两类下行流各开一条独立 WebSocket：`/api/events.mux` 只发送 `MuxFrame`，`/api/events.host` 只发送 `HostFrame`。每条文本消息是一份完整的 `ServerRequest` JSON；客户端继续先校验信封，再按路径校验具体 frame union，并把窄形 `RpcRequest<Frame>` 交给既有 `ConnectionController`。两条流保持独立生命周期和无跨流顺序保证，任一条结束仍使整个 connection generation 失败并按既有退避策略重建。
+متصفح حقيقي تحميل جسم لـ اثنان صنف تحت سطر تدفق كل فتح واحد بند مستقل WebSocket:`/api/events.mux` فقط إرسال `MuxFrame`،`/api/events.host` فقط إرسال `HostFrame`. كل بند نص رسالة هو واحد نسخة كامل `ServerRequest` JSON؛ عميل متابعة أولا تحقق معلومة غلاف، مجددا حسب مسار تحقق أداة جسم frame union، و يأخذ ضيق شكل `RpcRequest<Frame>` تسليم إعطاء قائم `ConnectionController`. اثنان بند تدفق إبقاء مستقل دورة الحياة و بلا عبر تدفق ترتيب حفظ إثبات، مهمة واحد بند انتهاء ما زال جعل كامل connection generation فشل و حسب قائم تراجع تجنب سياسة إعادة بناء.
 
-WebSocket 只承担 host→browser 下行。所有 client→host unary 调用和对 server request 的 `respond` 继续使用既有 `POST /api/*`；不在 WebSocket 上接收任何客户端业务消息。`WebApiClient` 因而同时持有 HTTP `fetch` 上行与 WebSocket 下行，而 fixture（测试前置数据）和 `InProcessApiClient(toFetchHandler(api))` 继续实现同一 `IApiClient` 双流抽象。进程内 fetch 载体保留 SSE 编解码来检验通道无关的协议同构，但网络上对 `/api/events.*` 的 GET 请求只返回 upgrade required，不作为浏览器兼容回退。
+WebSocket فقط تحمل تحمل host→browser تحت سطر. كل client→host unary استدعاء و مقابل server request `respond` متابعة استخدام قائم `POST /api/*`؛ لا في WebSocket فوق استقبال أي عميل عمل خدمة رسالة.`WebApiClient` بسبب بينما معا يحتفظ HTTP `fetch` فوق سطر و WebSocket تحت سطر، بينما fixture(اختبار قبل وضع بيانات) و `InProcessApiClient(toFetchHandler(api))` متابعة تنفيذ نفس `IApiClient` مزدوج تدفق سحب كائن. عملية داخل fetch تحميل جسم إبقاء SSE تحرير حل رمز قدوم فحص تحقق عبر طريق غير متصل بروتوكول نفس بنية، لكن شبكة شبكة فوق مقابل `/api/events.*` GET طلب فقط إرجاع upgrade required، لا بصفة متصفح توافق رجوع.
 
-## Upgrade 与生命周期边界
+## Upgrade و دورة الحياة حد
 
-`dsh-host-webserver` 提供与普通 route 并列的精确 upgrade-route 注册点，只按 pathname 分发 Node upgrade socket，隔离原始 socket 错误，并在 server teardown 期间等待仍存活的升级连接关闭；它不认识 Harness 帧或 WebSocket 消息。`dsh-client-connection` 拥有 WebSocket handshake、frame 写出和流取消。upgrade 前先执行 `/api` Host／Origin 校验，再执行与一元 HTTP 相同的签名浏览器 cookie 认证。未受信任的 authority 或跨来源 Origin 得到 403；Host 可信但未认证的请求得到 401；两者都不会启动 Remote stream。
+`dsh-host-webserver` توفير و عادي route و صف دقيق upgrade-route تسجيل نقطة، فقط حسب pathname توزيع Node upgrade socket، عزل أصلي socket خطأ، و في server teardown خلال انتظار ما زال تخزين نشط ترقية اتصال إغلاق؛ هو لا إقرار تعرف Harness لقطة أو WebSocket رسالة.`dsh-client-connection` يملك WebSocket handshake،frame كتابة خروج و تدفق إلغاء.upgrade قبل أولا تنفيذ `/api` Host/Origin تحقق، مجددا تنفيذ و واحد عنصر HTTP نفسه توقيع متصفح cookie إقرار إثبات. لم تلقي معلومة مهمة authority أو عبر مصدر Origin نيل إلى 403؛Host يمكن معلومة لكن لم إقرار إثبات طلب نيل إلى 401؛ اثنان من كل لن بدء Remote stream.
 
-浏览器 abort 或 socket close 会取消对应的 host 流；插件 teardown 还会等待该 source iterator 完成清理。host 流中途抛错时，载体发送一个现有的 `stream/error` frame 后关闭 socket；客户端把该 frame 收敛为连接丢失，不投递给业务 sink。每条 WebSocket 独立报告 open，既有 readiness handshake 仍等待 mux、host 都 open 且 `host.describe` HTTP 调用成功后才发布 connected。
+متصفح abort أو socket close سوف إلغاء مقابل host تدفق؛ إضافة teardown أيضا سوف انتظار هذا source iterator إتمام تنظيف.host تدفق في طريق رمي خطأ وقت، تحميل جسم إرسال واحد قائم `stream/error` frame بعد إغلاق socket؛ عميل يأخذ هذا frame استلام جمع لـ اتصال فقد فقد، لا إلقاء تمرير إعطاء عمل خدمة sink. كل بند WebSocket مستقل تقرير إبلاغ open، قائم readiness handshake ما زال انتظار mux،host كل open كما `host.describe` HTTP استدعاء نجاح بعد عندئذ إصدار connected.
 
 ## Verification
 
-webserver 约定测试钉住 upgrade pathname 分发、重复注册拒绝、资源释放与 teardown；connection 的真实网络测试钉住两条 WebSocket 各自的信任检查、open、schema 信封、frame 顺序、流错误与关闭时取消；客户端测试同时证明下行创建 `ws:`／`wss:` URL，而 unary 与 `respond` 仍调用 HTTP `fetch`。组装后的 keyless 浏览器回放继续覆盖 Chromium、真实 host、HTTP 上行与 WebSocket 下行整链。
+webserver اتفاق اختبار تثبيت إقامة upgrade pathname توزيع، تكرار تسجيل رفض، مورد تحرير و teardown؛connection حقيقي شبكة شبكة اختبار تثبيت إقامة اثنان بند WebSocket كل منها معلومة مهمة فحص،open،schema معلومة غلاف،frame ترتيب، تدفق خطأ و إغلاق وقت إلغاء؛ عميل اختبار معا إثبات تحت سطر إنشاء `ws:`/`wss:` URL، بينما unary و `respond` ما زال استدعاء HTTP `fetch`. تجميع بعد keyless متصفح إعادة تشغيل متابعة تغطية Chromium، حقيقي host،HTTP فوق سطر و WebSocket تحت سطر كامل سلسلة.
 
 ## Alternatives considered
 
-**用一条 WebSocket 复用 mux 与 host。** 这会新增 channel tag、复用队列与单连接背压策略，并改变现有双流 readiness 语义；两条 WebSocket 已避开 HTTP/1.1 六连接上限，同时让本次变更保持在物理载体层。
+**استخدام واحد بند WebSocket إعادة استخدام mux و host.** هذا سوف إضافة جديدة channel tag، إعادة استخدام طابور صف و مفرد اتصال خلف ضغط سياسة، و تغيير قائم مزدوج تدفق readiness دلالة؛ اثنان بند WebSocket قد تجنب فتح HTTP/1.1 ستة اتصال حد أعلى، معا يجعل هذا مرة تغيير إبقاء في شيء إدارة تحميل جسم طبقة.
 
-**把 unary 与 respond 一并迁入全双工 WebSocket。** 这会改写超时、取消、HTTP 状态、信任栅栏和请求关联行为，却不能为当前的下行连接槽问题带来额外收益；上行 HTTP 是明确保留的边界。
+**يأخذ unary و respond واحد و نقل دخول كل مزدوج عمل WebSocket.** هذا سوف تعديل كتابة مهلة، إلغاء،HTTP حالة، معلومة مهمة شبكة شريط و طلب صلة ربط سلوك، لكن لا يستطيع لـ حالي تحت سطر اتصال مجرى مشكلة حمل قدوم مقدار خارج استلام فائدة؛ فوق سطر HTTP هو واضح إبقاء حد.
 
-**保留网络 SSE 回退。** 双载体会让生产浏览器路径可因代理或握手差异静默分叉，并让连接上限问题继续存在于一个受支持分支；预发布阶段只交付 WebSocket 下行，失败由既有重连与连接状态显式呈现。
+**إبقاء شبكة شبكة SSE رجوع.** مزدوج تحميل جسم سوف يجعل إنتاج متصفح مسار يمكن بسبب بديل إدارة أو إمساك يد فرق مختلف ساكن صامت قسم تقاطع، و يجعل اتصال حد أعلى مشكلة متابعة وجود في واحد تلقي دعم حمل فرع؛ مسبق إصدار مرحلة مقطع فقط تسليم WebSocket تحت سطر، فشل من قائم إعادة وصل و اتصال حالة صريح عرض.
 
-**依赖 HTTP/2 扩大并发连接能力。** 内置开发服务器是明文 Node HTTP/1.1，部署前置代理也不是产品可依赖的不变式；物理下行应直接使用不受该连接池限制的浏览器原语。
+**اعتماد HTTP/2 توسيع كبير تزامن اتصال قدرة.** داخل وضع تطوير خادم هو واضح نص Node HTTP/1.1، نشر قبل وضع بديل إدارة أيضا لا هو منتج يمكن اعتماد ثابت صيغة؛ شيء إدارة تحت سطر ينبغي مباشر استخدام لا تلقي هذا اتصال حوض حد متصفح أصل لغة.
 
 ## Consequences
 
-每个 Web 页面仍有两条长期下行连接，但它们不再消耗浏览器的 HTTP/1.1 六连接配额；运行时继续消费原有双流并保留所有重连、流修复和跨流无序语义。代价是 webserver 多一个 upgrade 注册面，connection 包的 host 半侧新增一项 WebSocket 实现依赖，并需分别维护浏览器 WebSocket 与进程内 SSE 两种物理编解码；它们共享同一 `ServerRequest`／frame schema 和 `IApiClient` 语义，避免形成第二套业务协议。
+كل Web صفحة ما زال لديه اثنان بند طويل مدة تحت سطر اتصال، لكن هو جمع لم يعد إزالة استهلاك متصفح HTTP/1.1 ستة اتصال إعداد مقدار؛ وقت التشغيل متابعة إزالة استهلاك أصل لديه مزدوج تدفق و إبقاء كل إعادة وصل، تدفق إصلاح و عبر تدفق بلا ترتيب دلالة. بديل قيمة هو webserver كثير واحد upgrade تسجيل وجه،connection حزمة host نصف جانب إضافة جديدة واحد بند WebSocket تنفيذ اعتماد، و يحتاج قسم آخر صيانة متصفح WebSocket و عملية داخل SSE اثنان نوع شيء إدارة تحرير حل رمز؛ هو جمع مشترك نفس `ServerRequest`/frame schema و `IApiClient` دلالة، تجنب تجنب شكل صار ثاني طقم عمل خدمة بروتوكول.

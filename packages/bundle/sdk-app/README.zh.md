@@ -1,74 +1,74 @@
 ---
-description: "面向启动 JSON-RPC harness 运行时的用户与维护者，说明 SDK stdio 应用 profile。"
+description: "موجه إلى بدء JSON-RPC harness وقت التشغيل مستخدم و صيانة من، شرح SDK stdio تطبيق profile."
 kind: "package-bundle"
 ---
 
 # `@deepseek-ai/dsh-sdk-app`
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-以 [`dsh-base`](../base/README.zh.md) 为基础的 SDK stdio 应用 `dsh` profile 组合包。它继承 base 默认禁用模块 HMR（热模块替换）的策略；其 patch 设置 coding agent（编程智能体）persona、挂载应用自有的零选项命令提供方，并且只在该提供方接受调用后启动 [`dsh-sdk-jsonrpc-server`](../../sdk/server/README.zh.md)。因此，`dsh --profile sdk --help` 会写出 help 并退出，不会占用 stdin 或 stdout。独立的 [`sdk-minimal`](../sdk-minimal/README.zh.md) bundle 复用同一个启动提供方，并提供自己的 profile 名称。
+بـ [`dsh-base`](../base/README.zh.md) لـ أساس أساس SDK stdio تطبيق `dsh` profile تركيب حزمة. هو وراثة base افتراضي منع استخدام وحدة HMR(حار وحدة استبدال) سياسة؛ ذلك patch ضبط coding agent(تحرير مسار ذكي جسم)persona، تركيب تطبيق ذاتي لديه صفر خيار أمر مزود، و كما فقط في هذا مزود قبول استدعاء بعد بدء [`dsh-sdk-jsonrpc-server`](../../sdk/server/README.zh.md). لذلك،`dsh --profile sdk --help` سوف كتابة خروج help و خروج، لن احتلال استخدام stdin أو stdout. مستقل [`sdk-minimal`](../sdk-minimal/README.zh.md) bundle إعادة استخدام نفس عدد بدء مزود، و توفير ذاتي ذات profile اسم.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-启动提供方把 stdin EOF 接到启动器的有界成功关闭流程。SDK 协议 `shutdown`、SIGINT 与 SIGTERM 继续使用各自所属的 server 或启动器路径；dispose（资源释放）会排空根 profile 配置树与持久化。stdout 专用于按换行分隔的 JSON-RPC 帧。SDK 不提供 title 表层，因此本组合包禁用模型生成的会话标题；确定性的 fallback title 仍会持久化，但不发起辅助模型请求。继承的投影缓存会为 SDK 创建的会话写入检查点，供后续消费方使用；其持久性屏障会在发布缓存行前 flush 所覆盖的日志前缀，因此可能拆分原本会合并的 JSONL 行。部署通过 profile 组合包与 patch 文件选择另一套完整组合，而不是使用另一个应用 bin。
+بدء مزود يأخذ stdin EOF وصل إلى بدء جهاز محدود نجاح إغلاق مسار.SDK بروتوكول `shutdown`،SIGINT و SIGTERM متابعة استخدام كل منها الذي تابع server أو بدء جهاز مسار؛dispose(مورد تحرير) سوف ترتيب فارغ أصل profile إعداد شجرة و حفظ دائم.stdout مخصص لأجل حسب تبديل سطر قسم فصل JSON-RPC لقطة.SDK لا توفير title جدول طبقة، لذلك هذا تركيب حزمة منع استخدام نموذج توليد جلسة عنوان؛ تحديد صفة fallback title ما زال سوف حفظ دائم، لكن لا إرسال بدء مساعد مساعدة نموذج طلب. وراثة إسقاط ذاكرة مؤقتة سوف لـ SDK إنشاء جلسة كتابة فحص نقطة، توفير لاحق مستهلك استخدام؛ ذلك حمل دائم صفة شاشة عائق سوف في إصدار ذاكرة مؤقتة سطر قبل flush الذي تغطية سجل بادئة، لذلك ممكن تفكيك قسم أصل هذا سوف دمج JSONL سطر. نشر عبر profile تركيب حزمة و patch ملف اختيار آخر طقم كامل تركيب، بينما لا هو استخدام آخر عدد تطبيق bin.
 
-| 配置 | 默认值 | 行为 |
+| إعداد | قيمة افتراضية | سلوك |
 |---|---|---|
-| `profile` | `sdk` | 命令帮助中显示的 profile 名称；挂载此提供方的 bundle 会设置自己的随附 profile 名称。 |
+| `profile` | `sdk` | أمر مساعدة مساعدة في عرض profile اسم؛ تركيب هذا مزود bundle سوف ضبط ذاتي ذات مع مرفق profile اسم. |
 
-`DSH_MAX_TOKENS_AS_SUCCESS` 保留 SDK 部署映射：未设置或 JSON `true` 把 token 达限的 subagent 完成报告为已接受，JSON `false` 则报告为错误。模型提供方／模型与工作区 cwd 通过 SDK 初始化请求传入；base profile 拥有适配器、工具、持久化、策略、settings 与 credentials。
+`DSH_MAX_TOKENS_AS_SUCCESS` إبقاء SDK نشر خريطة: لم ضبط أو JSON `true` يأخذ token بلوغ حد subagent إتمام تقرير إبلاغ لـ قد قبول،JSON `false` فإن تقرير إبلاغ لـ خطأ. نموذج مزود/نموذج و مساحة العمل cwd عبر SDK ابتدائي تحويل طلب نقل دخول؛base profile يملك مهايئ، أداة، حفظ دائم، سياسة،settings و credentials.
 
-SDK 使用 base 默认提供的 `read`、`write` 和 `edit`。要添加 `str_replace_editor`，请使用 [base 配置指南](../base/README.zh.md#use-this-package)中的显式插入 patch。独立的 `sdk-minimal` profile 自行决定其工具选择。
+SDK استخدام base افتراضي توفير `read`،`write` و `edit`. يلزم إضافة `str_replace_editor`، طلب استخدام [base إعداد إشارة جنوب](../base/README.zh.md#use-this-package) في صريح إدراج دخول patch. مستقل `sdk-minimal` profile ذاتي سطر قرار ذلك أداة اختيار.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
 ### SDK coding agent persona
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-profile 在第一方指导之前提供 `You are a coding agent powered by the {{model}} model.`，并在独立的 persona 后缀中提供 `Your working directory is {{cwd}}.`。确切的 SDK 初始化路由与会话 cwd 会解析其中的占位符。默认文件工具 schema 包含 `read`、`write` 和 `edit`，不包含 `str_replace_editor`。
+profile في رقم واحد جهة إشارة توجيه قبل توفير `You are a coding agent powered by the {{model}} model.`، و في مستقل persona بعد لاحقة في توفير `Your working directory is {{cwd}}.`. تأكيد قطع SDK ابتدائي تحويل توجيه و جلسة cwd سوف تحليل منها احتلال موضع رمز. افتراضي ملف أداة schema يتضمن `read`،`write` و `edit`، لا يتضمن `str_replace_editor`.
 
-#### Token 影响
+#### Token أثر
 
-一段简短稳定的 persona，加上随数据变化的 base 提示词段落与所选工具 schema。
+واحد مقطع بسيط قصير مستقر persona، إضافة فوق مع بيانات تغير base نص التوجيه مقطع سقوط و الذي اختيار أداة schema.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-对固定 profile、提供方、模型与工具清单保持稳定。由于随附 SDK profile 使用仅启动时 patch，profile 变化会在下一个进程生效。
+مقابل ثابت profile، مزود، نموذج و أداة بيان إبقاء مستقر. من في مع مرفق SDK profile استخدام فقط بدء وقت patch،profile تغير سوف في تحت واحد عملية توليد فاعلية.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **profile 可能省略 SDK server**：TypeScript client 选择的自定义 profile 必须保留本组合包或另一个 `dsh-sdk-jsonrpc-server` 配置项；没有 peer 响应时，client 初始化会失败。
-- **用户插件可以破坏 stdout 纯净性**：profile 与逐次启动 patch 属于受信任应用组合。随附组合包不会向 stdout 写入非协议内容，但无法约束任意插入插件。
-- **配置变化需要重启**：`sdk-app` 组合包在 YAML 中禁用 HMR，因此一个 stdio 连接不会观察到 server 或 agent 依赖被替换。
+- **profile ممكن حذف SDK server**:TypeScript client اختيار ذاتي تعريف profile يجب إبقاء هذا تركيب حزمة أو آخر عدد `dsh-sdk-jsonrpc-server` بند إعداد؛ لا يوجد peer استجابة وقت،client ابتدائي تحويل سوف فشل.
+- **مستخدم إضافة يمكن كسر تالف stdout صاف صاف صفة**:profile و تدريجي مرة بدء patch يخص تلقي معلومة مهمة تطبيق تركيب. مع مرفق تركيب حزمة لن نحو stdout كتابة غير بروتوكول محتوى، لكن لا يمكن قيد مهمة معنى إدراج دخول إضافة.
+- **إعداد تغير حاجة إعادة بدء**:`sdk-app` تركيب حزمة في YAML في منع استخدام HMR، لذلك واحد stdio اتصال لن مراقبة إلى server أو agent اعتماد يتم استبدال.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。该 bundle 增加进程传输与启动 latch；帧纯度、help 排除和关闭行为由源码及构建产物的 stdio 测试负责。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذا bundle زيادة عملية نقل و بدء latch؛ لقطة صاف درجة،help ترتيب حذف و إغلاق سلوك من شفرة المصدر و بناء ناتج stdio اختبار مسؤول.

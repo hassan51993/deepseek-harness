@@ -1,120 +1,120 @@
 ---
-description: "dsh Web 客户端的 subagent 对话目录、续接路由 UI 与 '@' 引用 source。"
+description: "dsh Web عميل subagent محادثة دليل، متابعة وصل توجيه UI و '@' مرجع source."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-subagent
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-使用本包可浏览父会话下的每个 subagent 对话、打开任意后代，并查看其是否正在运行以及 token 用量和活跃轮次耗时。已完成的 one-shot 对话会作为只读执行记录打开。可继续对话在运行期间按提交顺序接收后续提示词，并独立提供 Stop。普通会话侧边栏会省略 subagent 对话，因此父会话页头目录是它们的导航入口。独立的 `@` source 会把运行中 child 的 label 插入用户消息，但不会把它解析成继续执行地址。
+استخدام هذه الحزمة يمكن تصفح تصفح أب جلسة تحت كل subagent محادثة، فتح مهمة معنى بعد بديل، و فحص نظر ذلك هل صحيح في تشغيل و token استخدام كمية و نشط وثب جولة استهلاك وقت. قد إتمام one-shot محادثة سوف بصفة فقط قراءة تنفيذ سجل فتح. يمكن متابعة محادثة في تشغيل خلال حسب إيداع ترتيب استقبال لاحق نص التوجيه، و مستقل توفير Stop. عادي جلسة جانب حافة شريط سوف حذف subagent محادثة، لذلك أب جلسة صفحة رأس دليل هو هو جمع تنقل مدخل. مستقل `@` source سوف يأخذ تشغيل في child label إدراج دخول مستخدم رسالة، لكن لن يأخذ هو تحليل صار متابعة تنفيذ عنوان.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-会话页头保留当前会话 title 作为谱系面包屑，并在会话存在 subagent 后代时，于页头操作行之前追加 `/` 数量触发器；触发器打开后代目录，统计仅含 subagent 的完整谱系、在普通 fork 处停止，并在任一计入统计的后代处于 `running` 时显示活动仍在进行。选择任意深度，即可用该子会话的确切 `{parentSessionId, childSessionId, mode}` 地址打开其对话；也可以使用行尾箭头在右侧 Sidebar 打开同一地址，并在空间允许时优先使用独立分栏。
+جلسة صفحة رأس إبقاء حالي جلسة title بصفة جدول نظام وجه حزمة فتات، و في جلسة وجود subagent بعد بديل وقت، في صفحة رأس عملية سطر قبل إلحاق `/` عدد كمية إطلاق جهاز؛ إطلاق جهاز فتح بعد بديل دليل، موحد حساب فقط يحتوي subagent كامل جدول نظام، في عادي fork موضع إيقاف، و في مهمة واحد حساب دخول موحد حساب بعد بديل موضع في `running` وقت عرض نشط حركة ما زال في إجراء. اختيار مهمة معنى عميق درجة، يكفي استخدام هذا فرعي جلسة تأكيد قطع `{parentSessionId, childSessionId, mode}` عنوان فتح ذلك محادثة؛ أيضا يمكن استخدام سطر ذيل سهم رأس في يمين جانب Sidebar فتح نفس عنوان، و في فضاء سماح وقت أولوية استخدام مستقل قسم شريط.
 
-本包注册 `dsh-resource://subagentchat/session/<child>?parent=<parent>&mode=<mode>` 资源与 builtin Sidebar tab 类型。资源先刷新直接 parent 目录，再保留 child 的 `SessionReference`，并在 tab 记录关闭时释放 reference。tab 通过 `sidebar.chat.conversation` 渲染共享 `conversation.content` Factory，把局部 View 固定为 Chat，并省略主 Conversation 的 Header 与宽度控制。
+هذه الحزمة تسجيل `dsh-resource://subagentchat/session/<child>?parent=<parent>&mode=<mode>` مورد و builtin Sidebar tab نوع. مورد أولا تحديث جديد مباشر parent دليل، مجددا إبقاء child `SessionReference`، و في tab سجل إغلاق وقت تحرير reference.tab عبر `sidebar.chat.conversation` تصيير مشترك `conversation.content` Factory، يأخذ نطاق جزء View ثابت لـ Chat، و حذف رئيسي Conversation Header و عرض درجة تحكم.
 
-### 浏览目录
+### تصفح تصفح دليل
 
-行显示 mode、`running`/`inactive` 活动状态与由日志支撑的可选 title；尾随列在上行显示提供方的持久化 token 用量总计，在下行显示活跃轮次耗时。键盘导航：ArrowRight/ArrowLeft 展开和折叠分支；ArrowUp/ArrowDown、Home、End 与 Escape 用于导航或关闭树。没有 label 的 one-shot 行回退到其会话 id；损坏、不受支持或不可用的行仍保持可读但禁用。
+سطر عرض mode،`running`/`inactive` نشط حركة حالة و من سجل دعم دعم اختياري title؛ ذيل مع صف في فوق سطر عرض مزود حفظ دائم token استخدام كمية مجموع حساب، في تحت سطر عرض نشط وثب جولة استهلاك وقت. مفتاح قرص تنقل:ArrowRight/ArrowLeft توسيع و طي فرع؛ArrowUp/ArrowDown،Home،End و Escape لأجل تنقل أو إغلاق شجرة. لا يوجد label one-shot سطر رجوع إلى ذلك جلسة id؛ ضرر تالف، لا تلقي دعم حمل أو غير ممكن استخدام سطر ما زال إبقاء يمكن قراءة لكن منع استخدام.
 
-### 续接对话
+### متابعة وصل محادثة
 
-确切 parent 存活时，可继续 child 保留普通输入 chrome：child 运行期间输入和 Send 保持可用，因为每条后续消息都会进入 child 的 FIFO inbox，而独立的 Stop 经由 `subagents/interruptByParent` 路由。确切 parent 不可用且 child 未在运行的可继续 child 会选用说明恢复路径的只读编辑器；此类 child 仍在运行期间，selector 会让位给普通编辑器——输入区与 Send 被禁用，但独立的 Stop 保持可用。
+تأكيد قطع parent تخزين نشط وقت، يمكن متابعة child إبقاء عادي إدخال chrome:child تشغيل خلال إدخال و Send إبقاء متاح، لأن كل بند لاحق رسالة كل سوف دخول child FIFO inbox، بينما مستقل Stop مرور من `subagents/interruptByParent` توجيه. تأكيد قطع parent غير ممكن استخدام كما child لم في تشغيل يمكن متابعة child سوف اختيار استخدام شرح استعادة مسار فقط قراءة تحرير جهاز؛ هذا صنف child ما زال في تشغيل خلال،selector سوف يجعل موضع إعطاء عادي تحرير جهاز——إدخال منطقة و Send يتم منع استخدام، لكن مستقل Stop إبقاء متاح.
 
-### `@` 引用 source
+### `@` مرجع source
 
-`@` source 仍然刻意保持独立且惰性：候选是从 `ctx.sessions.list` 零 RPC 得到的运行中 child；pick 会插入字面文本 `@label `，codec 投影为 `@label`。它不参与命令裁决，也不会把 label 解析成继续执行地址。
+`@` source ما زال لحظة معنى إبقاء مستقل كما كسول صفة: مرشح هو من `ctx.sessions.list` صفر RPC نيل إلى تشغيل في child؛pick سوف إدراج دخول حرف وجه نص `@label `،codec إسقاط لـ `@label`. هو لا مشاركة و أمر قطع قرار، أيضا لن يأخذ label تحليل صار متابعة تنفيذ عنوان.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-目录与编辑器行为由 [Web subagent 对话笔记](../../../.agents/notes/implemented/feature/2026-07-27-web-subagent-conversations.zh.md) 与[当前轮次中断笔记](../../../.agents/notes/implemented/feature/2026-08-06-continuable-subagent-interrupt.zh.md) 规定。
+دليل و تحرير جهاز سلوك من [Web subagent محادثة قلم تسجيل](../../../.agents/notes/implemented/feature/2026-07-27-web-subagent-conversations.zh.md) و[حالي جولة في قطع قلم تسجيل](../../../.agents/notes/implemented/feature/2026-08-06-continuable-subagent-interrupt.zh.md) قاعدة تحديد.
 
-### 目录派生
+### دليل إرسال توليد
 
-页头谱系 renderer 通过标准 `useSessions` 钩子读取 `subagentsByParent` 与会话摘要。紧凑树仍以直接目录为权威依据：每个健康行的 `hasChildren` 提示在交互前决定是否显示展开控件；每层目录仅在其中至少一个健康行是分支时才预留展开列；展开分支时会立即为每个已知直接后代预留一行禁用的加载行，随后再用该 child 的权威目录懒加载结果替换。每个可见分支都会上报给运行时，使成员帧只在树正被消费的位置触发去抖动刷新。
+صفحة رأس جدول نظام renderer عبر معيار `useSessions` خطاف قراءة `subagentsByParent` و جلسة ملخص. ضيق تجميع شجرة ما زال بـ مباشر دليل لـ مرجعي اعتماد حسب: كل سليم سليم سطر `hasChildren` تلميح في تفاعل قبل قرار هل عرض توسيع تحكم عنصر؛ كل طبقة دليل فقط في منها حتى قليل واحد سليم سليم سطر هو فرع وقت عندئذ مسبق إبقاء توسيع صف؛ توسيع فرع وقت سوف قيام أي لـ كل معروف مباشر بعد بديل مسبق إبقاء واحد سطر منع استخدام تحميل سطر، مع بعد مجددا استخدام هذا child مرجعي دليل كسول تحميل نتيجة استبدال. كل مرئي فرع كل سوف فوق تقرير إعطاء وقت التشغيل، جعل عضو لقطة فقط في شجرة صحيح يتم إزالة استهلاك موضع إطلاق ذهاب اهتزاز حركة تحديث جديد.
 
-### 耗时与 token
+### استهلاك وقت و token
 
-token 用量总计为四个互不重叠的 `tokenUsage` 桶之和。耗时会累加已完成的 `subagentTiming` 轮次，仅在运行中 child 存在未结束轮次时每秒递增一次，并在 child 变为 inactive 后冻结；被中断的未结束轮次以其同一切面的 `active.through` 为上界，绝不使用更新的会话元数据。
+token استخدام كمية مجموع حساب لـ أربعة عدد متبادل لا إعادة تراكم `tokenUsage` دلو لـ و. استهلاك وقت سوف تراكم إضافة قد إتمام `subagentTiming` جولة، فقط في تشغيل في child وجود لم انتهاء جولة وقت كل ثانية تمرير زيادة مرة، و في child تغيير لـ inactive بعد تجميد ربط؛ يتم في قطع لم انتهاء جولة بـ ذلك نفس قطع وجه `active.through` لـ فوق حد، أبدا استخدام تحديث جلسة بيانات وصفية.
 
-### 编辑器选举
+### تحرير جهاز اختيار رفع
 
-one-shot child 始终选用只读编辑器。可继续 child 仅在其确切 parent 不可用且 child 未在运行时选用只读编辑器；否则普通编辑器的会话会经 `subagents/prompt` 路由提示词。本包绝不接收宿主上下文，也不调用面向模型的工具。
+one-shot child بداية نهاية اختيار استخدام فقط قراءة تحرير جهاز. يمكن متابعة child فقط في ذلك تأكيد قطع parent غير ممكن استخدام كما child لم في وقت التشغيل اختيار استخدام فقط قراءة تحرير جهاز؛ لا فإن عادي تحرير جهاز جلسة سوف مرور `subagents/prompt` توجيه نص التوجيه. هذه الحزمة أبدا استقبال مضيف سياق، أيضا لا استدعاء موجه إلى نموذج أداة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-以下页面覆盖对话界面、宿主 seam 与设计笔记。
+التالي صفحة تغطية محادثة واجهة، مضيف seam و تصميم قلم تسجيل.
 
-- [ui-conversation](../ui-conversation/README.zh.md)——承载页头操作与编辑器链的聊天界面。
-- [ui-input-trigger](../ui-input-trigger/README.zh.md)——承载 `@` source 的建议机制。
-- [subagent](../../subagent/subagent/README.zh.md)——可继续 child 背后的宿主能力 seam。
-- [Web subagent 对话](../../../.agents/notes/implemented/feature/2026-07-27-web-subagent-conversations.zh.md)——目录与编辑器规范。
-- [当前轮次中断](../../../.agents/notes/implemented/feature/2026-08-06-continuable-subagent-interrupt.zh.md)——独立 Stop 的语义。
+- [ui-conversation](../ui-conversation/README.zh.md)——تحمل تحميل صفحة رأس عملية و تحرير جهاز سلسلة حديث يوم واجهة.
+- [ui-input-trigger](../ui-input-trigger/README.zh.md)——تحمل تحميل `@` source بناء اقتراح آلية.
+- [subagent](../../subagent/subagent/README.zh.md)——يمكن متابعة child خلف بعد مضيف قدرة seam.
+- [Web subagent محادثة](../../../.agents/notes/implemented/feature/2026-07-27-web-subagent-conversations.zh.md)——دليل و تحرير جهاز مواصفة.
+- [حالي جولة في قطع](../../../.agents/notes/implemented/feature/2026-08-06-continuable-subagent-interrupt.zh.md)——مستقل Stop دلالة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 用户提示词中的 subagent label 文本
+### مستخدم نص التوجيه في subagent label نص
 
-#### 模型看到的内容
+#### نموذج يرى محتوى
 
-只有 `@` 引用 source 会影响模型输入：pick 的候选以字面文本 `@label` 进入普通用户消息，没有专用内容块或宿主侧解析。浏览目录、导航 child 与查看持久化 transcript（文本记录）都不会添加提示词 section；已接收的继续交互内容会经宿主 subagent 适配器成为普通 FIFO 用户消息。
+فقط لديه `@` مرجع source سوف أثر نموذج إدخال:pick مرشح بـ حرف وجه نص `@label` دخول عادي مستخدم رسالة، لا يوجد مخصص استخدام محتوى كتلة أو مضيف جانب تحليل. تصفح تصفح دليل، تنقل child و فحص نظر حفظ دائم transcript(نص سجل) كل لن إضافة نص التوجيه section؛ قد استقبال متابعة تفاعل محتوى سوف مرور مضيف subagent مهايئ يصبح عادي FIFO مستخدم رسالة.
 
-#### Token 影响
+#### Token أثر
 
-有条件且仅追加：字面 `@label` 或用户后续消息只会向对应的新用户消息增加 token。目录与 transcript 操作增加零模型 token。
+لديه شرط كما فقط إلحاق: حرف وجه `@label` أو مستخدم لاحق رسالة فقط سوف نحو مقابل جديد مستخدم رسالة زيادة token. دليل و transcript عملية زيادة صفر نموذج token.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加。本包绝不改写更早的请求 token。
+فقط إلحاق. هذه الحزمة أبدا تعديل كتابة أكثر مبكر طلب token.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制定义目录能显示什么、`@` 引用意味着什么；它们是当前包约束。
+هذه حد تعريف دليل قدرة عرض ماذا،`@` مرجع معنى طعم حال ماذا؛ هو جمع هو حالي حزمة قيد.
 
-- **目录没有持久化结果**：活动状态与计时无法区分完成、失败或取消，且 UI 不公开 Activation 身份；停止能力仅限编辑器上针对运行中可继续 child 的当前轮次 Stop。
-- **`@` 引用仍是显示标题文本**：重复或改名后的 label 会有歧义，因此它们刻意不获得继续执行语义。
+- **دليل لا يوجد حفظ دائم نتيجة**: نشط حركة حالة و حساب وقت لا يمكن منطقة قسم إتمام، فشل أو إلغاء، كما UI لا عام Activation هوية؛ إيقاف قدرة فقط حد تحرير جهاز فوق إبرة مقابل تشغيل في يمكن متابعة child حالي جولة Stop.
+- **`@` مرجع ما زال هو عرض عنوان نص**: تكرار أو تعديل اسم بعد label سوف لديه اختلاف معنى، لذلك هو جمع لحظة معنى لا نيل نيل متابعة تنفيذ دلالة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。插件只注册一个 slash source，其资源释放已由 HMR（热模块替换）安全规范验证；它不发出 Cordis 事件，也不持有跨插件可变状态。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. إضافة فقط تسجيل واحد slash source، ذلك مورد تحرير قد من HMR(حار وحدة استبدال) أمان مواصفة تحقق؛ هو لا إرسال خروج Cordis حدث، أيضا لا يحتفظ عبر إضافة متغير حالة.

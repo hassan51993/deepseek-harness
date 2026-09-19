@@ -1,30 +1,30 @@
-# Agent Note: 仅在 Host 校验 Remote 输入
+# Agent Note: فقط في Host تحقق Remote إدخال
 
 Status: implemented
 
-[English](2026-09-15-host-only-remote-input-validation.md) | 中文
+[English](2026-09-15-host-only-remote-input-validation.md) | العربية
 
 ## Problem
 
-生成的 Client Remote 方法公开 TypeScript 签名，并通过 Connection 把调用转给 Host Gateway；Host Gateway 已经在 lookup 或业务调用前检查精确参数字段、执行每个严格输入 codec，并验证 JSON 数据。Client 再为每个参数执行对应 schema 会重复这次校验，在 Client 中实例化原本惰性创建的 Zod schema，还会让无效 JavaScript 调用根据哪一侧先拒绝而走不同的失败路径。
+توليد Client Remote طريقة عام TypeScript توقيع، و عبر Connection يأخذ استدعاء تحويل إعطاء Host Gateway؛Host Gateway قد في lookup أو عمل خدمة استدعاء قبل فحص دقيق معامل حقل، تنفيذ كل صارم إطار إدخال codec، و تحقق JSON بيانات.Client مجددا لـ كل معامل تنفيذ مقابل schema سوف تكرار هذا مرة تحقق، في Client في نسخة تحويل أصل هذا كسول صفة إنشاء Zod schema، أيضا سوف يجعل بلا فاعلية JavaScript استدعاء أصل حسب أي واحد جانب أولا رفض بينما مشي مختلف فشل مسار.
 
-Client 仍需要 descriptor 元数据来检查位置参数数量、把值映射为具名 wire 字段、绑定 scoped Context identity、省略显式为 undefined 的可选值，以及合并取消信号。这些操作都不需要执行运行时 schema。
+Client ما زال حاجة descriptor بيانات وصفية قدوم فحص موضع معامل عدد كمية، يأخذ قيمة خريطة لـ أداة اسم wire حقل، ربط scoped Context identity، حذف صريح لـ undefined اختياري قيمة، و دمج إلغاء إشارة. هذه عملية كل لا حاجة تنفيذ وقت التشغيل schema.
 
 ## Decision
 
-Client Remote 在挂载 contribution 时校验 descriptor 完整性，随后直接转发带类型的参数与绑定的 Context identity，不调用 invocation codec factory。位置参数数量错误与 Client Context binding 缺失仍在本地拒绝。成功的一元结果与流项同样不经 Client 侧类型解析直接传递。
+Client Remote في تركيب contribution وقت تحقق descriptor كامل صفة، مع بعد مباشر تحويل إرسال حمل نوع معامل و ربط Context identity، لا استدعاء invocation codec factory. موضع معامل عدد كمية خطأ و Client Context binding ناقص ما زال في محلي رفض. نجاح واحد عنصر نتيجة و تدفق بند نفس مثال لا مرور Client جانب نوع تحليل مباشر نقل تمرير.
 
-Host Gateway 拥有运行时输入校验。它检查精确具名字段、执行严格参数与 identity codec、验证 JSON 值，并在调用业务代码前完成 lookup。绕过生成 TypeScript API 的 JavaScript 调用方，其请求到达 Host 后会收到 Host 的 `gateway/input-invalid` 结果；无法进入载体的值则可能在序列化时失败。
+Host Gateway يملك وقت التشغيل إدخال تحقق. هو فحص دقيق أداة اسم حقل، تنفيذ صارم إطار معامل و identity codec، تحقق JSON قيمة، و في استدعاء عمل خدمة شفرة قبل إتمام lookup. التفاف مرور توليد TypeScript API JavaScript استدعاء جهة، ذلك طلب وصول Host بعد سوف استلام إلى Host `gateway/input-invalid` نتيجة؛ لا يمكن دخول تحميل جسم قيمة فإن ممكن في تسلسل تحويل وقت فشل.
 
-生成的 Remote contribution 继续携带 codec 元数据，因为 Host 与 Client 产物仍共享 `InvocationDescriptor`，Client 挂载也仍要求每个 Client 供值字段具备严格 codec。完整 Remote 架构见 [Typert 生成的 Remote 方法调用](../architecture/2026-08-02-typert-remote-method-calls.zh.md)；本决策只取代其中 Client 侧执行调用 codec 的部分。
+توليد Remote contribution متابعة يحمل codec بيانات وصفية، لأن Host و Client ناتج ما زال مشترك `InvocationDescriptor`،Client تركيب أيضا ما زال اشتراط كل Client توفير قيمة حقل أداة تجهيز صارم إطار codec. كامل Remote هيكل بنية رؤية [Typert توليد Remote طريقة استدعاء](../architecture/2026-08-02-typert-remote-method-calls.zh.md) ؛ هذا قرار فقط يحل محل منها Client جانب تنفيذ استدعاء codec جزء.
 
 ## Alternatives considered
 
-- **同时保留 Client 与 Host 输入解析。** 这样能让畸形 JavaScript 调用方更早收到本地错误，并在传输前剔除对象中的未声明属性；但即使 Host 必须独立校验，每次有效调用仍要重复实例化并执行 schema。
-- **从 Remote Client 产物中移除 codec 元数据。** 这样可以进一步缩小生成的 Client 代码，但会改变共享 descriptor 与 generator 协议。保留惰性 factory 能继续检查严格 contribution，同时不产生运行时 schema 构造成本。
+- **معا إبقاء Client و Host إدخال تحليل.** هذا مثال قدرة يجعل شاذ شكل JavaScript استدعاء جهة أكثر مبكر استلام إلى محلي خطأ، و في نقل قبل استبعاد حذف كائن في لم إعلان خاصية؛ لكن أي جعل Host يجب مستقل تحقق، كل مرة صالح استدعاء ما زال يلزم تكرار نسخة تحويل و تنفيذ schema.
+- **من Remote Client ناتج في إزالة codec بيانات وصفية.** هذا مثال يمكن دخول واحد خطوة تقليص صغير توليد Client شفرة، لكن سوف تغيير مشترك descriptor و generator بروتوكول. إبقاء كسول صفة factory قدرة متابعة فحص صارم إطار contribution، معا لا إنتاج وقت التشغيل schema بنية صنع صار هذا.
 
 ## Consequences
 
-正常 Client 调用不再分配 invocation schema，也不再重复执行 Zod parse。Host 校验仍是 lookup 与业务执行前的权威检查，Client 代码则保留参数数量、Context binding、取消与 contribution 生命周期故障。
+صحيح معتاد Client استدعاء لم يعد قسم إعداد invocation schema، أيضا لم يعد تكرار تنفيذ Zod parse.Host تحقق ما زال هو lookup و عمل خدمة تنفيذ قبل مرجعي فحص،Client شفرة فإن إبقاء معامل عدد كمية،Context binding، إلغاء و contribution دورة الحياة لذا عائق.
 
-畸形运行时值会比以前更晚失败。未声明的对象属性可能在 Host codec 剔除它们之前经过可信载体，因此从不可信对象或含秘密对象派生请求的调用方必须构造已声明 DTO，不能把 Client 解析当作脱敏步骤。Client 测试固定原样转发行为，Host 测试固定严格输入与 JSON 输入拒绝。
+شاذ شكل وقت التشغيل قيمة سوف مقارنة بـ قبل أكثر متأخر فشل. لم إعلان كائن خاصية ممكن في Host codec استبعاد حذف هو جمع قبل مرور مرور يمكن معلومة تحميل جسم، لذلك من غير ممكن معلومة كائن أو يحتوي سري سري كائن إرسال توليد طلب استدعاء جهة يجب بنية صنع قد إعلان DTO، لا يستطيع يأخذ Client تحليل عند عمل انفصال حساس خطوة.Client اختبار ثابت أصل مثال تحويل إرسال سلوك،Host اختبار ثابت صارم إطار إدخال و JSON إدخال رفض.

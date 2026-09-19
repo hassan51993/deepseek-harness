@@ -1,33 +1,33 @@
-# Agent Note: 从 fs seam 中移除只写字段与一个无效的路由旋钮
+# Agent Note: من fs seam في إزالة فقط كتابة حقل و واحد بلا فاعلية توجيه دوران زر
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-07-04-prune-write-only-fs-surface.md) | 中文
+[English](2026-07-04-prune-write-only-fs-surface.md) | العربية
 
-## 问题
+## مشكلة
 
-[fs seam 拆分](2026-06-26-fsspec-style-fs-seam.md)将读取路由与策略从后端移至 `dsh-tool-fs` 和 `dsh-fs-policy`。有四处接口保留了拆分前的形态——每次调用都填充，却无人读取：
+[fs seam تفكيك قسم](2026-06-26-fsspec-style-fs-seam.md) سوف قراءة توجيه و سياسة من خلفية نقل حتى `dsh-tool-fs` و `dsh-fs-policy`. لديه أربعة موضع واجهة إبقاء تفكيك قسم قبل شكل——كل مرة استدعاء كل ملء ملء، لكن بلا شخص قراءة:
 
-1. **`dsh-fs-local` 中的 `STREAM_MIN_SIZE` + `FsIoInternals.streamMinSize`**——*在本次变更之前已被「禁止硬编码可调参数」审计移除，该审计将路由阈值改为 `dsh-tool-fs` 的 `readStreamMinSize` 配置；此处记录是为了完整呈现整次清理。* 原始位置（`packages/fs/fs-local/src/fsio.ts`，从 `packages/fs/fs-local/src/index.ts` 重导出）：包括 fs-local 自身源码和测试在内，全仓库零读取者。后端没有读取路由——`readWholeText`/`streamWholeText` 是调用方自行选择的两个独立原语——真正的路由常量位于消费方（`packages/fs/tool-fs/src/read.ts`，与 `info.size` 比较）。同一个 10 MiB 事实的两份镜像；后端那份是死代码，且该旋钮的 JSDoc 声称提供一个实际不存在的「read routing」覆盖。
-2. **`FsTarget.inputPath`**（`packages/fs/fs/src/types.ts`）：每个后端和每个测试 mock 都必须为这个「仅供诊断」的字段编造一个值，而生产环境零读取者——策略插件和所有错误消息使用的是 `targetKey`/`displayPath`。`listDir` 的生产者暴露了语义上的摇摆：目录子项得到的是裸条目名，这不是任何人的「input」。
-3. **`FsEditOutcome.replacements` + `.replaceAll`**（`packages/fs/fs/src/types.ts`）：`replacements` 生产环境零读取者（单匹配策略本身保留——它由后端内部 `FS_AMBIGUOUS_EDIT`/`FS_EDIT_NOT_FOUND` 抛出来强制执行，错误消息保留了内部计数）；`replaceAll` 仅被 `packages/fs/tool-fs/src/edit.ts` 中的 `formatEditOutput` 读取——作为工具本身已持有的 `replace_all` 参数的回声。精简后，`FsEditOutcome` 变为 `{ version, before, after }`，与 `FsWriteOutcome` 中真正由后端发现的字段对齐。
-4. **`FileReadOutcome.limit` + `.version`**（`packages/fs/tool-fs/src/read-render.ts`）：由读取工具填充，但 `formatReadOutput` 只渲染 `offset`/`lines`/`totalLines`/`truncatedByBytes`，且 `fs/observed` 事件发射直接使用 `info.version` 而非 outcome 的副本。
+1. **`dsh-fs-local` في `STREAM_MIN_SIZE` + `FsIoInternals.streamMinSize`**——*في هذا مرة تغيير قبل قد يتم «منع توقف صلب تحرير رمز يمكن ضبط معامل» مراجعة حساب إزالة، هذا مراجعة حساب سوف توجيه عتبة قيمة تعديل لـ `dsh-tool-fs` `readStreamMinSize` إعداد؛ هذا موضع سجل هو لـ كامل عرض كامل مرة تنظيف.* أصلي موضع (`packages/fs/fs-local/src/fsio.ts`، من `packages/fs/fs-local/src/index.ts` إعادة توجيه خروج): يشمل fs-local ذاته شفرة المصدر و اختبار في داخل، كل مستودع صفر قراءة من. خلفية لا يوجد قراءة توجيه——`readWholeText`/`streamWholeText` هو استدعاء جهة ذاتي سطر اختيار اثنان عدد مستقل أصل لغة——حق صحيح توجيه معتاد كمية يقع في مستهلك (`packages/fs/tool-fs/src/read.ts`، و `info.size` مقارنة مقارنة). نفس عدد 10 MiB واقع اثنان نسخة مرآة مثل؛ خلفية ذلك نسخة هو ميت شفرة، كما هذا دوران زر JSDoc صوت تسمية توفير واحد فعلي لا وجود «read routing» تغطية.
+2. **`FsTarget.inputPath`**(`packages/fs/fs/src/types.ts`): كل خلفية و كل اختبار mock كل يجب لـ هذا عدد «فقط توفير تشخيص» حقل تحرير صنع واحد قيمة، بينما إنتاج بيئة صفر قراءة من——سياسة إضافة و كل خطأ رسالة استخدام هو `targetKey`/`displayPath`.`listDir` إنتاج من كشف دلالة فوق هز وضع: دليل فرعي بند نيل إلى هو عار بند اسم، هذا لا هو أي شخص «input».
+3. **`FsEditOutcome.replacements` + `.replaceAll`**(`packages/fs/fs/src/types.ts`):`replacements` إنتاج بيئة صفر قراءة من (مفرد مطابقة سياسة ذاته إبقاء——هو من خلفية داخلي `FS_AMBIGUOUS_EDIT`/`FS_EDIT_NOT_FOUND` رمي خروج قدوم قوي صنع تنفيذ، خطأ رسالة إبقاء داخلي حساب عدد) ؛`replaceAll` فقط يتم `packages/fs/tool-fs/src/edit.ts` في `formatEditOutput` قراءة——بصفة أداة ذاته قد يحتفظ `replace_all` معامل عودة صوت. دقيق بسيط بعد،`FsEditOutcome` تغيير لـ `{ version, before, after }`، و `FsWriteOutcome` في حق صحيح من خلفية اكتشاف حقل مقابل متساو.
+4. **`FileReadOutcome.limit` + `.version`**(`packages/fs/tool-fs/src/read-render.ts`): من قراءة أداة ملء ملء، لكن `formatReadOutput` فقط تصيير `offset`/`lines`/`totalLines`/`truncatedByBytes`، كما `fs/observed` حدث إرسال إطلاق مباشر استخدام `info.version` بينما غير outcome فرعي هذا.
 
-## 决策
+## قرار
 
-删除 fs-local 常量、其再导出和 `streamMinSize` 配置项（其余 `FsIoInternals` 配置项确实由原子写入测试使用）；从 `FsTarget` 删除 `inputPath`；将 `FsEditOutcome` 收窄为 `{ version, before, after }`，并把解析参数中的 `replaceAll` 传给 `formatEditOutput`；从 `FileReadOutcome` 删除 `limit`/`version`。[filesystem.md](../../../../docs/core-data-structures/filesystem.md) 中的粘贴、`packages/fs/fs/README.md`，以及不得不虚构已删除字段的测试 fake 都随类型一同收窄。
+حذف fs-local معتاد كمية، ذلك مجددا توجيه خروج و `streamMinSize` بند إعداد (ذلك بقية `FsIoInternals` بند إعداد تأكيد فعلي من أصل فرعي كتابة اختبار استخدام) ؛ من `FsTarget` حذف `inputPath`؛ سوف `FsEditOutcome` استلام ضيق لـ `{ version, before, after }`، و يأخذ تحليل معامل في `replaceAll` نقل إعطاء `formatEditOutput`؛ من `FileReadOutcome` حذف `limit`/`version`.[filesystem.md](../../../../docs/core-data-structures/filesystem.md) في لصق لصق،`packages/fs/fs/README.md`، و لا نيل لا وهمي بنية قد حذف حقل اختبار fake كل مع نوع واحد نفس استلام ضيق.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-### 为什么不保留？
+### لـ ماذا لا إبقاء؟
 
-未来的权限/隔离层可能需要解析前的路径来生成错误文本——但它需要的是*请求*，每个调用点仍然持有请求。「替换了 N 处」可能成为面向模型的文本——这是一个需要时再设计的行为变更，且后端内部的计数为其错误消息而保留。读取页脚可能展示 `limit`——但页脚展示的一切已经可以从 `lines`/`totalLines` 推导。与此同时，每个现有和未来的后端（远程、原生）都必须编造无人消费的协议字段，每个测试 mock 都必须满足它们。
+لم قدوم إذن/عزل طبقة ممكن حاجة تحليل قبل مسار قدوم توليد خطأ نص——لكن هو حاجة هو*طلب*، كل استدعاء نقطة ما زال يحتفظ طلب.«استبدال N موضع» ممكن يصبح موجه إلى نموذج نص——هذا هو واحد حاجة وقت مجددا تصميم سلوك تغيير، كما خلفية داخلي حساب عدد لـ ذلك خطأ رسالة بينما إبقاء. قراءة صفحة قدم ممكن عرض `limit`——لكن صفحة قدم عرض واحد قطع قد يمكن من `lines`/`totalLines` دفع توجيه. و هذا معا، كل قائم و لم قدوم خلفية (بعيد مسار، أصلي) كل يجب تحرير صنع بلا شخص إزالة استهلاك بروتوكول حقل، كل اختبار mock كل يجب ممتلئ كاف هو جمع.
 
-## 验证
+## تحقق
 
-已删除表面不复存在——`dsh-fs-local` 中的 `STREAM_MIN_SIZE`/`streamMinSize`、`FsTarget.inputPath`、`FsEditOutcome.replacements`/`.replaceAll`，以及 `FileReadOutcome.limit`/`.version`——而请求侧 `replaceAll`（`FsEditRequest`）和其他 outcome 类型上的版本字段保持不变；测试 fake 随类型一同收窄。`formatEditOutput` 在两个 `replace_all` 分支中生成的文本都没有变化，因此没有快照预期输出发生改动。
+قد حذف جدول وجه لا تكرار وجود——`dsh-fs-local` في `STREAM_MIN_SIZE`/`streamMinSize`،`FsTarget.inputPath`،`FsEditOutcome.replacements`/`.replaceAll`، و `FileReadOutcome.limit`/`.version`——بينما طلب جانب `replaceAll`(`FsEditRequest`) و أخرى outcome نوع فوق إصدار حقل إبقاء ثابت؛ اختبار fake مع نوع واحد نفس استلام ضيق.`formatEditOutput` في اثنان عدد `replace_all` فرع في توليد نص كل لا يوجد تغير، لذلك لا يوجد لقطة مسبق مدة إخراج حدوث تعديل.
 
-## 后果
+## عاقبة
 
-后端不增加新义务，反而卸下了四个无人消费的字段。fs 发现功能（glob/grep 工具）涉及相同的 `dsh-fs` 类型文件——这是文本层面而非设计层面的重叠，可以机械地合并解决。
+خلفية لا زيادة جديد معنى خدمة، عكس بينما إزالة تحت أربعة عدد بلا شخص إزالة استهلاك حقل.fs اكتشاف وظيفة (glob/grep أداة) تعلق و نفسه `dsh-fs` نوع ملف——هذا هو نص طبقة وجه بينما غير تصميم طبقة وجه إعادة تراكم، يمكن آلة آلة أرض دمج حل قرار.

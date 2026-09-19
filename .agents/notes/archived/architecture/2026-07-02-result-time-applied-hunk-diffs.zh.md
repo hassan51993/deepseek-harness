@@ -1,58 +1,58 @@
-# Agent Note: 结果时刻的 applied-hunk diff 用于文件变更
+# Agent Note: نتيجة وقت لحظة applied-hunk diff لأجل ملف تغيير
 
 Status: implemented
 Archived: 2026-07-27
 
-[English](2026-07-02-result-time-applied-hunk-diffs.md) | 中文
+[English](2026-07-02-result-time-applied-hunk-diffs.md) | العربية
 
-## 问题
+## مشكلة
 
-[带标签的 render-intent 联合类型](2026-07-02-tool-render-intent-union.md)为 `dsh-tool-fs` 的 write/edit 在调用时刻提供 `card:'diff'`，纯粹从工具参数推导：write ⇒ `{oldText:null, newText:content}`（整个新文件），edit ⇒ `{oldText:old_string, newText:new_string}`（裸替换片段）。UI 可以将其渲染为行内 diff，但这是一个**无上下文**的 diff：裸的 `old_string`→`new_string` 没有周围行，而一次触及五个分散位置的 `replace_all` 仍然渲染为一对片段。
+[حمل وسم render-intent ربط دمج نوع](2026-07-02-tool-render-intent-union.md) لـ `dsh-tool-fs` write/edit في استدعاء وقت لحظة توفير `card:'diff'`، صاف خالص من أداة معامل دفع توجيه:write ⇒ `{oldText:null, newText:content}`(كامل جديد ملف) ،edit ⇒ `{oldText:old_string, newText:new_string}`(عار استبدال قطعة مقطع).UI يمكن سوف ذلك تصيير لـ سطر داخل diff، لكن هذا هو واحد**بلا سياق** diff: عار `old_string`→`new_string` لا يوجد دورة محيط سطر، بينما مرة لمس و خمسة عدد قسم تفرق موضع `replace_all` ما زال تصيير لـ واحد مقابل قطعة مقطع.
 
-在对接 `claude-agent-acp` 自身的 ACP（Agent Client Protocol） bridge 时可以看到完整编辑器 diff 的样子：变更应用后，它发出第二个 `tool_call_update`，其 diff 是**带 ±3 行上下文的 applied hunk**（`replace_all` 的每个变更位置各一个 hunk），由工具的 `structuredPatch` 重建。这个结果时刻的 hunk 正是让 Zed 在文件中*原位*显示变更（而非浮动片段）的关键。我们的工具止步于调用时刻的片段；完成后的结果只携带纯文本「updated successfully」，没有 diff。
+في مقابل وصل `claude-agent-acp` ذاته ACP(Agent Client Protocol) bridge وقت يمكن يرى كامل تحرير جهاز diff مثال فرعي: تغيير تطبيق بعد، هو إرسال خروج ثاني عدد `tool_call_update`، ذلك diff هو**حمل ±3 سطر سياق applied hunk**(`replace_all` كل تغيير موضع كل واحد hunk) ، من أداة `structuredPatch` إعادة بناء. هذا عدد نتيجة وقت لحظة hunk صحيح هو يجعل Zed في ملف في*أصل موضع*عرض تغيير (بينما غير طفو حركة قطعة مقطع) صلة مفتاح. أنا جمع أداة توقف خطوة في استدعاء وقت لحظة قطعة مقطع؛ إتمام بعد نتيجة فقط يحمل صاف نص «updated successfully» ، لا يوجد diff.
 
-障碍在于一个 seam 边界：`presentResult(args, result)` 是 **`args` + 面向模型的 `result`（`{content, isError}`）的纯函数**——它在实时流式输出和会话日志回放中都会运行，因此必须具备回放确定性且不能做 I/O。它看不到文件的前后内容，而 `FsEditOutcome`/`FsWriteOutcome` 只携带替换计数和版本号，没有文本。因此无法计算——甚至无法携带——applied hunk 给 presenter。
+عائق عائق في في واحد seam حد:`presentResult(args, result)` هو **`args` + موجه إلى نموذج `result`(`{content, isError}`) صاف دالة**——هو في فوري تدفق صيغة إخراج و جلسة سجل إعادة تشغيل في كل سوف تشغيل، لذلك يجب أداة تجهيز إعادة تشغيل تحديد صفة كما لا يستطيع فعل I/O. هو نظر لا إلى ملف قبل بعد محتوى، بينما `FsEditOutcome`/`FsWriteOutcome` فقط يحمل استبدال حساب عدد و رقم الإصدار، لا يوجد نص. لذلك لا يمكن حساب حساب——جدا حتى لا يمكن يحمل——applied hunk إعطاء presenter.
 
-## 决策
+## قرار
 
-添加一个**持久化的、工具私有的展示通道**，使工具的 `execute` 能附加一个结果时刻的渲染载荷并在回放中存活，并用它来携带 applied-hunk diff。
+إضافة واحد**حفظ دائم، أداة خاص عرض عبر طريق**، جعل أداة `execute` قدرة مرفق إضافة واحد نتيجة وقت لحظة تصيير تحميل حمل و في إعادة تشغيل في تخزين نشط، و استخدام هو قدوم يحمل applied-hunk diff.
 
-### 1. 规范工具输出上的可回放展示投影（core）
+### 1. مواصفة أداة إخراج فوق يمكن إعادة تشغيل عرض إسقاط (core)
 
-原始实现允许 `execute` 返回 `{ content, meta }`。[规范工具输出契约](2026-07-20-canonical-tool-output-contract.md)取代了这种编写形态：每个工具如今返回一个由 schema 声明的 JSON 值，`output.render(args, value)` 从中派生面向模型的内容块，可选的 `output.presentationMeta(args, value)` 则派生可回放的 UI 数据。
+أصلي تنفيذ سماح `execute` إرجاع `{ content, meta }`.[مواصفة أداة إخراج عقد نحو](2026-07-20-canonical-tool-output-contract.md) يحل محل هذا نوع تحرير كتابة شكل: كل أداة مثل اليوم إرجاع واحد من schema إعلان JSON قيمة،`output.render(args, value)` من في إرسال توليد موجه إلى نموذج محتوى كتلة، اختياري `output.presentationMeta(args, value)` فإن إرسال توليد يمكن إعادة تشغيل UI بيانات.
 
-`presentationMeta` 是工具自有的 `JsonValue`，core 会持久化它，但不解释其中的字段。`Session.append` 将它与事件的其余部分一并校验，回放再把存储的载荷传回 `presentResult`；因此展示无需 I/O 或重新计算即可复现。规范值本身只存在于执行期间，不会加入会话格式。
+`presentationMeta` هو أداة ذاتي لديه `JsonValue`،core سوف حفظ دائم هو، لكن لا حل تفسير منها حقل.`Session.append` سوف هو و حدث ذلك بقية جزء واحد و تحقق، إعادة تشغيل مجددا يأخذ تخزين تحميل حمل نقل عودة `presentResult`؛ لذلك عرض بلا حاجة I/O أو إعادة حساب حساب يكفي تكرار الآن. مواصفة قيمة ذاته فقط وجود في تنفيذ خلال، لن إضافة دخول جلسة صيغة.
 
-这仍是通用形态（「工具投影持久化的结果展示」），而非 fs 特有；任何工具都可以使用。
+هذا ما زال هو عام شكل («أداة إسقاط حفظ دائم نتيجة عرض») ، بينما غير fs خاص لديه؛ أي أداة كل يمكن استخدام.
 
-### 2. 工具计算 hunk；后端返回 before/after（fs）
+### 2. أداة حساب حساب hunk؛ خلفية إرجاع before/after(fs)
 
-按照 [capability-seam 拆分](2026-06-13-capability-seams.md)，存储后端只返回**存储事实**，面向模型的工具拥有**展示**：
+حسب وفق [capability-seam تفكيك قسم](2026-06-13-capability-seams.md) ، تخزين خلفية فقط إرجاع**تخزين واقع**، موجه إلى نموذج أداة يملك**عرض**:
 
-- `dsh-fs` 将 `FsEditOutcome` 扩展为包含 `{ before: string; after: string }`，将 `FsWriteOutcome` 扩展为包含 `{ before: string | null; after: string }`（`before: null` 表示创建，或已存在但不可 diff 的二进制/非 UTF-8 文件）。本地后端在写入时已持有两份文本；它以原始 LF 规范化文本返回，**不让任何 diff/UI 概念进入 seam**。
-- `dsh-tool-fs` 返回规范的变更前／后事实，并将上下文 hunk 投影为 `meta: { diffs: FileDiff[] }`。成功的变更以 diff 视图完成：创建或无变化的覆写回退到由参数推导的整文件 diff，而编辑使用 applied hunk。失败的变更不携带 diff 元数据，正常渲染其错误信息。
+- `dsh-fs` سوف `FsEditOutcome` توسيع لـ يتضمن `{ before: string; after: string }`، سوف `FsWriteOutcome` توسيع لـ يتضمن `{ before: string | null; after: string }`(`before: null` يمثل إنشاء، أو قد وجود لكن غير ممكن diff اثنان دخول صنع/غير UTF-8 ملف). محلي خلفية في كتابة وقت قد يحتفظ اثنان نسخة نص؛ هو بـ أصلي LF مواصفة تحويل نص إرجاع،**لا يجعل أي diff/UI عام فكرة دخول seam**.
+- `dsh-tool-fs` إرجاع مواصفة تغيير قبل/بعد واقع، و سوف سياق hunk إسقاط لـ `meta: { diffs: FileDiff[] }`. نجاح تغيير بـ diff عرض إتمام: إنشاء أو بلا تغير تغطية كتابة رجوع إلى من معامل دفع توجيه كامل ملف diff، بينما تحرير استخدام applied hunk. فشل تغيير لا يحمل diff بيانات وصفية، صحيح معتاد تصيير ذلك خطأ معلومة.
 
-### 3. UI 传输层渲染 `diff` 结果视图
+### 3. UI نقل طبقة تصيير `diff` نتيجة عرض
 
-`ToolResultView` 包含 `DiffResultView { card:'diff'; title?; diffs: FileDiff[] }`。TUI 与 JSON-RPC/Web 消费方在同一个带标签的视图上做 switch，用 applied 结果 hunk 替换待定调用的无上下文片段。[仅面向自动化的 ACP 桥接层](../simplification/2026-07-23-acp-automation-only-protocol.md)不承载工具展示。
+`ToolResultView` يتضمن `DiffResultView { card:'diff'; title?; diffs: FileDiff[] }`.TUI و JSON-RPC/Web مستهلك في نفس عدد حمل وسم عرض فوق فعل switch، استخدام applied نتيجة hunk استبدال انتظار تحديد استدعاء بلا سياق قطعة مقطع.[فقط موجه إلى تلقائي تحويل ACP جسر وصل طبقة](../simplification/2026-07-23-acp-automation-only-protocol.md) لا تحمل تحميل أداة عرض.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**手写或 vendor diff 算法。** 上下文 hunk 有已知的边界情况，因此 `dsh-tool-fs` 使用带类型的 [`diff`](https://www.npmjs.com/package/diff) 包，并在一个模块中规范化 `structuredPatch` 输出。仓库的 vendor 策略适用于框架源码，而非每个叶子工具库。
+**يد كتابة أو vendor diff حساب قاعدة.** سياق hunk لديه معروف حد حال حال، لذلك `dsh-tool-fs` استخدام حمل نوع [`diff`](https://www.npmjs.com/package/diff) حزمة، و في واحد وحدة في مواصفة تحويل `structuredPatch` إخراج. مستودع vendor سياسة ملائم لأجل إطار هيكل شفرة المصدر، بينما غير كل ورقة فرعي أداة مكتبة.
 
-## 后果
+## عاقبة
 
-`tool/result` 事件携带工具私有的 `meta` 载荷；它属于磁盘格式词汇的一部分，由 `Session.append` 在运行时限制为 JSON。任何工具都可以投影持久化的结果展示，无需再改 core。diff 卡片在会话重载和快照回放时免费复现：它从日志中读回，从不重新计算。代价：覆写操作在内存中同时持有旧文本和新文本以计算仅用于 UI 的 hunk（`TODO(overwrite-diff-bound)`），且 `dsh-tool-fs` 引入了一个小型、知名的运行时依赖。
+`tool/result` حدث يحمل أداة خاص `meta` تحميل حمل؛ هو يخص مغناطيس قرص صيغة مفردات واحد جزء، من `Session.append` في وقت التشغيل حد لـ JSON. أي أداة كل يمكن إسقاط حفظ دائم نتيجة عرض، بلا حاجة مجددا تعديل core.diff بطاقة في جلسة إعادة تحميل و لقطة إعادة تشغيل وقت تجنب استهلاك تكرار الآن: هو من سجل في قراءة عودة، من لا إعادة حساب حساب. بديل قيمة: تغطية كتابة عملية في داخل تخزين في معا يحتفظ قديم نص و جديد نص بـ حساب حساب فقط لأجل UI hunk(`TODO(overwrite-diff-bound)`) ، كما `dsh-tool-fs` جذب دخول واحد صغير نوع، معرفة اسم وقت التشغيل اعتماد.
 
-## 非目标
+## غير هدف
 
-- **实时增量 diff 流式输出。** hunk 在变更完成后一次性计算；没有逐键 diff。
-- **对二进制/非 UTF-8 覆写做 diff。** 此类文件的 `before` 为 `null`（没有文本 diff 基础）；写入仍然成功，结果渲染整文件 diff（`oldText: null`）而非上下文 hunk。
-- **重命名/移动 diff。** 仅限单个已解析路径的内容 diff。
-- **限制覆写 diff 基础的大小。** 覆写操作将整个旧文件读入内存以计算上下文 hunk（加上已持有的新内容），因此非常大的文本覆写会为仅 UI 用途的 diff 分配两份文本。未来的改进可以设定预读上限，超过阈值时回退到整文件/无上下文 diff；在读取位置以 `TODO(overwrite-diff-bound)` 跟踪。
+- **فوري زيادة كمية diff تدفق صيغة إخراج.** hunk في تغيير إتمام بعد مرة صفة حساب حساب؛ لا يوجد تدريجي مفتاح diff.
+- **مقابل اثنان دخول صنع/غير UTF-8 تغطية كتابة فعل diff.** هذا صنف ملف `before` لـ `null`(لا يوجد نص diff أساس أساس) ؛ كتابة ما زال نجاح، نتيجة تصيير كامل ملف diff(`oldText: null`) بينما غير سياق hunk.
+- **إعادة تسمية/نقل حركة diff.** فقط حد مفرد عدد قد تحليل مسار محتوى diff.
+- **حد تغطية كتابة diff أساس أساس كبير صغير.** تغطية كتابة عملية سوف كامل قديم ملف قراءة دخول داخل تخزين بـ حساب حساب سياق hunk(إضافة فوق قد يحتفظ جديد محتوى) ، لذلك غير معتاد كبير نص تغطية كتابة سوف لـ فقط UI استخدام طريق diff قسم إعداد اثنان نسخة نص. لم قدوم تعديل دخول يمكن ضبط تحديد مسبق قراءة حد أعلى، تجاوز مرور عتبة قيمة وقت رجوع إلى كامل ملف/بلا سياق diff؛ في قراءة موضع بـ `TODO(overwrite-diff-bound)` تتبع أثر.
 
-## 相关
+## متبادل صلة
 
-- 补全了[带标签的 render-intent 联合类型](2026-07-02-tool-render-intent-union.md)中作为非目标列出的最后一项表示差异——该 Agent Note 的「非目标」一节已更新，记录 applied-hunk diff 在此处交付。
-- 基于[文件系统 capability seam](2026-06-17-filesystem-capability-seam.md)（before/after 是后端返回的存储事实）和[事件溯源会话](2026-06-11-event-sourced-sessions.md)（`meta` 载荷持久化在 `tool/result` 事件上，因此回放可复现卡片）。
-- `meta` 通道有意设计为通用的：未来的工具（结构化搜索、数据表结果）可以附加自己的持久化结果展示而无需再改 core。
+- تكملة كل[حمل وسم render-intent ربط دمج نوع](2026-07-02-tool-render-intent-union.md) في بصفة غير هدف صف خروج الأكثر بعد واحد بند يمثل فرق مختلف——هذا Agent Note «غير هدف» واحد عقدة قد تحديث، سجل applied-hunk diff في هذا موضع تسليم.
+- أساس في[نظام الملفات capability seam](2026-06-17-filesystem-capability-seam.md)(before/after هو خلفية إرجاع تخزين واقع) و[حدث تتبع مصدر جلسة](2026-06-11-event-sourced-sessions.md)(`meta` تحميل حمل حفظ دائم في `tool/result` حدث فوق، لذلك إعادة تشغيل يمكن تكرار الآن بطاقة).
+- `meta` عبر طريق متعمد تصميم لـ عام: لم قدوم أداة (بنية تحويل بحث، بيانات جدول نتيجة) يمكن مرفق إضافة ذاتي ذات حفظ دائم نتيجة عرض بينما بلا حاجة مجددا تعديل core.

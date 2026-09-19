@@ -23,12 +23,12 @@ async function main(): Promise<void> {
   let confirmed = false
   try {
     console.log(action === 'upload-binaries'
-      ? '仅授权此批次 test 二进制上传。确认没有其他发布者；会完整回读安装包，可能产生较大下载流量。'
-      : '仅授权此批次 test 清单发布。确认没有其他发布者；复用成功上传回执，仅回读清单，不重复下载安装包。')
+      ? 'فقط تخويل هذا دفعة مرة test اثنان دخول صنع فوق نقل. تأكيد لا يوجد أخرى إصدار من؛ سوف كامل عودة قراءة تثبيت حزمة، ممكن إنتاج مقارنة كبير تحت تحميل تدفق كمية.'
+      : 'فقط تخويل هذا دفعة مرة test بيان إصدار. تأكيد لا يوجد أخرى إصدار من؛ إعادة استخدام نجاح فوق نقل عودة تنفيذ، فقط عودة قراءة بيان، لا تكرار تحت تحميل تثبيت حزمة.')
     if (action === 'publish-feed' && version === prepared.run.versions[1]) {
-      console.log('确认版本 1 已通过安装后的入口启动并仍在运行；必须提供该批次 journals 目录。')
+      console.log('تأكيد إصدار 1 قد عبر تثبيت بعد مدخل بدء و ما زال في تشغيل؛ يجب توفير هذا دفعة مرة journals دليل.')
     }
-    confirmed = (await terminal.question(`请输入 ${expected}：`)) === expected
+    confirmed = (await terminal.question(`طلب إدخال ${expected}:`)) === expected
   } finally { terminal.close() }
   if (!confirmed) throw new Error('operator declined')
   console.log(await executeInstalledUpdatePublication(manifest, version, receipt, action, createInstalledUpdateCos(), values.journals))

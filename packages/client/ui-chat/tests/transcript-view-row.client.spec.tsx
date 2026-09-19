@@ -71,8 +71,8 @@ describe('TranscriptViewRow', () => {
 
   it('shows the conversation-display values in Chinese', () => {
     mount('compact', zh)
-    fireEvent.click(screen.getByRole('button', { name: '紧凑' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: '标准' }))
-    expect(screen.getByRole('button', { name: '标准' })).toBeDefined()
+    fireEvent.click(screen.getByRole('button', { name: 'ضيق تجميع' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'معيار' }))
+    expect(screen.getByRole('button', { name: 'معيار' })).toBeDefined()
   })
 })

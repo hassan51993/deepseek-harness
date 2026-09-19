@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-07-17-one-send-one-turn.zh.md)
+English | [العربية](2026-07-17-one-send-one-turn.zh.md)
 
 ## Problem
 

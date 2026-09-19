@@ -1,33 +1,33 @@
 ---
-description: "web GUI 宿主的 HTTP 服务器：具名路由与 upgrade 注册、index 转换，以及服务 Web 壳 SPA dist 的唯一回退席位。"
+description: "web GUI مضيف HTTP خادم: أداة اسم توجيه و upgrade تسجيل،index تحويل، و خدمة Web قشرة SPA dist وحيد رجوع مقعد موضع."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-host-webserver
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-浏览器经由 `dsh-host-webserver` 通过 HTTP 访问 web GUI：一个 `node:http` 服务器，其他插件在其中注册具名路由、upgrade 路由、index 启动输入与一个回退 handler。它不了解任何 harness 概念，也不提供任何文件服务——`/api` 桥接、插件 bundle、HMR（热模块替换）事件流与 SPA dist 都属于注册它们的插件。路由匹配顺序固定不变：先在整张表中匹配精确 route，再匹配最长前缀，最后交给回退 handler。它只服务浏览器；Electron 通过 `file://` 加载 dist，并经 IPC 桥接承载 fetch。
+متصفح مرور من `dsh-host-webserver` عبر HTTP وصول web GUI: واحد `node:http` خادم، أخرى إضافة في منها تسجيل أداة اسم توجيه،upgrade توجيه،index بدء إدخال و واحد رجوع handler. هو لا حل أي harness عام فكرة، أيضا لا توفير أي ملف خدمة——`/api` جسر وصل، إضافة bundle،HMR(حار وحدة استبدال) حدث تدفق و SPA dist كل يخص تسجيل هو جمع إضافة. توجيه مطابقة ترتيب ثابت ثابت: أولا في كامل ورقة جدول في مطابقة دقيق route، مجددا مطابقة الأكثر طويل بادئة، الأكثر بعد تسليم إعطاء رجوع handler. هو فقط خدمة متصفح؛Electron عبر `file://` تحميل dist، و مرور IPC جسر وصل تحمل تحميل fetch.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-把 webserver 组合为面向浏览器宿主的 HTTP 传输，然后让功能插件认领各自的路由。激活即开始监听；注册顺序不影响请求处理，因为具名路由组合起来互不相交。
+يأخذ webserver تركيب لـ موجه إلى متصفح مضيف HTTP نقل، لكن بعد يجعل وظيفة إضافة إقرار قيادة كل منها توجيه. تنشيط أي بدء استماع؛ تسجيل ترتيب لا أثر طلب معالجة، لأن أداة اسم توجيه تركيب بدء قدوم متبادل لا متبادل تسليم.
 
-### 最小配置
+### الأكثر صغير إعداد
 
 ```yaml
 - name: '@deepseek-ai/dsh-host-webserver'
@@ -36,89 +36,89 @@ kind: "package-reference"
     port: 3000
 ```
 
-`host` 只接受两个值：`127.0.0.1`（默认姿态，仅回环）与 `0.0.0.0`（有意向网络开放——服务器自身不携带 TLS、认证或来源策略）。`port` 为 0 时请求 OS 分配端口；之后用 `ctx.webServer.port` 读取正在监听的端口。
+`host` فقط قبول اثنان عدد قيمة:`127.0.0.1`(افتراضي وضع حالة، فقط عودة حلقة) و `0.0.0.0`(متعمد نحو شبكة شبكة فتح وضع——خادم ذاته لا يحمل TLS، إقرار إثبات أو مصدر سياسة).`port` لـ 0 وقت طلب OS قسم إعداد طرف فتحة؛ بعد استخدام `ctx.webServer.port` قراءة صحيح في استماع طرف فتحة.
 
-设置 `compression: 'gzip'` 可以包装符合条件的 socket-backed 响应，而不改变 route API。客户端必须接受 gzip，且媒体类型必须可压缩；已知长度小于 `compressionThresholdBytes` 的响应保持未压缩，未知长度的流则立即符合条件。已有编码、`Cache-Control: no-transform`、range 响应、SSE（Server-Sent Events）、ZIP 与已打包的 `.gz` Worker image 均保持不变。随附 Web bundle 使用 level 1 与 1024 字节阈值；其他组合默认不压缩。
+ضبط `compression: 'gzip'` يمكن حزمة تركيب رمز دمج شرط socket-backed استجابة، بينما لا تغيير route API. عميل يجب قبول gzip، كما وسيط جسم نوع يجب يمكن ضغط؛ معروف طويل درجة صغير في `compressionThresholdBytes` استجابة إبقاء لم ضغط، لم معرفة طويل درجة تدفق فإن قيام أي رمز دمج شرط. قد لديه تحرير رمز،`Cache-Control: no-transform`،range استجابة،SSE(Server-Sent Events) ،ZIP و قد تحزيم `.gz` Worker image متساو إبقاء ثابت. مع مرفق Web bundle استخدام level 1 و 1024 بايت عتبة قيمة؛ أخرى تركيب افتراضي لا ضغط.
 
-### 注册路由
+### تسجيل توجيه
 
-`register(route)` 添加具名的 `exact`／`prefix` HTTP route，`registerUpgrade(route)` 为精确 pathname 添加 upgrade route，两者返回的 disposer 都会移除注册。同一张表内的重复路径会抛错——route 模式是组合层约定，冲突即配置错误。HTTP 匹配先在整张表中匹配精确 route，再匹配最长前缀，最后交给回退 handler；upgrade 只做精确匹配，未命中连接直接关闭。
+`register(route)` إضافة أداة اسم `exact`/`prefix` HTTP route،`registerUpgrade(route)` لـ دقيق pathname إضافة upgrade route، اثنان من إرجاع disposer كل سوف إزالة تسجيل. نفس ورقة جدول داخل تكرار مسار سوف رمي خطأ——route نمط هو تركيب طبقة اتفاق، اندفاع مفاجئ أي إعداد خطأ.HTTP مطابقة أولا في كامل ورقة جدول في مطابقة دقيق route، مجددا مطابقة الأكثر طويل بادئة، الأكثر بعد تسليم إعطاء رجوع handler؛upgrade فقط فعل دقيق مطابقة، لم أمر في اتصال مباشر إغلاق.
 
-### 回退席位
+### رجوع مقعد موضع
 
-`registerFallback(handler)` 认领所有未被具名 route 命中的请求的唯一一个 handler。第二次注册会抛错；没有注册回退时服务器回答 404。在随附的 Web 组合中，[SPA dist 服务器](../frontend-static/README.zh.md)拥有该席位，并对其渲染的每个 index 响应调用 `renderIndex`。
+`registerFallback(handler)` إقرار قيادة كل لم يتم أداة اسم route أمر في طلب وحيد واحد handler. ثاني مرة تسجيل سوف رمي خطأ؛ لا يوجد تسجيل رجوع وقت خادم عودة جواب 404. في مع مرفق Web تركيب في،[SPA dist خادم](../frontend-static/README.zh.md) يملك هذا مقعد موضع، و مقابل ذلك تصيير كل index استجابة استدعاء `renderIndex`.
 
-index 启动输入分两层。`collectIndexInjections()` 收集一张全新的注入表——每次调用发一次 `webserver/index-inject` 事件，每个订阅方推入其当前行——`renderIndex(html)` 先把这些行渲染进 index.html 正文，再按注册顺序应用原始 `tapIndex(transform)` 转换。`script-preload` 行会渲染为 classic script 的提示性 preload 链接。静态部署会在启动 payload 中携带同一批行。`applyIndexTaps(html)` 只应用原始转换；它是任何行都无法表达的标记的逃生口。
+index بدء إدخال قسم اثنان طبقة.`collectIndexInjections()` استلام تجميع واحد ورقة كل جديد حقن جدول——كل مرة استدعاء إرسال مرة `webserver/index-inject` حدث، كل حجز قراءة جهة دفع دخول ذلك حالي سطر——`renderIndex(html)` أولا يأخذ هذه سطر تصيير دخول index.html متن، مجددا حسب تسجيل ترتيب تطبيق أصلي `tapIndex(transform)` تحويل.`script-preload` سطر سوف تصيير لـ classic script تلميح صفة preload رابط. ساكن حالة نشر سوف في بدء payload في يحمل نفس دفعة سطر.`applyIndexTaps(html)` فقط تطبيق أصلي تحويل؛ هو هو أي سطر كل لا يمكن جدول بلوغ علامة هروب توليد فتحة.
 
-### 失败时的行为
+### فشل وقت سلوك
 
-监听失败（例如 EADDRINUSE）会以绑定诊断信息拒绝插件初始化。handler 抛错的 HTTP 请求会得到 400——若响应头已经发出则销毁 socket——并记录 warning；它绝不会退出进程。upgrade handler 抛错或升级 socket 出现传输错误时，会记录 warning 并销毁对应 socket。
+استماع فشل (مثال مثل EADDRINUSE) سوف بـ ربط تشخيص معلومة رفض إضافة ابتدائي تحويل.handler رمي خطأ HTTP طلب سوف نيل إلى 400——إذا استجابة رأس قد إرسال خروج فإن إلغاء تدمير socket——و سجل warning؛ هو أبدا سوف خروج عملية.upgrade handler رمي خطأ أو ترقية socket ظهور نقل خطأ وقت، سوف سجل warning و إلغاء تدمير مقابل socket.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-### 设计理念
+### تصميم إدارة فكرة
 
-本包是一个不带任何 harness 词汇的普通路由注册表：`WebServer` 继承 Cordis `Service`，持有三张路由表、回退 slot、原始 index 转换列表，以及 index 渲染器经其收集行的 `webserver/index-inject` 事件。index 渲染每次响应组合两层：`renderIndex` 先把包含提示性 `script-preload` 行的全新注入表渲染进正文，再按注册顺序应用原始转换；`applyIndexTaps` 只运行转换。upgrade handler 拥有协议握手与连接内容；webserver 只交付原始 socket 与 request。`host` 与 `port` getter 暴露其他插件据以自适应的组合期事实（例如 directory-picker 选择器）。
+هذه الحزمة هو واحد لا حمل أي harness مفردات عادي توجيه سجل التسجيل:`WebServer` وراثة Cordis `Service`، يحتفظ ثلاثة ورقة توجيه جدول، رجوع slot، أصلي index تحويل قائمة، و index مصير مرور ذلك استلام تجميع سطر `webserver/index-inject` حدث.index تصيير كل مرة استجابة تركيب اثنان طبقة:`renderIndex` أولا يأخذ يتضمن تلميح صفة `script-preload` سطر كل جديد حقن جدول تصيير دخول متن، مجددا حسب تسجيل ترتيب تطبيق أصلي تحويل؛`applyIndexTaps` فقط تشغيل تحويل.upgrade handler يملك بروتوكول إمساك يد و اتصال محتوى؛webserver فقط تسليم أصلي socket و request.`host` و `port` getter كشف أخرى إضافة حسب بـ ذاتي ملائم ينبغي تركيب مدة واقع (مثال مثل directory-picker اختيار جهاز).
 
-### 匹配与生命周期
+### مطابقة و دورة الحياة
 
-`match(pathname)` 先查精确表，再遍历前缀表取最长匹配，最后走回退。激活（`[Service.init]`）即开始监听；资源释放会启动 `close()` 与 `closeAllConnections()`，销毁所有受跟踪的升级 socket，并仅在服务器与这些 socket 均已关闭后返回。Node 的 `closeAllConnections()` 不包含升级 socket，因此服务显式跟踪它们。
+`match(pathname)` أولا فحص دقيق جدول، مجددا مرة تاريخ بادئة جدول أخذ الأكثر طويل مطابقة، الأكثر بعد مشي رجوع. تنشيط (`[Service.init]`) أي بدء استماع؛ مورد تحرير سوف بدء `close()` و `closeAllConnections()`، إلغاء تدمير كل تلقي تتبع أثر ترقية socket، و فقط في خادم و هذه socket متساو قد إغلاق بعد إرجاع.Node `closeAllConnections()` لا يتضمن ترقية socket، لذلك خدمة صريح تتبع أثر هو جمع.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | `WebServer` 服务：路由表、回退席位、index 渲染、匹配、生命周期 |
-| — | 不发布运行时不变式伴生入口；路由注册与释放通过同一服务修改同一张路由表，register/dispose 探针只会重复执行实现。真实路由与 HMR 测试负责验证该行为。 |
-| [`src/injections.ts`](src/injections.ts) | 结构化 `IndexInjection` 行与 `renderIndexInjections` 行渲染 |
+| [`src/index.ts`](src/index.ts) | `WebServer` خدمة: توجيه جدول، رجوع مقعد موضع،index تصيير، مطابقة، دورة الحياة |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ توجيه تسجيل و تحرير عبر نفس خدمة تعديل نفس ورقة توجيه جدول،register/dispose استكشاف إبرة فقط سوف تكرار تنفيذ تنفيذ. حقيقي توجيه و HMR اختبار مسؤول تحقق هذا سلوك. |
+| [`src/injections.ts`](src/injections.ts) | بنية تحويل `IndexInjection` سطر و `renderIndexInjections` سطر تصيير |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当服务器约定不够用时阅读以下内容：先看子系统参考，再看回退持有者，以及谁注册哪条路由背后的分层决策。
+عند خادم اتفاق لا كاف استخدام وقت قراءة قراءة التالي محتوى: أولا نظر فرعي نظام مشاركة اعتبار، مجددا نظر رجوع يحتفظ من، و من تسجيل أي بند توجيه خلف بعد قسم طبقة قرار.
 
-- [HTTP 服务器子系统](../../../docs/subsystems/web-server.zh.md)——路由、匹配顺序与服务器接受的配置。
-- [SPA dist 服务器](../frontend-static/README.zh.md)——回退席位的随附持有者。
-- [Web 配置树启动与传输分层](../../../.agents/notes/implemented/architecture/2026-07-24-web-config-tree-boot-and-transport-layering.zh.md)——功能插件为何拥有每条路由。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-host-webserver)——每个受支持配置字段及其源声明。
+- [HTTP خادم فرعي نظام](../../../docs/subsystems/web-server.zh.md)——توجيه، مطابقة ترتيب و خادم قبول إعداد.
+- [SPA dist خادم](../frontend-static/README.zh.md)——رجوع مقعد موضع مع مرفق يحتفظ من.
+- [Web إعداد شجرة بدء و نقل قسم طبقة](../../../.agents/notes/implemented/architecture/2026-07-24-web-config-tree-boot-and-transport-layering.zh.md)——وظيفة إضافة لـ أي يملك كل بند توجيه.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-host-webserver)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该 HTTP 载体只桥接浏览器与 API handler，不注册任何面向模型的内容。
+بلا. هذا HTTP تحميل جسم فقط جسر وصل متصفح و API handler، لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；该包既不组装也不发送提供方请求。
+بلا؛ هذا حزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明服务器在何处有意保持最小。它们是当前包约束，不是任务积压。
+هذه حد شرح خادم في أي موضع متعمد إبقاء الأكثر صغير. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **不提供服务器级 TLS、认证或来源策略**：`dsh-client-connection` 等 route owner 会实施自己的请求策略。绑定非回环地址仍会向该网络公开未受保护的 route 与静态资源。
-- **Socket 选项固定不变**：配置只选择绑定宿主与端口；在具体部署产生需求前，backlog 和其他 socket 设置仍保持内部实现。
+- **لا توفير خادم درجة TLS، إقرار إثبات أو مصدر سياسة**:`dsh-client-connection` انتظار route owner سوف فعلي تطبيق ذاتي ذات طلب سياسة. ربط غير عودة حلقة عنوان ما زال سوف نحو هذا شبكة شبكة عام لم تلقي حفظ حماية route و ساكن حالة مورد.
+- **Socket خيار ثابت ثابت**: إعداد فقط اختيار ربط مضيف و طرف فتحة؛ في أداة جسم نشر إنتاج يحتاج طلب قبل،backlog و أخرى socket ضبط ما زال إبقاء داخلي تنفيذ.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

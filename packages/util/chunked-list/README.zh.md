@@ -1,31 +1,31 @@
 ---
-description: "用于 projection state 的不可变的仅追加列表，提供有界追加复制、按插入顺序迭代和 Zod 检查点校验。"
+description: "لأجل projection state غير ممكن تغيير فقط إلحاق قائمة، توفير محدود إلحاق نسخ، حسب إدراج دخول ترتيب تكرار بديل و Zod فحص نقطة تحقق."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-chunked-list
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-chunked-list` 让调用方追加值并保留早期列表版本，无需复制整个集合。调用方可以按插入顺序迭代所有值，并使用自己的值 schema 校验 JSON 检查点。subagent 目录用它保存不可变的 projection state。
+`dsh-chunked-list` يجعل استدعاء جهة إلحاق قيمة و إبقاء مبكر مدة قائمة إصدار، بلا حاجة نسخ كامل تجميع دمج. استدعاء جهة يمكن حسب إدراج دخول ترتيب تكرار بديل كل قيمة، و استخدام ذاتي ذات قيمة schema تحقق JSON فحص نقطة.subagent دليل استخدام هو حفظ غير ممكن تغيير projection state.
 
-## 目录
+## دليل
 
-- [使用此包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延后工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذا حزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و تأخير بعد عمل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用此包
+## استخدام هذا حزمة
 
-当仅追加集合需要不可变版本和兼容 JSON 的存储时，使用此列表。空列表用 `undefined` 表示；追加返回新的头节点，不修改已有节点。列表按引用共享所存的值，因此调用方必须将这些值视为不可变。
+عند فقط إلحاق تجميع دمج حاجة غير ممكن تغيير إصدار و توافق JSON تخزين وقت، استخدام هذا قائمة. فارغ قائمة استخدام `undefined` يمثل؛ إلحاق إرجاع جديد رأس عقدة، لا تعديل قد لديه عقدة. قائمة حسب مرجع مشترك الذي تخزين قيمة، لذلك استدعاء جهة يجب سوف هذه قيمة نظر لـ غير ممكن تغيير.
 
 ```ts
 import { appendChunkedList, iterateChunkedList } from '@deepseek-ai/dsh-chunked-list'
@@ -35,59 +35,59 @@ const second = appendChunkedList(first, 'second')
 console.log([...iterateChunkedList(second)])
 ```
 
-示例输出 `['first', 'second']`；`first` 仍只包含原来的值。`chunkedListSchema(valueSchema)` 校验 JSON 检查点并拒绝未知字段、无效值和空分片或超大分片。当外层字段也允许空列表时，在 schema 上使用 `.optional()`。各操作详见[源码约定](src/index.ts)。
+عرض مثال إخراج `['first', 'second']`؛`first` ما زال فقط يتضمن أصل قدوم قيمة.`chunkedListSchema(valueSchema)` تحقق JSON فحص نقطة و رفض لم معرفة حقل، بلا فاعلية قيمة و فارغ قسم قطعة أو تجاوز كبير قسم قطعة. عند خارج طبقة حقل أيضا سماح فارغ قائمة وقت، في schema فوق استخدام `.optional()`. كل عملية تفصيل رؤية[شفرة المصدر اتفاق](src/index.ts).
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现内部机制——点击展开</summary>
+<summary>تنفيذ داخلي آلية——انقر للتوسيع</summary>
 
-最新的分片最多存储 64 个值。追加最多复制该分片并共享较旧的节点，工作量为有界 O(1)。容量控制存储布局，不限制列表总长度。迭代以 O(N) 时间访问全部 N 个值，并使用 O(N / 64) 临时空间按从旧到新的顺序访问各分片。追加换片与递归 Zod 校验共用一个容量常量。
+الأكثر جديد قسم قطعة الأكثر كثير تخزين 64 عدد قيمة. إلحاق الأكثر كثير نسخ هذا قسم قطعة و مشترك مقارنة قديم عقدة، عمل كمية لـ محدود O(1). سعة كمية تحكم تخزين تخطيط، لا حد قائمة مجموع طويل درجة. تكرار بديل بـ O(N) وقت وصول الكل N عدد قيمة، و استخدام O(N / 64) مؤقت فضاء حسب من قديم إلى جديد ترتيب وصول كل قسم قطعة. إلحاق تبديل قطعة و تمرير عودة Zod تحقق مشترك استخدام واحد سعة كمية معتاد كمية.
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 持久化列表操作与检查点校验 |
-| [`tests/chunked-list.spec.ts`](tests/chunked-list.spec.ts) | 版本隔离、顺序、结构共享与检查点接受条件 |
+| [`src/index.ts`](src/index.ts) | حفظ دائم قائمة عملية و فحص نقطة تحقق |
+| [`tests/chunked-list.spec.ts`](tests/chunked-list.spec.ts) | إصدار عزل، ترتيب، بنية مشترك و فحص نقطة قبول شرط |
 
-此库没有独立变化的观测值，因此不发布运行时不变式伴随模块；其操作返回调用方拥有的不可变值。
+هذا مكتبة لا يوجد مستقل تغير مراقبة قياس قيمة، لذلك لا إصدار وقت التشغيل ثابت صيغة مرافق مع وحدة؛ ذلك عملية إرجاع استدعاء جهة يملك غير ممكن تغيير قيمة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [工具包映射](../README.zh.md)——共享原语。
-- [Subagent 目录决策](../../../.agents/notes/implemented/architecture/2026-09-01-parent-owned-subagent-catalog.zh.md)——projection state 使用分片的原因。
+- [أداة حزمة خريطة](../README.zh.md)——مشترك أصل لغة.
+- [Subagent دليل قرار](../../../.agents/notes/implemented/architecture/2026-09-01-parent-owned-subagent-catalog.zh.md)——projection state استخدام قسم قطعة سبب.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为此集合不注册任何面向模型的内容。
+بلا، لأن هذا تجميع دمج لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-本包没有内容进入模型请求，因此不影响提供方缓存复用。
+هذه الحزمة لا يوجد محتوى دخول نموذج طلب، لذلك لا أثر مزود ذاكرة مؤقتة إعادة استخدام.
 
-## 已知限制与延后工作
+## معروف حد و تأخير بعد عمل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **仅追加访问**——需要删除或随机访问的调用方应使用其他集合。
-- **递归检查点**——JSON 序列化与 schema 校验仍受运行时嵌套深度限制。所存的值本身必须支持调用方的序列化格式。
+- **فقط إلحاق وصول**——حاجة حذف أو مع آلة وصول استدعاء جهة ينبغي استخدام أخرى تجميع دمج.
+- **تمرير عودة فحص نقطة**——JSON تسلسل تحويل و schema تحقق ما زال تلقي وقت التشغيل تضمين طقم عميق درجة حد. الذي تخزين قيمة ذاته يجب دعم حمل استدعاء جهة تسلسل تحويل صيغة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

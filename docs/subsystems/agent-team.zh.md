@@ -1,12 +1,12 @@
 # Agent Teams
 
-[English](agent-team.md) | 中文
+[English](agent-team.md) | العربية
 
-实验性隐式 Root Team 领域、模型工具与宿主适配器共享的类型。[Agent Teams Agent Note](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md)负责身份、mailbox、task 与共享 checkout 决策；本页记录 [`packages/experimental/agent-team/src/types.ts`](../../packages/experimental/agent-team/src/types.ts) 中的字面持久形式。
+فعلي تحقق صفة خفي صيغة Root Team مجال، نموذج أداة و مضيف مهايئ مشترك نوع.[Agent Teams Agent Note](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md) مسؤول هوية،mailbox،task و مشترك checkout قرار؛ هذا صفحة سجل [`packages/experimental/agent-team/src/types.ts`](../../packages/experimental/agent-team/src/types.ts) في حرف وجه حمل دائم شكل صيغة.
 
-## 身份与 roster
+## هوية و roster
 
-`TeamId` 是具有独立[品牌](core.zh.md#branded-ids)的 Root `SessionId`。`TeamTaskId` 在 Team 内按 `task-<n>` 单调分配；`TeamMessageId` 是全局随机值。teammate 的 Session id 始终是持久身份，而 `name` 是不可变的模型／UI 标签。
+`TeamId` هو أداة لديه مستقل[صنف لوحة](core.zh.md#branded-ids) Root `SessionId`.`TeamTaskId` في Team داخل حسب `task-<n>` مفرد ضبط قسم إعداد؛`TeamMessageId` هو عام مع آلة قيمة.teammate Session id بداية نهاية هو حمل دائم هوية، بينما `name` هو غير ممكن تغيير نموذج/UI وسم.
 
 ```ts type-equiv
 /** Whole durable value written on every teammate lifecycle change. */
@@ -21,11 +21,11 @@ interface TeamMemberSnapshot {
 }
 ```
 
-每个 member 都从 `provisioning` 开始，并且只到达一个终态 roster phase：`active` 或 `failed`。运行时 `running`／`idle`／`inactive` 状态单独派生，绝不会重写该记录。
+كل member كل من `provisioning` بدء، و كما فقط وصول واحد نهاية حالة roster phase:`active` أو `failed`. وقت التشغيل `running`/`idle`/`inactive` حالة مفرد وحيد إرسال توليد، أبدا سوف إعادة كتابة هذا سجل.
 
-## 持久 mailbox
+## حمل دائم mailbox
 
-Lead Session 首先存储完整 queued message。只有 target 的 pending inbox 条目或已记录用户消息完成持久化，才会写入独立 acknowledgement event，queued-minus-delivered 因而构成恢复 mailbox。
+Lead Session أول أولا تخزين كامل queued message. فقط لديه target pending inbox بند أو قد سجل مستخدم رسالة إتمام حفظ دائم، عندئذ سوف كتابة مستقل acknowledgement event،queued-minus-delivered بسبب بينما بنية صار استعادة mailbox.
 
 ```ts type-equiv
 /** One peer message retained until its target Session records it. */
@@ -38,9 +38,9 @@ interface TeamMessageSnapshot {
 }
 ```
 
-每条消息都会尝试 Steer 投递。running target 在最近的步骤边界收到消息，idle target 启动一个轮次，inactive teammate 则冷恢复。调用方不能选择其他模式，因此持久记录不存储调度方式。
+كل بند رسالة كل سوف محاولة تجربة Steer إلقاء تمرير.running target في الأكثر قريب خطوة حد استلام إلى رسالة،idle target بدء واحد جولة،inactive teammate فإن بارد استعادة. استدعاء جهة لا يستطيع اختيار أخرى نمط، لذلك حمل دائم سجل لا تخزين ضبط درجة طريقة.
 
-target Session 会在 pending inbox 条目和最终用户消息上保留消息身份与发送者归因。跨 inbox 与历史折叠该 source 构成 target 侧去重键；模型可见的 framing 会重复 id 和发送者。
+target Session سوف في pending inbox بند و نهائي مستخدم رسالة فوق إبقاء رسالة هوية و إرسال من عودة بسبب. عبر inbox و تاريخ طي هذا source بنية صار target جانب ذهاب إعادة مفتاح؛ نموذج مرئي framing سوف تكرار id و إرسال من.
 
 ```ts type-equiv
 /** Source retained by the target Session for durable mailbox de-duplication. */
@@ -53,9 +53,9 @@ interface TeamMessageSource {
 }
 ```
 
-## 共享任务 DAG
+## مشترك مهمة DAG
 
-每条 task event 都存储完整快照。`revision` 是 compare-and-set 值，每次变更递增 1。`blockedBy` edge 必须指向未删除任务，并维持无环图。`writeScopes` 是规范化的提示性路径前缀，不是锁。
+كل بند task event كل تخزين كامل لقطة.`revision` هو compare-and-set قيمة، كل مرة تغيير تمرير زيادة 1.`blockedBy` edge يجب إشارة نحو لم حذف مهمة، و صيانة حمل بلا حلقة رسم.`writeScopes` هو مواصفة تحويل تلميح صفة مسار بادئة، لا هو قفل.
 
 ```ts type-equiv
 /** Whole durable task snapshot; every mutation increments {@link revision}. */
@@ -71,11 +71,11 @@ interface TeamTaskSnapshot {
 }
 ```
 
-`pending` 表示尚未开始或已经释放，`in_progress` 携带 owner，`completed` 满足 blocker，`deleted` 是保留的 tombstone。view 会添加 owner name、readiness 和 write-scope 重叠警告，但不会改变持久快照。
+`pending` يمثل بعد لم بدء أو قد تحرير،`in_progress` يحمل owner،`completed` ممتلئ كاف blocker،`deleted` هو إبقاء tombstone.view سوف إضافة owner name،readiness و write-scope إعادة تراكم تحذير إبلاغ، لكن لن تغيير حمل دائم لقطة.
 
-## 回放
+## إعادة تشغيل
 
-`foldTeam()` 把一个 Root Session 回放成每个 Team 操作所读取的 roster、任务板与 queued-minus-delivered mailbox。它按 `TeamId` 选取记录，因此普通 fork 继承的 event 保留 ancestor id，绝不会进入新 Root 的状态。Session event 的 `seq` 与 `time` 继续负责顺序和时间记录，Team snapshot 不再重复保存它们。roster 与 task 读取以 view 形式到达调用方，而 pending 邮件仅供投递与恢复内部使用。包 [README](../../packages/experimental/agent-team/README.zh.md)负责 operation、authorization、recovery 和限制行为。
+`foldTeam()` يأخذ واحد Root Session إعادة تشغيل صار كل Team عملية الذي قراءة roster، مهمة لوح و queued-minus-delivered mailbox. هو حسب `TeamId` اختيار أخذ سجل، لذلك عادي fork وراثة event إبقاء ancestor id، أبدا سوف دخول جديد Root حالة.Session event `seq` و `time` متابعة مسؤول ترتيب و وقت سجل،Team snapshot لم يعد تكرار حفظ هو جمع.roster و task قراءة بـ view شكل صيغة وصول استدعاء جهة، بينما pending بريد عنصر فقط توفير إلقاء تمرير و استعادة داخلي استخدام. حزمة [README](../../packages/experimental/agent-team/README.zh.md) مسؤول operation،authorization،recovery و حد سلوك.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

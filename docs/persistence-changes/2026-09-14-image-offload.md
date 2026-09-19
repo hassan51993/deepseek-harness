@@ -5,7 +5,7 @@ kind: persistence-change
 
 # 2026-09-14-image-offload
 
-English | [中文](2026-09-14-image-offload.zh.md)
+English | [العربية](2026-09-14-image-offload.zh.md)
 
 ## Summary
 

@@ -1,112 +1,112 @@
 ---
-description: "dsh Web 客户端的已归档会话设置页：把注册表全局归档集合呈现为可搜索列表，每行提供一个取消归档操作。"
+description: "dsh Web عميل قد عودة ملف جلسة ضبط صفحة: يأخذ سجل التسجيل عام عودة ملف تجميع دمج عرض لـ يمكن بحث قائمة، كل سطر توفير واحد إلغاء عودة ملف عملية."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-settings-unarchive-sessions
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-**已归档会话**设置页是从 Workspace 导航中隐藏的会话的恢复入口。它按归档时间由新到旧列出每个已归档会话，并显示其所属 Workspace 与最近活动时间，每行提供一个取消归档操作。搜索框按会话标题或 Workspace 名称过滤列表。行由归档集合与已加载的 Session 摘要合并而来，因此会话记录已不存在的归档条目既没有行也没有操作。每次恢复都经由共享的 Workspace 命令。
+**قد عودة ملف جلسة**ضبط صفحة هو من Workspace تنقل في إخفاء جلسة استعادة مدخل. هو حسب عودة ملف وقت من جديد إلى قديم صف خروج كل قد عودة ملف جلسة، و عرض ذلك الذي تابع Workspace و الأكثر قريب نشط حركة وقت، كل سطر توفير واحد إلغاء عودة ملف عملية. بحث إطار حسب جلسة عنوان أو Workspace اسم مرور ترشيح قائمة. سطر من عودة ملف تجميع دمج و قد تحميل Session ملخص دمج بينما قدوم، لذلك جلسة سجل قد لا وجود عودة ملف بند حيث لا يوجد سطر أيضا لا يوجد عملية. كل مرة استعادة كل مرور من مشترك Workspace أمر.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-打开设置并选择**已归档会话**，即可看到当前从所有分组视图中隐藏的会话。在已提供设置外壳、Workspace 服务与 Session 列表的 Web 组合中挂载 `@deepseek-ai/dsh-client-ui-settings-unarchive-sessions`；该页面注册自己的导航条目，无需配置。
+فتح ضبط و اختيار**قد عودة ملف جلسة**، يكفي يرى حالي من كل قسم مجموعة عرض في إخفاء جلسة. في قد توفير ضبط خارج قشرة،Workspace خدمة و Session قائمة Web تركيب في تركيب `@deepseek-ai/dsh-client-ui-settings-unarchive-sessions`؛ هذا صفحة تسجيل ذاتي ذات تنقل بند، بلا حاجة إعداد.
 
-### 阅读一行
+### قراءة قراءة واحد سطر
 
-每行显示会话的显示标题、为其记账的 Workspace 标题或未分组标签，以及以紧凑相对时间表示的最近活动。页面把最近归档的会话排在前面，与持久归档顺序相反。页面会先等待 Session 列表再渲染行；列表加载期间显示读取状态，而不是空归档。空归档、归档条目均无已加载 Session 可恢复、以及查询无匹配分别给出三种提示，因此搜索和不可寻址的条目都不会被误认为归档为空。
+كل سطر عرض جلسة عرض عنوان، لـ ذلك تسجيل حساب Workspace عنوان أو لم قسم مجموعة وسم، و بـ ضيق تجميع متبادل مقابل وقت يمثل الأكثر قريب نشط حركة. صفحة يأخذ الأكثر قريب عودة ملف جلسة ترتيب في قبل وجه، و حمل دائم عودة ملف ترتيب متبادل عكس. صفحة سوف أولا انتظار Session قائمة مجددا تصيير سطر؛ قائمة تحميل خلال عرض قراءة حالة، بينما لا هو فارغ عودة ملف. فارغ عودة ملف، عودة ملف بند متساو بلا قد تحميل Session يمكن استعادة، و استعلام بلا مطابقة قسم آخر إعطاء خروج ثلاثة نوع تلميح، لذلك بحث و غير ممكن بحث عنوان بند كل لن يتم خطأ إقرار لـ عودة ملف لـ فارغ.
 
-### 恢复会话
+### استعادة جلسة
 
-取消归档会把会话恢复到其 Workspace 下记录的位置；会话不属于任何 Workspace 时则恢复到未分组会话中，该行随即从页面消失。该操作调用 `ctx.uiWorkspace.unarchiveSession`，其回传的完整归档集合会更新所有依据它过滤的界面，因此会话也会重新出现在侧边栏与搜索中。调用被拒绝时会记录一条 console 诊断，并保留该行以便再次尝试。
+إلغاء عودة ملف سوف يأخذ جلسة استعادة إلى ذلك Workspace تحت سجل موضع؛ جلسة لا يخص أي Workspace وقت فإن استعادة إلى لم قسم مجموعة جلسة في، هذا سطر مع أي من صفحة إزالة فقد. هذا عملية استدعاء `ctx.uiWorkspace.unarchiveSession`، ذلك عودة نقل كامل عودة ملف تجميع دمج سوف تحديث كل اعتماد حسب هو مرور ترشيح واجهة، لذلك جلسة أيضا سوف إعادة ظهور في جانب حافة شريط و بحث في. استدعاء يتم رفض وقت سوف سجل واحد بند console تشخيص، و إبقاء هذا سطر بـ سهل مجددا مرة محاولة تجربة.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-页面是 id 为 `archived-sessions` 的一个本地化 `settings.section` 贡献；导航条目、模态框与挂载的分区都归设置外壳所有，不在此包内。
+صفحة هو id لـ `archived-sessions` واحد محلي تحويل `settings.section` مساهمة؛ تنقل بند، نموذج حالة إطار و تركيب قسم منطقة كل عودة ضبط خارج قشرة كل، لا في هذا حزمة داخل.
 
-### 注册与数据来源
+### تسجيل و بيانات مصدر
 
-`apply()` 注册并绑定 locale namespace，再用 `ctx.slots.inject()` 贡献该分区，因此延迟声明或恢复声明的 slot 依然能触达它。页面从 `useWorkspaces` 读取 `state.archivedSessionIds` 与 `state.items`，从 `useSessions` 读取 Session 摘要；它不持有 store 也不持有 transport，唯一的写入是注册处以 `ctx.uiWorkspace.unarchiveSession` 闭包注入的 `unarchive` 回调。
+`apply()` تسجيل و ربط locale namespace، مجددا استخدام `ctx.slots.inject()` مساهمة هذا قسم منطقة، لذلك تأخير متأخر إعلان أو استعادة إعلان slot اعتماد لكن قدرة لمس بلوغ هو. صفحة من `useWorkspaces` قراءة `state.archivedSessionIds` و `state.items`، من `useSessions` قراءة Session ملخص؛ هو لا يحتفظ store أيضا لا يحتفظ transport، وحيد كتابة هو تسجيل موضع بـ `ctx.uiWorkspace.unarchiveSession` إغلاق حزمة حقن `unarchive` عودة ضبط.
 
-### 行的派生
+### سطر إرسال توليد
 
-行由归档集合与已加载摘要合并派生：没有摘要的成员不产生行，因此在 Workspace 注册表之外被删除的会话不会留下取消归档操作。Workspace 归属从各 Workspace 的 `sessionIds` 读取；不属于任何 Workspace 的成员以未分组标签渲染。搜索只规范化一次查询，并与行标题和 Workspace 标签匹配。
+سطر من عودة ملف تجميع دمج و قد تحميل ملخص دمج إرسال توليد: لا يوجد ملخص عضو لا إنتاج سطر، لذلك في Workspace سجل التسجيل خارج يتم حذف جلسة لن إبقاء تحت إلغاء عودة ملف عملية.Workspace ملكية من كل Workspace `sessionIds` قراءة؛ لا يخص أي Workspace عضو بـ لم قسم مجموعة وسم تصيير. بحث فقط مواصفة تحويل مرة استعلام، و و سطر عنوان و Workspace وسم مطابقة.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 宿主 loader 入口：该页面仅供浏览器使用，因此插件体为空 |
-| [`src/client/index.ts`](src/client/index.ts) | 浏览器插件：locale namespace、分区注册、注入的取消归档操作 |
-| [`src/client/ArchivedSessionsSection.tsx`](src/client/ArchivedSessionsSection.tsx) | 页面组件：行的派生、搜索、每行的取消归档 |
-| [`src/client/locales.ts`](src/client/locales.ts) | 全部可见与无障碍字符串的中英文字典 |
-| [`src/client/ArchivedSessionsSection.module.css`](src/client/ArchivedSessionsSection.module.css) | 页面样式 |
+| [`src/index.ts`](src/index.ts) | مضيف loader مدخل: هذا صفحة فقط توفير متصفح استخدام، لذلك إضافة جسم لـ فارغ |
+| [`src/client/index.ts`](src/client/index.ts) | متصفح إضافة:locale namespace، قسم منطقة تسجيل، حقن إلغاء عودة ملف عملية |
+| [`src/client/ArchivedSessionsSection.tsx`](src/client/ArchivedSessionsSection.tsx) | صفحة مكون: سطر إرسال توليد، بحث، كل سطر إلغاء عودة ملف |
+| [`src/client/locales.ts`](src/client/locales.ts) | الكل مرئي و بلا عائق عائق نص في إنجليزي نص حرف قاموس |
+| [`src/client/ArchivedSessionsSection.module.css`](src/client/ArchivedSessionsSection.module.css) | صفحة مثال صيغة |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-以下页面覆盖承载该页面的设置界面、其背后的归档写入，以及它所渲染的状态。
+التالي صفحة تغطية تحمل تحميل هذا صفحة ضبط واجهة، ذلك خلف بعد عودة ملف كتابة، و هو الذي تصيير حالة.
 
-- [ui-settings](../ui-settings/README.zh.md)——声明 `settings.section` 与 namespace scope 服务的领域底座。
-- [ui-settings-general](../ui-settings-general/README.zh.md)——渲染导航并挂载该分区的设置外壳。
-- [ui-workspace](../ui-workspace/README.zh.md)——其 Session 行负责归档的侧边栏浏览器，以及本页面借以恢复的 `ctx.uiWorkspace` 服务。
-- [Workspace Controller](../../api/workspace-controller/README.zh.md)——`workspace.unarchiveSession` Remote 与持有归档集合的 Client model。
-- [Workspace 子系统](../../../docs/subsystems/workspace.zh.md)——持久归档集合、其领域字段，以及恢复背后的注册表操作。
+- [ui-settings](../ui-settings/README.zh.md)——إعلان `settings.section` و namespace scope خدمة مجال قاع مقعد.
+- [ui-settings-general](../ui-settings-general/README.zh.md)——تصيير تنقل و تركيب هذا قسم منطقة ضبط خارج قشرة.
+- [ui-workspace](../ui-workspace/README.zh.md)——ذلك Session سطر مسؤول عودة ملف جانب حافة شريط متصفح، و هذا صفحة استعارة بـ استعادة `ctx.uiWorkspace` خدمة.
+- [Workspace Controller](../../api/workspace-controller/README.zh.md)——`workspace.unarchiveSession` Remote و يحتفظ عودة ملف تجميع دمج Client model.
+- [Workspace فرعي نظام](../../../docs/subsystems/workspace.zh.md)——حمل دائم عودة ملف تجميع دمج، ذلك مجال حقل، و استعادة خلف بعد سجل التسجيل عملية.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该包是浏览器端 UI 插件层，不注册任何面向模型的内容。
+بلا. هذا حزمة هو متصفح طرف UI إضافة طبقة، لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；该包既不组装也不发送提供方请求。
+بلا؛ هذا حزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制界定本页面能够恢复哪些已归档会话；它们是当前包约束。
+هذه حد حد تحديد هذا صفحة قدرة كاف استعادة أي بعض قد عودة ملف جلسة؛ هو جمع هو حالي حزمة قيد.
 
-- **已加载摘要缺失的已归档会话无法寻址**：页面通过与 Session 列表合并来派生行，因此列表未携带的成员没有行也没有取消归档操作，尽管归档集合仍持有它；当集合中的成员全部处于该状态时，页面报告无法恢复，而不是报告归档为空。
-- **页面只列出会话，不提供会话删除**：归档可通过本页面恢复，而删除会话记录仍是彼此独立的能力。
+- **قد تحميل ملخص ناقص قد عودة ملف جلسة لا يمكن بحث عنوان**: صفحة عبر و Session قائمة دمج قدوم إرسال توليد سطر، لذلك قائمة لم يحمل عضو لا يوجد سطر أيضا لا يوجد إلغاء عودة ملف عملية، كل إدارة عودة ملف تجميع دمج ما زال يحتفظ هو؛ عند تجميع دمج في عضو الكل موضع في هذا حالة وقت، صفحة تقرير إبلاغ لا يمكن استعادة، بينما لا هو تقرير إبلاغ عودة ملف لـ فارغ.
+- **صفحة فقط صف خروج جلسة، لا توفير جلسة حذف**: عودة ملف يمكن عبر هذا صفحة استعادة، بينما حذف جلسة سجل ما زال هو ذاك هذا مستقل قدرة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。本包是浏览器端设置页，只注册一个本地化 `settings.section` 贡献及其 locale namespace；它不发出 Cordis 事件，也不持有跨插件可变关系。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذه الحزمة هو متصفح طرف ضبط صفحة، فقط تسجيل واحد محلي تحويل `settings.section` مساهمة و ذلك locale namespace؛ هو لا إرسال خروج Cordis حدث، أيضا لا يحتفظ عبر إضافة متغير علاقة.

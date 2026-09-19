@@ -1,93 +1,93 @@
-# Agent Note: 持久、仅限 Session 内的提醒
+# Agent Note: حمل دائم، فقط حد Session داخل رفع تنبيه
 
 Status: implemented
 
-[English](2026-08-05-durable-web-schedule.md) | 中文
+[English](2026-08-05-durable-web-schedule.md) | العربية
 
-## 问题
+## مشكلة
 
-在对话中创建的提醒必须始终归属于确切的那个 Session，并且跨进程重启存活。进程本地 timer 或 inbox 项无法提供这种持久性，而全局 scheduler 或私有数据库又会引入第二套身份、持久化和生命周期系统。
+في محادثة في إنشاء رفع تنبيه يجب بداية نهاية ملكية في تأكيد قطع ذلك عدد Session، و كما عبر عملية إعادة بدء تخزين نشط. عملية محلي timer أو inbox بند لا يمكن توفير هذا نوع حمل دائم صفة، بينما عام scheduler أو خاص قاعدة بيانات أيضا سوف جذب دخول ثاني طقم هوية، حفظ دائم و دورة الحياة نظام.
 
-繁忙的 Agent（智能体）、长等待、墙钟变化、cold Session、fork、持久化失败、绝对日历输入和资源释放，使简单 timeout 无法满足要求。设计必须区分持久记录与可丢弃的 live wait，阻止 fork 继承父 Session 的活动提醒，并避免把 Schedule 专属的呈现或时区状态扩散到无关组件。
+كثيف مشغول Agent(ذكي جسم) ، طويل انتظار، جدار ساعة تغير،cold Session،fork، حفظ دائم فشل، قطعا مقابل يوم تاريخ إدخال و مورد تحرير، جعل بسيط مفرد timeout لا يمكن ممتلئ كاف اشتراط. تصميم يجب منطقة قسم حمل دائم سجل و يمكن إسقاط live wait، منع توقف fork وراثة أب Session نشط حركة رفع تنبيه، و تجنب تجنب يأخذ Schedule مخصص تابع عرض أو وقت منطقة حالة توسيع تفرق إلى غير متصل مكون.
 
-## 决策
+## قرار
 
-[Schedule 指南](../../../../docs/user/guide/schedule.zh.md)使用显式加载 `@deepseek-ai/dsh-time-context` 与 `@deepseek-ai/dsh-schedule`，并启用 Web bundle 中默认 disabled 的 `ui-schedule` row 的 overlay。默认 Web 启动图不会激活 Schedule。Schedule 只观察插件加载后发布的根 Agent，并在该 Agent scope 中安装三个工具和一个可丢弃 owner。cold history 读取、已发布的根、child Agent 与其他 host 都不会激活 runtime。
+[Schedule إشارة جنوب](../../../../docs/user/guide/schedule.zh.md) استخدام صريح تحميل `@deepseek-ai/dsh-time-context` و `@deepseek-ai/dsh-schedule`، و تفعيل Web bundle في افتراضي disabled `ui-schedule` row overlay. افتراضي Web بدء رسم لن تنشيط Schedule.Schedule فقط مراقبة إضافة تحميل بعد إصدار أصل Agent، و في هذا Agent scope في تثبيت ثلاثة عدد أداة و واحد يمكن إسقاط owner.cold history قراءة، قد إصدار أصل،child Agent و أخرى host كل لن تنشيط runtime.
 
-用户可见边界是 `session-local`：原 Session 只有在 live 时才会准时运行提醒，cold 期间不发送任何外部通知；该 Session 再次 live 后才会处理 overdue 提醒。到期工作会等待 Agent 完全 idle，再通过 `followup()` 进入普通的下一轮队列；它绝不会中途引导当前轮次，也没有独立 Web 回执（[对话式交付](../../archived/simplification/2026-08-09-conversational-schedule-delivery.md)）。
+مستخدم مرئي حد هو `session-local`: أصل Session فقط لديه في live وقت عندئذ سوف دقيق وقت تشغيل رفع تنبيه،cold خلال لا إرسال أي خارجي إشعار؛ هذا Session مجددا مرة live بعد عندئذ سوف معالجة overdue رفع تنبيه. إلى مدة عمل سوف انتظار Agent تماما idle، مجددا عبر `followup()` دخول عادي تحت واحد جولة طابور صف؛ هو أبدا سوف في طريق جذب توجيه حالي جولة، أيضا لا يوجد مستقل Web عودة تنفيذ ([محادثة صيغة تسليم](../../archived/simplification/2026-08-09-conversational-schedule-delivery.md)).
 
-| 场景 | 持久事实 | live 行为 | 用户可见结果 |
+| مشهد | حمل دائم واقع | live سلوك | مستخدم مرئي نتيجة |
 | --- | --- | --- | --- |
-| 创建与管理 | 原 Session 中的 `schedule/change` create／delete | Agent-scoped 工具在读取前、变更后执行 checkpoint | 稳定 id、UTC 目标、状态与 `session-local` 说明 |
-| 到期时繁忙 | 活动 create 仍在 fold 中 | owner 等待 idle maintenance，排入一个 follow-up，再追加 dispatch | 后续一个普通对话轮次 |
-| 多条 Every 记录逾期 | 每条活动记录都保留最早一个尚未接受且与锚点对齐的目标 | 一次决策选择每条记录的最新发生时点，并将其推进到当前时刻之后 | 一个普通 follow-up，其中每条记录各有一个发生时点 |
-| 进程停止或 Session cold | 活动 create 仍在 persistence 中 | 不存在 timer 或后台扫描；resume 重建 owner | 未来目标继续等待；overdue 目标会被尝试 |
-| fork | 父 event 留在继承前缀 | child fold 从精确 `inheritedEventCount` 开始 | 父工作不会在 child 中变为活动状态 |
+| إنشاء و إدارة | أصل Session في `schedule/change` create/delete | Agent-scoped أداة في قراءة قبل، تغيير بعد تنفيذ checkpoint | مستقر id،UTC هدف، حالة و `session-local` شرح |
+| إلى مدة وقت كثيف مشغول | نشط حركة create ما زال في fold في | owner انتظار idle maintenance، ترتيب دخول واحد follow-up، مجددا إلحاق dispatch | لاحق واحد عادي محادثة جولة |
+| كثير بند Every سجل تجاوز مدة | كل بند نشط حركة سجل كل إبقاء الأكثر مبكر واحد بعد لم قبول كما و مرساة نقطة مقابل متساو هدف | مرة قرار اختيار كل بند سجل الأكثر جديد حدوث وقت نقطة، و سوف ذلك دفع دخول إلى حالي وقت لحظة بعد | واحد عادي follow-up، منها كل بند سجل كل لديه واحد حدوث وقت نقطة |
+| عملية إيقاف أو Session cold | نشط حركة create ما زال في persistence في | لا وجود timer أو خلفية مسح؛resume إعادة بناء owner | لم قدوم هدف متابعة انتظار؛overdue هدف سوف يتم محاولة تجربة |
+| fork | أب event إبقاء في وراثة بادئة | child fold من دقيق `inheritedEventCount` بدء | أب عمل لن في child في تغيير لـ نشط حركة حالة |
 
-### Session 日志权威与工具
+### Session سجل مرجعي و أداة
 
-版本 1 `schedule/change` stream 是唯一持久的 Schedule 权威。create 记录拥有一个 Session 内不复用的品牌 id、trim 后的提示词、规则判别字段和 UTC 目标。delete 与一次性 dispatch 是终结转换。Every dispatch 会存储 id 与决策时点，使 fold 将该记录直接推进到错过的发生时点之后。严格 decoder 与纯 fold 会拒绝未知版本、额外字段、重复使用的 id、形状不匹配的 dispatch，以及针对非活动记录的转换。普通 Session 折叠完整 stream；fork 只折叠传入 projection 初始化的 `inheritedEventCount` 位置及其后的 event。
+إصدار 1 `schedule/change` stream هو وحيد حمل دائم Schedule مرجعي.create سجل يملك واحد Session داخل لا إعادة استخدام صنف لوحة id،trim بعد نص التوجيه، قاعدة حكم آخر حقل و UTC هدف.delete و مرة صفة dispatch هو نهاية ربط تحويل.Every dispatch سوف تخزين id و قرار وقت نقطة، جعل fold سوف هذا سجل مباشر دفع دخول إلى خطأ مرور حدوث وقت نقطة بعد. صارم إطار decoder و صاف fold سوف رفض لم معرفة إصدار، مقدار خارج حقل، تكرار استخدام id، شكل حالة لا مطابقة dispatch، و إبرة مقابل غير نشط حركة سجل تحويل. عادي Session طي كامل stream؛fork فقط طي نقل دخول projection ابتدائي تحويل `inheritedEventCount` موضع و ذلك بعد event.
 
-`ctx.sessionProjections` 存在时，Schedule 会注册一个复用同一 transition 的严格单元，并发布完整的活动 `ScheduleRecord[]`；共享的 [projection state 决策](../../archived/architecture/2026-08-19-session-projection-state-and-client-views.md)拥有其初始化与 restore 约定。损坏的持久输入会使既有读取路径失败，而不会产生部分数组。浏览器安全的记录词汇通过纯类型子路径 `@deepseek-ai/dsh-schedule/client` 暴露。
+`ctx.sessionProjections` وجود وقت،Schedule سوف تسجيل واحد إعادة استخدام نفس transition صارم إطار وحدة، تزامن نشر كامل نشط حركة `ScheduleRecord[]`؛ مشترك [projection state قرار](../../archived/architecture/2026-08-19-session-projection-state-and-client-views.md) يملك ذلك ابتدائي تحويل و restore اتفاق. ضرر تالف حمل دائم إدخال سوف جعل قائم قراءة مسار فشل، بينما لن إنتاج جزء عدد مجموعة. متصفح أمان سجل مفردات عبر صاف نوع فرعي مسار `@deepseek-ai/dsh-schedule/client` كشف.
 
-当前规则 union 接受非空提示词和恰好一个 selector。`after_seconds` 是正的安全整数 delay，其记录为 `{ id, kind: 'after', prompt, afterSeconds, scheduledAt }`。`at` 可以是带 `Z` 或数值偏移量且严格符合 RFC 3339 的值，也可以是带显式时区的结构化 `{ date, time, time_zone }`；其记录为 `{ id, kind: 'at', prompt, scheduledAt }`。`every_seconds` 是不小于 300 的安全整数，其 `{ id, kind: 'every', prompt, everySeconds, scheduledAt }` 记录始终与从创建时刻加一个间隔开始的序列对齐。一次性 dispatch 只存储 id；Every dispatch 存储 `id + acceptedAt`。工具值派生 `scheduled` 或 `overdue`，并包含 `deliveryMode: 'session-local'`。
+حالي قاعدة union قبول غير فارغ نص التوجيه و تماما جيد واحد selector.`after_seconds` هو صحيح أمان كامل عدد delay، ذلك سجل لـ `{ id, kind: 'after', prompt, afterSeconds, scheduledAt }`.`at` يمكن هو حمل `Z` أو عدد قيمة انحراف نقل كمية كما صارم إطار رمز دمج RFC 3339 قيمة، أيضا يمكن هو حمل صريح وقت منطقة بنية تحويل `{ date, time, time_zone }`؛ ذلك سجل لـ `{ id, kind: 'at', prompt, scheduledAt }`.`every_seconds` هو لا صغير في 300 أمان كامل عدد، ذلك `{ id, kind: 'every', prompt, everySeconds, scheduledAt }` سجل بداية نهاية و من إنشاء وقت لحظة إضافة واحد بين فصل بدء تسلسل مقابل متساو. مرة صفة dispatch فقط تخزين id؛Every dispatch تخزين `id + acceptedAt`. أداة قيمة إرسال توليد `scheduled` أو `overdue`، و يتضمن `deliveryMode: 'session-local'`.
 
-一个 Agent-scoped FIFO 会将管理事务与 live owner 的到期事务从 preflight 到 post-append barrier 全程串行化。每项工具读取都会先等待 `ctx.sessions.flush(session)`。create 会尽可能在进入 FIFO 前拒绝输入形状错误，随后执行 preflight、分配 id、追加记录并再次 checkpoint。delete 会在进入 FIFO 前验证 id，在判断其是否活动前执行 preflight，并且只在追加后再次 checkpoint。list 与 not-found delete 绝不会根据未经确认的 live 后缀作答。barrier 失败会返回 `persistence_uncertain`，而不是猜测 eager write 是否已经提交。
+واحد Agent-scoped FIFO سوف سوف إدارة أمر خدمة و live owner إلى مدة أمر خدمة من preflight إلى post-append barrier كل مسار سلسلة سطر تحويل. كل بند أداة قراءة كل سوف أولا انتظار `ctx.sessions.flush(session)`.create سوف كل ممكن في دخول FIFO قبل رفض إدخال شكل حالة خطأ، مع بعد تنفيذ preflight، قسم إعداد id، إلحاق سجل و مجددا مرة checkpoint.delete سوف في دخول FIFO قبل تحقق id، في حكم قطع ذلك هل نشط حركة قبل تنفيذ preflight، و كما فقط في إلحاق بعد مجددا مرة checkpoint.list و not-found delete أبدا سوف أصل حسب لم مرور تأكيد live بعد لاحقة عمل جواب.barrier فشل سوف إرجاع `persistence_uncertain`، بينما لا هو تخمين قياس eager write هل قد إيداع.
 
-每次成功的管理 preflight 也会要求 live owner 重新计算。因此，如果先前的 post-append 被拒绝，后续 list 可以确认保留的 create 并将其 arm，而无需私有的 persistence 重试 timer。
+كل مرة نجاح إدارة preflight أيضا سوف اشتراط live owner إعادة حساب حساب. لذلك، إذا أولا قبل post-append يتم رفض، لاحق list يمكن تأكيد إبقاء create و سوف ذلك arm، بينما بلا حاجة خاص persistence إعادة محاولة timer.
 
-### 显式绝对时间边界
+### صريح قطعا مقابل وقت حد
 
-自然语言解释与 Schedule 解析被有意分开（[时区简化](../simplification/2026-08-09-explicit-schedule-time-zone.zh.md)）。每条浏览器提示词只在其对应的持久 user message 上携带由 Host 校验过的 IANA 时区。Time-context 会告诉模型，把未明确限定时区的日期和时间解释为该时区。Schedule 既不导入该插件，也不存储 Session 时区：模型必须把其解释结果转换为带偏移量的 RFC 3339 值，或带显式 `time_zone` 的本地对象。
+ذاتي لكن لغة حل تفسير و Schedule تحليل يتم متعمد قسم فتح ([وقت منطقة بسيط تحويل](../simplification/2026-08-09-explicit-schedule-time-zone.zh.md)). كل بند متصفح نص التوجيه فقط في ذلك مقابل حمل دائم user message فوق يحمل من Host تحقق مرور IANA وقت منطقة.Time-context سوف إبلاغ إبلاغ نموذج، يأخذ لم واضح حد تحديد وقت منطقة يوم مدة و وقت حل تفسير لـ هذا وقت منطقة.Schedule حيث لا استيراد هذا إضافة، أيضا لا تخزين Session وقت منطقة: نموذج يجب يأخذ ذلك حل تفسير نتيجة تحويل لـ حمل انحراف نقل كمية RFC 3339 قيمة، أو حمل صريح `time_zone` محلي كائن.
 
-Schedule 会校验精确的日历形状、偏移量、时区名称，以及一个严格位于未来、年份为四位数的时点。落在夏令时缺口内的本地时间会被拒绝；遇到重叠时会选择第一次出现的较早时点。创建成功后只存储规范化后的 UTC `scheduledAt`，不会存储原始偏移量、本地字段或时区。
+Schedule سوف تحقق دقيق يوم تاريخ شكل حالة، انحراف نقل كمية، وقت منطقة اسم، و واحد صارم إطار يقع في لم قدوم، سنة نسخة لـ أربعة موضع عدد وقت نقطة. سقوط في صيف أمر وقت نقص فتحة داخل محلي وقت سوف يتم رفض؛ لقاء إلى إعادة تراكم وقت سوف اختيار رقم مرة ظهور مقارنة مبكر وقت نقطة. إنشاء نجاح بعد فقط تخزين مواصفة تحويل بعد UTC `scheduledAt`، لن تخزين أصلي انحراف نقل كمية، محلي حقل أو وقت منطقة.
 
-### 有界固定速率语义
+### محدود ثابت سرعة معدل دلالة
 
-Every 是固定时长间隔，而不是日历规则。第一个目标是创建时刻加上一个间隔。作出到期决策时，整数除法会选出不晚于所采样墙钟的最新序列点，以及其后的第一个序列点。选中的发生时点只呈现一次，记录会直接推进到未来目标，因此 cold Session 绝不会积累回放任务，延迟执行的模型工作也绝不会使该序列漂移。
+Every هو ثابت وقت طويل بين فصل، بينما لا هو يوم تاريخ قاعدة. رقم واحد هدف هو إنشاء وقت لحظة إضافة فوق واحد بين فصل. عمل خروج إلى مدة قرار وقت، كامل عدد حذف قاعدة سوف اختيار خروج لا متأخر في الذي أخذ مثال جدار ساعة الأكثر جديد تسلسل نقطة، و ذلك بعد رقم واحد تسلسل نقطة. اختيار في حدوث وقت نقطة فقط عرض مرة، سجل سوف مباشر دفع دخول إلى لم قدوم هدف، لذلك cold Session أبدا سوف تراكم تراكم إعادة تشغيل مهمة، تأخير متأخر تنفيذ نموذج عمل أيضا أبدا سوف جعل هذا تسلسل عائم نقل.
 
-所有不同的逾期 Every 记录都会参与同一个批次，每条记录各自提供一个最新发生时点，并共享同一个 `acceptedAt`。系统不存在跨记录的冷却、门控、配额或保留的批次时间戳。至少 5 分钟的限制约束了唤醒与模型请求频率。如果下一个序列点会超出四位年份存储范围，dispatch 会终结该记录。
+كل مختلف تجاوز مدة Every سجل كل سوف مشاركة و نفس عدد دفعة مرة، كل بند سجل كل منها توفير واحد الأكثر جديد حدوث وقت نقطة، و مشترك نفس عدد `acceptedAt`. نظام لا وجود عبر سجل بارد لكن، باب تحكم، إعداد مقدار أو إبقاء دفعة مرة ختم الوقت. حتى قليل 5 قسم ساعة حد قيد نداء تنبيه و نموذج طلب تردد معدل. إذا تحت واحد تسلسل نقطة سوف تجاوز خروج أربعة موضع سنة نسخة تخزين نطاق،dispatch سوف نهاية ربط هذا سجل.
 
-日历表达式与 Cron 表达式被有意排除（[有界周期性简化](../../archived/simplification/2026-08-09-bounded-fixed-rate-schedule.md)）；支持这些表达式需要增加时区敏感的日历语言、求值器依赖、校验范围和 tzdata 回放策略，而这些都与固定速率提醒无关。
+يوم تاريخ جدول بلوغ صيغة و Cron جدول بلوغ صيغة يتم متعمد ترتيب حذف ([محدود دورة مدة صفة بسيط تحويل](../../archived/simplification/2026-08-09-bounded-fixed-rate-schedule.md)) ؛ دعم حمل هذه جدول بلوغ صيغة حاجة زيادة وقت منطقة حساس شعور يوم تاريخ لغة، طلب قيمة جهاز اعتماد، تحقق نطاق و tzdata إعادة تشغيل سياسة، بينما هذه كل و ثابت سرعة معدل رفع تنبيه غير متصل.
 
-### Live 交付生命周期
+### Live تسليم دورة الحياة
 
-Agent-scoped owner 从持久 fold 派生最早目标。超长目标使用有界 timer 分段，每次 wake 都会重新读取墙钟，因此回拨不会提前触发，前跳则会形成 overdue。已到期的一次性提醒优先，每次准入一条；否则，所有逾期 Every 记录会按目标时间和创建顺序进入同一个批次。如果 Agent 已被某个轮次或另一项 maintenance task 占用，`runMaintenance()` 会拒绝此次认领；这些记录保持活动，并由一次 `whenIdle()` wait 触发另一次尝试。被拒绝的 preflight 或被收容的 framing／入队失败同样会使其保持活动，但不会启动私有重试 timer。
+Agent-scoped owner من حمل دائم fold إرسال توليد الأكثر مبكر هدف. تجاوز طويل هدف استخدام محدود timer قسم مقطع، كل مرة wake كل سوف إعادة قراءة جدار ساعة، لذلك عودة تحويل لن رفع قبل إطلاق، قبل قفز فإن سوف شكل صار overdue. قد إلى مدة مرة صفة رفع تنبيه أولوية، كل مرة دقيق دخول واحد بند؛ لا فإن، كل تجاوز مدة Every سجل سوف حسب هدف وقت و إنشاء ترتيب دخول نفس عدد دفعة مرة. إذا Agent قد يتم بعض عدد جولة أو آخر بند maintenance task احتلال استخدام،`runMaintenance()` سوف رفض هذا مرة إقرار قيادة؛ هذه سجل إبقاء نشط حركة، و من مرة `whenIdle()` wait إطلاق آخر مرة محاولة تجربة. يتم رفض preflight أو يتم استلام سعة framing/دخول طابور فشل نفس مثال سوف جعل ذلك إبقاء نشط حركة، لكن لن بدء خاص إعادة محاولة timer.
 
-获得准入的路径会刷新所有 pending persistence 并认领真正的 idle phase。它会重新折叠确切的 Session 后缀、采样 decision clock、用经过 JSON 转义的值构造固定提醒 framing、同步排入一个 `followup()`，并在释放 maintenance 前追加 dispatch。一次性提醒会追加只含 id 的终结 dispatch。固定速率批次会为每条参与记录追加一个 `id + acceptedAt` 转换。触发唤醒的 input 会保持 parked，直到 maintenance 释放，因此在 dispatch 进入日志前，消息不会被认领；随后 owner 会为 dispatch 执行 checkpoint。
+نيل نيل دقيق دخول مسار سوف تحديث جديد كل pending persistence و إقرار قيادة حق صحيح idle phase. هو سوف إعادة طي تأكيد قطع Session بعد لاحقة، أخذ مثال decision clock، استخدام مرور مرور JSON تحويل معنى قيمة بنية صنع ثابت رفع تنبيه framing، تزامن ترتيب دخول واحد `followup()`، و في تحرير maintenance قبل إلحاق dispatch. مرة صفة رفع تنبيه سوف إلحاق فقط يحتوي id نهاية ربط dispatch. ثابت سرعة معدل دفعة مرة سوف لـ كل بند مشاركة و سجل إلحاق واحد `id + acceptedAt` تحويل. إطلاق نداء تنبيه input سوف إبقاء parked، مباشر إلى maintenance تحرير، لذلك في dispatch دخول سجل قبل، رسالة لن يتم إقرار قيادة؛ مع بعد owner سوف لـ dispatch تنفيذ checkpoint.
 
-dispatch 记录的是队列准入，而不是模型完成或用户收到提醒。framing 构造或同步入队失败不会追加 dispatch。append 失败会使该 owner fault，因为消息可能已经入队。Agent 或插件 dispose 会取消 timer、停止新工作、撤销工具注册，并等待进行中的工作，且不会删除持久记录。follow-up 获得准入后、持久 dispatch 前发生崩溃，可能使提醒在恢复后重复；本设计不作 exactly-once 承诺。
+dispatch سجل هو طابور صف دقيق دخول، بينما لا هو نموذج إتمام أو مستخدم استلام إلى رفع تنبيه.framing بنية صنع أو تزامن دخول طابور فشل لن إلحاق dispatch.append فشل سوف جعل هذا owner fault، لأن رسالة ممكن قد دخول طابور.Agent أو إضافة dispose سوف إلغاء timer، إيقاف جديد عمل، سحب إلغاء أداة تسجيل، و انتظار إجراء في عمل، كما لن حذف حمل دائم سجل.follow-up نيل نيل دقيق دخول بعد، حمل دائم dispatch قبل حدوث انهيار انهيار، ممكن جعل رفع تنبيه في استعادة بعد تكرار؛ هذا تصميم لا عمل exactly-once تحمل وعد.
 
-### 只读 Web 目录
+### فقط قراءة Web دليل
 
-Schedule overlay 会把默认禁用的 [`dsh-client-ui-schedule`](../../../../packages/client/ui-schedule/README.zh.md) client 与 Host 服务一同启用。完整活动 projection 也会交给 [`dsh-client-ui-workspace`](../../../../packages/client/ui-workspace/README.zh.md)。本 Note 拥有这条 opt-in 只读呈现边界：该 projection 表示当前活动状态，而非 dispatch 或交付回执，因此普通 Assistant 轮次仍是交付呈现。目录是挂到 `document.body` 的 fixed portal；空间足够时左边缘跟随触发按钮，靠近视口右侧时向左避让并保留 16px 边距。`useAnchoredPosition` 拥有测量以及 resize、捕获阶段 scroll、面板 resize 与清理行为；Schedule 提供触发器与 portal ref、bottom 放置、5px 间距和既有内外 dismissal 边界，不增加通用 popover 抽象。
+Schedule overlay سوف يأخذ افتراضي منع استخدام [`dsh-client-ui-schedule`](../../../../packages/client/ui-schedule/README.zh.md) client و Host خدمة واحد نفس تفعيل. كامل نشط حركة projection أيضا سوف تسليم إعطاء [`dsh-client-ui-workspace`](../../../../packages/client/ui-workspace/README.zh.md). هذا Note يملك هذا بند opt-in فقط قراءة عرض حد: هذا projection يمثل حالي نشط حركة حالة، بينما غير dispatch أو تسليم عودة تنفيذ، لذلك عادي Assistant جولة ما زال هو تسليم عرض. دليل هو تعليق إلى `document.body` fixed portal؛ فضاء كاف كاف وقت يسار حافة حافة تتبع مع إطلاق حسب زر، اعتماد قريب نظر فتحة يمين جانب وقت نحو يسار تجنب يجعل و إبقاء 16px حافة مسافة.`useAnchoredPosition` يملك قياس كمية و resize، التقاط مرحلة مقطع scroll، وجه لوح resize و تنظيف سلوك؛Schedule توفير إطلاق جهاز و portal ref،bottom وضع وضع،5px بين مسافة و قائم داخل خارج dismissal حد، لا زيادة عام popover سحب كائن.
 
-## 已考虑的替代方案
+## قد اعتبار بديل خطة
 
-**使用 `ctx.jobs`。** Task 拥有进程本地工作、结果和通知，而不是 Session 日志状态和对话 follow-up。
+**استخدام `ctx.jobs`.** Task يملك عملية محلي عمل، نتيجة و إشعار، بينما لا هو Session سجل حالة و محادثة follow-up.
 
-**把提醒存入私有数据库或全局 scheduler。** 这样可以运行 cold Session，却需要第二套身份映射、启动扫描、ownership lease、崩溃协议和通知策略。
+**يأخذ رفع تنبيه تخزين دخول خاص قاعدة بيانات أو عام scheduler.** هذا مثال يمكن تشغيل cold Session، لكن حاجة ثاني طقم هوية خريطة، بدء مسح،ownership lease، انهيار انهيار بروتوكول و إشعار سياسة.
 
-**持久化 Session 时区并推断本地 `at`。** 这会让一个解释默认值扩散到 Session core、Host create／fork、持久化格式、client 和不匹配恢复中。请求本地的模型指导与显式工具边界消除了这种耦合。
+**حفظ دائم Session وقت منطقة و دفع قطع محلي `at`.** هذا سوف يجعل واحد حل تفسير قيمة افتراضية توسيع تفرق إلى Session core،Host create/fork، حفظ دائم صيغة،client و لا مطابقة استعادة في. طلب محلي نموذج إشارة توجيه و صريح أداة حد إزالة حذف هذا نوع اقتران دمج.
 
-**保留独立的持久 Web 回执。** dispatch 是内部队列事实，而不是用户的提醒。渲染普通 assistant 回答既避免了第二种交付含义，也从 Host 与 client 层移除了 Schedule 代码。
+**إبقاء مستقل حمل دائم Web عودة تنفيذ.** dispatch هو داخلي طابور صف واقع، بينما لا هو مستخدم رفع تنبيه. تصيير عادي assistant عودة جواب حيث تجنب تجنب ثاني نوع تسليم يحتوي معنى، أيضا من Host و client طبقة إزالة Schedule شفرة.
 
-**增加通用周期规则引擎。** 固定时长间隔只需要锚点运算。共享的周期抽象、全局准入门控和日历求值器会扩大回放与运行时状态，却不能服务于保留的产品行为。
+**زيادة عام دورة مدة قاعدة جذب محرك.** ثابت وقت طويل بين فصل فقط حاجة مرساة نقطة تشغيل حساب. مشترك دورة مدة سحب كائن، عام دقيق دخول باب تحكم و يوم تاريخ طلب قيمة جهاز سوف توسيع كبير إعادة تشغيل و وقت التشغيل حالة، لكن لا يستطيع خدمة في إبقاء منتج سلوك.
 
-**在 `followup()` 前认领 dispatch，或增加 exactly-once fencing。** claim-first 会在入队失败时静默丢失提醒。跨进程 exactly-once 需要 lease、outbox、acknowledgement 与下游幂等边界，超出了此 Session-local 范围。
+**في `followup()` قبل إقرار قيادة dispatch، أو زيادة exactly-once fencing.** claim-first سوف في دخول طابور فشل وقت ساكن صامت فقد فقد رفع تنبيه. عبر عملية exactly-once حاجة lease،outbox،acknowledgement و تحت تنقل قوة انتظار حد، تجاوز خروج هذا Session-local نطاق.
 
-**接管既有根或注册全局工具。** 晚接管会让插件加载顺序激活不可见的 timer，并把工具暴露到受支持的根组合之外。
+**وصل إدارة قائم أصل أو تسجيل عام أداة.** متأخر وصل إدارة سوف يجعل إضافة تحميل ترتيب تنشيط غير ممكن رؤية timer، و يأخذ أداة كشف إلى تلقي دعم حمل أصل تركيب خارج.
 
-## 验证
+## تحقق
 
-包测试以逐文件 100% coverage 固定严格回放、一次性与 Every 状态转换、创建锚点运算、只追赶最新一次、多记录批处理、fork 后缀、id 复用、偏移量与本地日历 profile、IANA 校验、夏令时缺口与重叠、时间边界、timer 分段、墙钟变化、overdue 准入、固定 framing、入队与 append 失败、barrier 恢复、projection 注册与恢复、注册 rollback 和完全停稳的 dispose。属性测试会在不同间隔与跳过跨度下比较 Every 计算与回放。production JSONL restart 测试证明一条 overdue 提醒会经过真实 Agent 生命周期 dispatch，并且再次 restart 后不会重复 dispatch。聚焦 client suite 拥有目录与侧边栏行为，包括 body portal、空间充足时的左对齐、portal 内指针处理、外部 dismissal、Escape、live empty 与 timer 清理。共享 primitive suite 拥有定位 hook 的 resize、捕获阶段 scroll、面板 resize 与清理生命周期。无密钥组装 Web 场景保留普通 After／At／Every 交付证据，再由一个 900×900 Schedule 目录 smoke 覆盖 overlay 可达性、fixed portal 定位、右侧钳制、宽度与 overflow、普通／搜索闹钟、窄屏暗色布局、浅色主题浏览器截图与一次 live empty 更新。
+حزمة اختبار بـ تدريجي ملف 100% coverage ثابت صارم إطار إعادة تشغيل، مرة صفة و Every حالة تحويل، إنشاء مرساة نقطة تشغيل حساب، فقط تتبع لحاق الأكثر جديد مرة، كثير سجل دفعة معالجة،fork بعد لاحقة،id إعادة استخدام، انحراف نقل كمية و محلي يوم تاريخ profile،IANA تحقق، صيف أمر وقت نقص فتحة و إعادة تراكم، وقت حد،timer قسم مقطع، جدار ساعة تغير،overdue دقيق دخول، ثابت framing، دخول طابور و append فشل،barrier استعادة،projection تسجيل و استعادة، تسجيل rollback و تماما توقف مستقر dispose. خاصية اختبار سوف في مختلف بين فصل و قفز مرور عبر درجة تحت مقارنة مقارنة Every حساب حساب و إعادة تشغيل.production JSONL restart اختبار إثبات واحد بند overdue رفع تنبيه سوف مرور مرور حقيقي Agent دورة الحياة dispatch، و كما مجددا مرة restart بعد لن تكرار dispatch. تجمع تركيز client suite يملك دليل و جانب حافة شريط سلوك، يشمل body portal، فضاء ملء كاف وقت يسار مقابل متساو،portal داخل إشارة إبرة معالجة، خارجي dismissal،Escape،live empty و timer تنظيف. مشترك primitive suite يملك تحديد موضع hook resize، التقاط مرحلة مقطع scroll، وجه لوح resize و تنظيف دورة الحياة. بلا مفتاح تجميع Web مشهد إبقاء عادي After/At/Every تسليم دليل، مجددا من واحد 900×900 Schedule دليل smoke تغطية overlay يمكن بلوغ صفة،fixed portal تحديد موضع، يمين جانب ملقط صنع، عرض درجة و overflow، عادي/بحث ضجة ساعة، ضيق شاشة داكن لون تخطيط، ضحل لون رئيسي عنوان متصفح قطع رسم و مرة live empty تحديث.
 
-## 后果
+## عاقبة
 
-- 提醒状态通过普通 Session persistence 跨重启存活，无需新数据库或公开 service。
-- cold Session 不工作、不发送外部通知；重新打开后可能交付 overdue 工作。
-- 无需持久 Session 时区状态或从 Schedule 到 time-context 的依赖，绝对时间输入仍然具有确定性。
-- 用户看到普通对话输出；dispatch 绝不会夸大模型成功或 acknowledgement。
-- 显式启用 Schedule 的 Web 用户可以查看完整活动集合，并在普通行或搜索结果中辨认 cache 已知的活动 Session，而不会引入第二份持久状态、runtime 信号或第二种交付含义。
-- 每个 live 根只增加从 fold 派生的 timer、可选 idle wait 与一个 in-flight operation。
-- 固定速率周期性受到至少 5 分钟、只追赶最新一次，以及每条逾期记录只在一个批次中贡献一个发生时点的约束；日历周期性仍在此产品边界之外。
+- رفع تنبيه حالة عبر عادي Session persistence عبر إعادة بدء تخزين نشط، بلا حاجة جديد قاعدة بيانات أو عام service.
+- cold Session لا عمل، لا إرسال خارجي إشعار؛ إعادة فتح بعد ممكن تسليم overdue عمل.
+- بلا حاجة حمل دائم Session وقت منطقة حالة أو من Schedule إلى time-context اعتماد، قطعا مقابل وقت إدخال ما زال أداة لديه تحديد صفة.
+- مستخدم يرى عادي محادثة إخراج؛dispatch أبدا سوف مبالغة كبير نموذج نجاح أو acknowledgement.
+- صريح تفعيل Schedule Web مستخدم يمكن فحص نظر كامل نشط حركة تجميع دمج، و في عادي سطر أو بحث نتيجة في تمييز إقرار cache معروف نشط حركة Session، بينما لن جذب دخول ثاني نسخة حمل دائم حالة،runtime إشارة أو ثاني نوع تسليم يحتوي معنى.
+- كل live أصل فقط زيادة من fold إرسال توليد timer، اختياري idle wait و واحد in-flight operation.
+- ثابت سرعة معدل دورة مدة صفة تلقي إلى حتى قليل 5 قسم ساعة، فقط تتبع لحاق الأكثر جديد مرة، و كل بند تجاوز مدة سجل فقط في واحد دفعة مرة في مساهمة واحد حدوث وقت نقطة قيد؛ يوم تاريخ دورة مدة صفة ما زال في هذا منتج حد خارج.

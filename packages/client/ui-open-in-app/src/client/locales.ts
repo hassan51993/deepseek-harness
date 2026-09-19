@@ -39,16 +39,16 @@ const PRODUCT_NAMES = {
 
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
-  'open.title': '在 {app} 中打开工作目录',
-  'open.tooltip': '在本地打开',
-  'open.error': '打开失败',
-  'menu.toggle': '选择打开方式',
-  'menu.aria': '打开方式',
+  'open.title': 'في {app} في فتح عمل دليل',
+  'open.tooltip': 'في محلي فتح',
+  'open.error': 'فتح فشل',
+  'menu.toggle': 'اختيار فتح طريقة',
+  'menu.aria': 'فتح طريقة',
   ...PRODUCT_NAMES,
-  'app.finder': '访达',
-  'app.explorer': '文件资源管理器',
-  'app.filemanager': '文件管理器',
-  'app.terminal': '终端',
+  'app.finder': 'زيارة بلوغ',
+  'app.explorer': 'ملف مورد إدارة جهاز',
+  'app.filemanager': 'ملف إدارة جهاز',
+  'app.terminal': 'طرفية',
 } as const
 
 /** English dictionary, key-identical to the Chinese source of truth. */

@@ -1,35 +1,35 @@
 ---
-description: "面向快照测试的无密钥 LLM（大语言模型）回放插件，供测试作者针对已记录模型 transcript（文本记录）启动真实 agent（智能体）。"
+description: "موجه إلى لقطة اختبار بلا مفتاح LLM(كبير لغة نموذج) إعادة تشغيل إضافة، توفير اختبار عمل من إبرة مقابل قد سجل نموذج transcript(نص سجل) بدء حقيقي agent(ذكي جسم)."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-llm-replay
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-llm-replay` 从已记录的 Session JSONL fixture（测试前置数据）回放模型流，让快照测试无需 API 密钥即可运行真实 agent。每个 parent 与 subagent 会话按首次调用顺序取得各自的已记录脚本，而同一会话内的调用会独立推进。`replay.override.json` 伴随文件表示持久 settlement 无法重建的分片前失败、取消、挂起与注入重试。需要以固定模型输出确定性测试真实 loop 行为时，可在 ACP（Agent Client Protocol）、headless 与 Web 浏览器场景中使用本包。
+`dsh-llm-replay` من قد سجل Session JSONL fixture(اختبار قبل وضع بيانات) إعادة تشغيل نموذج تدفق، يجعل لقطة اختبار بلا حاجة API مفتاح يكفي تشغيل حقيقي agent. كل parent و subagent جلسة حسب أول مرة استدعاء ترتيب أخذ نيل كل منها قد سجل نص برمجي، بينما نفس جلسة داخل استدعاء سوف مستقل دفع دخول.`replay.override.json` مرافق مع ملف يمثل حمل دائم settlement لا يمكن إعادة بناء قسم قطعة قبل فشل، إلغاء، تعليق بدء و حقن إعادة محاولة. حاجة بـ ثابت نموذج إخراج تحديد صفة اختبار حقيقي loop سلوك وقت، يمكن في ACP(Agent Client Protocol) ،headless و Web متصفح مشهد في استخدام هذه الحزمة.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-本包让无密钥测试拥有带固定模型 transcript 的真实 agent：把它挂载到真实 LLM 适配器的位置，指向已记录的 fixture，然后就像模型真的产生了已记录输出那样运行场景。
+هذه الحزمة يجعل بلا مفتاح اختبار يملك حمل ثابت نموذج transcript حقيقي agent: يأخذ هو تركيب إلى حقيقي LLM مهايئ موضع، إشارة نحو قد سجل fixture، لكن بعد حينئذ مثل نموذج حق إنتاج قد سجل إخراج ذلك مثال تشغيل مشهد.
 
-### 挂载它
+### تركيب هو
 
-配置 `providers` 后，插件会注册仅用于回放的适配器，其模型目录可供测试模型发现功能的场景使用；未配置 `providers` 时，它安装无需模型发现功能的测试所用的 catch-all `llm/stream` waterfall（瀑布式事件）：
+إعداد `providers` بعد، إضافة سوف تسجيل فقط لأجل إعادة تشغيل مهايئ، ذلك نموذج دليل يمكن توفير اختبار نموذج اكتشاف وظيفة مشهد استخدام؛ لم إعداد `providers` وقت، هو تثبيت بلا حاجة نموذج اكتشاف وظيفة اختبار الذي استخدام catch-all `llm/stream` waterfall(شلال نشر صيغة حدث):
 
 ```yaml
 - id: llm-replay
@@ -53,105 +53,105 @@ kind: "package-reference"
   # harness per scenario.
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `file` | `$DSH_SNAPSHOT_FILE` | 选定 primary fixture 路径：v0 为 `session.jsonl`，正 generation 为 `session.vN.jsonl`；必需（config 或 env） |
-| `overrideFile` | `$DSH_SNAPSHOT_OVERRIDE` | 主会话的可选 `ReplayOverrideDoc` 伴随文件 |
-| `childFiles` | `$DSH_SNAPSHOT_CHILD_FILES` | 嵌套场景中已记录的 subagent 子会话日志 |
-| `providers` | 无 | 可选的仅回放提供方与模型目录；模型可声明 `contextWindow`、文本／图片模态、图片模型使用的正整数 `imageRequestTokens`，以及让无密钥场景演练历史内系统提示词替换的 `systemPromptUpdate: in-history`；非法值会在加载时失败（`llm-replay: provider "…" model "…" systemPromptUpdate must be "in-history" when present`），路由绝不执行提供方 I/O |
-| `paceMs` | 无（突发） | 可选的每分片延迟（毫秒），用于真正的增量投递 |
+| `file` | `$DSH_SNAPSHOT_FILE` | اختيار تحديد primary fixture مسار:v0 لـ `session.jsonl`، صحيح generation لـ `session.vN.jsonl`؛ مطلوب (config أو env) |
+| `overrideFile` | `$DSH_SNAPSHOT_OVERRIDE` | رئيسي جلسة اختياري `ReplayOverrideDoc` مرافق مع ملف |
+| `childFiles` | `$DSH_SNAPSHOT_CHILD_FILES` | تضمين طقم مشهد في قد سجل subagent فرعي جلسة سجل |
+| `providers` | بلا | اختياري فقط إعادة تشغيل مزود و نموذج دليل؛ نموذج يمكن إعلان `contextWindow`، نص/صورة نموذج حالة، صورة نموذج استخدام صحيح كامل عدد `imageRequestTokens`، و يجعل بلا مفتاح مشهد عرض تدريب تاريخ داخل توجيه النظام استبدال `systemPromptUpdate: in-history`؛ غير قاعدة قيمة سوف في تحميل وقت فشل (`llm-replay: provider "…" model "…" systemPromptUpdate must be "in-history" when present`) ، توجيه أبدا تنفيذ مزود I/O |
+| `paceMs` | بلا (مفاجئ إرسال) | اختياري كل قسم قطعة تأخير متأخر (جزء ثانية) ، لأجل حق صحيح زيادة كمية إلقاء تمرير |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-llm-replay)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-llm-replay) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
-### fixture 的工作方式
+### fixture عمل طريقة
 
-fixture 是运行一次真实 agent 所产生的一份选定持久化 Session generation 投影，本插件不录制。快照 harness 会提供数值最高的规范 parent 路径（v0 为 `<scenario>/session.jsonl`，正 generation 为 `<scenario>/session.vN.jsonl`），并在回放前校验文件名与 header 一致。fixture 保留 header 与每个事件 payload，但省略正文的 `seq`/`time` envelope（历史 packed row 使用 `seq0`/`time0`）。回放会补充连续序号与确定性时间戳，恢复被快照 token 替换的类型化值，拒绝不完整或混合 envelope，通过构建期静态 Session 格式 catalog 解码完整物理产物，并在公开事件或继承 cut 前于内存中迁移历史输入；当前输入直接 restore。仅对投影 v0 header，缺失的 `delegationDepth` 表示 `0`。parser 从不重写或重命名 fixture。运行时持久化继续写入完整日志。回放会展开当前视图中每个 `assistant/message` 或 `assistant/attempt` 的紧凑流，因此已记录 fixture 会回放出与在线模型产生的相同逻辑流。fixture 的 `request/header` 内容可能 token 化为 `{{system}}`/`{{tools}}`；回放会物化仅用于校验的值，而派生只读取 Assistant settlement、带标记的 summary 事件与 Session metadata。每个回放 fixture 与比较 fixture 都必须通过同一个只基于内容的 catalog 校验；回放绝不修复被拒绝的产物。比较编码保留已接受的 catalog 输出，包括扩展 request-header 字段；当前版本的 `header.system` 会被拒绝。协议通知的预期输出直接与当前写入器输出比较，保留事件顺序、插入的系统消息、包装层字段，以及不透明的交付和捕获代际值；只有完整 Session 产物使用格式迁移 catalog。
+fixture هو تشغيل مرة حقيقي agent الذي إنتاج واحد نسخة اختيار تحديد حفظ دائم Session generation إسقاط، هذا إضافة لا تسجيل صنع. لقطة harness سوف توفير عدد قيمة الأكثر عال مواصفة parent مسار (v0 لـ `<scenario>/session.jsonl`، صحيح generation لـ `<scenario>/session.vN.jsonl`) ، و في إعادة تشغيل قبل تحقق ملف اسم و header متسق.fixture إبقاء header و كل حدث payload، لكن حذف متن `seq`/`time` envelope(تاريخ packed row استخدام `seq0`/`time0`). إعادة تشغيل سوف تكملة ملء وصل متابعة ترتيب رقم و تحديد صفة ختم الوقت، استعادة يتم لقطة token استبدال نوع تحويل قيمة، رفض لا كامل أو خلط دمج envelope، عبر بناء مدة ساكن حالة Session صيغة catalog حل رمز كامل شيء إدارة ناتج، و في عام حدث أو وراثة cut قبل في داخل تخزين في ترحيل تاريخ إدخال؛ حالي إدخال مباشر restore. فقط مقابل إسقاط v0 header، ناقص `delegationDepth` يمثل `0`.parser من لا إعادة كتابة أو إعادة تسمية fixture. وقت التشغيل حفظ دائم متابعة كتابة كامل سجل. إعادة تشغيل سوف توسيع حالي عرض في كل `assistant/message` أو `assistant/attempt` ضيق تجميع تدفق، لذلك قد سجل fixture سوف إعادة تشغيل خروج و في خط نموذج إنتاج نفسه منطق تدفق.fixture `request/header` محتوى ممكن token تحويل لـ `{{system}}`/`{{tools}}`؛ إعادة تشغيل سوف شيء تحويل فقط لأجل تحقق قيمة، بينما إرسال توليد فقط قراءة Assistant settlement، حمل علامة summary حدث و Session metadata. كل إعادة تشغيل fixture و مقارنة مقارنة fixture كل يجب عبر نفس عدد فقط أساس في محتوى catalog تحقق؛ إعادة تشغيل أبدا إصلاح يتم رفض ناتج. مقارنة مقارنة تحرير رمز إبقاء قد قبول catalog إخراج، يشمل توسيع request-header حقل؛ حالي إصدار `header.system` سوف يتم رفض. بروتوكول إشعار مسبق مدة إخراج مباشر و حالي كتابة جهاز إخراج مقارنة مقارنة، إبقاء حدث ترتيب، إدراج دخول نظام رسالة، حزمة تركيب طبقة حقل، و لا نفاذ واضح تسليم و التقاط بديل حد قيمة؛ فقط لديه كامل Session ناتج استخدام صيغة ترحيل catalog.
 
-### 嵌套 agent
+### تضمين طقم agent
 
-parent agent 委托给进程内 subagent 的场景会为每个 Session 记录一个角色：parent 为 `session[.vN].jsonl`，随后是连续 child `session.<ordinal>[.vN].jsonl`。snapshot harness 只提供每个角色的最高 generation。live Session id 每次运行都会重新随机生成，因此 replay 按首次调用顺序把每个 live Session 绑定到已记录脚本：第一个发起模型调用的 live Session 取得 parent 脚本，下一个新 Session 取得下一条 child 脚本，依此类推，每个 Session 分别推进自己的 cursor。不同 live Session 数量超过已记录脚本数时会明确报错。
+parent agent تفويض حمل إعطاء عملية داخل subagent مشهد سوف لـ كل Session سجل واحد زاوية لون:parent لـ `session[.vN].jsonl`، مع بعد هو وصل متابعة child `session.<ordinal>[.vN].jsonl`.snapshot harness فقط توفير كل زاوية لون الأكثر عال generation.live Session id كل مرة تشغيل كل سوف إعادة مع آلة توليد، لذلك replay حسب أول مرة استدعاء ترتيب يأخذ كل live Session ربط إلى قد سجل نص برمجي: رقم واحد إرسال بدء نموذج استدعاء live Session أخذ نيل parent نص برمجي، تحت واحد جديد Session أخذ نيل تحت واحد بند child نص برمجي، اعتماد هذا صنف دفع، كل Session قسم آخر دفع دخول ذاتي ذات cursor. مختلف live Session عدد كمية تجاوز مرور قد سجل نص برمجي عدد وقت سوف واضح تقرير خطأ.
 
-### 失败模式与覆盖
+### فشل نمط و تغطية
 
-当回放在带有 `ctx.deepseekLlmApiExtensions` 的组合中服务 `deepseek-official` 时，它会在选择有效脚本条目后、产生首个分片前准备并接受这些字段。这与实时适配器的 2xx 后提交点一致，因此持久接受水位与 SDK 事件通知在录制和回放中行为相同。回放提供合成 `{ messages: [] }` 基础 body：它证明接受副作用，而非准备后的字段字节。
+عند إعادة تشغيل في حمل لديه `ctx.deepseekLlmApiExtensions` تركيب في خدمة `deepseek-official` وقت، هو سوف في اختيار صالح نص برمجي بند بعد، إنتاج أول عدد قسم قطعة قبل دقيق تجهيز و قبول هذه حقل. هذا و فوري مهايئ 2xx بعد إيداع نقطة متسق، لذلك حمل دائم قبول ماء موضع و SDK حدث إشعار في تسجيل صنع و إعادة تشغيل في سلوك نفسه. إعادة تشغيل توفير دمج صار `{ messages: [] }` أساس أساس body: هو إثبات قبول فرعي أثر، بينما غير دقيق تجهيز بعد حقل بايت.
 
-有两种失败模式无法仅根据持久 Assistant settlement 重建：任何 chunk 之前的纯 throw 没有携带异常的 stream member，而 cancel/hang 需要的是不终止语义，不能用有限前缀回放。需要这些行为的场景可提供可选伴随文件（`<scenario>/replay.override.json`）：它用裸 `ReplayEntry[]` 替换派生脚本，或用 `{ patches: [{ at, entry }] }` 增补——保留所有派生调用，只替换指定的从 0 开始计数的调用索引；当 `at` 等于派生长度时，则在注入瞬态异常后的重试位置追加。有前缀分片的 `throw` 条目会接受 DeepSeek 请求扩展；零分片 throw 默认表示 2xx 前未接受，也可设 `accepted: true` 表示 2xx 后无分片失败。`hang` 条目可以指定 `readyFile`，回放在等待取消前写入它，使外部 driver 可以确定性取消。
+لديه اثنان نوع فشل نمط لا يمكن فقط أصل حسب حمل دائم Assistant settlement إعادة بناء: أي chunk قبل صاف throw لا يوجد يحمل استثناء stream member، بينما cancel/hang حاجة هو لا إنهاء دلالة، لا يستطيع استخدام لديه حد بادئة إعادة تشغيل. حاجة هذه سلوك مشهد يمكن توفير اختياري مرافق مع ملف (`<scenario>/replay.override.json`): هو استخدام عار `ReplayEntry[]` استبدال إرسال توليد نص برمجي، أو استخدام `{ patches: [{ at, entry }] }` زيادة تكملة——إبقاء كل إرسال توليد استدعاء، فقط استبدال إشارة تحديد من 0 بدء حساب عدد استدعاء بحث جذب؛ عند `at` انتظار في إرسال توليد طويل درجة وقت، فإن في حقن لحظة حالة استثناء بعد إعادة محاولة موضع إلحاق. لديه بادئة قسم قطعة `throw` بند سوف قبول DeepSeek طلب توسيع؛ صفر قسم قطعة throw افتراضي يمثل 2xx قبل لم قبول، أيضا يمكن ضبط `accepted: true` يمثل 2xx بعد بلا قسم قطعة فشل.`hang` بند يمكن إشارة تحديد `readyFile`، إعادة تشغيل في انتظار إلغاء قبل كتابة هو، جعل خارجي driver يمكن تحديد صفة إلغاء.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-- **fixture 未被完全消费**——在测试中直接安装回放时调用 `assertConsumed()`，它会把场景静默驱动的模型调用少于记录数转换为明确诊断。
-- **未记录的会话发起调用**——回放会明确报错，并提示你重新录制场景。
-- **脚本占位符匹配不到内容**——`{{fromRequest:<regex>}}` 解析会校验模式与请求语料，匹配不到、模式非法或占位符未闭合都会明确报错。
+- **fixture لم يتم تماما إزالة استهلاك**——في اختبار في مباشر تثبيت إعادة تشغيل وقت استدعاء `assertConsumed()`، هو سوف يأخذ مشهد ساكن صامت قيادة نموذج استدعاء قليل في سجل عدد تحويل لـ واضح تشخيص.
+- **لم سجل جلسة إرسال بدء استدعاء**——إعادة تشغيل سوف واضح تقرير خطأ، و تلميح أنت إعادة تسجيل صنع مشهد.
+- **نص برمجي احتلال موضع رمز مطابقة لا إلى محتوى**——`{{fromRequest:<regex>}}` تحليل سوف تحقق نمط و طلب لغة مادة، مطابقة لا إلى، نمط غير قاعدة أو احتلال موضع رمز لم إغلاق دمج كل سوف واضح تقرير خطأ.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释回放插件的设计；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير إعادة تشغيل إضافة تصميم؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计
+### تصميم
 
-回放把选定的投影 Session generation 视为 fixture。一个 parser 补全投影 envelope，通过 `sessionFormatCatalog` 校验并迁移完整产物，再以一个结果返回当前 header、继承 cut 与事件列表。`deriveReplayScript` 按日志顺序展开每个 `assistant/message` 或 `assistant/attempt` 流，因此每个持久 settlement 都成为一条 `chunks` 条目；非空流缺少 `finish` 分片是 `stream()` 抛出异常的指纹，必须通过 override 伴随文件表达。携带 `llmStreamCall: true` 与完整 `rawOutput` 的 `compaction/summary` 会在该事件位置回放为一条规范成功流。脚本字符串可以内嵌 `{{fromRequest:<regex>}}`；流输出时每个 placeholder 针对 live request 的 string leaf 解析，取该 pattern 的最后一次 match，用其第一个 capture group（无 capture group 时用整个 match）原位替换。
+إعادة تشغيل يأخذ اختيار تحديد إسقاط Session generation نظر لـ fixture. واحد parser تكملة كل إسقاط envelope، عبر `sessionFormatCatalog` تحقق و ترحيل كامل ناتج، مجددا بـ واحد نتيجة إرجاع حالي header، وراثة cut و حدث قائمة.`deriveReplayScript` حسب سجل ترتيب توسيع كل `assistant/message` أو `assistant/attempt` تدفق، لذلك كل حمل دائم settlement كل يصبح واحد بند `chunks` بند؛ غير فارغ تدفق نقص قليل `finish` قسم قطعة هو `stream()` رمي خروج استثناء إشارة نقش، يجب عبر override مرافق مع ملف جدول بلوغ. يحمل `llmStreamCall: true` و كامل `rawOutput` `compaction/summary` سوف في هذا حدث موضع إعادة تشغيل لـ واحد بند مواصفة نجاح تدفق. نص برمجي نص يمكن داخل تضمين `{{fromRequest:<regex>}}`؛ تدفق إخراج وقت كل placeholder إبرة مقابل live request string leaf تحليل، أخذ هذا pattern الأكثر بعد مرة match، استخدام ذلك رقم واحد capture group(بلا capture group وقت استخدام كامل match) أصل موضع استبدال.
 
-[已提交语料测试](tests/session-format-corpus.spec.ts) 通过真实 catalog 还原 `snapshots/`、`packages/` 与 `scripts/snapshots/python-sdk-single-exe/` 下每个带版本的 `session*.jsonl`，且不改变源字节。其[清单](tests/session-format-corpus-inventory.ts) 按路径、源代际、错误类型与精确原因固定有意拒绝的历史转换；拒绝消失或变化都会使测试失败。当前代际产物不能获得例外。不含 header 的快照 harness 协议示例具有独立的显式豁免。其他所有还原错误都携带产物路径并使测试失败；历史文件保持不变，原生当前 fixture 则由 owner 修正。
+[قد إيداع لغة مادة اختبار](tests/session-format-corpus.spec.ts) عبر حقيقي catalog أيضا أصل `snapshots/`،`packages/` و `scripts/snapshots/python-sdk-single-exe/` تحت كل حمل إصدار `session*.jsonl`، كما لا تغيير مصدر بايت. ذلك[بيان](tests/session-format-corpus-inventory.ts) حسب مسار، مصدر بديل حد، خطأ نوع و دقيق سبب ثابت متعمد رفض تاريخ تحويل؛ رفض إزالة فقد أو تغير كل سوف جعل اختبار فشل. حالي بديل حد ناتج لا يستطيع نيل نيل مثال خارج. لا يحتوي header لقطة harness بروتوكول عرض مثال أداة لديه مستقل صريح إعفاء تجنب. أخرى كل أيضا أصل خطأ كل يحمل ناتج مسار و جعل اختبار فشل؛ تاريخ ملف إبقاء ثابت، أصلي حالي fixture فإن من owner إصلاح صحيح.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 类型、fixture 派生、override 校验、占位符解析、会话绑定、`installLlmReplay` 与插件导出 |
-| [`tests/session-format-corpus.spec.ts`](tests/session-format-corpus.spec.ts) | 已提交代际还原与精确历史拒绝检查 |
-| — | 不发布运行时不变式伴生入口；该仅测试适配器消费固定的回放脚本；其流语法由 LLM 伴生插件与 fixture 派生测试检验。 |
+| [`src/index.ts`](src/index.ts) | نوع،fixture إرسال توليد،override تحقق، احتلال موضع رمز تحليل، جلسة ربط،`installLlmReplay` و إضافة توجيه خروج |
+| [`tests/session-format-corpus.spec.ts`](tests/session-format-corpus.spec.ts) | قد إيداع بديل حد أيضا أصل و دقيق تاريخ رفض فحص |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذا فقط اختبار مهايئ إزالة استهلاك ثابت إعادة تشغيل نص برمجي؛ ذلك تدفق لغة قاعدة من LLM مرافق توليد إضافة و fixture إرسال توليد اختبار فحص تحقق. |
 
-### 绑定与流式流程
+### ربط و تدفق صيغة مسار
 
-`installLlmReplay` 加载有序脚本，然后安装路由回放适配器（`providers` 非空时）或 catch-all `llm/stream` waterfall 监听器。每次实时 `stream()` 调用以其调用会话 id 为键：新会话认领下一个未认领脚本（父会话在前，因为它必须先开始流式输出才能委托），没有 `sessionId` 的调用共享一个绑定主脚本的匿名会话。返回的 `ReplayHandle` 携带用于 HMR（热模块替换）安全的 disposer，以及 `assertConsumed()`——除非每个已记录脚本都绑定到实时会话且每个已绑定游标都已耗尽，否则它会抛出异常。
+`installLlmReplay` تحميل لديه ترتيب نص برمجي، لكن بعد تثبيت توجيه إعادة تشغيل مهايئ (`providers` غير فارغ وقت) أو catch-all `llm/stream` waterfall مستمع. كل مرة فوري `stream()` استدعاء بـ ذلك استدعاء جلسة id لـ مفتاح: جديد جلسة إقرار قيادة تحت واحد لم إقرار قيادة نص برمجي (أب جلسة في قبل، لأن هو يجب أولا بدء تدفق صيغة إخراج عندئذ قدرة تفويض حمل) ، لا يوجد `sessionId` استدعاء مشترك واحد ربط رئيسي نص برمجي مجهول اسم جلسة. إرجاع `ReplayHandle` يحمل لأجل HMR(حار وحدة استبدال) أمان disposer، و `assertConsumed()`——حذف غير كل قد سجل نص برمجي كل ربط إلى فوري جلسة كما كل قد ربط تنقل علامة كل قد استهلاك كل، لا فإن هو سوف رمي خروج استثناء.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从回放适配器逐步进入录制 fixture 的 harness 与消费流的 loop。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من إعادة تشغيل مهايئ تدريجي خطوة دخول تسجيل صنع fixture harness و إزالة استهلاك تدفق loop.
 
-- [session-snapshot](../session-snapshot/README.zh.md)——录制 fixture 并驱动回放、录制与刷新模式的快照支持。
-- [LLM 包](../../llm/llm/README.zh.md)——回放实现的提供方流约定与适配器注册表。
-- [测试策略](../../../docs/testing.zh.md)——无密钥快照层及其适用时机。
-- [test-support 组地图](../README.zh.md)——兄弟 harness 与支持包。
+- [session-snapshot](../session-snapshot/README.zh.md)——تسجيل صنع fixture و قيادة إعادة تشغيل، تسجيل صنع و تحديث جديد نمط لقطة دعم حمل.
+- [LLM حزمة](../../llm/llm/README.zh.md)——إعادة تشغيل تنفيذ مزود تدفق اتفاق و مهايئ سجل التسجيل.
+- [اختبار سياسة](../../../docs/testing.zh.md)——بلا مفتاح لقطة طبقة و ذلك ملائم استخدام وقت آلة.
+- [test-support مجموعة أرض رسم](../README.zh.md)——أخ أخ harness و دعم حمل حزمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该无密钥测试适配器不向提供方模型发送请求，只将已记录 assistant 分片回放到测试 loop 中。
+بلا. هذا بلا مفتاح اختبار مهايئ لا نحو مزود نموذج إرسال طلب، فقط سوف قد سجل assistant قسم قطعة إعادة تشغيل إلى اختبار loop في.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包既不组装也不发送提供方请求。
+بلا؛ هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明何时回放无法代替在线模型。它们是当前包约束，不是任务积压。
+هذه حد شرح أي وقت إعادة تشغيل لا يمكن بديل بديل في خط نموذج. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **首次调用顺序脚本绑定假设串行委托**——并发运行同级 subagent 的实现会非确定性地将实时会话绑定到已记录脚本；在这种场景出现前暂不实现更强的键控。
-- **只有普通 loop 分片与带标记的本地压缩输出才能派生**——在产生分片前直接抛出、取消/挂起，或未标记的外部摘要器调用场景需要 `replay.override.json` 伴随文件；替换与补丁两种形式都只影响主会话，子会话脚本仍从各自日志派生。
+- **أول مرة استدعاء ترتيب نص برمجي ربط زائف ضبط سلسلة سطر تفويض حمل**——تزامن تشغيل نفس درجة subagent تنفيذ سوف غير تحديد صفة أرض سوف فوري جلسة ربط إلى قد سجل نص برمجي؛ في هذا نوع مشهد ظهور قبل مؤقت لا تنفيذ أكثر قوي مفتاح تحكم.
+- **فقط لديه عادي loop قسم قطعة و حمل علامة محلي ضغط إخراج عندئذ قدرة إرسال توليد**——في إنتاج قسم قطعة قبل مباشر رمي خروج، إلغاء/تعليق بدء، أو لم علامة خارجي ملخص جهاز استدعاء مشهد حاجة `replay.override.json` مرافق مع ملف؛ استبدال و رقعة اثنان نوع شكل صيغة كل فقط أثر رئيسي جلسة، فرعي جلسة نص برمجي ما زال من كل منها سجل إرسال توليد.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

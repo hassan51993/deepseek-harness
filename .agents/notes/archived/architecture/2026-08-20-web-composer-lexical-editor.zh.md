@@ -1,62 +1,62 @@
-# Agent Note: Web 输入框改为 Lexical 编辑器（chip 为原子节点）
+# Agent Note: Web إدخال إطار تعديل لـ Lexical تحرير جهاز (chip لـ أصل فرعي عقدة)
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-20-web-composer-lexical-editor.md) | 中文
+[English](2026-08-20-web-composer-lexical-editor.md) | العربية
 
-> 范围：输入框文本表面（ui-conversation input/editor）、InputMachine 瘦身后余下的 SubmitMachine，以及喂给原封不动的 ui-input-trigger 管线的投影契约。取代[输入状态机 note](2026-07-25-web-input-machine-and-slash-pipeline.zh.md) 中 draft/occurrence 的那一半；其提交面、slot 与 trigger 管线部分仍然有效。
+> نطاق: إدخال إطار نص جدول وجه (ui-conversation input/editor) ،InputMachine نحيف ذات بعد بقية تحت SubmitMachine، و تغذية إعطاء أصل غلاف لا حركة ui-input-trigger إدارة خط إسقاط عقد نحو. يحل محل[إدخال حالة آلة note](2026-07-25-web-input-machine-and-slash-pipeline.zh.md) في draft/occurrence ذلك واحد نصف؛ ذلك إيداع وجه،slot و trigger إدارة خط جزء ما زال صالح.
 
-## 问题
+## مشكلة
 
-textarea 输入框用三个耦合层绘制文本（隐藏自增高 mirror、装饰 backdrop、文字透明的 textarea），且草稿存在两份（textarea 字符串与状态机的 occurrence 表）。两处耦合各自产生结构性 bug：occurrence 对齐依赖字符串 diff 猜测编辑位置，贪心扫描滑进引用内部会在序列化守卫运行前把它静默降级（#2813）；扫描推导的装饰没有身份，在其前方打字每一击都重建它的 DOM（#2793）。层叠戏法还对每种 chip 样式征税——任何改变字形 advance 的样式都不可用，于是没有背景、内边距、圆角，也无法截断标签。
+textarea إدخال إطار استخدام ثلاثة عدد اقتران دمج طبقة رسم صنع نص (إخفاء ذاتي زيادة عال mirror، تركيب زينة backdrop، نص حرف نفاذ واضح textarea) ، كما مسودة مسودة وجود اثنان نسخة (textarea نص و حالة آلة occurrence جدول). اثنان موضع اقتران دمج كل منها إنتاج بنية صفة bug:occurrence مقابل متساو اعتماد نص diff تخمين قياس تحرير موضع، طمع قلب مسح انزلاق دخول مرجع داخلي سوف في تسلسل تحويل حراسة حماية تشغيل قبل يأخذ هو ساكن صامت تخفيض (#2813) ؛ مسح دفع توجيه تركيب زينة لا يوجد هوية، في ذلك قبل جهة ضرب حرف كل واحد ضرب كل إعادة بناء هو DOM(#2793). طبقة تراكم لعب قاعدة أيضا مقابل كل نوع chip مثال صيغة سمة ضريبة——أي تغيير حرف شكل advance مثال صيغة كل غير ممكن استخدام، في هو لا يوجد خلف مشهد، داخل حافة مسافة، دائرة زاوية، أيضا لا يمكن قطع قطع وسم.
 
-## 决策
+## قرار
 
-每个会话壳持有一个 Lexical 编辑器，取代三层结构与状态机的草稿半边。
+كل جلسة قشرة يحتفظ واحد Lexical تحرير جهاز، يحل محل ثلاثة طبقة بنية و حالة آلة مسودة مسودة نصف حافة.
 
-- **所有权**：`SessionInputShell` 在 React 之外创建编辑器（`createEditor` + `registerPlainText` + `registerHistory`）并持有它到会话结束；React 侧把常驻 contenteditable 绑上去（`ComposerContentEditable`，约 40 行）并 portal 渲染 decorator（`DecoratorPortals`）。刻意不用 `@lexical/react`：其 composer 在 React 内部创建编辑器，与 per-session 壳所有权冲突，还会拖入用不到的依赖树。
-- **chip 是原子 `DecoratorNode`**（`ReferenceChipNode`），携带所有者插入时的投影。NodeKey 即 occurrence 身份；`getTextContent()` 回答剪贴板投影，因此原生复制/剪切与草稿镜像不再需要展开代码。
-- **一棵树，三个投影**：检测投影（chip = 1 个 U+FFFC）供 `detectTrigger` 与 TokenSpan 坐标使用，恢复了 #2769 打破的不透明引用不变量；剪贴板投影（chip = clipboardText）供 `InputState.draft`、持久化与提交面决策使用；模型形式在提交时逐 chip 经所有者 codec 产出。`span-map.ts` 是数字 span 映射回 Lexical point 的唯一场所。
-- **状态机瘦身为提交面**（phase/claim/attempt）；它不再持有草稿——事件携带剪贴板投影（`enter`、`submit-settled`），claimed 完整性监视跑在 `draft-changed` 上。清空草稿变成 shell 在编辑器里执行的 `commit-draft` 效果（含后缀保留），随后 `CLEAR_HISTORY_COMMAND`。
-- **契约稳定**：`TokenSpan {start, end, draftRev}`、`ReferenceInsert`、`CommandClaim`、四个 `slash/input-*` bail 事件、所有 trigger source、controller 与 MenuView 一律未改。`draftRev` 现在是编辑器 update 计数。
-- **claim token 保持字面文本**，前缀叶子由 transform 上色（退格删 token 仍是退出手势）；纯文本引用走 `registerLexicalTextEntity`（`TextRefNode`）；ghost hint 是 CSS 变量 `--dsh-composer-hint` 生成内容。
+- **كل حق**:`SessionInputShell` في React خارج إنشاء تحرير جهاز (`createEditor` + `registerPlainText` + `registerHistory`) و يحتفظ هو إلى جلسة انتهاء؛React جانب يأخذ معتاد إقامة contenteditable ربط فوق ذهاب (`ComposerContentEditable`، نحو 40 سطر) و portal تصيير decorator(`DecoratorPortals`). لحظة معنى لا استخدام `@lexical/react`: ذلك composer في React داخلي إنشاء تحرير جهاز، و per-session قشرة كل حق اندفاع مفاجئ، أيضا سوف سحب دخول استخدام لا إلى اعتماد شجرة.
+- **chip هو أصل فرعي `DecoratorNode`**(`ReferenceChipNode`) ، يحمل كل من إدراج دخول وقت إسقاط.NodeKey أي occurrence هوية؛`getTextContent()` عودة جواب قص لصق لوح إسقاط، لذلك أصلي نسخ/قص قطع و مسودة مسودة مرآة مثل لم يعد حاجة توسيع شفرة.
+- **واحد شجرة شجرة، ثلاثة عدد إسقاط**: فحص قياس إسقاط (chip = 1 عدد U+FFFC) توفير `detectTrigger` و TokenSpan جلوس علامة استخدام، استعادة #2769 ضرب كسر لا نفاذ واضح مرجع ثابت كمية؛ قص لصق لوح إسقاط (chip = clipboardText) توفير `InputState.draft`، حفظ دائم و إيداع وجه قرار استخدام؛ نموذج شكل صيغة في إيداع وقت تدريجي chip مرور كل من codec إنتاج خروج.`span-map.ts` هو عدد حرف span خريطة عودة Lexical point وحيد ساحة الذي.
+- **حالة آلة نحيف ذات لـ إيداع وجه**(phase/claim/attempt) ؛ هو لم يعد يحتفظ مسودة مسودة——حدث يحمل قص لصق لوح إسقاط (`enter`،`submit-settled`) ،claimed كامل صفة مراقبة نظر ركض في `draft-changed` فوق. صاف فارغ مسودة مسودة تغيير صار shell في تحرير جهاز داخل تنفيذ `commit-draft` فاعلية نتيجة (يحتوي بعد لاحقة إبقاء) ، مع بعد `CLEAR_HISTORY_COMMAND`.
+- **عقد نحو مستقر**:`TokenSpan {start, end, draftRev}`،`ReferenceInsert`،`CommandClaim`، أربعة عدد `slash/input-*` bail حدث، كل trigger source،controller و MenuView واحد قاعدة لم تعديل.`draftRev` الآن هو تحرير جهاز update حساب عدد.
+- **claim token إبقاء حرف وجه نص**، بادئة ورقة فرعي من transform فوق لون (تراجع إطار حذف token ما زال هو خروج يد اتجاه) ؛ صاف نص مرجع مشي `registerLexicalTextEntity`(`TextRefNode`) ؛ghost hint هو CSS متغير `--dsh-composer-hint` توليد محتوى.
 
-## 随重构退役
+## مع إعادة بنية تراجع دور
 
-mirror/backdrop 层及其 CSS 耦合规则；Safari 软换行修复（2026-08-13 note 的 workaround——表面已无可与之分歧的 mirror）；mirror-Range 光标测量；状态机的 undo 环与打字合并时钟（Lexical history，保留 1000ms 合并窗口）；手写的边界 Backspace/Delete 整段删除（原子节点原生）；手写复制/剪切展开；`EditRange`/`diffEdit`/`reconcile`。粘贴尝试面（`paste-begin` components、`paste-upgrade`、`invalidate-paste`）与 `set-invalid` 事件**全仓没有任何生产者**，直接删除而非移植；`Occurrence.invalid` 保留在节点与投影上，待未来出现生产者。
+mirror/backdrop طبقة و ذلك CSS اقتران دمج قاعدة؛Safari لين تبديل سطر إصلاح (2026-08-13 note workaround——جدول وجه قد بلا يمكن و لـ قسم اختلاف mirror) ؛mirror-Range ضوء علامة قياس كمية؛ حالة آلة undo حلقة و ضرب حرف دمج وقت ساعة (Lexical history، إبقاء 1000ms دمج نافذة) ؛ يد كتابة حد Backspace/Delete كامل مقطع حذف (أصل فرعي عقدة أصلي) ؛ يد كتابة نسخ/قص قطع توسيع؛`EditRange`/`diffEdit`/`reconcile`. لصق لصق محاولة تجربة وجه (`paste-begin` components،`paste-upgrade`،`invalidate-paste`) و `set-invalid` حدث**كل مستودع لا يوجد أي إنتاج من**، مباشر حذف بينما غير نقل غرس؛`Occurrence.invalid` إبقاء في عقدة و إسقاط فوق، انتظار لم قدوم ظهور إنتاج من.
 
-## 刻意的行为变化
+## لحظة معنى سلوك تغير
 
-- 已认领命令的 args 现以剪贴板形式到达 source（引用为规范文本而非展示标签）——可解析的那种形式。
-- `InputState.draft` 是剪贴板投影（原为展示文本）。跨包读方只消费 phase/queue 级字段；occurrence 表的外部读方为零。
-- chip 删除遵循引擎的原生 decorator 手势；jsdom 缺 `Selection.modify`，键盘路径只在浏览器 lane 断言。
-- 文件夹纯文本引用在完整字面 token 前渲染文件夹图标前缀（气泡同款资产的 currentcolor mask）；旧 backdrop 是覆盖绘制 trigger 字符，而 Lexical 文本节点无法表达这种覆盖。
-- 输入框的可访问名称改为显式 `aria-label` 镜像 placeholder（div 的 `data-placeholder` 不像 textarea 的 placeholder 那样参与命名）——由 reference-composer 的 aria golden 逮出。
-- 纯光标 commit 不发布任何东西：shell 只在投影内容变化时推进 `draftRev` 并重发布 `InputState`。光标移动仍然喂给菜单 tracking，但既不会使快照构造的 CAS span 失效（apply.ts 用已发布的 `draftRev` 构造 span），也不会触发订阅者重渲染。第一版每次 commit 都重发布；review 逮出了与旧机器「仅文本推进版本号」语义的漂移。
-- 粘贴是独立的 undo 边界：自定义 PASTE_COMMAND handler 在 `@lexical/plain-text` 有机会打 tag 之前就消费了事件，因此 shell 自己补上 `PASTE_TAG`（经 `$addUpdateTag`——dispatch 路径必然嵌套在命令 update 内部执行）。没有它，history 会把粘贴与 1 秒窗内的输入合并，一次 undo 同时撤销两者。
-- claim 装饰对行首 token 席位的优先级高于 text-ref 实体：被 claim 的命令名即使同时在触发 lexicon 上，也保持为普通的警告色 TextNode——因为 Lexical transform 按具体节点类注册，实体捕获会无声吃掉 claim 颜色（加守卫前经探针证实：实体节点胜出、样式丢失）。
+- قد إقرار قيادة أمر args الآن بـ قص لصق لوح شكل صيغة وصول source(مرجع لـ مواصفة نص بينما غير عرض وسم)——يمكن تحليل ذلك نوع شكل صيغة.
+- `InputState.draft` هو قص لصق لوح إسقاط (أصل لـ عرض نص). عبر حزمة قراءة جهة فقط إزالة استهلاك phase/queue درجة حقل؛occurrence جدول خارجي قراءة جهة لـ صفر.
+- chip حذف التزام دوران جذب محرك أصلي decorator يد اتجاه؛jsdom نقص `Selection.modify`، مفتاح قرص مسار فقط في متصفح lane تأكيد.
+- ملف مشبك صاف نص مرجع في كامل حرف وجه token قبل تصيير ملف مشبك رسم علامة بادئة (هواء فقاعة نفس بند مورد إنتاج currentcolor mask) ؛ قديم backdrop هو تغطية رسم صنع trigger محرف، بينما Lexical نص عقدة لا يمكن جدول بلوغ هذا نوع تغطية.
+- إدخال إطار يمكن وصول اسم تعديل لـ صريح `aria-label` مرآة مثل placeholder(div `data-placeholder` لا مثل textarea placeholder ذلك مثال مشاركة و تسمية)——من reference-composer aria golden إمساك خروج.
+- صاف ضوء علامة commit لا إصدار أي شرق غرب:shell فقط في إسقاط محتوى تغير وقت دفع دخول `draftRev` و إعادة إصدار `InputState`. ضوء علامة نقل حركة ما زال تغذية إعطاء قائمة مفرد tracking، لكن حيث لن جعل لقطة بنية صنع CAS span بطلان (apply.ts استخدام قد إصدار `draftRev` بنية صنع span) ، أيضا لن إطلاق حجز قراءة من إعادة تصيير. رقم واحد إصدار كل مرة commit كل إعادة إصدار؛review إمساك خروج و قديم آلة جهاز «فقط نص دفع دخول رقم الإصدار» دلالة عائم نقل.
+- لصق لصق هو مستقل undo حد: ذاتي تعريف PASTE_COMMAND handler في `@lexical/plain-text` لديه آلة سوف ضرب tag قبل حينئذ إزالة استهلاك حدث، لذلك shell ذاتي ذات تكملة فوق `PASTE_TAG`(مرور `$addUpdateTag`——dispatch مسار لا بد لكن تضمين طقم في أمر update داخلي تنفيذ). لا يوجد هو،history سوف يأخذ لصق لصق و 1 ثانية نافذة داخل إدخال دمج، مرة undo معا سحب إلغاء اثنان من.
+- claim تركيب زينة مقابل سطر أول token مقعد موضع أولوية درجة عال في text-ref فعلي جسم: يتم claim أمر اسم أي جعل معا في إطلاق lexicon فوق، أيضا إبقاء لـ عادي تحذير إبلاغ لون TextNode——لأن Lexical transform حسب أداة جسم عقدة صنف تسجيل، فعلي جسم التقاط سوف بلا صوت أكل إسقاط claim لون لون (إضافة حراسة حماية قبل مرور استكشاف إبرة إثبات فعلي: فعلي جسم عقدة فوز خروج، مثال صيغة فقد فقد).
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **给 textarea 打补丁**（记录 beforeinput 时的 selection 收窄 diff，即 #2813 提议的修法）：缩小猜测窗口但保留双事实源与样式税；未来每个装饰都要再交一次。
-- **自研 contenteditable 薄层**：被「依赖优先于手搓」政策否决——IME、selection 与引擎怪癖正是 Lexical 已经解决的本职。
-- **彻底删除状态机**（编辑器状态为唯一状态机）：提交面（attempt CAS、防倒灌、abort）与文本表示无关且久经考验；重写只买来风险。
-- **`@lexical/react`**：其 composer 在 React 内创建编辑器，与 per-session 壳所有权冲突，还拉入用不到的依赖树；它能替代的两个绑定总共约 80 行。
+- **إعطاء textarea ضرب رقعة**(سجل beforeinput وقت selection استلام ضيق diff، أي #2813 رفع اقتراح إصلاح قاعدة): تقليص صغير تخمين قياس نافذة لكن إبقاء مزدوج واقع مصدر و مثال صيغة ضريبة؛ لم قدوم كل تركيب زينة كل يلزم مجددا تسليم مرة.
+- **ذاتي بحث contenteditable رقيق طبقة**: يتم «اعتماد أولوية في يد فرك» سياسة سياسة مرفوض——IME،selection و جذب محرك غريب ميل صحيح هو Lexical قد حل قرار هذا وظيفة.
+- **تام قاع حذف حالة آلة**(تحرير جهاز حالة لـ وحيد حالة آلة): إيداع وجه (attempt CAS، منع قلب ملء،abort) و نص يمثل غير متصل كما دائم مرور اعتبار تحقق؛ إعادة كتابة فقط شراء قدوم ريح خطر.
+- **`@lexical/react`**: ذلك composer في React داخل إنشاء تحرير جهاز، و per-session قشرة كل حق اندفاع مفاجئ، أيضا سحب دخول استخدام لا إلى اعتماد شجرة؛ هو قدرة بديل اثنان عدد ربط مجموع مشترك نحو 80 سطر.
 
-## 后果
+## عاقبة
 
-- #2813 与 #2793 在结构上不可表达：不存在编辑位置推断，chip DOM 身份随 NodeKey。
-- chip 是真实 DOM（图标、胶囊、`max-width` 截断、失效删除线）并进入可访问性树；旧 backdrop 是 `aria-hidden` 的。
-- 编辑器及其历史随壳跨会话切换存活；单元测试无头驱动文档，真实键盘手势（删 chip、IME）归浏览器 lane。
-- ui-conversation 的 client bundle 携带 lexical（gzip 约 +70KB）；无其他包 import Lexical 值，故无模块表行。
-- 提交面、trigger 管线与 slash/input-* 契约对每个 source 插件字节兼容。
+- #2813 و #2793 في بنية فوق غير ممكن جدول بلوغ: لا وجود تحرير موضع دفع قطع،chip DOM هوية مع NodeKey.
+- chip هو حقيقي DOM(رسم علامة، لاصق كيس،`max-width` قطع قطع، بطلان حذف خط) و دخول يمكن وصول صفة شجرة؛ قديم backdrop هو `aria-hidden` .
+- تحرير جهاز و ذلك تاريخ مع قشرة عبر جلسة تبديل تخزين نشط؛ اختبار وحدة بلا رأس قيادة وثيقة، حقيقي مفتاح قرص يد اتجاه (حذف chip،IME) عودة متصفح lane.
+- ui-conversation client bundle يحمل lexical(gzip نحو +70KB) ؛ بلا أخرى حزمة import Lexical قيمة، لذا بلا وحدة جدول سطر.
+- إيداع وجه،trigger إدارة خط و slash/input-* عقد نحو مقابل كل source إضافة بايت توافق.
 
-## 坑
+## حفرة
 
-- 在同一编辑器的 update 内再调 `editor.update` 会**推迟**其 fn（command handler 同步落到这里）；嵌套 discrete 直接抛错。`applyEdit` 在 `editor._updating` 时直接执行 `$` 函数体（command handler 内合法——Lexical 自己对 setEditable 用同款分叉），顶层则 discrete。经包裹嵌套 update 计算的 bail 答案读到的是旧状态。
-- Lexical 的组合键/空格检测读 `event.keyCode`（undo `z`=90、空格=32）；合成事件测试必须设置它。
-- 历史恢复（`UNDO_COMMAND`）在下一次 flush 才提交，不在 dispatch 内同步生效。
-- client bundle 需钉住 `production`/`development` exports 条件（tsdown preset 的 `inputOptions.resolve.conditionNames`）：lexical 的 `node` 条件文件用顶层 await 选择口味，CJS bundle 载不动。
-- `registerHistory` 的合并延时在调用时捕获 `Date.now`；fake-timer 测试要么在 shell 构造前装好 mock，要么推进越过窗口。
-- chip 的 `isKeyboardSelectable()` 必须为 **false**。取默认值 `true` 时，方向键落在 chip 边缘会创建 NodeSelection，其 DOM 投影坍塌为 element point，而 plain-text binding 的方向键/删除/插入 handler 全都对非 Range selection 直接放弃——方向键、打字与退格在 chip 边死锁，直到鼠标点击才能解除。false 恢复占位符语义：方向键一步跨过，Backspace/Delete 整颗删除（浏览器 lane e2e 钉住该手势；只有真实按键事件能复现——CDP 裸 keydown 不携带引擎默认行为）。
+- في نفس تحرير جهاز update داخل مجددا ضبط `editor.update` سوف**دفع متأخر**ذلك fn(command handler تزامن سقوط إلى هذا داخل) ؛ تضمين طقم discrete مباشر رمي خطأ.`applyEdit` في `editor._updating` وقت مباشر تنفيذ `$` دالة جسم (command handler داخل دمج قاعدة——Lexical ذاتي ذات مقابل setEditable استخدام نفس بند قسم تقاطع) ، قمة طبقة فإن discrete. مرور حزمة لف تضمين طقم update حساب حساب bail جواب سجل قراءة إلى هو قديم حالة.
+- Lexical تركيب مفتاح/فارغ إطار فحص قياس قراءة `event.keyCode`(undo `z`=90، فارغ إطار=32) ؛ دمج صار حدث اختبار يجب ضبط هو.
+- تاريخ استعادة (`UNDO_COMMAND`) في تحت مرة flush عندئذ إيداع، لا في dispatch داخل تزامن توليد فاعلية.
+- client bundle يحتاج تثبيت إقامة `production`/`development` exports شرط (tsdown preset `inputOptions.resolve.conditionNames`):lexical `node` شرط ملف استخدام قمة طبقة await اختيار فتحة طعم،CJS bundle تحميل لا حركة.
+- `registerHistory` دمج تأخير وقت في استدعاء وقت التقاط `Date.now`؛fake-timer اختبار يلزم ما في shell بنية صنع قبل تركيب جيد mock، يلزم ما دفع دخول تجاوز مرور نافذة.
+- chip `isKeyboardSelectable()` يجب لـ **false**. أخذ قيمة افتراضية `true` وقت، جهة نحو مفتاح سقوط في chip حافة حافة سوف إنشاء NodeSelection، ذلك DOM إسقاط انهيار انهيار لـ element point، بينما plain-text binding جهة نحو مفتاح/حذف/إدراج دخول handler كل كل مقابل غير Range selection مباشر وضع ترك——جهة نحو مفتاح، ضرب حرف و تراجع إطار في chip حافة ميت قفل، مباشر إلى فأرة علامة نقر عندئذ قدرة حل حذف.false استعادة احتلال موضع رمز دلالة: جهة نحو مفتاح واحد خطوة عبر مرور،Backspace/Delete كامل حبة حذف (متصفح lane e2e تثبيت إقامة هذا يد اتجاه؛ فقط لديه حقيقي حسب مفتاح حدث قدرة تكرار الآن——CDP عار keydown لا يحمل جذب محرك افتراضي سلوك).

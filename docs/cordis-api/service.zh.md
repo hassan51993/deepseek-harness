@@ -1,17 +1,17 @@
-<!-- 英文源文件由 scripts/gen-cordis-catalog.ts 生成；本中文文件是通过双语配对维护的经评审对侧。
-     更新时先运行 `pnpm run gen-cordis-catalog` 更新英文，再更新本文件并运行 `pnpm run verify-translation-pairing --write docs/cordis-api/service.md` 重新记录配对。 -->
+<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
+     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/service.md` إعادة سجل إعداد مقابل. -->
 
 # Service
 
-[English](service.md) | 中文
+[English](service.md) | العربية
 
-上下文服务的基类。以插件形式加载的子类会将自身注册为 `ctx.<name>`。
+سياق خدمة أساس صنف. بـ إضافة شكل صيغة تحميل فرعي صنف سوف سوف ذاته تسجيل لـ `ctx.<name>`.
 
-用于在 `ctx` 上公开具名 API 的服务基类。
+لأجل في `ctx` فوق عام أداة اسم API خدمة أساس صنف.
 
-子类在构造函数中调用 `super(ctx, name)`。服务会立即注册，并随所属 fiber 自动移除。
+فرعي صنف في بنية صنع دالة في استدعاء `super(ctx, name)`. خدمة سوف قيام أي تسجيل، و مع الذي تابع fiber تلقائي إزالة.
 
-[源码](../../vendor/cordis/src/service.ts#L11)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L11)
 
 ### service.name
 
@@ -20,11 +20,11 @@
 public name!: string
 ```
 
-此实例注册时使用的服务名称。
+هذا نسخة تسجيل وقت استخدام خدمة اسم.
 
-[源码](../../vendor/cordis/src/service.ts#L30)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L30)
 
-## 静态成员
+## ساكن حالة عضو
 
 ### Service.init
 
@@ -33,9 +33,9 @@ public name!: string
 static readonly init: unique symbol
 ```
 
-构造完成后运行的实例方法所使用的符号键（类插件）。
+بنية صنع إتمام بعد تشغيل نسخة طريقة الذي استخدام رمز رقم مفتاح (صنف إضافة).
 
-[源码](../../vendor/cordis/src/service.ts#L13)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L13)
 
 ### Service.check
 
@@ -44,9 +44,9 @@ static readonly init: unique symbol
 static readonly check: unique symbol
 ```
 
-传给 `ctx.provide()` 的可用性谓词所使用的符号键。
+نقل إعطاء `ctx.provide()` متاح صفة يسمى كلمة الذي استخدام رمز رقم مفتاح.
 
-[源码](../../vendor/cordis/src/service.ts#L15)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L15)
 
 ### Service.config
 
@@ -55,9 +55,9 @@ static readonly check: unique symbol
 static readonly config: unique symbol
 ```
 
-虚设拦截配置类型参数所使用的符号键。
+وهمي ضبط اعتراض قطع إعداد نوع معامل الذي استخدام رمز رقم مفتاح.
 
-[源码](../../vendor/cordis/src/service.ts#L17)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L17)
 
 ### Service.invoke
 
@@ -66,9 +66,9 @@ static readonly config: unique symbol
 static readonly invoke: unique symbol
 ```
 
-使服务可被调用的调用体所使用的符号键（例如 `ctx.logger()`）。
+جعل خدمة يمكن يتم استدعاء استدعاء جسم الذي استخدام رمز رقم مفتاح (مثال مثل `ctx.logger()`).
 
-[源码](../../vendor/cordis/src/service.ts#L19)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L19)
 
 ### Service.extend
 
@@ -77,9 +77,9 @@ static readonly invoke: unique symbol
 static readonly extend: unique symbol
 ```
 
-用于派生扩展服务实例的辅助方法所使用的符号键。
+لأجل إرسال توليد توسيع خدمة نسخة مساعد مساعدة طريقة الذي استخدام رمز رقم مفتاح.
 
-[源码](../../vendor/cordis/src/service.ts#L21)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L21)
 
 ### Service.tracker
 
@@ -88,9 +88,9 @@ static readonly extend: unique symbol
 static readonly tracker: unique symbol
 ```
 
-上下文追踪所用跟踪器元数据的符号键。
+سياق تتبع أثر الذي استخدام تتبع أثر جهاز بيانات وصفية رمز رقم مفتاح.
 
-[源码](../../vendor/cordis/src/service.ts#L23)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L23)
 
 ### Service.resolveConfig
 
@@ -99,6 +99,6 @@ static readonly tracker: unique symbol
 static readonly resolveConfig: unique symbol
 ```
 
-下述拦截配置解析辅助方法所使用的符号键。
+تحت وصف اعتراض قطع إعداد تحليل مساعد مساعدة طريقة الذي استخدام رمز رقم مفتاح.
 
-[源码](../../vendor/cordis/src/service.ts#L25)
+[شفرة المصدر](../../vendor/cordis/src/service.ts#L25)

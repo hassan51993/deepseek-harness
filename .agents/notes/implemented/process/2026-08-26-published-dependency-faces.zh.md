@@ -1,97 +1,97 @@
-# Agent Note: 发布依赖门面与有限 peer 中继
+# Agent Note: إصدار اعتماد باب وجه و لديه حد peer في استمرار
 
 Status: implemented
 
-[English](2026-08-26-published-dependency-faces.md) | 中文
+[English](2026-08-26-published-dependency-faces.md) | العربية
 
-## 问题
+## مشكلة
 
-一个包可能同时包含浏览器 bundle、Host 入口、共享 TypeScript 声明和 Cordis 注入元数据。把这些关系全部编码成必需 npm peer 会使已发布 CLI 的安装代价过高：npm 会自动安装 peer，并沿深层、反复汇合的 peer 路径重复执行放置检查。修改版本范围或把 peer 标成 optional 都不会消除这类遍历。
+واحد حزمة ممكن معا يتضمن متصفح bundle،Host مدخل، مشترك TypeScript إعلان و Cordis حقن بيانات وصفية. يأخذ هذه علاقة الكل تحرير رمز صار مطلوب npm peer سوف جعل قد إصدار CLI تثبيت بديل قيمة مرور عال:npm سوف تلقائي تثبيت peer، و امتداد عميق طبقة، عكس تكرار تجميع دمج peer مسار تكرار تنفيذ وضع وضع فحص. تعديل إصدار نطاق أو يأخذ peer علامة صار optional كل لن إزالة حذف هذا صنف مرة تاريخ.
 
-Client 构建输入由发布 profile 选择，而 Host value import 由导入它的包通过 Node 加载；两者需要不同的 npm 区段。把规则应用到每个 Host 包虽然也能缩小依赖图，却会制造一个没有对应安装收益的大范围迁移。
+Client بناء إدخال من إصدار profile اختيار، بينما Host value import من استيراد هو حزمة عبر Node تحميل؛ اثنان من حاجة مختلف npm منطقة مقطع. يأخذ قاعدة تطبيق إلى كل Host حزمة رغم لكن أيضا قدرة تقليص صغير اعتماد رسم، لكن سوف صنع صنع واحد لا يوجد مقابل تثبيت استلام فائدة كبير نطاق ترحيل.
 
-## 决策
+## قرار
 
-### 包选择
+### حزمة اختيار
 
-[`verify-package-dependencies`](../../../../scripts/verify-package-dependencies.ts) 统一负责依赖区段策略。它始终覆盖 `packages/client/` 下的包，以及声明 `dsh.client` 的每个非实验包。在该目录内，`dsh.client` 标记需要扫描 Host 入口的 Client/Host 包；没有该声明的包是仅供 Client 编译的静态输入。在目录外，`dsh.client` 选择相同的 Client/Host 扫描。仅有 `"./client"` export 只是 API，不参与 npm 依赖策略选包。
+[`verify-package-dependencies`](../../../../scripts/verify-package-dependencies.ts) موحد واحد مسؤول اعتماد منطقة مقطع سياسة. هو بداية نهاية تغطية `packages/client/` تحت حزمة، و إعلان `dsh.client` كل غير فعلي تحقق حزمة. في هذا دليل داخل،`dsh.client` علامة حاجة مسح Host مدخل Client/Host حزمة؛ لا يوجد هذا إعلان حزمة هو فقط توفير Client تحرير ترجمة ساكن حالة إدخال. في دليل خارج،`dsh.client` اختيار نفسه Client/Host مسح. فقط لديه `"./client"` export فقط هو API، لا مشاركة و npm اعتماد سياسة اختيار حزمة.
 
-[`package-dependency-policy.ts`](../../../../scripts/package-dependency-policy.ts) 提供显式 Client 门面 include 与 exclude 列表。include 用于没有 `dsh.client` 的例外包，exclude 用于移除 `packages/client/` 之外自动发现的双面包。验证器拒绝未知、失效、冗余、重复、相互重叠和无法生效的配置项。include 列表为空；exclude 列表包含 `@deepseek-ai/dsh-api-session-controller` 和 `@deepseek-ai/dsh-api-workspace-controller`。把 Session Controller 加回会多迁移九条 Host 边，而五次候选复测的 resolver 中位数仅改善 0.15 秒。
+[`package-dependency-policy.ts`](../../../../scripts/package-dependency-policy.ts) توفير صريح Client باب وجه include و exclude قائمة.include لأجل لا يوجد `dsh.client` مثال خارج حزمة،exclude لأجل إزالة `packages/client/` خارج تلقائي اكتشاف مزدوج وجه حزمة. تحقق جهاز رفض لم معرفة، بطلان، زائد بقية، تكرار، متبادل متبادل إعادة تراكم و لا يمكن توليد فاعلية بند إعداد.include قائمة لـ فارغ؛exclude قائمة يتضمن `@deepseek-ai/dsh-api-session-controller` و `@deepseek-ai/dsh-api-workspace-controller`. يأخذ Session Controller إضافة عودة سوف كثير ترحيل تسعة بند Host حافة، بينما خمسة مرة مرشح تكرار قياس resolver في موضع عدد فقط تعديل حسن 0.15 ثانية.
 
-Host-only 包通过另一份显式列表加入同一策略。该列表包含 `@deepseek-ai/dsh-llm` 和 `@deepseek-ai/dsh-session`；源码 import 不会自动扩大列表。
+Host-only حزمة عبر آخر نسخة صريح قائمة إضافة دخول نفس سياسة. هذا قائمة يتضمن `@deepseek-ai/dsh-llm` و `@deepseek-ai/dsh-session`؛ شفرة المصدر import لن تلقائي توسيع كبير قائمة.
 
-### 依赖区段
+### اعتماد منطقة مقطع
 
-每个受管包都把 `@deepseek-ai/cordis` 保持在范围一致的 `peerDependencies` 和 `devDependencies` 中。Cordis 是由应用控制身份的共享插件运行时。
+كل تلقي إدارة حزمة كل يأخذ `@deepseek-ai/cordis` إبقاء في نطاق متسق `peerDependencies` و `devDependencies` في.Cordis هو من تطبيق تحكم هوية مشترك إضافة وقت التشغيل.
 
-Host 入口闭包中的运行期 value import 所到达的 workspace 包，只有在其完整运行时入口列入 `duplicateSafePackages`，或每个运行期导出都列入 `safeHostDependencyExports` 时才只属于 `dependencies`。包级列表包含 `@deepseek-ai/dsh-brand`、`@deepseek-ai/dsh-typert-protocol`、`@deepseek-ai/dsh-util-crypto` 与 `@deepseek-ai/dsh-util-values`：它们的值无状态、按结构识别，或通过带版本且可互操作的描述符存储。导出表负责处理其他导出无法提供同等保证的混合包中的已审查值。
+Host مدخل إغلاق حزمة في تشغيل مدة value import الذي وصول workspace حزمة، فقط لديه في ذلك كامل وقت التشغيل مدخل صف دخول `duplicateSafePackages`، أو كل تشغيل مدة توجيه خروج كل صف دخول `safeHostDependencyExports` وقت عندئذ فقط يخص `dependencies`. حزمة درجة قائمة يتضمن `@deepseek-ai/dsh-brand`،`@deepseek-ai/dsh-typert-protocol`،`@deepseek-ai/dsh-util-crypto` و `@deepseek-ai/dsh-util-values`: هو جمع قيمة بلا حالة، حسب بنية تعرف آخر، أو عبر حمل إصدار كما يمكن متبادل عملية وصف رمز تخزين. توجيه خروج جدول مسؤول معالجة أخرى توجيه خروج لا يمكن توفير نفس انتظار حفظ إثبات خلط دمج حزمة في قد مراجعة فحص قيمة.
 
-constructor 身份或模块状态必须共享的导出列入 `peerRequiredHostExports`；一旦使用这类导出，整条包依赖边就保留在范围一致的 `peerDependencies` 与 `devDependencies` 中。每个导出表的 key 都是精确 module specifier，每个 value 都是经审查的导出集合。验证器从 Host 入口沿运行期本地 import 扫描，记录具名与默认 import 和 re-export，并拒绝既没有包级分类、也没有导出级分类的导出；除非完整的精确入口已按包分类，否则 namespace、dynamic 和 side-effect import 仍无法限定范围。
+constructor هوية أو وحدة حالة يجب مشترك توجيه خروج صف دخول `peerRequiredHostExports`؛ واحد حالما استخدام هذا صنف توجيه خروج، كامل بند حزمة اعتماد حافة حينئذ إبقاء في نطاق متسق `peerDependencies` و `devDependencies` في. كل توجيه خروج جدول key كل هو دقيق module specifier، كل value كل هو مرور مراجعة فحص توجيه خروج تجميع دمج. تحقق جهاز من Host مدخل امتداد تشغيل مدة محلي import مسح، سجل أداة اسم و افتراضي import و re-export، و رفض حيث لا يوجد حزمة درجة تصنيف، أيضا لا يوجد توجيه خروج درجة تصنيف توجيه خروج؛ حذف غير كامل دقيق مدخل قد حسب حزمة تصنيف، لا فإن namespace،dynamic و side-effect import ما زال لا يمكن حد تحديد نطاق.
 
-Client bundle 使用的 workspace import、纯类型 import、模块扩充、`dsh.client.inject` 和仅有元数据的现存 peer 只属于 `devDependencies`。Host 运行时 import（包括额外 Node 入口）遵循 Host 分类。[浏览器第三方构建输入](2026-09-08-browser-third-party-build-inputs.zh.md)规定普通第三方声明，部分取代本决策对它们原区段的保留。Workspace 引用使用 `workspace:^`。
+Client bundle استخدام workspace import، صاف نوع import، وحدة توسيع ملء،`dsh.client.inject` و فقط لديه بيانات وصفية الآن تخزين peer فقط يخص `devDependencies`.Host وقت التشغيل import(يشمل مقدار خارج Node مدخل) التزام دوران Host تصنيف.[متصفح رقم ثلاثة جهة بناء إدخال](2026-09-08-browser-third-party-build-inputs.zh.md) قاعدة تحديد عادي رقم ثلاثة جهة إعلان، جزء يحل محل هذا قرار مقابل هو جمع أصل منطقة مقطع إبقاء.Workspace مرجع استخدام `workspace:^`.
 
-部分开发期关系只存在于 `dsh.client.inject` 或 TypeScript project reference 中。策略的 `configurationOnlyDevDependencies` 表只列出这些已评审的依赖边，并将它们保留在 `devDependencies` 中。
+جزء تطوير مدة علاقة فقط وجود في `dsh.client.inject` أو TypeScript project reference في. سياسة `configurationOnlyDevDependencies` جدول فقط صف خروج هذه قد مراجعة اعتماد حافة، و سوف هو جمع إبقاء في `devDependencies` في.
 
-验证器读取源码 manifest 和源码文件，因此可以在没有已构建 `lib/` 的干净工作树上运行。每个被选中的 Host face 都必须存在 `src/index.ts`。未分类的 Host 运行期导出属于策略违规，会阻止 `--fix` 的全部写入；维护者必须审查该导出，并选择分类该导出、修改源码关系或修改选包范围。源码安全检查通过后，`--fix` 只执行分类所确定的区段与范围变更，并删除失效的 peer 元数据。
+تحقق جهاز قراءة شفرة المصدر manifest و شفرة المصدر ملف، لذلك يمكن في لا يوجد قد بناء `lib/` جاف صاف عمل شجرة فوق تشغيل. كل يتم اختيار في Host face كل يجب وجود `src/index.ts`. لم تصنيف Host تشغيل مدة توجيه خروج يخص سياسة مخالفة قاعدة، سوف منع توقف `--fix` الكل كتابة؛ صيانة من يجب مراجعة فحص هذا توجيه خروج، و اختيار تصنيف هذا توجيه خروج، تعديل شفرة المصدر علاقة أو تعديل اختيار حزمة نطاق. شفرة المصدر أمان فحص عبر بعد،`--fix` فقط تنفيذ تصنيف الذي تحديد منطقة مقطع و نطاق تغيير، و حذف بطلان peer بيانات وصفية.
 
-### 维护流程
+### صيانة مسار
 
-不带 `--fix` 运行验证器，会以只读方式检查选包范围、导出分类、依赖区段、workspace range 与 peer metadata。未分类的运行期 import 会按每个导出分别报告可点击的 `path:line:column` 诊断。
+لا حمل `--fix` تشغيل تحقق جهاز، سوف بـ فقط قراءة طريقة فحص اختيار حزمة نطاق، توجيه خروج تصنيف، اعتماد منطقة مقطع،workspace range و peer metadata. لم تصنيف تشغيل مدة import سوف حسب كل توجيه خروج قسم آخر تقرير إبلاغ يمكن نقر `path:line:column` تشخيص.
 
 ```sh
 pnpm run verify-package-dependencies
 ```
 
-生成 manifest 前，在 [`package-dependency-policy.ts`](../../../../scripts/package-dependency-policy.ts) 中分类每个新增 Host 运行期导出。`duplicateSafePackages` 允许一个精确根入口的全部运行期导出使用普通 dependency；`safeHostDependencyExports` 只允许列出的导出；`peerRequiredHostExports` 让整个提供包依赖边保留在范围一致的 peer 与开发区段。一个导出只能获得一种分类。移除包级的 identity 或状态要求后，按包分类其根入口；只改变混合包中的一个导出时，则更新精确导出表。只有当一条依赖边的所有 import 都不再使用 peer-required 导出时，它才会成为普通 dependency。
+توليد manifest قبل، في [`package-dependency-policy.ts`](../../../../scripts/package-dependency-policy.ts) في تصنيف كل إضافة جديدة Host تشغيل مدة توجيه خروج.`duplicateSafePackages` سماح واحد دقيق أصل مدخل الكل تشغيل مدة توجيه خروج استخدام عادي dependency؛`safeHostDependencyExports` فقط سماح صف خروج توجيه خروج؛`peerRequiredHostExports` يجعل كامل توفير حزمة اعتماد حافة إبقاء في نطاق متسق peer و تطوير منطقة مقطع. واحد توجيه خروج فقط قدرة نيل نيل واحد نوع تصنيف. إزالة حزمة درجة identity أو حالة اشتراط بعد، حسب حزمة تصنيف ذلك أصل مدخل؛ فقط تغيير خلط دمج حزمة في واحد توجيه خروج وقت، فإن تحديث دقيق توجيه خروج جدول. فقط لديه عند واحد بند اعتماد حافة كل import كل لم يعد استخدام peer-required توجيه خروج وقت، هو عندئذ سوف يصبح عادي dependency.
 
-用一条命令生成受管 manifest 和所有直接派生产物。存在策略违规时，`--fix` 不写任何文件；成功后，它会刷新 `pnpm-lock.yaml`、重新生成中英文 module graph 及其配对记录，并打印普通 dependency 与 peer-required 依赖边。
+استخدام واحد بند أمر توليد تلقي إدارة manifest و كل مباشر إرسال إنتاج شيء. وجود سياسة مخالفة قاعدة وقت،`--fix` لا كتابة أي ملف؛ نجاح بعد، هو سوف تحديث جديد `pnpm-lock.yaml`، إعادة توليد في إنجليزي نص module graph و ذلك إعداد مقابل سجل، و ضرب طبع عادي dependency و peer-required اعتماد حافة.
 
 ```sh
 pnpm run verify-package-dependencies -- --fix
 git diff -- packages pnpm-lock.yaml docs/module-graph.md docs/module-graph.zh.md docs/module-graph.i18n.yaml
 ```
 
-通过仅 metadata 的本地 registry 测量工作树依赖图与 Git ref。每轮都会创建全新 consumer 与 npm cache，用明确的 peer、hoisting 和 registry 设置替换继承的 npm 配置，执行 `npm install --package-lock-only`，拒绝下载包归档，并保持仓库不变。`--runs` 控制重复次数，`--timeout-ms` 会在期限到达后终止 npm 进程树，可选 `--max-ms` 会在最慢一轮超过阈值时让命令失败。
+عبر فقط metadata محلي registry قياس كمية عمل شجرة اعتماد رسم و Git ref. كل جولة كل سوف إنشاء كل جديد consumer و npm cache، استخدام واضح peer،hoisting و registry ضبط استبدال وراثة npm إعداد، تنفيذ `npm install --package-lock-only`، رفض تحت تحميل حزمة عودة ملف، و إبقاء مستودع ثابت.`--runs` تحكم تكرار مرة عدد،`--timeout-ms` سوف في مدة حد وصول بعد إنهاء npm عملية شجرة، اختياري `--max-ms` سوف في الأكثر بطيء واحد جولة تجاوز مرور عتبة قيمة وقت يجعل أمر فشل.
 
 ```sh
 pnpm run benchmark:npm-resolution -- --runs=5 --timeout-ms=300000
 pnpm run benchmark:npm-resolution -- --ref=origin/master --runs=5 --timeout-ms=300000
 ```
 
-通过两个互不兼容的 DSH 合成版本验证包落位。验证器把每份当前 DSH manifest 分别复制为 `0.1.0` 和 `0.2.0`，只要求 npm 生成 package lock，并拒绝跨版本 DSH 解析、非预期 DSH 路径、两套版本清单不一致、多个 Cordis 实例以及包归档请求。本地索引只包含当前平台已安装的 metadata，因此只报告而不拒绝 npm 已接受的不可用可选包探测。
+عبر اثنان عدد متبادل لا توافق DSH دمج صار إصدار تحقق حزمة سقوط موضع. تحقق جهاز يأخذ كل نسخة حالي DSH manifest قسم آخر نسخ لـ `0.1.0` و `0.2.0`، فقط اشتراط npm توليد package lock، و رفض عبر إصدار DSH تحليل، غير مسبق مدة DSH مسار، اثنان طقم إصدار بيان لا متسق، كثير عدد Cordis نسخة و حزمة عودة ملف طلب. محلي بحث جذب فقط يتضمن حالي منصة قد تثبيت metadata، لذلك فقط تقرير إبلاغ بينما لا رفض npm قد قبول غير ممكن استخدام اختياري حزمة استكشاف قياس.
 
 ```sh
 pnpm run verify-npm-install-layout
 ```
 
-计算下一项 Host 包时，命令会在内存中应用当前策略、测量 baseline、逐个尝试可达且未配置的包，并串行复测粗筛中最快的候选。正数 `gainSeconds` 等于 `baseline median - candidate median`；`--candidates` 限定名册，`--jobs` 控制粗筛并发度，两个阶段都不写 manifest。选中的候选仍需先完成导出分类，才能加入 `hostPackages`。
+حساب حساب تحت واحد بند Host حزمة وقت، أمر سوف في داخل تخزين في تطبيق حالي سياسة، قياس كمية baseline، تدريجي عدد محاولة تجربة يمكن بلوغ كما لم إعداد حزمة، و سلسلة سطر تكرار قياس خشن غربلة في الأكثر سريع مرشح. صحيح عدد `gainSeconds` انتظار في `baseline median - candidate median`؛`--candidates` حد تحديد اسم سجل،`--jobs` تحكم خشن غربلة تزامن درجة، اثنان عدد مرحلة مقطع كل لا كتابة manifest. اختيار في مرشح ما زال يحتاج أولا إتمام توجيه خروج تصنيف، عندئذ قدرة إضافة دخول `hostPackages`.
 
 ```sh
 pnpm run benchmark:npm-resolution:next -- --runs=1 --finalist-runs=5 --finalists=5 --jobs=8 --timeout-ms=120000
 ```
 
-### 性能验证
+### صفة قدرة تحقق
 
-[`verify-npm-install-layout`](../../../../scripts/verify-npm-install-layout.ts) 是 `Release (dsh)` workflow 在每个 pull request 和 master push 上运行的确定性包路径与版本检查；它不限制 resolver 耗时。[`benchmark-npm-resolution`](../../../../scripts/benchmark-npm-resolution.ts) 与 [`benchmark-next-package-dependency`](../../../../scripts/benchmark-next-package-dependency.ts) 保持为手动工具，因为 resolver 耗时会随机器负载和 metadata 完成顺序变化。它们通过全新 consumer 和仅 metadata 的运行，把 npm 依赖树计算与 registry 延迟、包归档下载分离，因此相对结果可以定位 peer 中继，但不构成发布时性能承诺。
+[`verify-npm-install-layout`](../../../../scripts/verify-npm-install-layout.ts) هو `Release (dsh)` workflow في كل pull request و master push فوق تشغيل تحديد صفة حزمة مسار و إصدار فحص؛ هو لا حد resolver استهلاك وقت.[`benchmark-npm-resolution`](../../../../scripts/benchmark-npm-resolution.ts) و [`benchmark-next-package-dependency`](../../../../scripts/benchmark-next-package-dependency.ts) إبقاء لـ يد حركة أداة، لأن resolver استهلاك وقت سوف مع آلة جهاز سالب تحميل و metadata إتمام ترتيب تغير. هو جمع عبر كل جديد consumer و فقط metadata تشغيل، يأخذ npm اعتماد شجرة حساب حساب و registry تأخير متأخر، حزمة عودة ملف تحت تحميل قسم مغادرة، لذلك متبادل مقابل نتيجة يمكن تحديد موضع peer في استمرار، لكن لا بنية صار إصدار وقت صفة قدرة تحمل وعد.
 
-生成后的策略目前在 13 个包中留下 27 条位于 `dependencies` 的受管 Host 运行时边。两条边仍位于 `peerDependencies`：`dsh-api-remotes → dsh-scope` 使用 `carrierKeyOf`，`dsh-session → dsh-scope` 使用 `scopeOf` 与 `scopeTarget`。
+توليد بعد سياسة هدف قبل في 13 عدد حزمة في إبقاء تحت 27 بند يقع في `dependencies` تلقي إدارة Host وقت التشغيل حافة. اثنان بند حافة ما زال يقع في `peerDependencies`:`dsh-api-remotes → dsh-scope` استخدام `carrierKeyOf`،`dsh-session → dsh-scope` استخدام `scopeOf` و `scopeTarget`.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**把内部关系继续保留为 peer。** npm 必须沿汇合的祖先路径放置并验证每个必需 peer；即使内部版本全部兼容，也会重新产生已报告的安装耗时问题。
+**يأخذ داخلي علاقة متابعة إبقاء لـ peer.** npm يجب امتداد تجميع دمج أصل أولا مسار وضع وضع و تحقق كل مطلوب peer؛ أي جعل داخلي إصدار الكل توافق، أيضا سوف إعادة إنتاج قد تقرير إبلاغ تثبيت استهلاك وقت مشكلة.
 
-**用 `"./client"` export 作为 Client 门面名册。** 包可能发布 Client 类型或浏览器 API，却不贡献动态装载 row。选中这类包会把迁移扩大到 Goal、Session Title 和 Todo 等无关 Host 包。`dsh.client` 标识动态 row，而 `packages/client/` 目录独立覆盖静态 Client 输入。
+**استخدام `"./client"` export بصفة Client باب وجه اسم سجل.** حزمة ممكن إصدار Client نوع أو متصفح API، لكن لا مساهمة حركة حالة تركيب تحميل row. اختيار في هذا صنف حزمة سوف يأخذ ترحيل توسيع كبير إلى Goal،Session Title و Todo انتظار غير متصل Host حزمة.`dsh.client` معرف حركة حالة row، بينما `packages/client/` دليل مستقل تغطية ساكن حالة Client إدخال.
 
-**拍平全部 Host 包。** 这会移除更多 peer 工作，却把迁移扩大到单包 benchmark 收益可忽略的包。显式 Host 列表会保留其余 peer 约束，直到测量结果证明应增加新成员。
+**التقاط مستو الكل Host حزمة.** هذا سوف إزالة أكثر كثير peer عمل، لكن يأخذ ترحيل توسيع كبير إلى مفرد حزمة benchmark استلام فائدة يمكن تجاهل اختصار حزمة. صريح Host قائمة سوف إبقاء ذلك بقية peer قيد، مباشر إلى قياس كمية نتيجة إثبات ينبغي زيادة جديد عضو.
 
-**把所有 Client 相关声明都改为仅开发依赖。** 双面包的 Host value import 仍是实际的 Node 加载；从发布依赖图中删掉它们，会让包依赖 profile 的偶然提升。
+**يأخذ كل Client متبادل صلة إعلان كل تعديل لـ فقط تطوير اعتماد.** مزدوج وجه حزمة Host value import ما زال هو فعلي Node تحميل؛ من إصدار اعتماد رسم في حذف إسقاط هو جمع، سوف يجعل حزمة اعتماد profile أحيانا لكن رفع رفع.
 
-**在 CI 中强制墙钟阈值。** Resolver 耗时会随机器负载和 metadata 完成顺序变化。确定性的 manifest 分类进入 CI，耗时测量保留为维护者 benchmark。
+**في CI في قوي صنع جدار ساعة عتبة قيمة.** Resolver استهلاك وقت سوف مع آلة جهاز سالب تحميل و metadata إتمام ترتيب تغير. تحديد صفة manifest تصنيف دخول CI، استهلاك وقت قياس كمية إبقاء لـ صيانة من benchmark.
 
-## 结果
+## نتيجة
 
-发布依赖图按产物归属而不是源码目录耦合分类。Client bundle 与发布 profile 提供浏览器运行时身份，Host 模块安装自己加载的可重复实体，而 Cordis 和显式标为 peer-required 的 Host 导出继续共享包实例。
+إصدار اعتماد رسم حسب ناتج ملكية بينما لا هو شفرة المصدر دليل اقتران دمج تصنيف.Client bundle و إصدار profile توفير متصفح وقت التشغيل هوية،Host وحدة تثبيت ذاتي ذات تحميل يمكن تكرار فعلي جسم، بينما Cordis و صريح علامة لـ peer-required Host توجيه خروج متابعة مشترك حزمة نسخة.
 
-把公开纯类型关系放进 `devDependencies`，意味着独立 TypeScript 消费者在使用该声明时必须自行安装被引用的类型包。发布 profile 会安装完整的受支持包族；若要支持独立组装的 TypeScript 消费者，需要另一套策略。
+يأخذ عام صاف نوع علاقة وضع دخول `devDependencies`، معنى طعم حال مستقل TypeScript إزالة استهلاك من في استخدام هذا إعلان وقت يجب ذاتي سطر تثبيت يتم مرجع نوع حزمة. إصدار profile سوف تثبيت كامل تلقي دعم حمل حزمة عائلة؛ إذا يلزم دعم حمل مستقل تجميع TypeScript إزالة استهلاك من، حاجة آخر طقم سياسة.
 
-显式 override、Host 列表、包分类与导出分类都是需要评审的决策。当 `instanceof` 使用的 class constructor、私有 symbol 和模块本地 registry 跨包传递 identity 或不可访问状态时，它们要求 peer。稳定的结构标记或带版本的 prototype 描述符可以让特定值互操作，但仅仅属于 value import 并不能做到这一点。修改分类会改变安装图，因此需要运行聚焦 verifier 测试、双版本布局检查并重新执行 next-package benchmark。仅 metadata benchmark 是诊断证据，不是发布时安装耗时承诺。
+صريح override،Host قائمة، حزمة تصنيف و توجيه خروج تصنيف كل هو حاجة مراجعة قرار. عند `instanceof` استخدام class constructor، خاص symbol و وحدة محلي registry عبر حزمة نقل تمرير identity أو غير ممكن وصول حالة وقت، هو جمع اشتراط peer. مستقر بنية علامة أو حمل إصدار prototype وصف رمز يمكن يجعل خاص تحديد قيمة متبادل عملية، لكن فقط فقط يخص value import و لا يستطيع فعل إلى هذا واحد نقطة. تعديل تصنيف سوف تغيير تثبيت رسم، لذلك حاجة تشغيل تجمع تركيز verifier اختبار، مزدوج إصدار تخطيط فحص و إعادة تنفيذ next-package benchmark. فقط metadata benchmark هو تشخيص دليل، لا هو إصدار وقت تثبيت استهلاك وقت تحمل وعد.

@@ -1,30 +1,30 @@
-# Agent Note: Win32 目录选择器路径不再在 U+XX00 码元处截断
+# Agent Note: Win32 دليل اختيار جهاز مسار لم يعد في U+XX00 رمز عنصر موضع قطع قطع
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-23-win32-utf16-nul-truncation.md) | 中文
+[English](2026-08-23-win32-utf16-nul-truncation.md) | العربية
 
-## 问题
+## مشكلة
 
-`packages/host/directory-picker-native/src/win32-dialog-bindings.ts` 的 `readUtf16` 用 `bytes[end] !== 0` 扫描 `IFileOpenDialog` 结果缓冲区来寻找零字节。UTF-16LE 真正的 NUL 是两个零字节，因此任何低字节为 0 的 BMP 码元——U+XX00，例如「开」(U+5F00)——都会提前结束扫描。选择 `C:\Users\XIAOPAN\Desktop\安卓开发` 这类目录会得到 `C:\Users\XIAOPAN\Desktop\安卓`，随后创建工作区的调用以 `workspace-invalid-path ... ENOENT` 失败。
+`packages/host/directory-picker-native/src/win32-dialog-bindings.ts` `readUtf16` استخدام `bytes[end] !== 0` مسح `IFileOpenDialog` نتيجة مؤقت اندفاع منطقة قدوم بحث بحث صفر بايت.UTF-16LE حق صحيح NUL هو اثنان عدد صفر بايت، لذلك أي منخفض بايت لـ 0 BMP رمز عنصر——U+XX00، مثال مثل «فتح»(U+5F00)——كل سوف رفع قبل انتهاء مسح. اختيار `C:\Users\XIAOPAN\Desktop\أمان بارز تطوير` هذا صنف دليل سوف نيل إلى `C:\Users\XIAOPAN\Desktop\أمان بارز`، مع بعد إنشاء مساحة العمل استدعاء بـ `workspace-invalid-path ... ENOENT` فشل.
 
-## 决策
+## قرار
 
-扫描只有在一个码元的两个字节都为零时才结束，仍按每次两个字节在同一个 32KiB `koffi.view` 缓冲区上推进。回归测试通过既有的假 koffi COM 世界驱动 `readUtf16`，路径包含「安卓开发」(U+5F00)，从而不依赖真实 Windows 主机验证终止规则。
+مسح فقط لديه في واحد رمز عنصر اثنان عدد بايت كل لـ صفر وقت عندئذ انتهاء، ما زال حسب كل مرة اثنان عدد بايت في نفس عدد 32KiB `koffi.view` مؤقت اندفاع منطقة فوق دفع دخول. ارتداد اختبار عبر قائم زائف koffi COM عالم حد قيادة `readUtf16`، مسار يتضمن «أمان بارز تطوير»(U+5F00) ، من بينما لا اعتماد حقيقي Windows رئيسي آلة تحقق إنهاء قاعدة.
 
-修复逐字采用 ericcaiwx-star fork 的 `fix/win32-utf16-nul-truncation` 分支上的社区补丁系列——[c8aac14703](https://github.com/ericcaiwx-star/deepseek-harness/commit/c8aac14703a517b8db1573f9ca4ed94dc58e276b) 是扫描修复，[e1d6265cb9](https://github.com/ericcaiwx-star/deepseek-harness/commit/e1d6265cb930a0a74cba03c40e73ed872a83575f) 是 fixture 清理——在 [discussion #580](https://github.com/deepseek-ai/deepseek-harness/discussions/580) 报告（更早在 [discussion #563](https://github.com/deepseek-ai/deepseek-harness/discussions/563) 报告）。两次 cherry-pick 均保留原作者 ericcaiwx-star；上游 fork 是补丁的记录来源。
+إصلاح تدريجي حرف اعتماد ericcaiwx-star fork `fix/win32-utf16-nul-truncation` فرع فوق مجتمع منطقة رقعة نظام صف——[c8aac14703](https://github.com/ericcaiwx-star/deepseek-harness/commit/c8aac14703a517b8db1573f9ca4ed94dc58e276b) هو مسح إصلاح،[e1d6265cb9](https://github.com/ericcaiwx-star/deepseek-harness/commit/e1d6265cb930a0a74cba03c40e73ed872a83575f) هو fixture تنظيف——في [discussion #580](https://github.com/deepseek-ai/deepseek-harness/discussions/580) تقرير إبلاغ (أكثر مبكر في [discussion #563](https://github.com/deepseek-ai/deepseek-harness/discussions/563) تقرير إبلاغ). اثنان مرة cherry-pick متساو إبقاء أصل عمل من ericcaiwx-star؛ فوق تنقل fork هو رقعة سجل مصدر.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**拒绝社区补丁，本地重写扫描。** 拒绝：补丁极小，与目录选择器现有测试方式一致；逐字节一致的 cherry-pick 保留来源与署名。
+**رفض مجتمع منطقة رقعة، محلي إعادة كتابة مسح.** رفض: رقعة أقصى صغير، و دليل اختيار جهاز قائم اختبار طريقة متسق؛ تدريجي بايت متسق cherry-pick إبقاء مصدر و توقيع اسم.
 
-**用 `toString('utf16le')` 解码整个缓冲区再按 `\0` 切分。** 拒绝：复制整个缓冲区而非扫描，且切分仍依赖同一「双零字节」规则。
+**استخدام `toString('utf16le')` حل رمز كامل مؤقت اندفاع منطقة مجددا حسب `\0` قطع قسم.** رفض: نسخ كامل مؤقت اندفاع منطقة بينما غير مسح، كما قطع قسم ما زال اعتماد نفس «مزدوج صفر بايت» قاعدة.
 
-**向 COM 或 koffi 索取字符串长度。** 拒绝：绑定面不提供长度；双零扫描是标准的 UTF-16LE NUL 判定。
+**نحو COM أو koffi بحث أخذ نص طويل درجة.** رفض: ربط وجه لا توفير طويل درجة؛ مزدوج صفر مسح هو معيار UTF-16LE NUL حكم تحديد.
 
-## 后果
+## عاقبة
 
-- 任何含 U+XX00 码元的路径组件都能通过选择器转译；含这类字符的路径（例如中文目录名）可以选中并用于创建工作区。
-- 修复不改变 ABI 用法、缓冲区大小或对话框流程；[Win32 目录选择器 note](../feature/2026-08-02-win32-in-process-folder-dialog.zh.md) 中的 COM 子进程架构不受影响。
-- 真实对话框渲染与选择仍是手动 Windows 检查；本次回归测试只针对假 COM 世界中的字节到字符串转译。fixture 路径为合成路径（`C:\fixture\安卓开发`），仓库中不出现真实用户路径。
+- أي يحتوي U+XX00 رمز عنصر مسار مكون كل قدرة عبر اختيار جهاز تحويل ترجمة؛ يحتوي هذا صنف محرف مسار (مثال مثل العربية دليل اسم) يمكن اختيار في و لأجل إنشاء مساحة العمل.
+- إصلاح لا تغيير ABI استخدام قاعدة، مؤقت اندفاع منطقة كبير صغير أو محادثة إطار مسار؛[Win32 دليل اختيار جهاز note](../feature/2026-08-02-win32-in-process-folder-dialog.zh.md) في COM عملية فرعية هيكل بنية لا تلقي أثر.
+- حقيقي محادثة إطار تصيير و اختيار ما زال هو يد حركة Windows فحص؛ هذا مرة ارتداد اختبار فقط إبرة مقابل زائف COM عالم حد في بايت إلى نص تحويل ترجمة.fixture مسار لـ دمج صار مسار (`C:\fixture\أمان بارز تطوير`) ، مستودع في لا ظهور حقيقي مستخدم مسار.

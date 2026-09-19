@@ -1,35 +1,35 @@
 ---
-description: "共享的 Typert Remote 协议：业务包、生成产物、Host Gateway 与 Client API 使用的装饰器、wire 描述符、编解码器与提供方约定。"
+description: "مشترك Typert Remote بروتوكول: عمل خدمة حزمة، توليد ناتج،Host Gateway و Client API استخدام تركيب زينة جهاز،wire وصف رمز، تحرير حل رمز جهاز و مزود اتفاق."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-typert-protocol
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-借助 `dsh-typert-protocol`，业务包可以向 Remote 客户端暴露 Host 方法：用 `@Remote`（作用域接收者用 `@RemoteScope`）标记方法，把服务绑定到 wire 命名空间，并通过可合并扩展的协议映射把 Host 对象与作用域 Context 关联到 wire identity。生成产物、Host Gateway 与 Client API 消费同一套调用描述符、编解码器与提供方约定。调用持有的值把清理责任交给 Gateway，不另增引用计数。本包不注册任何 Cordis 服务，也不运行 TypeScript 分析。
+استعارة مساعدة `dsh-typert-protocol`، عمل خدمة حزمة يمكن نحو Remote عميل كشف Host طريقة: استخدام `@Remote`(أثر مجال استقبال من استخدام `@RemoteScope`) علامة طريقة، يأخذ خدمة ربط إلى wire نطاق الأسماء، و عبر يمكن دمج توسيع بروتوكول خريطة يأخذ Host كائن و أثر مجال Context صلة ربط إلى wire identity. توليد ناتج،Host Gateway و Client API إزالة استهلاك نفس طقم استدعاء وصف رمز، تحرير حل رمز جهاز و مزود اتفاق. استدعاء يحتفظ قيمة يأخذ تنظيف مسؤولية مهمة تسليم إعطاء Gateway، لا آخر زيادة مرجع حساب عدد. هذه الحزمة لا تسجيل أي Cordis خدمة، أيضا لا تشغيل TypeScript قسم تحليل.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-本包供向 Remote 客户端暴露 Host 能力的业务包与装配维护者使用。它是一个声明库：标记方法、绑定服务，其余交给生成的流水线与 Gateway。
+هذه الحزمة توفير نحو Remote عميل كشف Host قدرة عمل خدمة حزمة و تركيب إعداد صيانة من استخدام. هو هو واحد إعلان مكتبة: علامة طريقة، ربط خدمة، ذلك بقية تسليم إعطاء توليد خط الإنتاج و Gateway.
 
-### 暴露 Host 方法
+### كشف Host طريقة
 
-业务包用 `@Remote`（当接收者来自作用域 Context 时用 `@RemoteScope(key)`）标记一个公开实例方法，所属服务要么继承 `TypertRemoteService`，要么通过 `bindTypertRemote()` 声明 `typertRemote` 绑定：
+عمل خدمة حزمة استخدام `@Remote`(عند استقبال من قدوم ذاتي أثر مجال Context وقت استخدام `@RemoteScope(key)`) علامة واحد عام نسخة طريقة، الذي تابع خدمة يلزم ما وراثة `TypertRemoteService`، يلزم ما عبر `bindTypertRemote()` إعلان `typertRemote` ربط:
 
 ```text
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
@@ -42,17 +42,17 @@ export class GoalService extends TypertRemoteService {
 }
 ```
 
-生成会把方法变为服务命名空间下的 wire 端点；Client 通过 `ctx.remote` 以类型化方法调用它（见 [API Gateway 参考](../../../docs/api-gateway.zh.md)）。方法把 `signal: AbortSignal` 声明为最后一个参数即可选择协作式取消——该信号是注入的，绝不会成为 JSON 参数或查找字段。
+توليد سوف يأخذ طريقة تغيير لـ خدمة نطاق الأسماء تحت wire طرف نقطة؛Client عبر `ctx.remote` بـ نوع تحويل طريقة استدعاء هو (رؤية [API Gateway مشاركة اعتبار](../../../docs/api-gateway.zh.md)). طريقة يأخذ `signal: AbortSignal` إعلان لـ الأكثر بعد واحد معامل يكفي اختيار تنسيق عمل صيغة إلغاء——هذا إشارة هو حقن، أبدا سوف يصبح JSON معامل أو فحص بحث حقل.
 
-### 把 Host 对象与 Context 关联到 wire identity
+### يأخذ Host كائن و Context صلة ربط إلى wire identity
 
-复杂的 Host 对象不能直接跨 wire 传输。业务包通过可合并扩展的 `TypertLookupMap` 与 `TypertContextMap` 声明关联。Host Context 适配器拥有稳定 wire 声明，并把 wire identity 解析为活跃 Context。Client Context 适配器需要双向映射，因为作用域调用从 Client Context 发起，而转发的 Host 事件要在 Client 侧解析其显式 wire identity。Host 组合可以覆盖其同步或异步解析器。因策略原因拒绝解析的解析器会抛出带有自身错误码的 `RemoteError`，该码原样到达调用方。
+تكرار مختلط Host كائن لا يستطيع مباشر عبر wire نقل. عمل خدمة حزمة عبر يمكن دمج توسيع `TypertLookupMap` و `TypertContextMap` إعلان صلة ربط.Host Context مهايئ يملك مستقر wire إعلان، و يأخذ wire identity تحليل لـ نشط وثب Context.Client Context مهايئ حاجة مزدوج نحو خريطة، لأن أثر مجال استدعاء من Client Context إرسال بدء، بينما تحويل إرسال Host حدث يلزم في Client جانب تحليل ذلك صريح wire identity.Host تركيب يمكن تغطية ذلك تزامن أو مختلف خطوة محلل. بسبب سياسة سبب رفض تحليل محلل سوف رمي خروج حمل لديه ذاته رمز خطأ `RemoteError`، هذا رمز أصل مثال وصول استدعاء جهة.
 
-Client Context 解析保持同步。`typertOwnedValue(value, release)` 把不抛异常、幂等的清理交给调用 owner；Gateway 在处理器和回复均结束后调用它。借用的 Context 不需要清理包装层。共享的 `TYPERT_OWNED_VALUE` symbol 与 `isTypertOwnedValue` 识别函数可跨独立打包的提供方与 Gateway 使用；包装层自身不会 retain 资源。
+Client Context تحليل إبقاء تزامن.`typertOwnedValue(value, release)` يأخذ لا رمي استثناء، قوة انتظار تنظيف تسليم إعطاء استدعاء owner؛Gateway في معالج و عودة تكرار متساو انتهاء بعد استدعاء هو. استعارة استخدام Context لا حاجة تنظيف حزمة تركيب طبقة. مشترك `TYPERT_OWNED_VALUE` symbol و `isTypertOwnedValue` تعرف آخر دالة يمكن عبر مستقل تحزيم مزود و Gateway استخدام؛ حزمة تركيب طبقة ذاته لن retain مورد.
 
-### 报告与读取 Remote 失败
+### تقرير إبلاغ و قراءة Remote فشل
 
-所有 Remote 失败都由一个类承载：`RemoteError`，携带稳定的 `<domain>/<reason>` 码，以及按该码定型的 details。本包声明通用载体码（`gateway/bad-request`、`gateway/cancelled`、`gateway/internal`），并拥有 `RemoteErrorDetailsMap`——可合并扩展的码表，其他每个包都在自己的抛出点旁扩展它：
+كل Remote فشل كل من واحد صنف تحمل تحميل:`RemoteError`، يحمل مستقر `<domain>/<reason>` رمز، و حسب هذا رمز تحديد نوع details. هذه الحزمة إعلان عام تحميل جسم رمز (`gateway/bad-request`،`gateway/cancelled`،`gateway/internal`) ، و يملك `RemoteErrorDetailsMap`——يمكن دمج توسيع رمز جدول، أخرى كل حزمة كل في ذاتي ذات رمي خروج نقطة جانب توسيع هو:
 
 ```text
 declare module '@deepseek-ai/dsh-typert-protocol' {
@@ -63,89 +63,89 @@ declare module '@deepseek-ai/dsh-typert-protocol' {
 throw new RemoteError('goal/not-found', `goal "${id}" does not exist`, { goalId: id })
 ```
 
-拥有方在失败点直接抛出；没有任何包再写错误类家族或出口映射函数。调用方按 `code` 判别——绝不用 `instanceof`——且 `code` 分支无需 cast 即收窄 `details`，因为 `RemoteFailure` 就是 `RemoteError` 实例按码判别的 union。需要识别跨模块或跨 realm 类副本传来的失败时，基础设施调用 `remoteErrorOf(value)`，它读结构标记而不是原型链。
+يملك جهة في فشل نقطة مباشر رمي خروج؛ لا يوجد أي حزمة مجددا كتابة خطأ صنف بيت عائلة أو خروج فتحة خريطة دالة. استدعاء جهة حسب `code` حكم آخر——أبدا استخدام `instanceof`——كما `code` فرع بلا حاجة cast أي استلام ضيق `details`، لأن `RemoteFailure` حينئذ هو `RemoteError` نسخة حسب رمز حكم آخر union. حاجة تعرف آخر عبر وحدة أو عبر realm صنف فرعي هذا نقل قدوم فشل وقت، أساس أساس ضبط تطبيق استدعاء `remoteErrorOf(value)`، هو قراءة بنية علامة بينما لا هو أصل نوع سلسلة.
 
-### 在 Client 侧接收转发的 Host 事件
+### في Client جانب استقبال تحويل إرسال Host حدث
 
-Host 装配以转发给消费方的 Cordis 事件扩展 `TypertRemoteEventSelection`，从而收窄 `ctx.remote.$on` 的键集。`TypertForwardableEvent` 接受无作用域且返回 `void` 的通知，以及最后一个 `next()` 回调返回事件结果类型的异步作用域 waterfall（瀑布式事件）。`TypertClientEventListener` 从同一条 `Events` 成员派生 Client listener，并保留 signal、可选和只读字段、数组、回调与结果类型。`TypertClientRemote` 只公开 `$mount()` 与 `$on()`；事件传输仍由 Gateway 私有持有。
+Host تركيب إعداد بـ تحويل إرسال إعطاء مستهلك Cordis حدث توسيع `TypertRemoteEventSelection`، من بينما استلام ضيق `ctx.remote.$on` مفتاح تجميع.`TypertForwardableEvent` قبول بلا أثر مجال كما إرجاع `void` إشعار، و الأكثر بعد واحد `next()` عودة ضبط إرجاع حدث نتيجة نوع مختلف خطوة أثر مجال waterfall(شلال نشر صيغة حدث).`TypertClientEventListener` من نفس بند `Events` عضو إرسال توليد Client listener، و إبقاء signal، اختياري و فقط قراءة حقل، عدد مجموعة، عودة ضبط و نتيجة نوع.`TypertClientRemote` فقط عام `$mount()` و `$on()`؛ حدث نقل ما زال من Gateway خاص يحتفظ.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释声明如何保持与编译器无关，以及每个约定在哪里执行；编程模型已在[使用本包](#use-this-package)中说明。
+هذا عقدة حل تفسير إعلان مثل أي إبقاء و تحرير ترجمة جهاز غير متصل، و كل اتفاق في أي داخل تنفيذ؛ تحرير مسار نموذج قد في[استخدام هذه الحزمة](#use-this-package) في شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-本包把严格反射留在编译器中：装饰器初始化器把最小标记保存在 Service 原型上的带版本描述符中。描述符使用稳定的字符串属性名，因此协议包的另一个已安装副本也能读取同一组标记。完整的参数、结果、查找与 schema 反射是 Typert 构建流水线的职责，通过 `InvocationDescriptor` 交付。
+هذه الحزمة يأخذ صارم إطار عكس إطلاق إبقاء في تحرير ترجمة جهاز في: تركيب زينة جهاز ابتدائي تحويل جهاز يأخذ الأكثر صغير علامة حفظ في Service أصل نوع فوق حمل إصدار وصف رمز في. وصف رمز استخدام مستقر نص خاصية اسم، لذلك بروتوكول حزمة آخر عدد قد تثبيت فرعي هذا أيضا قدرة قراءة نفس مجموعة علامة. كامل معامل، نتيجة، فحص بحث و schema عكس إطلاق هو Typert بناء خط الإنتاج مسؤولية، عبر `InvocationDescriptor` تسليم.
 
-### Remote 标记
+### Remote علامة
 
-`@Remote` 与 `@RemoteScope` 调度一个初始化器，把方法名、可选导出名与调用模式追加到原型描述符；`remoteMethods(service)` 校验其版本，并返回与已存描述符分离、按声明顺序排列的快照，供 Gateway 的源码模式回退读取。标记要求名称为字符串的公开、非静态实例方法，同一方法上的冲突标记会被拒绝。
+`@Remote` و `@RemoteScope` ضبط درجة واحد ابتدائي تحويل جهاز، يأخذ طريقة اسم، اختياري توجيه خروج اسم و استدعاء نمط إلحاق إلى أصل نوع وصف رمز؛`remoteMethods(service)` تحقق ذلك إصدار، و إرجاع و قد تخزين وصف رمز قسم مغادرة، حسب إعلان ترتيب ترتيب صف لقطة، توفير Gateway شفرة المصدر نمط رجوع قراءة. علامة اشتراط اسم لـ نص عام، غير ساكن حالة نسخة طريقة، نفس طريقة فوق اندفاع مفاجئ علامة سوف يتم رفض.
 
-### 协议映射与描述符
+### بروتوكول خريطة و وصف رمز
 
-可合并扩展的协议映射在类型系统中保留静态关联，运行时提供方则向 `ctx.typert` 注册解析；映射的名称与形状见 [`src/types.ts`](src/types.ts)。`InvocationDescriptor` 是注册表、Gateway 与 Client Remote 共同消费的共享运行时形式，涵盖直接与 Context 接收者、JSON 与查找参数、作用域投影、取消与结果编解码器。
+يمكن دمج توسيع بروتوكول خريطة في نوع نظام في إبقاء ساكن حالة صلة ربط، وقت التشغيل مزود فإن نحو `ctx.typert` تسجيل تحليل؛ خريطة اسم و شكل حالة رؤية [`src/types.ts`](src/types.ts).`InvocationDescriptor` هو سجل التسجيل،Gateway و Client Remote مشترك نفس إزالة استهلاك مشترك وقت التشغيل شكل صيغة، شمول غطاء مباشر و Context استقبال من،JSON و فحص بحث معامل، أثر مجال إسقاط، إلغاء و نتيجة تحرير حل رمز جهاز.
 
-### Wire 标识文法
+### Wire معرف نص قاعدة
 
-每个命名空间、方法、查找与 Context 段都必须满足 `isTypertRemoteSegment()`，生成的名字才能原样跨共享 RPC 载体传输。严格编解码器携带生成的 schema factory；`src-json` 编解码器标识约束更弱的源码启动路径。
+كل نطاق الأسماء، طريقة، فحص بحث و Context مقطع كل يجب ممتلئ كاف `isTypertRemoteSegment()`، توليد اسم حرف عندئذ قدرة أصل مثال عبر مشترك RPC تحميل جسم نقل. صارم إطار تحرير حل رمز جهاز يحمل توليد schema factory؛`src-json` تحرير حل رمز جهاز معرف قيد أكثر ضعيف شفرة المصدر بدء مسار.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 装饰器、Gateway 绑定、`remoteMethods`、段校验 |
-| [`src/remote-error.ts`](src/remote-error.ts) | `RemoteError` 与结构式识别函数 `remoteErrorOf` |
-| [`src/types.ts`](src/types.ts) | 协议映射、`RemoteErrorDetailsMap`、`RemoteResult`、`InvocationDescriptor`、编解码器、提供方约定、注册表接口、`TypertClientRemote` |
-| — | 不发布运行时不变量伴生入口；decorator 只保留私有不可变声明，binding 也是冻结值，没有可供交叉核对的独立事件流。 |
+| [`src/index.ts`](src/index.ts) | تركيب زينة جهاز،Gateway ربط،`remoteMethods`، مقطع تحقق |
+| [`src/remote-error.ts`](src/remote-error.ts) | `RemoteError` و بنية صيغة تعرف آخر دالة `remoteErrorOf` |
+| [`src/types.ts`](src/types.ts) | بروتوكول خريطة،`RemoteErrorDetailsMap`،`RemoteResult`،`InvocationDescriptor`، تحرير حل رمز جهاز، مزود اتفاق، سجل التسجيل واجهة،`TypertClientRemote` |
+| — | لا إصدار وقت التشغيل ثابت كمية مرافق توليد مدخل؛decorator فقط إبقاء خاص غير ممكن تغيير إعلان،binding أيضا هو تجميد ربط قيمة، لا يوجد يمكن توفير تسليم تقاطع نواة مقابل مستقل حدث تدفق. |
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面；它们从声明逐步进入运行时与调用路径。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة؛ هو جمع من إعلان تدريجي خطوة دخول وقت التشغيل و استدعاء مسار.
 
-- [API Gateway 参考](../../../docs/api-gateway.zh.md)——声明如何成为实际的 Host 到 Client 调用。
-- [Typert 子系统参考](../../../docs/subsystems/typert.zh.md)——从协议与 Gateway 类型记录的字面公共约定。
-- [Typert 注册表](../registry/README.zh.md)——描述符与提供方在运行时存放的位置。
-- [Typert 生成器](../generator/README.zh.md)——生成消费方声明与描述符的包。
-- [Remote 调用 Agent Note](../../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md)——Remote 调用背后的架构与传输决策。
+- [API Gateway مشاركة اعتبار](../../../docs/api-gateway.zh.md)——إعلان مثل أي يصبح فعلي Host إلى Client استدعاء.
+- [Typert فرعي نظام مشاركة اعتبار](../../../docs/subsystems/typert.zh.md)——من بروتوكول و Gateway نوع سجل حرف وجه عام مشترك اتفاق.
+- [Typert سجل التسجيل](../registry/README.zh.md)——وصف رمز و مزود في وقت التشغيل تخزين وضع موضع.
+- [Typert توليد جهاز](../generator/README.zh.md)——توليد مستهلك إعلان و وصف رمز حزمة.
+- [Remote استدعاء Agent Note](../../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md)——Remote استدعاء خلف بعد هيكل بنية و نقل قرار.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为与编译器无关的 Remote 协议声明不注册任何面向模型的内容。
+بلا، لأن و تحرير ترجمة جهاز غير متصل Remote بروتوكول إعلان لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；声明的约定只有在装配将其放入请求时才会触及请求。
+بلا مباشر أثر؛ إعلان اتفاق فقط لديه في تركيب إعداد سوف ذلك وضع دخول طلب وقت عندئذ سوف لمس و طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明声明能表示什么；它们是当前包约束，不是任务积压。
+هذه حد شرح إعلان قدرة يمثل ماذا؛ هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **装饰器标记是最小化的**——标记只包含方法名与直接调用或 Context 调用模式；参数、结果、查找与 schema 反射需要 Typert 构建流水线。
-- **Remote 签名受限**——装饰器只接受具有字符串名称的公开、非静态实例方法，源码模式执行无法表示重载、解构、默认参数或剩余参数签名。
+- **تركيب زينة جهاز علامة هو الأكثر صغير تحويل**——علامة فقط يتضمن طريقة اسم و مباشر استدعاء أو Context استدعاء نمط؛ معامل، نتيجة، فحص بحث و schema عكس إطلاق حاجة Typert بناء خط الإنتاج.
+- **Remote توقيع تلقي حد**——تركيب زينة جهاز فقط قبول أداة لديه نص اسم عام، غير ساكن حالة نسخة طريقة، شفرة المصدر نمط تنفيذ لا يمكن يمثل إعادة تحميل، حل بنية، افتراضي معامل أو باق بقية معامل توقيع.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -95,7 +95,7 @@ export function render(
     '',
     `# ${text.title}`,
     '',
-    ...(locale === 'zh' ? ['[English](persistence-catalog.md) | 中文', ''] : []),
+    ...(locale === 'zh' ? ['[English](persistence-catalog.md) | العربية', ''] : []),
     text.intro,
     '',
     text.generation,

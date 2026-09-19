@@ -1,30 +1,30 @@
-# Agent Note: 生产 dsh 排除产品 subagent 提供方
+# Agent Note: إنتاج dsh ترتيب حذف منتج subagent مزود
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-12-production-dsh-excludes-product-subagent-providers.md) | 中文
+[English](2026-08-12-production-dsh-excludes-product-subagent-providers.md) | العربية
 
-## 问题
+## مشكلة
 
-`@deepseek-ai/dsh` 会获得 `@deepseek-ai/dsh-base` 的依赖闭包。如果 base 包含 Codex 与 Claude Code subagent 提供方，每次生产安装都会下载可选的产品集成代码与大型平台 CLI 载荷，即使用户并未使用任一集成。
+`@deepseek-ai/dsh` سوف نيل نيل `@deepseek-ai/dsh-base` اعتماد إغلاق حزمة. إذا base يتضمن Codex و Claude Code subagent مزود، كل مرة إنتاج تثبيت كل سوف تحت تحميل اختياري منتج تجميع صار شفرة و كبير نوع منصة CLI تحميل حمل، أي استخدام مستخدم و لم استخدام مهمة واحد تجميع صار.
 
-## 决策
+## قرار
 
-本决策只部分取代[共享 host 放置决策](../architecture/2026-08-10-product-subagent-providers-in-shared-host.zh.md)中关于默认包含提供方的部分：`@deepseek-ai/dsh-base` 不依赖也不挂载 Codex 与 Claude Code subagent 提供方。每个提供方包都是可直接安装的 Profile Bundle，其 `dsh.bundle.patch` 指向包自身拥有的 `cordis.patch.yml`。每份 patch 恰好贡献一条挂载自身提供方的 Host 行，不包含 Agent 工具行。
+هذا قرار فقط جزء يحل محل[مشترك host وضع وضع قرار](../architecture/2026-08-10-product-subagent-providers-in-shared-host.zh.md) في صلة في افتراضي يتضمن مزود جزء:`@deepseek-ai/dsh-base` لا اعتماد أيضا لا تركيب Codex و Claude Code subagent مزود. كل مزود حزمة كل هو يمكن مباشر تثبيت Profile Bundle، ذلك `dsh.bundle.patch` إشارة نحو حزمة ذاته يملك `cordis.patch.yml`. كل نسخة patch تماما جيد مساهمة واحد بند تركيب ذاته مزود Host سطر، لا يتضمن Agent أداة سطر.
 
-两个 Bundle 彼此独立。Codex Bundle 自己负责锁定的官方 wrapper 与六个平台 alias；生产环境会启动包所声明的 wrapper，绝不会回退到宿主 `codex`。Claude Code Bundle 自己负责锁定的 Agent SDK 与匹配平台 CLI；生产环境让 SDK 选择该私有 CLI，绝不会回退到宿主 `claude`。安装其中一个 Bundle 不会带入另一个，默认的 `@deepseek-ai/dsh` 生产依赖闭包既不包含任一提供方，也不包含任一产品运行时。每个已安装 Bundle 会在下次 Profile 启动时注册一个休眠提供方，而 Agent Preset 独立决定新 Session 是否获得对应工具。安装不会启动产品、验证账户、改写原生设置或向模型授予访问权。
+اثنان عدد Bundle ذاك هذا مستقل.Codex Bundle ذاتي ذات مسؤول قفل تحديد رسمي جهة wrapper و ستة عدد منصة alias؛ إنتاج بيئة سوف بدء حزمة الذي إعلان wrapper، أبدا سوف رجوع إلى مضيف `codex`.Claude Code Bundle ذاتي ذات مسؤول قفل تحديد Agent SDK و مطابقة منصة CLI؛ إنتاج بيئة يجعل SDK اختيار هذا خاص CLI، أبدا سوف رجوع إلى مضيف `claude`. تثبيت منها واحد Bundle لن حمل دخول آخر عدد، افتراضي `@deepseek-ai/dsh` إنتاج اعتماد إغلاق حزمة حيث لا يتضمن مهمة واحد مزود، أيضا لا يتضمن مهمة واحد منتج وقت التشغيل. كل قد تثبيت Bundle سوف في تحت مرة Profile بدء وقت تسجيل واحد راحة نوم مزود، بينما Agent Preset مستقل قرار جديد Session هل نيل نيل مقابل أداة. تثبيت لن بدء منتج، تحقق حساب مستخدم، تعديل كتابة أصلي ضبط أو نحو نموذج منح إعطاء وصول حق.
 
-## 验证
+## تحقق
 
-包测试会固定两个 Bundle 的 manifest、发布 patch、准确的自身提供方行与产品运行时依赖。Claude 覆盖会固定 Agent SDK 0.3.241、Claude Code 2.1.241、八个平台包、SDK 所选执行路径，以及载荷缺失时不回退宿主命令的失败。Codex 覆盖会固定 wrapper 0.149.1、六个平台 alias、包声明的执行路径、原生后代进程停稳，以及同样的载荷缺失行为。工作区验证会从 Bundle 声明派生每份发布 patch，而非维护包目录。包与 base 断言加上实际 pnpm 生产证据会证明默认与所选产品的依赖边界；真实 Bundle patch 与 Agent Preset 组装则覆盖未安装、任一单包、双包、工具授权交集、后续 Session 采纳以及零启动进程。
+حزمة اختبار سوف ثابت اثنان عدد Bundle manifest، إصدار patch، دقيق تأكيد ذاته مزود سطر و منتج وقت التشغيل اعتماد.Claude تغطية سوف ثابت Agent SDK 0.3.241،Claude Code 2.1.241، ثمانية عدد منصة حزمة،SDK الذي اختيار تنفيذ مسار، و تحميل حمل ناقص وقت لا رجوع مضيف أمر فشل.Codex تغطية سوف ثابت wrapper 0.149.1، ستة عدد منصة alias، حزمة إعلان تنفيذ مسار، أصلي بعد بديل عملية توقف مستقر، و نفس مثال تحميل حمل ناقص سلوك. مساحة العمل تحقق سوف من Bundle إعلان إرسال توليد كل نسخة إصدار patch، بينما غير صيانة حزمة دليل. حزمة و base تأكيد إضافة فوق فعلي pnpm إنتاج دليل سوف إثبات افتراضي و الذي اختيار منتج اعتماد حد؛ حقيقي Bundle patch و Agent Preset تجميع فإن تغطية لم تثبيت، مهمة واحد مفرد حزمة، مزدوج حزمة، أداة تخويل تسليم تجميع، لاحق Session قبول و صفر بدء عملية.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**在 base 组合包中保留休眠提供方。** 休眠提供方不会启动产品进程，但其包仍会进入每次生产 NPM 安装。
+**في base تركيب حزمة في إبقاء راحة نوم مزود.** راحة نوم مزود لن بدء منتج عملية، لكن ذلك حزمة ما زال سوف دخول كل مرة إنتاج NPM تثبيت.
 
-**新增 wrapper 或 meta Bundle。** 第三个包会重复安装责任，使独立移除变得更间接，却不会贡献新的运行时能力。
+**إضافة جديدة wrapper أو meta Bundle.** رقم ثلاثة عدد حزمة سوف تكرار تثبيت مسؤولية مهمة، جعل مستقل إزالة تغيير نيل أكثر بين وصل، لكن لن مساهمة جديد وقت التشغيل قدرة.
 
-## 后果
+## عاقبة
 
-安装 `@deepseek-ai/dsh` 时，不会通过 base 组合包下载任一产品提供方。Profile 可以独立添加或移除任一 provider Bundle；Host 可用性的变化会在下次 Profile 启动时生效，选择产品也代表明确接受其私有平台载荷。单独创作的 Agent Preset 仍只会向新组装的 Session 授予任一模型可见工具。本决策不会在产品官方发行版之外引入 wrapper 包，也不引入 meta Bundle、动态安装程序或持久化的产品启用状态。
+تثبيت `@deepseek-ai/dsh` وقت، لن عبر base تركيب حزمة تحت تحميل مهمة واحد منتج مزود.Profile يمكن مستقل إضافة أو إزالة مهمة واحد provider Bundle؛Host متاح صفة تغير سوف في تحت مرة Profile بدء وقت توليد فاعلية، اختيار منتج أيضا بديل جدول واضح قبول ذلك خاص منصة تحميل حمل. مفرد وحيد إنشاء عمل Agent Preset ما زال فقط سوف نحو جديد تجميع Session منح إعطاء مهمة واحد نموذج مرئي أداة. هذا قرار لن في منتج رسمي جهة إرسال سطر إصدار خارج جذب دخول wrapper حزمة، أيضا لا جذب دخول meta Bundle، حركة حالة تثبيت برنامج أو حفظ دائم منتج تفعيل حالة.

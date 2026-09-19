@@ -86,7 +86,7 @@ function open(): HTMLDialogElement {
 describe('documentation Mermaid viewer', () => {
   it.each([
     { heading: 'Agent lifecycle', language: 'en-US', expected: 'Agent lifecycle' },
-    { heading: '  \n  ', language: 'zh-CN', expected: '图表查看器' },
+    { heading: ' \n ', language: 'zh-CN', expected: 'رسم جدول فحص نظر جهاز' },
     { heading: null, language: 'en-US', expected: 'Diagram viewer' },
   ])('uses the visible title as the dialog name for $heading', ({ heading, language, expected }) => {
     render()
@@ -244,9 +244,9 @@ describe('documentation Mermaid viewer', () => {
     open()
     locale = 'zh-CN'
     viewer.refresh()
-    getByRole(document.body, 'button', { name: '全屏查看图表' }).click()
-    expect(getByRole(document.body, 'dialog', { name: '图表查看器' })).toBeTruthy()
-    getByRole(document.body, 'button', { name: '关闭' }).click()
+    getByRole(document.body, 'button', { name: 'كل شاشة فحص نظر رسم جدول' }).click()
+    expect(getByRole(document.body, 'dialog', { name: 'رسم جدول فحص نظر جهاز' })).toBeTruthy()
+    getByRole(document.body, 'button', { name: 'إغلاق' }).click()
     expect(panzoom.destroy).toHaveBeenCalledTimes(3)
   })
 

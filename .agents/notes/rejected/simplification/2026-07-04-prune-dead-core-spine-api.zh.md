@@ -1,62 +1,62 @@
-# Agent Note: 裁剪无用的公开与结果接口
+# Agent Note: قطع قص بلا استخدام عام و نتيجة واجهة
 
 Status: rejected — stale 2026-07 inventory: rows were pruned piecemeal or gained callers; a fresh audit must supersede it
 
-[English](2026-07-04-prune-dead-core-spine-api.md) | 中文
+[English](2026-07-04-prune-dead-core-spine-api.md) | العربية
 
-## 问题
+## مشكلة
 
-若干包根导出、结果字段和便利方法没有生产消费方。它们之所以存活，要么是因为测试通过公开入口导入了内部实现，要么是因为某个类型预期了一个从未出现的调用者。每一项单独看都很小，但合在一起，它们扩大了 SDK 约定、生成的 catalog、文档和回归矩阵，却没有支撑任何已交付的路径。
+إذا جاف حزمة أصل توجيه خروج، نتيجة حقل و سهل فائدة طريقة لا يوجد إنتاج مستهلك. هو جمع لـ الذي بـ تخزين نشط، يلزم ما هو لأن اختبار عبر عام مدخل استيراد داخلي تنفيذ، يلزم ما هو لأن بعض عدد نوع مسبق مدة واحد من لم ظهور استدعاء من. كل واحد بند مفرد وحيد نظر كل جدا صغير، لكن دمج في واحد بدء، هو جمع توسيع كبير SDK اتفاق، توليد catalog، وثيقة و ارتداد مستطيل دفعة، لكن لا يوجد دعم دعم أي قد تسليم مسار.
 
-生产语料库是 `packages/*/*/src`、示例源码/配置和运行时脚本。测试、包 README 和 Agent Note 行文是发布的证据，但不是固定调用者。`cordis_inspect` 使 `packages/extensions/tool-cordis/src/api-catalog.ts` 对模型可见，`cordis_mount` 可以通过受保护的真实服务代理调用注入的服务，因此 catalog 中的服务方法和返回形状是真正的动态产品接口。下表因此区分「没有固定的仓库调用者」与「不可达」：涉及 catalog 词汇的行有意收缩模型编写的 mount 能发现和调用的内容，而包根实现辅助函数并不通过该服务门面可达。精确符号搜索得出以下清单：
+إنتاج لغة مادة مكتبة هو `packages/*/*/src`، عرض مثال شفرة المصدر/إعداد و وقت التشغيل نص برمجي. اختبار، حزمة README و Agent Note سطر نص هو إصدار دليل، لكن لا هو ثابت استدعاء من.`cordis_inspect` جعل `packages/extensions/tool-cordis/src/api-catalog.ts` مقابل نموذج مرئي،`cordis_mount` يمكن عبر تلقي حفظ حماية حقيقي خدمة بديل إدارة استدعاء حقن خدمة، لذلك catalog في خدمة طريقة و إرجاع شكل حالة هو حق صحيح حركة حالة منتج واجهة. تحت جدول لذلك منطقة قسم «لا يوجد ثابت مستودع استدعاء من» و «غير ممكن بلوغ»: تعلق و catalog مفردات سطر متعمد استلام تقليص نموذج تحرير كتابة mount قدرة اكتشاف و استدعاء محتوى، بينما حزمة أصل تنفيذ مساعد مساعدة دالة و لا عبر هذا خدمة باب وجه يمكن بلوغ. دقيق رمز رقم بحث نيل خروج التالي بيان:
 
-| 接口 | 生产证据 | 简化方式 |
+| واجهة | إنتاج دليل | بسيط تحويل طريقة |
 | --- | --- | --- |
-| `SurfaceManager.invalidate()` | 只有其单元测试调用它；seeding 在惰性创建的 manager 存在之前就已完成，且会话从不替换其日志引用。 | 删除它及其不可能触发的整体替换约定。 |
-| `ToolExecutionResult.callId` | 每个钩子已经接收不可变的 `ToolExecution`；循环和 ACP（Agent Client Protocol）通过调用/会话事件关联。没有消费方读取这个重复的结果字段。 | 移除该字段、复制/不匹配守卫，以及证明该重复不可能不一致的测试。 |
-| `ReactLoopAgent` 根导出 | 包外的命名导入都是测试；生产代码面向 `Agent` 编程，通过 `ctx.agents` 创建/恢复。 | 将返回类型和接口类型设为 `Agent`，将具体循环类改为包内部；保留有意设计的同步、仅配置的 `AgentLoop.create()` 路径。 |
-| `workflow-worker-thread` 的 protocol/runtime/session 再导出与命名的 `WorkerThreadWorkflowEngine` | 所有通过包名导入的消费方都使用默认引擎；工作流 Agent Note 已将 worker 协议格式（wire format）定义为私有。 | 保留默认插件类/配置约定；移除重复的命名类导出，将协议模块保持为源码私有。 |
-| `ptc-runtime-worker` 的 protocol/bootstrap 再导出 | 包外的生产/e2e 消费方使用 `NodePtcRuntime` 和配置，而非 `BootstrapPort`、`PatchableStream` 或 worker 消息/启动类型。 | 保留运行时类/配置约定，将其协议格式/bootstrap 词汇改为源码私有。 |
-| ACP 的 `agentOptions` 根导出 | 该辅助函数只有同文件和 ACP 测试消费方；唯一的包外生产消费方挂载的是插件命名空间。 | 保留 `name`、`inject`、`Config`、`AcpConfig` 和 `apply`；将 `agentOptions` 改为源码私有，通过桥接层行为测试。 |
-| `providerWording` 与 `completedTurnPrefix` 根导出 | 各有一个同包生产调用者；只有 balanced-prefix 辅助函数有一个同包白盒测试。 | 改为源码私有，测试提供方行为。 |
-| `depthOf`、`SubagentDepthError`、`waitForExit` 与 `exitsWithin` 根导出 | 生产 subagent 后端消费的是进程内 runner 和子进程构造/dispose（资源释放）辅助函数，而非这些强制机制和测试内部实现。`SENSITIVE_ENV_PATTERN` 不在其中，因为 SDK helper 会将它应用于调用方传入的环境。 | 保留深度与退出行为，但将剩余辅助函数和 error 改为源码私有；通过 spawn 和 dispose 测试。保持共享凭据正则公开。 |
-| `LlmError.status` 与回放 status | 适配器/回放填充它，但生产分支基于稳定的错误码/消息判断，从不读取原始 status。 | 移除未读字段和回放管道，保留错误分类。 |
-| `BlockAssembler.push()` 返回值 | 两个生产调用者都忽略返回的已完成块。 | 返回 `void`；保留有意公开的 `blocks()`/`message()` 约定。 |
-| `compactRegion` 的独立 `session` 参数 | 固定调用方传入的对象就是 `agent.session` 中已有的对象；模型可见的 mount API 也可以调用该方法，但同时接受两个独立对象，会让挂载的插件传入不一致的组合。 | 保留手动 region API，同时有意将其收窄为以 `agent.session` 为唯一真源。 |
-| `CompactionResult.startSeq`、`summarySeq`、`endSeq` 与 `summary` | 生产消费方只读取 shadowed range/seq/token 统计；持久日志拥有 summary 和事件标识。 | 移除四个结果回显，保留两个共享的 transcript（文本记录）渲染器。 |
-| `BasicCompactionEngine` 的估算/摘要方法可见性 | 没有包外生产调用者调用这五个方法；已实现的 Agent Note 只将 `estimateContentTokens()` 和 `summarize()` 命名为子类钩子。 | 将这两个方法改为 `protected`，其余三个编排专用的估算器改为 private。 |
-| `CodeLogEntry.source`/`level` 与 `RunCodeMeta.dispatches` | 每个生产消费方都将日志映射为文本；没有 presenter/模型路径读取其他字段或持久化的 dispatch 计数。 | 将 ptc-runtime 日志改为字符串（或纯文本条目），移除 result-meta 的 dispatch 管道；保留用于生成确定性 dispatch id 的本地计数器。 |
-| `PtcRuntime.language` 与 `PtcRuntime.isolation` | worker 后端提供唯一的生产值，而 PTC mode 及其他所有生产调用方只调用 `run()`。 | 移除未读描述符，同时保留 worker 的语言、隔离、预算、取消与资源释放行为。 |
-| `ToolNotFoundError.toolName`、`SystemPrompt.config` 与 `BashTask.command` | 每个存储的公开值都没有生产读取者。 | 移除未读字段，保留错误消息、已解析的配置行为和任务生命周期。 |
-| 后端包根实现辅助函数 | 下方精确清单仅通过相对路径的同包导入调用。生产命名空间导入挂载的是保留的插件约定，不读取这些属性；包根命名导入的消费方都是测试。 | 保留每个适配器/提供方/服务及其配置/错误约定；停止在包根导出所列辅助函数/常量。 |
-| 消费方包根实现辅助函数 | 下方精确清单只有同包生产调用者。生产命名空间导入挂载的是插件约定，不读取辅助属性；包根命名导入的消费方都是测试。 | 保留插件约定和稳定的错误码；将测试迁移到包内模块或公开行为，停止在包根导出所列辅助函数。 |
+| `SurfaceManager.invalidate()` | فقط لديه ذلك اختبار وحدة استدعاء هو؛seeding في كسول صفة إنشاء manager وجود قبل حينئذ قد إتمام، كما جلسة من لا استبدال ذلك سجل مرجع. | حذف هو و ذلك غير ممكن قدرة إطلاق كامل جسم استبدال اتفاق. |
+| `ToolExecutionResult.callId` | كل خطاف قد استقبال غير ممكن تغيير `ToolExecution`؛ حلقة و ACP(Agent Client Protocol) عبر استدعاء/جلسة حدث صلة ربط. لا يوجد مستهلك قراءة هذا عدد تكرار نتيجة حقل. | إزالة هذا حقل، نسخ/لا مطابقة حراسة حماية، و إثبات هذا تكرار غير ممكن قدرة لا متسق اختبار. |
+| `ReactLoopAgent` أصل توجيه خروج | حزمة خارج تسمية استيراد كل هو اختبار؛ إنتاج شفرة موجه إلى `Agent` تحرير مسار، عبر `ctx.agents` إنشاء/استعادة. | سوف إرجاع نوع و واجهة نوع ضبط لـ `Agent`، سوف أداة جسم حلقة صنف تعديل لـ حزمة داخلي؛ إبقاء متعمد تصميم تزامن، فقط إعداد `AgentLoop.create()` مسار. |
+| `workflow-worker-thread` protocol/runtime/session مجددا توجيه خروج و تسمية `WorkerThreadWorkflowEngine` | كل عبر حزمة اسم استيراد مستهلك كل استخدام افتراضي جذب محرك؛ سير العمل Agent Note قد سوف worker بروتوكول صيغة (wire format) تعريف لـ خاص. | إبقاء افتراضي إضافة صنف/إعداد اتفاق؛ إزالة تكرار تسمية صنف توجيه خروج، سوف بروتوكول وحدة إبقاء لـ شفرة المصدر خاص. |
+| `ptc-runtime-worker` protocol/bootstrap مجددا توجيه خروج | حزمة خارج إنتاج/e2e مستهلك استخدام `NodePtcRuntime` و إعداد، بينما غير `BootstrapPort`،`PatchableStream` أو worker رسالة/بدء نوع. | إبقاء وقت التشغيل صنف/إعداد اتفاق، سوف ذلك بروتوكول صيغة/bootstrap مفردات تعديل لـ شفرة المصدر خاص. |
+| ACP `agentOptions` أصل توجيه خروج | هذا مساعد مساعدة دالة فقط لديه نفس ملف و ACP اختبار مستهلك؛ وحيد حزمة خارج إنتاج مستهلك تركيب هو إضافة نطاق الأسماء. | إبقاء `name`،`inject`،`Config`،`AcpConfig` و `apply`؛ سوف `agentOptions` تعديل لـ شفرة المصدر خاص، عبر جسر وصل طبقة سلوك اختبار. |
+| `providerWording` و `completedTurnPrefix` أصل توجيه خروج | كل لديه واحد نفس حزمة إنتاج استدعاء من؛ فقط لديه balanced-prefix مساعد مساعدة دالة لديه واحد نفس حزمة أبيض صندوق اختبار. | تعديل لـ شفرة المصدر خاص، اختبار مزود سلوك. |
+| `depthOf`،`SubagentDepthError`،`waitForExit` و `exitsWithin` أصل توجيه خروج | إنتاج subagent خلفية إزالة استهلاك هو عملية داخل runner و عملية فرعية بنية صنع/dispose(مورد تحرير) مساعد مساعدة دالة، بينما غير هذه قوي صنع آلية و اختبار داخلي تنفيذ.`SENSITIVE_ENV_PATTERN` لا في منها، لأن SDK helper سوف سوف هو تطبيق في استدعاء جهة نقل دخول بيئة. | إبقاء عميق درجة و خروج سلوك، لكن سوف باق بقية مساعد مساعدة دالة و error تعديل لـ شفرة المصدر خاص؛ عبر spawn و dispose اختبار. إبقاء مشترك اعتماد صحيح فإن عام. |
+| `LlmError.status` و إعادة تشغيل status | مهايئ/إعادة تشغيل ملء ملء هو، لكن إنتاج فرع أساس في مستقر رمز خطأ/رسالة حكم قطع، من لا قراءة أصلي status. | إزالة لم قراءة حقل و إعادة تشغيل إدارة طريق، إبقاء خطأ تصنيف. |
+| `BlockAssembler.push()` قيمة راجعة | اثنان عدد إنتاج استدعاء من كل تجاهل اختصار إرجاع قد إتمام كتلة. | إرجاع `void`؛ إبقاء متعمد عام `blocks()`/`message()` اتفاق. |
+| `compactRegion` مستقل `session` معامل | ثابت استدعاء جهة نقل دخول كائن حينئذ هو `agent.session` في قد لديه كائن؛ نموذج مرئي mount API أيضا يمكن استدعاء هذا طريقة، لكن معا قبول اثنان عدد مستقل كائن، سوف يجعل تركيب إضافة نقل دخول لا متسق تركيب. | إبقاء يد حركة region API، معا متعمد سوف ذلك استلام ضيق لـ بـ `agent.session` لـ وحيد حق مصدر. |
+| `CompactionResult.startSeq`،`summarySeq`،`endSeq` و `summary` | إنتاج مستهلك فقط قراءة shadowed range/seq/token موحد حساب؛ حمل دائم سجل يملك summary و حدث معرف. | إزالة أربعة عدد نتيجة عودة إظهار، إبقاء اثنان عدد مشترك transcript(نص سجل) مصير. |
+| `BasicCompactionEngine` تقدير حساب/ملخص طريقة مرئي صفة | لا يوجد حزمة خارج إنتاج استدعاء من استدعاء هذا خمسة عدد طريقة؛ قد تنفيذ Agent Note فقط سوف `estimateContentTokens()` و `summarize()` تسمية لـ فرعي صنف خطاف. | سوف هذا اثنان عدد طريقة تعديل لـ `protected`، ذلك بقية ثلاثة عدد تحرير ترتيب مخصص استخدام تقدير حساب جهاز تعديل لـ private. |
+| `CodeLogEntry.source`/`level` و `RunCodeMeta.dispatches` | كل إنتاج مستهلك كل سوف سجل خريطة لـ نص؛ لا يوجد presenter/نموذج مسار قراءة أخرى حقل أو حفظ دائم dispatch حساب عدد. | سوف ptc-runtime سجل تعديل لـ نص (أو صاف نص بند) ، إزالة result-meta dispatch إدارة طريق؛ إبقاء لأجل توليد تحديد صفة dispatch id محلي حساب عدد جهاز. |
+| `PtcRuntime.language` و `PtcRuntime.isolation` | worker خلفية توفير وحيد إنتاج قيمة، بينما PTC mode و أخرى كل إنتاج استدعاء جهة فقط استدعاء `run()`. | إزالة لم قراءة وصف رمز، معا إبقاء worker لغة، عزل، ميزانية، إلغاء و مورد تحرير سلوك. |
+| `ToolNotFoundError.toolName`،`SystemPrompt.config` و `BashTask.command` | كل تخزين عام قيمة كل لا يوجد إنتاج قراءة من. | إزالة لم قراءة حقل، إبقاء خطأ رسالة، قد تحليل إعداد سلوك و مهمة دورة الحياة. |
+| خلفية حزمة أصل تنفيذ مساعد مساعدة دالة | تحت جهة دقيق بيان فقط عبر متبادل مقابل مسار نفس حزمة استيراد استدعاء. إنتاج نطاق الأسماء استيراد تركيب هو إبقاء إضافة اتفاق، لا قراءة هذه خاصية؛ حزمة أصل تسمية استيراد مستهلك كل هو اختبار. | إبقاء كل مهايئ/مزود/خدمة و ذلك إعداد/خطأ اتفاق؛ إيقاف في حزمة أصل توجيه خروج الذي صف مساعد مساعدة دالة/معتاد كمية. |
+| مستهلك حزمة أصل تنفيذ مساعد مساعدة دالة | تحت جهة دقيق بيان فقط لديه نفس حزمة إنتاج استدعاء من. إنتاج نطاق الأسماء استيراد تركيب هو إضافة اتفاق، لا قراءة مساعد مساعدة خاصية؛ حزمة أصل تسمية استيراد مستهلك كل هو اختبار. | إبقاء إضافة اتفاق و مستقر رمز خطأ؛ سوف اختبار ترحيل إلى حزمة داخل وحدة أو عام سلوك، إيقاف في حزمة أصل توجيه خروج الذي صف مساعد مساعدة دالة. |
 
-### 分组辅助导出清单
+### قسم مجموعة مساعد مساعدة توجيه خروج بيان
 
-- `dsh-llm-deepseek`：`httpErrorCode`、`serializeMessages`、`serializeRequest`、`DONE`、`parseSse`、`mapFinishReason`、`mapUsage` 与 `translate`；`dsh-llm-pi-ai`：`buildModel`、`mapStopReason`、`mapUsage`、`toPiContext` 与 `toStreamChunks`。
-- `dsh-bash-local`：`DEFAULT_GRACE_MS`、`ENV_OVERRIDES`、`killGroup`、`OutputCollector` 与 `runBash`；`dsh-bash-sandbox`：`shellQuote`、`classifyDenial` 与 `classifyRunnerFailure`；`dsh-sandbox-local`：`bwrapProfileArgs`、`landlockProfileArgs` 与 `seatbeltProfileArgs`。公开的可变测试注入字段及其类型不在本提案范围内。
-- `dsh-fs-local`：`applyLiteralEdit`、`listDirectory`、`probe`、`readForEdit`、`readTextForDiff`、`readWholeText`、`resolveLocalTarget`、`restoreLineEndings`、`streamWholeText` 与 `writeFileAtomic`。
-- `dsh-web-fetch-http`：`classifyContentType`、`decoderForCharset`、`isSameOrigin`、`parseCharset` 与 `validateFetchUrl`；`dsh-web-search-exa`：`mapExaResponse` 与 `mapExaResult`；`dsh-web-search-deepseek`：`citationSnippets` 与 `mapAnthropicResponse`；`dsh-web-search-perplexity`：`mapPerplexityResponse` 与 `mapPerplexityResult`。
-- `dsh-tool-fs`：`READ_LIMIT`、`STREAM_MIN_SIZE`、`READ_MAX_BYTES`、`READ_MAX_LINE_LENGTH`、`DIFF_CONTEXT`、`applyReadTool`、`parseReadArgs`、`applyWriteTool`、`formatWriteOutput`、`parseWriteArgs`、`applyEditTool`、`formatEditOutput`、`parseEditArgs`、`buildWindow`、`formatReadOutput`、`computeHunkDiffs` 与 `diffsFromMeta`。
-- `dsh-tool-web`：`WEB_SEARCH_MAX_RESULTS`、`applyWebSearchTool`、`formatSearchOutput`、`parseSearchArgs`、`presentSearchCall`、`applyWebFetchTool`、`formatFetchOutput`、`parseFetchArgs`、`presentFetchCall`、`renderBody` 与 `htmlToMarkdown`；`dsh-tool-call-timeout-policy`：`toolTimeoutResult`；`dsh-compaction-basic`：`resolveConfig`；`dsh-tool-bash`：`renderResult`。
+- `dsh-llm-deepseek`:`httpErrorCode`،`serializeMessages`،`serializeRequest`،`DONE`،`parseSse`،`mapFinishReason`،`mapUsage` و `translate`؛`dsh-llm-pi-ai`:`buildModel`،`mapStopReason`،`mapUsage`،`toPiContext` و `toStreamChunks`.
+- `dsh-bash-local`:`DEFAULT_GRACE_MS`،`ENV_OVERRIDES`،`killGroup`،`OutputCollector` و `runBash`؛`dsh-bash-sandbox`:`shellQuote`،`classifyDenial` و `classifyRunnerFailure`؛`dsh-sandbox-local`:`bwrapProfileArgs`،`landlockProfileArgs` و `seatbeltProfileArgs`. عام متغير اختبار حقن حقل و ذلك نوع لا في هذا رفع سجل نطاق داخل.
+- `dsh-fs-local`:`applyLiteralEdit`،`listDirectory`،`probe`،`readForEdit`،`readTextForDiff`،`readWholeText`،`resolveLocalTarget`،`restoreLineEndings`،`streamWholeText` و `writeFileAtomic`.
+- `dsh-web-fetch-http`:`classifyContentType`،`decoderForCharset`،`isSameOrigin`،`parseCharset` و `validateFetchUrl`؛`dsh-web-search-exa`:`mapExaResponse` و `mapExaResult`؛`dsh-web-search-deepseek`:`citationSnippets` و `mapAnthropicResponse`؛`dsh-web-search-perplexity`:`mapPerplexityResponse` و `mapPerplexityResult`.
+- `dsh-tool-fs`:`READ_LIMIT`،`STREAM_MIN_SIZE`،`READ_MAX_BYTES`،`READ_MAX_LINE_LENGTH`،`DIFF_CONTEXT`،`applyReadTool`،`parseReadArgs`،`applyWriteTool`،`formatWriteOutput`،`parseWriteArgs`،`applyEditTool`،`formatEditOutput`،`parseEditArgs`،`buildWindow`،`formatReadOutput`،`computeHunkDiffs` و `diffsFromMeta`.
+- `dsh-tool-web`:`WEB_SEARCH_MAX_RESULTS`،`applyWebSearchTool`،`formatSearchOutput`،`parseSearchArgs`،`presentSearchCall`،`applyWebFetchTool`،`formatFetchOutput`،`parseFetchArgs`،`presentFetchCall`،`renderBody` و `htmlToMarkdown`؛`dsh-tool-call-timeout-policy`:`toolTimeoutResult`؛`dsh-compaction-basic`:`resolveConfig`؛`dsh-tool-bash`:`renderResult`.
 
-## 提案
+## رفع سجل
 
-以一次有界的、协调的公开接口清理，移除或降级上述每一行。同步更新包 README、JSDoc、生成的 API/事件 catalog、type-equiv 记录、必要的 exports map 以及测试，使测试通过所属的公开约定验证行为，而非保留仅为测试而存在的入口。不折叠任何能力 seam、LLM（大语言模型）适配器、持久化 provider 或生命周期完全停稳约定。
+بـ مرة محدود، تنسيق ضبط عام واجهة تنظيف، إزالة أو تخفيض فوق وصف كل واحد سطر. تزامن تحديث حزمة README،JSDoc، توليد API/حدث catalog،type-equiv سجل، لا بد يلزم exports map و اختبار، جعل اختبار عبر الذي تابع عام اتفاق تحقق سلوك، بينما غير إبقاء فقط لـ اختبار بينما وجود مدخل. لا طي أي قدرة seam،LLM(كبير لغة نموذج) مهايئ، حفظ دائم provider أو دورة الحياة تماما توقف مستقر اتفاق.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**保留测试便利函数和自包含的结果字段为公开。** 公开辅助函数可以让白盒测试更方便，自包含的结果字段看起来更易用，未来的嵌入者可能需要具体循环类或枚举方法。这些好处是假设性的；保留它们会让每处实现和文档都要解释没有已交付调用者能观察到的状态。真正的消费方可以引入它所需的最小约定，其所有权和失败语义明确。
+**إبقاء اختبار سهل فائدة دالة و ذاتي يتضمن نتيجة حقل لـ عام.** عام مساعد مساعدة دالة يمكن يجعل أبيض صندوق اختبار أكثر جهة سهل، ذاتي يتضمن نتيجة حقل نظر بدء قدوم أكثر سهل استخدام، لم قدوم تضمين دخول من ممكن حاجة أداة جسم حلقة صنف أو قطعة رفع طريقة. هذه جيد موضع هو زائف ضبط صفة؛ إبقاء هو جمع سوف يجعل كل موضع تنفيذ و وثيقة كل يلزم حل تفسير لا يوجد قد تسليم استدعاء من قدرة مراقبة إلى حالة. حق صحيح مستهلك يمكن جذب دخول هو الذي يحتاج الأكثر صغير اتفاق، ذلك كل حق و فشل دلالة واضح.
 
-**保留所有 catalog 成员以供模型编写的 mount 使用。** 自引用工具集是一条真实的通用消费路径，而非生成文档的噪音。然而，它的价值来自准确、可组合的服务接口，而非无限期保留重复字段或不一致的参数对；上述每一项 catalog 收缩都移除了在同一次执行、同一个 agent（智能体）或同一结果中其他位置已可获得的事实，并在同一变更中更新 API 参考。
+**إبقاء كل catalog عضو بـ توفير نموذج تحرير كتابة mount استخدام.** ذاتي مرجع أداة تجميع هو واحد بند حقيقي عام إزالة استهلاك مسار، بينما غير توليد وثيقة ضجيج صوت. لكن بينما، هو قيمة قيمة قدوم ذاتي دقيق تأكيد، يمكن تركيب خدمة واجهة، بينما غير بلا حد مدة إبقاء تكرار حقل أو لا متسق معامل مقابل؛ فوق وصف كل واحد بند catalog استلام تقليص كل إزالة في نفس مرة تنفيذ، نفس عدد agent(ذكي جسم) أو نفس نتيجة في أخرى موضع قد يمكن نيل نيل واقع، و في نفس تغيير في تحديث API مشاركة اعتبار.
 
-## 验收标准
+## تحقق استلام معيار
 
-- 精确符号搜索显示：在本 Agent Note 及任何对已实现 Agent Note 的修正之外，没有被移除的接口。
-- 本 Agent Note 列出的每个接口均按指定方式移除或降级；清单之外有意保留的扩展/测试约定不变。
-- 工具执行、上下文压缩（context compaction）、两个 LLM 适配器、持久化 provider、工作流隔离以及 agent 创建/恢复保持其已交付行为。
-- 类型检查、覆盖率、快照、doc-sync（文档同步门禁）、module-graph 校验、构建和 hygiene 通过。
+- دقيق رمز رقم بحث عرض: في هذا Agent Note و أي مقابل قد تنفيذ Agent Note إصلاح صحيح خارج، لا يوجد يتم إزالة واجهة.
+- هذا Agent Note صف خروج كل واجهة متساو حسب إشارة تحديد طريقة إزالة أو تخفيض؛ بيان خارج متعمد إبقاء توسيع/اختبار اتفاق ثابت.
+- أداة تنفيذ، سياق ضغط (context compaction) ، اثنان عدد LLM مهايئ، حفظ دائم provider، سير العمل عزل و agent إنشاء/استعادة إبقاء ذلك قد تسليم سلوك.
+- نوع فحص، نسبة التغطية، لقطة،doc-sync(وثيقة تزامن بوابة) ،module-graph تحقق، بناء و hygiene عبر.
 
-## 风险
+## ريح خطر
 
-大多数移除在编译时可见但对运行时无影响。上下文压缩参数清理有意禁止会话/上下文不匹配，同时保留手动 region API。外部预发布嵌入者和现有模型编写的 mount 可能导入更少的辅助函数、传递更少的参数或接收更窄的结果形状；这是有意的产品接口收缩，而非仅仅是生成 catalog 的清理。仓库尚未发布，因此承载不受支持的接口才是更大的基础成本。
+كبير كثير عدد إزالة في تحرير ترجمة وقت مرئي لكن مقابل وقت التشغيل بلا أثر. سياق ضغط معامل تنظيف متعمد منع توقف جلسة/سياق لا مطابقة، معا إبقاء يد حركة region API. خارجي مسبق إصدار تضمين دخول من و قائم نموذج تحرير كتابة mount ممكن استيراد أكثر قليل مساعد مساعدة دالة، نقل تمرير أكثر قليل معامل أو استقبال أكثر ضيق نتيجة شكل حالة؛ هذا هو متعمد منتج واجهة استلام تقليص، بينما غير فقط فقط هو توليد catalog تنظيف. مستودع بعد لم إصدار، لذلك تحمل تحميل لا تلقي دعم حمل واجهة عندئذ هو أكثر كبير أساس أساس صار هذا.

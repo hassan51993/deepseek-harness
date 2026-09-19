@@ -1,21 +1,21 @@
-# Python SDK 入门
+# Python SDK دخول باب
 
-[English](python-sdk.md) | 中文
+[English](python-sdk.md) | العربية
 
-本教程安装已发布的 Python SDK，运行随附的独立极简 profile，并说明如何从自己的程序自定义同一个 `dsh` profile。
+هذا تعليم مسار تثبيت قد إصدار Python SDK، تشغيل مع مرفق مستقل أقصى بسيط profile، و شرح مثل أي من ذاتي ذات برنامج ذاتي تعريف نفس عدد `dsh` profile.
 
-## 前置条件
+## قبل وضع شرط
 
-- Python 3.10 或更高版本
+- Python 3.10 أو أكثر عال إصدار
 - Git
-- Linux x64、Linux arm64、arm64 上的 macOS 14 或更高版本，或 Windows x64
-- DeepSeek 兼容的 API endpoint 与凭据
-- 隔离的 workspace 与隔离的 Harness home
+- Linux x64،Linux arm64،arm64 فوق macOS 14 أو أكثر عال إصدار، أو Windows x64
+- DeepSeek توافق API endpoint و اعتماد
+- عزل workspace و عزل Harness home
 
-## 安装 SDK
+## تثبيت SDK
 
 <div>
-<a id="linux-与-macos"></a>
+<a id="linux-و-macos"></a>
 <a id="windows-powershell"></a>
 </div>
 
@@ -39,14 +39,14 @@ python -m pip install deepseek-harness-sdk
 
 :::
 
-安装内容包含匹配的原生运行时 wheel 与 `dsh` 命令。普通 SDK 运行不需要系统 Node.js。需要构建产物的仓库贡献者应使用 [Python 贡献者工作流](../../../python/development.zh.md)。
+تثبيت محتوى يتضمن مطابقة أصلي وقت التشغيل wheel و `dsh` أمر. عادي SDK تشغيل لا حاجة نظام Node.js. حاجة بناء ناتج مستودع مساهمة من ينبغي استخدام [Python مساهمة من سير العمل](../../../python/development.zh.md).
 
-## 运行检入示例
+## تشغيل فحص دخول عرض مثال
 
-导出凭据；使用兼容代理时再设置 endpoint：
+توجيه خروج اعتماد؛ استخدام توافق بديل إدارة وقت مجددا ضبط endpoint:
 
 <div>
-<a id="linux-与-macos-1"></a>
+<a id="linux-و-macos-1"></a>
 <a id="windows-powershell-1"></a>
 </div>
 
@@ -64,10 +64,10 @@ $env:DEEPSEEK_API_KEY = "sk-your-key-here"
 
 :::
 
-使用显式 workspace 与 home 路径运行一个任务：
+استخدام صريح workspace و home مسار تشغيل واحد مهمة:
 
 <div>
-<a id="linux-与-macos-2"></a>
+<a id="linux-و-macos-2"></a>
 <a id="windows-powershell-2"></a>
 </div>
 
@@ -91,9 +91,9 @@ python python/sdk/examples/minimal.py `
 
 :::
 
-脚本会打印最终 assistant 响应。所选 home 会保存生成的 `sdk-minimal` profile、已安装插件，以及 `sessions/` 下的未压缩 JSONL 会话日志。示例与 SDK 绝不会静默读取 `~/.dsh`。
+نص برمجي سوف ضرب طبع نهائي assistant استجابة. الذي اختيار home سوف حفظ توليد `sdk-minimal` profile، قد تثبيت إضافة، و `sessions/` تحت لم ضغط JSONL جلسة سجل. عرض مثال و SDK أبدا سوف ساكن صامت قراءة `~/.dsh`.
 
-## 在程序中使用 SDK
+## في برنامج في استخدام SDK
 
 ```python
 from pathlib import Path
@@ -118,14 +118,14 @@ with DeepSeekHarness(
 print(result.final_response)
 ```
 
-SDK 会延迟启动内置的 `dsh --profile sdk-minimal` 进程，并复用到上下文管理器退出。Profile、其持久 patch、home patch 与任何有序 `patches` tuple 共同组成应用配置。不存在独立 Python 运行时 bin 或完整配置选项。
+SDK سوف تأخير متأخر بدء داخل وضع `dsh --profile sdk-minimal` عملية، و إعادة استخدام إلى سياق إدارة جهاز خروج.Profile، ذلك حمل دائم patch،home patch و أي لديه ترتيب `patches` tuple مشترك نفس مجموعة صار تطبيق إعداد. لا وجود مستقل Python وقت التشغيل bin أو كامل إعداد خيار.
 
-## 安装或定义插件
+## تثبيت أو تعريف إضافة
 
-需要在该 home 中持久保存依赖与 bundle 层时，使用 `dsh plugin`：
+حاجة في هذا home في حمل دائم حفظ اعتماد و bundle طبقة وقت، استخدام `dsh plugin`:
 
 <div>
-<a id="linux-与-macos-3"></a>
+<a id="linux-و-macos-3"></a>
 <a id="windows-powershell-3"></a>
 </div>
 
@@ -145,14 +145,14 @@ dsh plugin --profile sdk-minimal add file:C:/work/my-plugin-bundle
 
 :::
 
-第一个命令初始化随附的独立 profile。第二个命令把包管理转发给 `pnpm`，然后记录所有导出 `dsh.bundle` 层的已安装包。只有执行此管理命令时才需要安装 `pnpm`；启动已安装 SDK 不需要它。持久配置项变更应编辑 `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml`；单次启动变更则从 Python 传入 patch 文件。
+رقم واحد أمر ابتدائي تحويل مع مرفق مستقل profile. ثاني عدد أمر يأخذ حزمة إدارة تحويل إرسال إعطاء `pnpm`، لكن بعد سجل كل توجيه خروج `dsh.bundle` طبقة قد تثبيت حزمة. فقط لديه تنفيذ هذا إدارة أمر وقت عندئذ حاجة تثبيت `pnpm`؛ بدء قد تثبيت SDK لا حاجة هو. حمل دائم بند إعداد تغيير ينبغي تحرير `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml`؛ مفرد مرة بدء تغيير فإن من Python نقل دخول patch ملف.
 
-另一个 `profile` 只有包含 `@deepseek-ai/dsh-sdk-app` 或另一个 JSON-RPC server 配置项时才有效。缺失 server 配置项、无法解析的插件和非法 patch 会在启动时失败，不会回退到其他组合。
+آخر عدد `profile` فقط لديه يتضمن `@deepseek-ai/dsh-sdk-app` أو آخر عدد JSON-RPC server بند إعداد وقت عندئذ صالح. ناقص server بند إعداد، لا يمكن تحليل إضافة و غير قاعدة patch سوف في بدء وقت فشل، لن رجوع إلى أخرى تركيب.
 
 <a id="opt-in-to-str_replace_editor"></a>
-### 显式启用 `str_replace_editor`
+### صريح تفعيل `str_replace_editor`
 
-随附运行时包含 `str_replace_editor`，但 `sdk-minimal` 的默认 Cordis tree 不挂载它。要使用该工具，请将以下配置保存为 `editor.patch.yml`；`insert` 会添加 editor，以及极简 profile 缺少的文件系统后端：
+مع مرفق وقت التشغيل يتضمن `str_replace_editor`، لكن `sdk-minimal` افتراضي Cordis tree لا تركيب هو. يلزم استخدام هذا أداة، طلب سوف التالي إعداد حفظ لـ `editor.patch.yml`؛`insert` سوف إضافة editor، و أقصى بسيط profile نقص قليل نظام الملفات خلفية:
 
 ```yaml
 - insert:
@@ -164,23 +164,23 @@ dsh plugin --profile sdk-minimal add file:C:/work/my-plugin-bundle
       name: '@deepseek-ai/dsh-tool-str-replace-editor'
 ```
 
-构造 `DeepSeekHarness(profile="sdk-minimal", ...)` 时传入 `patches=("/absolute/path/to/editor.patch.yml",)`，或将 patch 写入 `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` 以持久保存配置。下次运行时启动后，模型请求会在持久 shell 之外包含 `str_replace_editor`。本地文件系统后端以运行时工作目录解析相对路径；与极简 shell 一样，它不会将访问限制在该目录内。对于标准 `sdk` profile，只插入 editor 配置项，让它使用已有的文件系统后端与策略。
+بنية صنع `DeepSeekHarness(profile="sdk-minimal", ...)` وقت نقل دخول `patches=("/absolute/path/to/editor.patch.yml",)`، أو سوف patch كتابة `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` بـ حمل دائم حفظ إعداد. تحت مرة وقت التشغيل بدء بعد، نموذج طلب سوف في حمل دائم shell خارج يتضمن `str_replace_editor`. محلي نظام الملفات خلفية بـ وقت التشغيل عمل دليل تحليل متبادل مقابل مسار؛ و أقصى بسيط shell واحد مثال، هو لن سوف وصول حد في هذا دليل داخل. مقابل في معيار `sdk` profile، فقط إدراج دخول editor بند إعداد، يجعل هو استخدام قد لديه نظام الملفات خلفية و سياسة.
 
-## 理解极简 profile
+## إدارة حل أقصى بسيط profile
 
-| 属性 | 值 |
+| خاصية | قيمة |
 |---|---|
-| 系统提示词 | `DSH_SYSTEM_PROMPT`，未设置时为 `You are a helpful software engineer assistant.` |
-| `minimal.py` 的模型 | `--model`，然后是 `DSH_MODEL`，最后是 `deepseek-v4-flash` |
-| 面向模型的工具 | Linux／macOS 上的持久 `bash` 或 Windows 上的 `pwsh` |
-| Shell 超时 | 300 秒 |
-| 运行时上下文与 compaction | 不存在 |
-| 会话持久化 | `<dsh_home>/sessions` 下的未压缩 JSONL |
+| توجيه النظام | `DSH_SYSTEM_PROMPT`، لم ضبط وقت لـ `You are a helpful software engineer assistant.` |
+| `minimal.py` نموذج | `--model`، لكن بعد هو `DSH_MODEL`، الأكثر بعد هو `deepseek-v4-flash` |
+| موجه إلى نموذج أداة | Linux/macOS فوق حمل دائم `bash` أو Windows فوق `pwsh` |
+| Shell مهلة | 300 ثانية |
+| وقت التشغيل سياق و compaction | لا وجود |
+| جلسة حفظ دائم | `<dsh_home>/sessions` تحت لم ضغط JSONL |
 
-该 profile 的唯一组合包会在空根之上插入完整配置树，且不包含 `dsh-base`，因此基础 profile 以后新增的工具不会隐式出现。它包含 SDK 协议、一个由环境配置的 DeepSeek 适配器、本地执行与持久化；文件系统工具、settings、托管凭据、OTel 遥测、Web 工具、subagent、本地指令发现和 compaction 均不存在。[DeepSeek 会话日志贡献器](../../../packages/session/session-log-deepseek/README.zh.md)默认随 DeepSeek 请求上传完整的未接受日志后缀；在 profile patch 中设置 `session-log-deepseek.enabled: false` 可将其关闭。它固定使用 `danger-full-access`，因此按平台选择的持久 shell 可以修改运行时可见的任何路径；应使用一次性 checkout 或容器。
+هذا profile وحيد تركيب حزمة سوف في فارغ أصل لـ فوق إدراج دخول كامل إعداد شجرة، كما لا يتضمن `dsh-base`، لذلك أساس أساس profile بـ بعد إضافة جديدة أداة لن خفي صيغة ظهور. هو يتضمن SDK بروتوكول، واحد من بيئة إعداد DeepSeek مهايئ، محلي تنفيذ و حفظ دائم؛ نظام الملفات أداة،settings، حمل إدارة اعتماد،OTel بعيد قياس،Web أداة،subagent، محلي إشارة أمر اكتشاف و compaction متساو لا وجود.[DeepSeek جلسة سجل مساهمة جهاز](../../../packages/session/session-log-deepseek/README.zh.md) افتراضي مع DeepSeek طلب فوق نقل كامل لم قبول سجل بعد لاحقة؛ في profile patch في ضبط `session-log-deepseek.enabled: false` يمكن سوف ذلك إغلاق. هو ثابت استخدام `danger-full-access`، لذلك حسب منصة اختيار حمل دائم shell يمكن تعديل وقت التشغيل مرئي أي مسار؛ ينبغي استخدام مرة صفة checkout أو حاوية.
 
-已安装 wheel 仍会打包完整 `web` profile 与前端产物。如果 Python SDK 部署还需要浏览器应用，请针对显式 `DSH_HOME` 运行 `dsh web`；`web` 是独立 CLI 应用，不能为 Python SDK client 提供服务。
+قد تثبيت wheel ما زال سوف تحزيم كامل `web` profile و قبل طرف ناتج. إذا Python SDK نشر أيضا حاجة متصفح تطبيق، طلب إبرة مقابل صريح `DSH_HOME` تشغيل `dsh web`؛`web` هو مستقل CLI تطبيق، لا يستطيع لـ Python SDK client توفير خدمة.
 
-需要隔离 profile、插件、凭据、设置与会话时，应使用新的 home。独立工作应使用新的 session id；只有继续同一段持久对话和会话资源时，才同时复用 harness、home 与 id。
+حاجة عزل profile، إضافة، اعتماد، ضبط و جلسة وقت، ينبغي استخدام جديد home. مستقل عمل ينبغي استخدام جديد session id؛ فقط لديه متابعة نفس مقطع حمل دائم محادثة و جلسة مورد وقت، عندئذ معا إعادة استخدام harness،home و id.
 
-[组合包参考](../../../packages/bundle/sdk-minimal/README.zh.md)定义确切配置树，[示例参考](../../../python/sdk/examples/README.zh.md)定义可运行程序。[Python SDK 参考](../../../python/sdk/README.zh.md)介绍生命周期、结果、通知与底层行为；[dsh CLI 参考](../../../apps/cli/reference/README.zh.md)介绍 profile 分层。
+[تركيب حزمة مشاركة اعتبار](../../../packages/bundle/sdk-minimal/README.zh.md) تعريف تأكيد قطع إعداد شجرة،[عرض مثال مشاركة اعتبار](../../../python/sdk/examples/README.zh.md) تعريف يمكن تشغيل برنامج.[Python SDK مشاركة اعتبار](../../../python/sdk/README.zh.md) وسيط تعريف دورة الحياة، نتيجة، إشعار و قاع طبقة سلوك؛[dsh CLI مشاركة اعتبار](../../../apps/cli/reference/README.zh.md) وسيط تعريف profile قسم طبقة.

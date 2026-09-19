@@ -1,28 +1,28 @@
-# Agent Note: Win32 文件夹选择器迁至 koffi 子进程
+# Agent Note: Win32 ملف مشبك اختيار جهاز نقل حتى koffi عملية فرعية
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-02-win32-in-process-folder-dialog.md) | 中文
+[English](2026-08-02-win32-in-process-folder-dialog.md) | العربية
 
-## 问题
+## مشكلة
 
-Windows 目录选择器的主层此前是围绕 WinForms `FolderBrowserDialog` spawn 出的 PowerShell 脚本：只有恰好安装了 PowerShell 7 的机器才有现代对话框；一处回归——PowerShell 6 可解析却没有 WinForms（退出码 1 而非 `ENOENT`，5.1 回退永远不会触发）；`SetProcessDPIAware` 只有系统 DPI 的上限；选择器的行为取决于机器装了哪些 shell，而不是取决于 Windows 本身。
+Windows دليل اختيار جهاز رئيسي طبقة هذا قبل هو محيط التفاف WinForms `FolderBrowserDialog` spawn خروج PowerShell نص برمجي: فقط لديه تماما جيد تثبيت PowerShell 7 آلة جهاز عندئذ لديه الآن بديل محادثة إطار؛ واحد موضع ارتداد——PowerShell 6 يمكن تحليل لكن لا يوجد WinForms(خروج رمز 1 بينما غير `ENOENT`،5.1 رجوع دائم بعيد لن إطلاق) ؛`SetProcessDPIAware` فقط لديه نظام DPI حد أعلى؛ اختيار جهاز سلوك أخذ قرار في آلة جهاز تركيب أي بعض shell، بينما لا هو أخذ قرار في Windows ذاته.
 
-## 决策
+## قرار
 
-`packages/host/directory-picker-native` 现在经 koffi——它已是仓库其他 `win32.ts` 代码的工作区依赖——在进程内打开 `IFileOpenDialog`（`FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_NOCHANGEDIR`），作为 win32 主层。COM 会话运行在 spawn 出的子进程中，模态 `Show` 永不阻塞宿主事件循环；子进程在阻塞前上报其原生线程 id，驱动层通过向该线程的窗口反复投递 `WM_CLOSE`（`EnumThreadWindows`）来处理中止请求，关闭等待预算耗尽后强制终止子进程。对话框是子进程的第一个窗口，Windows 会自动激活它，无需手动前台调用。子进程线程启用宿主接受的最佳线程 DPI 感知（`SetThreadDpiAwarenessContext`，按 per-monitor-v2 → per-monitor → system-aware 级联并检查返回值），严格优于脚本的系统 DPI 上限；DPI 保持为纯外观的 best-effort——不接受其中任何一种的宿主仍得到现代对话框，而不会降级。模块切分让覆盖率在任何主机上都诚实：`win32-dialog-logic.ts`（纯时序）与 `win32-dialog.ts`（driver）可在任何平台使用 fake 进行测试；`win32-dialog-bindings.ts` 对 mock 的 `koffi` COM 世界测试（`dsh-session-persistence-jsonl` 的技法）；POSIX 主机运行真实的 spawn 管道，并验证其因 koffi 加载失败而拒绝；win32 主机运行真实的打开对话框并通过中止将其关闭的冒烟测试。先于本层存在的 PowerShell 链已被删除（见[链删除](../simplification/2026-08-04-drop-windows-powershell-picker-fallback.zh.md)）：该层无回退。
+`packages/host/directory-picker-native` الآن مرور koffi——هو قد هو مستودع أخرى `win32.ts` شفرة مساحة العمل اعتماد——في عملية داخل فتح `IFileOpenDialog`(`FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_NOCHANGEDIR`) ، بصفة win32 رئيسي طبقة.COM جلسة تشغيل في spawn خروج عملية فرعية في، نموذج حالة `Show` دائم لا منع سد مضيف حدث حلقة؛ عملية فرعية في منع سد قبل فوق تقرير ذلك أصلي خط مسار id، قيادة طبقة عبر نحو هذا خط مسار نافذة عكس تكرار إلقاء تمرير `WM_CLOSE`(`EnumThreadWindows`) قدوم معالجة في توقف طلب، إغلاق انتظار ميزانية استهلاك كل بعد قوي صنع إنهاء عملية فرعية. محادثة إطار هو عملية فرعية رقم واحد نافذة،Windows سوف تلقائي تنشيط هو، بلا حاجة يد حركة قبل منصة استدعاء. عملية فرعية خط مسار تفعيل مضيف قبول الأكثر جيد خط مسار DPI شعور معرفة (`SetThreadDpiAwarenessContext`، حسب per-monitor-v2 → per-monitor → system-aware درجة ربط و فحص قيمة راجعة) ، صارم إطار أفضل في نص برمجي نظام DPI حد أعلى؛DPI إبقاء لـ صاف خارج مراقبة best-effort——لا قبول منها أي واحد نوع مضيف ما زال نيل إلى الآن بديل محادثة إطار، بينما لن تخفيض. وحدة قطع قسم يجعل نسبة التغطية في أي رئيسي آلة فوق كل صدق فعلي:`win32-dialog-logic.ts`(صاف وقت ترتيب) و `win32-dialog.ts`(driver) يمكن في أي منصة استخدام fake إجراء اختبار؛`win32-dialog-bindings.ts` مقابل mock `koffi` COM عالم حد اختبار (`dsh-session-persistence-jsonl` تقنية قاعدة) ؛POSIX رئيسي آلة تشغيل حقيقي spawn إدارة طريق، و تحقق ذلك بسبب koffi تحميل فشل بينما رفض؛win32 رئيسي آلة تشغيل حقيقي فتح محادثة إطار و عبر في توقف سوف ذلك إغلاق خطر دخان اختبار. أولا في هذا طبقة وجود PowerShell سلسلة قد يتم حذف (رؤية[سلسلة حذف](../simplification/2026-08-04-drop-windows-powershell-picker-fallback.zh.md)): هذا طبقة بلا رجوع.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-- **预编译原生辅助程序（`native/` 家族，如 `@deepseek-ai/node-addon-landlock-run`）。** 否决：再增加一个 npm 包家族、MSVC 环境配置和 Windows 构建／发布通道——只为交付约 150 行仓库目前无法通过 CI 检验的 C 代码（现有 CI 没有真 Windows 通道）；koffi 以零新增供应链提供同一 COM 接口。
-- **N-API 进程内插件。** 否决：同样的 CI／工具链原因，还需自行维护处理 STA 线程与消息泵的 C++ 代码，而子进程 + koffi 用 TypeScript 就能表达。
-- **保留 PowerShell 为主层并探测版本。** 否决：选择器仍被 shell 打包形态挟持（6 与 7、Store 别名、profile），且没有 pwsh 的机器仍只能使用 5.1 的旧版对话框；只有拓宽回退触发条件这一项改动被纳入了回退层。
-- **在主线程上阻塞模态调用。** 直接否决：对话框打开期间 web 宿主必须继续服务 RPC。
+- **مسبق تحرير ترجمة أصلي مساعد مساعدة برنامج (`native/` بيت عائلة، مثل `@deepseek-ai/node-addon-landlock-run`).** مرفوض: مجددا زيادة واحد npm حزمة بيت عائلة،MSVC بيئة إعداد و Windows بناء/إصدار عبر طريق——فقط لـ تسليم نحو 150 سطر مستودع هدف قبل لا يمكن عبر CI فحص تحقق C شفرة (قائم CI لا يوجد حق Windows عبر طريق) ؛koffi بـ صفر إضافة جديدة توفير ينبغي سلسلة توفير نفس COM واجهة.
+- **N-API عملية داخل إضافة.** مرفوض: نفس مثال CI/أداة سلسلة سبب، أيضا يحتاج ذاتي سطر صيانة معالجة STA خط مسار و رسالة مضخة C++ شفرة، بينما عملية فرعية + koffi استخدام TypeScript حينئذ قدرة جدول بلوغ.
+- **إبقاء PowerShell لـ رئيسي طبقة و استكشاف قياس إصدار.** مرفوض: اختيار جهاز ما زال يتم shell تحزيم شكل انتزاع حمل (6 و 7،Store آخر اسم،profile) ، كما لا يوجد pwsh آلة جهاز ما زال فقط قدرة استخدام 5.1 قديم إصدار محادثة إطار؛ فقط لديه توسيع عرض رجوع إطلاق شرط هذا واحد بند تعديل يتم قبول دخول رجوع طبقة.
+- **في رئيسي خط مسار فوق منع سد نموذج حالة استدعاء.** مباشر مرفوض: محادثة إطار فتح خلال web مضيف يجب متابعة خدمة RPC.
 
-## 后果
+## عاقبة
 
-- 每台 Windows 机器都得到带其所支持的最佳 DPI 感知（1703+ 为 per-monitor-v2）的现代对话框，无论是否安装 PowerShell。
-- 真实对话框的渲染与完成选择的流程仍需在 Windows 上手动检查（自动关闭冒烟测试证明打开／中止／收尾）。
-- 所用 COM vtable 槽位与 GUID 是冻结的 Windows ABI（Vista 起）；koffi 签名错误可能引发原生访问冲突，但被限制在对话框子进程内——宿主 Node 进程存活，失败原样上报（无回退层；见[链删除](../simplification/2026-08-04-drop-windows-powershell-picker-fallback.zh.md)）。mocked-koffi 的 ABI 固定测试与真实 win32 冒烟测试正是为了在交付前捕获这类错误。
-- 打包二进制路径——打包后的可执行文件以对话框入口形式自我 spawn——不受任何自动化测试覆盖。源码侧与普通 Node 下构建出的 `lib/worker.cjs` 已被覆盖；打包后的自我 spawn 仍是一项明确的覆盖缺口。
+- كل منصة Windows آلة جهاز كل نيل إلى حمل ذلك الذي دعم حمل الأكثر جيد DPI شعور معرفة (1703+ لـ per-monitor-v2) الآن بديل محادثة إطار، بلا نقاش هل تثبيت PowerShell.
+- حقيقي محادثة إطار تصيير و إتمام اختيار مسار ما زال يحتاج في Windows فوق يد حركة فحص (تلقائي إغلاق خطر دخان اختبار إثبات فتح/في توقف/استلام ذيل).
+- الذي استخدام COM vtable مجرى موضع و GUID هو تجميد ربط Windows ABI(Vista بدء) ؛koffi توقيع خطأ ممكن جذب إرسال أصلي وصول اندفاع مفاجئ، لكن يتم حد في محادثة إطار عملية فرعية داخل——مضيف Node عملية تخزين نشط، فشل أصل مثال فوق تقرير (بلا رجوع طبقة؛ رؤية[سلسلة حذف](../simplification/2026-08-04-drop-windows-powershell-picker-fallback.zh.md)).mocked-koffi ABI ثابت اختبار و حقيقي win32 خطر دخان اختبار صحيح هو لـ في تسليم قبل التقاط هذا صنف خطأ.
+- تحزيم اثنان دخول صنع مسار——تحزيم بعد يمكن تنفيذ ملف بـ محادثة إطار مدخل شكل صيغة ذاتي أنا spawn——لا تلقي أي تلقائي تحويل اختبار تغطية. شفرة المصدر جانب و عادي Node تحت بناء خروج `lib/worker.cjs` قد يتم تغطية؛ تحزيم بعد ذاتي أنا spawn ما زال هو واحد بند واضح تغطية نقص فتحة.

@@ -1,14 +1,14 @@
-# 持久 PTY 会话
+# حمل دائم PTY جلسة
 
-[English](terminal.md) | 中文
+[English](terminal.md) | العربية
 
-PTY 后端、`ctx.terminals` 与面向模型的消费方共享的类型。[持久 PTY Agent Note](../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md) 负责记录决策依据；本页记录来自 [`packages/terminal/terminal/src/types.ts`](../../packages/terminal/terminal/src/types.ts) 的跨包词汇。
+PTY خلفية،`ctx.terminals` و موجه إلى نموذج مستهلك مشترك نوع.[حمل دائم PTY Agent Note](../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md) مسؤول سجل قرار اعتماد حسب؛ هذا صفحة سجل قدوم ذاتي [`packages/terminal/terminal/src/types.ts`](../../packages/terminal/terminal/src/types.ts) عبر حزمة مفردات.
 
-## 标识与就绪
+## معرف و حينئذ خيط
 
-`TerminalSessionId` 是由服务铸造的branded id。可选名称是拥有者本地的显示元数据；授权比较的是拥有该会话的确切 `Agent`，而不是名称或猜测的 id。
+`TerminalSessionId` هو من خدمة صب صنعbranded id. اختياري اسم هو يملك من محلي عرض بيانات وصفية؛ تخويل مقارنة مقارنة هو يملك هذا جلسة تأكيد قطع `Agent`، بينما لا هو اسم أو تخمين قياس id.
 
-`TerminalWaitReason` 说明一次发送为何返回。它与 `TerminalSessionStatus` 无关：一次发送可能因静默或超时而返回，但顶层 shell 仍然存活；`session_exit` 表示该 shell 已退出，而不是某个任意的前台子进程已退出。
+`TerminalWaitReason` شرح مرة إرسال لـ أي إرجاع. هو و `TerminalSessionStatus` غير متصل: مرة إرسال ممكن بسبب ساكن صامت أو مهلة بينما إرجاع، لكن قمة طبقة shell ما زال تخزين نشط؛`session_exit` يمثل هذا shell قد خروج، بينما لا هو بعض عدد مهمة معنى قبل منصة عملية فرعية قد خروج.
 
 ```ts type-equiv
 /** Why one interactive send returned control to its caller. */
@@ -22,9 +22,9 @@ type TerminalSessionStatus =
   | { kind: 'exited'; exitCode: number | null; signal: NodeJS.Signals | null }
 ```
 
-## 后端与活跃会话
+## خلفية و نشط وثب جلسة
 
-后端负责启动某种已注册类型的会话并检测其就绪状态。`TerminalSessionService` 只在初始化成功后才发布返回的会话，随后负责 id 授权与清理。无法清理部分启动资源时，后端会以 `TerminalBackendCleanupError` 拒绝启动；这样，资源释放流程既能保留清理失败，也不会用它替换调用方的取消原因。后端会话拥有终端状态，并负责让已捕获的资源完全停稳。
+خلفية مسؤول بدء بعض نوع قد تسجيل نوع جلسة و فحص قياس ذلك حينئذ خيط حالة.`TerminalSessionService` فقط في ابتدائي تحويل نجاح بعد عندئذ إصدار إرجاع جلسة، مع بعد مسؤول id تخويل و تنظيف. لا يمكن تنظيف جزء بدء مورد وقت، خلفية سوف بـ `TerminalBackendCleanupError` رفض بدء؛ هذا مثال، مورد تحرير مسار حيث قدرة إبقاء تنظيف فشل، أيضا لن استخدام هو استبدال استدعاء جهة إلغاء سبب. خلفية جلسة يملك طرفية حالة، و مسؤول يجعل قد التقاط مورد تماما توقف مستقر.
 
 ```ts type-equiv
 /** Replaceable provider for one PTY session type. */
@@ -56,9 +56,9 @@ interface TerminalBackendSession {
 }
 ```
 
-## 发送与保留输出
+## إرسال و إبقاء إخراج
 
-一个活跃会话同时只接受一个活动发送。该操作向通用后台任务提供读取后即推进的输出游标，并向前台调用方提供最终结果。`TerminalReadResult` 则为有界的会话 scrollback 单独分页。
+واحد نشط وثب جلسة معا فقط قبول واحد نشط حركة إرسال. هذا عملية نحو عام خلفية مهمة توفير قراءة بعد أي دفع دخول إخراج تنقل علامة، و نحو قبل منصة استدعاء جهة توفير نهائي نتيجة.`TerminalReadResult` فإن لـ محدود جلسة scrollback مفرد وحيد قسم صفحة.
 
 ```ts type-equiv
 /** Live backend-owned send; exactly one may be active per PTY session. */
@@ -86,9 +86,9 @@ interface TerminalSendResult {
 }
 ```
 
-## 归属与持久性
+## ملكية و حمل دائم صفة
 
-`TerminalSessionService` 会将一项等待完成的清理附加到确切的拥有者作用域，拒绝其他拥有者的操作，并让会话在后端或工具插件重载期间保持存活。PTY 状态与原始字节仍局限在进程内。模型输入与有界返回输出通过现有 `tool/call`、`tool/result` 和任务结果路径持久保存，而不是重复记录 PTY 会话事件。
+`TerminalSessionService` سوف سوف واحد بند انتظار إتمام تنظيف مرفق إضافة إلى تأكيد قطع يملك من أثر مجال، رفض أخرى يملك من عملية، و يجعل جلسة في خلفية أو أداة إضافة إعادة تحميل خلال إبقاء تخزين نشط.PTY حالة و أصلي بايت ما زال نطاق حد في عملية داخل. نموذج إدخال و محدود إرجاع إخراج عبر قائم `tool/call`،`tool/result` و مهمة نتيجة مسار حمل دائم حفظ، بينما لا هو تكرار سجل PTY جلسة حدث.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

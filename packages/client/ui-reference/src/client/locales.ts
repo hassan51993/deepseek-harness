@@ -13,17 +13,17 @@ export const NS = 'reference'
  * bucketing they name is the one shared {@link relativeTime} in ui-primitives.
  */
 export const zh = {
-  'section.files': '文件与文件夹',
-  'section.subagents': '子智能体',
-  'section.sessions': '对话',
-  'candidate.noCwd': '（无工作目录）',
-  'crumb.root': '工作区',
-  'time.now': '刚刚',
-  'time.minutes': '{n}分钟',
-  'time.hours': '{n}小时',
-  'time.days': '{n}天',
-  'time.months': '{n}个月',
-  'time.years': '{n}年',
+  'section.files': 'ملف و ملف مشبك',
+  'section.subagents': 'فرعي ذكي جسم',
+  'section.sessions': 'محادثة',
+  'candidate.noCwd': '(بلا عمل دليل)',
+  'crumb.root': 'مساحة العمل',
+  'time.now': 'للتو للتو',
+  'time.minutes': '{n}قسم ساعة',
+  'time.hours': '{n}صغير وقت',
+  'time.days': '{n}يوم',
+  'time.months': '{n}عدد شهر',
+  'time.years': '{n}سنة',
 } satisfies Record<string, string>
 
 /** The reference namespace key union. */

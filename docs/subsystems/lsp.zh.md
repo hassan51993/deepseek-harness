@@ -1,14 +1,14 @@
-# LSP 导航
+# LSP تنقل
 
-[English](lsp.md) | 中文
+[English](lsp.md) | العربية
 
-LSP seam 是一个[能力 seam](../glossary.zh.md#capability-seam)：它在单一 `ctx.lsp` 服务上公开语义代码导航，并拆分到多个包：Service Definition（[dsh-lsp](../../packages/lsp/lsp)，`ctx.lsp` + 提供方注册表）、通用 Service Provider（[dsh-lsp-stdio](../../packages/lsp/lsp-stdio)，经过配置的 stdio 语言服务器宿主）和 Consumer（[dsh-tool-lsp](../../packages/lsp/tool-lsp)，即 `lsp` 工具 schema）。LSP 是**一项可选能力**，不属于 agent loop（智能体循环）主干，因此其词汇定义在此而非 [core.md](core.zh.md) 中。更换提供方不会改变模型请求导航的方式。
+LSP seam هو واحد[قدرة seam](../glossary.zh.md#capability-seam): هو في مفرد واحد `ctx.lsp` خدمة فوق عام دلالة شفرة تنقل، و تفكيك قسم إلى كثير عدد حزمة:Service Definition([dsh-lsp](../../packages/lsp/lsp) ،`ctx.lsp` + مزود سجل التسجيل) ، عام Service Provider([dsh-lsp-stdio](../../packages/lsp/lsp-stdio) ، مرور مرور إعداد stdio لغة خادم مضيف) و Consumer([dsh-tool-lsp](../../packages/lsp/tool-lsp) ، أي `lsp` أداة schema).LSP هو**واحد بند اختياري قدرة**، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، لذلك ذلك مفردات تعريف في هذا بينما غير [core.md](core.zh.md) في. أكثر تبديل مزود لن تغيير نموذج طلب تنقل طريقة.
 
-源文件：[`packages/lsp/lsp/src/types.ts`](../../packages/lsp/lsp/src/types.ts)
+مصدر ملف:[`packages/lsp/lsp/src/types.ts`](../../packages/lsp/lsp/src/types.ts)
 
-## 操作与坐标
+## عملية و جلوس علامة
 
-seam 与模型恰好公开 4 项语义查询；该联合是闭合的，因此新增一项查询会通过编译强制要求同步修改 seam、提供方和工具。位置与范围采用从零开始的 UTF-16 坐标，与协议一致；面向模型的工具采用从 1 开始的光标约定，并在输入和输出时进行转换。
+seam و نموذج تماما جيد عام 4 بند دلالة استعلام؛ هذا ربط دمج هو إغلاق دمج، لذلك إضافة جديدة واحد بند استعلام سوف عبر تحرير ترجمة قوي صنع اشتراط تزامن تعديل seam، مزود و أداة. موضع و نطاق اعتماد من صفر بدء UTF-16 جلوس علامة، و بروتوكول متسق؛ موجه إلى نموذج أداة اعتماد من 1 بدء ضوء علامة اتفاق، و في إدخال و إخراج وقت إجراء تحويل.
 
 ```ts type-equiv
 /**
@@ -37,9 +37,9 @@ interface LspRange {
 }
 ```
 
-## 请求
+## طلب
 
-每个字段都是必填项：`workspaceRoot` 由调用方提供，`languageId` 来自提供方注册而非请求，超时与结果上限由消费方决定。因此没有字段需要由实现提供默认值，也不存在 `resolve()` 步骤。提供方收到调用方请求和派生的 `languageId`；后者只用于同步瞬态文档，从不参与选择。
+كل حقل كل هو لا بد ملء بند:`workspaceRoot` من استدعاء جهة توفير،`languageId` قدوم ذاتي مزود تسجيل بينما غير طلب، مهلة و نتيجة حد أعلى من مستهلك قرار. لذلك لا يوجد حقل حاجة من تنفيذ توفير قيمة افتراضية، أيضا لا وجود `resolve()` خطوة. مزود استلام إلى استدعاء جهة طلب و إرسال توليد `languageId`؛ بعد من فقط لأجل تزامن لحظة حالة وثيقة، من لا مشاركة و اختيار.
 
 ```ts type-equiv
 /**
@@ -71,9 +71,9 @@ interface LspProviderQuery extends LspQueryRequest {
 }
 ```
 
-## 结果
+## نتيجة
 
-这是一个闭合的可辨识联合：导航操作规范化为 `locations`，`hover` 规范化为内容或 `null`。消费方使用 `switch` 对 `kind` 做穷尽处理，因此新增分支会使编译失败，直到完成处理。`findReferences` 始终包含声明；提供方在内部强制保证这一点，因此调用方没有对应 flag。`locations` 变体携带 `resolvedWorkspaceUri`，即提供方的规范工作区 `file:` URI。调用方相对化位置 URI 时应使用这一坐标，而不是对可能经过符号链接的请求根目录应用宿主平台路径规则。
+هذا هو واحد إغلاق دمج يمكن تمييز تعرف ربط دمج: تنقل عملية مواصفة تحويل لـ `locations`،`hover` مواصفة تحويل لـ محتوى أو `null`. مستهلك استخدام `switch` مقابل `kind` فعل نفاد كل معالجة، لذلك إضافة جديدة فرع سوف جعل تحرير ترجمة فشل، مباشر إلى إتمام معالجة.`findReferences` بداية نهاية يتضمن إعلان؛ مزود في داخلي قوي صنع حفظ إثبات هذا واحد نقطة، لذلك استدعاء جهة لا يوجد مقابل flag.`locations` تغيير جسم يحمل `resolvedWorkspaceUri`، أي مزود مواصفة مساحة العمل `file:` URI. استدعاء جهة متبادل مقابل تحويل موضع URI وقت ينبغي استخدام هذا واحد جلوس علامة، بينما لا هو مقابل ممكن مرور مرور رمز رقم رابط طلب أصل دليل تطبيق مضيف منصة مسار قاعدة.
 
 ```ts type-equiv
 /** One resolved location: a document URI and the range within it. */
@@ -111,9 +111,9 @@ type LspQueryResult =
   | { readonly kind: 'hover'; readonly hover: LspHover | null }
 ```
 
-## 提供方与服务
+## مزود و خدمة
 
-每个提供方拥有一个稳定的品牌化 `id`，以及一份互斥的、小写且以点开头的扩展名映射。`registerProvider` 会原子预留 id 和每个扩展名：注册无效或冲突时不发布任何内容；其 disposer 会释放所有保留项。每次查询独立选择提供方，且选择与顺序无关；没有匹配项时抛出 `LspError` `LSP_UNAVAILABLE`。该 seam 不公开协议类型、进程或文档控制，也不提供通用 JSON-RPC 逃生口。
+كل مزود يملك واحد مستقر صنف لوحة تحويل `id`، و واحد نسخة متبادل رفض، صغير كتابة كما بـ نقطة فتح رأس توسيع اسم خريطة.`registerProvider` سوف أصل فرعي مسبق إبقاء id و كل توسيع اسم: تسجيل بلا فاعلية أو اندفاع مفاجئ وقت لا إصدار أي محتوى؛ ذلك disposer سوف تحرير كل إبقاء بند. كل مرة استعلام مستقل اختيار مزود، كما اختيار و ترتيب غير متصل؛ لا يوجد مطابقة بند وقت رمي خروج `LspError` `LSP_UNAVAILABLE`. هذا seam لا عام بروتوكول نوع، عملية أو وثيقة تحكم، أيضا لا توفير عام JSON-RPC هروب توليد فتحة.
 
 ```ts type-equiv
 /**
@@ -162,7 +162,7 @@ interface LspService {
 }
 ```
 
-`LspProviderId` 是该 seam 的品牌化 id（来自 [dsh-brand](../../packages/util/brand) 的 `Branded<'LspProviderId'>`）；`LspError` 扩展 `HarnessError`，提供 `LSP_INVALID_PROVIDER`、`LSP_CONFLICT`、`LSP_UNAVAILABLE`、`LSP_DISPOSED`、`LSP_UNSUPPORTED_OPERATION` 和 `LSP_MALFORMED_RESPONSE` 等稳定错误码，调用方应按错误码路由，而不是解析 `message`。
+`LspProviderId` هو هذا seam صنف لوحة تحويل id(قدوم ذاتي [dsh-brand](../../packages/util/brand) `Branded<'LspProviderId'>`) ؛`LspError` توسيع `HarnessError`، توفير `LSP_INVALID_PROVIDER`،`LSP_CONFLICT`،`LSP_UNAVAILABLE`،`LSP_DISPOSED`،`LSP_UNSUPPORTED_OPERATION` و `LSP_MALFORMED_RESPONSE` انتظار مستقر رمز خطأ، استدعاء جهة ينبغي حسب رمز خطأ توجيه، بينما لا هو تحليل `message`.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

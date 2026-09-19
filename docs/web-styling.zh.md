@@ -1,30 +1,30 @@
-# Web UI 样式参考
+# Web UI مثال صيغة مشاركة اعتبار
 
-[English](web-styling.md) | 中文
+[English](web-styling.md) | العربية
 
-本文规定浏览器客户端包的样式职责归属与组件规则。当前 token 值位于 [`packages/client/ui-theme/src/styles/`](../packages/client/ui-theme/src/styles/)；本文不重复这份由源码生成的清单。
+هذا نص قاعدة تحديد متصفح عميل حزمة مثال صيغة مسؤولية ملكية و مكون قاعدة. حالي token قيمة يقع في [`packages/client/ui-theme/src/styles/`](../packages/client/ui-theme/src/styles/) ؛ هذا نص لا تكرار هذا نسخة من شفرة المصدر توليد بيان.
 
-## 职责归属
+## مسؤولية ملكية
 
-[`ui-theme`](../packages/client/ui-theme/README.zh.md) 负责 `--dsw-*` 静态色阶、语义别名、排版、动效、渐变、阴影、滚动条样式以及明暗主题偏好。[`ui-layout`](../packages/client/ui-layout/README.zh.md) 将解析后的主题快照应用到文档。功能包使用语义别名，不得另行定义全局主题。
+[`ui-theme`](../packages/client/ui-theme/README.zh.md) مسؤول `--dsw-*` ساكن حالة لون مرحلة، دلالة آخر اسم، ترتيب إصدار، حركة فاعلية، تدريجي تغيير، ظل أثر، تمرير بند مثال صيغة و واضح داكن رئيسي عنوان انحراف جيد.[`ui-layout`](../packages/client/ui-layout/README.zh.md) سوف تحليل بعد رئيسي عنوان لقطة تطبيق إلى وثيقة. وظيفة حزمة استخدام دلالة آخر اسم، لا نيل آخر سطر تعريف عام رئيسي عنوان.
 
-全局样式表归 `ui-theme/src/styles/` 所有。组件样式以 CSS Modules 形式放在组件旁。当某个值属于该组件的布局或呈现约定时，组件可以定义局部自定义属性；共享颜色、排版、层级和动效属于主题包。
+عام مثال صيغة جدول عودة `ui-theme/src/styles/` كل. مكون مثال صيغة بـ CSS Modules شكل صيغة وضع في مكون جانب. عند بعض عدد قيمة يخص هذا مكون تخطيط أو عرض اتفاق وقت، مكون يمكن تعريف نطاق جزء ذاتي تعريف خاصية؛ مشترك لون لون، ترتيب إصدار، طبقة درجة و حركة فاعلية يخص رئيسي عنوان حزمة.
 
-## 组件规则
+## مكون قاعدة
 
-- 重新设计控件样式之前先复用控件：[ui-primitives 组件目录](../packages/client/ui-primitives/README.zh.md#component-catalog)是唯一跨功能包的通道，有意的视觉差异应作为那里的一个 prop，而不是另起一份拷贝（[决定](../.agents/notes/implemented/architecture/2026-09-05-shared-client-control-primitives.zh.md)）。
-- 使用 CSS Modules 和 `clsx`；不得添加组件库或 Tailwind。
-- 功能组件使用 `--dsw-alias-*` 语义 token。不得复制静态色板值或在其中写入颜色字面量。
-- 功能组件 CSS 不得包含主题选择器。明暗主题覆盖属于主题所有方。
-- 字体大小必须与行高配对；已有角色匹配时使用主题排版变量。
-- 当组件约定要求保留列结构时，源码文本、终端输出和 diff 行不得换行；使用共享滚动条样式，不得定义组件专用滚动条选择器。
-- 呈现规则写在 CSS 中。React 内联样式可以传递组件局部自定义属性值，但不得编码主题分支。
-- 添加过渡动画或仅悬停可见的控件时，保留清晰可见的键盘焦点和减少动态效果行为。
-- 支持的引擎上，圆角继承 ui-theme `corner-shape.css` 的全局超级椭圆平滑。每个正圆 `border-radius`（`50%`、`100%` 或胶囊半径）必须配对 `corner-shape: round`，使圆形与胶囊保持圆弧；ui-theme 的 corner-shape spec 强制这一配对。
-- 高层级表面（菜单、浮层、对话框、面板、悬浮按钮、输入框）设 `border: 0` 并使用 `box-shadow: var(--dsw-elevation-panel)`、`var(--dsw-elevation-prominent)` 或输入框专用的 `var(--dsw-elevation-soft)`（更大模糊、更低透明度）：0.5px 发丝描边是第一层投影，`--dsw-elevation-stroke-color` 可按表面或状态重绑或抑制描边。不得将 `--dsw-alias-border-*` border 与 lv/elevation 投影配对——ui-theme 的 elevation spec 会拒绝；状态色 border（warn 面板）保持真 border。
-- 使用中性 `--dsw-alias-border-*` token 的平面边框与分割线一律 `0.5px`——按钮、输入框、卡片、行分割线，以及以填充盒绘制的分隔线（菜单分隔、对话标题栏接缝、markdown `hr`、竖向轨道线）共用发丝线粗细，Chromium 将其绘制为一个设备像素。dashed 记号与状态色 border 保持 1px；spinner 圆环经 spec 的显式豁免保留原宽度。更宽的中性 solid border 会被 ui-theme elevation spec 拒绝。
-- 可点击产物链接（Markdown 锚点、正文文件引用、网页来源与抓取链接、产物 chips、workflow 成员链接）经 `--dsw-alias-link` 着色、`font-weight: 500`，默认无下划线，hover/focus 时为 3px offset 的点状下划线。紧凑 Thinking Markdown 保持 tertiary 文字色和默认点状下划线（[紧凑展示](../.agents/notes/implemented/bug-fix/2026-09-17-thinking-markdown.zh.md)）。带文字的锚点另以 ui-primitives 的 `LinkIcon` 分类图形（随 `currentColor`）作前置；目的地是已知外部站点时改用该站点自己的标记而非地球；workflow 成员链接与只包图片的锚点不带图形，工具行文件链接保持其灰色点线示能（[可点击链接 Agent Note](../.agents/notes/implemented/feature/2026-09-04-web-clickable-link-styles.zh.md)、[已知站点标记 Agent Note](../.agents/notes/implemented/feature/2026-09-16-known-site-link-marks.zh.md)）。
+- إعادة تصميم تحكم عنصر مثال صيغة قبل أولا إعادة استخدام تحكم عنصر:[ui-primitives مكون دليل](../packages/client/ui-primitives/README.zh.md#component-catalog) هو وحيد عبر وظيفة حزمة عبر طريق، متعمد نظر شعور فرق مختلف ينبغي بصفة ذلك داخل واحد prop، بينما لا هو آخر بدء واحد نسخة نسخ صدفة ([قرار](../.agents/notes/implemented/architecture/2026-09-05-shared-client-control-primitives.zh.md)).
+- استخدام CSS Modules و `clsx`؛ لا نيل إضافة مكون مكتبة أو Tailwind.
+- وظيفة مكون استخدام `--dsw-alias-*` دلالة token. لا نيل نسخ ساكن حالة لون لوح قيمة أو في منها كتابة لون لون حرف وجه كمية.
+- وظيفة مكون CSS لا نيل يتضمن رئيسي عنوان اختيار جهاز. واضح داكن رئيسي عنوان تغطية يخص رئيسي عنوان كل جهة.
+- حرف جسم كبير صغير يجب و سطر عال إعداد مقابل؛ قد لديه زاوية لون مطابقة وقت استخدام رئيسي عنوان ترتيب إصدار متغير.
+- عند مكون اتفاق اشتراط إبقاء صف بنية وقت، شفرة المصدر نص، طرفية إخراج و diff سطر لا نيل تبديل سطر؛ استخدام مشترك تمرير بند مثال صيغة، لا نيل تعريف مكون مخصص استخدام تمرير بند اختيار جهاز.
+- عرض قاعدة كتابة في CSS في.React داخل ربط مثال صيغة يمكن نقل تمرير مكون نطاق جزء ذاتي تعريف خاصية قيمة، لكن لا نيل تحرير رمز رئيسي عنوان فرع.
+- إضافة مرور عبور حركة رسم أو فقط معلق توقف مرئي تحكم عنصر وقت، إبقاء صاف واضح مرئي مفتاح قرص تركيز نقطة و نقص قليل حركة حالة فاعلية نتيجة سلوك.
+- دعم حمل جذب محرك فوق، دائرة زاوية وراثة ui-theme `corner-shape.css` عام تجاوز درجة بيضوي دائرة مستو انزلاق. كل صحيح دائرة `border-radius`(`50%`،`100%` أو لاصق كيس نصف مسار) يجب إعداد مقابل `corner-shape: round`، جعل دائرة شكل و لاصق كيس إبقاء دائرة قوس؛ui-theme corner-shape spec قوي صنع هذا واحد إعداد مقابل.
+- عال طبقة درجة جدول وجه (قائمة مفرد، طفو طبقة، محادثة إطار، وجه لوح، معلق طفو حسب زر، إدخال إطار) ضبط `border: 0` و استخدام `box-shadow: var(--dsw-elevation-panel)`،`var(--dsw-elevation-prominent)` أو إدخال إطار مخصص استخدام `var(--dsw-elevation-soft)`(أكثر كبير نموذج غامض، أكثر منخفض نفاذ واضح درجة):0.5px إرسال خيط وصف حافة هو رقم واحد طبقة إسقاط،`--dsw-elevation-stroke-color` يمكن حسب جدول وجه أو حالة إعادة ربط أو كبح صنع وصف حافة. لا نيل سوف `--dsw-alias-border-*` border و lv/elevation إسقاط إعداد مقابل——ui-theme elevation spec سوف رفض؛ حالة لون border(warn وجه لوح) إبقاء حق border.
+- استخدام في صفة `--dsw-alias-border-*` token مستو وجه حافة إطار و قسم قطع خط واحد قاعدة `0.5px`——حسب زر، إدخال إطار، بطاقة، سطر قسم قطع خط، و بـ ملء ملء صندوق رسم صنع قسم فصل خط (قائمة مفرد قسم فصل، محادثة عنوان شريط وصل شق،markdown `hr`، عمودي نحو مسار طريق خط) مشترك استخدام إرسال خيط خط خشن دقيق،Chromium سوف ذلك رسم صنع لـ واحد ضبط تجهيز مثل عنصر.dashed تسجيل رقم و حالة لون border إبقاء 1px؛spinner دائرة حلقة مرور spec صريح إعفاء تجنب إبقاء أصل عرض درجة. أكثر عرض في صفة solid border سوف يتم ui-theme elevation spec رفض.
+- يمكن نقر ناتج رابط (Markdown مرساة نقطة، متن ملف مرجع، شبكة صفحة مصدر و إمساك أخذ رابط، ناتج chips،workflow عضو رابط) مرور `--dsw-alias-link` حال لون،`font-weight: 500`، افتراضي بلا تحت تخطيط خط،hover/focus وقت لـ 3px offset نقطة حالة تحت تخطيط خط. ضيق تجميع Thinking Markdown إبقاء tertiary نص حرف لون و افتراضي نقطة حالة تحت تخطيط خط ([ضيق تجميع عرض](../.agents/notes/implemented/bug-fix/2026-09-17-thinking-markdown.zh.md)). حمل نص حرف مرساة نقطة آخر بـ ui-primitives `LinkIcon` تصنيف رسم شكل (مع `currentColor`) عمل قبل وضع؛ هدف أرض هو معروف خارجي محطة نقطة وقت تعديل استخدام هذا محطة نقطة ذاتي ذات علامة بينما غير أرض كرة؛workflow عضو رابط و فقط حزمة صورة مرساة نقطة لا حمل رسم شكل، أداة سطر ملف رابط إبقاء ذلك رمادي لون نقطة خط عرض قدرة ([يمكن نقر رابط Agent Note](../.agents/notes/implemented/feature/2026-09-04-web-clickable-link-styles.zh.md) ،[معروف محطة نقطة علامة Agent Note](../.agents/notes/implemented/feature/2026-09-16-known-site-link-marks.zh.md)).
 
-## 变更系统
+## تغيير نظام
 
-在所属 `ui-theme` 样式表中添加或修改共享 token，然后在功能包中使用其语义别名。公共样式约定发生变化时，更新所属包的参考文档。视觉行为遵循[测试策略](testing.zh.md)；[样式系统 Agent Note](../.agents/notes/implemented/process/2026-07-19-web-styling-system.zh.md) 记录框架依据。
+في الذي تابع `ui-theme` مثال صيغة جدول في إضافة أو تعديل مشترك token، لكن بعد في وظيفة حزمة في استخدام ذلك دلالة آخر اسم. عام مشترك مثال صيغة اتفاق حدوث تغير وقت، تحديث الذي تابع حزمة مشاركة اعتبار وثيقة. نظر شعور سلوك التزام دوران[اختبار سياسة](testing.zh.md) ؛[مثال صيغة نظام Agent Note](../.agents/notes/implemented/process/2026-07-19-web-styling-system.zh.md) سجل إطار هيكل اعتماد حسب.

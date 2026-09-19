@@ -1,47 +1,47 @@
 ---
-description: "回溯 dsh-v0.1.0-rc.7 的已声明 Session 持久化类型及相邻版本变化。"
+description: "عودة تتبع dsh-v0.1.0-rc.7 قد إعلان Session حفظ دائم نوع و متبادل مجاور إصدار تغير."
 kind: persistence-release
 ---
 
-# 持久化版本回溯: dsh-v0.1.0-rc.7
+# حفظ دائم إصدار عودة تتبع: dsh-v0.1.0-rc.7
 
-[English](dsh-v0.1.0-rc.7.md) | 中文
+[English](dsh-v0.1.0-rc.7.md) | العربية
 
-## 概述
+## عام وصف
 
-assistant/chunk 的 replayState 从 unknown 改为包含必需字段 response 和可选字段 blocks 的对象。写入格式仍为 0。
+assistant/chunk replayState من unknown تعديل لـ يتضمن مطلوب حقل response و اختياري حقل blocks كائن. كتابة صيغة ما زال لـ 0.
 
-## 目录
+## دليل
 
-- [发行来源](#evidence)
-- [声明](#declaration)
-- [结构变化](#changes)
-- [校验](#verification)
-- [开发备注](#dev-note)
+- [إرسال سطر مصدر](#evidence)
+- [إعلان](#declaration)
+- [بنية تغير](#changes)
+- [تحقق](#verification)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="evidence"></a>
-## 发行来源
+## إرسال سطر مصدر
 
-这是供阅读和格式校验的近似回填，不是当时的兼容性确认。提取方法和覆盖限制见[归档说明](README.zh.md)。
+هذا هو توفير قراءة قراءة و صيغة تحقق قريب يشبه عودة ملء، لا هو عند وقت توافق صفة تأكيد. رفع أخذ طريقة و تغطية حد رؤية[عودة ملف شرح](README.zh.md).
 
-| 项目 | 记录值 |
+| مشروع | سجل قيمة |
 |---|---|
-| 源码 tag | `dsh-v0.1.0-rc.7` |
-| 源码日期 | 2026-08-17T11:03:17.000Z |
-| 发行记录 | 有 release 对象。 |
-| 前一版本 | [dsh-v0.1.0-rc.6](dsh-v0.1.0-rc.6.zh.md) |
-| Session 写入版本 | 0 |
-| 完整重建清单 | <!-- persistence-release-inventory:start -->47 个根类型 / 376 种类型<!-- persistence-release-inventory:end --> |
-| 本条快照 | [dsh-v0.1.0-rc.7.schema.json](dsh-v0.1.0-rc.7.schema.json) |
+| شفرة المصدر tag | `dsh-v0.1.0-rc.7` |
+| شفرة المصدر يوم مدة | 2026-08-17T11:03:17.000Z |
+| إرسال سطر سجل | لديه release كائن. |
+| قبل واحد إصدار | [dsh-v0.1.0-rc.6](dsh-v0.1.0-rc.6.zh.md) |
+| Session كتابة إصدار | 0 |
+| كامل إعادة بناء بيان | <!-- persistence-release-inventory:start -->47 عدد أصل نوع / 376 نوع نوع<!-- persistence-release-inventory:end --> |
+| هذا بند لقطة | [dsh-v0.1.0-rc.7.schema.json](dsh-v0.1.0-rc.7.schema.json) |
 
-写入版本常量在该 tag 中的源码证据：
+كتابة إصدار معتاد كمية في هذا tag في شفرة المصدر دليل:
 
 - `packages/core/session/src/types.ts`: `export const SESSION_FORMAT_VERSION = 0`
 
 <a id="declaration"></a>
-## 声明
+## إعلان
 
 ```yaml persistence-release
 schemaVersion: 1
@@ -55,28 +55,28 @@ changes:
 ```
 
 <a id="changes"></a>
-## 结构变化
+## بنية تغير
 
 <!-- persistence-release-changes:start -->
 
-检测到 1 个根类型变化、1 项结构差异。下表的最低要求按当前规则计算，只用于比较；不表示旧版本曾遵守这些规则，也不证明迁移或运行时兼容性。
+فحص قياس إلى 1 عدد أصل نوع تغير،1 بند بنية فرق مختلف. تحت جدول الأكثر منخفض اشتراط حسب حالي قاعدة حساب حساب، فقط لأجل مقارنة مقارنة؛ لا يمثل قديم إصدار سبق التزام حراسة هذه قاعدة، أيضا لا إثبات ترحيل أو وقت التشغيل توافق صفة.
 
-| 路径 | 变化 | 当前最低要求 |
+| مسار | تغير | حالي الأكثر منخفض اشتراط |
 |---|---|---|
 | `event:assistant/chunk.data.chunk.replayState` | `type-changed` | `version-bump` |
 
 <!-- persistence-release-changes:end -->
 
 <a id="verification"></a>
-## 校验
+## تحقق
 
-提取结果已通过规范图、根摘要和全部可达类型摘要校验；仅对历史 surface 事件允许源码原有的可选 `surfaceOp`。仓库内检查从前驱重建每个 tag，核对 before/after、快照覆盖和双语机器声明。
+رفع أخذ نتيجة قد عبر مواصفة رسم، أصل ملخص و الكل يمكن بلوغ نوع ملخص تحقق؛ فقط مقابل تاريخ surface حدث سماح شفرة المصدر أصل لديه اختياري `surfaceOp`. مستودع داخل فحص من قبل دفع إعادة بناء كل tag، نواة مقابل before/after، لقطة تغطية و مزدوج لغة آلة جهاز إعلان.
 
 ```sh
 pnpm run verify-persistence-releases
 ```
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

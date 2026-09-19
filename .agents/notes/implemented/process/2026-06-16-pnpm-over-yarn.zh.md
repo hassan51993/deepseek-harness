@@ -1,46 +1,46 @@
-# Agent Note: 使用 pnpm 替代 Yarn 4 作为包管理器
+# Agent Note: استخدام pnpm بديل Yarn 4 بصفة حزمة إدارة جهاز
 
 Status: implemented
 
-[English](2026-06-16-pnpm-over-yarn.md) | 中文
+[English](2026-06-16-pnpm-over-yarn.md) | العربية
 
-## 问题
+## مشكلة
 
-本仓库最初使用 **Yarn 4** 搭配 `node-modules` 链接器。这是一个刻意保守的选择：行为类似 npm 的扁平布局，同时享有 Yarn 的 workspaces 和 `yarn constraints`。它能正常工作。但 Yarn 4 源自 Plug'n'Play 的血统，使得 `node-modules` 链接器成为非主流模式；而更广泛的 JS 生态——工具默认值、CI action、Corepack 示例、贡献者的熟悉度——正日益以 pnpm 为中心。对于一个主要由 agent（智能体）构建、偶尔有人类贡献者阅读的仓库而言，「大多数工具和人所期望的包管理器」具有实际价值：更少的意外、更成熟的故障路径、更多可直接复用的解答。
+هذا مستودع الأكثر أول استخدام **Yarn 4** تركيب إعداد `node-modules` رابط جهاز. هذا هو واحد لحظة معنى حفظ حراسة اختيار: سلوك صنف يشبه npm مسطح مستو تخطيط، معا مشاركة لديه Yarn workspaces و `yarn constraints`. هو قدرة صحيح معتاد عمل. لكن Yarn 4 مصدر ذاتي Plug'n'Play دم موحد، جعل نيل `node-modules` رابط جهاز يصبح غير رئيسي تدفق نمط؛ بينما أكثر واسع عام JS توليد حالة——أداة قيمة افتراضية،CI action،Corepack عرض مثال، مساهمة من ناضج معرفة درجة——صحيح يوم فائدة بـ pnpm لـ في قلب. مقابل في واحد رئيسي يلزم من agent(ذكي جسم) بناء، أحيانا ذلك لديه شخص صنف مساهمة من قراءة قراءة مستودع بينما قول، «كبير كثير عدد أداة و شخص الذي مدة نظر حزمة إدارة جهاز» أداة لديه فعلي قيمة قيمة: أكثر قليل معنى خارج، أكثر صار ناضج لذا عائق مسار، أكثر كثير يمكن مباشر إعادة استخدام حل جواب.
 
-切换成本目前处于最低点。本仓库尚无任何包发布（每个包都是 `private: true`）；开发流程、测试和源码模式 demo 都通过各自声明的 TypeScript 启动器运行，产物检查则会显式构建。因此，包管理器只需做到：（a）解析并链接 `node_modules`，（b）运行 workspace 脚本，（c）强制执行 workspace 约束。唯一的 Yarn 特有资产是 `yarn.config.cjs`（`@yarnpkg/types` 约束引擎），体量小且可机械地重新表达。这与 [tsdown 决策](../../archived/process/2026-06-11-tsdown-over-dumble.md)的逻辑一致：在爆炸半径尚小时，将承重工具换为生态更健康的选项。
+تبديل صار هذا هدف قبل موضع في الأكثر منخفض نقطة. هذا مستودع بعد بلا أي حزمة إصدار (كل حزمة كل هو `private: true`) ؛ تطوير مسار، اختبار و شفرة المصدر نمط demo كل عبر كل منها إعلان TypeScript بدء جهاز تشغيل، ناتج فحص فإن سوف صريح بناء. لذلك، حزمة إدارة جهاز فقط يحتاج فعل إلى:(a) تحليل و رابط `node_modules`، (b) تشغيل workspace نص برمجي، (c) قوي صنع تنفيذ workspace قيد. وحيد Yarn خاص لديه مورد إنتاج هو `yarn.config.cjs`(`@yarnpkg/types` قيد جذب محرك) ، جسم كمية صغير كما يمكن آلة آلة أرض إعادة جدول بلوغ. هذا و [tsdown قرار](../../archived/process/2026-06-11-tsdown-over-dumble.md) منطق متسق: في انفجار انفجار نصف مسار بعد صغير وقت، سوف تحمل إعادة أداة تبديل لـ توليد حالة أكثر سليم سليم خيار.
 
-## 决策
+## قرار
 
-采用 **pnpm 11.7.0**，通过 `packageManager` 字段固定版本。贡献者环境使用 Corepack，CI 则通过 `pnpm/action-setup` 安装该固定版本：
+اعتماد **pnpm 11.7.0**، عبر `packageManager` حقل ثابت إصدار. مساهمة من بيئة استخدام Corepack،CI فإن عبر `pnpm/action-setup` تثبيت هذا ثابت إصدار:
 
-- **Workspaces** 从 `package.json` 的 `workspaces` 数组 + `.yarnrc.yml` 迁移到 `pnpm-workspace.yaml`；vendored 包、分组包、应用、网站、原生 launcher 与 Python runtime closure 都是显式成员。
-- **严格符号链接链接器**（pnpm 默认）取代 Yarn 的提升式 `node-modules` 链接器。我们刻意**不**添加 `node-linker=hoisted` / `shamefully-hoist` 逃生口：pnpm 的非扁平 `node_modules` 会使幻影依赖（引用未声明的传递依赖）明确报错，这对于一个以机械门禁为核心质量保障的仓库（见[机械质量门禁](2026-06-11-quality-gates.zh.md)）是一项*优势*。门禁套件（类型检查、lint、test 和 build）是证明不存在此类幻影导入的安全网。
-- **构建脚本白名单。** pnpm 10+ 不运行依赖的生命周期脚本，除非将其加入白名单。`pnpm-workspace.yaml` 携带一份显式的 `allowBuilds` 映射（`esbuild`、`lefthook`、`@google/genai`、`protobufjs`）——与本仓库对模型/工具输出已有的供应链加固姿态一致，现在也应用于安装时的代码执行。`peerDependencyRules.allowedVersions.typescript: '>=5 <7'` 消除仓库内 TypeScript 的良性 peer 范围警告。
-- **无 shell 的包管理器再进入。** 需要启动另一条 pnpm 命令的仓库脚本按文件形式解析 `npm_execpath`：`.js`、`.cjs` 和 `.mjs` 入口由当前 Node 可执行文件运行，原生及带 shebang 的可执行入口则直接运行。两条路径都不使用 shell，因此命令路径和参数在各平台上均保留字面内容。[原生 Windows 拉取请求作业](2026-08-08-native-windows-pull-request-ci.zh.md)会提供 `@pnpm/exe`，因此其完整清单会产生真实的 PE 入口集成信号。
-- **约束变为包管理器无关。** `yarn.config.cjs`（导入 `@yarnpkg/types`，使用 `Yarn.workspaces()` / `workspace.set()`）被 `scripts/check-workspace-constraints.ts` 取代——一个纯 tsx 脚本，通过 `pnpm run constraints` 运行。它在相同的 `vendor` + `packages` 范围上强制执行完全相同的不变式：每个包 `private: true`；`@deepseek-ai/dsh-*` 包将 `cordis` 同时声明为对等依赖（peer dependency）和 dev 依赖且范围一致、使用根 `package.json` 的版本、设置 `type: module`；vendor 包仅检查是否为私有。
-- 所有 CI、lefthook 钩子、`package.json` 脚本和文档中的 `yarn …` 动词变为 `pnpm …` / `pnpm run …`。`yarn.lock` → `pnpm-lock.yaml`（lockfile v9）。`.gitignore` 将 `.yarn/` 换为 `.pnpm-store/`。vendor README（如 `vendor/cordis/README.md`）按 Vendoring Policy 保持其上游 `yarn` 示例不变。
+- **Workspaces** من `package.json` `workspaces` عدد مجموعة + `.yarnrc.yml` ترحيل إلى `pnpm-workspace.yaml`؛vendored حزمة، قسم مجموعة حزمة، تطبيق، شبكة محطة، أصلي launcher و Python runtime closure كل هو صريح عضو.
+- **صارم إطار رمز رقم رابط رابط جهاز**(pnpm افتراضي) يحل محل Yarn رفع رفع صيغة `node-modules` رابط جهاز. أنا جمع لحظة معنى**لا**إضافة `node-linker=hoisted` / `shamefully-hoist` هروب توليد فتحة:pnpm غير مسطح مستو `node_modules` سوف جعل وهم أثر اعتماد (مرجع لم إعلان نقل تمرير اعتماد) واضح تقرير خطأ، هذا مقابل في واحد بـ آلة آلة بوابة لـ نواة قلب جودة كمية حفظ عائق مستودع (رؤية[آلة آلة جودة كمية بوابة](2026-06-11-quality-gates.zh.md)) هو واحد بند*أفضل اتجاه*. بوابة طقم عنصر (نوع فحص،lint،test و build) هو إثبات لا وجود هذا صنف وهم أثر استيراد أمان شبكة.
+- **بناء نص برمجي أبيض اسم مفرد.** pnpm 10+ لا تشغيل اعتماد دورة الحياة نص برمجي، حذف غير سوف ذلك إضافة دخول أبيض اسم مفرد.`pnpm-workspace.yaml` يحمل واحد نسخة صريح `allowBuilds` خريطة (`esbuild`،`lefthook`،`@google/genai`،`protobufjs`)——و هذا مستودع مقابل نموذج/أداة إخراج قد لديه توفير ينبغي سلسلة إضافة ثابت وضع حالة متسق، الآن أيضا تطبيق في تثبيت وقت شفرة تنفيذ.`peerDependencyRules.allowedVersions.typescript: '>=5 <7'` إزالة حذف مستودع داخل TypeScript جيد صفة peer نطاق تحذير إبلاغ.
+- **بلا shell حزمة إدارة جهاز مجددا دخول.** حاجة بدء آخر بند pnpm أمر مستودع نص برمجي حسب ملف شكل صيغة تحليل `npm_execpath`:`.js`،`.cjs` و `.mjs` مدخل من حالي Node يمكن تنفيذ ملف تشغيل، أصلي و حمل shebang يمكن تنفيذ مدخل فإن مباشر تشغيل. اثنان بند مسار كل لا استخدام shell، لذلك أمر مسار و معامل في كل منصة فوق متساو إبقاء حرف وجه محتوى.[أصلي Windows سحب أخذ طلب عمل عمل](2026-08-08-native-windows-pull-request-ci.zh.md) سوف توفير `@pnpm/exe`، لذلك ذلك كامل بيان سوف إنتاج حقيقي PE مدخل تجميع صار إشارة.
+- **قيد تغيير لـ حزمة إدارة جهاز غير متصل.** `yarn.config.cjs`(استيراد `@yarnpkg/types`، استخدام `Yarn.workspaces()` / `workspace.set()`) يتم `scripts/check-workspace-constraints.ts` يحل محل——واحد صاف tsx نص برمجي، عبر `pnpm run constraints` تشغيل. هو في نفسه `vendor` + `packages` نطاق فوق قوي صنع تنفيذ تماما نفسه ثابت صيغة: كل حزمة `private: true`؛`@deepseek-ai/dsh-*` حزمة سوف `cordis` معا إعلان لـ مقابل انتظار اعتماد (peer dependency) و dev اعتماد كما نطاق متسق، استخدام أصل `package.json` إصدار، ضبط `type: module`؛vendor حزمة فقط فحص هل لـ خاص.
+- كل CI،lefthook خطاف،`package.json` نص برمجي و وثيقة في `yarn …` حركة كلمة تغيير لـ `pnpm …` / `pnpm run …`.`yarn.lock` → `pnpm-lock.yaml`(lockfile v9).`.gitignore` سوف `.yarn/` تبديل لـ `.pnpm-store/`.vendor README(مثل `vendor/cordis/README.md`) حسب Vendoring Policy إبقاء ذلك فوق تنقل `yarn` عرض مثال ثابت.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **保留 Yarn 4**——零变动，但押注于使用率较低的链接器模式和一个绑定单一包管理器的约束引擎。
-- **npm workspaces**——无处不在，但没有约束方案，monorepo 开发体验也较差。
-- **pnpm 搭配提升式链接器**——迁移更平滑，但放弃了幻影依赖安全性，而这正是迁移的核心正确性理由。
-- **始终通过 Node 运行 `npm_execpath`**——适用于 pnpm 的 JavaScript 分发，但会让 Node 尝试解析 `@pnpm/exe` 提供的 ELF、Mach-O 或 PE 可执行文件。
-- **通过 shell 运行再进入命令**——可接受更多启动器形式，但会改变每条子命令的引号、元字符展开、可执行文件解析和信号行为。
+- **إبقاء Yarn 4**——صفر تغيير حركة، لكن رهن ملاحظة في استخدام معدل مقارنة منخفض رابط جهاز نمط و واحد ربط مفرد واحد حزمة إدارة جهاز قيد جذب محرك.
+- **npm workspaces**——بلا موضع لا في، لكن لا يوجد قيد خطة،monorepo تطوير تجربة أيضا مقارنة فرق.
+- **pnpm تركيب إعداد رفع رفع صيغة رابط جهاز**——ترحيل أكثر مستو انزلاق، لكن وضع ترك وهم أثر اعتماد أمان صفة، بينما هذا صحيح هو ترحيل نواة قلب صحيح تأكيد صفة إدارة من.
+- **بداية نهاية عبر Node تشغيل `npm_execpath`**——ملائم لأجل pnpm JavaScript توزيع، لكن سوف يجعل Node محاولة تجربة تحليل `@pnpm/exe` توفير ELF،Mach-O أو PE يمكن تنفيذ ملف.
+- **عبر shell تشغيل مجددا دخول أمر**——يمكن قبول أكثر كثير بدء جهاز شكل صيغة، لكن سوف تغيير كل بند فرعي أمر جذب رقم، عنصر محرف توسيع، يمكن تنفيذ ملف تحليل و إشارة سلوك.
 
-## 后果
+## عاقبة
 
-约束检查失去了 Yarn 的自动**修复**能力（`workspace.set()` 能原地改写 manifest）；tsx 脚本仅做检查，不通过时以非零退出码和消息退出。这是可接受的：CI 从未运行过 `--fix`，且需要手动编辑的情况很少。贡献者现在为 pnpm 而非 Yarn 运行 `corepack enable`；`pnpm exec lefthook install` 取代 `yarn lefthook install`（`postinstall` 钩子仍会运行 `lefthook install`）。
+قيد فحص فقد ذهاب Yarn تلقائي**إصلاح**قدرة (`workspace.set()` قدرة أصل أرض تعديل كتابة manifest) ؛tsx نص برمجي فقط فعل فحص، لا عبر وقت بـ غير صفر خروج رمز و رسالة خروج. هذا هو يمكن قبول:CI من لم تشغيل مرور `--fix`، كما حاجة يد حركة تحرير حال حال جدا قليل. مساهمة من الآن لـ pnpm بينما غير Yarn تشغيل `corepack enable`؛`pnpm exec lefthook install` يحل محل `yarn lefthook install`(`postinstall` خطاف ما زال سوف تشغيل `lefthook install`).
 
-性能（迁移时在开发 NFS 文件系统上测量；运行次数为个位数的样本，方差大——仅供方向性参考，非基准测试套件）：
+صفة قدرة (ترحيل وقت في تطوير NFS نظام الملفات فوق قياس كمية؛ تشغيل مرة عدد لـ عدد موضع عدد مثال هذا، جهة فرق كبير——فقط توفير جهة نحو صفة مشاركة اعتبار، غير أساس دقيق اختبار طقم عنصر):
 
-| 场景 | Yarn 4 | pnpm 11 |
+| مشهد | Yarn 4 | pnpm 11 |
 |---|---|---|
-| 冷启动（空缓存/store，无 `node_modules`） | ~14 s | ~16 s |
-| 热重链接（缓存/store 已热，`node_modules` 已删除） | ~12–14 s | ~15–22 s |
-| 冻结安装，`node_modules` 存在（无操作重验证） | ~2–8 s | ~0.5–7 s |
+| بارد بدء (فارغ ذاكرة مؤقتة/store، بلا `node_modules`) | ~14 s | ~16 s |
+| حار إعادة رابط (ذاكرة مؤقتة/store قد حار،`node_modules` قد حذف) | ~12–14 s | ~15–22 s |
+| تجميد ربط تثبيت،`node_modules` وجود (بلا عملية إعادة تحقق) | ~2–8 s | ~0.5–7 s |
 
-在快速本地磁盘上，pnpm 的内容寻址 store 通常在冷/热安装中胜出，尤其在多个检出之间的**磁盘占用**方面优势明显（一个全局 store 通过硬链接接入每个 `node_modules`，而 Yarn 每个 worktree 复制约 279 MB——部分开发者经常为本仓库保持约 10 个或更多 worktree）。该去重优势在上述迁移时数据中**未能**体现，因为测试 store 和 `node_modules` 位于不同文件系统，硬链接失效；在单文件系统的开发机或 CI 缓存上则适用。诚实的总结：在我们的 NFS 开发文件系统上，安装速度在噪声范围内不分伯仲；迁移的理由是生态对齐、幻影依赖安全性和跨检出磁盘去重，而非原始安装时间的胜出。
+في سريع سرعة محلي مغناطيس قرص فوق،pnpm محتوى بحث عنوان store عبر معتاد في بارد/حار تثبيت في فوز خروج، خاصة ذلك في كثير عدد فحص خروج بين**مغناطيس قرص احتلال استخدام**جهة وجه أفضل اتجاه واضح إظهار (واحد عام store عبر صلب رابط وصل دخول كل `node_modules`، بينما Yarn كل worktree نسخ نحو 279 MB——جزء تطوير من مرور معتاد لـ هذا مستودع إبقاء نحو 10 عدد أو أكثر كثير worktree). هذا ذهاب إعادة أفضل اتجاه في فوق وصف ترحيل وقت بيانات في**لم قدرة**جسم الآن، لأن اختبار store و `node_modules` يقع في مختلف نظام الملفات، صلب رابط بطلان؛ في مفرد نظام الملفات تطوير آلة أو CI ذاكرة مؤقتة فوق فإن ملائم استخدام. صدق فعلي مجموع ربط: في أنا جمع NFS تطوير نظام الملفات فوق، تثبيت سرعة درجة في ضجيج صوت نطاق داخل لا قسم عم وسيط؛ ترحيل إدارة من هو توليد حالة مقابل متساو، وهم أثر اعتماد أمان صفة و عبر فحص خروج مغناطيس قرص ذهاب إعادة، بينما غير أصلي تثبيت وقت فوز خروج.
 
-所有质量门禁（constraints、类型检查、lint、doc-sync、达到 100% 的 test:coverage、构建、publint 以及已构建应用的冒烟测试）均在 pnpm 下通过，证明更换链接器没有引入幻影依赖故障。
+كل جودة كمية بوابة (constraints، نوع فحص،lint،doc-sync، بلوغ إلى 100% test:coverage، بناء،publint و قد بناء تطبيق خطر دخان اختبار) متساو في pnpm تحت عبر، إثبات أكثر تبديل رابط جهاز لا يوجد جذب دخول وهم أثر اعتماد لذا عائق.

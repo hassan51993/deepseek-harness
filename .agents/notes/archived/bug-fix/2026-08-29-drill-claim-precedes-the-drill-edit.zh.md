@@ -3,17 +3,17 @@
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-29-drill-claim-precedes-the-drill-edit.md) | 中文
+[English](2026-08-29-drill-claim-precedes-the-drill-edit.md) | العربية
 
 ## Problem
 
-在 `@` 菜单里用指针进入目录不产生 breadcrumb,而用键盘进入同一个目录则会产生(#3310)。点击 crumb——breadcrumb 存在的意义所在——不但没有重新列出它所指的那一层,反而让整个 header 消失。指针进入的列表里,每一行还会重复 header 本应承担的父目录。
+في `@` قائمة مفرد داخل استخدام إشارة إبرة دخول دليل لا إنتاج breadcrumb,بينما استخدام مفتاح قرص دخول نفس عدد دليل فإن سوف إنتاج (#3310). نقر crumb——breadcrumb وجود معنى معنى الذي في——لا لكن لا يوجد إعادة صف خروج هو الذي إشارة ذلك واحد طبقة,عكس بينما يجعل كامل header إزالة فقد. إشارة إبرة دخول قائمة داخل,كل واحد سطر أيضا سوف تكرار header هذا ينبغي تحمل تحمل أب دليل.
 
-这三处故障是 `InputTriggerController.settle` 中的同一个顺序缺陷。drill 声明(`drilled`)过去在 `execute()` 返回之后才赋值,前提是输入层稍后才应用下钻编辑并重新 track。该前提只对键盘成立:`KEY_TAB_COMMAND` 的处理器运行在 Lexical update 内部,`SessionInputShell.applyEdit` 因此并入外层 update,提交——以及其 update listener 驱动的 `track()` 调用——落在 `settle` 返回之后。指针的 `mousedown` 处理器不在任何 update 内,`applyEdit` 于是执行 `editor.update(fn, { discrete: true })`,该选项置起 `_flushSync` 并同步提交;`track()` 因此在 `execute()` **执行期间**重入控制器,而声明的两个读取方——`refreshHeaders` 与 `fetchCandidates`——看到的仍是未置位的值。既有测试全部按键盘顺序建模:伪造的 insert 监听器只返回 `true`,由用例事后手工重新 track,指针顺序从未被覆盖。
+هذا ثلاثة موضع لذا عائق هو `InputTriggerController.settle` في نفس عدد ترتيب نقص وقوع.drill إعلان (`drilled`) مرور ذهاب في `execute()` إرجاع بعد عندئذ منح قيمة,قبل رفع هو إدخال طبقة قليلا بعد عندئذ تطبيق تحت حفر تحرير و إعادة track. هذا قبل رفع فقط مقابل مفتاح قرص صار قيام:`KEY_TAB_COMMAND` معالج تشغيل في Lexical update داخلي,`SessionInputShell.applyEdit` لذلك و دخول خارج طبقة update,إيداع——و ذلك update listener قيادة `track()` استدعاء——سقوط في `settle` إرجاع بعد. إشارة إبرة `mousedown` معالج لا في أي update داخل,`applyEdit` في هو تنفيذ `editor.update(fn, { discrete: true })`,هذا خيار وضع بدء `_flushSync` و تزامن إيداع;`track()` لذلك في `execute()` **تنفيذ خلال**إعادة دخول تحكم جهاز,بينما إعلان اثنان عدد قراءة جهة——`refreshHeaders` و `fetchCandidates`——يرى ما زال هو لم وضع موضع قيمة. قائم اختبار الكل حسب مفتاح قرص ترتيب بناء نموذج: زائف صنع insert مستمع فقط إرجاع `true`,من حالة استخدام أمر بعد يد عمل إعادة track,إشارة إبرة ترتيب من لم يتم تغطية.
 
 ## Decision
 
-`settle` 在派发编辑之前声明 drill,并且只在编辑被拒绝时撤回:
+`settle` في إرسال إرسال تحرير قبل إعلان drill,و كما فقط في تحرير يتم رفض وقت سحب عودة:
 
 ```ts ignore-check
 this.reduce({ type: 'close' })
@@ -21,18 +21,18 @@ this.drilled = action === 'drill'
 if (!this.execute(outcome, hit.span)) this.drilled = false
 ```
 
-声明仍然排在 `reduce({ type: 'close' })` 之后,因为后者的清理会把它清掉。撤回依然精确,原因是被拒绝的编辑不做任何变更,因而不会驱动重入的 `track()`:`insertText` 在碰到编辑器之前就没通过 `draftRev` CAS,`$replaceDetectSpanWithText` 也在 `$setSelection` 之前就从 `selectSpan` 返回 `false`。[breadcrumb 决策](../feature/2026-08-27-web-at-mention-discovery-and-row-content.zh.md)所声明的可观察保证不变——header 绝不会指向一个无人进入过的目录——而两种下钻手势现在都以 drill 的身份抵达 `header` 与 `candidates`。
+إعلان ما زال ترتيب في `reduce({ type: 'close' })` بعد,لأن بعد من تنظيف سوف يأخذ هو صاف إسقاط. سحب عودة اعتماد لكن دقيق,سبب هو يتم رفض تحرير لا فعل أي تغيير,بسبب بينما لن قيادة إعادة دخول `track()`:`insertText` في اصطدام إلى تحرير جهاز قبل حينئذ لا عبر `draftRev` CAS,`$replaceDetectSpanWithText` أيضا في `$setSelection` قبل حينئذ من `selectSpan` إرجاع `false`.[breadcrumb قرار](../feature/2026-08-27-web-at-mention-discovery-and-row-content.zh.md) الذي إعلان يمكن مراقبة حفظ إثبات ثابت——header أبدا سوف إشارة نحو واحد بلا شخص دخول مرور دليل——بينما اثنان نوع تحت حفر يد اتجاه الآن كل بـ drill هوية مقاومة بلوغ `header` و `candidates`.
 
 ## Alternatives considered
 
-**在 `execute` 返回后重新发布 header。** 否决:这只处理了缺陷中看得见的那一半。`fetchCandidates` 读取同一个声明,候选请求仍会报告 `drilled: false`,`ui-reference` 也就仍会在指针进入的列表中逐行重复父目录。
+**في `execute` إرجاع بعد إعادة إصدار header.** مرفوض: هذا فقط معالجة نقص وقوع في نظر نيل رؤية ذلك واحد نصف.`fetchCandidates` قراءة نفس عدد إعلان,مرشح طلب ما زال سوف تقرير إبلاغ `drilled: false`,`ui-reference` أيضا حينئذ ما زال سوف في إشارة إبرة دخول قائمة في تدريجي سطر تكرار أب دليل.
 
-**把 `execute` 推迟到 microtask,使重入的 track 必定落在 `settle` 之后。** 否决:该编辑携带 `hit.span` 用于版本 CAS,把它推迟到当前任务之外,会让插入其间的按键作废该 span,把一次本可成功的下钻变成静默失败。
+**يأخذ `execute` دفع متأخر إلى microtask,جعل إعادة دخول track لا بد تحديد سقوط في `settle` بعد.** مرفوض: هذا تحرير يحمل `hit.span` لأجل إصدار CAS,يأخذ هو دفع متأخر إلى حالي مهمة خارج,سوف يجعل إدراج دخول ذلك بين حسب مفتاح عمل ملغى هذا span,يأخذ مرة هذا يمكن نجاح تحت حفر تغيير صار ساكن صامت فشل.
 
-**让 `applyEdit` 永不同步 flush。** 否决:`discrete` 正是让一次程序化编辑与由它算出的 detect 坐标留在同一个任务内的机制;为了修一个菜单标志而放宽它,会为所有调用方松开整个输入机的顺序保证。
+**يجعل `applyEdit` دائم مختلف خطوة flush.** مرفوض:`discrete` صحيح هو يجعل مرة برنامج تحويل تحرير و من هو حساب خروج detect جلوس علامة إبقاء في نفس عدد مهمة داخل آلية;لـ إصلاح واحد قائمة مفرد علامة سجل بينما وضع عرض هو,سوف لـ كل استدعاء جهة رخو فتح كامل إدخال آلة ترتيب حفظ إثبات.
 
 ## Consequences
 
-- Tab、行内 chevron 与 crumb 收敛到同一种行为,breadcrumb 不再取决于是哪种手势打开了列表。
-- 今后凡是 source 通过 `header` 或 `candidates` 读取的状态,都必须在 `execute` 之前发布,因为输入层可能在其内部重入 `track()`。该声明是控制器上的实例状态,顺序是唯一的约束手段。
-- 覆盖:一个 insert 监听器同步重新 track 的控制器用例——即指针顺序——断言两个读取方;`reference-composer.e2e.ts` 断言 chevron 下钻后的 breadcrumb 与精简后的行,并通过 crumb 点击走完两层路径的回退。键盘顺序保留原有用例,因此「修好一种手势却弄坏另一种」的回归会失败。
+- Tab، سطر داخل chevron و crumb استلام جمع إلى نفس نوع سلوك,breadcrumb لم يعد أخذ قرار في هو أي نوع يد اتجاه فتح قائمة.
+- اليوم بعد كل هو source عبر `header` أو `candidates` قراءة حالة,كل يجب في `execute` قبل إصدار,لأن إدخال طبقة ممكن في ذلك داخلي إعادة دخول `track()`. هذا إعلان هو تحكم جهاز فوق نسخة حالة,ترتيب هو وحيد قيد يد مقطع.
+- تغطية: واحد insert مستمع تزامن إعادة track تحكم جهاز حالة استخدام——أي إشارة إبرة ترتيب——تأكيد اثنان عدد قراءة جهة;`reference-composer.e2e.ts` تأكيد chevron تحت حفر بعد breadcrumb و دقيق بسيط بعد سطر,و عبر crumb نقر مشي تمام اثنان طبقة مسار رجوع. مفتاح قرص ترتيب إبقاء أصل لديه حالة استخدام,لذلك «إصلاح جيد واحد نوع يد اتجاه لكن فعل تالف آخر نوع» ارتداد سوف فشل.

@@ -1,13 +1,13 @@
-- dialog "添加插件":
-  - heading "添加插件" [level=2]
-  - button "关闭":
+- dialog "إضافة إضافة":
+  - heading "إضافة إضافة" [level=2]
+  - button "إغلاق":
     - img
-  - paragraph: 输入插件的包名、GitHub 仓库地址或本地目录路径。
-  - text: 包名或地址
-  - textbox "包名或地址":
-    - /placeholder: 例如 @deepseek-ai/dsh-experimental-auto-review
+  - paragraph: إدخال إضافة حزمة اسم،GitHub مستودع عنوان أو محلي دليل مسار.
+  - text: حزمة اسم أو عنوان
+  - textbox "حزمة اسم أو عنوان":
+    - /placeholder: مثال مثل @deepseek-ai/dsh-experimental-auto-review
     - text: slow-package
-  - button "不知道该填什么？":
+  - button "لا معرفة طريق هذا ملء ماذا؟":
     - img
-    - text: 不知道该填什么？
-  - button "安装"
+    - text: لا معرفة طريق هذا ملء ماذا؟
+  - button "تثبيت"

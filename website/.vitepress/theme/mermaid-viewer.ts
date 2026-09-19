@@ -8,9 +8,9 @@ const messages = {
     help: 'Scroll or pinch to zoom · Drag or use arrow keys to pan · Esc to close',
   },
   zh: {
-    open: '全屏查看图表', title: '图表查看器',
-    zoomIn: '放大', zoomOut: '缩小', fit: '适应窗口', close: '关闭', helpLabel: '查看器帮助',
-    help: '滚轮或双指缩放 · 拖动或方向键平移 · Esc 关闭',
+    open: 'كل شاشة فحص نظر رسم جدول', title: 'رسم جدول فحص نظر جهاز',
+    zoomIn: 'وضع كبير', zoomOut: 'تقليص صغير', fit: 'ملائم ينبغي نافذة', close: 'إغلاق', helpLabel: 'فحص نظر جهاز مساعدة مساعدة',
+    help: 'تدحرج جولة أو مزدوج إشارة تقليص وضع · سحب حركة أو جهة نحو مفتاح مستو نقل · Esc إغلاق',
   },
 } satisfies Record<string, Record<string, string>>
 

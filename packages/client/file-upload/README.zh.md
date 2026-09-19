@@ -1,101 +1,101 @@
 ---
-description: "按 Session 寻址上传浏览器文件，提供流式接收、进度、取消和供后续 prompt 使用的暂存凭证。"
+description: "حسب Session بحث عنوان فوق نقل متصفح ملف، توفير تدفق صيغة استقبال، دخول درجة، إلغاء و توفير لاحق prompt استخدام مؤقت تخزين سند إثبات."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-file-upload
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-本包让浏览器功能为一个 Session 存储 `Blob`、精确字节或 `ReadableStream<Uint8Array>`，并取得供后续 prompt 使用的不透明凭证。普通服务页面发送 Blob 和 stream 请求体时，不会在页面线程聚合全部字节；Host 位于其他执行上下文中的页面会在 Cordis 启动前提供 Fetch 形式的载体。调用方可以观察已消费字节并取消活动操作。stream 请求体只能消费一次，跨 Worker 边界时会转移所有权。精确字节使用生成的 Remote。
+هذه الحزمة يجعل متصفح وظيفة لـ واحد Session تخزين `Blob`، دقيق بايت أو `ReadableStream<Uint8Array>`، و أخذ نيل توفير لاحق prompt استخدام لا نفاذ واضح سند إثبات. عادي خدمة صفحة إرسال Blob و stream طلب جسم وقت، لن في صفحة خط مسار تجمع دمج الكل بايت؛Host يقع في أخرى تنفيذ سياق في صفحة سوف في Cordis بدء قبل توفير Fetch شكل صيغة تحميل جسم. استدعاء جهة يمكن مراقبة قد إزالة استهلاك بايت و إلغاء نشط حركة عملية.stream طلب جسم فقط قدرة إزالة استهلاك مرة، عبر Worker حد وقت سوف تحويل نقل كل حق. دقيق بايت استخدام توليد Remote.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在注入 `fileUpload` 的消费方之前挂载本包，再调用 `ctx.fileUpload.upload(sessionId, body, name, signal, onProgress)`。Session 标识同时用于寻址原始路由和生成的 Remote 兜底；调用方不组装这两种请求。
+في حقن `fileUpload` مستهلك قبل تركيب هذه الحزمة، مجددا استدعاء `ctx.fileUpload.upload(sessionId, body, name, signal, onProgress)`.Session معرف معا لأجل بحث عنوان أصلي توجيه و توليد Remote التقاط قاع؛ استدعاء جهة لا تجميع هذا اثنان نوع طلب.
 
 ```yaml
 - id: file-upload
   name: '@deepseek-ai/dsh-client-file-upload'
 ```
 
-本包没有 Cordis 配置字段。`Blob` 在专用 Worker 内通过 XMLHttpRequest 发送，因此服务可以报告浏览器上传进度，并在浏览器提供总量时一并报告。`ReadableStream` 会转移给该 Worker，再增量传入 Fetch；进度只报告已消费字节，不包含总量。`AbortSignal` 会终止专用 Worker，或传递给页面自己提供的载体。精确字节使用生成的 Remote。
+هذه الحزمة لا يوجد Cordis إعداد حقل.`Blob` في مخصص استخدام Worker داخل عبر XMLHttpRequest إرسال، لذلك خدمة يمكن تقرير إبلاغ متصفح فوق نقل دخول درجة، و في متصفح توفير مجموع كمية وقت واحد و تقرير إبلاغ.`ReadableStream` سوف تحويل نقل إعطاء هذا Worker، مجددا زيادة كمية نقل دخول Fetch؛ دخول درجة فقط تقرير إبلاغ قد إزالة استهلاك بايت، لا يتضمن مجموع كمية.`AbortSignal` سوف إنهاء مخصص استخدام Worker، أو نقل تمرير إعطاء صفحة ذاتي ذات توفير تحميل جسم. دقيق بايت استخدام توليد Remote.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-Client 插件提供 `ctx.fileUpload`。其 `upload()` 方法接收所属 Session 标识，组装原始路由请求，并为精确字节调用生成的 Remote。提供方只读取一次可选的 Cordis 启动前 `__DSH_FILE_UPLOAD__` 钩子。没有该钩子时，每个 Blob 或 stream 请求拥有一个短期 Worker，并在完成、失败或取消后释放。存在该钩子时，服务通过页面自己提供的 Fetch 载体发送请求体；Web Worker runtime 会通过请求帧转移 stream 请求体，再以带背压的分片形式交给 Host HTTP bridge。
+Client إضافة توفير `ctx.fileUpload`. ذلك `upload()` طريقة استقبال الذي تابع Session معرف، تجميع أصلي توجيه طلب، و لـ دقيق بايت استدعاء توليد Remote. مزود فقط قراءة مرة اختياري Cordis بدء قبل `__DSH_FILE_UPLOAD__` خطاف. لا يوجد هذا خطاف وقت، كل Blob أو stream طلب يملك واحد قصير مدة Worker، و في إتمام، فشل أو إلغاء بعد تحرير. وجود هذا خطاف وقت، خدمة عبر صفحة ذاتي ذات توفير Fetch تحميل جسم إرسال طلب جسم؛Web Worker runtime سوف عبر طلب لقطة تحويل نقل stream طلب جسم، مجددا بـ حمل خلف ضغط قسم قطعة شكل صيغة تسليم إعطاء Host HTTP bridge.
 
-Host 插件提供 `ctx.fileUploads`。它拥有经过认证的流式路由、编码 Remote 兜底、命令凭证解析器与暂存凭证生命周期；编码准入、附件错误识别与字节存储仍由 `ctx.attachments` 提供。凭证表以接收方 Agent 的 Session 对象为键。Session Controller 注册可恢复休眠普通 Agent 的解析器，并在 prompt 准入时消费凭证。Prompt 投递通过可释放事务持有每个凭证绑定。成功投递提交事务前，释放会恢复原绑定；提交后，队列或历史观察会退休该凭证。
+Host إضافة توفير `ctx.fileUploads`. هو يملك مرور مرور إقرار إثبات تدفق صيغة توجيه، تحرير رمز Remote التقاط قاع، أمر سند إثبات محلل و مؤقت تخزين سند إثبات دورة الحياة؛ تحرير رمز دقيق دخول، مرفق عنصر خطأ تعرف آخر و بايت تخزين ما زال من `ctx.attachments` توفير. سند إثبات جدول بـ استقبال جهة Agent Session كائن لـ مفتاح.Session Controller تسجيل يمكن استعادة راحة نوم عادي Agent محلل، و في prompt دقيق دخول وقت إزالة استهلاك سند إثبات.Prompt إلقاء تمرير عبر يمكن تحرير أمر خدمة يحتفظ كل سند إثبات ربط. نجاح إلقاء تمرير إيداع أمر خدمة قبل، تحرير سوف استعادة أصل ربط؛ إيداع بعد، طابور صف أو تاريخ مراقبة سوف تراجع راحة هذا سند إثبات.
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | Host 流式路由、附件服务准入与按 Agent scope 管理的凭证生命周期 |
-| [`src/types.ts`](src/types.ts) | 编码请求、凭证与持久结果类型 |
-| [`src/client/contract.ts`](src/client/contract.ts) | Client 上传、进度与页面钩子类型 |
-| [`src/client/runtime.ts`](src/client/runtime.ts) | 专用 Worker 与页面自有载体实现 |
-| [`src/client/index.ts`](src/client/index.ts) | Client 插件注册与 `ctx.fileUpload` 声明 |
+| [`src/index.ts`](src/index.ts) | Host تدفق صيغة توجيه، مرفق عنصر خدمة دقيق دخول و حسب Agent scope إدارة سند إثبات دورة الحياة |
+| [`src/types.ts`](src/types.ts) | تحرير رمز طلب، سند إثبات و حمل دائم نتيجة نوع |
+| [`src/client/contract.ts`](src/client/contract.ts) | Client فوق نقل، دخول درجة و صفحة خطاف نوع |
+| [`src/client/runtime.ts`](src/client/runtime.ts) | مخصص استخدام Worker و صفحة ذاتي لديه تحميل جسم تنفيذ |
+| [`src/client/index.ts`](src/client/index.ts) | Client إضافة تسجيل و `ctx.fileUpload` إعلان |
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。每个上传凭证只属于一个准确的 Session，每个请求只使用一个已选定载体。载体不支持的 stream 会在发送请求体前失败。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. كل فوق نقل سند إثبات فقط يخص واحد دقيق تأكيد Session، كل طلب فقط استخدام واحد قد اختيار تحديد تحميل جسم. تحميل جسم لا دعم حمل stream سوف في إرسال طلب جسم قبل فشل.
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [Connection](../connection/README.zh.md)——认证 RPC、Host 精确路由与 connection generation。
-- [Session Controller](../../api/session-controller/README.zh.md)——消费暂存凭证的 prompt 准入。
-- [Web Worker runtime](../../experimental/webworker-runtime/README.zh.md)——页面到 Host Worker 的请求隧道。
-- [客户端组地图](../README.zh.md)——浏览器服务与 UI 功能包。
+- [Connection](../connection/README.zh.md)——إقرار إثبات RPC،Host دقيق توجيه و connection generation.
+- [Session Controller](../../api/session-controller/README.zh.md)——إزالة استهلاك مؤقت تخزين سند إثبات prompt دقيق دخول.
+- [Web Worker runtime](../../experimental/webworker-runtime/README.zh.md)——صفحة إلى Host Worker طلب نفق طريق.
+- [عميل مجموعة أرض رسم](../README.zh.md)——متصفح خدمة و UI وظيفة حزمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。本包只传输浏览器请求体，不提供模型输入。
+بلا. هذه الحزمة فقط نقل متصفح طلب جسم، لا توفير نموذج إدخال.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包既不组装也不发送提供方请求。
+بلا؛ هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-以下限制适用于传输操作本身。
+التالي حد ملائم لأجل نقل عملية ذاته.
 
-- **上传不能断点续传**：失败或取消后的重试会从第一个字节开始。
-- **stream 请求体只能使用一次**：转移 `ReadableStream` 会锁定调用方的对象，因此重试必须重新创建 stream。
-- **stream 进度没有总量**：stream API 不携带字节长度，因此调用方只能收到已消费字节数。
-- **浏览器 Worker 必须自包含**：其源代码由函数字符串生成。如果实现需要运行时 import，就必须迁移为由 tsdown 打包的独立 Worker 入口。
+- **فوق نقل لا يستطيع قطع نقطة متابعة نقل**: فشل أو إلغاء بعد إعادة محاولة سوف من رقم واحد بايت بدء.
+- **stream طلب جسم فقط قدرة استخدام مرة**: تحويل نقل `ReadableStream` سوف قفل تحديد استدعاء جهة كائن، لذلك إعادة محاولة يجب إعادة إنشاء stream.
+- **stream دخول درجة لا يوجد مجموع كمية**:stream API لا يحمل بايت طويل درجة، لذلك استدعاء جهة فقط قدرة استلام إلى قد إزالة استهلاك بايت عدد.
+- **متصفح Worker يجب ذاتي يتضمن**: ذلك مصدر شفرة من دالة نص توليد. إذا تنفيذ حاجة وقت التشغيل import، حينئذ يجب ترحيل لـ من tsdown تحزيم مستقل Worker مدخل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

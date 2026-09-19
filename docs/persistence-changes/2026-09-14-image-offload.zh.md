@@ -1,25 +1,25 @@
 ---
-description: "记录持久化类型更改及其兼容性确认。"
+description: "سجل حفظ دائم نوع أكثر تعديل و ذلك توافق صفة تأكيد."
 kind: persistence-change
 ---
 
 # 2026-09-14-image-offload
 
-[English](2026-09-14-image-offload.md) | 中文
+[English](2026-09-14-image-offload.md) | العربية
 
-## 概述
+## عام وصف
 
-用 image/offload 事件记录选中的图片出现位置，通过所属插件的消息投影派生 offloaded 标记。
+استخدام image/offload حدث سجل اختيار في صورة ظهور موضع، عبر الذي تابع إضافة رسالة إسقاط إرسال توليد offloaded علامة.
 
-## 目录
+## دليل
 
-- [声明](#declaration)
-- [兼容性](#compatibility)
-- [验证](#verification)
-- [开发备注](#dev-note)
+- [إعلان](#declaration)
+- [توافق صفة](#compatibility)
+- [تحقق](#verification)
+- [ملاحظة تطوير](#dev-note)
 
 <a id="declaration"></a>
-## 声明
+## إعلان
 
 ```yaml persistence-change
 schemaVersion: 1
@@ -81,16 +81,16 @@ changes:
 ```
 
 <a id="compatibility"></a>
-## 兼容性
+## توافق صفة
 
-现有日志仍可读取。可选的图片字段 offloaded 使未标记的出现位置保持保留状态。新事件在读取时必须被识别：不认识 image/offload 的旧版本拒绝读取这些日志，当前读取器需要对应的消息投影。事件信封和结构性的 Session 格式版本不变。
+قائم سجل ما زال يمكن قراءة. اختياري صورة حقل offloaded جعل لم علامة ظهور موضع إبقاء إبقاء حالة. جديد حدث في قراءة وقت يجب يتم تعرف آخر: لا إقرار تعرف image/offload قديم إصدار رفض قراءة هذه سجل، حالي قراءة جهاز حاجة مقابل رسالة إسقاط. حدث معلومة غلاف و بنية صفة Session صيغة إصدار ثابت.
 
 <a id="verification"></a>
-## 验证
+## تحقق
 
-Session 和图片省略测试覆盖事件校验、不可变消息投影、缺少处理器、恢复和重试。所选的 1,144 项测试和两项 TypeScript 图片快照通过。Python advanced SDK 录制已通过构建后的 dsh profile 刷新，包含独立的 image/offload 事件。
+Session و صورة حذف اختبار تغطية حدث تحقق، غير ممكن تغيير رسالة إسقاط، نقص قليل معالج، استعادة و إعادة محاولة. الذي اختيار 1,144 بند اختبار و اثنان بند TypeScript صورة لقطة عبر.Python advanced SDK تسجيل صنع قد عبر بناء بعد dsh profile تحديث جديد، يتضمن مستقل image/offload حدث.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

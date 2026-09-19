@@ -1,38 +1,38 @@
-# Agent Note: 在每个诊断边界渲染错误 cause 链
+# Agent Note: في كل تشخيص حد تصيير خطأ cause سلسلة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-20-error-cause-chain-diagnostics.md) | 中文
+[English](2026-07-20-error-cause-chain-diagnostics.md) | العربية
 
-## 问题
+## مشكلة
 
-TUI 连接不可达的 DeepSeek 端点时，失败只显示一条 `fetch failed` 通知，没有任何进一步细节。两个独立缺口共同造成了这个死胡同：
+TUI اتصال غير ممكن بلوغ DeepSeek طرف نقطة وقت، فشل فقط عرض واحد بند `fetch failed` إشعار، لا يوجد أي دخول واحد خطوة دقيق عقدة. اثنان عدد مستقل نقص فتحة مشترك نفس صنع صار هذا عدد ميت عشوائي نفس:
 
-1. undici 的 `fetch` 把所有传输层失败（DNS、连接被拒、TLS、代理）包装成裸的 `TypeError: fetch failed`，可操作的细节——`ECONNREFUSED`、`bad port`、Happy Eyeballs 的 AggregateError——都在 `error.cause` 上。harness 里的每个诊断边界都只渲染 `error.message`（或对 Error 等价的 `String(error)`），于是包装层在 TUI 通知、持久化的 `turn/end` reason 和所有日志行里都掩盖了诊断信息。
-2. readline 入口（`dsh-stdio`）完全不渲染失败原因：`reason.kind === 'error'` 的 `turn/end` 只打印下一个 `> ` 提示符，同样的失败在 `demo:repl` 里就是纯粹的沉默。
+1. undici `fetch` يأخذ كل نقل طبقة فشل (DNS، اتصال يتم رفض،TLS، بديل إدارة) حزمة تركيب صار عار `TypeError: fetch failed`، يمكن عملية دقيق عقدة——`ECONNREFUSED`،`bad port`،Happy Eyeballs AggregateError——كل في `error.cause` فوق.harness داخل كل تشخيص حد كل فقط تصيير `error.message`(أو مقابل Error انتظار قيمة `String(error)`) ، في هو حزمة تركيب طبقة في TUI إشعار، حفظ دائم `turn/end` reason و كل سجل سطر داخل كل إخفاء غطاء تشخيص معلومة.
+2. readline مدخل (`dsh-stdio`) تماما لا تصيير فشل سبب:`reason.kind === 'error'` `turn/end` فقط ضرب طبع تحت واحد `> ` تلميح رمز، نفس مثال فشل في `demo:repl` داخل حينئذ هو صاف خالص غرق صامت.
 
-## 决策
+## قرار
 
-- `dsh-llm` 导出 `errorChain(value)`：渲染抛出值及其完整 `cause` 链（`outer: inner: …`）与 AggregateError 成员（`msg [m1; m2]`），并容错循环 cause 和恶意强制转换。它只是用于诊断输出的渲染器；路由仍然基于 `HarnessError.code`。
-- DeepSeek 适配器把拿到响应之前的传输失败包装成 `LlmError('TRANSPORT')`，写明配置的 `baseURL` 并将原始拒绝值作为 `cause` 串入错误链。被中止的请求变为 `LlmError('ABORTED')`；由于轮次信号已处于中止状态，agent loop（智能体循环）仍将该轮次归类为取消而非恢复。
-- 每个诊断边界改用 `errorChain` 而非 `error.message`/`String(error)`：agent-loop 的持久化 `turn/end` 错误消息（`errorData`）、其日志警告、TUI 的 `agent/error` 通知与启动失败行、以及 `dsh-stdio` 的启动失败日志行。实时 `agent/error` 事件与 `SettleReason` 以 `unknown` 原样保留抛出值；各诊断消费方自行渲染，而不是由循环把它包装成另一个错误。`dsh-agent-loop`、`dsh-stdio`、`dsh-tui` 里各自的 `renderThrown` 副本被删除，统一使用这一个共享渲染器。
-- `dsh-stdio` 渲染失败的 `turn/end` reason：`[turn failed <code>] <message>`、`[turn aborted] <reason>`、`[turn rejected] <reason>`、`[turn interrupted by a previous process exit]` 以及输出 token 上限通知。通过声明合并扩展出的未知 kind 按普通轮次结束处理。
+- `dsh-llm` توجيه خروج `errorChain(value)`: تصيير رمي خروج قيمة و ذلك كامل `cause` سلسلة (`outer: inner: …`) و AggregateError عضو (`msg [m1; m2]`) ، و سعة خطأ حلقة cause و سيئ معنى قوي صنع تحويل. هو فقط هو لأجل تشخيص إخراج مصير؛ توجيه ما زال أساس في `HarnessError.code`.
+- DeepSeek مهايئ يأخذ أخذ إلى استجابة قبل نقل فشل حزمة تركيب صار `LlmError('TRANSPORT')`، كتابة واضح إعداد `baseURL` و سوف أصلي رفض قيمة بصفة `cause` سلسلة دخول خطأ سلسلة. يتم في توقف طلب تغيير لـ `LlmError('ABORTED')`؛ من في جولة إشارة قد موضع في في توقف حالة،agent loop(ذكي جسم حلقة) ما زال سوف هذا جولة عودة صنف لـ إلغاء بينما غير استعادة.
+- كل تشخيص حد تعديل استخدام `errorChain` بينما غير `error.message`/`String(error)`:agent-loop حفظ دائم `turn/end` خطأ رسالة (`errorData`) ، ذلك سجل تحذير إبلاغ،TUI `agent/error` إشعار و بدء فشل سطر، و `dsh-stdio` بدء فشل سجل سطر. فوري `agent/error` حدث و `SettleReason` بـ `unknown` أصل مثال إبقاء رمي خروج قيمة؛ كل تشخيص مستهلك ذاتي سطر تصيير، بينما لا هو من حلقة يأخذ هو حزمة تركيب صار آخر عدد خطأ.`dsh-agent-loop`،`dsh-stdio`،`dsh-tui` داخل كل منها `renderThrown` فرعي هذا يتم حذف، موحد واحد استخدام هذا واحد مشترك مصير.
+- `dsh-stdio` تصيير فشل `turn/end` reason:`[turn failed <code>] <message>`،`[turn aborted] <reason>`،`[turn rejected] <reason>`،`[turn interrupted by a previous process exit]` و إخراج token حد أعلى إشعار. عبر إعلان دمج توسيع خروج لم معرفة kind حسب عادي جولة انتهاء معالجة.
 
-`errorChain` 与 `HarnessError` 一样放在 `dsh-llm` 里，理由相同：它是每个消费方都已导入的叶子包，共享不增加新的依赖边。
+`errorChain` و `HarnessError` واحد مثال وضع في `dsh-llm` داخل، إدارة من نفسه: هو هو كل مستهلك كل قد استيراد ورقة فرعي حزمة، مشترك لا زيادة جديد اعتماد حافة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**在每个错误的构造函数里渲染链（把 cause 写入 `message`）。** 否决：当消费方同时遍历 `cause` 时会双重渲染（适配器修复的第一版产出了 `… fetch failed: bad port: fetch failed: bad port`），并且破坏了想按内层错误路由的消费方所需的结构化链。
+**في كل خطأ بنية صنع دالة داخل تصيير سلسلة (يأخذ cause كتابة `message`).** مرفوض: عند مستهلك معا مرة تاريخ `cause` وقت سوف مزدوج إعادة تصيير (مهايئ إصلاح رقم واحد إصدار إنتاج خروج `… fetch failed: bad port: fetch failed: bad port`) ، و كما كسر تالف تفكير حسب داخل طبقة خطأ توجيه مستهلك الذي يحتاج بنية تحويل سلسلة.
 
-**只做一个感知 `cause` 的日志导出器。** 否决：持久化的 `turn/end` reason 和 TUI 通知不是日志行；被掩盖的消息会留在会话日志——轮次内失败的唯一持久记录——以及主要 UI 中。
+**فقط فعل واحد شعور معرفة `cause` سجل توجيه خروج جهاز.** مرفوض: حفظ دائم `turn/end` reason و TUI إشعار لا هو سجل سطر؛ يتم إخفاء غطاء رسالة سوف إبقاء في جلسة سجل——جولة داخل فشل وحيد حمل دائم سجل——و رئيسي يلزم UI في.
 
-**逐包升级 `renderThrown`。** 否决：三个包已经各自持有几乎相同的私有副本；分别升级只会固化共享渲染器所要消除的重复。
+**تدريجي حزمة ترقية `renderThrown`.** مرفوض: ثلاثة عدد حزمة قد كل منها يحتفظ بضعة نحو نفسه خاص فرعي هذا؛ قسم آخر ترقية فقط سوف ثابت تحويل مشترك مصير الذي يلزم إزالة حذف تكرار.
 
-## 后果
+## عاقبة
 
-- 传输失败现在在 TUI 通知、readline transcript（文本记录）和持久化会话日志里显示为 `DeepSeek API request to <baseURL> failed: fetch failed: connect ECONNREFUSED …`，代价是更长的诊断字符串。
-- 持久化的 `turn/end` 错误消息包含 cause 细节。现有快照 fixture（测试前置数据）字节级一致地回放，因为其脚本化错误不带 `cause`（对这类错误 `errorChain(err)` 等于 `err.message`）；只有单元测试的期望字符串有变化。从真实传输失败录制的 fixture 会携带完整链。
-- `errorChain` 渲染 `message` 而不带类名（`String(error)` 会渲染 `Error: <message>`），因此日志行里的裸 `TypeError` 会丢失类型标签，除非消息为空（此时回退到类名）。在这些诊断边界上，链细节被判断为比类名更有价值。
-- `dsh-stdio` 对失败轮次的输出不再沉默；解析 transcript 的管道消费方会看到新的 `[turn …]` 行。
-- `dsh-subagent`、`dsh-workflow`、`dsh-skill`、`dsh-workflow-worker-thread` 里剩余的 `renderThrown` 副本仍不渲染链；它们包装的是自带消息的包内错误，等诊断信息证明不足时再采用 `errorChain`。
+- نقل فشل الآن في TUI إشعار،readline transcript(نص سجل) و حفظ دائم جلسة سجل داخل عرض لـ `DeepSeek API request to <baseURL> failed: fetch failed: connect ECONNREFUSED …`، بديل قيمة هو أكثر طويل تشخيص نص.
+- حفظ دائم `turn/end` خطأ رسالة يتضمن cause دقيق عقدة. قائم لقطة fixture(اختبار قبل وضع بيانات) بايت درجة متسق أرض إعادة تشغيل، لأن ذلك نص برمجي تحويل خطأ لا حمل `cause`(مقابل هذا صنف خطأ `errorChain(err)` انتظار في `err.message`) ؛ فقط لديه اختبار وحدة مدة نظر نص لديه تغير. من حقيقي نقل فشل تسجيل صنع fixture سوف يحمل كامل سلسلة.
+- `errorChain` تصيير `message` بينما لا حمل صنف اسم (`String(error)` سوف تصيير `Error: <message>`) ، لذلك سجل سطر داخل عار `TypeError` سوف فقد فقد نوع وسم، حذف غير رسالة لـ فارغ (هذا وقت رجوع إلى صنف اسم). في هذه تشخيص حد فوق، سلسلة دقيق عقدة يتم حكم قطع لـ مقارنة صنف اسم أكثر لديه قيمة قيمة.
+- `dsh-stdio` مقابل فشل جولة إخراج لم يعد غرق صامت؛ تحليل transcript إدارة طريق مستهلك سوف يرى جديد `[turn …]` سطر.
+- `dsh-subagent`،`dsh-workflow`،`dsh-skill`،`dsh-workflow-worker-thread` داخل باق بقية `renderThrown` فرعي هذا ما زال لا تصيير سلسلة؛ هو جمع حزمة تركيب هو ذاتي حمل رسالة حزمة داخل خطأ، انتظار تشخيص معلومة إثبات لا كاف وقت مجددا اعتماد `errorChain`.

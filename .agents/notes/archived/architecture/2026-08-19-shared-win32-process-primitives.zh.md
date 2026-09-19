@@ -1,36 +1,36 @@
-# Agent Note: Windows sandbox process primitives 只有一个低层 owner
+# Agent Note: Windows sandbox process primitives فقط لديه واحد منخفض طبقة owner
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-19-shared-win32-process-primitives.md) | 中文
+[English](2026-08-19-shared-win32-process-primitives.md) | العربية
 
 ## Problem
 
-Windows ACL sandbox 拥有 restricted token、SID、DACL、grant 与 workspace policy，但其进程启动路径还同时承载通用 Koffi ABI、命令行引用、匿名管道、继承 stdio、Job 设置、wait 与 HANDLE 清理。第二个 Windows process consumer 否则只能依赖 sandbox policy 或复制 native resource 逻辑，而 allocation 与失败清理修复也必须在多份实现间保持同步。
+Windows ACL sandbox يملك restricted token،SID،DACL،grant و workspace policy، لكن ذلك عملية بدء مسار أيضا معا تحمل تحميل عام Koffi ABI، أمر سطر مرجع، مجهول اسم إدارة طريق، وراثة stdio،Job ضبط،wait و HANDLE تنظيف. ثاني عدد Windows process consumer لا فإن فقط قدرة اعتماد sandbox policy أو نسخ native resource منطق، بينما allocation و فشل تنظيف إصلاح أيضا يجب في كثير نسخة تنفيذ بين إبقاء تزامن.
 
 ## Decision
 
-`@deepseek-ai/dsh-win32-process` 拥有 `sandbox-windows-acl` 当前消费的可复用 Win32 process ABI 与 native resource 操作。该包惰性加载 `kernel32.dll` 和 `advapi32.dll`，核验 x64 `STARTUPINFOW` 与 `PROCESS_INFORMATION` 布局，为 `CreateProcessAsUserW` 引用 argv，并提供带检查的 restricted-token pipe 与 inherited-stdio Job 操作。
+`@deepseek-ai/dsh-win32-process` يملك `sandbox-windows-acl` حالي إزالة استهلاك يمكن إعادة استخدام Win32 process ABI و native resource عملية. هذا حزمة كسول صفة تحميل `kernel32.dll` و `advapi32.dll`، نواة تحقق x64 `STARTUPINFOW` و `PROCESS_INFORMATION` تخطيط، لـ `CreateProcessAsUserW` مرجع argv، و توفير حمل فحص restricted-token pipe و inherited-stdio Job عملية.
 
-Windows ACL sandbox 继续唯一拥有 restricted-token 创建、SID 与 DACL policy、grants、可写路径裁定、临时目录 policy 和公共 sandbox child result。它通过共享 binding context 扩展 policy-specific API，提供 primary token，组合 pipe drain 与 wait，并在自己的生命周期边界关闭调用方拥有的 Job。
+Windows ACL sandbox متابعة وحيد يملك restricted-token إنشاء،SID و DACL policy،grants، يمكن كتابة مسار قطع تحديد، مؤقت دليل policy و عام مشترك sandbox child result. هو عبر مشترك binding context توسيع policy-specific API، توفير primary token، تركيب pipe drain و wait، و في ذاتي ذات دورة الحياة حد إغلاق استدعاء جهة يملك Job.
 
-每项 native allocation 与 HANDLE 在各个 shared operation 内只有一个 owner。process operation 会释放 Koffi out-parameter，并在受控失败前关闭它已经取得的每个 pipe、thread、process 或 Job handle。pipe 创建成功时，把 process 与 stdout/stderr read handles 返回给 sandbox。inherited-stdio 创建以 suspended 状态启动目标，把它分配给 kill-on-close Job，并只在分配后恢复，因此目标代码不会在 Job 外运行。分配失败会先终止 suspended target 再释放句柄；恢复失败会关闭已经分配的 Job。sandbox 保留既有 pipe-drain、direct-wait、result 与返回 Job 的生命周期。
+كل بند native allocation و HANDLE في كل عدد shared operation داخل فقط لديه واحد owner.process operation سوف تحرير Koffi out-parameter، و في تلقي تحكم فشل قبل إغلاق هو قد أخذ نيل كل pipe،thread،process أو Job handle.pipe إنشاء نجاح وقت، يأخذ process و stdout/stderr read handles إرجاع إعطاء sandbox.inherited-stdio إنشاء بـ suspended حالة بدء هدف، يأخذ هو قسم إعداد إعطاء kill-on-close Job، و فقط في قسم إعداد بعد استعادة، لذلك هدف شفرة لن في Job خارج تشغيل. قسم إعداد فشل سوف أولا إنهاء suspended target مجددا تحرير جملة مقبض؛ استعادة فشل سوف إغلاق قد قسم إعداد Job.sandbox إبقاء قائم pipe-drain،direct-wait،result و إرجاع Job دورة الحياة.
 
-该包只导出 sandbox 生产路径已使用的操作。ordinary `CreateProcessW`、精确 `applicationName`、parent-stdio release 与 whole-Job settlement 在 ordinary process consumer 出现前保持缺席。该包是 library，不是 Cordis service 或公共 Windows SDK。
+هذا حزمة فقط توجيه خروج sandbox إنتاج مسار قد استخدام عملية.ordinary `CreateProcessW`، دقيق `applicationName`،parent-stdio release و whole-Job settlement في ordinary process consumer ظهور قبل إبقاء نقص مقعد. هذا حزمة هو library، لا هو Cordis service أو عام مشترك Windows SDK.
 
 ## Verification
 
-shared suite 覆盖 x64 ABI 值、命令行引用、binding extension、pipe EOF 与 drain allocation 复用、restricted-token process 创建、suspended 创建后的 Job 分配与恢复、wait 与 exit-code 读取、native allocation 释放，以及已取得资源的失败路径。sandbox 测试保留 restricted-token、fail-closed、pipe/inherit、result 与 disposal 组合行为，不重复低层矩阵。已提交的 header probe 与 Windows package 测试覆盖迁移后的 ABI 和 native 路径；Wine 提供模拟 Windows package 与组合信号。
+shared suite تغطية x64 ABI قيمة، أمر سطر مرجع،binding extension،pipe EOF و drain allocation إعادة استخدام،restricted-token process إنشاء،suspended إنشاء بعد Job قسم إعداد و استعادة،wait و exit-code قراءة،native allocation تحرير، و قد أخذ نيل مورد فشل مسار.sandbox اختبار إبقاء restricted-token،fail-closed،pipe/inherit،result و disposal تركيب سلوك، لا تكرار منخفض طبقة مستطيل دفعة. قد إيداع header probe و Windows package اختبار تغطية ترحيل بعد ABI و native مسار؛Wine توفير نموذج محاكاة Windows package و تركيب إشارة.
 
 ## Alternatives considered
 
-**把 process primitives 留在 sandbox package。** 拒绝，因为 process consumer 将被迫继承 ACL/token policy，或复制 native ABI 与清理路径。
+**يأخذ process primitives إبقاء في sandbox package.** رفض، لأن process consumer سوف يتم إجبار وراثة ACL/token policy، أو نسخ native ABI و تنظيف مسار.
 
-**为每个 consumer 复制 Koffi 实现。** 拒绝，因为 struct layout、错误捕获与局部失败清理会出现多个 owner。
+**لـ كل consumer نسخ Koffi تنفيذ.** رفض، لأن struct layout، خطأ التقاط و نطاق جزء فشل تنظيف سوف ظهور كثير عدد owner.
 
-**在当前 consumer 出现前发布 ordinary-runner operations。** 拒绝，因为未使用的 `CreateProcessW`、application-name、parent-stdio 与 Job-settlement API 会冻结推测性义务，并扩大失败矩阵。
+**في حالي consumer ظهور قبل إصدار ordinary-runner operations.** رفض، لأن لم استخدام `CreateProcessW`،application-name،parent-stdio و Job-settlement API سوف تجميد ربط دفع قياس صفة معنى خدمة، و توسيع كبير فشل مستطيل دفعة.
 
 ## Consequences
 
-sandbox 保持公共行为，而通用 Win32 resource ownership 只有一个 package 与一个测试归属。该 package boundary 增加一个 workspace dependency 和发布 library；调用方必须显式拥有 policy、调度、result 组合与返回 HANDLE 的关闭责任。suspended 创建保证目标代码只在 Job 分配后启动，但不会让 runner 的 create-to-assignment 区间对外部终止具备原子性。后续 process consumer 只在其生产路径存在时扩展低层 package。
+sandbox إبقاء عام مشترك سلوك، بينما عام Win32 resource ownership فقط لديه واحد package و واحد اختبار ملكية. هذا package boundary زيادة واحد workspace dependency و إصدار library؛ استدعاء جهة يجب صريح يملك policy، ضبط درجة،result تركيب و إرجاع HANDLE إغلاق مسؤولية مهمة.suspended إنشاء حفظ إثبات هدف شفرة فقط في Job قسم إعداد بعد بدء، لكن لن يجعل runner create-to-assignment منطقة بين مقابل خارجي إنهاء أداة تجهيز أصل فرعي صفة. لاحق process consumer فقط في ذلك إنتاج مسار وجود وقت توسيع منخفض طبقة package.

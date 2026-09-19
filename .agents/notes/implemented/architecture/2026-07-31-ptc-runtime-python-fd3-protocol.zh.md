@@ -2,44 +2,44 @@
 
 Status: implemented
 
-CPython PTC 运行时位于 `packages/experimental/ptc-runtime-python`，以 `@deepseek-ai/dsh-experimental-ptc-runtime-python` 名称发布；[发布决策](../process/2026-09-12-publish-all-experimental-packages.zh.md)保留其实验性状态。
+CPython PTC وقت التشغيل يقع في `packages/experimental/ptc-runtime-python`، بـ `@deepseek-ai/dsh-experimental-ptc-runtime-python` اسم إصدار؛[إصدار قرار](../process/2026-09-12-publish-all-experimental-packages.zh.md) إبقاء ذلك فعلي تحقق صفة حالة.
 
-[English](2026-07-31-ptc-runtime-python-fd3-protocol.md) | 中文
+[English](2026-07-31-ptc-runtime-python-fd3-protocol.md) | العربية
 
 ## Problem
 
-`@deepseek-ai/dsh-experimental-ptc-runtime-python` 负责供 CPython ptc-runtime 提供方使用的 wire protocol。这样的提供方会在全新的 `python3 -I` 子进程中运行每个模型程序，并通过子进程 fd 3 桥接 binding 调用与完成值。Host 不能信任这条通道：模型代码可以完全访问 fd 3 并伪造任意帧，因此 host 必须把每个入站帧视为敌意输入，先校验并重建后才能读取。协议还必须承载无深度限制的 lossless JSON，因为 seam 的 `PtcJsonValue` 深度无界，而 `JSON.stringify` 和 `json.dumps` 都有递归深度限制。
+`@deepseek-ai/dsh-experimental-ptc-runtime-python` مسؤول توفير CPython ptc-runtime مزود استخدام wire protocol. هذا مثال مزود سوف في كل جديد `python3 -I` عملية فرعية في تشغيل كل نموذج برنامج، و عبر عملية فرعية fd 3 جسر وصل binding استدعاء و إتمام قيمة.Host لا يستطيع معلومة مهمة هذا بند عبر طريق: نموذج شفرة يمكن تماما وصول fd 3 و زائف صنع مهمة معنى لقطة، لذلك host يجب يأخذ كل دخول محطة لقطة نظر لـ عدو معنى إدخال، أولا تحقق و إعادة بناء بعد عندئذ قدرة قراءة. بروتوكول أيضا يجب تحمل تحميل بلا عميق درجة حد lossless JSON، لأن seam `PtcJsonValue` عميق درجة بلا حد، بينما `JSON.stringify` و `json.dumps` كل لديه تمرير عودة عميق درجة حد.
 
-这个实验包同时包含协议与 runtime 实现：`PythonPtcRuntime`（插件的默认导出）、`python3 -I` 子进程路径与 Python 侧 JSON codec 都在 `@deepseek-ai/dsh-experimental-ptc-runtime-python` 中。协议建立在[可移植标识符 seam](../../archived/architecture/2026-07-31-code-runtime-portable-identifier-seam.md)之上。
+هذا عدد فعلي تحقق حزمة معا يتضمن بروتوكول و runtime تنفيذ:`PythonPtcRuntime`(إضافة افتراضي توجيه خروج) ،`python3 -I` عملية فرعية مسار و Python جانب JSON codec كل في `@deepseek-ai/dsh-experimental-ptc-runtime-python` في. بروتوكول بناء قيام في[يمكن نقل غرس معرف رمز seam](../../archived/architecture/2026-07-31-code-runtime-portable-identifier-seam.md) لـ فوق.
 
 ## Decision
 
-`src/protocol.ts` 是 wire vocabulary 的 host 侧及其敌意帧编解码：
+`src/protocol.ts` هو wire vocabulary host جانب و ذلك عدو معنى لقطة تحرير حل رمز:
 
-- **`validateChildFrame`** 对每个入站帧做形状校验并重建。编译期 union 在 fd 3 上毫无意义——伪造帧可携带 `null`、被污染的字段，或省略必需字段——所以每个被接受的帧都逐字段重建：伪造的额外字段绝不随行，非有限的 call id 绝不会被回显进 reply，垃圾返回 `undefined` 被丢弃，而不是在 host 的 message handler 里抛错。
-- **`encodeJsonPlain` / `checkDoneValue` / `hasUnsafeIntegerToken` / `hasNonLosslessNumber`** 是 lossless-JSON 编解码器与计量器。它们迭代遍历（显式栈，非递归），使低于字节预算的深层值能完整穿越；`checkDoneValue` 把字节计量和数字无损性折进一次遍历，在新增入栈子节点之前就拒绝超预算 payload；字符串与 key 由非分配的转义尺寸扫描（`jsonStringBytesUpTo`）计量，从不物化转义副本。它不会重新约束帧自身的宽度：`done.value` 在检查运行时已经过 `JSON.parse`，因此消费 runtime 必须在解析前限制 fd-3 字节数。超出安全范围的整数型 double 通过 `BigInt` 数字序列化，穿越的是精确整数而非 `String()` 的舍入形式。
-- **`logTruncationMarker`** 产出日志 ledger 耗尽字节预算时发出的带内标记文本。
+- **`validateChildFrame`** مقابل كل دخول محطة لقطة فعل شكل حالة تحقق و إعادة بناء. تحرير ترجمة مدة union في fd 3 فوق جزء بلا معنى معنى——زائف صنع لقطة يمكن يحمل `null`، يتم تلوث صبغ حقل، أو حذف مطلوب حقل——الذي بـ كل يتم قبول لقطة كل تدريجي حقل إعادة بناء: زائف صنع مقدار خارج حقل أبدا مع سطر، غير لديه حد call id أبدا سوف يتم عودة إظهار دخول reply، نفاية قمامة إرجاع `undefined` يتم إسقاط، بينما لا هو في host message handler داخل رمي خطأ.
+- **`encodeJsonPlain` / `checkDoneValue` / `hasUnsafeIntegerToken` / `hasNonLosslessNumber`** هو lossless-JSON تحرير حل رمز جهاز و حساب كمية جهاز. هو جمع تكرار بديل مرة تاريخ (صريح مكدس، غير تمرير عودة) ، جعل منخفض في بايت ميزانية عميق طبقة قيمة قدرة كامل اختراق تجاوز؛`checkDoneValue` يأخذ بايت حساب كمية و عدد حرف بلا ضرر صفة طي دخول مرة مرة تاريخ، في إضافة جديدة دخول مكدس فرعي عقدة قبل حينئذ رفض تجاوز ميزانية payload؛ نص و key من غير قسم إعداد تحويل معنى مقياس قياس مسح (`jsonStringBytesUpTo`) حساب كمية، من لا شيء تحويل تحويل معنى فرعي هذا. هو لن إعادة قيد لقطة ذاته عرض درجة:`done.value` في فحص وقت التشغيل قد مرور `JSON.parse`، لذلك إزالة استهلاك runtime يجب في تحليل قبل حد fd-3 بايت عدد. تجاوز خروج أمان نطاق كامل عدد نوع double عبر `BigInt` عدد حرف تسلسل تحويل، اختراق تجاوز هو دقيق كامل عدد بينما غير `String()` ترك دخول شكل صيغة.
+- **`logTruncationMarker`** إنتاج خروج سجل ledger استهلاك كل بايت ميزانية وقت إرسال خروج حمل داخل علامة نص.
 
-`py/protocol.py` 用 `TypedDict` 镜像消息形状，并重新声明两侧都会 EXECUTE 的两个面——`PROTOCOL_FD = 3` 与 `log_truncation_marker`——文本逐字节一致。
+`py/protocol.py` استخدام `TypedDict` مرآة مثل رسالة شكل حالة، و إعادة إعلان اثنان جانب كل سوف EXECUTE اثنان عدد وجه——`PROTOCOL_FD = 3` و `log_truncation_marker`——نص تدريجي بايت متسق.
 
-该包随协议一起交付 runtime，同时保持独立可构建。`check-workspace-constraints` 会无条件读取每个 `packages/<group>/<pkg>/package.json`，coverage 与 invariant-topology 检查则会在包目录存在时立即覆盖该包。
+هذا حزمة مع بروتوكول واحد بدء تسليم runtime، معا إبقاء مستقل يمكن بناء.`check-workspace-constraints` سوف بلا شرط قراءة كل `packages/<group>/<pkg>/package.json`،coverage و invariant-topology فحص فإن سوف في حزمة دليل وجود وقت قيام أي تغطية هذا حزمة.
 
 ## Wire contract
 
-帧是 fd 3 上的 JSON-lines，每行一个对象，让 stdout/stderr 空出给程序自己的输出。Child → host：`boot-ack`、`call`、`log`、`done`。Host → child：`boot`（首帧）、`run`（在 `boot-ack` 之后）、以及每个 `call` 对应一个 `reply`。`log` 帧的 `truncated` 标志标记那个本身就是子进程 ledger 截断标记的帧，使 host 在与子进程相同的点停止捕获，而不是从自己的预算去推断。`log` 帧的 `open` 标志标记由显式 flush 提交的未结束行：宿主持有它并把下一个帧追加到同一条目，因此显式 flush 后接更多文本读回为一行而不是假换行。唯一例外是截断：当后续超预算帧触发账本时，已计费的前缀作为独立条目先提交，截断 marker 跟在后面（marker 保持末位，无重复计费）。合并条目的线上成本恰好计费一次，在两侧按片段增量分摊（k 个片段 O(k)，绝不对整个持有重走）：首片段付完整 JSON 字符串成本加分隔符，每个续接与闭合帧只付内容；宿主精确成本 cap 是首片段 `logBudget - 1`（账本预留字节，与 `admit` 一致）、续接或闭合帧 `logBudget + 2`（不含两个引号计费），且 `jsonStringCostUpTo` 在低于 2 字节 cap 时返回 `undefined`；子进程按 `_open_started` 单独键控拆分计费，因此闭合帧按合并尾部计费。`done.error.kind` 是 `exception`、`invalid-output`、`output-limit` 之一；wall/CPU 预算、abort、substrate 死亡都在 host 侧观测，不作为帧携带。
+لقطة هو fd 3 فوق JSON-lines، كل سطر واحد كائن، يجعل stdout/stderr فارغ خروج إعطاء برنامج ذاتي ذات إخراج.Child → host:`boot-ack`،`call`،`log`،`done`.Host → child:`boot`(أول لقطة) ،`run`(في `boot-ack` بعد) ، و كل `call` مقابل واحد `reply`.`log` لقطة `truncated` علامة سجل علامة ذلك عدد ذاته حينئذ هو عملية فرعية ledger قطع قطع علامة لقطة، جعل host في و عملية فرعية نفسه نقطة إيقاف التقاط، بينما لا هو من ذاتي ذات ميزانية ذهاب دفع قطع.`log` لقطة `open` علامة سجل علامة من صريح flush إيداع لم انتهاء سطر: مضيف يحتفظ هو و يأخذ تحت واحد لقطة إلحاق إلى نفس بند، لذلك صريح flush بعد وصل أكثر كثير نص قراءة عودة لـ واحد سطر بينما لا هو زائف تبديل سطر. وحيد مثال خارج هو قطع قطع: عند لاحق تجاوز ميزانية لقطة إطلاق حساب هذا وقت، قد حساب استهلاك بادئة بصفة مستقل بند أولا إيداع، قطع قطع marker تتبع في بعد وجه (marker إبقاء نهاية موضع، بلا تكرار حساب استهلاك). دمج بند خط فوق صار هذا تماما جيد حساب استهلاك مرة، في اثنان جانب حسب قطعة مقطع زيادة كمية قسم توزيع (k عدد قطعة مقطع O(k) ، أبدا مقابل كامل يحتفظ إعادة مشي): أول قطعة مقطع دفع كامل JSON نص صار هذا إضافة قسم فصل رمز، كل متابعة وصل و إغلاق دمج لقطة فقط دفع محتوى؛ مضيف دقيق صار هذا cap هو أول قطعة مقطع `logBudget - 1`(حساب هذا مسبق إبقاء بايت، و `admit` متسق) ، متابعة وصل أو إغلاق دمج لقطة `logBudget + 2`(لا يحتوي اثنان عدد جذب رقم حساب استهلاك) ، كما `jsonStringCostUpTo` في منخفض في 2 بايت cap وقت إرجاع `undefined`؛ عملية فرعية حسب `_open_started` مفرد وحيد مفتاح تحكم تفكيك قسم حساب استهلاك، لذلك إغلاق دمج لقطة حسب دمج ذيل جزء حساب استهلاك.`done.error.kind` هو `exception`،`invalid-output`،`output-limit` لـ واحد؛wall/CPU ميزانية،abort،substrate ميت هلاك كل في host جانب مراقبة قياس، لا بصفة لقطة يحمل.
 
 ## Mirror alignment
 
-`py/protocol.py` 与 `src/protocol.ts` 一致规定：`LogMessage` 携带 `truncated`，`DoneMessage.error` 携带 `kind`，`Namespace` 可以携带 `errorClass`。`tests/protocol-mirror.e2e.ts` 启动真实 `python3`，对照 `src/protocol.ts` 断言 `PROTOCOL_FD`、`log_truncation_marker` 以及每个 `TypedDict` 的必填和可选 wire 字段集。字段改名、删除或必填／可选性不一致都会使测试失败。字段*类型*不跨语言边界比较；这项缺口由评审和 runtime 的真实子进程套件（`runtime.spec.ts`）负责。
+`py/protocol.py` و `src/protocol.ts` متسق قاعدة تحديد:`LogMessage` يحمل `truncated`،`DoneMessage.error` يحمل `kind`،`Namespace` يمكن يحمل `errorClass`.`tests/protocol-mirror.e2e.ts` بدء حقيقي `python3`، مقابل وفق `src/protocol.ts` تأكيد `PROTOCOL_FD`،`log_truncation_marker` و كل `TypedDict` لا بد ملء و اختياري wire حقل تجميع. حقل تعديل اسم، حذف أو لا بد ملء/اختياري صفة لا متسق كل سوف جعل اختبار فشل. حقل*نوع*لا عبر لغة حد مقارنة مقارنة؛ هذا بند نقص فتحة من مراجعة و runtime حقيقي عملية فرعية طقم عنصر (`runtime.spec.ts`) مسؤول.
 
 ## Alternatives considered
 
-**要求未来的 Python JSON codec（`_encode_json_plain` / `_decode_json_plain`）放进 `py/protocol.py`，以便与 `protocol.ts` 跨侧对称。**拒绝。仓库的 “prefer symmetry for parallel values” 规则指向真正平行的值；这两者不是。`protocol.ts` 中的 host 侧 codec 校验敌意输入且自包含。Child 侧 codec 会产出受信任输出，应与 bootstrap 拥有的发出逻辑和成本核算放在一起；只把入口强塞进 `protocol.py` 会让 vocabulary 镜像耦合 runtime 内部实现，或制造 import 环。`protocol.py` 保持纯 wire-vocabulary 镜像；codec（`_encode_json_plain`／`_decode_json_plain`）与它所服务的 runtime 一起位于 `bootstrap.py`。
+**اشتراط لم قدوم Python JSON codec(`_encode_json_plain` / `_decode_json_plain`) وضع دخول `py/protocol.py`، بـ سهل و `protocol.ts` عبر جانب مقابل تسمية.**رفض. مستودع “prefer symmetry for parallel values” قاعدة إشارة نحو حق صحيح مستو سطر قيمة؛ هذا اثنان من لا هو.`protocol.ts` في host جانب codec تحقق عدو معنى إدخال كما ذاتي يتضمن.Child جانب codec سوف إنتاج خروج تلقي معلومة مهمة إخراج، ينبغي و bootstrap يملك إرسال خروج منطق و صار هذا نواة حساب وضع في واحد بدء؛ فقط يأخذ مدخل قوي سد دخول `protocol.py` سوف يجعل vocabulary مرآة مثل اقتران دمج runtime داخلي تنفيذ، أو صنع صنع import حلقة.`protocol.py` إبقاء صاف wire-vocabulary مرآة مثل؛codec(`_encode_json_plain`/`_decode_json_plain`) و هو الذي خدمة runtime واحد بدء يقع في `bootstrap.py`.
 
-**在 runtime 交付前把协议文件放在不可构建的包外。**拒绝：workspace-constraint、coverage 与 invariant-topology 检查要求 `packages/<group>/<pkg>` 下的每个目录都是可构建包，而协议本身拥有独立测试与公开 wire vocabulary。
+**في runtime تسليم قبل يأخذ بروتوكول ملف وضع في غير ممكن بناء حزمة خارج.**رفض:workspace-constraint،coverage و invariant-topology فحص اشتراط `packages/<group>/<pkg>` تحت كل دليل كل هو يمكن بناء حزمة، بينما بروتوكول ذاته يملك مستقل اختبار و عام wire vocabulary.
 
 ## Consequences
 
-收获：fd-3 协议及其敌意输入 codec 构成自包含、unit 全覆盖的一层，并由执行中的 guard 防止 TypeScript／Python 字段集漂移。基于它构建的 runtime（`bootstrap.py`）消费经过评审的 wire contract。
+استلام نيل:fd-3 بروتوكول و ذلك عدو معنى إدخال codec بنية صار ذاتي يتضمن،unit كل تغطية واحد طبقة، و من تنفيذ في guard منع توقف TypeScript/Python حقل تجميع عائم نقل. أساس في هو بناء runtime(`bootstrap.py`) إزالة استهلاك مرور مرور مراجعة wire contract.
 
-代价：包名表示 Python runtime 家族，而 `src/index.ts` 导出完整的 `PythonPtcRuntime` 实现，协议 vocabulary 只是包表面的一部分。mirror e2e 会比较两侧字段名与必填／可选状态，但不比较字段类型；跨 TypeScript 与 Python 比较类型声明没有机械等价物，因此评审与 runtime 的真实子进程套件继续负责这项检查。
+بديل قيمة: حزمة اسم يمثل Python runtime بيت عائلة، بينما `src/index.ts` توجيه خروج كامل `PythonPtcRuntime` تنفيذ، بروتوكول vocabulary فقط هو حزمة جدول وجه واحد جزء.mirror e2e سوف مقارنة مقارنة اثنان جانب حقل اسم و لا بد ملء/اختياري حالة، لكن لا مقارنة مقارنة حقل نوع؛ عبر TypeScript و Python مقارنة مقارنة نوع إعلان لا يوجد آلة آلة انتظار قيمة شيء، لذلك مراجعة و runtime حقيقي عملية فرعية طقم عنصر متابعة مسؤول هذا بند فحص.

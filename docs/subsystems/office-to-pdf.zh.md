@@ -1,45 +1,45 @@
-# Office 转 PDF
+# Office تحويل PDF
 
-[English](office-to-pdf.md) | 中文
+[English](office-to-pdf.md) | العربية
 
-[document 包族](../../packages/document/README.zh.md) 在 Node 宿主上将 Office 文件转换为 PDF。消费者负责源文件读取授权与展示；共享提供方负责转换、有界准入和临时 PDF 复用。此子系统不创建面向模型的工具或 Session 事件。
+[document حزمة عائلة](../../packages/document/README.zh.md) في Node مضيف فوق سوف Office ملف تحويل لـ PDF. إزالة استهلاك من مسؤول مصدر ملف قراءة تخويل و عرض؛ مشترك مزود مسؤول تحويل، محدود دقيق دخول و مؤقت PDF إعادة استخدام. هذا فرعي نظام لا إنشاء موجه إلى نموذج أداة أو Session حدث.
 
-## 所有权
+## كل حق
 
-| 所有者 | 职责 |
+| كل من | مسؤولية |
 |---|---|
-| [office-to-pdf](../../packages/document/office-to-pdf/README.zh.md) | `ctx.officeToPdf`：共享 LibreOffice 转换、有界准入和 PDF 缓存 |
-| [Web bundle](../../packages/bundle/web-app/README.zh.md) | 由宿主消费者共享的单个可配置转换提供方 |
-| [Office 预览 Client](../../packages/client/ui-sidebar-documentpreview/README.zh.md#office-preview) | Office 扩展名选择、PDF 复用和缺失字体提示 |
+| [office-to-pdf](../../packages/document/office-to-pdf/README.zh.md) | `ctx.officeToPdf`: مشترك LibreOffice تحويل، محدود دقيق دخول و PDF ذاكرة مؤقتة |
+| [Web bundle](../../packages/bundle/web-app/README.zh.md) | من مضيف إزالة استهلاك من مشترك مفرد عدد يمكن إعداد تحويل مزود |
+| [Office معاينة Client](../../packages/client/ui-sidebar-documentpreview/README.zh.md#office-preview) | Office توسيع اسم اختيار،PDF إعادة استخدام و ناقص حرف جسم تلميح |
 
-## 请求和结果
+## طلب و نتيجة
 
-[`OfficeToPdfRequest`](../../packages/document/office-to-pdf/src/types.ts)包含已授权的源键与版本、可选 stat 大小、延迟的 `read(signal, maxBytes)` 回调、前台或后台优先级以及 `OfficeExtension`：`doc`、`docx`、`xls`、`xlsx`、`ppt` 或 `pptx`。`OfficeToPdf.convert(request, signal?)` 返回一个完整 PDF 结果。取消遵循调用方和提供方生命周期；校验、输出和引擎失败以分类的 `OfficeToPdfError` 拒绝。
+[`OfficeToPdfRequest`](../../packages/document/office-to-pdf/src/types.ts) يتضمن قد تخويل مصدر مفتاح و إصدار، اختياري stat كبير صغير، تأخير متأخر `read(signal, maxBytes)` عودة ضبط، قبل منصة أو خلفية أولوية درجة و `OfficeExtension`:`doc`،`docx`،`xls`،`xlsx`،`ppt` أو `pptx`.`OfficeToPdf.convert(request, signal?)` إرجاع واحد كامل PDF نتيجة. إلغاء التزام دوران استدعاء جهة و مزود دورة الحياة؛ تحقق، إخراج و جذب محرك فشل بـ تصنيف `OfficeToPdfError` رفض.
 
-`OfficeToPdfPriority` 对请求的预览或 QA 使用 `foreground`，对推测工作使用 `background`。`OfficeSourceKey` 为调用方拥有的已授权源定位符增加品牌类型。`OfficeToPdfGeneration` 表示提供方生命周期，`OfficeToPdfKey` 表示其内容身份；消费者不解析这两种不透明值。
+`OfficeToPdfPriority` مقابل طلب معاينة أو QA استخدام `foreground`، مقابل دفع قياس عمل استخدام `background`.`OfficeSourceKey` لـ استدعاء جهة يملك قد تخويل مصدر تحديد موضع رمز زيادة صنف لوحة نوع.`OfficeToPdfGeneration` يمثل مزود دورة الحياة،`OfficeToPdfKey` يمثل ذلك محتوى هوية؛ إزالة استهلاك من لا تحليل هذا اثنان نوع لا نفاذ واضح قيمة.
 
-| 结果字段 | 含义 |
+| نتيجة حقل | يحتوي معنى |
 |---|---|
-| `pdf` | 调用方拥有的 `Uint8Array`，包含完整 PDF |
-| `missingFonts` | 本次转换无法使用的文档请求字体名称 |
-| `cacheKey` | 不透明的转换 generation 加扩展名与源内容身份 |
-| `generation` | 提供方生命周期；替换后缓存 PDF 不再可复用 |
+| `pdf` | استدعاء جهة يملك `Uint8Array`، يتضمن كامل PDF |
+| `missingFonts` | هذا مرة تحويل لا يمكن استخدام وثيقة طلب حرف جسم اسم |
+| `cacheKey` | لا نفاذ واضح تحويل generation إضافة توسيع اسم و مصدر محتوى هوية |
+| `generation` | مزود دورة الحياة؛ استبدال بعد ذاكرة مؤقتة PDF لم يعد يمكن إعادة استخدام |
 
-提供方先准入延迟读取，再分配源文件字节；按内容身份共享转换，并在返回前删除私有临时目录。返回的 PDF 字节在提供方释放后仍有效。源文件和 PDF 字节不会进入 Session 存储。消费者可通过[工作区文件](../../packages/api/workspace-files/README.zh.md)执行已授权的有界读取。
+مزود أولا دقيق دخول تأخير متأخر قراءة، مجددا قسم إعداد مصدر ملف بايت؛ حسب محتوى هوية مشترك تحويل، و في إرجاع قبل حذف خاص مؤقت دليل. إرجاع PDF بايت في مزود تحرير بعد ما زال صالح. مصدر ملف و PDF بايت لن دخول Session تخزين. إزالة استهلاك من يمكن عبر[مساحة العمل ملف](../../packages/api/workspace-files/README.zh.md) تنفيذ قد تخويل محدود قراءة.
 
-## 预览读取
+## معاينة قراءة
 
-`RenderedDocumentBytes` 在工作区字节响应上增加 `missingFonts` 和 `generation`；转换后的 PDF 附带原始源文件身份。
+`RenderedDocumentBytes` في مساحة العمل بايت استجابة فوق زيادة `missingFonts` و `generation`؛ تحويل بعد PDF مرفق حمل أصلي مصدر ملف هوية.
 
-`officeToPdf.render` Remote 方法通过 Session 的[工作区文件](../../packages/api/workspace-files/README.zh.md)服务检查源文件授权与版本。取得转换容量后，`fs.readBytes` 在预留字节容量内提供原始输入；该读取受 Office 输入上限约束。响应携带 base64 PDF 字节、源文件绝对路径与新鲜度版本。源访问失败直接传递；大小和引擎失败只暴露分类原因，不含诊断信息。转换不激活 Agent 或追加事件。
+`officeToPdf.render` Remote طريقة عبر Session [مساحة العمل ملف](../../packages/api/workspace-files/README.zh.md) خدمة فحص مصدر ملف تخويل و إصدار. أخذ نيل تحويل سعة كمية بعد،`fs.readBytes` في مسبق إبقاء بايت سعة كمية داخل توفير أصلي إدخال؛ هذا قراءة تلقي Office إدخال حد أعلى قيد. استجابة يحمل base64 PDF بايت، مصدر ملف قطعا مقابل مسار و جديد طازج درجة إصدار. مصدر وصول فشل مباشر نقل تمرير؛ كبير صغير و جذب محرك فشل فقط كشف تصنيف سبب، لا يحتوي تشخيص معلومة. تحويل لا تنشيط Agent أو إلحاق حدث.
 
-`api/remotes` 挂载转换服务生成的 Remote 描述符。共享文档预览包使用完整字节加载和现有 PDF.js Worker 注册 Office 格式。每次预览读取都会重新检查渲染 generation、源文件授权和版本，再共享进行中的转换或缓存 PDF。连接重置和插件卸载会取消请求并清空缓存字节。缺少服务时显示本地化配置引导。
+`api/remotes` تركيب تحويل خدمة توليد Remote وصف رمز. مشترك وثيقة معاينة حزمة استخدام كامل بايت تحميل و قائم PDF.js Worker تسجيل Office صيغة. كل مرة معاينة قراءة كل سوف إعادة فحص تصيير generation، مصدر ملف تخويل و إصدار، مجددا مشترك إجراء في تحويل أو ذاكرة مؤقتة PDF. اتصال إعادة وضع و إضافة إزالة سوف إلغاء طلب و صاف فارغ ذاكرة مؤقتة بايت. نقص قليل خدمة وقت عرض محلي تحويل إعداد جذب توجيه.
 
-## 引擎选择和限制
+## جذب محرك اختيار و حد
 
-外部 [`@deepseek-ai/libreoffice-kit`](https://github.com/deepseek-harness/libreoffice-kit) Node API 选择其预编译引擎。kit 独立维护版本和发布流程，具体归属由[发布归属决策](../../.agents/notes/implemented/architecture/2026-09-14-independent-libreoffice-kit.zh.md)定义。应用构建时安装已发布的 npm 包。应用打包要求目标已声明的原生引擎；kit 未为该目标声明原生引擎时使用 Node WASM。[平台引擎决策](../../.agents/notes/implemented/architecture/2026-09-15-platform-office-engines.zh.md)定义安装和打包规则。元数据无效、必需资源缺失和转换错误都会拒绝请求，不切换引擎。转换在 Host 使用磁盘输入输出路径，不使用浏览器转换引擎或字体 RPC。
+خارجي [`@deepseek-ai/libreoffice-kit`](https://github.com/deepseek-harness/libreoffice-kit) Node API اختيار ذلك مسبق تحرير ترجمة جذب محرك.kit مستقل صيانة إصدار و إصدار مسار، أداة جسم ملكية من[إصدار ملكية قرار](../../.agents/notes/implemented/architecture/2026-09-14-independent-libreoffice-kit.zh.md) تعريف. تطبيق بناء وقت تثبيت قد إصدار npm حزمة. تطبيق تحزيم اشتراط هدف قد إعلان أصلي جذب محرك؛kit لم لـ هذا هدف إعلان أصلي جذب محرك وقت استخدام Node WASM.[منصة جذب محرك قرار](../../.agents/notes/implemented/architecture/2026-09-15-platform-office-engines.zh.md) تعريف تثبيت و تحزيم قاعدة. بيانات وصفية بلا فاعلية، مطلوب مورد ناقص و تحويل خطأ كل سوف رفض طلب، لا تبديل جذب محرك. تحويل في Host استخدام مغناطيس قرص إدخال إخراج مسار، لا استخدام متصفح تحويل جذب محرك أو حرف جسم RPC.
 
-[Host 提供方配置](../../packages/document/office-to-pdf/README.zh.md#use-this-package)负责并发、期限、输入输出上限、归档上限、图像分辨率和字体访问。原生/WASM 实现和资产分发属于 kit 工作区。系统 LibreOffice 探测、运行时引擎下载、持久 PDF 缓存和面向模型的渲染不属于此提供方。
+[Host مزود إعداد](../../packages/document/office-to-pdf/README.zh.md#use-this-package) مسؤول تزامن، مدة حد، إدخال إخراج حد أعلى، عودة ملف حد أعلى، رسم مثل قسم تمييز معدل و حرف جسم وصول. أصلي/WASM تنفيذ و مورد إنتاج توزيع يخص kit مساحة العمل. نظام LibreOffice استكشاف قياس، وقت التشغيل جذب محرك تحت تحميل، حمل دائم PDF ذاكرة مؤقتة و موجه إلى نموذج تصيير لا يخص هذا مزود.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

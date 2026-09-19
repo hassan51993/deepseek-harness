@@ -1,18 +1,18 @@
-# Web 访问
+# Web وصول
 
-[English](web.md) | 中文
+[English](web.md) | العربية
 
-Web 访问 seam 是一个[能力 seam](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)，在同一个 `ctx.web` 服务上横跨**两项操作**（search 与 fetch），并拆分到多个包：Service Definition（[dsh-web](../../packages/web/web)，`ctx.web` + 提供方注册表）、Service Provider（[dsh-web-search-exa](../../packages/web/web-search-exa)、[dsh-web-search-perplexity](../../packages/web/web-search-perplexity)、[dsh-web-search-deepseek](../../packages/web/web-search-deepseek)、[dsh-web-fetch-http](../../packages/web/web-fetch-http)）与 Consumer（[dsh-tool-web](../../packages/web/tool-web)，即 `web_search`/`web_fetch` 工具 schema）。Web 是**一项可选能力**，不属于 agent loop（智能体循环）主干，因此其词汇定义在此而非 [core.md](core.zh.md) 中。更换 search 提供方不会改变模型提交查询的方式，更换 fetch 提供方也不会改变模型请求 URL 的方式。
+Web وصول seam هو واحد[قدرة seam](../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md) ، في نفس عدد `ctx.web` خدمة فوق أفقي عبر**اثنان بند عملية**(search و fetch) ، و تفكيك قسم إلى كثير عدد حزمة:Service Definition([dsh-web](../../packages/web/web) ،`ctx.web` + مزود سجل التسجيل) ،Service Provider([dsh-web-search-exa](../../packages/web/web-search-exa) ،[dsh-web-search-perplexity](../../packages/web/web-search-perplexity) ،[dsh-web-search-deepseek](../../packages/web/web-search-deepseek) ،[dsh-web-fetch-http](../../packages/web/web-fetch-http)) و Consumer([dsh-tool-web](../../packages/web/tool-web) ، أي `web_search`/`web_fetch` أداة schema).Web هو**واحد بند اختياري قدرة**، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، لذلك ذلك مفردات تعريف في هذا بينما غير [core.md](core.zh.md) في. أكثر تبديل search مزود لن تغيير نموذج إيداع استعلام طريقة، أكثر تبديل fetch مزود أيضا لن تغيير نموذج طلب URL طريقة.
 
-源码：[`packages/web/web/src/types.ts`](../../packages/web/web/src/types.ts)
+شفرة المصدر:[`packages/web/web/src/types.ts`](../../packages/web/web/src/types.ts)
 
-## 为什么一项能力包含两项操作
+## لـ ماذا واحد بند قدرة يتضمن اثنان بند عملية
 
-搜索与抓取既不共享请求 schema，也不共享业务逻辑，但它们被有意设计为同一个 `ctx.web` 中间层：一个提供方选择策略的所有者、一套中止与错误词汇，以及一个面向产品的「此 harness 如何访问 Web」配置界面。代价是服务上并行的 `searchX`／`fetchX` 方法对；这种并行是有意为之，而不是遗漏了可抽取的共性。提供方注册的是**能力**（`WebSearchProvider` 或 `WebFetchProvider`），而非工具；面向模型的名称、schema、提示词引导与展示全部集中在唯一的消费方 `dsh-tool-web` 中。
+بحث و إمساك أخذ حيث لا مشترك طلب schema، أيضا لا مشترك عمل خدمة منطق، لكن هو جمع يتم متعمد تصميم لـ نفس عدد `ctx.web` في بين طبقة: واحد مزود اختيار سياسة كل من، واحد طقم في توقف و خطأ مفردات، و واحد موجه إلى منتج «هذا harness مثل أي وصول Web» إعداد واجهة. بديل قيمة هو خدمة فوق و سطر `searchX`/`fetchX` طريقة مقابل؛ هذا نوع و سطر هو متعمد لـ لـ، بينما لا هو متروك تسرب يمكن سحب أخذ مشترك صفة. مزود تسجيل هو**قدرة**(`WebSearchProvider` أو `WebFetchProvider`) ، بينما غير أداة؛ موجه إلى نموذج اسم،schema، نص التوجيه جذب توجيه و عرض الكل تجميع في في وحيد مستهلك `dsh-tool-web` في.
 
-## 搜索请求与结果
+## بحث طلب و نتيجة
 
-每个 seam 请求只携带一个 `query`。消费方 `dsh-tool-web` 接受必填的 `queries` 数组，并把它扇出为多个独立 seam 请求；单元素数组执行一次搜索。`maxResults` 是消费方自有的上限（`dsh-tool-web` 的 `searchMaxResults` 配置，默认 `8`），通过 seam 传递并在返回时强制执行——如果提供方返回超量，seam 截断 `sources[]` 并设置 `truncated`。
+كل seam طلب فقط يحمل واحد `query`. مستهلك `dsh-tool-web` قبول لا بد ملء `queries` عدد مجموعة، و يأخذ هو مروحة خروج لـ كثير عدد مستقل seam طلب؛ وحدة عنصر عدد مجموعة تنفيذ مرة بحث.`maxResults` هو مستهلك ذاتي لديه حد أعلى (`dsh-tool-web` `searchMaxResults` إعداد، افتراضي `8`) ، عبر seam نقل تمرير و في إرجاع وقت قوي صنع تنفيذ——إذا مزود إرجاع تجاوز كمية،seam قطع قطع `sources[]` و ضبط `truncated`.
 
 ```ts type-equiv
 /**
@@ -68,7 +68,7 @@ interface WebSearchSource {
 }
 ```
 
-## 抓取请求与结果
+## إمساك أخذ طلب و نتيجة
 
 ```ts type-equiv
 /**
@@ -82,7 +82,7 @@ interface WebFetchRequest {
 }
 ```
 
-HTTP 状态码是被抓取资源状态的一部分，不自动视为失败：即使一次成功的网络抓取收到 `404` 或 `500` 响应，也仍会产出一个 `WebFetchResult`，其中包含状态码和长度受限的已解码正文。`url` 是经过允许的重定向后的最终 URL。`WebError` 仅用于无法安全获取或表示资源的情况。
+HTTP حالة رمز هو يتم إمساك أخذ مورد حالة واحد جزء، لا تلقائي نظر لـ فشل: أي جعل مرة نجاح شبكة شبكة إمساك أخذ استلام إلى `404` أو `500` استجابة، أيضا ما زال سوف إنتاج خروج واحد `WebFetchResult`، منها يتضمن حالة رمز و طويل درجة تلقي حد قد حل رمز متن.`url` هو مرور مرور سماح إعادة تحديد نحو بعد نهائي URL.`WebError` فقط لأجل لا يمكن أمان نيل أخذ أو يمثل مورد حال حال.
 
 ```ts type-equiv
 /**
@@ -118,25 +118,25 @@ type WebFetchBody =
   | { readonly kind: 'text'; readonly content: string }
 ```
 
-## 提供方可用性
+## مزود متاح صفة
 
-提供方的 `available(): boolean` 是一个廉价的本地检查（凭证是否存在、配置是否可解析），**禁止发起网络调用**。它是执行时选择提供方的输入，而不是健康检查系统：`search()`／`fetch()` 会读取它来选择可用的提供方。选择失败时，调用方会收到可据以分支处理的结构化 `WebError`；其错误代码和消息会说明缺失的 id 或存在歧义的候选集。
+مزود `available(): boolean` هو واحد نزيه قيمة محلي فحص (سند إثبات هل وجود، إعداد هل يمكن تحليل) ،**منع توقف إرسال بدء شبكة شبكة استدعاء**. هو هو تنفيذ وقت اختيار مزود إدخال، بينما لا هو سليم سليم فحص نظام:`search()`/`fetch()` سوف قراءة هو قدوم اختيار متاح مزود. اختيار فشل وقت، استدعاء جهة سوف استلام إلى يمكن حسب بـ فرع معالجة بنية تحويل `WebError`؛ ذلك خطأ شفرة و رسالة سوف شرح ناقص id أو وجود اختلاف معنى مرشح تجميع.
 
-选择从不依赖注册顺序、配置顺序或 HMR（热模块替换）顺序：一项能力要么有显式的提供方 id（配置 `searchProvider`／`fetchProvider`，或填充同一字段的对应环境变量），要么在恰好只有一个可用提供方注册时自动选择；如果存在多个可用提供方却未配置 id，则抛出 `WEB_PROVIDER_AMBIGUOUS`，而不会选用最先注册的提供方。
+اختيار من لا اعتماد تسجيل ترتيب، إعداد ترتيب أو HMR(حار وحدة استبدال) ترتيب: واحد بند قدرة يلزم ما لديه صريح مزود id(إعداد `searchProvider`/`fetchProvider`، أو ملء ملء نفس حقل مقابل بيئة متغير) ، يلزم ما في تماما جيد فقط لديه واحد متاح مزود تسجيل وقت تلقائي اختيار؛ إذا وجود كثير عدد متاح مزود لكن لم إعداد id، فإن رمي خروج `WEB_PROVIDER_AMBIGUOUS`، بينما لن اختيار استخدام الأكثر أولا تسجيل مزود.
 
-## 抓取网络策略
+## إمساك أخذ شبكة شبكة سياسة
 
-已交付的 Cordis、Code 与 Standard preset 会在所有 sandbox 和审批模式下暴露 `web_fetch`，无需逐次确认。文件 sandbox preset 不管辖 Web 网络访问。需要确认步骤的部署必须添加 `tools/pre-execute` 策略或禁用抓取。
+قد تسليم Cordis،Code و Standard preset سوف في كل sandbox و مراجعة دفعة نمط تحت كشف `web_fetch`، بلا حاجة تدريجي مرة تأكيد. ملف sandbox preset لا إدارة ولاية Web شبكة شبكة وصول. حاجة تأكيد خطوة نشر يجب إضافة `tools/pre-execute` سياسة أو منع استخدام إمساك أخذ.
 
-HTTP 提供方会解析每个实际请求，拒绝包括通过当前 DNS64 前缀抵达私有 IPv4 在内的非公开结果，固定已验证的地址集合，并在每次同源重定向时重复强制执行。跨源重定向需要新的工具调用和新的公开地址校验。这些检查会阻止通过 SSRF 访问非公开目的地址，但不会阻止模型把数据发送到公开 URL。
+HTTP مزود سوف تحليل كل فعلي طلب، رفض يشمل عبر حالي DNS64 بادئة مقاومة بلوغ خاص IPv4 في داخل غير عام نتيجة، ثابت قد تحقق عنوان تجميع دمج، و في كل مرة نفس مصدر إعادة تحديد نحو وقت تكرار قوي صنع تنفيذ. عبر مصدر إعادة تحديد نحو حاجة جديد أداة استدعاء و جديد عام عنوان تحقق. هذه فحص سوف منع توقف عبر SSRF وصول غير عام هدف عنوان، لكن لن منع توقف نموذج يأخذ بيانات إرسال إلى عام URL.
 
-## 错误
+## خطأ
 
-`WebError extends HarnessError`（[core.md](core.zh.md) 错误分类体系），带有 `code: string`（开放式，与其他 seam 的错误一致——`LlmError`、`SubagentError`），而非封闭联合类型：提供方可以在不修改 `dsh-web` 的情况下抛出自己的错误代码，消费方必须容忍未知错误代码。错误代码按所有者划分。共享的 `WebRuntime` 约定会抛出与 seam 无关的错误代码：`WEB_PROVIDER_UNAVAILABLE`、`WEB_PROVIDER_CONFIGURED_MISSING`、`WEB_PROVIDER_CONFIGURED_UNAVAILABLE`、`WEB_PROVIDER_AMBIGUOUS`、`WEB_DUPLICATE_PROVIDER`（注册时的编程错误，类似 `LlmRuntime` 的 `DUPLICATE_ADAPTER`）、`WEB_ABORTED`，以及 `WEB_PROVIDER_ERROR`（提供方自身故障经 seam 暴露时使用的兜底代码，包括 DNS、连接被拒绝、TLS 等网络或传输故障）。抓取传输层错误代码由 `dsh-web-fetch-http` 实现拥有，不同的抓取后端无需抛出它们：`WEB_INVALID_URL`、`WEB_BLOCKED_URL`、`WEB_REDIRECT_BLOCKED`、`WEB_FETCH_TOO_LARGE`、`WEB_FETCH_TIMEOUT`、`WEB_UNSUPPORTED_CONTENT_TYPE`。
+`WebError extends HarnessError`([core.md](core.zh.md) خطأ تصنيف جسم نظام) ، حمل لديه `code: string`(فتح وضع صيغة، و أخرى seam خطأ متسق——`LlmError`،`SubagentError`) ، بينما غير غلاف إغلاق ربط دمج نوع: مزود يمكن في لا تعديل `dsh-web` حال حال تحت رمي خروج ذاتي ذات خطأ شفرة، مستهلك يجب سعة تحمل لم معرفة خطأ شفرة. خطأ شفرة حسب كل من تخطيط قسم. مشترك `WebRuntime` اتفاق سوف رمي خروج و seam غير متصل خطأ شفرة:`WEB_PROVIDER_UNAVAILABLE`،`WEB_PROVIDER_CONFIGURED_MISSING`،`WEB_PROVIDER_CONFIGURED_UNAVAILABLE`،`WEB_PROVIDER_AMBIGUOUS`،`WEB_DUPLICATE_PROVIDER`(تسجيل وقت تحرير مسار خطأ، صنف يشبه `LlmRuntime` `DUPLICATE_ADAPTER`) ،`WEB_ABORTED`، و `WEB_PROVIDER_ERROR`(مزود ذاته لذا عائق مرور seam كشف وقت استخدام التقاط قاع شفرة، يشمل DNS، اتصال يتم رفض،TLS انتظار شبكة شبكة أو نقل لذا عائق). إمساك أخذ نقل طبقة خطأ شفرة من `dsh-web-fetch-http` تنفيذ يملك، مختلف إمساك أخذ خلفية بلا حاجة رمي خروج هو جمع:`WEB_INVALID_URL`،`WEB_BLOCKED_URL`،`WEB_REDIRECT_BLOCKED`،`WEB_FETCH_TOO_LARGE`،`WEB_FETCH_TIMEOUT`،`WEB_UNSUPPORTED_CONTENT_TYPE`.
 
-## 服务
+## خدمة
 
-`WebRuntime` 注册搜索与抓取提供方，以 `WEB_DUPLICATE_PROVIDER` 拒绝重复 id，并在执行时以结构化的选择错误解析提供方。本地抓取后端仅接受 HTTP(S)、拒绝凭证、对每个 hostname 只解析一次、拒绝包含任一非公开 IPv4／IPv6 目的地址或经当前前缀转换到非公开 IPv4 的 NAT64 地址的解析结果、把请求连接固定到已验证地址、对每一次同源重定向跳转重复这些校验、限制重定向次数、字节数、字符数和时间，并解码正文；展示由工具负责。
+`WebRuntime` تسجيل بحث و إمساك أخذ مزود، بـ `WEB_DUPLICATE_PROVIDER` رفض تكرار id، و في تنفيذ وقت بـ بنية تحويل اختيار خطأ تحليل مزود. محلي إمساك أخذ خلفية فقط قبول HTTP(S) ، رفض سند إثبات، مقابل كل hostname فقط تحليل مرة، رفض يتضمن مهمة واحد غير عام IPv4/IPv6 هدف عنوان أو مرور حالي بادئة تحويل إلى غير عام IPv4 NAT64 عنوان تحليل نتيجة، يأخذ طلب اتصال ثابت إلى قد تحقق عنوان، مقابل كل مرة نفس مصدر إعادة تحديد نحو قفز تحويل تكرار هذه تحقق، حد إعادة تحديد نحو مرة عدد، بايت عدد، محرف عدد و وقت، و حل رمز متن؛ عرض من أداة مسؤول.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

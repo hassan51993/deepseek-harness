@@ -1,9 +1,9 @@
 - menu:
-  - menuitem "仅可查看"
-  - menuitem "工作区内修改":
-    - text: 工作区内修改
+  - menuitem "فقط يمكن فحص نظر"
+  - menuitem "مساحة العمل داخل تعديل":
+    - text: مساحة العمل داخل تعديل
     - img
-  - menuitem "完全权限"
+  - menuitem "تماما إذن"
   - menuitem "Auto review EXP":
     - text: Auto review
     - superscript: EXP

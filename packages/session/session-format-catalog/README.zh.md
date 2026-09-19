@@ -1,35 +1,35 @@
 ---
-description: "供持久化读取方使用的构建期静态第一方 Session 格式编解码器与相邻迁移装配。"
+description: "توفير حفظ دائم قراءة جهة استخدام بناء مدة ساكن حالة رقم واحد جهة Session صيغة تحرير حل رمز جهاز و متبادل مجاور ترحيل تركيب إعداد."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-session-format-catalog
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-session-format-catalog` 为持久化提供一个确定性的 Session 格式读取器，且无需查询已挂载插件。它装配从最早受支持格式到[当前写入格式](../../../docs/session-format-status.zh.md)的编解码器与相邻迁移边，在模块初始化时校验完整且无缺口的迁移链，并通过 `sessionFormatCatalog` 暴露物理分派、仅 header 分类、单遍行还原和当前格式逐记录编码。
+`dsh-session-format-catalog` لـ حفظ دائم توفير واحد تحديد صفة Session صيغة قراءة جهاز، كما بلا حاجة استعلام قد تركيب إضافة. هو تركيب إعداد من الأكثر مبكر تلقي دعم حمل صيغة إلى[حالي كتابة صيغة](../../../docs/session-format-status.zh.md) تحرير حل رمز جهاز و متبادل مجاور ترحيل حافة، في وحدة ابتدائي تحويل وقت تحقق كامل كما بلا نقص فتحة ترحيل سلسلة، و عبر `sessionFormatCatalog` كشف شيء إدارة قسم إرسال، فقط header تصنيف، مفرد مرة سطر أيضا أصل و حالي صيغة تدريجي سجل تحرير رمز.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-### 何时使用
+### أي وقت استخدام
 
-当持久化与测试支持读取方需要在任何功能插件挂载前取得完整第一方已发布格式清单时，导入本库。功能组合不会注册或重排其条目。它不发布运行时不变式伴生入口，因为构造过程会拒绝无效静态清单，每次完成的还原也会校验结果；可变行 decoder 状态只属于一次由调用方持有的流式还原。
+عند حفظ دائم و اختبار دعم حمل قراءة جهة حاجة في أي وظيفة إضافة تركيب قبل أخذ نيل كامل رقم واحد جهة قد إصدار صيغة بيان وقت، استيراد هذا مكتبة. وظيفة تركيب لن تسجيل أو إعادة ترتيب ذلك بند. هو لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل، لأن بنية صنع مرور مسار سوف رفض بلا فاعلية ساكن حالة بيان، كل مرة إتمام أيضا أصل أيضا سوف تحقق نتيجة؛ متغير سطر decoder حالة فقط يخص مرة من استدعاء جهة يحتفظ تدفق صيغة أيضا أصل.
 
-### 入口
+### مدخل
 
 ```text
 const descriptor = sessionFormatCatalog.readHeader(physicalHeader)
@@ -40,67 +40,67 @@ const headerRecord = sessionFormatCatalog.encodeCurrentHeader(current.header, cu
 const eventRecords = current.events.map(sessionFormatCatalog.encodeCurrentEvent)
 ```
 
-从包根导入 `sessionFormatCatalog`。JSONL 与 fixture（测试前置数据）读取方创建一次 restore，把每个已解析物理行传给 `decodeRow()`，再调用一次 `finish()`。Writer 通过 `encodeCurrentHeader()` 与 `encodeCurrentEvent()` 序列化返回的当前产物。列表读取调用 `readHeader()`，绝不打开事件正文。
+من حزمة أصل استيراد `sessionFormatCatalog`.JSONL و fixture(اختبار قبل وضع بيانات) قراءة جهة إنشاء مرة restore، يأخذ كل قد تحليل شيء إدارة سطر نقل إعطاء `decodeRow()`، مجددا استدعاء مرة `finish()`.Writer عبر `encodeCurrentHeader()` و `encodeCurrentEvent()` تسلسل تحويل إرجاع حالي ناتج. قائمة قراءة استدعاء `readHeader()`، أبدا فتح حدث متن.
 
-Production 历史读取使用 `{ recovery: 'recoverable', validation: 'transformed' }`。Worker 与 fixture 校验使用 `{ recovery: 'strict', validation: 'current' }`。Transformed validation 会在迁移后执行已发布 current 规则，但对已经是 current 的输入有意跳过已安装语义校验。
+Production تاريخ قراءة استخدام `{ recovery: 'recoverable', validation: 'transformed' }`.Worker و fixture تحقق استخدام `{ recovery: 'strict', validation: 'current' }`.Transformed validation سوف في ترحيل بعد تنفيذ قد إصدار current قاعدة، لكن مقابل قد هو current إدخال متعمد قفز مرور قد تثبيت دلالة تحقق.
 
-该目录直接包含所有受支持的历史读取器。Profile 无法通过挂载功能插件来添加、移除或重新排列迁移边。它通过对 `dsh-session` 的对等依赖（peer dependency）获得已安装的当前事件词表与当前还原规则，而历史迁移边校验器保持冻结。浏览器安全的 `./message-projections` 导出为独立构造函数和 surface 折叠装配当前插件拥有的处理器，不挂载恢复监听器。
+هذا دليل مباشر يتضمن كل تلقي دعم حمل تاريخ قراءة جهاز.Profile لا يمكن عبر تركيب وظيفة إضافة قدوم إضافة، إزالة أو إعادة ترتيب صف ترحيل حافة. هو عبر مقابل `dsh-session` مقابل انتظار اعتماد (peer dependency) نيل نيل قد تثبيت حالي حدث كلمة جدول و حالي أيضا أصل قاعدة، بينما تاريخ ترحيل حافة تحقق جهاز إبقاء تجميد ربط. متصفح أمان `./message-projections` توجيه خروج لـ مستقل بنية صنع دالة و surface طي تركيب إعداد حالي إضافة يملك معالج، لا تركيب استعادة مستمع.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-[`src/generated.ts`](src/generated.ts) 是编解码器与迁移边顺序的静态所有者。[`src/current.ts`](src/current.ts) 把最终标头、事件信封、消息、表面、种子和当前请求标头校验委托给已安装的 Session 语义。底层构造函数会在开始读取任何 Session 之前拒绝重复编解码器、重复迁移边、缺口，以及超过当前版本的条目。
+[`src/generated.ts`](src/generated.ts) هو تحرير حل رمز جهاز و ترحيل حافة ترتيب ساكن حالة كل من.[`src/current.ts`](src/current.ts) يأخذ نهائي علامة رأس، حدث معلومة غلاف، رسالة، جدول وجه، نوع فرعي و حالي طلب علامة رأس تحقق تفويض حمل إعطاء قد تثبيت Session دلالة. قاع طبقة بنية صنع دالة سوف في بدء قراءة أي Session قبل رفض تكرار تحرير حل رمز جهاز، تكرار ترحيل حافة، نقص فتحة، و تجاوز مرور حالي إصدار بند.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [迁移机制](../session-format/README.zh.md)——目录构造与分派行为。
-- [已发布 v0 到 v1 迁移边](../session-format-v0-to-v1/README.zh.md)——编解码器与校验器所有权。
-- [已发布 v1 到 v2 迁移边](../session-format-v1-to-v2/README.zh.md)——Assistant 流嵌入与基数变化引用重映射。
-- [已发布 V2 到 V3 规范](../session-format-v2-to-v3/README.zh.md#v2-to-v3-specification)——转换、保留与拒绝。
-- [JSONL 持久化](../session-persistence-jsonl/README.zh.md)——不可变 generation 命名与排他发布。
+- [ترحيل آلية](../session-format/README.zh.md)——دليل بنية صنع و قسم إرسال سلوك.
+- [قد إصدار v0 إلى v1 ترحيل حافة](../session-format-v0-to-v1/README.zh.md)——تحرير حل رمز جهاز و تحقق جهاز كل حق.
+- [قد إصدار v1 إلى v2 ترحيل حافة](../session-format-v1-to-v2/README.zh.md)——Assistant تدفق تضمين دخول و أساس عدد تغير مرجع إعادة خريطة.
+- [قد إصدار V2 إلى V3 مواصفة](../session-format-v2-to-v3/README.zh.md#v2-to-v3-specification)——تحويل، إبقاء و رفض.
+- [JSONL حفظ دائم](../session-persistence-jsonl/README.zh.md)——غير ممكن تغيير generation تسمية و ترتيب هو إصدار.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 目录分派
+### دليل قسم إرسال
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-没有直接内容。该目录只还原由请求重建逻辑消费的 `SessionEvent` 历史。
+لا يوجد مباشر محتوى. هذا دليل فقط أيضا أصل من طلب إعادة بناء منطق إزالة استهلاك `SessionEvent` تاريخ.
 
-#### Token 影响
+#### Token أثر
 
-不直接产生 token。
+لا مباشر إنتاج token.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-没有直接影响；还原后的历史在其消费方中决定缓存身份。
+لا يوجد مباشر أثر؛ أيضا أصل بعد تاريخ في ذلك مستهلك في قرار ذاكرة مؤقتة هوية.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **仅包含第一方构建清单**——尚不支持外部迁移所有权与分发。
-- **生成顺序封闭**——运行时插件注册无法补充缺失的历史迁移边。
+- **فقط يتضمن رقم واحد جهة بناء بيان**——بعد لا دعم حمل خارجي ترحيل كل حق و توزيع.
+- **توليد ترتيب غلاف إغلاق**——وقت التشغيل إضافة تسجيل لا يمكن تكملة ملء ناقص تاريخ ترحيل حافة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

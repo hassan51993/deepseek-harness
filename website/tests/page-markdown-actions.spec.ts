@@ -98,7 +98,7 @@ describe('page Markdown actions', () => {
     data.frontmatter.value = { rawMarkdownPath: `${lang === 'en-US' ? 'en/' : ''}guide/quickstart.md` }
     await mount()
     await expect(`${host.innerHTML}\n`).toMatchFileSnapshot(`./expected/page-markdown-actions.${lang}.html`)
-    fireEvent.click(getByRole(host, 'button', { name: lang === 'en-US' ? 'More page actions' : '更多页面操作' }))
+    fireEvent.click(getByRole(host, 'button', { name: lang === 'en-US' ? 'More page actions' : 'أكثر كثير صفحة عملية' }))
     await nextTick()
     await expect(`${host.innerHTML}\n`).toMatchFileSnapshot(`./expected/page-markdown-menu.${lang}.html`)
   })
@@ -114,7 +114,7 @@ describe('page Markdown actions', () => {
     expect(link.getAttribute('href')).toBe(`/deepseek-harness/${path}`)
     expect(link.getAttribute('target')).toBe('_blank')
     expect(link.getAttribute('aria-label')).toBe(lang === 'en-US'
-      ? 'View as Markdown (opens in a new tab)' : '以 Markdown 格式查看（在新标签页打开）')
+      ? 'View as Markdown (opens in a new tab)' : 'بـ Markdown صيغة فحص نظر (في جديد وسم صفحة فتح)')
     await expect(`${host.innerHTML}\n`).toMatchFileSnapshot(`./expected/page-markdown-static.${lang}.html`)
     expect(fetchMock).not.toHaveBeenCalled()
   })
@@ -405,8 +405,8 @@ describe('page Markdown actions', () => {
     if (change === 'unmount') expect(host.textContent).toBe('')
     else {
       expect(getByRole(host, 'status').textContent).toBe('')
-      fireEvent.click(getByRole(host, 'button', { name: change === 'route' ? 'Copy page' : '复制页面' }))
-      await waitFor(() => { expect(getByRole(host, 'status').textContent).toBe(change === 'route' ? 'Markdown copied.' : '已复制 Markdown。') })
+      fireEvent.click(getByRole(host, 'button', { name: change === 'route' ? 'Copy page' : 'نسخ صفحة' }))
+      await waitFor(() => { expect(getByRole(host, 'status').textContent).toBe(change === 'route' ? 'Markdown copied.' : 'قد نسخ Markdown.') })
       expect(fetchMock.mock.calls[1]?.[0]).toBe(change === 'route' ? '/en/reference/index.md?dsh-raw=1' : '/guide/quickstart.md?dsh-raw=1')
     }
   })

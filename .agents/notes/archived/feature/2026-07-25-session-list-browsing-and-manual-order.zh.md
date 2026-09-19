@@ -1,61 +1,61 @@
-# Agent Note: Session 列表浏览与 Workspace 手动排序
+# Agent Note: Session قائمة تصفح تصفح و Workspace يد حركة ترتيب ترتيب
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-25-session-list-browsing-and-manual-order.md) | 中文
+[English](2026-07-25-session-list-browsing-and-manual-order.md) | العربية
 
-## 问题
+## مشكلة
 
-[Workspace UI 完整产品流](2026-07-25-workspace-ui-product-flow.zh.md)交付了分组 session 列表的首个形态，并把 Rename、拖拽排序等操作明确划出当期范围。设计稿（figma 239-10458 及关联画面）随后补齐了这些交互：列表要能切换成不分组的平铺视图、session 行悬停要出详情卡与操作菜单、workspace 要能改名、组内 session 要能手动排序。
+[Workspace UI كامل منتج تدفق](2026-07-25-workspace-ui-product-flow.zh.md) تسليم قسم مجموعة session قائمة أول عدد شكل، و يأخذ Rename، سحب جر ترتيب ترتيب انتظار عملية واضح تخطيط خروج عند مدة نطاق. تصميم مسودة (figma 239-10458 و صلة ربط رسم وجه) مع بعد تكملة متساو هذه تفاعل: قائمة يلزم قدرة تبديل صار لا قسم مجموعة مستو فرش عرض،session سطر معلق توقف يلزم خروج تفصيل حال بطاقة و عملية قائمة مفرد،workspace يلزم قدرة تعديل اسم، مجموعة داخل session يلزم قدرة يد حركة ترتيب ترتيب.
 
-两条既有机制挡在前面。其一，host 在每条 `session/event` 上把活跃 session 持久化地提到 workspace 账本最前（活动置顶），任何手动排序都会被下一次活动打乱——两种排序权威不可调和。其二，浏览区域被劈在两个包里：ui-sidebar 拥有列表、搜索和组头行，而 ui-workspace 只借一个 picker slot 放弹层；每加一个 workspace 域的对话框都要跨包接线，归属越来越拧。
+اثنان بند قائم آلية حجب في قبل وجه. ذلك واحد،host في كل بند `session/event` فوق يأخذ نشط وثب session حفظ دائم أرض رفع إلى workspace حساب هذا الأكثر قبل (نشط حركة وضع قمة) ، أي يد حركة ترتيب ترتيب كل سوف يتم تحت مرة نشط حركة ضرب فوضى——اثنان نوع ترتيب ترتيب مرجعي غير ممكن ضبط و. ذلك اثنان، تصفح تصفح منطقة مجال يتم شق في اثنان عدد حزمة داخل:ui-sidebar يملك قائمة، بحث و مجموعة رأس سطر، بينما ui-workspace فقط استعارة واحد picker slot وضع نابض طبقة؛ كل إضافة واحد workspace مجال محادثة إطار كل يلزم عبر حزمة وصل خط، ملكية تجاوز قدوم تجاوز لي.
 
-## 决策
+## قرار
 
-### 平铺行与浏览态
+### مستو فرش سطر و تصفح تصفح حالة
 
-group-by 菜单提供 WorkSpace / In one list 两种模式。WorkSpace 模式按 `WorkspaceView.sessionIds` 的手动序在各组内展示同级 session 行；In one list 把所有 session 合并后严格按 `updatedAt` 新→旧排序。两种模式都不把 `parentId` 投影成列表层级，fork 谱系只保留为 session 数据；完整 fork 行为由 [Web session fork 操作](2026-07-27-web-session-fork-actions.zh.md)定义。模式选择持久化在浏览器（`dsh.workspace.view`），刷新后仍保持。[Workspace 侧边栏顺序与折叠](2026-08-11-workspace-sidebar-order-and-folding.zh.md)随后加入浏览器本地的最近更新视图，而未改变 Host 记账的手动顺序权威。
+group-by قائمة مفرد توفير WorkSpace / In one list اثنان نوع نمط.WorkSpace نمط حسب `WorkspaceView.sessionIds` يد حركة ترتيب في كل مجموعة داخل عرض نفس درجة session سطر؛In one list يأخذ كل session دمج بعد صارم إطار حسب `updatedAt` جديد→قديم ترتيب ترتيب. اثنان نوع نمط كل لا يأخذ `parentId` إسقاط صار قائمة طبقة درجة،fork جدول نظام فقط إبقاء لـ session بيانات؛ كامل fork سلوك من [Web session fork عملية](2026-07-27-web-session-fork-actions.zh.md) تعريف. نمط اختيار حفظ دائم في متصفح (`dsh.workspace.view`) ، تحديث جديد بعد ما زال إبقاء.[Workspace جانب حافة شريط ترتيب و طي](2026-08-11-workspace-sidebar-order-and-folding.zh.md) مع بعد إضافة دخول متصفح محلي الأكثر قريب تحديث عرض، بينما لم تغيير Host تسجيل حساب يد حركة ترتيب مرجعي.
 
-### 行交互
+### سطر تفاعل
 
-- session 行悬停 500ms 出详情卡（完整标题、相对时间、状态行；在 wire 增加 status 字段前，状态行只有 running/idle 两态）。卡片与行菜单互斥：菜单开启或拖拽进行中不出卡。
-- session 行 … 菜单：Rename / Fork session / Delete session，其中 Rename 与 Fork 已接线，Delete 仍为纯视觉；workspace 组头 … 菜单的 Rename / Delete workspace 均已接线。菜单鼠标移出即关。
-- 支撑件：`Menu` 新增 label 条目、danger 行、`closeOnPointerLeave`；新增 `HoverCard`（portal 定位、开启延时、disabled 守卫）。
+- session سطر معلق توقف 500ms خروج تفصيل حال بطاقة (كامل عنوان، متبادل مقابل وقت، حالة سطر؛ في wire زيادة status حقل قبل، حالة سطر فقط لديه running/idle اثنان حالة). بطاقة و سطر قائمة مفرد متبادل رفض: قائمة مفرد فتح بدء أو سحب جر إجراء في لا خروج بطاقة.
+- session سطر … قائمة مفرد:Rename / Fork session / Delete session، منها Rename و Fork قد وصل خط،Delete ما زال لـ صاف نظر شعور؛workspace مجموعة رأس … قائمة مفرد Rename / Delete workspace متساو قد وصل خط. قائمة مفرد فأرة علامة نقل خروج أي صلة.
+- دعم دعم عنصر:`Menu` إضافة جديدة label بند،danger سطر،`closeOnPointerLeave`؛ إضافة جديدة `HoverCard`(portal تحديد موضع، فتح بدء تأخير وقت،disabled حراسة حماية).
 
 ### workspace.rename
 
-`workspace.rename({ workspaceId, title })`：title trim 后非空；同名 no-op 与重名查重都在 Host 的 Workspace 操作串行链内求值（与按路径收编和删除共链，并发的 Workspace 操作不能穿插出重名或乱序假成功），冲突返回 `workspace-name-conflict`。按路径收编可以派生出已有 title，因为拥有身份的是 canonical path，而不是 title（见[身份决策](../bug-fix/2026-07-31-same-basename-workspace-adoption.zh.md)）。落盘经 `setTitle` 的 mutate 通道，`domain/changed` 监听自动广播 `host/workspace-changed` 帧。UI 为标准 Modal，client 侧另做重名预检。
+`workspace.rename({ workspaceId, title })`:title trim بعد غير فارغ؛ نفس اسم no-op و إعادة اسم فحص إعادة كل في Host Workspace عملية سلسلة سطر سلسلة داخل طلب قيمة (و حسب مسار استلام تحرير و حذف مشترك سلسلة، تزامن Workspace عملية لا يستطيع اختراق إدراج خروج إعادة اسم أو فوضى ترتيب زائف نجاح) ، اندفاع مفاجئ إرجاع `workspace-name-conflict`. حسب مسار استلام تحرير يمكن إرسال توليد خروج قد لديه title، لأن يملك هوية هو canonical path، بينما لا هو title(رؤية[هوية قرار](../bug-fix/2026-07-31-same-basename-workspace-adoption.zh.md)). سقوط قرص مرور `setTitle` mutate عبر طريق،`domain/changed` استماع تلقائي واسع بث `host/workspace-changed` لقطة.UI لـ معيار Modal،client جانب آخر فعل إعادة اسم مسبق فحص.
 
-### 手动排序：insertSessionBefore 取代活动置顶
+### يد حركة ترتيب ترتيب:insertSessionBefore يحل محل نشط حركة وضع قمة
 
-`session/event` → `touchSession` 活动置顶链整体删除；workspace 账本顺序现完全由手动排序决定——新 session attach 时前插，显式重排走 `workspace.insertSessionBefore({ workspaceId, sessionId, beforeSessionId? })`（DOM insertBefore 语义：给定锚点时插在锚点前，省略则追加到末尾）。实体只对不在账的 session/锚抛类型化的 `WorkspaceMoveInvalidError`，handler 仅把它映射为业务码 `workspace-move-invalid`，存储故障保持 internal。
+`session/event` → `touchSession` نشط حركة وضع قمة سلسلة كامل جسم حذف؛workspace حساب هذا ترتيب الآن تماما من يد حركة ترتيب ترتيب قرار——جديد session attach وقت قبل إدراج، صريح إعادة ترتيب مشي `workspace.insertSessionBefore({ workspaceId, sessionId, beforeSessionId? })`(DOM insertBefore دلالة: إعطاء تحديد مرساة نقطة وقت إدراج في مرساة نقطة قبل، حذف فإن إلحاق إلى نهاية ذيل). فعلي جسم فقط مقابل لا في حساب session/مرساة رمي نوع تحويل `WorkspaceMoveInvalidError`،handler فقط يأخذ هو خريطة لـ عمل خدمة رمز `workspace-move-invalid`، تخزين لذا عائق إبقاء internal.
 
-UI 为组内 session 行的 HTML5 拖拽（仅 workspace 分组、非搜索态；fork 子会话及其源会话各自独立排序）。顺序权威完全在 host：drop 只发 RPC，client 零本地重排，视图靠响应体 upsert 与 changed 帧刷新；失败即无事发生。client 的 upsert 拒绝比已装载投影更旧（`updatedAt`）的快照，防迟到的一元响应回滚较新的帧。
+UI لـ مجموعة داخل session سطر HTML5 سحب جر (فقط workspace قسم مجموعة، غير بحث حالة؛fork فرعي جلسة و ذلك مصدر جلسة كل منها مستقل ترتيب ترتيب). ترتيب مرجعي تماما في host:drop فقط إرسال RPC،client صفر محلي إعادة ترتيب، عرض اعتماد استجابة جسم upsert و changed لقطة تحديث جديد؛ فشل أي بلا أمر حدوث.client upsert رفض مقارنة قد تركيب تحميل إسقاط أكثر قديم (`updatedAt`) لقطة، منع متأخر إلى واحد عنصر استجابة تراجع مقارنة جديد لقطة.
 
-### 壳/区域切分
+### قشرة/منطقة مجال قطع قسم
 
-ui-sidebar 缩为列几何壳：品牌行、折叠状态机、New Session、Settings，以及一个 `sidebar.workspaces` 洞；壳与区域的约定只有两个事实 `{ wide, expandSidebar }`。ui-workspace 全权拥有浏览区域（section header、搜索、分组树与平铺、全部 workspace 对话框、拖拽）及其 groupBy store；rail 态的搜索、添加工作区图标也归区域，经 `expandSidebar()` 请求壳展开。picker 拆为核心件 `WorkspacePickFlow`（区域内直接组件组合；在[单一路径 Note](../simplification/2026-07-31-one-route-to-add-a-workspace.zh.md)之前名为 `WorkspaceCreateFlow`）与薄包装层 `WorkspacePicker`（继续填 ui-conversation 的 hero slot）；原 `sidebar.workspace` picker slot 与声明感知延迟注册随之删除。
+ui-sidebar تقليص لـ صف بضعة أي قشرة: صنف لوحة سطر، طي حالة آلة،New Session،Settings، و واحد `sidebar.workspaces` ثقب؛ قشرة و منطقة مجال اتفاق فقط لديه اثنان عدد واقع `{ wide, expandSidebar }`.ui-workspace كل حق يملك تصفح تصفح منطقة مجال (section header، بحث، قسم مجموعة شجرة و مستو فرش، الكل workspace محادثة إطار، سحب جر) و ذلك groupBy store؛rail حالة بحث، إضافة مساحة العمل رسم علامة أيضا عودة منطقة مجال، مرور `expandSidebar()` طلب قشرة توسيع.picker تفكيك لـ نواة قلب عنصر `WorkspacePickFlow`(منطقة مجال داخل مباشر مكون تركيب؛ في[مفرد واحد مسار Note](../simplification/2026-07-31-one-route-to-add-a-workspace.zh.md) قبل اسم لـ `WorkspaceCreateFlow`) و رقيق حزمة تركيب طبقة `WorkspacePicker`(متابعة ملء ui-conversation hero slot) ؛ أصل `sidebar.workspace` picker slot و إعلان شعور معرفة تأخير متأخر تسجيل مع لـ حذف.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留活动置顶、拖拽仅作临时调整**——手动序在下一次 session 活动即被打乱，形同虚设；两种排序权威并存无法向用户解释。也考虑过「拖过一次即冻结该 workspace 的活动置顶」的折中，状态多一档、语义更难讲，直接删除更干净。
+**إبقاء نشط حركة وضع قمة، سحب جر فقط عمل مؤقت ضبط كامل**——يد حركة ترتيب في تحت مرة session نشط حركة أي يتم ضرب فوضى، شكل نفس وهمي ضبط؛ اثنان نوع ترتيب ترتيب مرجعي و تخزين لا يمكن نحو مستخدم حل تفسير. أيضا اعتبار مرور «سحب مرور مرة أي تجميد ربط هذا workspace نشط حركة وضع قمة» طي في، حالة كثير واحد ملف، دلالة أكثر صعب شرح، مباشر حذف أكثر جاف صاف.
 
-**排序报文用数字下标**——`{ index }` 在拖拽窗口期会漂移：host 前插新 session（如 Intent 材料化）后同一下标指向别的行。锚点式 insertBefore 对前插与过滤投影天然免疫。
+**ترتيب ترتيب تقرير نص استخدام عدد حرف تحت علامة**——`{ index }` في سحب جر نافذة مدة سوف عائم نقل:host قبل إدراج جديد session(مثل Intent مادة مادة تحويل) بعد نفس تحت علامة إشارة نحو آخر سطر. مرساة نقطة صيغة insertBefore مقابل قبل إدراج و مرور ترشيح إسقاط يوم لكن تجنب وباء.
 
-**drop 后乐观重排**——client 先行重排需失败回滚，对象层多一块纠缠态；本地、局域网往返毫秒级，等 host 响应的简单方案肉眼无感。顺序权威单一化（完全信 host）后，前端永不发明顺序。
+**drop بعد مرح مراقبة إعادة ترتيب**——client أولا سطر إعادة ترتيب يحتاج فشل تراجع، كائن طبقة كثير واحد كتلة تصحيح التفاف حالة؛ محلي، نطاق مجال شبكة نحو إرجاع جزء ثانية درجة، انتظار host استجابة بسيط مفرد خطة لحم عين بلا شعور. ترتيب مرجعي مفرد واحد تحويل (تماما معلومة host) بعد، قبل طرف دائم لا إرسال واضح ترتيب.
 
-**rename 对话框留在 ui-sidebar（最小改动）**——正是问题本身：workspace 域的对话框散落在借来的坑里，每加一个（Delete 确认框将至）都重演跨包接线。只挪 rename Modal 会在下一个对话框上重演这份接线；整个浏览区域归 ui-workspace，壳只留几何。
+**rename محادثة إطار إبقاء في ui-sidebar(الأكثر صغير تعديل)**——صحيح هو مشكلة ذاته:workspace مجال محادثة إطار تفرق سقوط في استعارة قدوم حفرة داخل، كل إضافة واحد (Delete تأكيد إطار سوف حتى) كل إعادة عرض عبر حزمة وصل خط. فقط نقل rename Modal سوف في تحت واحد محادثة إطار فوق إعادة عرض هذا نسخة وصل خط؛ كامل تصفح تصفح منطقة مجال عودة ui-workspace، قشرة فقط إبقاء بضعة أي.
 
-**WorkSpace 模式按 fork 谱系嵌套 session**——嵌套会让当前子会话依赖祖先展开态才能可见，也让组内手动序只能移动根节点；`parentId` 是 lineage 数据，不是列表导航结构。所有 session 拍平成同级行后，每行都可独立打开、搜索与排序；In one list 仍因没有 workspace 持久化载体而禁用拖拽。
+**WorkSpace نمط حسب fork جدول نظام تضمين طقم session**——تضمين طقم سوف يجعل حالي فرعي جلسة اعتماد أصل أولا توسيع حالة عندئذ قدرة مرئي، أيضا يجعل مجموعة داخل يد حركة ترتيب فقط قدرة نقل حركة أصل عقدة؛`parentId` هو lineage بيانات، لا هو قائمة تنقل بنية. كل session التقاط مستو صار نفس درجة سطر بعد، كل سطر كل يمكن مستقل فتح، بحث و ترتيب ترتيب؛In one list ما زال بسبب لا يوجد workspace حفظ دائم تحميل جسم بينما منع استخدام سحب جر.
 
-## 后果
+## عاقبة
 
-- 手动序是 Host workspace 账本的唯一顺序权威：活动绝不改动 `WorkspaceView.sessionIds`。后续加入的浏览器本地最近更新视图可以把活跃行提到最前，但不会改变该账本；其独立语义见 [Workspace 侧边栏顺序与折叠](2026-08-11-workspace-sidebar-order-and-folding.zh.md)。
-- 壳/区域两事实约定把 workspace 域的后续功能（Delete 确认、跨组移动、Ungrouped 收编）全部收进 ui-workspace 单包；ui-sidebar 不再随 session 列表功能演进。
-- 平铺模式不支持重排，也没有在指定 workspace 中创建 session 的入口（需切回分组视图），是拍板接受的范围收窄。
-- session Delete 的功能接线与扩展 wire 状态枚举，留待后续迭代。
+- يد حركة ترتيب هو Host workspace حساب هذا وحيد ترتيب مرجعي: نشط حركة أبدا تعديل `WorkspaceView.sessionIds`. لاحق إضافة دخول متصفح محلي الأكثر قريب تحديث عرض يمكن يأخذ نشط وثب سطر رفع إلى الأكثر قبل، لكن لن تغيير هذا حساب هذا؛ ذلك مستقل دلالة رؤية [Workspace جانب حافة شريط ترتيب و طي](2026-08-11-workspace-sidebar-order-and-folding.zh.md).
+- قشرة/منطقة مجال اثنان واقع اتفاق يأخذ workspace مجال لاحق وظيفة (Delete تأكيد، عبر مجموعة نقل حركة،Ungrouped استلام تحرير) الكل استلام دخول ui-workspace مفرد حزمة؛ui-sidebar لم يعد مع session قائمة وظيفة عرض دخول.
+- مستو فرش نمط لا دعم حمل إعادة ترتيب، أيضا لا يوجد في إشارة تحديد workspace في إنشاء session مدخل (يحتاج قطع عودة قسم مجموعة عرض) ، هو التقاط لوح قبول نطاق استلام ضيق.
+- session Delete وظيفة وصل خط و توسيع wire حالة قطعة رفع، إبقاء انتظار لاحق تكرار بديل.
 
-## 测试
+## اختبار
 
-包级用例覆盖派生（deriveGroups/deriveFlat）、同级 session 行、两处 apply 注册与透传、host 实体移位语义、rename/insertSessionBefore 的 RPC 实现与 fixture（测试前置数据）桩；`apps/web` keyless 快照回归覆盖装配后的应用，并钉住 fork 后没有 session 展开控件。
+حزمة درجة حالة استخدام تغطية إرسال توليد (deriveGroups/deriveFlat) ، نفس درجة session سطر، اثنان موضع apply تسجيل و نفاذ نقل،host فعلي جسم نقل موضع دلالة،rename/insertSessionBefore RPC تنفيذ و fixture(اختبار قبل وضع بيانات) وتد؛`apps/web` keyless لقطة ارتداد تغطية تركيب إعداد بعد تطبيق، و تثبيت إقامة fork بعد لا يوجد session توسيع تحكم عنصر.

@@ -1,31 +1,31 @@
-# Agent Note: 将持久化接口合并进 dsh-session
+# Agent Note: سوف حفظ دائم واجهة دمج دخول dsh-session
 
-Status: rejected — 独立的持久化 Service Definition 包是持久化能力 seam 预期的模块化角色拆分。将其折叠进 `dsh-session` 虽能减少包数量，却会牺牲更清晰的后端边界。
+Status: rejected — مستقل حفظ دائم Service Definition حزمة هو حفظ دائم قدرة seam مسبق مدة وحدة تحويل زاوية لون تفكيك قسم. سوف ذلك طي دخول `dsh-session` رغم قدرة نقص قليل حزمة عدد كمية، لكن سوف تضحية قربان أكثر صاف واضح خلفية حد.
 
-[English](2026-06-20-fold-session-persistence-interface.md) | 中文
+[English](2026-06-20-fold-session-persistence-interface.md) | العربية
 
-## 问题
+## مشكلة
 
-`dsh-session-persistence` 是一个 Service Definition 包，其核心概念已经由 `dsh-session` 拥有：`SessionHeader`、`SessionEvent`、`SessionId`、`session/event` 与 `session/flush`。该包额外添加了抽象的 `SessionPersistence` 服务、共享写入协调器和约定辅助工具。提供方包依赖它，为实现恢复，`agent-loop`（智能体循环）还需要按需查找这个同级服务。
+`dsh-session-persistence` هو واحد Service Definition حزمة، ذلك نواة قلب عام فكرة قد من `dsh-session` يملك:`SessionHeader`،`SessionEvent`،`SessionId`،`session/event` و `session/flush`. هذا حزمة مقدار خارج إضافة سحب كائن `SessionPersistence` خدمة، مشترك كتابة تنسيق ضبط جهاز و اتفاق مساعد مساعدة أداة. مزود حزمة اعتماد هو، لـ تنفيذ استعادة،`agent-loop`(ذكي جسم حلقة) أيضا حاجة حسب يحتاج فحص بحث هذا عدد نفس درجة خدمة.
 
-当持久化还是一个全新的可替换后端设计时，能力 seam 的拆分是合理的。但在可变摘要被移除之后，这个 Service Definition 包基本上只是包装了会话日志自身的存储职责。继续保持独立可能带来的仪式感多于清晰度。
+عند حفظ دائم أيضا هو واحد كل جديد يمكن استبدال خلفية تصميم وقت، قدرة seam تفكيك قسم هو دمج إدارة. لكن في متغير ملخص يتم إزالة بعد، هذا عدد Service Definition حزمة أساس هذا فوق فقط هو حزمة تركيب جلسة سجل ذاته تخزين مسؤولية. متابعة إبقاء مستقل ممكن حمل قدوم جهاز صيغة شعور كثير في صاف واضح درجة.
 
-## 提案
+## رفع سجل
 
-将抽象的 `SessionPersistence` 服务、协调器和持久化约定辅助工具移入 `dsh-session`。JSONL 和 SQLite 仍作为独立的后端包，注册由会话包拥有的服务。这样既保留了后端可替换性，又删除了一个支撑包和一条跨包边界。
+سوف سحب كائن `SessionPersistence` خدمة، تنسيق ضبط جهاز و حفظ دائم اتفاق مساعد مساعدة أداة نقل دخول `dsh-session`.JSONL و SQLite ما زال بصفة مستقل خلفية حزمة، تسجيل من جلسة حزمة يملك خدمة. هذا مثال حيث إبقاء خلفية يمكن استبدال صفة، أيضا حذف واحد دعم دعم حزمة و واحد بند عبر حزمة حد.
 
-实施 PR（Pull Request）应更新[能力 seam](../../implemented/architecture/2026-06-13-capability-seams.zh.md) 指南，补充此例外：持久化不同于 bash 或 LLM（大语言模型），因为它的词汇和生命周期事件本就属于会话包的核心领域。
+فعلي تطبيق PR(Pull Request) ينبغي تحديث[قدرة seam](../../implemented/architecture/2026-06-13-capability-seams.zh.md) إشارة جنوب، تكملة ملء هذا مثال خارج: حفظ دائم مختلف في bash أو LLM(كبير لغة نموذج) ، لأن هو مفردات و دورة الحياة حدث هذا حينئذ يخص جلسة حزمة نواة قلب مجال.
 
-## 验收标准
+## تحقق استلام معيار
 
-- `@deepseek-ai/dsh-session-persistence` 作为包被移除。
-- `dsh-session` 导出持久化服务类型、协调器和约定辅助工具。
-- JSONL 和 SQLite 后端包直接依赖 `dsh-session`。
-- `agent-loop` 的恢复功能使用会话包拥有的服务键。
-- [会话持久化](../../implemented/architecture/2026-06-14-session-persistence.zh.md)、[基于句柄的会话持久化](../../implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md)与[包文档](../../../../packages/session/session-persistence/README.zh.md)说明后端实现为何仍保持独立。
+- `@deepseek-ai/dsh-session-persistence` بصفة حزمة يتم إزالة.
+- `dsh-session` توجيه خروج حفظ دائم خدمة نوع، تنسيق ضبط جهاز و اتفاق مساعد مساعدة أداة.
+- JSONL و SQLite خلفية حزمة مباشر اعتماد `dsh-session`.
+- `agent-loop` استعادة وظيفة استخدام جلسة حزمة يملك خدمة مفتاح.
+- [جلسة حفظ دائم](../../implemented/architecture/2026-06-14-session-persistence.zh.md) ،[أساس في جملة مقبض جلسة حفظ دائم](../../implemented/architecture/2026-08-27-handle-based-session-persistence.zh.md) و[حزمة وثيقة](../../../../packages/session/session-persistence/README.zh.md) شرح خلفية تنفيذ لـ أي ما زال إبقاء مستقل.
 
-## 放弃了什么
+## وضع ترك ماذا
 
-`dsh-session` 变得更重：它同时拥有内存日志和持久化 Service Definition。这就是代价。如果第三方持久化后端已经形成公开生态，独立的 Service Definition 包会是更清晰的 SDK 边界；但在预发布阶段尚无外部消费方时，这个额外的包更像是过早引入的抽象。
+`dsh-session` تغيير نيل أكثر إعادة: هو معا يملك داخل تخزين سجل و حفظ دائم Service Definition. هذا حينئذ هو بديل قيمة. إذا رقم ثلاثة جهة حفظ دائم خلفية قد شكل صار عام توليد حالة، مستقل Service Definition حزمة سوف هو أكثر صاف واضح SDK حد؛ لكن في مسبق إصدار مرحلة مقطع بعد بلا خارجي مستهلك وقت، هذا عدد مقدار خارج حزمة أكثر مثل هو مرور مبكر جذب دخول سحب كائن.
 
 <!-- agent-note-format: alternatives-not-recorded (pre-format Agent Note) -->

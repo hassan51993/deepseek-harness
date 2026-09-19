@@ -1,12 +1,12 @@
-# 产出物
+# إنتاج خروج شيء
 
-[English](deliverables.md) | 中文
+[English](deliverables.md) | العربية
 
-记录一轮交给用户的东西，由 [deliverables 包组](../../packages/deliverables/README.zh.md)拥有：模型通过 `present` 工具声明的文件，记在一个只写日志的 Session 事件里；这一轮改动的文件，由轮开始和轮结束时的 git 工作树快照对比得出，git 覆盖不到的路径则由文件工具每次编辑前后的整文件捕获得出，用一个只写日志的事件宣告，并在 Session 存活期间由 Host 服务连同每个所列文件在轮开始与轮结束时的对比一起提供。它们只由客户端读取，Web [产出物插件](../../packages/client/ui-deliverables/README.zh.md)在轮末渲染两者。工具行为、快照机制和配置见 [`tool-present`](../../packages/deliverables/tool-present/README.zh.md) 与 [`workspace-changes`](../../packages/deliverables/workspace-changes/README.zh.md) 的包 README。
+سجل واحد جولة تسليم إعطاء مستخدم شرق غرب، من [deliverables حزمة مجموعة](../../packages/deliverables/README.zh.md) يملك: نموذج عبر `present` أداة إعلان ملف، تسجيل في واحد فقط كتابة سجل Session حدث داخل؛ هذا واحد جولة تعديل ملف، من جولة بدء و جولة انتهاء وقت git عمل شجرة لقطة مقابل مقارنة نيل خروج،git تغطية لا إلى مسار فإن من ملف أداة كل مرة تحرير قبل بعد كامل ملف التقاط نيل خروج، استخدام واحد فقط كتابة سجل حدث إعلان إبلاغ، و في Session تخزين نشط خلال من Host خدمة وصل نفس كل الذي صف ملف في جولة بدء و جولة انتهاء وقت مقابل مقارنة واحد بدء توفير. هو جمع فقط من عميل قراءة،Web [إنتاج خروج شيء إضافة](../../packages/client/ui-deliverables/README.zh.md) في جولة نهاية تصيير اثنان من. أداة سلوك، لقطة آلية و إعداد رؤية [`tool-present`](../../packages/deliverables/tool-present/README.zh.md) و [`workspace-changes`](../../packages/deliverables/workspace-changes/README.zh.md) حزمة README.
 
-源码：[`packages/deliverables/tool-present/src/types.ts`](../../packages/deliverables/tool-present/src/types.ts)、[`packages/deliverables/workspace-changes/src/types.ts`](../../packages/deliverables/workspace-changes/src/types.ts)
+شفرة المصدر:[`packages/deliverables/tool-present/src/types.ts`](../../packages/deliverables/tool-present/src/types.ts) ،[`packages/deliverables/workspace-changes/src/types.ts`](../../packages/deliverables/workspace-changes/src/types.ts)
 
-## `PresentedFile`：一条声明的交付
+## `PresentedFile`: واحد بند إعلان تسليم
 
 ```ts type-equiv
 /** A declared filesystem file whose current contents remain at its source path. */
@@ -18,7 +18,7 @@ interface PresentedFile {
 }
 ```
 
-## `WorkspaceChangedFile`：一个改动的文件
+## `WorkspaceChangedFile`: واحد تعديل ملف
 
 ```ts type-equiv
 /** One file changed during a turn, with line counts from git or from the whole-file captures around its file-tool edits. */
@@ -42,7 +42,7 @@ interface WorkspaceChangedFile {
 }
 ```
 
-## `WorkspaceChangesSummary`：一轮的改动摘要
+## `WorkspaceChangesSummary`: واحد جولة تعديل ملخص
 
 ```ts type-equiv
 /** Files changed during one top-level turn, kept on the Host until its Session is disposed. */
@@ -64,7 +64,7 @@ interface WorkspaceChangesSummary {
 }
 ```
 
-## `WorkspaceDiffHunk`：一个 unified diff hunk
+## `WorkspaceDiffHunk`: واحد unified diff hunk
 
 ```ts type-equiv
 /** One unified-diff hunk with three context lines; every line keeps its `+`, `-`, or space prefix. */
@@ -82,7 +82,7 @@ interface WorkspaceDiffHunk {
 }
 ```
 
-## `WorkspaceFileDiff`：一个文件的对比
+## `WorkspaceFileDiff`: واحد ملف مقابل مقارنة
 
 ```ts type-equiv
 /** The comparison of one listed file's turn-start and turn-end contents, computed when asked for. */
@@ -108,7 +108,7 @@ type WorkspaceFileDiff =
   | { kind: 'oversized'; path: string; display: string }
 ```
 
-## `WorkspaceChanges`：提供摘要与对比的 Host 服务
+## `WorkspaceChanges`: توفير ملخص و مقابل مقارنة Host خدمة
 
 ```ts type-equiv
 /** Serves the summaries and file comparisons the recorder keeps for live Sessions. */
@@ -133,9 +133,9 @@ interface WorkspaceChanges {
 }
 ```
 
-## 持久事件与提供的摘要
+## حمل دائم حدث و توفير ملخص
 
-`tool-present` 通过声明合并把 `deliverables/presented: { turn; callId; files: PresentedFile[] }` 加入 `SessionEventMap`，每次 `present` 的最终结果成功时追加一条。`workspace-changes` 合并 `workspace/changes: { turn }`，在顶层轮停止时追加；该事件宣告的摘要不在日志里，而是由 `workspaceChanges.summary(sessionId, seq)` 按事件序号返回，直到 Session 释放，因此 Host 重启后重新打开的对话，先前轮次没有改动文件卡片。`workspaceChanges.diff(sessionId, seq, index, signal)` 按同样的条件对比一个所列文件。同一轮后来的事件替代先前的，客户端只保留最新一条。生成的[持久化目录](../persistence-catalog.zh.md#deliverablespresented--log-only)记录了两处声明位置。两个事件都不会进入模型请求。
+`tool-present` عبر إعلان دمج يأخذ `deliverables/presented: { turn; callId; files: PresentedFile[] }` إضافة دخول `SessionEventMap`، كل مرة `present` نهائي نتيجة نجاح وقت إلحاق واحد بند.`workspace-changes` دمج `workspace/changes: { turn }`، في قمة طبقة جولة إيقاف وقت إلحاق؛ هذا حدث إعلان إبلاغ ملخص لا في سجل داخل، بينما هو من `workspaceChanges.summary(sessionId, seq)` حسب حدث ترتيب رقم إرجاع، مباشر إلى Session تحرير، لذلك Host إعادة بدء بعد إعادة فتح محادثة، أولا قبل جولة لا يوجد تعديل ملف بطاقة.`workspaceChanges.diff(sessionId, seq, index, signal)` حسب نفس مثال شرط مقابل مقارنة واحد الذي صف ملف. نفس جولة بعد قدوم حدث بديل أولا قبل، عميل فقط إبقاء الأكثر جديد واحد بند. توليد[حفظ دائم دليل](../persistence-catalog.zh.md#deliverablespresented--log-only) سجل اثنان موضع إعلان موضع. اثنان عدد حدث كل لن دخول نموذج طلب.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

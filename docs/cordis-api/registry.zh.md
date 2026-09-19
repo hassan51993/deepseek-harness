@@ -1,11 +1,11 @@
-<!-- 英文源文件由 scripts/gen-cordis-catalog.ts 生成；本中文文件是通过双语配对维护的经评审对侧。
-     更新时先运行 `pnpm run gen-cordis-catalog` 更新英文，再更新本文件并运行 `pnpm run verify-translation-pairing --write docs/cordis-api/registry.md` 重新记录配对。 -->
+<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
+     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/registry.md` إعادة سجل إعداد مقابل. -->
 
-# 注册表
+# سجل التسجيل
 
-[English](registry.md) | 中文
+[English](registry.md) | العربية
 
-插件加载与依赖注入。
+إضافة تحميل و اعتماد حقن.
 
 ### ctx.inject(deps, callback)
 
@@ -23,16 +23,16 @@
 inject(deps: Inject, callback: Plugin.Function<void>): Fiber & PromiseLike<Fiber>
 ```
 
-请求的服务可用后，运行回调。
+طلب خدمة متاح بعد، تشغيل عودة ضبط.
 
-这是 `ctx.plugin({ inject, apply: callback })` 的简写形式：每当某个必需服务发生变化时，系统都会卸载并重新运行该回调。
+هذا هو `ctx.plugin({ inject, apply: callback })` بسيط كتابة شكل صيغة: كل عند بعض عدد مطلوب خدمة حدوث تغير وقت، نظام كل سوف إزالة و إعادة تشغيل هذا عودة ضبط.
 
-- `deps`：必需服务，形式可以是数组，也可以是从名称到配置的映射。
-- `callback`：以 `(ctx, config)` 调用的插件主体。
+- `deps`: مطلوب خدمة، شكل صيغة يمكن هو عدد مجموعة، أيضا يمكن هو من اسم إلى إعداد خريطة.
+- `callback`: بـ `(ctx, config)` استدعاء إضافة رئيسي جسم.
 
-**返回** fiber；对其执行 await 会在加载完成后结束等待。
+**إرجاع** fiber؛ مقابل ذلك تنفيذ await سوف في تحميل إتمام بعد انتهاء انتظار.
 
-[源码](../../vendor/cordis/src/registry.ts#L176)
+[شفرة المصدر](../../vendor/cordis/src/registry.ts#L176)
 
 ### ctx.plugin(plugin, ...args)
 
@@ -48,18 +48,18 @@ inject(deps: Inject, callback: Plugin.Function<void>): Fiber & PromiseLike<Fiber
 plugin<P extends Plugin>(plugin: P, ...args: Spread<GetPluginConfig<P>>): Fiber & PromiseLike<Fiber>
 ```
 
-在当前上下文中加载插件。
+في حالي سياق في تحميل إضافة.
 
-- `plugin`：函数、类或 `{ apply }` 对象形式的插件。
-- `args`：插件配置，会根据其 `Config` schema 进行校验。
+- `plugin`: دالة، صنف أو `{ apply }` كائن شكل صيغة إضافة.
+- `args`: إضافة إعداد، سوف أصل حسب ذلك `Config` schema إجراء تحقق.
 
-**返回** fiber；对其执行 await 会在加载完成后结束等待（如果发生配置错误或启动错误，则会被拒绝）。
+**إرجاع** fiber؛ مقابل ذلك تنفيذ await سوف في تحميل إتمام بعد انتهاء انتظار (إذا حدوث إعداد خطأ أو بدء خطأ، فإن سوف يتم رفض).
 
-[源码](../../vendor/cordis/src/registry.ts#L185)
+[شفرة المصدر](../../vendor/cordis/src/registry.ts#L185)
 
 ## Plugin
 
-支持的插件入口点形式。
+دعم حمل إضافة مدخل نقطة شكل صيغة.
 
 ```ts cordis-catalog
 /** Supported plugin entrypoint shapes. */
@@ -120,13 +120,13 @@ namespace Plugin {
 }
 ```
 
-[源码](../../vendor/cordis/src/registry.ts#L92)
+[شفرة المصدر](../../vendor/cordis/src/registry.ts#L92)
 
 ## Inject
 
-插件和 `@Inject` 装饰器接受的服务依赖声明。
+إضافة و `@Inject` تركيب زينة جهاز قبول خدمة اعتماد إعلان.
 
-数组形式请求不带拦截配置的服务。对象形式将每个服务名称映射到插件上下文中可选的拦截配置。
+عدد مجموعة شكل صيغة طلب لا حمل اعتراض قطع إعداد خدمة. كائن شكل صيغة سوف كل خدمة اسم خريطة إلى إضافة سياق في اختياري اعتراض قطع إعداد.
 
 ```ts cordis-catalog
 /**
@@ -151,4 +151,4 @@ namespace Inject {
 }
 ```
 
-[源码](../../vendor/cordis/src/registry.ts#L19)
+[شفرة المصدر](../../vendor/cordis/src/registry.ts#L19)

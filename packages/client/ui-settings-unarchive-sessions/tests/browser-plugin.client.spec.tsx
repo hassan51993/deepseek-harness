@@ -50,7 +50,7 @@ describe('ui-settings-unarchive-sessions browser plugin', () => {
     expect(entry.component).toBe(ArchivedSessionsSection)
     expect(entry.options).toMatchObject({ id: 'archived-sessions', order: 25 })
     expect(entry.locale).toBe('settings.archivedSessions')
-    expect(resolveSlotLabel(entry.options.label)).toBe('已归档会话')
+    expect(resolveSlotLabel(entry.options.label)).toBe('قد عودة ملف جلسة')
 
     b.locale.setLocale('en')
     expect(resolveSlotLabel(b.slots.entries('settings.section')[0]!.options.label)).toBe('Archived sessions')

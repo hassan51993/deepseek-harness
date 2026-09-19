@@ -1,85 +1,85 @@
 ---
-description: "面向 Host 与浏览器 Client Cordis 运行时的实验性 Chrome DevTools 检查，包括 Console 求值、Sources、Network 采集、Elements 树和独立于 CDP 的查询 API。"
+description: "موجه إلى Host و متصفح Client Cordis وقت التشغيل فعلي تحقق صفة Chrome DevTools فحص، يشمل Console طلب قيمة،Sources،Network أخذ تجميع،Elements شجرة و مستقل في CDP استعلام API."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-experimental-inspector
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-使用这个实验性 Inspector，可以在 Chrome DevTools 中检查一个运行中的 dsh Host 及其浏览器 Client。它提供 Host 与 Client Console context、Host Sources 与调试、Host fetch 采集和共享 Cordis 树，并让 Worker 独占全部 CDP 状态。
+استخدام هذا عدد فعلي تحقق صفة Inspector، يمكن في Chrome DevTools في فحص واحد تشغيل في dsh Host و ذلك متصفح Client. هو توفير Host و Client Console context،Host Sources و ضبط تجربة،Host fetch أخذ تجميع و مشترك Cordis شجرة، و يجعل Worker وحيد احتلال الكل CDP حالة.
 
-本包以实验性名称发布，需要显式组合。Worker 不访问实时 Cordis 对象；共享 Host/Client collector 会在传输前把它们投影成已验证快照。Cordis 还负责插件组合、注册 `ctx.inspector`、注入 bootstrap 和 dispose（资源释放）。
+هذه الحزمة بـ فعلي تحقق صفة اسم إصدار، حاجة صريح تركيب.Worker لا وصول فوري Cordis كائن؛ مشترك Host/Client collector سوف في نقل قبل يأخذ هو جمع إسقاط صار قد تحقق لقطة.Cordis أيضا مسؤول إضافة تركيب، تسجيل `ctx.inspector`، حقن bootstrap و dispose(مورد تحرير).
 
-## 目录
+## دليل
 
-- [运行时布局](#runtime-layout)
-- [配置](#configuration)
-- [观测 API](#observation-api)
-- [Cordis 树检查](#cordis-tree-inspection)
-- [Host fetch 采集](#host-fetch-capture)
-- [安全](#security)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [وقت التشغيل تخطيط](#runtime-layout)
+- [إعداد](#configuration)
+- [مراقبة قياس API](#observation-api)
+- [Cordis شجرة فحص](#cordis-tree-inspection)
+- [Host fetch أخذ تجميع](#host-fetch-capture)
+- [أمان](#security)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="runtime-layout"></a>
-## 运行时布局
+## وقت التشغيل تخطيط
 
-Host 插件启动 Worker 并连接专用 `MessagePort`。Client 插件读取注入的 `globalThis.__DSH_INSPECTOR__` bootstrap，直接向 Worker 打开一条独立、带鉴权的 WebSocket。Chrome DevTools 连接 Worker 的 CDP WebSocket。每条 DevTools 连接在 Worker 中独占一个连接 Host 主线程的 `node:inspector.Session`，因此 Host JavaScript 暂停时，Host Console 求值、Sources、断点和 resume 仍然可用。
+Host إضافة بدء Worker و اتصال مخصص استخدام `MessagePort`.Client إضافة قراءة حقن `globalThis.__DSH_INSPECTOR__` bootstrap، مباشر نحو Worker فتح واحد بند مستقل، حمل تمييز حق WebSocket.Chrome DevTools اتصال Worker CDP WebSocket. كل بند DevTools اتصال في Worker في وحيد احتلال واحد اتصال Host رئيسي خط مسار `node:inspector.Session`، لذلك Host JavaScript مؤقت توقف وقت،Host Console طلب قيمة،Sources، قطع نقطة و resume ما زال متاح.
 
-源码树遵循这些执行环境：`client/` 与 `host/` 提供镜像的适配器 entry path，`worker/` 只包含 Worker thread orchestration 与 Chrome protocol 状态，`shared/` 包含与环境无关的 Cordis 和 network model、规范化 realm 后端接口及内部 bridge protocol。Worker 侧 Client 与 Host 适配器镜像放在 `worker/realms/` 下；其中的 Client 适配器仍然在 Worker 中执行。
+شفرة المصدر شجرة التزام دوران هذه تنفيذ بيئة:`client/` و `host/` توفير مرآة مثل مهايئ entry path،`worker/` فقط يتضمن Worker thread orchestration و Chrome protocol حالة،`shared/` يتضمن و بيئة غير متصل Cordis و network model، مواصفة تحويل realm خلفية واجهة و داخلي bridge protocol.Worker جانب Client و Host مهايئ مرآة مثل وضع في `worker/realms/` تحت؛ منها Client مهايئ ما زال في Worker في تنفيذ.
 
-Host 与 Client producer 发送内部观测记录，不发送 CDP 消息。记录包含 source generation、sequence、source 时钟时间、topic 和 JSON payload。Worker 验证每个进程或网络帧，独占 source 状态与保留历史，并把已识别 topic 转换成标准 CDP domain。
+Host و Client producer إرسال داخلي مراقبة قياس سجل، لا إرسال CDP رسالة. سجل يتضمن source generation،sequence،source وقت ساعة وقت،topic و JSON payload.Worker تحقق كل عملية أو شبكة شبكة لقطة، وحيد احتلال source حالة و إبقاء تاريخ، و يأخذ قد تعرف آخر topic تحويل صار معيار CDP domain.
 
-Client source 声明类型化 Runtime、Console 和只读 Sources 能力。`Runtime.enable` 发布真实 Host execution context，并为每个已连接的 Client source 发布一个 synthetic context。选择 Client context 后，求值、属性读取、函数调用、Promise await 和对象释放都会路由到该浏览器 realm。Client Console argument 使用同一份会话本地 object table；`Debugger.enable` 发布构建后的 `lib/client.js` catalog，`Debugger.getScriptSource` 读取有界 content chunk。Client script 断点、step 和 call frame 仍不支持；target-wide pause 与 resume 只控制 Host debugger。
+Client source إعلان نوع تحويل Runtime،Console و فقط قراءة Sources قدرة.`Runtime.enable` إصدار حقيقي Host execution context، و لـ كل قد اتصال Client source إصدار واحد synthetic context. اختيار Client context بعد، طلب قيمة، خاصية قراءة، دالة استدعاء،Promise await و كائن تحرير كل سوف توجيه إلى هذا متصفح realm.Client Console argument استخدام نفس نسخة جلسة محلي object table؛`Debugger.enable` إصدار بناء بعد `lib/client.js` catalog،`Debugger.getScriptSource` قراءة محدود content chunk.Client script قطع نقطة،step و call frame ما زال لا دعم حمل؛target-wide pause و resume فقط تحكم Host debugger.
 
-两个插件端运行同一份可在浏览器中安全运行的 Cordis collector。它把可达 Context 与 Fiber 对象转换成有版本的 `CordisTreeSnapshot`；Worker 存储这份与 CDP 无关的表示，并把每个 Host 或 Client source 投影到 Elements 面板。
+اثنان عدد إضافة طرف تشغيل نفس نسخة يمكن في متصفح في أمان تشغيل Cordis collector. هو يأخذ يمكن بلوغ Context و Fiber كائن تحويل صار لديه إصدار `CordisTreeSnapshot`؛Worker تخزين هذا نسخة و CDP غير متصل يمثل، و يأخذ كل Host أو Client source إسقاط إلى Elements وجه لوح.
 
 <a id="configuration"></a>
-## 配置
+## إعداد
 
-Host 插件注入 `webServer`，接受以下字段：
+Host إضافة حقن `webServer`، قبول التالي حقل:
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---:|---|
-| `host` | `127.0.0.1` | Worker endpoint 监听地址；只接受 loopback |
-| `port` | `9230` | Worker endpoint 起始端口；端口占用时向上递增，`0` 表示由操作系统分配 |
-| `clientOrigins` | `[]` | `/ingest` 额外接受的精确浏览器 origin；loopback origin 始终允许 |
-| `captureFetch` | `true` | 包装 `globalThis.fetch` 并发布之后的每次调用 |
-| `maxRequestBodyBytes` | 8 MiB | 每次请求保留的 request body 前缀 |
-| `maxResponseBodyBytes` | 32 MiB | 每次请求保留的 response body 前缀 |
-| `maxBodyChunkBytes` | 48 KiB | base64 编码前一条 body 记录携带的原始字节数 |
-| `maxJournalBytes` | 256 MiB | Worker 保留的请求与响应 body 总字节数 |
-| `maxRetainedRequests` | `2000` | Worker 保留的进行中与已完成请求总数 |
-| `maxSourceFrameBytes` | 128 KiB | 编码后的 source frame 上限 |
-| `maxSourceRecordsPerFrame` | `128` | 每个 source batch 的记录数 |
-| `maxQueuedRecords` | `2048` | 每个 producer 等待发送的记录数 |
-| `maxQueuedBytes` | 16 MiB | 每个 producer 等待发送的编码字节数 |
-| `startupTimeoutMs` | 10 秒 | Worker ready 截止时间 |
-| `stopTimeoutMs` | 5 秒 | 强制终止前的 Worker 优雅关闭期限 |
-| `clientReconnectBaseMs` | 250 ms | Client 首次重连退避上限 |
-| `clientReconnectMaxMs` | 5 秒 | Client 最大重连退避上限 |
-| `clientRuntimeTimeoutMs` | 30 秒 | 一次 Worker 到 Client Runtime 或 Sources 命令的截止时间 |
-| `queryTimeoutMs` | 10 秒 | 一次非 CDP 语义查询的截止时间 |
-| `maxClientRuntimeObjects` | `10000` | 每条 DevTools 连接保留的 Client 实时对象 handle 数 |
-| `maxClientRuntimeProperties` | `2000` | 单次 Client 对象检查返回的属性描述符数 |
-| `maxClientSourceBytes` | 8 MiB | 单个 Client script 或 source map 允许读取的最大编码字节数 |
-| `maxCordisNodes` | `2048` | 一个 realm 快照截断前允许的 Context 与 Fiber 节点数 |
-| `maxDisconnectedCordisTrees` | `8` | 作为非实时快照保留的最近断联 realm 树数量 |
+| `host` | `127.0.0.1` | Worker endpoint استماع عنوان؛ فقط قبول loopback |
+| `port` | `9230` | Worker endpoint بدء بداية طرف فتحة؛ طرف فتحة احتلال استخدام وقت نحو فوق تمرير زيادة،`0` يمثل من عملية نظام قسم إعداد |
+| `clientOrigins` | `[]` | `/ingest` مقدار خارج قبول دقيق متصفح origin؛loopback origin بداية نهاية سماح |
+| `captureFetch` | `true` | حزمة تركيب `globalThis.fetch` تزامن نشر بعد كل مرة استدعاء |
+| `maxRequestBodyBytes` | 8 MiB | كل مرة طلب إبقاء request body بادئة |
+| `maxResponseBodyBytes` | 32 MiB | كل مرة طلب إبقاء response body بادئة |
+| `maxBodyChunkBytes` | 48 KiB | base64 تحرير رمز قبل واحد بند body سجل يحمل أصلي بايت عدد |
+| `maxJournalBytes` | 256 MiB | Worker إبقاء طلب و استجابة body مجموع بايت عدد |
+| `maxRetainedRequests` | `2000` | Worker إبقاء إجراء في و قد إتمام طلب مجموع عدد |
+| `maxSourceFrameBytes` | 128 KiB | تحرير رمز بعد source frame حد أعلى |
+| `maxSourceRecordsPerFrame` | `128` | كل source batch سجل عدد |
+| `maxQueuedRecords` | `2048` | كل producer انتظار إرسال سجل عدد |
+| `maxQueuedBytes` | 16 MiB | كل producer انتظار إرسال تحرير رمز بايت عدد |
+| `startupTimeoutMs` | 10 ثانية | Worker ready قطع توقف وقت |
+| `stopTimeoutMs` | 5 ثانية | قوي صنع إنهاء قبل Worker أفضل أنيق إغلاق مدة حد |
+| `clientReconnectBaseMs` | 250 ms | Client أول مرة إعادة وصل تراجع تجنب حد أعلى |
+| `clientReconnectMaxMs` | 5 ثانية | Client الأكثر كبير إعادة وصل تراجع تجنب حد أعلى |
+| `clientRuntimeTimeoutMs` | 30 ثانية | مرة Worker إلى Client Runtime أو Sources أمر قطع توقف وقت |
+| `queryTimeoutMs` | 10 ثانية | مرة غير CDP دلالة استعلام قطع توقف وقت |
+| `maxClientRuntimeObjects` | `10000` | كل بند DevTools اتصال إبقاء Client فوري كائن handle عدد |
+| `maxClientRuntimeProperties` | `2000` | مفرد مرة Client كائن فحص إرجاع خاصية وصف رمز عدد |
+| `maxClientSourceBytes` | 8 MiB | مفرد عدد Client script أو source map سماح قراءة الأكثر كبير تحرير رمز بايت عدد |
+| `maxCordisNodes` | `2048` | واحد realm لقطة قطع قطع قبل سماح Context و Fiber عقدة عدد |
+| `maxDisconnectedCordisTrees` | `8` | بصفة غير فوري لقطة إبقاء الأكثر قريب قطع ربط realm شجرة عدد كمية |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-inspector)是全部已接受字段及其声明的详尽来源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-inspector) هو الكل قد قبول حقل و ذلك إعلان تفصيل كل مصدر.
 
-Worker 监听后，Host 会记录一个 `devtools://` URL。同一个 Worker 提供 `/json`、`/json/list`、`/json/version`、`/devtools/page/<id>` target WebSocket 和 `/ingest` Client source。
+Worker استماع بعد،Host سوف سجل واحد `devtools://` URL. نفس عدد Worker توفير `/json`،`/json/list`،`/json/version`،`/devtools/page/<id>` target WebSocket و `/ingest` Client source.
 
 <a id="observation-api"></a>
-## 观测 API
+## مراقبة قياس API
 
-两个插件端都提供同一个服务：
+اثنان عدد إضافة طرف كل توفير نفس عدد خدمة:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -93,64 +93,64 @@ ctx.inspector.publish(topic, jsonPayload)
 await ctx.inspector.cordis.getTree()
 ```
 
-发布操作先验证无损 JSON，再调度发送，不等待 Worker。每个 source 的队列都有上限；溢出表现为 sequence gap，绝不延迟被观察的应用操作。`cordis.getTree()` 读取 Worker 最新的 detached semantic 快照，不创建 CDP 会话，也不启用 Runtime、Debugger 或 Sources。
+إصدار عملية أولا تحقق بلا ضرر JSON، مجددا ضبط درجة إرسال، لا انتظار Worker. كل source طابور صف كل لديه حد أعلى؛ فيض خروج جدول الآن لـ sequence gap، أبدا تأخير متأخر يتم مراقبة تطبيق عملية.`cordis.getTree()` قراءة Worker الأكثر جديد detached semantic لقطة، لا إنشاء CDP جلسة، أيضا لا تفعيل Runtime،Debugger أو Sources.
 
 <a id="cordis-tree-inspection"></a>
-## Cordis 树检查
+## Cordis شجرة فحص
 
-Elements document 包含固定的 `<host>` 与 `<clients>` 容器。`<host>` 包含 Host root Context；`<clients>` 为每个 Client source 包含一个 `<client>`，每个 `<client>` 再包含该 realm 的根 Context。Cordis root Fiber 不显示。其他 Fiber 都是 `fiber.parent` 的子节点，并包含唯一一个表示 `fiber.ctx` 的 Context 子节点；Fiber 只携带 `uid="<Cordis Fiber.uid>"`，Context element 不携带 attribute。只有 Context 的 `extend()`、`isolate()` 与 `intercept()` 层仍然是直接 Context 后代。
+Elements document يتضمن ثابت `<host>` و `<clients>` حاوية.`<host>` يتضمن Host root Context؛`<clients>` لـ كل Client source يتضمن واحد `<client>`، كل `<client>` مجددا يتضمن هذا realm أصل Context.Cordis root Fiber لا عرض. أخرى Fiber كل هو `fiber.parent` فرعي عقدة، و يتضمن وحيد واحد يمثل `fiber.ctx` Context فرعي عقدة؛Fiber فقط يحمل `uid="<Cordis Fiber.uid>"`،Context element لا يحمل attribute. فقط لديه Context `extend()`،`isolate()` و `intercept()` طبقة ما زال هو مباشر Context بعد بديل.
 
-Host 与 Client 发布同一种嵌套 `CordisTreeSnapshot` 类型。Context 与 Fiber 节点携带用于 realm-local 对象查询的不透明 object 句柄；Fiber 还携带 Cordis `uid`。Worker 把这些 realm 快照组合成一棵 `{ host, clients }` inspection tree。Worker 按 source generation 分配 `BackendNodeId`；每条 DevTools 连接分配自己的 `NodeId`；`DOM.resolveNode` 请求所属 Host 或 Client Runtime 生成连接本地 `RemoteObjectId`。`DOM.requestNode` 把该 object id 映射回同一个 Elements 节点。`ctx.inspector.cordis.getTree()` 与 `DSHInspector.getCordisTree` 读取不含 routing 句柄或 CDP id 的 detached 消费方无关 tree。
+Host و Client إصدار نفس نوع تضمين طقم `CordisTreeSnapshot` نوع.Context و Fiber عقدة يحمل لأجل realm-local كائن استعلام لا نفاذ واضح object جملة مقبض؛Fiber أيضا يحمل Cordis `uid`.Worker يأخذ هذه realm لقطة تركيب صار واحد شجرة `{ host, clients }` inspection tree.Worker حسب source generation قسم إعداد `BackendNodeId`؛ كل بند DevTools اتصال قسم إعداد ذاتي ذات `NodeId`؛`DOM.resolveNode` طلب الذي تابع Host أو Client Runtime توليد اتصال محلي `RemoteObjectId`.`DOM.requestNode` يأخذ هذا object id خريطة عودة نفس عدد Elements عقدة.`ctx.inspector.cordis.getTree()` و `DSHInspector.getCordisTree` قراءة لا يحتوي routing جملة مقبض أو CDP id detached مستهلك غير متصل tree.
 
-节点按 DevTools 连接做深度受限下发：调用方省略 `depth` 时 `DOM.getDocument` 提供三层 document，被扣留的层级通过 `childNodeCount` 声明数量，展开时经 `DOM.requestChildNodes` 获取（`depth: -1` 取整棵子树）。经 `DOM.performSearch`、`DOM.requestNode` 或 `DOM.pushNodesByBackendIdsToFrontend` 流出的 NodeId 会先把尚未下发的祖先层级以 `DOM.setChildNodes` 事件推送出去。
+عقدة حسب DevTools اتصال فعل عميق درجة تلقي حد تحت إرسال: استدعاء جهة حذف `depth` وقت `DOM.getDocument` توفير ثلاثة طبقة document، يتم خصم إبقاء طبقة درجة عبر `childNodeCount` إعلان عدد كمية، توسيع وقت مرور `DOM.requestChildNodes` نيل أخذ (`depth: -1` أخذ كامل شجرة فرعي شجرة). مرور `DOM.performSearch`،`DOM.requestNode` أو `DOM.pushNodesByBackendIdsToFrontend` تدفق خروج NodeId سوف أولا يأخذ بعد لم تحت إرسال أصل أولا طبقة درجة بـ `DOM.setChildNodes` حدث دفع إرسال خروج ذهاب.
 
-source 仍发布完整 snapshot，Worker 在通知 DevTools 前按稳定的 backend node identity 比较差异。无变化的 snapshot 不发送 DOM 事件；新增、移除和 attribute 变化使用节点级 CDP 事件，插入节点的载荷扣留其子树，兄弟节点重排只替换对应 parent 的 children。现有 `NodeId` 与未受影响的 Elements 展开状态保持稳定。
+source ما زال إصدار كامل snapshot،Worker في إشعار DevTools قبل حسب مستقر backend node identity مقارنة مقارنة فرق مختلف. بلا تغير snapshot لا إرسال DOM حدث؛ إضافة جديدة، إزالة و attribute تغير استخدام عقدة درجة CDP حدث، إدراج دخول عقدة تحميل حمل خصم إبقاء ذلك فرعي شجرة، أخ أخ عقدة إعادة ترتيب فقط استبدال مقابل parent children. قائم `NodeId` و لم تلقي أثر Elements توسيع حالة إبقاء مستقر.
 
-Client 断联时，其 Console execution context 与 live object id 会立即销毁。启用断联树保留后，Elements 会原样保留最后一棵树；连接状态留在 inspection model 中，不会未经审查就成为 DOM attribute。重连会沿用逻辑 source id，为新的 transport generation 创建新的 synthetic CDP context id，并在完整 snapshot 到达后替换旧树。Client 把逻辑 id 保存在 `sessionStorage` 中，并通过 Web Locks 在页面存活期间独占该 id，因此刷新会复用 id，而复制出的另一个 live tab 会取得新 id。Worker 最多保留 `maxDisconnectedCordisTrees` 棵此类 snapshot；设为零会立即移除。
+Client قطع ربط وقت، ذلك Console execution context و live object id سوف قيام أي إلغاء تدمير. تفعيل قطع ربط شجرة إبقاء بعد،Elements سوف أصل مثال إبقاء الأكثر بعد واحد شجرة شجرة؛ اتصال حالة إبقاء في inspection model في، لن لم مرور مراجعة فحص حينئذ يصبح DOM attribute. إعادة وصل سوف امتداد استخدام منطق source id، لـ جديد transport generation إنشاء جديد synthetic CDP context id، و في كامل snapshot وصول بعد استبدال قديم شجرة.Client يأخذ منطق id حفظ في `sessionStorage` في، و عبر Web Locks في صفحة تخزين نشط خلال وحيد احتلال هذا id، لذلك تحديث جديد سوف إعادة استخدام id، بينما نسخ خروج آخر عدد live tab سوف أخذ نيل جديد id.Worker الأكثر كثير إبقاء `maxDisconnectedCordisTrees` شجرة هذا صنف snapshot؛ ضبط لـ صفر سوف قيام أي إزالة.
 
 <a id="host-fetch-capture"></a>
-## Host fetch 采集
+## Host fetch أخذ تجميع
 
-fetch 采集默认开启，记录完整 URL、全部请求与响应 headers、请求体、响应体、状态、时间、错误和取消。它不脱敏 credential、Cookie、query value 或 payload。body 采集读取 clone；原始 fetch resolve 后，调用方立即拿到原始 Response。
+fetch أخذ تجميع افتراضي فتح بدء، سجل كامل URL، الكل طلب و استجابة headers، طلب جسم، استجابة جسم، حالة، وقت، خطأ و إلغاء. هو لا انفصال حساس credential،Cookie،query value أو payload.body أخذ تجميع قراءة clone؛ أصلي fetch resolve بعد، استدعاء جهة قيام أي أخذ إلى أصلي Response.
 
-配置的 body 上限限制保留量，而不选择字段：采集保留前缀并标记 truncated。`Network.getRequestPostData` 与 `Network.getResponseBody` 读取 Worker 保留的字节。`Network.streamResourceContent` 返回已缓冲的前缀，并仅为发起调用的 DevTools 连接把后续 response 字节附加到 `Network.dataReceived`，以驱动实时 Response 与 EventStream 视图。直接调用 Undici Client/Dispatcher，以及插件激活前保存的 fetch 引用，不在观察范围内。
+إعداد body حد أعلى حد إبقاء كمية، بينما لا اختيار حقل: أخذ تجميع إبقاء بادئة و علامة truncated.`Network.getRequestPostData` و `Network.getResponseBody` قراءة Worker إبقاء بايت.`Network.streamResourceContent` إرجاع قد مؤقت اندفاع بادئة، و فقط لـ إرسال بدء استدعاء DevTools اتصال يأخذ لاحق response بايت مرفق إضافة إلى `Network.dataReceived`، بـ قيادة فوري Response و EventStream عرض. مباشر استدعاء Undici Client/Dispatcher، و إضافة تنشيط قبل حفظ fetch مرجع، لا في مراقبة نطاق داخل.
 
-response headers 到达后，调用方 abort 可能会终止 observer clone；已采集的字节仍可通过 `Network.getResponseBody` 读取，采集 metadata 记录错误与截断，并且 CDP 因 fetch 已返回 Response 而发送 `Network.loadingFinished`。response headers 到达前发生的 fetch rejection 会发送 `Network.loadingFailed`，其中 abort 对应 `canceled: true`。
+response headers وصول بعد، استدعاء جهة abort ممكن سوف إنهاء observer clone؛ قد أخذ تجميع بايت ما زال يمكن عبر `Network.getResponseBody` قراءة، أخذ تجميع metadata سجل خطأ و قطع قطع، و كما CDP بسبب fetch قد إرجاع Response بينما إرسال `Network.loadingFinished`.response headers وصول قبل حدوث fetch rejection سوف إرسال `Network.loadingFailed`، منها abort مقابل `canceled: true`.
 
 <a id="security"></a>
-## 安全
+## أمان
 
-CDP target 通过 `Runtime.evaluate` 提供 Host 和已连接 Client realm 中的任意代码执行能力，Host Debugger 操作还会提供额外控制，完整 fetch 采集也包含敏感信息。因此 Worker 只接受 `127.0.0.1` 监听地址。Client ingest 还要求 Host 注入的随机 WebSocket subprotocol token；除非配置明确允许，否则拒绝非 loopback origin。CDP socket 本身不携带 token，loopback 监听是它唯一的访问控制。
+CDP target عبر `Runtime.evaluate` توفير Host و قد اتصال Client realm في مهمة معنى شفرة تنفيذ قدرة،Host Debugger عملية أيضا سوف توفير مقدار خارج تحكم، كامل fetch أخذ تجميع أيضا يتضمن حساس شعور معلومة. لذلك Worker فقط قبول `127.0.0.1` استماع عنوان.Client ingest أيضا اشتراط Host حقن مع آلة WebSocket subprotocol token؛ حذف غير إعداد واضح سماح، لا فإن رفض غير loopback origin.CDP socket ذاته لا يحمل token،loopback استماع هو هو وحيد وصول تحكم.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无：这个仅供开发者使用的 Inspector 只观察运行时活动，不改变模型请求。
+بلا: هذا عدد فقط توفير تطوير من استخدام Inspector فقط مراقبة وقت التشغيل نشط حركة، لا تغيير نموذج طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无：本包既不组装也不发送提供方请求。
+بلا: هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **Client active debugging 不受支持**——Console event、Runtime 求值、RemoteObject 访问和只读 `lib/client.js` Sources 可用。Client script debugger request 返回明确的 unsupported error；target-wide pause 与 resume 只控制 Host。
-- **Client Sources 只暴露 Inspector bundle**——本包不收录页面中的其他 script。
-- **Client 求值使用页面 JavaScript**——页面 Content Security Policy 可能阻止动态求值；synthetic context 不提供 DevTools command-line helper 或原生 REPL 声明语义。
-- **Client 身份仲裁依赖 Web Locks**——缺少该 API 的浏览器仍会通过 `sessionStorage` 保持重连与刷新身份，但无法区分从同一存储状态复制出的两个同时存活 tab。
-- **fetch 拦截范围是 `globalThis.fetch`**——直接调用 Undici API，以及激活前保存的 fetch 引用不会被观察。
-- **body clone 有运行成本**——完整采集会 tee 请求与响应流，直至达到配置上限，可能增加内存与 I/O 压力。保留 body 的上限不包含流 tee 内部的缓冲，包括来源提供的超大 chunk，或为读取较慢的应用分支排队的数据。
-- **不自动重启 Worker**——Worker 意外退出会使当前 Inspector 实例失败；生命周期恢复留待后续改动。
+- **Client active debugging لا تلقي دعم حمل**——Console event،Runtime طلب قيمة،RemoteObject وصول و فقط قراءة `lib/client.js` Sources متاح.Client script debugger request إرجاع واضح unsupported error؛target-wide pause و resume فقط تحكم Host.
+- **Client Sources فقط كشف Inspector bundle**——هذه الحزمة لا استلام تسجيل صفحة في أخرى script.
+- **Client طلب قيمة استخدام صفحة JavaScript**——صفحة Content Security Policy ممكن منع توقف حركة حالة طلب قيمة؛synthetic context لا توفير DevTools command-line helper أو أصلي REPL إعلان دلالة.
+- **Client هوية وسيط قطع اعتماد Web Locks**——نقص قليل هذا API متصفح ما زال سوف عبر `sessionStorage` إبقاء إعادة وصل و تحديث جديد هوية، لكن لا يمكن منطقة قسم من نفس تخزين حالة نسخ خروج اثنان عدد معا تخزين نشط tab.
+- **fetch اعتراض قطع نطاق هو `globalThis.fetch`**——مباشر استدعاء Undici API، و تنشيط قبل حفظ fetch مرجع لن يتم مراقبة.
+- **body clone لديه تشغيل صار هذا**——كامل أخذ تجميع سوف tee طلب و استجابة تدفق، مباشر حتى بلوغ إلى إعداد حد أعلى، ممكن زيادة داخل تخزين و I/O ضغط قوة. إبقاء body حد أعلى لا يتضمن تدفق tee داخلي مؤقت اندفاع، يشمل مصدر توفير تجاوز كبير chunk، أو لـ قراءة مقارنة بطيء تطبيق فرع ترتيب طابور بيانات.
+- **لا تلقائي إعادة بدء Worker**——Worker معنى خارج خروج سوف جعل حالي Inspector نسخة فشل؛ دورة الحياة استعادة إبقاء انتظار لاحق تعديل.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。wire 解析、generation、Worker 生命周期与 CDP 会话会在所属操作中拒绝无效关系。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.wire تحليل،generation،Worker دورة الحياة و CDP جلسة سوف في الذي تابع عملية في رفض بلا فاعلية علاقة.

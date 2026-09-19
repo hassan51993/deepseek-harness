@@ -1,73 +1,73 @@
-# Agent Note: dsh-hooks-claude-code + dsh-hooks-codex —— Claude Code / Codex 钩子桥接插件
+# Agent Note: dsh-hooks-claude-code + dsh-hooks-codex —— Claude Code / Codex خطاف جسر وصل إضافة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-06-30-hook-bridges.md) | 中文
+[English](2026-06-30-hook-bridges.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 的扩展面是其类型化拦截点（见[拦截扩展点 Agent Note](2026-06-30-interception-extension-points.zh.md)）：所谓「原生钩子」不过是一个普通的 Cordis 插件，订阅 `agent/session-start`、`agent/pre-step`、`tools/pre-execute`、`tools/post-execute`、`agent/turn-stopping`、`subagent/start` 或 `subagent/end`。但用户带着**既有的** Claude Code（CC）和 Codex 钩子配置到来，一个 `hooks.json`（或 settings 文件中的 `hooks` 键）里满是 shell 命令钩子，并希望它们原样运行。本 Agent Note 引入两个**桥接插件**，将外部 shell 钩子协议翻译到类型化扩展点上，构建于共享的协议格式（wire format）库之上（见 [hook-protocol-lib Agent Note](2026-06-30-hook-protocol-lib.zh.md)）。
+harness توسيع وجه هو ذلك نوع تحويل اعتراض قطع نقطة (رؤية[اعتراض قطع نقطة توسيع Agent Note](2026-06-30-interception-extension-points.zh.md)): الذي يسمى «أصلي خطاف» لا مرور هو واحد عادي Cordis إضافة، حجز قراءة `agent/session-start`،`agent/pre-step`،`tools/pre-execute`،`tools/post-execute`،`agent/turn-stopping`،`subagent/start` أو `subagent/end`. لكن مستخدم حمل حال**قائم** Claude Code(CC) و Codex خطاف إعداد إلى قدوم، واحد `hooks.json`(أو settings ملف في `hooks` مفتاح) داخل ممتلئ هو shell أمر خطاف، و أمل نظر هو جمع أصل مثال تشغيل. هذا Agent Note جذب دخول اثنان عدد**جسر وصل إضافة**، سوف خارجي shell خطاف بروتوكول قلب ترجمة إلى نوع تحويل نقطة توسيع فوق، بناء في مشترك بروتوكول صيغة (wire format) مكتبة لـ فوق (رؤية [hook-protocol-lib Agent Note](2026-06-30-hook-protocol-lib.zh.md)).
 
-核心规则是：**桥接是兼容性适配器，不是高级工具。** 桥接能做的事（阻止工具、注入上下文、强制继续、观察 subagent），原生 Cordis 插件都能做得更强——类型化返回值、完整 `ctx`、无序列化边界。桥接存在的理由是运行外部 CC/Codex 命令钩子中被明确支持的子集。这使每个桥接保持精简：解析配置、选择匹配模式、构建每事件的 payload、调用共享库的 `runHook` + `mergeHookOutputs`，再将中性结果映射为类型化 Decision。各包的 README 维护着当前不支持的事件和部分支持的字段的完整清单，以官方协议为参照。
+نواة قلب قاعدة هو:**جسر وصل هو توافق صفة مهايئ، لا هو عال درجة أداة.** جسر وصل قدرة فعل أمر (منع توقف أداة، حقن سياق، قوي صنع متابعة، مراقبة subagent) ، أصلي Cordis إضافة كل قدرة فعل نيل أكثر قوي——نوع تحويل قيمة راجعة، كامل `ctx`، بلا تسلسل تحويل حد. جسر وصل وجود إدارة من هو تشغيل خارجي CC/Codex أمر خطاف في يتم واضح دعم حمل فرعي تجميع. هذا جعل كل جسر وصل إبقاء دقيق بسيط: تحليل إعداد، اختيار مطابقة نمط، بناء كل حدث payload، استدعاء مشترك مكتبة `runHook` + `mergeHookOutputs`، مجددا سوف في صفة نتيجة خريطة لـ نوع تحويل Decision. كل حزمة README صيانة حال حالي لا دعم حمل حدث و جزء دعم حمل حقل كامل بيان، بـ رسمي جهة بروتوكول لـ مشاركة وفق.
 
-## 决策
+## قرار
 
-`packages/hooks/` 组下两个独立插件，各为 function/namespace 插件（`name`/`inject`/`Config`/`apply`，无 default export——见[事故复盘（postmortem）0001](../../../../docs/postmortem/0001-acp-default-export-drops-inject.zh.md)），仅注入 `bash`：
+`packages/hooks/` مجموعة تحت اثنان عدد مستقل إضافة، كل لـ function/namespace إضافة (`name`/`inject`/`Config`/`apply`، بلا default export——رؤية[أمر لذا تكرار قرص (postmortem)0001](../../../../docs/postmortem/0001-acp-default-export-drops-inject.zh.md)) ، فقط حقن `bash`:
 
-- **`dsh-hooks-claude-code`**——CC 方言。Claude Code 当前钩子点中的七个：`SessionStart`、`UserPromptSubmit`、`PreToolUse`、`PostToolUse`、`Stop`、`SubagentStart` 和 `SubagentStop`。负责构建 CC 形态的逐事件 stdin payload（基础字段 `session_id`/`transcript_path`/`cwd`/`hook_event_name` 加每事件字段）、`CLAUDE_PROJECT_DIR` 环境变量加 `${CLAUDE_PLUGIN_ROOT}`/`${CLAUDE_PROJECT_DIR}` 替换，以及字面量或正则的匹配模式。`transcript_path` 是持久化定位器结果或 `''`；stdin 带有**尾部换行**。
-- **`dsh-hooks-codex`**——Codex 当前钩子点中的五个：`PreToolUse`、`PostToolUse`、`SessionStart`、`UserPromptSubmit` 和 `Stop`。它使用始终按正则解释的 matcher，输出 Codex 形态的 snake_case payload（含 `turn_id`/`model`/`permission_mode` 额外字段）且写入时不带尾部换行，不注入 Codex 插件环境变量，不做配置时占位符替换，也没有 pre-tool 审批或重写路径。`transcript_path` 是同一定位器结果或 `null`；工具 payload 在精简后的 `tool_input: { command }` 形态中携带真实的 `tool_name`。
+- **`dsh-hooks-claude-code`**——CC جهة قول.Claude Code حالي خطاف نقطة في سبعة عدد:`SessionStart`،`UserPromptSubmit`،`PreToolUse`،`PostToolUse`،`Stop`،`SubagentStart` و `SubagentStop`. مسؤول بناء CC شكل تدريجي حدث stdin payload(أساس أساس حقل `session_id`/`transcript_path`/`cwd`/`hook_event_name` إضافة كل حدث حقل) ،`CLAUDE_PROJECT_DIR` بيئة متغير إضافة `${CLAUDE_PLUGIN_ROOT}`/`${CLAUDE_PROJECT_DIR}` استبدال، و حرف وجه كمية أو صحيح فإن مطابقة نمط.`transcript_path` هو حفظ دائم تحديد موضع جهاز نتيجة أو `''`؛stdin حمل لديه**ذيل جزء تبديل سطر**.
+- **`dsh-hooks-codex`**——Codex حالي خطاف نقطة في خمسة عدد:`PreToolUse`،`PostToolUse`،`SessionStart`،`UserPromptSubmit` و `Stop`. هو استخدام بداية نهاية حسب صحيح فإن حل تفسير matcher، إخراج Codex شكل snake_case payload(يحتوي `turn_id`/`model`/`permission_mode` مقدار خارج حقل) كما كتابة وقت لا حمل ذيل جزء تبديل سطر، لا حقن Codex إضافة بيئة متغير، لا فعل إعداد وقت احتلال موضع رمز استبدال، أيضا لا يوجد pre-tool مراجعة دفعة أو إعادة كتابة مسار.`transcript_path` هو نفس تحديد موضع جهاز نتيجة أو `null`؛ أداة payload في دقيق بسيط بعد `tool_input: { command }` شكل في يحمل حقيقي `tool_name`.
 
-### Outcome → Decision 映射
+### Outcome → Decision خريطة
 
-每个桥接将共享库返回的中性 `MergedHookOutcome` 映射到各扩展点的类型化 Decision：
+كل جسر وصل سوف مشترك مكتبة إرجاع في صفة `MergedHookOutcome` خريطة إلى كل نقطة توسيع نوع تحويل Decision:
 
-| 扩展点 | CC | Codex |
+| نقطة توسيع | CC | Codex |
 |---|---|---|
-| `agent/session-start`（emit） | additionalContext → `agent.inject()` | 纯 stdout 输出 → additionalContext → `agent.inject()` |
-| `agent/pre-step` | `deny`→`reject`；仅上下文→委托并折叠到 `enter` | `block`→`reject`；仅上下文→委托并折叠到 `enter` |
-| `tools/pre-execute` | `deny`→`deny`；`ask`→`ask` | `block`→`deny`（无 allow/ask） |
-| `tools/post-execute` | `deny`→`block`+反馈；仅上下文→委托并折叠 | 同上 |
-| `agent/turn-stopping` | 阻塞的 Stop → 下一步 steering（中途引导） | 同上 |
-| `subagent/start`（emit） | additionalContext → 注入到存活的进程内 subagent；远程 subagent 无本地注入目标 | 本桥接不支持 |
-| `subagent/end`（emit） | 仅观察 | 本桥接不支持 |
+| `agent/session-start`(emit) | additionalContext → `agent.inject()` | صاف stdout إخراج → additionalContext → `agent.inject()` |
+| `agent/pre-step` | `deny`→`reject`؛ فقط سياق→تفويض حمل و طي إلى `enter` | `block`→`reject`؛ فقط سياق→تفويض حمل و طي إلى `enter` |
+| `tools/pre-execute` | `deny`→`deny`؛`ask`→`ask` | `block`→`deny`(بلا allow/ask) |
+| `tools/post-execute` | `deny`→`block`+عكس تغذية؛ فقط سياق→تفويض حمل و طي | نفس فوق |
+| `agent/turn-stopping` | منع سد Stop → تحت واحد خطوة steering(في طريق جذب توجيه) | نفس فوق |
+| `subagent/start`(emit) | additionalContext → حقن إلى تخزين نشط عملية داخل subagent؛ بعيد مسار subagent بلا محلي حقن هدف | هذا جسر وصل لا دعم حمل |
+| `subagent/end`(emit) | فقط مراقبة | هذا جسر وصل لا دعم حمل |
 
-CC 桥接的 `ask` 结果是一条真正的权限路径，而非终态桥接决策：`dsh-tools` 通过可选的[审批 seam](2026-07-06-approval-seam.zh.md) 来解析它。ACP（Agent Client Protocol）自动化客户端可以应答所属会话的一次性机器策略请求，`allowed-once` 后继续执行；如果没有 ApprovalService 或应答器，调用以 `deny` 安全关闭。
+CC جسر وصل `ask` نتيجة هو واحد بند حق صحيح إذن مسار، بينما غير نهاية حالة جسر وصل قرار:`dsh-tools` عبر اختياري[مراجعة دفعة seam](2026-07-06-approval-seam.zh.md) قدوم تحليل هو.ACP(Agent Client Protocol) تلقائي تحويل عميل يمكن ينبغي جواب الذي تابع جلسة مرة صفة آلة جهاز سياسة طلب،`allowed-once` بعد متابعة تنفيذ؛ إذا لا يوجد ApprovalService أو ينبغي جواب جهاز، استدعاء بـ `deny` أمان إغلاق.
 
-### 上下文来源始终是插件（误标签防护）
+### سياق مصدر بداية نهاية هو إضافة (خطأ وسم منع حماية)
 
-每个桥接的 `inject()` 和 additional-context 输入都显式传入 `{ kind: 'plugin', plugin: 'hooks-claude-code' | 'hooks-codex' }`。单元测试固定验证结果中的 `user/message.source` 为插件而非用户。
+كل جسر وصل `inject()` و additional-context إدخال كل صريح نقل دخول `{ kind: 'plugin', plugin: 'hooks-claude-code' | 'hooks-codex' }`. اختبار وحدة ثابت تحقق نتيجة في `user/message.source` لـ إضافة بينما غير مستخدم.
 
-`UserPromptSubmit` 在 `turn/start` 之后的 pre-step 运行，因此每次调用都会写入轮次范围的 `hook/invoked` / `hook/result` 对。拒绝会使已领取的输入维持移除状态，将轮次关闭为已阻止状态且不包含步骤，并保留该钩子对作为持久决策证据。Codex payload 会收到这个已打开轮次的 `turn_id`。
+`UserPromptSubmit` في `turn/start` بعد pre-step تشغيل، لذلك كل مرة استدعاء كل سوف كتابة جولة نطاق `hook/invoked` / `hook/result` مقابل. رفض سوف جعل قد قيادة أخذ إدخال صيانة حمل إزالة حالة، سوف جولة إغلاق لـ قد منع توقف حالة كما لا يتضمن خطوة، و إبقاء هذا خطاف مقابل بصفة حمل دائم قرار دليل.Codex payload سوف استلام إلى هذا عدد قد فتح جولة `turn_id`.
 
-### 添加上下文不是否决——先 delegate，再 prepend
+### إضافة سياق لا هل قرار——أولا delegate، مجددا prepend
 
-仅附加 `additionalContext`（没有 block/deny）的钩子并不是桥接可以独自返回的决策：在 waterfall（瀑布式事件）监听器中不调用 `next()` 就返回 `enter`，会短路其后的每个 `agent/pre-step` / `tools/post-execute` 监听器，使注册在桥接之后的策略/沙箱插件看不到该提示词。因此，每个桥接都会先通过 `next()` 委托，再将自身上下文加入下游 enter 决策。桥接会保留所有下游消息；下游 pre-step reject 会丢弃整个已领取批次，因为步骤从未打开。工具后决策仍保留独立的有序 `additionalContexts` 语义，包括 PTC mode 通过外层 `run_code` 结果延迟上下文。只有钩子本身真正返回 `deny`/`block` 才会短路。测试断言：仅上下文钩子之后，较晚的监听器仍能 reject 提示词，且保留的提示词和工具后上下文仍彼此分离。
+فقط مرفق إضافة `additionalContext`(لا يوجد block/deny) خطاف و لا هو جسر وصل يمكن وحيد ذاتي إرجاع قرار: في waterfall(شلال نشر صيغة حدث) مستمع في لا استدعاء `next()` حينئذ إرجاع `enter`، سوف قصير مسار ذلك بعد كل `agent/pre-step` / `tools/post-execute` مستمع، جعل تسجيل في جسر وصل بعد سياسة/صندوق رملي إضافة نظر لا إلى هذا نص التوجيه. لذلك، كل جسر وصل كل سوف أولا عبر `next()` تفويض حمل، مجددا سوف ذاته سياق إضافة دخول تحت تنقل enter قرار. جسر وصل سوف إبقاء كل تحت تنقل رسالة؛ تحت تنقل pre-step reject سوف إسقاط كامل قد قيادة أخذ دفعة مرة، لأن خطوة من لم فتح. أداة بعد قرار ما زال إبقاء مستقل لديه ترتيب `additionalContexts` دلالة، يشمل PTC mode عبر خارج طبقة `run_code` نتيجة تأخير متأخر سياق. فقط لديه خطاف ذاته حق صحيح إرجاع `deny`/`block` عندئذ سوف قصير مسار. اختبار تأكيد: فقط سياق خطاف بعد، مقارنة متأخر مستمع ما زال قدرة reject نص التوجيه، كما إبقاء نص التوجيه و أداة بعد سياق ما زال ذاك هذا قسم مغادرة.
 
-### CLAUDE_PROJECT_DIR 默认为会话工作区
+### CLAUDE_PROJECT_DIR افتراضي لـ جلسة مساحة العمل
 
-Claude Code 始终导出 `CLAUDE_PROJECT_DIR`，常见的未修改钩子引用 `$CLAUDE_PROJECT_DIR` 来构造项目相对路径。显式的 `config.projectDir` 优先；当它被省略时（默认 ACP 接线只配置 `configPath`），桥接将该环境变量按每次运行默认为 agent（智能体）的会话工作区——即钩子已经在其中运行的 `session.header.cwd`——而非留空。这样，一个标准的项目相对路径钩子在默认配置下即可正常工作。
+Claude Code بداية نهاية توجيه خروج `CLAUDE_PROJECT_DIR`، معتاد رؤية لم تعديل خطاف مرجع `$CLAUDE_PROJECT_DIR` قدوم بنية صنع مشروع متبادل مقابل مسار. صريح `config.projectDir` أولوية؛ عند هو يتم حذف وقت (افتراضي ACP وصل خط فقط إعداد `configPath`) ، جسر وصل سوف هذا بيئة متغير حسب كل مرة تشغيل افتراضي لـ agent(ذكي جسم) جلسة مساحة العمل——أي خطاف قد في منها تشغيل `session.header.cwd`——بينما غير إبقاء فارغ. هذا مثال، واحد معيار مشروع متبادل مقابل مسار خطاف في افتراضي إعداد تحت يكفي صحيح معتاد عمل.
 
-### 隔离
+### عزل
 
-配置在加载时一次性解析；读取/解析失败时记录日志并不注册任何内容，而非导致启动崩溃（一个拼错的路径不应拖垮 agent）。CC 桥接只运行 shell 形式的 `type: 'command'` 钩子；`http`、`mcp_tool`、`prompt` 和 `agent` 处理器被解析后跳过。Codex 桥接只运行同步命令处理器，跳过 `async: true` 或非命令条目。emit 监听路径（`session-start`、`subagent/start`）以 detached 方式运行，其 `inject` 包裹在 `.catch` 中记录日志（抛异常的 inject 不得中断会话启动或循环）。
+إعداد في تحميل وقت مرة صفة تحليل؛ قراءة/تحليل فشل وقت سجل سجل و لا تسجيل أي محتوى، بينما غير توجيه يؤدي بدء انهيار انهيار (واحد تجميع خطأ مسار لا ينبغي سحب انهيار agent).CC جسر وصل فقط تشغيل shell شكل صيغة `type: 'command'` خطاف؛`http`،`mcp_tool`،`prompt` و `agent` معالج يتم تحليل بعد قفز مرور.Codex جسر وصل فقط تشغيل تزامن أمر معالج، قفز مرور `async: true` أو غير أمر بند.emit استماع مسار (`session-start`،`subagent/start`) بـ detached طريقة تشغيل، ذلك `inject` حزمة لف في `.catch` في سجل سجل (رمي استثناء inject لا نيل في قطع جلسة بدء أو حلقة).
 
-### 钩子在哪里运行，配置从哪里来
+### خطاف في أي داخل تشغيل، إعداد من أي داخل قدوم
 
-钩子在 agent 的会话工作区中运行，因此相对路径指向用户的项目。`configPath` 相对于进程启动时的 cwd 解析一次，适用于所有会话。按会话的项目本地发现仍推迟在 `TODO(per-session-hook-config)` 下。
+خطاف في agent جلسة مساحة العمل في تشغيل، لذلك متبادل مقابل مسار إشارة نحو مستخدم مشروع.`configPath` متبادل مقابل في عملية بدء وقت cwd تحليل مرة، ملائم لأجل كل جلسة. حسب جلسة مشروع محلي اكتشاف ما زال دفع متأخر في `TODO(per-session-hook-config)` تحت.
 
-## 推迟的兼容性缺口
+## دفع متأخر توافق صفة نقص فتحة
 
-- **工具输入重写。** CC/Codex 的 `updatedInput` 被记录日志并发出警告，但不予执行——输入重写是一个推迟的一致性设计问题（见 [pre-tool-input-rewrite Agent Note](../../proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)），因为 pre-execution 参数被 `tool/call` 审计、`assistant/message` 历史和工具展示共同读取，诚实的重写是一个设计单元，而非一个字段。
-- **Stop 循环防护**（`TODO(stop-loop-guard)`）。Claude Code 提供 `stop_hook_active` 并在连续八次阻塞后覆盖钩子；Codex 提供 `stop_hook_active` 但未记录等效上限。两个桥接始终报告 `false`，因此一个无条件阻塞的 Stop 钩子会在每一步强制继续——在状态追踪落地之前，钩子作者必须自行限制。
-- **钩子 `continue:false`（硬停止）。** 钩子可以请求终止整个运行（CC/Codex `continue:false`）；共享合并将其折叠为 `MergedHookOutcome.stop`/`stopReason`，但没有桥接对其采取行动（`TODO(hook-continue-false)`）——拦截点尚无「硬停止 agent」原语（Decision 阻塞/引导的是单个点，而非整个运行）。与循环防护工作一同推迟；轮中请求会将停止请求记录在 `hook/result` 中，钩子在此期间保留其逐点效果（决策/上下文）。
-- **配置发现。** 路径在 `cordis.yml` 中显式指定且为进程级（见上文）；完整的多层 CC/Codex 优先级遍历、按会话的项目本地发现以及信任/hash 模型未被重新实现（`TODO(per-session-hook-config)`）。
-- **Session-start / subagent-start 上下文为尽力而为（`TODO(session-start-gating)`）。** 两个钩子以 detached 方式运行，不阻塞启动流程，因此其上下文在就绪时注入，但可能错过首个请求或短命的 subagent。要保证首请求送达，需要一个 awaited 的启动扩展点。
+- **أداة إدخال إعادة كتابة.** CC/Codex `updatedInput` يتم سجل سجل تزامن خروج تحذير إبلاغ، لكن لا إعطاء تنفيذ——إدخال إعادة كتابة هو واحد دفع متأخر متسق صفة تصميم مشكلة (رؤية [pre-tool-input-rewrite Agent Note](../../proposed/feature/2026-06-30-pre-tool-input-rewrite.zh.md)) ، لأن pre-execution معامل يتم `tool/call` مراجعة حساب،`assistant/message` تاريخ و أداة عرض مشترك نفس قراءة، صدق فعلي إعادة كتابة هو واحد تصميم وحدة، بينما غير واحد حقل.
+- **Stop حلقة منع حماية**(`TODO(stop-loop-guard)`).Claude Code توفير `stop_hook_active` و في وصل متابعة ثمانية مرة منع سد بعد تغطية خطاف؛Codex توفير `stop_hook_active` لكن لم سجل انتظار فاعلية حد أعلى. اثنان عدد جسر وصل بداية نهاية تقرير إبلاغ `false`، لذلك واحد بلا شرط منع سد Stop خطاف سوف في كل واحد خطوة قوي صنع متابعة——في حالة تتبع أثر سقوط أرض قبل، خطاف عمل من يجب ذاتي سطر حد.
+- **خطاف `continue:false`(صلب إيقاف).** خطاف يمكن طلب إنهاء كامل تشغيل (CC/Codex `continue:false`) ؛ مشترك دمج سوف ذلك طي لـ `MergedHookOutcome.stop`/`stopReason`، لكن لا يوجد جسر وصل مقابل ذلك أخذ أخذ سطر حركة (`TODO(hook-continue-false)`)——اعتراض قطع نقطة بعد بلا «صلب إيقاف agent» أصل لغة (Decision منع سد/جذب توجيه هو مفرد عدد نقطة، بينما غير كامل تشغيل). و حلقة منع حماية عمل واحد نفس دفع متأخر؛ جولة في طلب سوف سوف إيقاف طلب سجل في `hook/result` في، خطاف في هذا خلال إبقاء ذلك تدريجي نقطة فاعلية نتيجة (قرار/سياق).
+- **إعداد اكتشاف.** مسار في `cordis.yml` في صريح إشارة تحديد كما لـ عملية درجة (رؤية فوق نص) ؛ كامل كثير طبقة CC/Codex أولوية درجة مرة تاريخ، حسب جلسة مشروع محلي اكتشاف و معلومة مهمة/hash نموذج لم يتم إعادة تنفيذ (`TODO(per-session-hook-config)`).
+- **Session-start / subagent-start سياق لـ كل قوة بينما لـ (`TODO(session-start-gating)`).** اثنان عدد خطاف بـ detached طريقة تشغيل، لا منع سد بدء مسار، لذلك ذلك سياق في حينئذ خيط وقت حقن، لكن ممكن خطأ مرور أول عدد طلب أو قصير أمر subagent. يلزم حفظ إثبات أول طلب إرسال بلوغ، حاجة واحد awaited بدء نقطة توسيع.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**每点钩子并发执行。** 参考引擎对一个点匹配到的钩子并发运行并折叠结果。本桥接**串行**运行（匹配循环内每个钩子 `await`），并以相同的最严格合并策略折叠。串行是刻意的：对轮次范围的拦截点，它使每个钩子的 `hook/invoked`/`hook/result` 对相邻且顺序确定，而折叠对决策是顺序无关的（`deny > ask > allow`），因此结果一致。代价是延迟（钩子 *N* 等待钩子 *N−1*）以及每钩子超时不重叠——对真实配置中的钩子数量可以接受；如果某配置的扇出大到影响总耗时，再重新评估。
+**كل نقطة خطاف تزامن تنفيذ.** مشاركة اعتبار جذب محرك مقابل واحد نقطة مطابقة إلى خطاف تزامن تشغيل و طي نتيجة. هذا جسر وصل**سلسلة سطر**تشغيل (مطابقة حلقة داخل كل خطاف `await`) ، و بـ نفسه الأكثر صارم إطار دمج سياسة طي. سلسلة سطر هو لحظة معنى: مقابل جولة نطاق اعتراض قطع نقطة، هو جعل كل خطاف `hook/invoked`/`hook/result` مقابل متبادل مجاور كما ترتيب تحديد، بينما طي مقابل قرار هو ترتيب غير متصل (`deny > ask > allow`) ، لذلك نتيجة متسق. بديل قيمة هو تأخير متأخر (خطاف *N* انتظار خطاف *N−1*) و كل خطاف مهلة لا إعادة تراكم——مقابل حقيقي إعداد في خطاف عدد كمية يمكن قبول؛ إذا بعض إعداد مروحة خروج كبير إلى أثر مجموع استهلاك وقت، مجددا إعادة تقييم تقدير.
 
-## 后果
+## عاقبة
 
-匹配语义、退出码处理和合并优先级位于 `dsh-hook-protocol`；每个桥接只负责解析配置、构建方言 payload 和映射结果。逐文件覆盖率包含配置分支以及通过真实循环、`dsh-bash-local` 和 shell 脚本的端到端映射，同时一个真实 Loader 冒烟测试守护包的导出形态。原生插件绕过协议格式，直接返回类型化决策。
+مطابقة دلالة، خروج رمز معالجة و دمج أولوية درجة يقع في `dsh-hook-protocol`؛ كل جسر وصل فقط مسؤول تحليل إعداد، بناء جهة قول payload و خريطة نتيجة. تدريجي ملف نسبة التغطية يتضمن إعداد فرع و عبر حقيقي حلقة،`dsh-bash-local` و shell نص برمجي طرف إلى طرف خريطة، معا واحد حقيقي Loader خطر دخان اختبار حراسة حماية حزمة توجيه خروج شكل. أصلي إضافة التفاف مرور بروتوكول صيغة، مباشر إرجاع نوع تحويل قرار.

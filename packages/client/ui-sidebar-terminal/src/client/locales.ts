@@ -9,19 +9,19 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 /** Simplified Chinese terminal copy. */
 export const zh = {
-  recoveryFailed: '恢复终端失败：{message}', retryRecovery: '重试恢复终端',
-  shell: '选择 Shell', shellLoading: '正在读取 Shell…', shellEmpty: '没有可用的 Shell', description: '在会话工作区运行命令',
-  title: '终端', new: '新建终端', loading: '正在读取终端环境…', creating: '正在启动…',
-  connecting: '正在连接…', disconnected: '连接已断开。', reconnect: '重新连接',
-  readonly: '此页面当前只读。', control: '接管输入',
-  closed: '终端已关闭。', exited: '进程已退出（{code}）', failed: '终端错误：{message}',
-  rename: '终端名称', unavailable: '不可用', retry: '重试',
-  cleanupFailed: '终端「{title}」未能结束：{message}',
-  missingTerminal: '此终端已不存在，请新建终端。',
-  inputFull: '输入缓冲区已满，请重新连接后重试。',
-  attachmentEnded: '终端连接已结束，请重新连接。',
-  invalidOutput: '终端画面传输异常，请重新连接。',
-  terminalLimit: '终端数量已达上限，请关闭不用的终端后重试。已退出的终端也计入数量。',
+  recoveryFailed: 'استعادة طرفية فشل:{message}', retryRecovery: 'إعادة محاولة استعادة طرفية',
+  shell: 'اختيار Shell', shellLoading: 'صحيح في قراءة Shell…', shellEmpty: 'لا يوجد متاح Shell', description: 'في جلسة مساحة العمل تشغيل أمر',
+  title: 'طرفية', new: 'جديد بناء طرفية', loading: 'صحيح في قراءة طرفية بيئة…', creating: 'صحيح في بدء…',
+  connecting: 'صحيح في اتصال…', disconnected: 'اتصال قد قطع فتح.', reconnect: 'إعادة اتصال',
+  readonly: 'هذا صفحة حالي فقط قراءة.', control: 'وصل إدارة إدخال',
+  closed: 'طرفية قد إغلاق.', exited: 'عملية قد خروج ({code})', failed: 'طرفية خطأ:{message}',
+  rename: 'طرفية اسم', unavailable: 'غير ممكن استخدام', retry: 'إعادة محاولة',
+  cleanupFailed: 'طرفية «{title}» لم قدرة انتهاء:{message}',
+  missingTerminal: 'هذا طرفية قد لا وجود، طلب جديد بناء طرفية.',
+  inputFull: 'إدخال مؤقت اندفاع منطقة قد ممتلئ، طلب إعادة اتصال بعد إعادة محاولة.',
+  attachmentEnded: 'طرفية اتصال قد انتهاء، طلب إعادة اتصال.',
+  invalidOutput: 'طرفية رسم وجه نقل استثناء، طلب إعادة اتصال.',
+  terminalLimit: 'طرفية عدد كمية قد بلوغ حد أعلى، طلب إغلاق لا استخدام طرفية بعد إعادة محاولة. قد خروج طرفية أيضا حساب دخول عدد كمية.',
 } satisfies Record<string, string>
 
 /** English terminal copy. */

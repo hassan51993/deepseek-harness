@@ -1,33 +1,33 @@
-# Agent Note: 遥测、反馈与 DeepSeek 请求共享匿名用户 id
+# Agent Note: بعيد قياس، عكس تغذية و DeepSeek طلب مشترك مجهول اسم مستخدم id
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-07-shared-feedback-telemetry-user-id.md) | 中文
+[English](2026-08-07-shared-feedback-telemetry-user-id.md) | العربية
 
-## 问题
+## مشكلة
 
-OpenTelemetry 后端已在 `$DSH_HOME/.anonymous-user-id` 中持久化一个匿名 UUID。`/feedback` 需要同时报告接收反馈的会话 id 与用户 id，以便运维人员将确认文本与导出的记录相关联。复制该身份或单独生成身份会使报告的用户失去意义；从 `session-telemetry-otel` 导入身份则会让直接命令依赖导出后端，并在遥测侧挂载反馈导出时形成依赖环。
+OpenTelemetry خلفية قد في `$DSH_HOME/.anonymous-user-id` في حفظ دائم واحد مجهول اسم UUID.`/feedback` حاجة معا تقرير إبلاغ استقبال عكس تغذية جلسة id و مستخدم id، بـ سهل تشغيل صيانة شخص عضو سوف تأكيد نص و توجيه خروج سجل متبادل صلة ربط. نسخ هذا هوية أو مفرد وحيد توليد هوية سوف جعل تقرير إبلاغ مستخدم فقد ذهاب معنى معنى؛ من `session-telemetry-otel` استيراد هوية فإن سوف يجعل مباشر أمر اعتماد توجيه خروج خلفية، و في بعيد قياس جانب تركيب عكس تغذية توجيه خروج وقت شكل صار اعتماد حلقة.
 
-早先的[匿名用户 id 决策](../feature/2026-07-31-telemetry-anonymous-user-id.zh.md)刻意将辅助函数留在 OTel 后端内，直至出现第二个真实消费方。反馈成为第二个消费方，[直连 DeepSeek 请求身份](../feature/2026-08-11-deepseek-request-user-id-header.zh.md)则是第三个。
+مبكر أولا[مجهول اسم مستخدم id قرار](../feature/2026-07-31-telemetry-anonymous-user-id.zh.md) لحظة معنى سوف مساعد مساعدة دالة إبقاء في OTel خلفية داخل، مباشر حتى ظهور ثاني عدد حقيقي مستهلك. عكس تغذية يصبح ثاني عدد مستهلك،[مباشر وصل DeepSeek طلب هوية](../feature/2026-08-11-deepseek-request-user-id-header.zh.md) فإن هو رقم ثلاثة عدد.
 
-## 决策
+## قرار
 
-`@deepseek-ai/dsh-anonymous-user-id` 负责 `getOrCreateAnonymousUserId()` 和 `$DSH_HOME/.anonymous-user-id` 存储约定。`session-telemetry-otel` 将返回的 id 用作 OpenTelemetry Resource 的 `user.id`；`/feedback` 的成功确认先报告 `Feedback recorded for session {sessionId}`，再在第二行显示 `User: {userId}`；直连 DeepSeek 请求则通过 `x-deepseek-harness-user-id` 携带它。系统在获取 id 前拒绝无效反馈，DeepSeek 适配器也仅在凭据解析成功后获取 id，因此空命令和凭据失败都不会创建 `.anonymous-user-id`。
+`@deepseek-ai/dsh-anonymous-user-id` مسؤول `getOrCreateAnonymousUserId()` و `$DSH_HOME/.anonymous-user-id` تخزين اتفاق.`session-telemetry-otel` سوف إرجاع id استخدام عمل OpenTelemetry Resource `user.id`؛`/feedback` نجاح تأكيد أولا تقرير إبلاغ `Feedback recorded for session {sessionId}`، مجددا في ثاني سطر عرض `User: {userId}`؛ مباشر وصل DeepSeek طلب فإن عبر `x-deepseek-harness-user-id` يحمل هو. نظام في نيل أخذ id قبل رفض بلا فاعلية عكس تغذية،DeepSeek مهايئ أيضا فقط في اعتماد تحليل نجاح بعد نيل أخذ id، لذلك فارغ أمر و اعتماد فشل كل لن إنشاء `.anonymous-user-id`.
 
-此次抽取保留既有的随机 UUID、home 解析、进程内缓存、独占创建并发、损坏文件替换与 best-effort 写入语义。
+هذا مرة سحب أخذ إبقاء قائم مع آلة UUID،home تحليل، عملية داخل ذاكرة مؤقتة، وحيد احتلال إنشاء تزامن، ضرر تالف ملف استبدال و best-effort كتابة دلالة.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-| 已否决 | 原因 |
+| قد مرفوض | سبب |
 |---|---|
-| 从 `session-telemetry-otel` 导入辅助函数 | 使反馈耦合到可选的导出后端，并在遥测导出反馈后形成反向依赖环 |
-| 在反馈中复制持久化辅助函数 | 同一文件约定的两份实现可能发生偏差，并因校验或失败语义不同而产生竞态 |
-| 生成独立的反馈用户 id | 确认文本无法与 OTel Resource 相关联，因而不能达到报告目的 |
+| من `session-telemetry-otel` استيراد مساعد مساعدة دالة | جعل عكس تغذية اقتران دمج إلى اختياري توجيه خروج خلفية، و في بعيد قياس توجيه خروج عكس تغذية بعد شكل صار عكس نحو اعتماد حلقة |
+| في عكس تغذية في نسخ حفظ دائم مساعد مساعدة دالة | نفس ملف اتفاق اثنان نسخة تنفيذ ممكن حدوث انحراف فرق، و بسبب تحقق أو فشل دلالة مختلف بينما إنتاج تنافس حالة |
+| توليد مستقل عكس تغذية مستخدم id | تأكيد نص لا يمكن و OTel Resource متبادل صلة ربط، بسبب بينما لا يستطيع بلوغ إلى تقرير إبلاغ هدف |
 
-## 后果
+## عاقبة
 
-- 一个 harness home 只有一个匿名 id，由反馈确认、会话遥测导出与直连 DeepSeek 请求共享。
-- 反馈包只依赖身份能力，不依赖遥测 seam 或 OTel SDK。
-- 该包由三个消费方使用，成为有充分依据的共享库；其空不变式伴生插件解释了为何读取私有文件并非有用的运行时关系检查。
-- 原始匿名用户 id Note 仍是存储与隐私语义的权威记录；本 Note 仅取代其中由 OTel 本地拥有身份的决策。
+- واحد harness home فقط لديه واحد مجهول اسم id، من عكس تغذية تأكيد، جلسة بعيد قياس توجيه خروج و مباشر وصل DeepSeek طلب مشترك.
+- عكس تغذية حزمة فقط اعتماد هوية قدرة، لا اعتماد بعيد قياس seam أو OTel SDK.
+- هذا حزمة من ثلاثة عدد مستهلك استخدام، يصبح لديه ملء قسم اعتماد حسب مشترك مكتبة؛ ذلك فارغ ثابت صيغة مرافق توليد إضافة حل تفسير لـ أي قراءة خاص ملف و غير لديه استخدام وقت التشغيل علاقة فحص.
+- أصلي مجهول اسم مستخدم id Note ما زال هو تخزين و خفي خاص دلالة مرجعي سجل؛ هذا Note فقط يحل محل منها من OTel محلي يملك هوية قرار.

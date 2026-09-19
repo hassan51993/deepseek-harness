@@ -1,49 +1,49 @@
 ---
-description: "todo 组地图：基于会话日志的模型侧 todo_write 工具，供浏览本组的用户与维护者阅读。"
+description: "todo مجموعة أرض رسم: أساس في جلسة سجل نموذج جانب todo_write أداة، توفير تصفح تصفح هذا مجموعة مستخدم و صيانة من قراءة قراءة."
 kind: "package-group"
 ---
 
 # packages/todo
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-todo 组为 agent（智能体）提供可用于规划的会话级任务列表：添加任务、标记进行中、逐项完成，同一份列表跨轮次、跨重新打开的会话持续存在。它只包含一个产品包，提供 `todo_write` 工具；列表属于创建它的 agent 会话，每次更新都会整体替换。交互式宿主会从列表展示当前计划，组本身不附带任何 UI。
+todo مجموعة لـ agent(ذكي جسم) توفير متاح في قاعدة تخطيط جلسة درجة مهمة قائمة: إضافة مهمة، علامة إجراء في، تدريجي بند إتمام، نفس نسخة قائمة عبر جولة، عبر إعادة فتح جلسة حمل متابعة وجود. هو فقط يتضمن واحد منتج حزمة، توفير `todo_write` أداة؛ قائمة يخص إنشاء هو agent جلسة، كل مرة تحديث كل سوف كامل جسم استبدال. تفاعل صيغة مضيف سوف من قائمة عرض حالي حساب تخطيط، مجموعة ذاته لا مرفق حمل أي UI.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`tool-todo`](tool-todo/README.zh.md) | 让 agent 维护会话任务列表：规划任务、更新状态、跟踪进度 | 注册到 `ctx.tools` |
+| [`tool-todo`](tool-todo/README.zh.md) | يجعل agent صيانة جلسة مهمة قائمة: قاعدة تخطيط مهمة، تحديث حالة، تتبع أثر دخول درجة | تسجيل إلى `ctx.tools` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [Todo 子系统](../../docs/subsystems/todo.zh.md)——`todo/write` 事件载荷、归属规则与 `TodoItem`。
-- [生成的工具目录](../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-todo)——模型接收的 `todo_write` schema。
-- [生成的配置目录](../../docs/config-catalog.zh.md#deepseek-aidsh-tool-todo)——每个受支持配置字段。
-- [todo_write 工具 Agent Note](../../.agents/notes/archived/feature/2026-06-29-todo-write-tool.md)——原始设计及其备选方案。
+- [Todo فرعي نظام](../../docs/subsystems/todo.zh.md)——`todo/write` حدث تحميل حمل، ملكية قاعدة و `TodoItem`.
+- [توليد أداة دليل](../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-todo)——نموذج استقبال `todo_write` schema.
+- [توليد إعداد دليل](../../docs/config-catalog.zh.md#deepseek-aidsh-tool-todo)——كل تلقي دعم حمل إعداد حقل.
+- [todo_write أداة Agent Note](../../.agents/notes/archived/feature/2026-06-29-todo-write-tool.md)——أصلي تصميم و ذلك تجهيز اختيار خطة.
 
 -----
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

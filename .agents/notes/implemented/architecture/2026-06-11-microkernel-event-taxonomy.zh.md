@@ -1,31 +1,31 @@
-# Agent Note: 微内核——通过 Cordis 事件分类体系实现扩展，唯一具体循环
+# Agent Note: دقيق داخل نواة——عبر Cordis حدث تصنيف جسم نظام تنفيذ توسيع، وحيد أداة جسم حلقة
 
 Status: implemented
 
-[English](2026-06-11-microkernel-event-taxonomy.md) | 中文
+[English](2026-06-11-microkernel-event-taxonomy.md) | العربية
 
-## 问题
+## مشكلة
 
-产品原则是「一切皆插件」：钩子、/goal、/loop、动态工作流、压缩（compaction）、沙箱、权限、UI、持久化、MCP、skill（技能）都必须能以插件形式编写，无需修改核心。
+منتج أصل فإن هو «واحد قطع جميع إضافة»: خطاف،/goal،/loop، حركة حالة سير العمل، ضغط (compaction) ، صندوق رملي، إذن،UI، حفظ دائم،MCP،skill(تقنية قدرة) كل يجب قدرة بـ إضافة شكل صيغة تحرير كتابة، بلا حاجة تعديل نواة قلب.
 
-## 决策
+## قرار
 
-纯 Cordis 事件分类体系。agent loop（智能体循环）的扩展点是带类型的事件，具有明确的分发模式：
+صاف Cordis حدث تصنيف جسم نظام.agent loop(ذكي جسم حلقة) نقطة توسيع هو حمل نوع حدث، أداة لديه واضح توزيع نمط:
 
-- **waterfall（瀑布式事件）**（around-middleware）：插件可变换、短路、恢复或包装：`agent/pre-step`、`agent/request`、`agent/request-error`、`tools/pre-execute`、`tools/execute`、`tools/post-execute`、`llm/stream`、`system-prompt/assemble`。
-- **serial**（按监听器顺序依次 await）：用于 `agent/turn-stopping` 等有序检查点。
-- **parallel**（await 扇出）：每个监听器都必须获得独立执行的机会：`session/flush` 持久性检查点。
-- **emit**（同步 fire-and-forget）：用于通知：inbox 转换、生命周期、错误，以及受错误隔离的 `tools/result` 观测；该观测接收不可变的最终结果。轮次与步骤边界由持久会话事件拥有。
+- **waterfall(شلال نشر صيغة حدث)**(around-middleware): إضافة متغير تبديل، قصير مسار، استعادة أو حزمة تركيب:`agent/pre-step`،`agent/request`،`agent/request-error`،`tools/pre-execute`،`tools/execute`،`tools/post-execute`،`llm/stream`،`system-prompt/assemble`.
+- **serial**(حسب مستمع ترتيب اعتماد مرة await): لأجل `agent/turn-stopping` انتظار لديه ترتيب فحص نقطة.
+- **parallel**(await مروحة خروج): كل مستمع كل يجب نيل نيل مستقل تنفيذ آلة سوف:`session/flush` حمل دائم صفة فحص نقطة.
+- **emit**(تزامن fire-and-forget): لأجل إشعار:inbox تحويل، دورة الحياة، خطأ، و تلقي خطأ عزل `tools/result` مراقبة قياس؛ هذا مراقبة قياس استقبال غير ممكن تغيير نهائي نتيجة. جولة و خطوة حد من حمل دائم جلسة حدث يملك.
 
-事件词汇定义在约定包中（`dsh-agent` 声明 `agent/*` 事件）；`@deepseek-ai/dsh-agent-loop` 是唯一的具体循环插件，且自身可替换——外部不得依赖它。
+حدث مفردات تعريف في اتفاق حزمة في (`dsh-agent` إعلان `agent/*` حدث) ؛`@deepseek-ai/dsh-agent-loop` هو وحيد أداة جسم حلقة إضافة، كما ذاته يمكن استبدال——خارجي لا نيل اعتماد هو.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**专用中间件栈（koa-compose 风格）**与**显式阶段状态机（插件向其中插入阶段）**：两者都需要重新实现 Cordis 原生事件系统已提供的分发、dispose（资源释放）与重载语义；作为 Cordis effect，监听器天然获得 HMR（热模块替换）与 dispose 能力。
+**مخصص استخدام في بين عنصر مكدس (koa-compose ريح إطار)**و**صريح مرحلة مقطع حالة آلة (إضافة نحو منها إدراج دخول مرحلة مقطع)**: اثنان من كل حاجة إعادة تنفيذ Cordis أصلي حدث نظام قد توفير توزيع،dispose(مورد تحرير) و إعادة تحميل دلالة؛ بصفة Cordis effect، مستمع يوم لكن نيل نيل HMR(حار وحدة استبدال) و dispose قدرة.
 
-## 后果
+## عاقبة
 
-- 每个 MVP 功能都映射到一个监听器（[功能→机制映射](../../../../docs/cookbook/extension-cookbook.zh.md#the-feature--mechanism-map)是证明义务，保持更新）。
-- HMR 与 dispose 无需额外工作：监听器和注册均为 Cordis effect。
-- waterfall 语义（调用 `next()` 或短路）不直观，需要教学——在 AGENTS.md 中记录，并由组合测试覆盖。
-- 循环必须具备防御性：插件异常在轮次级别被隔离，来自任何扩展点的 steering（中途引导）永远不会被搁置（有回归测试保障）。
+- كل MVP وظيفة كل خريطة إلى واحد مستمع ([وظيفة→آلية خريطة](../../../../docs/cookbook/extension-cookbook.zh.md#the-feature--mechanism-map) هو إثبات معنى خدمة، إبقاء تحديث).
+- HMR و dispose بلا حاجة مقدار خارج عمل: مستمع و تسجيل متساو لـ Cordis effect.
+- waterfall دلالة (استدعاء `next()` أو قصير مسار) لا مباشر مراقبة، حاجة تعليم تعلم——في AGENTS.md في سجل، و من تركيب اختبار تغطية.
+- حلقة يجب أداة تجهيز منع صد صفة: إضافة استثناء في جولة درجة آخر يتم عزل، قدوم ذاتي أي نقطة توسيع steering(في طريق جذب توجيه) دائم بعيد لن يتم وضع وضع (لديه ارتداد اختبار حفظ عائق).

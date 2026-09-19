@@ -13,11 +13,11 @@ async function main(): Promise<void> {
       if (!stdin.isTTY || !stdout.isTTY) return false
       const terminal = createInterface({ input: stdin, output: stdout })
       try {
-        console.log('仅在管理员已审核并恢复签名保护后继续。确认已注销令牌、剩余 5/5、PIN 正确且无其他签名任务。')
-        console.log('本次打包会有多次签名；不重试失败操作，驱动内部认证次数无法保证。出现密码弹窗请取消，不要补输。')
-        console.log('PIN 只从 .env.windows 读取；签名接口要求它短暂出现在 SignTool 参数中。不会安装或上传。')
+        console.log('فقط في إدارة عضو قد مراجعة نواة و استعادة توقيع حفظ حماية بعد متابعة. تأكيد قد ملاحظة إلغاء أمر لوحة، باق بقية 5/5،PIN صحيح تأكيد كما بلا أخرى توقيع مهمة.')
+        console.log('هذا مرة تحزيم سوف لديه كثير مرة توقيع؛ لا إعادة محاولة فشل عملية، قيادة داخلي إقرار إثبات مرة عدد لا يمكن حفظ إثبات. ظهور سري رمز نابض نافذة طلب إلغاء، لا يلزم تكملة نقل.')
+        console.log('PIN فقط من .env.windows قراءة؛ توقيع واجهة اشتراط هو قصير مؤقت ظهور في SignTool معامل في. لن تثبيت أو فوق نقل.')
         const expected = `PACKAGE ${selectedVersion} ${id}`
-        return (await terminal.question(`仅授权这个版本，请输入 ${expected}：`)) === expected
+        return (await terminal.question(`فقط تخويل هذا عدد إصدار، طلب إدخال ${expected}:`)) === expected
       } finally { terminal.close() }
     } })
   console.log(JSON.stringify(result, null, 2))

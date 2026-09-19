@@ -1,36 +1,36 @@
-# Agent Note: worker 的 Node 面——builtin、VFS 与 shell 进程层
+# Agent Note: worker Node وجه——builtin،VFS و shell عملية طبقة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-20-webworker-node-face.md) | 中文
+[English](2026-08-20-webworker-node-face.md) | العربية
 
-## 问题
+## مشكلة
 
-worker 逐字节运行 web profile 的 Cordis 配置——没有 worker 专属行——因此浏览器缺失的平台必须在模块层被替换：被代理的模块保持身份、更换实现。这覆盖三条战线：树所 import 的 Node builtin、这些 builtin 背后应答的文件系统，以及 bash 工具的进程层。如果 `node:child_process` 只是结构桩，工具仍会照常挂载并向模型自我宣告，但每次调用都会失败。
+worker تدريجي بايت تشغيل web profile Cordis إعداد——لا يوجد worker مخصص تابع سطر——لذلك متصفح ناقص منصة يجب في وحدة طبقة يتم استبدال: يتم بديل إدارة وحدة إبقاء هوية، أكثر تبديل تنفيذ. هذا تغطية ثلاثة بند حرب خط: شجرة الذي import Node builtin، هذه builtin خلف بعد ينبغي جواب نظام الملفات، و bash أداة عملية طبقة. إذا `node:child_process` فقط هو بنية وتد، أداة ما زال سوف وفق معتاد تركيب و نحو نموذج ذاتي أنا إعلان إبلاغ، لكن كل مرة استدعاء كل سوف فشل.
 
-## 决定
+## قرار
 
-**Builtin。** 代理表只替换 Node builtin 与外部 npm 包，绝不替换 workspace 或 vendored 模块。`./implemented/<module>.ts` 在 worker 数据源之上承载真语义；`./mock/<module>.ts` 静默挂载、在调用真正抵达时报告缺失的能力。装载器的表按 specifier 各持一个 memoized thunk——求值发生在首次 `require` 而非装配期——且每个垫片的导出面对 Node 自身的模块类型作类型检查，仅在结构身份（真实类）确不可满足处留最窄的、有说明的例外。它的 `createRequire` 面在镜像 package 根之上同时提供 `resolve()` 与 `resolve.paths()`，使未修改的包无需加载目标即可发现 manifest。`process` 全局由 worker 自装，装配期填入表中。Shim 包含 `process.title`：`@xterm/headless` 等包通过该属性是否存在来选择 Node 路径；缺少它会让 dedicated Worker 被误判为浏览器 Window，进而访问仅适用于 DOM 的全局对象。
+**Builtin.** بديل إدارة جدول فقط استبدال Node builtin و خارجي npm حزمة، أبدا استبدال workspace أو vendored وحدة.`./implemented/<module>.ts` في worker بيانات مصدر لـ فوق تحمل تحميل حق دلالة؛`./mock/<module>.ts` ساكن صامت تركيب، في استدعاء حق صحيح مقاومة بلوغ وقت تقرير إبلاغ ناقص قدرة. تركيب تحميل جهاز جدول حسب specifier كل حمل واحد memoized thunk——طلب قيمة حدوث في أول مرة `require` بينما غير تركيب إعداد مدة——كما كل وسادة قطعة توجيه خروج وجه مقابل Node ذاته وحدة نوع عمل نوع فحص، فقط في بنية هوية (حقيقي صنف) تأكيد غير ممكن ممتلئ كاف موضع إبقاء الأكثر ضيق، لديه شرح مثال خارج. هو `createRequire` وجه في مرآة مثل package أصل لـ فوق معا توفير `resolve()` و `resolve.paths()`، جعل لم تعديل حزمة بلا حاجة تحميل هدف يكفي اكتشاف manifest.`process` عام من worker ذاتي تركيب، تركيب إعداد مدة ملء دخول جدول في.Shim يتضمن `process.title`:`@xterm/headless` انتظار حزمة عبر هذا خاصية هل وجود قدوم اختيار Node مسار؛ نقص قليل هو سوف يجعل dedicated Worker يتم خطأ حكم لـ متصفح Window، دخول بينما وصول فقط ملائم لأجل DOM عام كائن.
 
-**VFS。** 内存为真相。`statSync(path, { bigint: true })` 返回 Node 的 BigInt 形状，其中两个字段承载真实信息，因为 `dsh-fs-local` 的 stale-write guard 依赖它们：`ino` 是按路径的身份（单调计数器分配，路径重建即新身份），`mtimeMs` 按条目严格递增（`max(now, previous + 1)`）——内存写例行落在同一毫秒内，相等的时间戳会放过陈旧覆写。已提交的 mutation 还会驱动 [Node 兼容 watcher 与 confinement 实现](2026-08-23-webworker-vfs-watch-and-landlock.zh.md)。Cordis 日志器的详细度数值向上计数，因此 `startWorkerHost` 会在任何 entry 挂载前安装 `levels: { default: 2 }` 的 console exporter，避免未声明等级的 exporter 丢掉所有 warning。
+**VFS.** داخل تخزين لـ حق متبادل.`statSync(path, { bigint: true })` إرجاع Node BigInt شكل حالة، منها اثنان عدد حقل تحمل تحميل حقيقي معلومة، لأن `dsh-fs-local` stale-write guard اعتماد هو جمع:`ino` هو حسب مسار هوية (مفرد ضبط حساب عدد جهاز قسم إعداد، مسار إعادة بناء أي جديد هوية) ،`mtimeMs` حسب بند صارم إطار تمرير زيادة (`max(now, previous + 1)`)——داخل تخزين كتابة مثال سطر سقوط في نفس جزء ثانية داخل، متبادل انتظار ختم الوقت سوف وضع مرور قديم قديم تغطية كتابة. قد إيداع mutation أيضا سوف قيادة [Node توافق watcher و confinement تنفيذ](2026-08-23-webworker-vfs-watch-and-landlock.zh.md).Cordis سجل جهاز تفصيل دقيق درجة عدد قيمة نحو فوق حساب عدد، لذلك `startWorkerHost` سوف في أي entry تركيب قبل تثبيت `levels: { default: 2 }` console exporter، تجنب تجنب لم إعلان انتظار درجة exporter فقد إسقاط كل warning.
 
-**Shell。** `node:child_process` 是 VFS 之上的真实现。语法是买来的——`@yarnpkg/parsers` 的 `parseShell`——求值器与命令表是自有的，因为每个候选解释器都自带文件系统：管道是逐段传递的字符串，每个程序是 VFS 上的一个函数。普通命令从该表解析；native 包协议可以通过 [watcher 与 confinement 决策](2026-08-23-webworker-vfs-watch-and-landlock.zh.md)提供 Worker 自有的虚拟 executable wrapper。两处都没有的名字在直接 spawn 时报告 `ENOENT`，在 shell source 中则报告 `command not found`（127）。每次 `spawn` 从同一个 bundle 起一个子 Web Worker，首帧声明 shell 进程角色，因此终止梯是真的：`SIGTERM` 在下一命令边界处请求停止，`SIGKILL` 在任意时刻终止 worker——这是线程内解释器永远没有的抢占。文件系统面端到端异步（子进程经帧到宿主 VFS）；`execSync`、`execFileSync`、`fork` 拒绝，`node-pty` 保持桩。
+**Shell.** `node:child_process` هو VFS لـ فوق حقيقي الآن. لغة قاعدة هو شراء قدوم——`@yarnpkg/parsers` `parseShell`——طلب قيمة جهاز و أمر جدول هو ذاتي لديه، لأن كل مرشح حل تفسير جهاز كل ذاتي حمل نظام الملفات: إدارة طريق هو تدريجي مقطع نقل تمرير نص، كل برنامج هو VFS فوق واحد دالة. عادي أمر من هذا جدول تحليل؛native حزمة بروتوكول يمكن عبر [watcher و confinement قرار](2026-08-23-webworker-vfs-watch-and-landlock.zh.md) توفير Worker ذاتي لديه وهمي محاكاة executable wrapper. اثنان موضع كل لا يوجد اسم حرف في مباشر spawn وقت تقرير إبلاغ `ENOENT`، في shell source في فإن تقرير إبلاغ `command not found`(127). كل مرة `spawn` من نفس عدد bundle بدء واحد فرعي Web Worker، أول لقطة إعلان shell عملية زاوية لون، لذلك إنهاء سلم هو حق:`SIGTERM` في تحت واحد أمر حد موضع طلب إيقاف،`SIGKILL` في مهمة معنى وقت لحظة إنهاء worker——هذا هو خط مسار داخل حل تفسير جهاز دائم بعيد لا يوجد انتزاع احتلال. نظام الملفات وجه طرف إلى طرف مختلف خطوة (عملية فرعية مرور لقطة إلى مضيف VFS) ؛`execSync`،`execFileSync`،`fork` رفض،`node-pty` إبقاء وتد.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**整包替换 `dsh-subprocess-local` 或替换 bash 执行器。** 前者让代理表首次替换 workspace 包、违背其自身分类并倒置分层；后者撞上 `dsh-permission-presets` 对 `sandboxMode` 的 boot 期硬校验，并丢掉执行器已被测试钉住的超时/输出行为。
+**كامل حزمة استبدال `dsh-subprocess-local` أو استبدال bash منفذ.** قبل من يجعل بديل إدارة جدول أول مرة استبدال workspace حزمة، مخالفة خلف ذلك ذاته تصنيف و قلب وضع قسم طبقة؛ بعد من اصطدام فوق `dsh-permission-presets` مقابل `sandboxMode` boot مدة صلب تحقق، و فقد إسقاط منفذ قد يتم اختبار تثبيت إقامة مهلة/إخراج سلوك.
 
-**`@yarnpkg/shell`、WASM shell、WebContainer。** 配套解释器建立在真实 Node streams 之上（约 1.5 MB 闭包要自养）；本部署排除 WASM，WASI 没有 `fork`；且它们全都自带文件系统——恰是无法复用的那部分。
+**`@yarnpkg/shell`،WASM shell،WebContainer.** إعداد طقم حل تفسير جهاز بناء قيام في حقيقي Node streams لـ فوق (نحو 1.5 MB إغلاق حزمة يلزم ذاتي رعاية) ؛ هذا نشر ترتيب حذف WASM،WASI لا يوجد `fork`؛ كما هو جمع كل كل ذاتي حمل نظام الملفات——تماما هو لا يمكن إعادة استخدام ذلك جزء.
 
-**`SharedArrayBuffer` + `Atomics.wait` 给子进程同步文件系统。** 在部署目标实测：无 COOP/COEP 头时 `SharedArrayBuffer` 未定义，而 GitHub Pages 无法设置响应头。异步面是超集；SAB 后端将来可垫入其下而不动任何程序。
+**`SharedArrayBuffer` + `Atomics.wait` إعطاء عملية فرعية تزامن نظام الملفات.** في نشر هدف فعلي قياس: بلا COOP/COEP رأس وقت `SharedArrayBuffer` لم تعريف، بينما GitHub Pages لا يمكن ضبط استجابة رأس. مختلف خطوة وجه هو تجاوز تجميع؛SAB خلفية سوف قدوم يمكن وسادة دخول ذلك تحت بينما لا حركة أي برنامج.
 
-**伪造 stats 或放宽错误谓词，而非如实实现 `bigint`。** 常量 `ino`/纯挂钟 `mtimeNs` 会静默废掉 stale-write guard；让技能发现吞下 `FS_IO_ERROR` 则会把同一个 bug 变成处处无失败的永久空目录。
+**زائف صنع stats أو وضع عرض خطأ يسمى كلمة، بينما غير مثل فعلي تنفيذ `bigint`.** معتاد كمية `ino`/صاف تعليق ساعة `mtimeNs` سوف ساكن صامت ملغى إسقاط stale-write guard؛ يجعل تقنية قدرة اكتشاف ابتلاع تحت `FS_IO_ERROR` فإن سوف يأخذ نفس عدد bug تغيير صار موضع موضع بلا فشل دائم دائم فارغ دليل.
 
-## 后果
+## عاقبة
 
-- `read-only` 与 `workspace-write` 解释 native Landlock launcher 协议，并在 VFS 帧闸口执行逐进程授权；`danger-full-access` 保持直接进程路径。[Watcher 与 confinement 决策](2026-08-23-webworker-vfs-watch-and-landlock.zh.md)拥有该执行世界中 `full` 的更窄含义。
-- Node 宿主的阶梯测试（`tests/node/child-process.spec.ts`）登记为 windows 不支持：阶梯的 win32 kill 梯级是按真 pid 的 taskkill，对进程表 pid 不可投递，而 worker 自身恒报 `linux`。
-- 输出增量但不流式：程序写入的 sink 以 `data` 事件转发，一个管道阶段完成后下一阶段才开始。
-- `tests/node/process-shim.spec.ts` 独立于测试运行器自带的 Node process，钉住 Node 环境识别字段。
-- 运行时的测试镜像 `src/`（`tests/node/`、`tests/shell/`、`tests/storage/`……），每个垫片族在 oracle-diff 套件旁拥有自己的行为用例。
+- `read-only` و `workspace-write` حل تفسير native Landlock launcher بروتوكول، و في VFS لقطة بوابة فتحة تنفيذ تدريجي عملية تخويل؛`danger-full-access` إبقاء مباشر عملية مسار.[Watcher و confinement قرار](2026-08-23-webworker-vfs-watch-and-landlock.zh.md) يملك هذا تنفيذ عالم حد في `full` أكثر ضيق يحتوي معنى.
+- Node مضيف مرحلة سلم اختبار (`tests/node/child-process.spec.ts`) تسجيل تسجيل لـ windows لا دعم حمل: مرحلة سلم win32 kill سلم درجة هو حسب حق pid taskkill، مقابل عملية جدول pid غير ممكن إلقاء تمرير، بينما worker ذاته ثابت تقرير `linux`.
+- إخراج زيادة كمية لكن لا تدفق صيغة: برنامج كتابة sink بـ `data` حدث تحويل إرسال، واحد إدارة طريق مرحلة مقطع إتمام بعد تحت واحد مرحلة مقطع عندئذ بدء.
+- `tests/node/process-shim.spec.ts` مستقل في اختبار تشغيل جهاز ذاتي حمل Node process، تثبيت إقامة Node بيئة تعرف آخر حقل.
+- وقت التشغيل اختبار مرآة مثل `src/`(`tests/node/`،`tests/shell/`،`tests/storage/`……) ، كل وسادة قطعة عائلة في oracle-diff طقم عنصر جانب يملك ذاتي ذات سلوك حالة استخدام.

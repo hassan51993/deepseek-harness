@@ -1,24 +1,24 @@
-# Agent Note: 使用自定义类型化工具 schema DSL 替代 schemastery
+# Agent Note: استخدام ذاتي تعريف نوع تحويل أداة schema DSL بديل schemastery
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-06-11-custom-schema-dsl.md) | 中文
+[English](2026-06-11-custom-schema-dsl.md) | العربية
 
-## 问题
+## مشكلة
 
-工具参数必须以标准 JSON Schema 形式到达模型，同时让工具作者在 `execute(args)` 中获得类型化的参数而无需类型断言。Schemastery 已用于插件配置，但工具作者 API 需要逐属性的 `required: true` 布尔值，而非 JSON Schema 的独立 `required` 数组。
+أداة معامل يجب بـ معيار JSON Schema شكل صيغة وصول نموذج، معا يجعل أداة عمل من في `execute(args)` في نيل نيل نوع تحويل معامل بينما بلا حاجة نوع تأكيد.Schemastery قد لأجل إضافة إعداد، لكن أداة عمل من API حاجة تدريجي خاصية `required: true` قيمة منطقية، بينما غير JSON Schema مستقل `required` عدد مجموعة.
 
-## 决策
+## قرار
 
-该决策已由[统一 JSON 值 schema DSL](2026-07-20-unified-json-value-schema-dsl.md)取代；新设计保留小型编写接口，同时让参数与类型化值共享一套词汇。`ParameterSchemaSpec` 保留逐属性的 `required: true`；`InferArgs<S>` 将必需键映射为非可选属性；`parameterSchemaSpecToJsonSchema()` 编译隐式开放的对象根；`defineTool()` 则将类型推导、编译与校验串联起来。原始 JSON Schema 的 `ToolDefinition` 仍是 `ToolRegistry.register()` 接受的输入，供 MCP 和其他外部工具使用。
+هذا قرار قد من[موحد واحد JSON قيمة schema DSL](2026-07-20-unified-json-value-schema-dsl.md) يحل محل؛ جديد تصميم إبقاء صغير نوع تحرير كتابة واجهة، معا يجعل معامل و نوع تحويل قيمة مشترك واحد طقم مفردات.`ParameterSchemaSpec` إبقاء تدريجي خاصية `required: true`؛`InferArgs<S>` سوف مطلوب مفتاح خريطة لـ غير اختياري خاصية؛`parameterSchemaSpecToJsonSchema()` تحرير ترجمة خفي صيغة فتح وضع كائن أصل؛`defineTool()` فإن سوف نوع دفع توجيه، تحرير ترجمة و تحقق سلسلة ربط بدء قدوم. أصلي JSON Schema `ToolDefinition` ما زال هو `ToolRegistry.register()` قبول إدخال، توفير MCP و أخرى خارجي أداة استخدام.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**Schemastery**（已作为 vendor 引入，用于插件 Config）经评估后被否决：它面向的是基于 StandardSchema 的校验／转换，而非 JSON Schema *生成*，因此会增加间接层却无法干净地产出协议格式（wire format）。
+**Schemastery**(قد بصفة vendor جذب دخول، لأجل إضافة Config) مرور تقييم تقدير بعد يتم مرفوض: هو موجه إلى هو أساس في StandardSchema تحقق/تحويل، بينما غير JSON Schema *توليد*، لذلك سوف زيادة بين وصل طبقة لكن لا يمكن جاف صاف أرض إنتاج خروج بروتوكول صيغة (wire format).
 
-## 后果
+## عاقبة
 
-- 第一方工具作者获得零类型断言的类型化参数；类型体操的成本留在核心包内部（符合 AGENTS.md 的类型安全策略）。
-- 当前节点、字面量约束、联合类型、JSON 值边界与对象开放性规则均由上述统一说明定义。
-- `InferArgs` 映射在类型层面有回归测试，源于早期一个可选性 bug。
+- رقم واحد جهة أداة عمل من نيل نيل صفر نوع تأكيد نوع تحويل معامل؛ نوع جسم تشغيل صار هذا إبقاء في نواة قلب حزمة داخلي (رمز دمج AGENTS.md نوع أمان سياسة).
+- حالي عقدة، حرف وجه كمية قيد، ربط دمج نوع،JSON قيمة حد و كائن فتح وضع صفة قاعدة متساو من فوق وصف موحد واحد شرح تعريف.
+- `InferArgs` خريطة في نوع طبقة وجه لديه ارتداد اختبار، مصدر في مبكر مدة واحد اختياري صفة bug.

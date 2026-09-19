@@ -1,111 +1,111 @@
 ---
-description: "dsh Web 客户端的 slot 注册表纯核心：普通扩展 slots、可复用 Component Factory、推导 props 类型、store 席位与渲染器安装约定。"
+description: "dsh Web عميل slot سجل التسجيل صاف نواة قلب: عادي توسيع slots، يمكن إعادة استخدام Component Factory، دفع توجيه props نوع،store مقعد موضع و مصير تثبيت اتفاق."
 kind: "package-library"
 ---
 
 # @deepseek-ai/dsh-client-ui-slots
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-client-ui-slots` 让 Web 客户端插件定义并组合带类型检查的 UI 区域。普通 Slots 提供 parent-owned 扩展位置；Component Factory 提供带调用方所选局部 Component 的可复用装配。两套 API 都从声明合并类型推导 scoped state、injection、locale 与 child-render props，并在插件加载期间报告冲突 definition。客户端需要渲染时，将这个不依赖 React 的包与 `ui-renderer` 配合使用。
+`dsh-client-ui-slots` يجعل Web عميل إضافة تعريف و تركيب حمل نوع فحص UI منطقة مجال. عادي Slots توفير parent-owned توسيع موضع؛Component Factory توفير حمل استدعاء جهة الذي اختيار نطاق جزء Component يمكن إعادة استخدام تركيب إعداد. اثنان طقم API كل من إعلان دمج نوع دفع توجيه scoped state،injection،locale و child-render props، و في إضافة تحميل خلال تقرير إبلاغ اندفاع مفاجئ definition. عميل حاجة تصيير وقت، سوف هذا عدد لا اعتماد React حزمة و `ui-renderer` إعداد دمج استخدام.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-编写客户端插件时都通过本包组合 UI：把组件注册进父级已声明的 slot，或声明组件将要渲染的子 slot。四种 kind 覆盖组合形态——`single`（单个占位者）、`list`（有序条目）、`keyed`（按键分派）与 `chain`（条目自行提名）。
+تحرير كتابة عميل إضافة وقت كل عبر هذه الحزمة تركيب UI: يأخذ مكون تسجيل دخول أب درجة قد إعلان slot، أو إعلان مكون سوف يلزم تصيير فرعي slot. أربعة نوع kind تغطية تركيب شكل——`single`(مفرد عدد احتلال موضع من) ،`list`(لديه ترتيب بند) ،`keyed`(حسب مفتاح قسم إرسال) و `chain`(بند ذاتي سطر رفع اسم).
 
-### 可复用 Component Factory
+### يمكن إعادة استخدام Component Factory
 
-当一个包定义装配、而互不相关的 parents 需要独立渲染它时，使用 Component Factory。在 `SlotFactoryMap` 中声明完整类型，通过 `ctx.slots.registerFactory()` 安装 definition，通过注入的 `renderFactorySlot()` 渲染 occurrences，并通过调用的 `slots` 选项选择每个已声明的局部 Component。definition 通过 `useFactorySlot(name, fallback)` 读取该选择。
+عند واحد حزمة تعريف تركيب إعداد، بينما متبادل لا متبادل صلة parents حاجة مستقل تصيير هو وقت، استخدام Component Factory. في `SlotFactoryMap` في إعلان كامل نوع، عبر `ctx.slots.registerFactory()` تثبيت definition، عبر حقن `renderFactorySlot()` تصيير occurrences، و عبر استدعاء `slots` خيار اختيار كل قد إعلان نطاق جزء Component.definition عبر `useFactorySlot(name, fallback)` قراءة هذا اختيار.
 
-Factory `children` 仍是普通全局 Slots 且必须与 `SlotMap` 匹配，而局部 `slots` 为每个 occurrence 选择一个 Component。occurrence 继承其渲染位置的 scope；`renderFactorySlot()` 不接受 Session identity。共享 Store handle 使用普通 scope 解析。Store factory 保持 lazy，直到 occurrence 首次物化时才为该渲染位置创建一个 handle；若持久化 Store spec 会让 persistence key 在 occurrences 之间冲突，renderer 会拒绝它。
+Factory `children` ما زال هو عادي عام Slots كما يجب و `SlotMap` مطابقة، بينما نطاق جزء `slots` لـ كل occurrence اختيار واحد Component.occurrence وراثة ذلك تصيير موضع scope؛`renderFactorySlot()` لا قبول Session identity. مشترك Store handle استخدام عادي scope تحليل.Store factory إبقاء lazy، مباشر إلى occurrence أول مرة شيء تحويل وقت عندئذ لـ هذا تصيير موضع إنشاء واحد handle؛ إذا حفظ دائم Store spec سوف يجعل persistence key في occurrences بين اندفاع مفاجئ،renderer سوف رفض هو.
 
-### 五个框架 props share
+### خمسة عدد إطار هيكل props share
 
-每个已注册组件都会收到由五个框架 share 组合而成的 props：运行时 share（父级 render 调用点的 `owner`，加上会话标准工具包与全局席位）、child render share（静态缩窄到已声明 children 的 `renderSlot`）、Factory render share（`renderFactorySlot`）、store share（已声明 handle 的 selector 钩子与移除 draft 的 actions），以及业务 share（从 `inject` 推导）。组件引用推导出的 props 别名；它们绝不在本地重新定义任何 share 的类型。
+كل قد تسجيل مكون كل سوف استلام إلى من خمسة عدد إطار هيكل share تركيب بينما صار props: وقت التشغيل share(أب درجة render استدعاء نقطة `owner`، إضافة فوق جلسة معيار أداة حزمة و عام مقعد موضع) ،child render share(ساكن حالة تقليص ضيق إلى قد إعلان children `renderSlot`) ،Factory render share(`renderFactorySlot`) ،store share(قد إعلان handle selector خطاف و إزالة draft actions) ، و عمل خدمة share(من `inject` دفع توجيه). مكون مرجع دفع توجيه خروج props آخر اسم؛ هو جمع أبدا في محلي إعادة تعريف أي share نوع.
 
-### Store 席位
+### Store مقعد موضع
 
-register 调用可以用 `store: defineStore(...)` 声明 store 席位：`init` 推断状态 schema，`actions` 是完整的 draft-transform 写入集合。组件经 selector 钩子读取、经烘焙回调写入；`defineStore` 的引擎实现位于运行时包，并满足这里导出的 `DefineStore` 约定。
+register استدعاء يمكن استخدام `store: defineStore(...)` إعلان store مقعد موضع:`init` دفع قطع حالة schema،`actions` هو كامل draft-transform كتابة تجميع دمج. مكون مرور selector خطاف قراءة، مرور تجفيف خبز عودة ضبط كتابة؛`defineStore` جذب محرك تنفيذ يقع في وقت التشغيل حزمة، و ممتلئ كاف هذا داخل توجيه خروج `DefineStore` اتفاق.
 
-### 声明纪律
+### إعلان سجل قاعدة
 
-声明即认领：注册条目成为唯一被允许渲染该键的条目；注册未声明 slot、声明已声明过的子项、在两个 scope 下挂载同一个共享句柄、或注册缺少 `select` 的 chain，都会在加载时抛出。条目的 disposer 会递归移除其声明的子 slot——账本行、贡献与 store 挂载都随同一生命周期结束而移除。
+إعلان أي إقرار قيادة: تسجيل بند يصبح وحيد يتم سماح تصيير هذا مفتاح بند؛ تسجيل لم إعلان slot، إعلان قد إعلان مرور فرعي بند، في اثنان عدد scope تحت تركيب نفس عدد مشترك جملة مقبض، أو تسجيل نقص قليل `select` chain، كل سوف في تحميل وقت رمي خروج. بند disposer سوف تمرير عودة إزالة ذلك إعلان فرعي slot——حساب هذا سطر، مساهمة و store تركيب كل مع نفس دورة الحياة انتهاء بينما إزالة.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-普通 Slot 设计就是一张表：声明 = 渲染授权 = 运行时规范。`SlotMap` 在这里声明为空，由消费方通过 `declare module` 增补合并；`SlotFactoryMap` 和标准工具包接口（`SessionStandardProps`、`GlobalStandardProps`）也采用同一方式。Factory definition 使用独立的单 definition ledger，因为其 occurrences 没有 parent 声明。
+عادي Slot تصميم حينئذ هو واحد ورقة جدول: إعلان = تصيير تخويل = وقت التشغيل مواصفة.`SlotMap` في هذا داخل إعلان لـ فارغ، من مستهلك عبر `declare module` زيادة تكملة دمج؛`SlotFactoryMap` و معيار أداة حزمة واجهة (`SessionStandardProps`،`GlobalStandardProps`) أيضا اعتماد نفس طريقة.Factory definition استخدام مستقل مفرد definition ledger، لأن ذلك occurrences لا يوجد parent إعلان.
 
-### 注册与路由
+### تسجيل و توجيه
 
-`SlotCore` 在构造时预置 `'root'` slot，并强制执行加载时验证。`ChainSelect` selector 按升序 `priority` 运行（相同值按注册顺序）；第一个非 null 返回值选中其条目，并成为组件的 `matched` prop；全部返回 null 时使用 owner 的 `renderSlotChain` fallback（`ChainRenderOpts`）。每个 key 都携带一个 declaration epoch，它只在声明与移除时递增；`ui-renderer` 将其用于 `ctx.slots.inject`，且与普通条目版本相互独立。实时检查使用严格的 `type: 'slot' | 'factory'` 节点，并把 Factory-owned child Slots 嵌套在其 definition 下。
+`SlotCore` في بنية صنع وقت مسبق وضع `'root'` slot، و قوي صنع تنفيذ تحميل وقت تحقق.`ChainSelect` selector حسب رفع ترتيب `priority` تشغيل (نفسه قيمة حسب تسجيل ترتيب) ؛ رقم واحد غير null قيمة راجعة اختيار في ذلك بند، و يصبح مكون `matched` prop؛ الكل إرجاع null وقت استخدام owner `renderSlotChain` fallback(`ChainRenderOpts`). كل key كل يحمل واحد declaration epoch، هو فقط في إعلان و إزالة وقت تمرير زيادة؛`ui-renderer` سوف ذلك لأجل `ctx.slots.inject`، كما و عادي بند إصدار متبادل متبادل مستقل. فوري فحص استخدام صارم إطار `type: 'slot' | 'factory'` عقدة، و يأخذ Factory-owned child Slots تضمين طقم في ذلك definition تحت.
 
-### 渲染器约定
+### مصير اتفاق
 
-`renderer.ts` 携带安装约定（`SlotRenderer`、`SlotRendererHost`）以及 `StaleAuthorizationError`/`SlotOwnershipError`；ui-renderer 负责实现，并在其插件生命周期中完成安装。引擎产物与渲染器宿主约定携带裸快照 source（`getSnapshot`/`subscribe`），绝不携带 React 钩子——钩子绑定属于渲染机制。Factory 崩溃使用普通监督通道，幂等 effect 仅在 commit 后保留逐渲染位置 Store handle。
+`renderer.ts` يحمل تثبيت اتفاق (`SlotRenderer`،`SlotRendererHost`) و `StaleAuthorizationError`/`SlotOwnershipError`؛ui-renderer مسؤول تنفيذ، و في ذلك إضافة دورة الحياة في إتمام تثبيت. جذب محرك ناتج و مصير مضيف اتفاق يحمل عار لقطة source(`getSnapshot`/`subscribe`) ، أبدا يحمل React خطاف——خطاف ربط يخص تصيير آلية.Factory انهيار انهيار استخدام عادي مراقبة إشراف عبر طريق، قوة انتظار effect فقط في commit بعد إبقاء تدريجي تصيير موضع Store handle.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-以下页面覆盖引擎、渲染器与组合模型。
+التالي صفحة تغطية جذب محرك، مصير و تركيب نموذج.
 
-- [ui-renderer](../ui-renderer/README.zh.md)——实现本包安装约定的 React slot 渲染器。
-- [slot 系统标准](../../../.agents/notes/implemented/architecture/2026-07-22-slot-type-chain-implementation.zh.md)——权威组合模型。
-- [Component Factory](../../../.agents/notes/implemented/architecture/2026-09-10-component-factories-and-local-slots.zh.md)——可复用 definitions、局部 Component 选择与 occurrence 生命周期。
-- [Web 客户端架构](../../../.agents/notes/implemented/architecture/2026-07-19-gui-web-client-architecture.zh.md)——本注册表接入的加载链与对象层。
+- [ui-renderer](../ui-renderer/README.zh.md)——تنفيذ هذه الحزمة تثبيت اتفاق React slot مصير.
+- [slot نظام معيار](../../../.agents/notes/implemented/architecture/2026-07-22-slot-type-chain-implementation.zh.md)——مرجعي تركيب نموذج.
+- [Component Factory](../../../.agents/notes/implemented/architecture/2026-09-10-component-factories-and-local-slots.zh.md)——يمكن إعادة استخدام definitions، نطاق جزء Component اختيار و occurrence دورة الحياة.
+- [Web عميل هيكل بنية](../../../.agents/notes/implemented/architecture/2026-07-19-gui-web-client-architecture.zh.md)——هذا سجل التسجيل وصل دخول تحميل سلسلة و كائن طبقة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。该包是浏览器端 UI 接线层，不注册任何面向模型的内容。
+بلا. هذا حزمة هو متصفح طرف UI وصل خط طبقة، لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；该包既不组装也不发送提供方请求。
+بلا؛ هذا حزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制定义注册表的规模扩展特性与已接受的类型噪声；它们是当前包约束。
+هذه حد تعريف سجل التسجيل قاعدة نموذج توسيع خاص صفة و قد قبول نوع ضجيج صوت؛ هو جمع هو حالي حزمة قيد.
 
-- **`isLive` 会线性扫描所有记录**：在 UI 插件的注册规模（数十项）下没有问题；如果账本变得频繁访问，再使用条目→记录反向引用改进。
-- **`__renders` 幻象锚点在 `PropsRenderSlots` 上可见**：这是与类型链设计的 `__accepts` 相同且已接受的噪声；泛型方法签名在 key 联合之间比较宽松，因此必须依靠逆变标记强制执行「组件 key 集合 ⊆ children 声明」。
+- **`isLive` سوف خط صفة مسح كل سجل**: في UI إضافة تسجيل قاعدة نموذج (عدد عشرة بند) تحت لا يوجد مشكلة؛ إذا حساب هذا تغيير نيل تردد كثيف وصول، مجددا استخدام بند→سجل عكس نحو مرجع تعديل دخول.
+- **`__renders` وهم كائن مرساة نقطة في `PropsRenderSlots` فوق مرئي**: هذا هو و نوع سلسلة تصميم `__accepts` نفسه كما قد قبول ضجيج صوت؛ عام نوع طريقة توقيع في key ربط دمج بين مقارنة مقارنة عرض رخو، لذلك يجب اعتماد اعتماد عكس تغيير علامة قوي صنع تنفيذ «مكون key تجميع دمج ⊆ children إعلان».
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。这是零依赖的纯注册表核心，本身不发出 Cordis 事件；`ui-renderer` SlotRegistry 负责事件桥及其不变式。本包的行为规范直接断言 define/register/dispose 的执行顺序。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذا هو صفر اعتماد صاف سجل التسجيل نواة قلب، ذاته لا إرسال خروج Cordis حدث؛`ui-renderer` SlotRegistry مسؤول حدث جسر و ذلك ثابت صيغة. هذه الحزمة سلوك مواصفة مباشر تأكيد define/register/dispose تنفيذ ترتيب.

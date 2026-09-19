@@ -26,9 +26,9 @@ describe('tails', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    expect(view.getByText('思考')).toBeTruthy()
+    expect(view.getByText('تفكير اعتبار')).toBeTruthy()
     expect(view.getByText('thinking hard')).toBeTruthy()
-    expect(view.getByText(/未知内容块/)).toBeTruthy()
+    expect(view.getByText(/لم معرفة محتوى كتلة/)).toBeTruthy()
     const stopped = render(
       <AssistantMarkdown
         t={t}
@@ -38,7 +38,7 @@ describe('tails', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    expect(stopped.getByText('已停止')).toBeTruthy()
+    expect(stopped.getByText('قد إيقاف')).toBeTruthy()
   })
 
   it('AssistantMarkdown skips the root shell when only tool-call heads remain', () => {

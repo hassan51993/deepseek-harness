@@ -1,118 +1,118 @@
-# Agent Note: 增加不可变 profile 解析代际
+# Agent Note: زيادة غير ممكن تغيير profile تحليل بديل حد
 
 Status: implemented
 
-[English](2026-09-09-profile-resolution-generations.md) | 中文
+[English](2026-09-09-profile-resolution-generations.md) | العربية
 
 ## Problem
 
-profile 从自己的包项目加载插件配置项，而 Harness 包和所选 bundle 携带的包可能位于该项目普通依赖树之外。通过共享 symlink、profile 自有链接或打包可执行文件的代理包连接两棵依赖树，会让选包结果跨进程和安装版本持续存在。这些文件需要协调和锁来维护，并向元数据读取方暴露生成的代理 manifest，也无法原子表示进程内变更。
+profile من ذاتي ذات حزمة مشروع تحميل إضافة بند إعداد، بينما Harness حزمة و الذي اختيار bundle يحمل حزمة ممكن يقع في هذا مشروع عادي اعتماد شجرة خارج. عبر مشترك symlink،profile ذاتي لديه رابط أو تحزيم يمكن تنفيذ ملف بديل إدارة حزمة اتصال اثنان شجرة اعتماد شجرة، سوف يجعل اختيار حزمة نتيجة عبر عملية و تثبيت إصدار حمل متابعة وجود. هذه ملف حاجة تنسيق ضبط و قفل قدوم صيانة، و نحو بيانات وصفية قراءة جهة كشف توليد بديل إدارة manifest، أيضا لا يمكن أصل فرعي يمثل عملية داخل تغيير.
 
-运行时设计保留现有选包规则，不另建一套包策略。它覆盖插件模块内部的 import 以及 Loader 配置项的 import，并在主线程和 Harness 自有 Worker 中工作。generation 替换只接受新增包的集合，不会逐项修改正在使用的表。
+وقت التشغيل تصميم إبقاء قائم اختيار حزمة قاعدة، لا آخر بناء واحد طقم حزمة سياسة. هو تغطية إضافة وحدة داخلي import و Loader بند إعداد import، و في رئيسي خط مسار و Harness ذاتي لديه Worker في عمل.generation استبدال فقط قبول إضافة جديدة حزمة تجميع دمج، لن تدريجي بند تعديل صحيح في استخدام جدول.
 
 ## Decision
 
-profile 启动从磁盘 module fallback 使用的同一套依赖遍历生成一个不可变 `ResolutionGeneration`。launcher 默认使用 runtime 模式，把 generation 安装到 Node 的 ESM 与 CommonJS 解析器，不物化 fallback 链接。普通 Node 调用方和测试可以显式选择 link 模式以物化 generation，或选择 dual 模式以物化并校验它。`PluginPackages.replace()` 通过一次引用替换发布完整的新增型后继 generation。
+profile بدء من مغناطيس قرص module fallback استخدام نفس طقم اعتماد مرة تاريخ توليد واحد غير ممكن تغيير `ResolutionGeneration`.launcher افتراضي استخدام runtime نمط، يأخذ generation تثبيت إلى Node ESM و CommonJS محلل، لا شيء تحويل fallback رابط. عادي Node استدعاء جهة و اختبار يمكن صريح اختيار link نمط بـ شيء تحويل generation، أو اختيار dual نمط بـ شيء تحويل و تحقق هو.`PluginPackages.replace()` عبر مرة مرجع استبدال إصدار كامل إضافة جديدة نوع بعد استمرار generation.
 
-### 唯一选包算法
+### وحيد اختيار حزمة حساب قاعدة
 
-包遍历继续放在 `@deepseek-ai/dsh-app-boot` 的 profile 加载代码旁。磁盘 materializer 和运行时解析器消费同一个纯计划；两者都不持有另一份优先级算法。普通 Node 调用方可以选择 link、dual 或 runtime 模式，省略模式时使用 runtime。打包可执行文件与 Electron Host 会选择 runtime，因为其依赖树可能位于虚拟文件系统；dual 保留为内部对比路径。
+حزمة مرة تاريخ متابعة وضع في `@deepseek-ai/dsh-app-boot` profile تحميل شفرة جانب. مغناطيس قرص materializer و وقت التشغيل محلل إزالة استهلاك نفس عدد صاف حساب تخطيط؛ اثنان من كل لا يحتفظ آخر نسخة أولوية درجة حساب قاعدة. عادي Node استدعاء جهة يمكن اختيار link،dual أو runtime نمط، حذف نمط وقت استخدام runtime. تحزيم يمكن تنفيذ ملف و Electron Host سوف اختيار runtime، لأن ذلك اعتماد شجرة ممكن يقع في وهمي محاكاة نظام الملفات؛dual إبقاء لـ داخلي مقابل مقارنة مسار.
 
-安装 manifest 是第一个根。它按 BFS 依次遍历 `dependencies` 和 `peerDependencies`，每条边从声明它的 manifest 解析，同名包由第一次找到的已安装包占有。所选 bundle 随后按 profile 顺序逐根遍历；每个较早根的完整依赖图优先于所有较晚根。安装闭包中的名称被保留，bundle 包根本身不成为插件 fallback。与旧行为相同，已声明但未安装的包会被跳过。
+تثبيت manifest هو رقم واحد أصل. هو حسب BFS اعتماد مرة مرة تاريخ `dependencies` و `peerDependencies`، كل بند حافة من إعلان هو manifest تحليل، نفس اسم حزمة من رقم مرة بحث إلى قد تثبيت حزمة احتلال لديه. الذي اختيار bundle مع بعد حسب profile ترتيب تدريجي أصل مرة تاريخ؛ كل مقارنة مبكر أصل كامل اعتماد رسم أولوية في كل مقارنة متأخر أصل. تثبيت إغلاق حزمة في اسم يتم إبقاء،bundle حزمة أصل ذاته لا يصبح إضافة fallback. و قديم سلوك نفسه، قد إعلان لكن لم تثبيت حزمة سوف يتم قفز مرور.
 
-profile 本地和插件私有 `node_modules` 不进入 fallback entries，由 Node 在虚拟 fallback 位置之前选择。generation 只记录已安装的 profile 直接包名用于 native 快速分流；每个 fallback 记录包名、版本、旧规则选中的查找目录、声明该边的 manifest 锚点和作用域，足以从选定包重新进入 Node 原生解析并验证换代保持既有映射。
+profile محلي و إضافة خاص `node_modules` لا دخول fallback entries، من Node في وهمي محاكاة fallback موضع قبل اختيار.generation فقط سجل قد تثبيت profile مباشر حزمة اسم لأجل native سريع سرعة قسم تدفق؛ كل fallback سجل حزمة اسم، إصدار، قديم قاعدة اختيار في فحص بحث دليل، إعلان هذا حافة manifest مرساة نقطة و أثر مجال، كاف بـ من اختيار تحديد حزمة إعادة دخول Node أصلي تحليل و تحقق تبديل بديل إبقاء قائم خريطة.
 
-旧 `healProfilesModuleFallback()` 保留为相同纯计算结果的磁盘 materializer，便于直接比较并避免重写旧规则。具名 profile 启动只在显式 link 或 dual 模式下调用它。runtime 模式只计算 generation 而不物化，dual 模式会物化并安装该 generation 进行比较。
+قديم `healProfilesModuleFallback()` إبقاء لـ نفسه صاف حساب حساب نتيجة مغناطيس قرص materializer، سهل في مباشر مقارنة مقارنة و تجنب تجنب إعادة كتابة قديم قاعدة. أداة اسم profile بدء فقط في صريح link أو dual نمط تحت استدعاء هو.runtime نمط فقط حساب حساب generation بينما لا شيء تحويل،dual نمط سوف شيء تحويل و تثبيت هذا generation إجراء مقارنة مقارنة.
 
-### 不可变 generation
+### غير ممكن تغيير generation
 
-一个解析器 registration 持有一个 `current` generation。每个同步 resolve 在入口只捕获一次该引用，完整调用只读该引用。generation 构造在发布前读取所有必需 manifest；失败时当前 generation 不变。发布成功只替换一个引用，执行中的调用可以继续使用它已捕获的 generation。
+واحد محلل registration يحتفظ واحد `current` generation. كل تزامن resolve في مدخل فقط التقاط مرة هذا مرجع، كامل استدعاء فقط قراءة هذا مرجع.generation بنية صنع في إصدار قبل قراءة كل مطلوب manifest؛ فشل وقت حالي generation ثابت. إصدار نجاح فقط استبدال واحد مرجع، تنفيذ في استدعاء يمكن متابعة استخدام هو قد التقاط generation.
 
-选包缓存和包元数据缓存归 generation 所有。发布下一代后，旧 generation 在调用方退出后自然不可达，不逐项清理缓存。generation 命中和原生解析成功结果可以缓存，但 generation 未命中会重新扫描，因此未命中后安装的 profile 本地包会像 link 模式一样变为可见。显式 CommonJS paths 或非默认 conditions 不得复用默认解析缓存。
+اختيار حزمة ذاكرة مؤقتة و حزمة بيانات وصفية ذاكرة مؤقتة عودة generation كل. إصدار تحت واحد بديل بعد، قديم generation في استدعاء جهة خروج بعد ذاتي لكن غير ممكن بلوغ، لا تدريجي بند تنظيف ذاكرة مؤقتة.generation أمر في و أصلي تحليل نجاح نتيجة يمكن ذاكرة مؤقتة، لكن generation لم أمر في سوف إعادة مسح، لذلك لم أمر في بعد تثبيت profile محلي حزمة سوف مثل link نمط واحد مثال تغيير لـ مرئي. صريح CommonJS paths أو غير افتراضي conditions لا نيل إعادة استخدام افتراضي تحليل ذاكرة مؤقتة.
 
-launcher 只构造启动 generation。服务接受新增型后继 generation，但本实现没有包管理器事务调用替换操作。
+launcher فقط بنية صنع بدء generation. خدمة قبول إضافة جديدة نوع بعد استمرار generation، لكن هذا تنفيذ لا يوجد حزمة إدارة جهاز أمر خدمة استدعاء استبدال عملية.
 
-### ESM 与 CommonJS 共用规则
+### ESM و CommonJS مشترك استخدام قاعدة
 
-resolver 使用 `node-addon-require-builtin` 读取 `internal/modules/esm/loader` 和 `internal/modules/cjs/loader`。ESM 适配器包装每线程单例 `CascadedLoader` 的 resolve 方法。CommonJS 适配器包装内部 builtin 导出的 `Module._resolveFilename`；该 `Module` 与 `node:module` 导出的对象相同。
+resolver استخدام `node-addon-require-builtin` قراءة `internal/modules/esm/loader` و `internal/modules/cjs/loader`.ESM مهايئ حزمة تركيب كل خط مسار مفرد مثال `CascadedLoader` resolve طريقة.CommonJS مهايئ حزمة تركيب داخلي builtin توجيه خروج `Module._resolveFilename`؛ هذا `Module` و `node:module` توجيه خروج كائن نفسه.
 
-两个适配器调用同一个路由函数。builtin、相对或绝对路径、URL、profile 作用域外 parent 和支持的查找以外的显式调用都直接委托原生实现。`#imports` 请求使用所属 manifest 中的 Node 映射；外部 bare target 按相同 conditions 遵循本地包、generation 和 after-fallback 的选包顺序，精确 target 解析仍由 Node 负责。对于作用域内的 bare request，package self-reference 保留原 parent，即使 npm alias 使安装目录使用另一个名称。Node 能在虚拟共享 fallback 之前从 profile 本地包或插件私有包解析到所请求入口时，也保留原 parent；没有 `exports` 的 CommonJS 包目录仅缺少所请求 subpath 时，不会压过 fallback。其他请求在 generation 命中时通过该条目的声明锚点解析，未命中时从虚拟 fallback 之后继续原生查找。显式 CommonJS path 列表按调用方顺序，对每个 path 独立应用相同的插入规则。
+اثنان عدد مهايئ استدعاء نفس عدد توجيه دالة.builtin، متبادل مقابل أو قطعا مقابل مسار،URL،profile أثر مجال خارج parent و دعم حمل فحص بحث بـ خارج صريح استدعاء كل مباشر تفويض حمل أصلي تنفيذ.`#imports` طلب استخدام الذي تابع manifest في Node خريطة؛ خارجي bare target حسب نفسه conditions التزام دوران محلي حزمة،generation و after-fallback اختيار حزمة ترتيب، دقيق target تحليل ما زال من Node مسؤول. مقابل في أثر مجال داخل bare request،package self-reference إبقاء أصل parent، أي جعل npm alias جعل تثبيت دليل استخدام آخر عدد اسم.Node قدرة في وهمي محاكاة مشترك fallback قبل من profile محلي حزمة أو إضافة خاص حزمة تحليل إلى الذي طلب مدخل وقت، أيضا إبقاء أصل parent؛ لا يوجد `exports` CommonJS حزمة دليل فقط نقص قليل الذي طلب subpath وقت، لن ضغط مرور fallback. أخرى طلب في generation أمر في وقت عبر هذا بند إعلان مرساة نقطة تحليل، لم أمر في وقت من وهمي محاكاة fallback بعد متابعة أصلي فحص بحث. صريح CommonJS path قائمة حسب استدعاء جهة ترتيب، مقابل كل path مستقل تطبيق نفسه إدراج دخول قاعدة.
 
-适配器完成路由后调用捕获的原生 resolver。exports、import/require conditions、main、subpath、扩展名、原生缓存和错误码仍归 Node 处理。路由后的 ESM 失败会把 Node 诊断中的内部查找锚点替换为原始 importer。选中包的无效 export 或缺失目标不会触发另一个同名候选。CommonJS 不替换 `_findPath`，也不复制 `_resolveFilename`。
+مهايئ إتمام توجيه بعد استدعاء التقاط أصلي resolver.exports،import/require conditions،main،subpath، توسيع اسم، أصلي ذاكرة مؤقتة و رمز خطأ ما زال عودة Node معالجة. توجيه بعد ESM فشل سوف يأخذ Node تشخيص في داخلي فحص بحث مرساة نقطة استبدال لـ أصلي importer. اختيار في حزمة بلا فاعلية export أو ناقص هدف لن إطلاق آخر عدد نفس اسم مرشح.CommonJS لا استبدال `_findPath`، أيضا لا نسخ `_resolveFilename`.
 
-保证范围是当前线程安装后发生的 Node 默认 `import`、`import()`、`import.meta.resolve`、`require` 和 `require.resolve`。已经链接的模块、自定义 `vm` linker、不透明的非 Node importer 和第三方 Worker 不在透明保证范围。
+حفظ إثبات نطاق هو حالي خط مسار تثبيت بعد حدوث Node افتراضي `import`،`import()`،`import.meta.resolve`،`require` و `require.resolve`. قد رابط وحدة، ذاتي تعريف `vm` linker، لا نفاذ واضح غير Node importer و رقم ثلاثة جهة Worker لا في نفاذ واضح حفظ إثبات نطاق.
 
-### 活动插件列表与包元数据
+### نشط حركة إضافة قائمة و حزمة بيانات وصفية
 
-resolution generation 列出可用 fallback 包；Loader entries 组成活动插件列表，两者不能合并。消费方继续使用 Loader 原有 entry 生命周期，并按自身 scope 过滤相关 entries。需要 package metadata 的消费方将 specifier 和所属树的 base URL 交给 app-boot 中的轻量服务，无需 package 导出 `./package.json`。安装 generation 后，即使查询未命中也以 generation 为准；底层嵌入方只安装服务而不提供 generation 时，服务保留 Node 原生查找。
+resolution generation صف خروج متاح fallback حزمة؛Loader entries مجموعة صار نشط حركة إضافة قائمة، اثنان من لا يستطيع دمج. مستهلك متابعة استخدام Loader أصل لديه entry دورة الحياة، و حسب ذاته scope مرور ترشيح متبادل صلة entries. حاجة package metadata مستهلك سوف specifier و الذي تابع شجرة base URL تسليم إعطاء app-boot في خفيف كمية خدمة، بلا حاجة package توجيه خروج `./package.json`. تثبيت generation بعد، أي جعل استعلام لم أمر في أيضا بـ generation لـ دقيق؛ قاع طبقة تضمين دخول جهة فقط تثبيت خدمة بينما لا توفير generation وقت، خدمة إبقاء Node أصلي فحص بحث.
 
-解析器不提供 `imported(entry)`，不观察 ModuleJob，不包装 Entry 方法，不把 fiber 与 import 调用关联，也不替换 registry、tree 或 HMR 方法。重复查询读取同一个 generation，因此不会偏离 import 使用的路线。需要包元数据的非 Node importer 必须显式实现同一个确定性 resolver 接口，不能把调用来源推断重新引入 Node 主路径。
+محلل لا توفير `imported(entry)`، لا مراقبة ModuleJob، لا حزمة تركيب Entry طريقة، لا يأخذ fiber و import استدعاء صلة ربط، أيضا لا استبدال registry،tree أو HMR طريقة. تكرار استعلام قراءة نفس عدد generation، لذلك لن انحراف مغادرة import استخدام مسار خط. حاجة حزمة بيانات وصفية غير Node importer يجب صريح تنفيذ نفس عدد تحديد صفة resolver واجهة، لا يستطيع يأخذ استدعاء مصدر دفع قطع إعادة جذب دخول Node رئيسي مسار.
 
-实现集中在 `app-boot/src/profile-resolution/`。`service.ts` 提供长期存在的 `ctx.pluginPackages`，并拥有主线程 resolver 与 Worker generation 的生命周期；`resolver.ts` 实现 generation 查询和 Node Internal 适配器；`worker-bootstrap.ts` 在线程内安装继承的 generation。旧 profile 选包和磁盘 materialize 逻辑留在 `profile.ts`。Worker 只通过 `@deepseek-ai/dsh-app-boot/worker/profile-resolution-bootstrap` 公开入口引用 bootstrap。
+تنفيذ تجميع في في `app-boot/src/profile-resolution/`.`service.ts` توفير طويل مدة وجود `ctx.pluginPackages`، و يملك رئيسي خط مسار resolver و Worker generation دورة الحياة؛`resolver.ts` تنفيذ generation استعلام و Node Internal مهايئ؛`worker-bootstrap.ts` في خط مسار داخل تثبيت وراثة generation. قديم profile اختيار حزمة و مغناطيس قرص materialize منطق إبقاء في `profile.ts`.Worker فقط عبر `@deepseek-ai/dsh-app-boot/worker/profile-resolution-bootstrap` عام مدخل مرجع bootstrap.
 
-服务定义与提供方继续放在 `app-boot`，因为 profile boot 拥有 resolver 生命周期。出现与 launcher 无关的提供方或需要独立演进的消费方时，再抽出单独的能力 seam。
+خدمة تعريف و مزود متابعة وضع في `app-boot`، لأن profile boot يملك resolver دورة الحياة. ظهور و launcher غير متصل مزود أو حاجة مستقل عرض دخول مستهلك وقت، مجددا سحب خروج مفرد وحيد قدرة seam.
 
-### Worker 与 generation 更新
+### Worker و generation تحديث
 
-主线程通过 Worker environment data 发布当前 generation 的可结构化克隆表示和 profile scope。每个 Harness 自有 Worker 构建产物通过构建 banner 获取自己的 ESM/CJS Internal 并安装同一适配器，不重新遍历 manifest。bootstrap bundle 不静态导入任何包。源码 Worker 入口保持原有自包含依赖；第三方 Worker 保持不变。
+رئيسي خط مسار عبر Worker environment data إصدار حالي generation يمكن بنية تحويل تغلب ضخم يمثل و profile scope. كل Harness ذاتي لديه Worker بناء ناتج عبر بناء banner نيل أخذ ذاتي ذات ESM/CJS Internal و تثبيت نفس مهايئ، لا إعادة مرة تاريخ manifest.bootstrap bundle لا ساكن حالة استيراد أي حزمة. شفرة المصدر Worker مدخل إبقاء أصل لديه ذاتي يتضمن اعتماد؛ رقم ثلاثة جهة Worker إبقاء ثابت.
 
-新 Worker 继承最新发布的 generation。已运行的 Worker 保留启动时继承的 generation，因此发布后继 generation 的调用方必须重启它们。ESM bootstrap 无法影响其执行前已链接的静态依赖，因此 Worker bundle 必须保证 bootstrap 之前的静态 import 可由原生 Node 解析，需要 profile resolver 的业务入口在 bootstrap 后通过 dynamic import 启动。
+جديد Worker وراثة الأكثر جديد إصدار generation. قد تشغيل Worker إبقاء بدء وقت وراثة generation، لذلك إصدار بعد استمرار generation استدعاء جهة يجب إعادة بدء هو جمع.ESM bootstrap لا يمكن أثر ذلك تنفيذ قبل قد رابط ساكن حالة اعتماد، لذلك Worker bundle يجب حفظ إثبات bootstrap قبل ساكن حالة import يمكن من أصلي Node تحليل، حاجة profile resolver عمل خدمة مدخل في bootstrap بعد عبر dynamic import بدء.
 
-### 只增加包的变更
+### فقط زيادة حزمة تغيير
 
-添加包的调用方先完成 pnpm 事务，再构造下一代。替换操作会拒绝改变任何既有 package name 的目录或版本。调用方先发布只增加映射的后继 generation，再挂载新的 Loader 配置项；本实现不提供该包事务。挂载失败可以留下已安装但未启用的包。
+إضافة حزمة استدعاء جهة أولا إتمام pnpm أمر خدمة، مجددا بنية صنع تحت واحد بديل. استبدال عملية سوف رفض تغيير أي قائم package name دليل أو إصدار. استدعاء جهة أولا إصدار فقط زيادة خريطة بعد استمرار generation، مجددا تركيب جديد Loader بند إعداد؛ هذا تنفيذ لا توفير هذا حزمة أمر خدمة. تركيب فشل يمكن إبقاء تحت قد تثبيت لكن لم تفعيل حزمة.
 
-替换、升级或删除已加载包需要重启，因为 Node 的 ESM Module Map、CommonJS cache、现存对象引用和运行中的 Worker 都可能保留旧模块 identity。generation 换代不声称卸载模块。
+استبدال، ترقية أو حذف قد تحميل حزمة حاجة إعادة بدء، لأن Node ESM Module Map،CommonJS cache، الآن تخزين كائن مرجع و تشغيل في Worker كل ممكن إبقاء قديم وحدة identity.generation تبديل بديل لا صوت تسمية إزالة وحدة.
 
-### 磁盘迁移
+### مغناطيس قرص ترحيل
 
-runtime-only 启动流程不创建、更新或退休 symlink 和代理包。resolver 把旧共享 fallback 和 `.dsh-module-fallback` 投影视为虚拟插入位置：generation 命中时使用表中目标，未命中时越过旧位置继续原生祖先查找。dual 阶段物化并安装同一个 generation；测试分别禁用一个后端并比较目标。
+runtime-only بدء مسار لا إنشاء، تحديث أو تراجع راحة symlink و بديل إدارة حزمة.resolver يأخذ قديم مشترك fallback و `.dsh-module-fallback` إسقاط نظر لـ وهمي محاكاة إدراج دخول موضع:generation أمر في وقت استخدام جدول في هدف، لم أمر في وقت تجاوز مرور قديم موضع متابعة أصلي أصل أولا فحص بحث.dual مرحلة مقطع شيء تحويل و تثبيت نفس عدد generation؛ اختبار قسم آخر منع استخدام واحد خلفية و مقارنة مقارنة هدف.
 
-旧磁盘状态继续供 link-only 启动、旧进程和回滚使用，但不参与 runtime-only 选择。清理旧链接是本次变更之外的独立维护操作。
+قديم مغناطيس قرص حالة متابعة توفير link-only بدء، قديم عملية و تراجع استخدام، لكن لا مشاركة و runtime-only اختيار. تنظيف قديم رابط هو هذا مرة تغيير خارج مستقل صيانة عملية.
 
-### 模式行为
+### نمط سلوك
 
-link、dual 与 runtime 模式使用同一种 generation schema 和依赖选择策略。link 模式持久化计算结果，runtime 模式只在进程内安装，dual 模式要求 Node 的磁盘结果与 generation 路由一致。
+link،dual و runtime نمط استخدام نفس نوع generation schema و اعتماد اختيار سياسة.link نمط حفظ دائم حساب حساب نتيجة،runtime نمط فقط في عملية داخل تثبيت،dual نمط اشتراط Node مغناطيس قرص نتيجة و generation توجيه متسق.
 
-普通 Node 调用方省略 `resolutionMode` 时，`dsh` launcher 选择 runtime 模式。pkg 可执行文件始终选择 runtime，Electron Host 在开发与打包构建中也会在挂载任何 profile 条目前显式选择 runtime。普通 Node 测试与底层嵌入方可以显式选择 link、dual 或 runtime。
+عادي Node استدعاء جهة حذف `resolutionMode` وقت،`dsh` launcher اختيار runtime نمط.pkg يمكن تنفيذ ملف بداية نهاية اختيار runtime،Electron Host في تطوير و تحزيم بناء في أيضا سوف في تركيب أي profile بند قبل صريح اختيار runtime. عادي Node اختبار و قاع طبقة تضمين دخول جهة يمكن صريح اختيار link،dual أو runtime.
 
-runtime 模式要求受支持的 Node Internal loader 接口，并且不会创建、更新或退休 fallback 链接。dual 模式保留链接写入，并在 Node 的磁盘结果与 generation 不同时失败。可写 profile 状态和包管理器事务不属于 resolver。
+runtime نمط اشتراط تلقي دعم حمل Node Internal loader واجهة، و كما لن إنشاء، تحديث أو تراجع راحة fallback رابط.dual نمط إبقاء رابط كتابة، و في Node مغناطيس قرص نتيجة و generation مختلف وقت فشل. يمكن كتابة profile حالة و حزمة إدارة جهاز أمر خدمة لا يخص resolver.
 
-pkg 与 Electron 载体强制使用 runtime 解析。Electron Host 通过设置 `ELECTRON_RUN_AS_NODE=1` 的 Electron 可执行文件运行；打包构建从 ASAR 读取 dsh 依赖树，并把 ASAR 中的可执行条目映射到 electron-builder 的 unpacked 目录。它们的运行时解析器不会创建、更新或删除旧解析链接。
+pkg و Electron تحميل جسم قوي صنع استخدام runtime تحليل.Electron Host عبر ضبط `ELECTRON_RUN_AS_NODE=1` Electron يمكن تنفيذ ملف تشغيل؛ تحزيم بناء من ASAR قراءة dsh اعتماد شجرة، و يأخذ ASAR في يمكن تنفيذ بند خريطة إلى electron-builder unpacked دليل. هو جمع وقت التشغيل محلل لن إنشاء، تحديث أو حذف قديم تحليل رابط.
 
-### 性能与验证
+### صفة قدرة و تحقق
 
-generation 构造发生在启动或显式更新阶段，不属于单次 resolve，但需要单独报告绝对延迟。普通热路径只包括 scope 分类、bare name 提取、本地优先判断、Map 查询和一次原生解析；缓存命中直接返回 generation 级结果。当本地 CommonJS 包目录没有 `exports` 且仅缺少所请求 subpath 时，一次请求可能先执行一次原生探测，再执行一次路由解析。作用域外调用不读取 manifest，只缓存 parent 是否位于 profile scope。
+generation بنية صنع حدوث في بدء أو صريح تحديث مرحلة مقطع، لا يخص مفرد مرة resolve، لكن حاجة مفرد وحيد تقرير إبلاغ قطعا مقابل تأخير متأخر. عادي حار مسار فقط يشمل scope تصنيف،bare name رفع أخذ، محلي أولوية حكم قطع،Map استعلام و مرة أصلي تحليل؛ ذاكرة مؤقتة أمر في مباشر إرجاع generation درجة نتيجة. عند محلي CommonJS حزمة دليل لا يوجد `exports` كما فقط نقص قليل الذي طلب subpath وقت، مرة طلب ممكن أولا تنفيذ مرة أصلي استكشاف قياس، مجددا تنفيذ مرة توجيه تحليل. أثر مجال خارج استدعاء لا قراءة manifest، فقط ذاكرة مؤقتة parent هل يقع في profile scope.
 
-实现期间的一次性本地测量用 plain Node 在全新进程中执行构建后的 JavaScript，并与完全没有安装 hook 的进程比较。测量脚本和结果未提交，这些数据不是 benchmark 或 CI 预算。七轮交替顺序覆盖 outside、profile-local 和 fallback 的 dynamic import、`import.meta.resolve`、require、`require.resolve`。Node 22.19、24.18 和 26.8 的热路径中位数最大正向回退为 4.5%。Node 24.18 的 256 包 cold workload 最大回退为 11.2%，generation 构造中位数为 16.027 ms；32 包本地 `require.resolve` 因固定启动成本在整批增加 1.033 ms（+34.7%）。
+تنفيذ خلال مرة صفة محلي قياس كمية استخدام plain Node في كل جديد عملية في تنفيذ بناء بعد JavaScript، و و تماما لا يوجد تثبيت hook عملية مقارنة مقارنة. قياس كمية نص برمجي و نتيجة لم إيداع، هذه بيانات لا هو benchmark أو CI ميزانية. سبعة جولة تسليم بديل ترتيب تغطية outside،profile-local و fallback dynamic import،`import.meta.resolve`،require،`require.resolve`.Node 22.19،24.18 و 26.8 حار مسار في موضع عدد الأكثر كبير صحيح نحو رجوع لـ 4.5%.Node 24.18 256 حزمة cold workload الأكثر كبير رجوع لـ 11.2%،generation بنية صنع في موضع عدد لـ 16.027 ms؛32 حزمة محلي `require.resolve` بسبب ثابت بدء صار هذا في كامل دفعة زيادة 1.033 ms(+34.7%).
 
-行为测试在同一包树上比较运行时 generation 与磁盘 materializer，再覆盖根顺序、传递依赖和 peer、本地与外层优先级、exports 与 subpath 错误、conditions 和显式 CommonJS options。Node 兼容矩阵会在受支持的内部 loader 变体上运行 resolver、service 和 bootstrap 规格。Worker 测试通过 mock 线程与 native loader 接口验证 environment data 发布和 bootstrap 安装，但不会启动构建后的 Worker。generation 测试证明构造失败不发布部分状态，成功换代只做原子引用替换。
+سلوك اختبار في نفس حزمة شجرة فوق مقارنة مقارنة وقت التشغيل generation و مغناطيس قرص materializer، مجددا تغطية أصل ترتيب، نقل تمرير اعتماد و peer، محلي و خارج طبقة أولوية درجة،exports و subpath خطأ،conditions و صريح CommonJS options.Node توافق مستطيل دفعة سوف في تلقي دعم حمل داخلي loader تغيير جسم فوق تشغيل resolver،service و bootstrap قاعدة إطار.Worker اختبار عبر mock خط مسار و native loader واجهة تحقق environment data إصدار و bootstrap تثبيت، لكن لن بدء بناء بعد Worker.generation اختبار إثبات بنية صنع فشل لا إصدار جزء حالة، نجاح تبديل بديل فقط فعل أصل فرعي مرجع استبدال.
 
 ## Alternatives considered
 
-**永久保留磁盘投影。** 这能在没有进程 hook 时沿用原生查找，但仍有跨进程写入、陈旧 generation、代理 manifest、写锁和打包运行时差异。迁移期 dual 模式仍有价值，因为两个后端消费同一个 generation。
+**دائم دائم إبقاء مغناطيس قرص إسقاط.** هذا قدرة في لا يوجد عملية hook وقت امتداد استخدام أصلي فحص بحث، لكن ما زال لديه عبر عملية كتابة، قديم قديم generation، بديل إدارة manifest، كتابة قفل و تحزيم وقت التشغيل فرق مختلف. ترحيل مدة dual نمط ما زال لديه قيمة قيمة، لأن اثنان عدد خلفية إزالة استهلاك نفس عدد generation.
 
-**在 resolve 时惰性扩展依赖图。** 这会把 manifest 读取和错误分散到首次使用，改变磁盘实现的时机，使 Worker 启动更复杂，并让热路径成本随依赖图变化。完整构造 generation 更容易比较和原子替换。
+**في resolve وقت كسول صفة توسيع اعتماد رسم.** هذا سوف يأخذ manifest قراءة و خطأ قسم تفرق إلى أول مرة استخدام، تغيير مغناطيس قرص تنفيذ وقت آلة، جعل Worker بدء أكثر تكرار مختلط، و يجعل حار مسار صار هذا مع اعتماد رسم تغير. كامل بنية صنع generation أكثر سعة سهل مقارنة مقارنة و أصل فرعي استبدال.
 
-**使用 `module.registerHooks`。** 公共 API 会在 profile scope 拒绝请求之前让相关解析进入 Node 的全局 hook 分发。直接访问已有 ESM/CJS 内部解析器可以保留更小的快速路径，并继续让 Node 完成最终解析。
+**استخدام `module.registerHooks`.** عام مشترك API سوف في profile scope رفض طلب قبل يجعل متبادل صلة تحليل دخول Node عام hook توزيع. مباشر وصول قد لديه ESM/CJS داخلي محلل يمكن إبقاء أكثر صغير سريع سرعة مسار، و متابعة يجعل Node إتمام نهائي تحليل.
 
-**通过 Loader 和 HMR 适配器记录每个 Entry 的实际 import。** 实际 import 记录能支持相同输入返回不同目标的有状态 resolver。本设计改为以 generation 作为确定性权威，因此这些记录只会复制 resolver 的答案，同时增加 Entry、fiber、registry、ModuleJob 和 HMR 生命周期状态。
+**عبر Loader و HMR مهايئ سجل كل Entry فعلي import.** فعلي import سجل قدرة دعم حمل نفسه إدخال إرجاع مختلف هدف لديه حالة resolver. هذا تصميم تعديل لـ بـ generation بصفة تحديد صفة مرجعي، لذلك هذه سجل فقط سوف نسخ resolver جواب سجل، معا زيادة Entry،fiber،registry،ModuleJob و HMR دورة الحياة حالة.
 
-**每次包操作增量修改一张长期表。** 增量修改会暴露半成品依赖图，并要求定点失效缓存。完整构造下一代使失败保持原子，并让所有缓存随 generation 生命周期存在。
+**كل مرة حزمة عملية زيادة كمية تعديل واحد ورقة طويل مدة جدول.** زيادة كمية تعديل سوف كشف نصف صار صنف اعتماد رسم، و اشتراط تحديد نقطة بطلان ذاكرة مؤقتة. كامل بنية صنع تحت واحد بديل جعل فشل إبقاء أصل فرعي، و يجعل كل ذاكرة مؤقتة مع generation دورة الحياة وجود.
 
-**热替换已经加载的包版本。** 解析表换代无法使所有存活模块实例和对象引用失效。重启可以保证每个进程只使用一个 package identity。
+**حار استبدال قد تحميل حزمة إصدار.** تحليل جدول تبديل بديل لا يمكن جعل كل تخزين نشط وحدة نسخة و كائن مرجع بطلان. إعادة بدء يمكن حفظ إثبات كل عملية فقط استخدام واحد package identity.
 
 ## Verification
 
-- 一次 eager 计算同时供应保留的磁盘 materializer 和运行时 generation。
-- link-only、dual 和 runtime-only 测试消费同一个 generation；runtime 启动既不写入也不退休模块解析数据。
-- pkg 与 Electron 载体选择 runtime 解析；Electron 以 Node 模式从 ASAR 承载的 dsh 依赖树执行 Host，原生可执行条目保持 unpacked。
-- ESM 与 CommonJS 适配器共享同一个路由器，并把最终解析委托给 Node，不使用 `module.registerHooks` 或替换 `_findPath`。
-- 生产 package metadata 查询不记录 Loader import 结果，也不包装 Entry、registry、tree 或 HMR 方法。
-- Node 兼容矩阵会在受支持的 loader 接口上运行主线程 resolver 规格；service 和 bootstrap 规格覆盖 Worker environment data 与安装接口，但不会启动构建后的 Worker。
-- 一次性 plain Node 构建产物测量得到上述相对无 hook Node 的热路径和 cold 观察结果；脚本与结果并未提交为证据。
-- package README、架构引用、生成目录和双语文档对描述已交付实现。
+- مرة eager حساب حساب معا توفير ينبغي إبقاء مغناطيس قرص materializer و وقت التشغيل generation.
+- link-only،dual و runtime-only اختبار إزالة استهلاك نفس عدد generation؛runtime بدء حيث لا كتابة أيضا لا تراجع راحة وحدة تحليل بيانات.
+- pkg و Electron تحميل جسم اختيار runtime تحليل؛Electron بـ Node نمط من ASAR تحمل تحميل dsh اعتماد شجرة تنفيذ Host، أصلي يمكن تنفيذ بند إبقاء unpacked.
+- ESM و CommonJS مهايئ مشترك نفس عدد توجيه جهاز، و يأخذ نهائي تحليل تفويض حمل إعطاء Node، لا استخدام `module.registerHooks` أو استبدال `_findPath`.
+- إنتاج package metadata استعلام لا سجل Loader import نتيجة، أيضا لا حزمة تركيب Entry،registry،tree أو HMR طريقة.
+- Node توافق مستطيل دفعة سوف في تلقي دعم حمل loader واجهة فوق تشغيل رئيسي خط مسار resolver قاعدة إطار؛service و bootstrap قاعدة إطار تغطية Worker environment data و تثبيت واجهة، لكن لن بدء بناء بعد Worker.
+- مرة صفة plain Node بناء ناتج قياس كمية نيل إلى فوق وصف متبادل مقابل بلا hook Node حار مسار و cold مراقبة نتيجة؛ نص برمجي و نتيجة و لم إيداع لـ دليل.
+- package README، هيكل بنية مرجع، توليد دليل و مزدوج لغة وثيقة مقابل وصف قد تسليم تنفيذ.
 
 ## Consequences
 
-runtime 启动避免磁盘修改和代理 manifest，同时保留既有选包算法。代价是持续维护 Node Internal 兼容测试，并在每个自有 Worker 中最早执行自包含 bootstrap。runtime 是普通 Node launcher 的默认值，link 与 dual 保留为显式对比选项；pkg 与 Electron 载体强制使用 runtime，解析器不退休旧链接。在产品拥有模块缓存失效和 Worker 重启前，generation 替换只能新增映射。
+runtime بدء تجنب تجنب مغناطيس قرص تعديل و بديل إدارة manifest، معا إبقاء قائم اختيار حزمة حساب قاعدة. بديل قيمة هو حمل متابعة صيانة Node Internal توافق اختبار، و في كل ذاتي لديه Worker في الأكثر مبكر تنفيذ ذاتي يتضمن bootstrap.runtime هو عادي Node launcher قيمة افتراضية،link و dual إبقاء لـ صريح مقابل مقارنة خيار؛pkg و Electron تحميل جسم قوي صنع استخدام runtime، محلل لا تراجع راحة قديم رابط. في منتج يملك وحدة ذاكرة مؤقتة بطلان و Worker إعادة بدء قبل،generation استبدال فقط قدرة إضافة جديدة خريطة.

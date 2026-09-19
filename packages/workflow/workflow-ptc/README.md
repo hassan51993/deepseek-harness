@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-workflow-ptc
 
-English | [中文](README.zh.md)
+English | [العربية](README.zh.md)
 
 ## Summary
 

@@ -1,35 +1,35 @@
 ---
-description: "面向模型的 bash 工具，供选择、配置或排查一次性命令执行、后台任务与沙箱升权的使用者与维护者阅读。"
+description: "موجه إلى نموذج bash أداة، توفير اختيار، إعداد أو ترتيب فحص مرة صفة أمر تنفيذ، خلفية مهمة و صندوق رملي رفع حق استخدام من و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-tool-bash
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-tool-bash` 让 agent（智能体）运行一次性 `bash` 命令，并接收 stdout、stderr 与退出标记。每次调用都使用全新 shell，因此 cwd、变量和函数不会保留；`run_in_background` 可启动长时间运行的工作，agent 能用 `job_output` 检查、用 `job_kill` 停止。命令会收到受管 `DSH_*` 环境；沙箱拒绝后，可携带更宽的 `sandbox_permissions`、一句 `justification` 并经用户批准重试一次。非零退出会作为结果报告，因此由 agent 决定如何响应；请使用 `dsh-bash-local` 或 `dsh-bash-sandbox` 等执行器，并加载 `dsh-shell-env`。
+`dsh-tool-bash` يجعل agent(ذكي جسم) تشغيل مرة صفة `bash` أمر، و استقبال stdout،stderr و خروج علامة. كل مرة استدعاء كل استخدام كل جديد shell، لذلك cwd، متغير و دالة لن إبقاء؛`run_in_background` يمكن بدء طويل وقت تشغيل عمل،agent قدرة استخدام `job_output` فحص، استخدام `job_kill` إيقاف. أمر سوف استلام إلى تلقي إدارة `DSH_*` بيئة؛ صندوق رملي رفض بعد، يمكن يحمل أكثر عرض `sandbox_permissions`، واحد جملة `justification` و مرور مستخدم دفعة دقيق إعادة محاولة مرة. غير صفر خروج سوف بصفة نتيجة تقرير إبلاغ، لذلك من agent قرار مثل أي استجابة؛ طلب استخدام `dsh-bash-local` أو `dsh-bash-sandbox` انتظار منفذ، و تحميل `dsh-shell-env`.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在 agent 需要运行 bash 命令的任何组合中加载本插件：一旦挂载执行器提供方与 `dsh-shell-env` 注册表，它就注册 `bash` 工具，并在 `tools`、`shell`、`systemPrompt` 与 `shellEnv` 服务就绪之前保持等待。
+في agent حاجة تشغيل bash أمر أي تركيب في تحميل هذا إضافة: واحد حالما تركيب منفذ مزود و `dsh-shell-env` سجل التسجيل، هو حينئذ تسجيل `bash` أداة، و في `tools`،`shell`،`systemPrompt` و `shellEnv` خدمة حينئذ خيط قبل إبقاء انتظار.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-常用路径是执行器提供方、环境注册表与本工具；当 agent 需要后台运行命令时，再添加任务运行时。
+معتاد استخدام مسار هو منفذ مزود، بيئة سجل التسجيل و هذا أداة؛ عند agent حاجة خلفية تشغيل أمر وقت، مجددا إضافة مهمة وقت التشغيل.
 
 ```yaml
 - name: '@deepseek-ai/dsh-bash-local'
@@ -41,180 +41,180 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-tool-jobs'
 ```
 
-唯一的配置字段用于开关后台支持。
+وحيد إعداد حقل لأجل فتح صلة خلفية دعم حمل.
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `enableRunInBackground` | `true` | 暴露 `run_in_background`；为 `false` 时拒绝强制后台调用 |
+| `enableRunInBackground` | `true` | كشف `run_in_background`؛ لـ `false` وقت رفض قوي صنع خلفية استدعاء |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash)是每个受支持字段及其 JSDoc 的穷尽式真源；生成的[工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash)携带完整参数 schema。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر؛ توليد[أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash) يحمل كامل معامل schema.
 
-### 运行命令
+### تشغيل أمر
 
-工具执行 `bash -c <command>` 并返回合并后的输出。命令每次调用都运行在全新 shell 中，因此状态从不保留——请传 `workdir` 而不是 `cd`。非零退出以 `[exit code: N]` 报告给 agent 解读，而不是作为工具错误抛出。主动语态的 `description`（5–10 个词）在 UI 中标注该调用；`timeoutMs` 覆盖执行器的默认值与上限。超出执行器流上限的输出会被截断为尾部，完整输出保存到 spill 文件并报告其路径。
+أداة تنفيذ `bash -c <command>` و إرجاع دمج بعد إخراج. أمر كل مرة استدعاء كل تشغيل في كل جديد shell في، لذلك حالة من لا إبقاء——طلب نقل `workdir` بينما لا هو `cd`. غير صفر خروج بـ `[exit code: N]` تقرير إبلاغ إعطاء agent حل قراءة، بينما لا هو بصفة أداة خطأ رمي خروج. رئيسي حركة لغة حالة `description`(5–10 عدد كلمة) في UI في علامة ملاحظة هذا استدعاء؛`timeoutMs` تغطية منفذ قيمة افتراضية و حد أعلى. تجاوز خروج منفذ تدفق حد أعلى إخراج سوف يتم قطع قطع لـ ذيل جزء، كامل إخراج حفظ إلى spill ملف و تقرير إبلاغ ذلك مسار.
 
 <a id="running-long-commands-in-the-background"></a>
-### 后台运行长时间命令
+### خلفية تشغيل طويل وقت أمر
 
-传入 `run_in_background: true` 会准入任务并立即返回 job id；限制准备可能仍在进行，且不设后台执行超时。进程可用前输出为空。任务取消会中止准备并停止随后返回的进程；启动失败使已准入任务以失败状态结算。agent 用 `job_output` 读取输出（除非 `wait: true`，否则非阻塞）、用 `job_list` 列出任务、用 `job_kill` 停止任务；完成的任务会在会话内通知拥有它的 agent。后台支持需要挂载通用任务运行时（`dsh-jobs-local`）及其控制工具（`dsh-tool-jobs`）。
+نقل دخول `run_in_background: true` سوف دقيق دخول مهمة و قيام أي إرجاع job id؛ حد دقيق تجهيز ممكن ما زال في إجراء، كما لا ضبط خلفية تنفيذ مهلة. عملية متاح قبل إخراج لـ فارغ. مهمة إلغاء سوف في توقف دقيق تجهيز و إيقاف مع بعد إرجاع عملية؛ بدء فشل جعل قد دقيق دخول مهمة بـ فشل حالة تسوية.agent استخدام `job_output` قراءة إخراج (حذف غير `wait: true`، لا فإن غير منع سد) ، استخدام `job_list` صف خروج مهمة، استخدام `job_kill` إيقاف مهمة؛ إتمام مهمة سوف في جلسة داخل إشعار يملك هو agent. خلفية دعم حمل حاجة تركيب عام مهمة وقت التشغيل (`dsh-jobs-local`) و ذلك تحكم أداة (`dsh-tool-jobs`).
 
-### 沙箱执行与升权
+### صندوق رملي تنفيذ و رفع حق
 
-当已挂载的执行器约束命令（例如 `dsh-bash-sandbox`）时，被阻止的文件操作会报告为 `[sandbox: file access denied under <mode> mode]`——这是策略拒绝，不是命令失败。模型随后可以在同一轮次中用 `sandbox_permissions`（满足需要的最窄更宽模式）与一句 `justification` 重试完全相同的命令一次；该重试引发的审批提示就是用户同意的方式。只有发生真实拒绝后才请求更宽权限；被拒绝的升权对该命令即为最终结果。重复当前模式无需审批即可执行，更窄目标则在执行前失败。
+عند قد تركيب منفذ قيد أمر (مثال مثل `dsh-bash-sandbox`) وقت، يتم منع توقف ملف عملية سوف تقرير إبلاغ لـ `[sandbox: file access denied under <mode> mode]`——هذا هو سياسة رفض، لا هو أمر فشل. نموذج مع بعد يمكن في نفس جولة في استخدام `sandbox_permissions`(ممتلئ كاف حاجة الأكثر ضيق أكثر عرض نمط) و واحد جملة `justification` إعادة محاولة تماما نفسه أمر مرة؛ هذا إعادة محاولة جذب إرسال مراجعة دفعة تلميح حينئذ هو مستخدم نفس معنى طريقة. فقط لديه حدوث حقيقي رفض بعد عندئذ طلب أكثر عرض إذن؛ يتم رفض رفع حق مقابل هذا أمر أي لـ نهائي نتيجة. تكرار حالي نمط بلا حاجة مراجعة دفعة يكفي تنفيذ، أكثر ضيق هدف فإن في تنفيذ قبل فشل.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-没有执行器提供方的组合永远不会激活该工具。没有任务运行时的后台调用会以 `background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs` 失败；没有沙箱执行器时的 `sandbox_permissions` 会以 `sandbox_permissions is not available in this composition (no sandboxing executor to escalate)` 失败。`enableRunInBackground: false` 会移除该参数，并在执行时拒绝强制后台调用。
+لا يوجد منفذ مزود تركيب دائم بعيد لن تنشيط هذا أداة. لا يوجد مهمة وقت التشغيل خلفية استدعاء سوف بـ `background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs` فشل؛ لا يوجد صندوق رملي منفذ وقت `sandbox_permissions` سوف بـ `sandbox_permissions is not available in this composition (no sandboxing executor to escalate)` فشل.`enableRunInBackground: false` سوف إزالة هذا معامل، و في تنفيذ وقت رفض قوي صنع خلفية استدعاء.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释工具背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير أداة خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **shell seam 的模型侧消费方。** 本工具是 bash 能力的消费方角色：它注册 `bash` schema、渲染结果并解析每次调用的策略，进程机制归执行器 seam 所有。
-- **请求只来自命名参数。** 工具从不暴露 `stdin`、`env` 或 `stdoutMaxBytes`；它只用命令／workdir／超时／信号字段加上注册表收集的 `dshEnv` 构建每个请求，因此模型提供的键无法替换受管值。
-- **非零退出只报告、不失败。** 只有基础设施故障（spawn 错误、中止）才会作为工具错误暴露；模型解读退出码与标记。
-- **后台工作归任务运行时。** 后台调用把进程句柄注册到 `ctx.jobs`；job id、所有权、完成通知与释放都是运行时的职责，本工具只把 bash 退出与沙箱事实映射为任务输出。
+- **shell seam نموذج جانب مستهلك.** هذا أداة هو bash قدرة مستهلك زاوية لون: هو تسجيل `bash` schema، تصيير نتيجة و تحليل كل مرة استدعاء سياسة، عملية آلية عودة منفذ seam كل.
+- **طلب فقط قدوم ذاتي تسمية معامل.** أداة من لا كشف `stdin`،`env` أو `stdoutMaxBytes`؛ هو فقط استخدام أمر/workdir/مهلة/إشارة حقل إضافة فوق سجل التسجيل استلام تجميع `dshEnv` بناء كل طلب، لذلك نموذج توفير مفتاح لا يمكن استبدال تلقي إدارة قيمة.
+- **غير صفر خروج فقط تقرير إبلاغ، لا فشل.** فقط لديه أساس أساس ضبط تطبيق لذا عائق (spawn خطأ، في توقف) عندئذ سوف بصفة أداة خطأ كشف؛ نموذج حل قراءة خروج رمز و علامة.
+- **خلفية عمل عودة مهمة وقت التشغيل.** خلفية استدعاء يأخذ عملية جملة مقبض تسجيل إلى `ctx.jobs`؛job id، كل حق، إتمام إشعار و تحرير كل هو وقت التشغيل مسؤولية، هذا أداة فقط يأخذ bash خروج و صندوق رملي واقع خريطة لـ مهمة إخراج.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：工具注册、提示词区段、参数校验、升权、请求组装 |
-| [`src/background.ts`](src/background.ts) | 管理异步 shell 准备，并将进程结算映射为任务结果 |
-| [`src/render.ts`](src/render.ts) | 模型侧结果文本：流、标记、截断通知 |
-| — | 不发布运行时不变式伴生入口；环境注册表在每次变更和读取时校验所有权及收集值，且不发布可供伴生入口交叉核对的独立快照；执行关系由能力 seam 负责。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: أداة تسجيل، نص التوجيه منطقة مقطع، معامل تحقق، رفع حق، طلب تجميع |
+| [`src/background.ts`](src/background.ts) | إدارة مختلف خطوة shell دقيق تجهيز، و سوف عملية تسوية خريطة لـ مهمة نتيجة |
+| [`src/render.ts`](src/render.ts) | نموذج جانب نتيجة نص: تدفق، علامة، قطع قطع إشعار |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ بيئة سجل التسجيل في كل مرة تغيير و قراءة وقت تحقق كل حق و استلام تجميع قيمة، كما لا إصدار يمكن توفير مرافق توليد مدخل تسليم تقاطع نواة مقابل مستقل لقطة؛ تنفيذ علاقة من قدرة seam مسؤول. |
 
-### 请求解析
+### طلب تحليل
 
-工具在 `ctx.shell.resolve()` 运行前解析 workdir：显式的相对 `workdir` 相对会话 cwd 解析，沙箱策略的规范化 workspace root 优先，使约束与启动使用同一身份。沙箱策略通过 `ctx.sandboxPolicy` 按调用解析；升权请求在任何执行前经由 `ctx.approval`，若执行器会约束命令却没有挂载策略服务，工具在加载时失败。
+أداة في `ctx.shell.resolve()` تشغيل قبل تحليل workdir: صريح متبادل مقابل `workdir` متبادل مقابل جلسة cwd تحليل، صندوق رملي سياسة مواصفة تحويل workspace root أولوية، جعل قيد و بدء استخدام نفس هوية. صندوق رملي سياسة عبر `ctx.sandboxPolicy` حسب استدعاء تحليل؛ رفع حق طلب في أي تنفيذ قبل مرور من `ctx.approval`، إذا منفذ سوف قيد أمر لكن لا يوجد تركيب سياسة خدمة، أداة في تحميل وقت فشل.
 
-### 渲染故事
+### تصيير لذا أمر
 
-结果文本为 stdout，然后是带标记的 `[stderr]` 区段，再是条件标记：截断通知、沙箱拒绝（组合声明升权时附带同轮次升权提示）、超时、信号与退出码——每个占一行。退出标记同时充当 UI 卡片的退出状态 pill：`dsh-shell` 共享的 `parseExitStatus` 会从输出体中消费它，因此回放显示 pill 而不重复标记。
+نتيجة نص لـ stdout، لكن بعد هو حمل علامة `[stderr]` منطقة مقطع، مجددا هو شرط علامة: قطع قطع إشعار، صندوق رملي رفض (تركيب إعلان رفع حق وقت مرفق حمل نفس جولة رفع حق تلميح) ، مهلة، إشارة و خروج رمز——كل احتلال واحد سطر. خروج علامة معا ملء عند UI بطاقة خروج حالة pill:`dsh-shell` مشترك `parseExitStatus` سوف من إخراج جسم في إزالة استهلاك هو، لذلك إعادة تشغيل عرض pill بينما لا تكرار علامة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从 shell 家族逐步进入执行器 seam、任务运行时，以及行为背后的决策笔记。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من shell بيت عائلة تدريجي خطوة دخول منفذ seam، مهمة وقت التشغيل، و سلوك خلف بعد قرار قلم تسجيل.
 
-- [shell 包映射](../README.zh.md)——bash 能力家族及其角色。
-- [Bash 执行器子系统](../../../docs/subsystems/shell.zh.md)——请求／spec 词汇、结果与后台进程。
-- [shell-env](../shell-env/README.zh.md)——每次调用都会收到的受管 `DSH_*` 环境。
-- [tool-jobs](../../jobs/tool-jobs/README.zh.md)——后台运行的 `job_output`、`job_list` 与 `job_kill` 控制。
-- [沙箱 Agent Note](../../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md)——升权与模式切换的理由。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash)——`bash` 参数 schema 的确切内容。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash)——每个受支持配置字段及其源声明。
+- [shell حزمة خريطة](../README.zh.md)——bash قدرة بيت عائلة و ذلك زاوية لون.
+- [Bash منفذ فرعي نظام](../../../docs/subsystems/shell.zh.md)——طلب/spec مفردات، نتيجة و خلفية عملية.
+- [shell-env](../shell-env/README.zh.md)——كل مرة استدعاء كل سوف استلام إلى تلقي إدارة `DSH_*` بيئة.
+- [tool-jobs](../../jobs/tool-jobs/README.zh.md)——خلفية تشغيل `job_output`،`job_list` و `job_kill` تحكم.
+- [صندوق رملي Agent Note](../../../.agents/notes/implemented/feature/2026-07-06-sandbox.zh.md)——رفع حق و نمط تبديل إدارة من.
+- [توليد أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash)——`bash` معامل schema تأكيد قطع محتوى.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-bash)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 系统提示词
+### توجيه النظام
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-以下 bash 指引会以第一方顺序值 1000 出现在该插件注册作用域内的每次请求中。策略归属方通过其缓存安全的运行时上下文贡献当前沙箱状态，而不修改本区段。按作用域实施的工具限制可以隐藏 schema，却不会移除这个独立注册的区段。
+التالي bash إشارة جذب سوف بـ رقم واحد جهة ترتيب قيمة 1000 ظهور في هذا إضافة تسجيل أثر مجال داخل كل مرة طلب في. سياسة ملكية جهة عبر ذلك ذاكرة مؤقتة أمان وقت التشغيل سياق مساهمة حالي صندوق رملي حالة، بينما لا تعديل هذا منطقة مقطع. حسب أثر مجال فعلي تطبيق أداة حد يمكن إخفاء schema، لكن لن إزالة هذا عدد مستقل تسجيل منطقة مقطع.
 
-##### Bash 指引
+##### Bash إشارة جذب
 
 ```markdown
 Check the [exit code: N] marker on every bash result; investigate failures before moving on.
 ```
 
-#### Token 影响
+#### Token أثر
 
-插件激活期间，每次请求都会产生少量固定的输入 token 开销，不随沙箱模式或模式切换而变。
+إضافة تنشيط خلال، كل مرة طلب كل سوف إنتاج قليل كمية ثابت إدخال token فتح إلغاء، لا مع صندوق رملي نمط أو نمط تبديل بينما تغيير.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要注册作用域与提示词文本不变，前缀就保持稳定。插件激活或释放可能使从该提示词区段起的复用失效；沙箱模式切换不会。
+فقط يلزم تسجيل أثر مجال و نص التوجيه نص ثابت، بادئة حينئذ إبقاء مستقر. إضافة تنشيط أو تحرير ممكن جعل من هذا نص التوجيه منطقة مقطع بدء إعادة استخدام بطلان؛ صندوق رملي نمط تبديل لن.
 
-### 工具 schema
+### أداة schema
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-模型会看到生成的 [`bash` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash)。仅当本生产方启用 `run_in_background` 时，该字段才会出现；仅当已挂载执行器声明支持沙箱时，`sandbox_permissions` 和 `justification` 才会出现。按 agent 作用域限制工具可以移除该 agent 的定义。
+نموذج سوف يرى توليد [`bash` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-bash). فقط عند هذا إنتاج جهة تفعيل `run_in_background` وقت، هذا حقل عندئذ سوف ظهور؛ فقط عند قد تركيب منفذ إعلان دعم حمل صندوق رملي وقت،`sandbox_permissions` و `justification` عندئذ سوف ظهور. حسب agent أثر مجال حد أداة يمكن إزالة هذا agent تعريف.
 
-#### Token 影响
+#### Token أثر
 
-工具可见的每个请求都会产生固定 schema 开销；沙箱支持会增加升权字段及其条件说明段落。
+أداة مرئي كل طلب كل سوف إنتاج ثابت schema فتح إلغاء؛ صندوق رملي دعم حمل سوف زيادة رفع حق حقل و ذلك شرط شرح مقطع سقوط.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要可见性、后台支持与执行器沙箱能力不变，前缀就保持稳定。限制、配置或执行器发生变化时，可能从首个变化的工具定义开始使复用失效。
+فقط يلزم مرئي صفة، خلفية دعم حمل و منفذ صندوق رملي قدرة ثابت، بادئة حينئذ إبقاء مستقر. حد، إعداد أو منفذ حدوث تغير وقت، ممكن من أول عدد تغير أداة تعريف بدء جعل إعادة استخدام بطلان.
 
-### 前台结果
+### قبل منصة نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-renderer 输出依数据而定的 stdout 尾部，再输出可选的 `[stderr]` 和 stderr 尾部。没有输出时，它精确输出 `(no output)`。条件行精确为 `[output truncated; full output: <path-or-(unavailable)>]`、`[sandbox: file access denied under <mode> mode]`、`[timed out after <timeoutMs>ms]`、`[killed by signal: <signal>]` 与 `[exit code: <exitCode>]`；沙箱升权与 runner 故障行原文列于 [`dsh-bash-sandbox`](../bash-sandbox/README.zh.md)。
+renderer إخراج اعتماد بيانات بينما تحديد stdout ذيل جزء، مجددا إخراج اختياري `[stderr]` و stderr ذيل جزء. لا يوجد إخراج وقت، هو دقيق إخراج `(no output)`. شرط سطر دقيق لـ `[output truncated; full output: <path-or-(unavailable)>]`،`[sandbox: file access denied under <mode> mode]`،`[timed out after <timeoutMs>ms]`،`[killed by signal: <signal>]` و `[exit code: <exitCode>]`؛ صندوق رملي رفع حق و runner لذا عائق سطر أصل نص صف في [`dsh-bash-sandbox`](../bash-sandbox/README.zh.md).
 
-#### Token 影响
+#### Token أثر
 
-调用前的结果 token 为零。每条流的输出有界，每个已输出行则会保留在历史中，直至压缩（compaction）。
+استدعاء قبل نتيجة token لـ صفر. كل بند تدفق إخراج محدود، كل قد إخراج سطر فإن سوف إبقاء في تاريخ في، مباشر حتى ضغط (compaction).
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-### 后台任务上下文与结果
+### خلفية مهمة سياق و نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-启动会精确返回 `started background job <jobId>`。本生产方会向通用任务运行时提供增量进程输出、可选的 `[some output was dropped from memory; full output: <paths-or-(unavailable)>]`、沙箱事实，以及 `exit code: <exitCode>` 或 `signal: <signal>` 等终止详情。[`dsh-tool-jobs`](../../jobs/tool-jobs/README.zh.md) 负责模型可见的状态行、完成通知、列表和取消响应。
+بدء سوف دقيق إرجاع `started background job <jobId>`. هذا إنتاج جهة سوف نحو عام مهمة وقت التشغيل توفير زيادة كمية عملية إخراج، اختياري `[some output was dropped from memory; full output: <paths-or-(unavailable)>]`، صندوق رملي واقع، و `exit code: <exitCode>` أو `signal: <signal>` انتظار إنهاء تفصيل حال.[`dsh-tool-jobs`](../../jobs/tool-jobs/README.zh.md) مسؤول نموذج مرئي حالة سطر، إتمام إشعار، قائمة و إلغاء استجابة.
 
-#### Token 影响
+#### Token أثر
 
-启动确认很短且会保留；收集到的输出依数据而定，并受执行器流缓冲区限制。消费式读取不会重复先前输出。
+بدء تأكيد جدا قصير كما سوف إبقاء؛ استلام تجميع إلى إخراج اعتماد بيانات بينما تحديد، و تلقي منفذ تدفق مؤقت اندفاع منطقة حد. إزالة استهلاك صيغة قراءة لن تكرار أولا قبل إخراج.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-### 工具错误
+### أداة خطأ
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-验证与策略失败统一为 `Error: <message>`。本包的稳定消息包括 `invalid command: expected a non-empty string`、`invalid description: expected a non-empty string`、`invalid timeoutMs: expected a positive number, got <value>`、升权配对失败、`run_in_background is disabled for this deployment (enableRunInBackground: false)`、`background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs`、`sandbox_permissions is not available in this composition (no sandboxing executor to escalate)`、审批不可用／拒绝／取消变体，以及 `tool call aborted`。
+تحقق و سياسة فشل موحد واحد لـ `Error: <message>`. هذه الحزمة مستقر رسالة يشمل `invalid command: expected a non-empty string`،`invalid description: expected a non-empty string`،`invalid timeoutMs: expected a positive number, got <value>`، رفع حق إعداد مقابل فشل،`run_in_background is disabled for this deployment (enableRunInBackground: false)`،`background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs`،`sandbox_permissions is not available in this composition (no sandboxing executor to escalate)`، مراجعة دفعة غير ممكن استخدام/رفض/إلغاء تغيير جسم، و `tool call aborted`.
 
-#### Token 影响
+#### Token أثر
 
-只有失败调用会增加这些保留 token；升权被拒时命令不会运行，因此不会添加命令输出。
+فقط لديه فشل استدعاء سوف زيادة هذه إبقاء token؛ رفع حق يتم رفض وقت أمر لن تشغيل، لذلك لن إضافة أمر إخراج.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明工具何时不合适或需要特别小心。它们是当前包约束，不是任务积压。
+هذه حد شرح أداة أي وقت لا دمج ملائم أو حاجة خاص آخر صغير قلب. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **回放的退出 pill 从结果文本解析**——输出最后一行恰好是 `[exit code: N]` / `[killed by signal: …]` 时，会话回放会显示错误的 pill 并从卡片正文丢失该行，因为解析把它当作要消费的标记；这是仅影响显示的已知残留。
-- **`bash` 工具不参与 `timeout-policy` 预算**——它保留执行器自有的 `BASH_TIMEOUT` 路径，见[工具调用超时策略 Agent Note](../../../.agents/notes/implemented/architecture/2026-07-07-tool-call-timeout-policy.zh.md)。
-- **后台进程没有执行器超时**——工作不再需要时，调用方必须使用 `job_kill`，或依赖持有者／服务的释放。
+- **إعادة تشغيل خروج pill من نتيجة نص تحليل**——إخراج الأكثر بعد واحد سطر تماما جيد هو `[exit code: N]` / `[killed by signal: …]` وقت، جلسة إعادة تشغيل سوف عرض خطأ pill و من بطاقة متن فقد فقد هذا سطر، لأن تحليل يأخذ هو عند عمل يلزم إزالة استهلاك علامة؛ هذا هو فقط أثر عرض معروف ناقص إبقاء.
+- **`bash` أداة لا مشاركة و `timeout-policy` ميزانية**——هو إبقاء منفذ ذاتي لديه `BASH_TIMEOUT` مسار، رؤية[أداة استدعاء مهلة سياسة Agent Note](../../../.agents/notes/implemented/architecture/2026-07-07-tool-call-timeout-policy.zh.md).
+- **خلفية عملية لا يوجد منفذ مهلة**——عمل لم يعد حاجة وقت، استدعاء جهة يجب استخدام `job_kill`، أو اعتماد يحتفظ من/خدمة تحرير.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

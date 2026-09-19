@@ -1,43 +1,43 @@
 ---
-description: "boot 包组：dsh app bin 如何启动——环境加载、profile 与 patch 层、清晰的启动失败信息，以及由应用持有的命令行。"
+description: "boot حزمة مجموعة:dsh app bin مثل أي بدء——بيئة تحميل،profile و patch طبقة، صاف واضح بدء فشل معلومة، و من تطبيق يحتفظ أمر سطر."
 kind: "package-group"
 ---
 
-# boot/：共享的 app bin 启动粘合层
+# boot/: مشترك app bin بدء لصق دمج طبقة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-boot 组负责启动 profile 应用并管理其已安装组合。`app-boot` 解析配置并启动 Loader，`cmdline` 提供应用参数，`plugin-manager` 提供与 CLI 共享的当前 profile 操作。各包 README 负责各自的细节。
+boot مجموعة مسؤول بدء profile تطبيق و إدارة ذلك قد تثبيت تركيب.`app-boot` تحليل إعداد و بدء Loader،`cmdline` توفير تطبيق معامل،`plugin-manager` توفير و CLI مشترك حالي profile عملية. كل حزمة README مسؤول كل منها دقيق عقدة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`app-boot`](app-boot/README.zh.md) | 从 `cordis.yml` 启动 dsh 应用：加载 `.env`、应用 profile 与 patch 层，并清晰报告启动失败 | （供各 bin 使用的库） |
-| [`cmdline`](cmdline/README.zh.md) | 让应用持有自己的 flag、`--help` 与退出码；启动器自身 flag 之后的一切原样传入 | `cmdlineArgs`、`appExit` |
-| [`hmr`](hmr/README.zh.md) | 协调模块与配置重载，并与包修改互斥执行 | `hmr` |
-| [`plugin-manager`](plugin-manager/README.zh.md) | 通过共享 CLI 操作管理当前 profile 插件与组合包 | `pluginManager` |
+| [`app-boot`](app-boot/README.zh.md) | من `cordis.yml` بدء dsh تطبيق: تحميل `.env`، تطبيق profile و patch طبقة، و صاف واضح تقرير إبلاغ بدء فشل | (توفير كل bin استخدام مكتبة) |
+| [`cmdline`](cmdline/README.zh.md) | يجعل تطبيق يحتفظ ذاتي ذات flag،`--help` و خروج رمز؛ بدء جهاز ذاته flag بعد واحد قطع أصل مثال نقل دخول | `cmdlineArgs`،`appExit` |
+| [`hmr`](hmr/README.zh.md) | تنسيق ضبط وحدة و إعداد إعادة تحميل، و و حزمة تعديل متبادل رفض تنفيذ | `hmr` |
+| [`plugin-manager`](plugin-manager/README.zh.md) | عبر مشترك CLI عملية إدارة حالي profile إضافة و تركيب حزمة | `pluginManager` |
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [dsh 应用](../../apps/cli/README.zh.md)——在其启动序列中使用这些 helper 的 `dsh` bin。
-- [Profile 组合包](../bundle/README.zh.md)——可由 `dsh --profile` 组合挂载的可安装 patch 层。
-- [dsh-home-paths](../util/home-paths/README.zh.md)——两个包都依赖的 harness home 解析器。
-- [dsh-cmdline](cmdline/README.zh.md)——flag 家族如何由应用持有而非启动器。
+- [dsh تطبيق](../../apps/cli/README.zh.md)——في ذلك بدء تسلسل في استخدام هذه helper `dsh` bin.
+- [Profile تركيب حزمة](../bundle/README.zh.md)——يمكن من `dsh --profile` تركيب تركيب يمكن تثبيت patch طبقة.
+- [dsh-home-paths](../util/home-paths/README.zh.md)——اثنان عدد حزمة كل اعتماد harness home محلل.
+- [dsh-cmdline](cmdline/README.zh.md)——flag بيت عائلة مثل أي من تطبيق يحتفظ بينما غير بدء جهاز.
 
-- [Profile 管理](../../docs/subsystems/boot.zh.md)——服务方法与结果记录。
+- [Profile إدارة](../../docs/subsystems/boot.zh.md)——خدمة طريقة و نتيجة سجل.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

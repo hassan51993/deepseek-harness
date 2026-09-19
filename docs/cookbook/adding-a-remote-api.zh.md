@@ -1,12 +1,12 @@
-# 实操手册：新增一个 Remote API
+# فعلي تشغيل يد سجل: إضافة جديدة واحد Remote API
 
-[English](adding-a-remote-api.md) | 中文
+[English](adding-a-remote-api.md) | العربية
 
-新增或改动一个 `ctx.remote` 端点按本页五步走：声明方法、声明失败、在包上注册、在 Client 消费、写测试。decorator 语义、lookup 解析、生成管线与 `/api` 路由属于机制，由 [API Gateway 参考](../api-gateway.zh.md)负责；本页给的是每一步的动作与必须遵守的约定。为什么是这套编程面，见 [Typert Remote 方法调用 Agent Note](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md)；为什么失败面是单个 `RemoteError` 加一张码表，见[失败词汇 Agent Note](../../.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.zh.md)。
+إضافة جديدة أو تعديل واحد `ctx.remote` طرف نقطة حسب هذا صفحة خمسة خطوة مشي: إعلان طريقة، إعلان فشل، في حزمة فوق تسجيل، في Client إزالة استهلاك، كتابة اختبار.decorator دلالة،lookup تحليل، توليد إدارة خط و `/api` توجيه يخص آلية، من [API Gateway مشاركة اعتبار](../api-gateway.zh.md) مسؤول؛ هذا صفحة إعطاء هو كل واحد خطوة حركة عمل و يجب التزام حراسة اتفاق. لـ ماذا هو هذا طقم تحرير مسار وجه، رؤية [Typert Remote طريقة استدعاء Agent Note](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.zh.md) ؛ لـ ماذا فشل وجه هو مفرد عدد `RemoteError` إضافة واحد ورقة رمز جدول، رؤية[فشل مفردات Agent Note](../../.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.zh.md).
 
-## 1. 声明 API
+## 1. إعلان API
 
-owner 是一个 Host 侧 Cordis 服务：继承 `TypertRemoteService` 把 service 键与 wire namespace 一起绑定，再用 `@Remote` 标注对外暴露的方法。业务方法的签名若已符合 wire 约定就直接标注它本身；只有形态需要调整（补 `signal`、换参数顺序、换导出名）才写一个 `remoteExport*` adapter，由它调用不改名的业务方法。lookup 对象（`Agent`、`Session`）只能占顶层参数位，支持协作式取消的方法把 `signal: AbortSignal` 放在最后一位。
+owner هو واحد Host جانب Cordis خدمة: وراثة `TypertRemoteService` يأخذ service مفتاح و wire namespace واحد بدء ربط، مجددا استخدام `@Remote` علامة ملاحظة مقابل خارج كشف طريقة. عمل خدمة طريقة توقيع إذا قد رمز دمج wire اتفاق حينئذ مباشر علامة ملاحظة هو ذاته؛ فقط لديه شكل حاجة ضبط كامل (تكملة `signal`، تبديل معامل ترتيب، تبديل توجيه خروج اسم) عندئذ كتابة واحد `remoteExport*` adapter، من هو استدعاء لا تعديل اسم عمل خدمة طريقة.lookup كائن (`Agent`،`Session`) فقط قدرة احتلال قمة طبقة معامل موضع، دعم حمل تنسيق عمل صيغة إلغاء طريقة يأخذ `signal: AbortSignal` وضع في الأكثر بعد واحد موضع.
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -48,16 +48,16 @@ export class NotesController extends TypertRemoteService {
 }
 ```
 
-## 2. 声明失败
+## 2. إعلان فشل
 
-Remote 失败只有一个类 `RemoteError`：域码经 declaration merging 进 `RemoteErrorDetailsMap`，失败点直接 `throw new RemoteError(code, message, details)`。不要建域异常类家族，也不要写出口映射函数；与本端点无关的异常不预先归类，Gateway 会兜底折成 `gateway/internal`。只有"把任意 provider 异常归为一个域码"这一种场景才写 `catch`，并把原始异常挂在 `cause` 上。
+Remote فشل فقط لديه واحد صنف `RemoteError`: مجال رمز مرور declaration merging دخول `RemoteErrorDetailsMap`، فشل نقطة مباشر `throw new RemoteError(code, message, details)`. لا يلزم بناء مجال استثناء صنف بيت عائلة، أيضا لا يلزم كتابة خروج فتحة خريطة دالة؛ و هذا طرف نقطة غير متصل استثناء لا مسبق أولا عودة صنف،Gateway سوف التقاط قاع طي صار `gateway/internal`. فقط لديه"يأخذ مهمة معنى provider استثناء عودة لـ واحد مجال رمز"هذا واحد نوع مشهد عندئذ كتابة `catch`، و يأخذ أصلي استثناء تعليق في `cause` فوق.
 
-码名是 `<域>/<理由>`，声明落点四条：
+رمز اسم هو `<مجال>/<إدارة من>`، إعلان سقوط نقطة أربعة بند:
 
-- 只有一个生产者：声明落生产者包，紧挨抛出点。
-- 多个包共同生产：落双方共同依赖的最低层域包（`session/not-found` 在 `core/session`，`workspace/not-found` 在 `dsh-workspace`）。
-- 载体码 `gateway/bad-request`、`gateway/cancelled`、`gateway/internal` 已在 protocol 声明，Gateway 基础设施码已在 gateway 声明——直接用，不要复制。
-- 不上 wire 的本地失败不进码表，用调用方自己的类型表达。
+- فقط لديه واحد إنتاج من: إعلان سقوط إنتاج من حزمة، ضيق ملاصق رمي خروج نقطة.
+- كثير عدد حزمة مشترك نفس إنتاج: سقوط مزدوج جهة مشترك نفس اعتماد الأكثر منخفض طبقة مجال حزمة (`session/not-found` في `core/session`،`workspace/not-found` في `dsh-workspace`).
+- تحميل جسم رمز `gateway/bad-request`،`gateway/cancelled`،`gateway/internal` قد في protocol إعلان،Gateway أساس أساس ضبط تطبيق رمز قد في gateway إعلان——مباشر استخدام، لا يلزم نسخ.
+- لا فوق wire محلي فشل لا دخول رمز جدول، استخدام استدعاء جهة ذاتي ذات نوع جدول بلوغ.
 
 ```ts
 import { RemoteError } from '@deepseek-ai/dsh-typert-protocol'
@@ -87,9 +87,9 @@ export async function rename(noteId: string, title: string): Promise<void> {
 }
 ```
 
-## 3. 在包上注册
+## 3. في حزمة فوق تسجيل
 
-`@Remote` 必须落在一个 Loader entry 插件包里；owner 是抽象 seam 时把控制器放进 `packages/api/` 下的对应包。包清单要补两个生成入口与 protocol 的 peer 依赖，Client 侧则由 `@deepseek-ai/dsh-api-remotes` 的 assembly 挂载该贡献并按需转口类型词汇。两个入口分别指向哪个生成产物、生成管线如何排序，见 [API Gateway 参考](../api-gateway.zh.md)。
+`@Remote` يجب سقوط في واحد Loader entry إضافة حزمة داخل؛owner هو سحب كائن seam وقت يأخذ تحكم جهاز وضع دخول `packages/api/` تحت مقابل حزمة. حزمة بيان يلزم تكملة اثنان عدد توليد مدخل و protocol peer اعتماد،Client جانب فإن من `@deepseek-ai/dsh-api-remotes` assembly تركيب هذا مساهمة و حسب يحتاج تحويل فتحة نوع مفردات. اثنان عدد مدخل قسم آخر إشارة نحو أي عدد توليد ناتج، توليد إدارة خط مثل أي ترتيب ترتيب، رؤية [API Gateway مشاركة اعتبار](../api-gateway.zh.md).
 
 ```json
 {
@@ -102,13 +102,13 @@ export async function rename(noteId: string, title: string): Promise<void> {
 }
 ```
 
-改动了签名、码表、namespace 或导出名之后重跑 `pnpm run build:lib`，Client 才拿得到新的声明与 codec；只改实现体不需要重新生成。
+تعديل توقيع، رمز جدول،namespace أو توجيه خروج اسم بعد إعادة ركض `pnpm run build:lib`،Client عندئذ أخذ نيل إلى جديد إعلان و codec؛ فقط تعديل تنفيذ جسم لا حاجة إعادة توليد.
 
-## 4. 在 Client 消费
+## 4. في Client إزالة استهلاك
 
-调用插件在 `inject` 里同时声明 `remote` 与 `remote.<namespace>`，调用点直写 `ctx.remote.<namespace>.<method>(...)`：不要用 `Pick<ClientRemote, …>` 窄化、不要手写方法签名、不要造 wire 中转对象。结果是 `RemoteResult<T>`，就地 `if (!result.ok)` 分支，判 `code` 而不是 `instanceof`——code 分支会自动窄化 `details`。异常流的站点写 `throw result.error`（它是真 Error）；接住它的上层用 `isRemoteFailure` 区分 Remote 失败与本地缺陷，本地缺陷继续往上抛。不要写防御性 catch：Remote 调用不 reject，装配错误就该炸。
+استدعاء إضافة في `inject` داخل معا إعلان `remote` و `remote.<namespace>`، استدعاء نقطة مباشر كتابة `ctx.remote.<namespace>.<method>(...)`: لا يلزم استخدام `Pick<ClientRemote, …>` ضيق تحويل، لا يلزم يد كتابة طريقة توقيع، لا يلزم صنع wire في تحويل كائن. نتيجة هو `RemoteResult<T>`، حينئذ أرض `if (!result.ok)` فرع، حكم `code` بينما لا هو `instanceof`——code فرع سوف تلقائي ضيق تحويل `details`. استثناء تدفق محطة نقطة كتابة `throw result.error`(هو هو حق Error) ؛ وصل إقامة هو فوق طبقة استخدام `isRemoteFailure` منطقة قسم Remote فشل و محلي نقص وقوع، محلي نقص وقوع متابعة نحو فوق رمي. لا يلزم كتابة منع صد صفة catch:Remote استدعاء لا reject، تركيب إعداد خطأ حينئذ هذا انفجار.
 
-Host 的固定事实读 `ctx.remote.$host`：`home` 与 `isLoopback` 是普通值读取，没有订阅也没有 generation 计数器，`home` 在第一帧 ready 之前是 `undefined`；重连后的刷新走 `ctx.on('connection/reset')` 或各域自己的 remote 事件。调用方 abort 掉一次一元调用时，结果落在错误分支上的 `gateway/cancelled`，而不是抛出。
+Host ثابت واقع قراءة `ctx.remote.$host`:`home` و `isLoopback` هو عادي قيمة قراءة، لا يوجد حجز قراءة أيضا لا يوجد generation حساب عدد جهاز،`home` في رقم واحد لقطة ready قبل هو `undefined`؛ إعادة وصل بعد تحديث جديد مشي `ctx.on('connection/reset')` أو كل مجال ذاتي ذات remote حدث. استدعاء جهة abort إسقاط مرة واحد عنصر استدعاء وقت، نتيجة سقوط في خطأ فرع فوق `gateway/cancelled`، بينما لا هو رمي خروج.
 
 ```ts ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -146,9 +146,9 @@ export function hostLabel(): string {
 }
 ```
 
-## 5. 测试
+## 5. اختبار
 
-owner 侧断言抛出的码：捕获后用 `remoteErrorOf` 取出失败，再用 `toMatchObject` 比对 `code` 与需要的 `details` 字段——不要用 `toEqual` 深比对错误对象，也不要断言 `instanceof`。
+owner جانب تأكيد رمي خروج رمز: التقاط بعد استخدام `remoteErrorOf` أخذ خروج فشل، مجددا استخدام `toMatchObject` مقارنة مقابل `code` و حاجة `details` حقل——لا يلزم استخدام `toEqual` عميق مقارنة مقابل خطأ كائن، أيضا لا يلزم تأكيد `instanceof`.
 
 ```ts
 import { remoteErrorOf } from '@deepseek-ai/dsh-typert-protocol'
@@ -166,7 +166,7 @@ it('refuses an unknown note before writing', async () => {
 })
 ```
 
-Client 侧的替身返回真实例：`RemoteError` 与 `TestRemote` 的值 import 一律取自 `@deepseek-ai/dsh-client-test-runtime`，因为从 `api-remotes` facade 值 import 会拉起尚未构建的装配链。`TestRemote.$host` 是普通字段，spec 直接赋值即可。
+Client جانب بديل ذات إرجاع حقيقي مثال:`RemoteError` و `TestRemote` قيمة import واحد قاعدة أخذ ذاتي `@deepseek-ai/dsh-client-test-runtime`، لأن من `api-remotes` facade قيمة import سوف سحب بدء بعد لم بناء تركيب إعداد سلسلة.`TestRemote.$host` هو عادي حقل،spec مباشر منح قيمة يكفي.
 
 ```ts ignore-check
 import { Context } from '@deepseek-ai/cordis'
@@ -189,9 +189,9 @@ it('renders the failure code the Host reported', async () => {
 })
 ```
 
-## 验证
+## تحقق
 
-1. `pnpm run build:lib`：签名、码表、namespace 或导出名变过就必须重跑，Client 声明与 codec 由它产出。
-2. `pnpm run typecheck`：Host 与 Client 两个 program 都过一遍，码表的 merge 落点错了会在这里红。
-3. 点名跑两侧 spec：`npx vitest run <owner spec> <client spec>`。
-4. 端点属于产品可见面时补一条录制会话快照，规则见[测试策略](../testing.zh.md)。
+1. `pnpm run build:lib`: توقيع، رمز جدول،namespace أو توجيه خروج اسم تغيير مرور حينئذ يجب إعادة ركض،Client إعلان و codec من هو إنتاج خروج.
+2. `pnpm run typecheck`:Host و Client اثنان عدد program كل مرور واحد مرة، رمز جدول merge سقوط نقطة خطأ سوف في هذا داخل أحمر.
+3. نقطة اسم ركض اثنان جانب spec:`npx vitest run <owner spec> <client spec>`.
+4. طرف نقطة يخص منتج مرئي وجه وقت تكملة واحد بند تسجيل صنع جلسة لقطة، قاعدة رؤية[اختبار سياسة](../testing.zh.md).

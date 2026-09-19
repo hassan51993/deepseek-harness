@@ -1,27 +1,27 @@
 # `@deepseek-ai/dsh`
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-`dsh` 是唯一受支持的 Node 应用启动器；profile 由多个插件组合包 patch 层按顺序叠加而成，其上再应用用户自己的覆盖配置。SDK 与 ACP（Agent Client Protocol）都是 profile，而不是独立的公开可执行命令。Python 运行时 wheel 包中也包含同一个命令；SDK 默认使用 `sdk`，极简示例选择 `sdk-minimal`。[`src/args.ts`](src/args.ts) 负责命令语法，[`src/bin.ts`](src/bin.ts) 只加载选中的运行器。无效命令、来自其他模式的选项，以及致命的配置或启动错误都会以非零状态退出。
+`dsh` هو وحيد تلقي دعم حمل Node تطبيق بدء جهاز؛profile من كثير عدد إضافة تركيب حزمة patch طبقة حسب ترتيب تراكم إضافة بينما صار، ذلك فوق مجددا تطبيق مستخدم ذاتي ذات تغطية إعداد.SDK و ACP(Agent Client Protocol) كل هو profile، بينما لا هو مستقل عام يمكن تنفيذ أمر.Python وقت التشغيل wheel حزمة في أيضا يتضمن نفس عدد أمر؛SDK افتراضي استخدام `sdk`، أقصى بسيط عرض مثال اختيار `sdk-minimal`.[`src/args.ts`](src/args.ts) مسؤول أمر لغة قاعدة،[`src/bin.ts`](src/bin.ts) فقط تحميل اختيار في تشغيل جهاز. بلا فاعلية أمر، قدوم ذاتي أخرى نمط خيار، و يؤدي أمر إعداد أو بدء خطأ كل سوف بـ غير صفر حالة خروج.
 
-## 入口模式
+## مدخل نمط
 
-| 命令 | 用途 |
+| أمر | استخدام طريق |
 |---|---|
-| `dsh <name>` / `dsh --profile <name>` | 启动位于 `$DSH_HOME/profiles/<name>` 的指定 profile。 |
-| `dsh --profile <name> --from-default-profile <template>` | 从随附模板创建新的自定义 profile，然后启动它。 |
-| `dsh --profile acp` | 通过 ACP stdio 为自动化客户端提供服务，直至断开连接。 |
-| `dsh --profile headless "job"` | 运行一个全新的持久化会话，打印最终答案并退出。 |
-| `dsh --profile sdk` | 通过 JSON-RPC stdio 为 SDK 客户端提供服务，直至关闭或断开连接。 |
-| `dsh --profile sdk-minimal` | 以独立极简 agent（智能体）配置树为 SDK 客户端提供服务。 |
-| `dsh web` | 启动 Web profile。 |
-| `dsh plugin --profile <name> <pnpm args>` | 通过在 profile 目录中转发给 pnpm 来管理该 profile 的插件。 |
+| `dsh <name>` / `dsh --profile <name>` | بدء يقع في `$DSH_HOME/profiles/<name>` إشارة تحديد profile. |
+| `dsh --profile <name> --from-default-profile <template>` | من مع مرفق نموذج لوح إنشاء جديد ذاتي تعريف profile، لكن بعد بدء هو. |
+| `dsh --profile acp` | عبر ACP stdio لـ تلقائي تحويل عميل توفير خدمة، مباشر حتى قطع فتح اتصال. |
+| `dsh --profile headless "job"` | تشغيل واحد كل جديد حفظ دائم جلسة، ضرب طبع نهائي جواب سجل و خروج. |
+| `dsh --profile sdk` | عبر JSON-RPC stdio لـ SDK عميل توفير خدمة، مباشر حتى إغلاق أو قطع فتح اتصال. |
+| `dsh --profile sdk-minimal` | بـ مستقل أقصى بسيط agent(ذكي جسم) إعداد شجرة لـ SDK عميل توفير خدمة. |
+| `dsh web` | بدء Web profile. |
+| `dsh plugin --profile <name> <pnpm args>` | عبر في profile دليل في تحويل إرسال إعطاء pnpm قدوم إدارة هذا profile إضافة. |
 
-运行命令时所在的目录将作为默认 workspace 根目录。`web`、`headless`、`sdk`、`sdk-minimal` 和 `acp` profile 在首次使用时会从随附模板自动初始化。使用 `--from-default-profile` 可以基于这些模板之一，在尚未使用的非内置名称处创建其他 profile；通过 `dsh plugin` 则可以初始化一个以 base 为基础的 profile。`desktop` 名称保留给 Electron 持有的 profile，因此 CLI（命令行界面）会拒绝针对它的启动、配置 dump 和插件管理请求。
+تشغيل أمر وقت الذي في دليل سوف بصفة افتراضي workspace أصل دليل.`web`،`headless`،`sdk`،`sdk-minimal` و `acp` profile في أول مرة استخدام وقت سوف من مع مرفق نموذج لوح تلقائي ابتدائي تحويل. استخدام `--from-default-profile` يمكن أساس في هذه نموذج لوح لـ واحد، في بعد لم استخدام غير داخل وضع اسم موضع إنشاء أخرى profile؛ عبر `dsh plugin` فإن يمكن ابتدائي تحويل واحد بـ base لـ أساس أساس profile.`desktop` اسم إبقاء إعطاء Electron يحتفظ profile، لذلك CLI(أمر سطر واجهة) سوف رفض إبرة مقابل هو بدء، إعداد dump و إضافة إدارة طلب.
 
-## 应用参数
+## تطبيق معامل
 
-启动器只解析自身的 flag，并将其后的所有内容交给已启动的 profile；注入该 profile 的任意应用插件都可以解析这份共享的不可变快照（[`dsh-cmdline`](../../packages/boot/cmdline/README.zh.md)）。启动器无法识别的第一个 token 标志着应用参数的开始：
+بدء جهاز فقط تحليل ذاته flag، و سوف ذلك بعد كل محتوى تسليم إعطاء قد بدء profile؛ حقن هذا profile مهمة معنى تطبيق إضافة كل يمكن تحليل هذا نسخة مشترك غير ممكن تغيير لقطة ([`dsh-cmdline`](../../packages/boot/cmdline/README.zh.md)). بدء جهاز لا يمكن تعرف آخر رقم واحد token علامة سجل حال تطبيق معامل بدء:
 
 ```sh
 dsh --profile web --port 8080       # --port belongs to the web app
@@ -34,27 +34,27 @@ dsh --help                          # the launcher's own help
 <a id="profiles"></a>
 ## Profile
 
-profile 目录包含一个 `package.json`，其中记录树外插件依赖，以及 profile manifest（元数据清单）`dsh.profile`、其中按顺序排列的 `bundles` 列表；还包含一个 `cordis.patch.yml`，其中保存用户自己的 patch 层。在 YAML 中启用的 `dsh-hmr` 监视 profile manifest、profile 与 home 级 patch 文件，再通过统一串行重载重新组合所有层。未启用 HMR 时，更改在重启后生效。监听器注册期间发生的编辑与后续编辑使用相同的非致命重载错误报告。[插件管理器](../../packages/boot/plugin-manager/README.zh.md) 与 `dsh plugin` 共享包操作和 profile 写锁；更新依赖会保留已停用的组合包选择。CLI 包操作继承认证环境和终端描述符，支持交互式构建批准；service 调用保留清理后的环境并捕获诊断。
+profile دليل يتضمن واحد `package.json`، منها سجل شجرة خارج إضافة اعتماد، و profile manifest(بيانات وصفية بيان)`dsh.profile`، منها حسب ترتيب ترتيب صف `bundles` قائمة؛ أيضا يتضمن واحد `cordis.patch.yml`، منها حفظ مستخدم ذاتي ذات patch طبقة. في YAML في تفعيل `dsh-hmr` مراقبة نظر profile manifest،profile و home درجة patch ملف، مجددا عبر موحد واحد سلسلة سطر إعادة تحميل إعادة تركيب كل طبقة. لم تفعيل HMR وقت، أكثر تعديل في إعادة بدء بعد توليد فاعلية. مستمع تسجيل خلال حدوث تحرير و لاحق تحرير استخدام نفسه غير يؤدي أمر إعادة تحميل خطأ تقرير إبلاغ.[إضافة إدارة جهاز](../../packages/boot/plugin-manager/README.zh.md) و `dsh plugin` مشترك حزمة عملية و profile كتابة قفل؛ تحديث اعتماد سوف إبقاء قد توقف استخدام تركيب حزمة اختيار.CLI حزمة عملية وراثة إقرار إثبات بيئة و طرفية وصف رمز، دعم حمل تفاعل صيغة بناء دفعة دقيق؛service استدعاء إبقاء تنظيف بعد بيئة و التقاط تشخيص.
 
-配置树以空根为起点，依次叠加以下配置层：
-- `dsh.profile.bundles` 中各组合包的 patch
-- profile 自身的 `cordis.patch.yml`，然后是 home 级的 `$DSH_HOME/cordis.patch.yml`
-- `--patch` 指定的覆盖层
+إعداد شجرة بـ فارغ أصل لـ بدء نقطة، اعتماد مرة تراكم إضافة التالي إعداد طبقة:
+- `dsh.profile.bundles` في كل تركيب حزمة patch
+- profile ذاته `cordis.patch.yml`، لكن بعد هو home درجة `$DSH_HOME/cordis.patch.yml`
+- `--patch` إشارة تحديد تغطية طبقة
 
-`dsh.profile.bundles` 中列出的组合包先从 dsh 安装目录解析（`@deepseek-ai/dsh-base`、`@deepseek-ai/dsh-web-app`、`@deepseek-ai/dsh-headless`、`@deepseek-ai/dsh-sdk-app`、`@deepseek-ai/dsh-sdk-minimal`、`@deepseek-ai/dsh-acp-app`），再从 profile 自身的 `node_modules` 解析；pnpm 会将树外插件安装到该目录。
+`dsh.profile.bundles` في صف خروج تركيب حزمة أولا من dsh تثبيت دليل تحليل (`@deepseek-ai/dsh-base`،`@deepseek-ai/dsh-web-app`،`@deepseek-ai/dsh-headless`،`@deepseek-ai/dsh-sdk-app`،`@deepseek-ai/dsh-sdk-minimal`،`@deepseek-ai/dsh-acp-app`) ، مجددا من profile ذاته `node_modules` تحليل؛pnpm سوف سوف شجرة خارج إضافة تثبيت إلى هذا دليل.
 
-使用 `--dump-default-config` 和 `--dump-config` 可在不启动的情况下检查组合后的配置树。
+استخدام `--dump-default-config` و `--dump-config` يمكن في لا بدء حال حال تحت فحص تركيب بعد إعداد شجرة.
 
-层的确切优先级、flag、关闭行为、部署默认值和源码执行方式，以 [CLI 行为参考](reference/README.zh.md)为准。[启动与重载失败表](../../packages/boot/app-boot/README.zh.md#startup-and-reload-failures)对比 optional、required 插件启动失败与配置 HMR 的行为。
+طبقة تأكيد قطع أولوية درجة،flag، إغلاق سلوك، نشر قيمة افتراضية و شفرة المصدر تنفيذ طريقة، بـ [CLI سلوك مشاركة اعتبار](reference/README.zh.md) لـ دقيق.[بدء و إعادة تحميل فشل جدول](../../packages/boot/app-boot/README.zh.md#startup-and-reload-failures) مقابل مقارنة optional،required إضافة بدء فشل و إعداد HMR سلوك.
 
-## 可选覆盖层
+## اختياري تغطية طبقة
 
-`config/examples/` 交付 GitHub 评审 webhook、会话内 Schedule、记忆 MCP 服务器与运行时 Cordis 工具的可选覆盖层。它们绝不属于默认 profile；设置与安全说明由[用户指南](../../docs/user/guide/index.zh.md)和[开发实战指南](../../docs/user/develop/practice/index.zh.md)负责。
+`config/examples/` تسليم GitHub مراجعة webhook، جلسة داخل Schedule، تسجيل ذاكرة MCP خادم و وقت التشغيل Cordis أداة اختياري تغطية طبقة. هو جمع أبدا يخص افتراضي profile؛ ضبط و أمان شرح من[مستخدم إشارة جنوب](../../docs/user/guide/index.zh.md) و[تطوير فعلي حرب إشارة جنوب](../../docs/user/develop/practice/index.zh.md) مسؤول.
 
-## 开发
+## تطوير
 
-生产运行需要已构建的包与前端产物。请在仓库根目录单独运行 `pnpm run build`，然后使用 `pnpm dsh <args...>` 运行 TypeScript 入口并转发所有参数；模块解析约定以[源码执行参考](reference/README.zh.md#source-execution)为准。
+إنتاج تشغيل حاجة قد بناء حزمة و قبل طرف ناتج. طلب في مستودع أصل دليل مفرد وحيد تشغيل `pnpm run build`، لكن بعد استخدام `pnpm dsh <args...>` تشغيل TypeScript مدخل و تحويل إرسال كل معامل؛ وحدة تحليل اتفاق بـ[شفرة المصدر تنفيذ مشاركة اعتبار](reference/README.zh.md#source-execution) لـ دقيق.
 
-`@deepseek-ai/dsh/profile-boot` 导出向 Desktop Host 提供共享 profile 生命周期。已解析的应用 profile 为运行时包解析指定自己的安装锚点，同时沿用 Harness home patch、代理环境、遥测开关、patch 热重载和有界关闭。
+`@deepseek-ai/dsh/profile-boot` توجيه خروج نحو Desktop Host توفير مشترك profile دورة الحياة. قد تحليل تطبيق profile لـ وقت التشغيل حزمة تحليل إشارة تحديد ذاتي ذات تثبيت مرساة نقطة، معا امتداد استخدام Harness home patch، بديل إدارة بيئة، بعيد قياس فتح صلة،patch حار إعادة تحميل و محدود إغلاق.
 
-[Web 失败矩阵](tests/profiles/web/tests/web-failure-matrix.expected.e2e.ts)在 `test:expected` 中通过构建后的 CLI 验证启动失败与启用 `awaitWriteFinish` 的原生配置 HMR。它不调用模型 API，而是检查经过认证的 HTTP 响应、诊断、恢复、进程退出与 dispose；[启动验收测试](tests/profiles/web/tests/web-best-effort-startup.expected.e2e.ts)还覆盖随附 Web 的必需依赖与端口冲突。
+[Web فشل مستطيل دفعة](tests/profiles/web/tests/web-failure-matrix.expected.e2e.ts) في `test:expected` في عبر بناء بعد CLI تحقق بدء فشل و تفعيل `awaitWriteFinish` أصلي إعداد HMR. هو لا استدعاء نموذج API، بينما هو فحص مرور مرور إقرار إثبات HTTP استجابة، تشخيص، استعادة، عملية خروج و dispose؛[بدء تحقق استلام اختبار](tests/profiles/web/tests/web-best-effort-startup.expected.e2e.ts) أيضا تغطية مع مرفق Web مطلوب اعتماد و طرف فتحة اندفاع مفاجئ.

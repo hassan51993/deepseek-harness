@@ -1,31 +1,31 @@
-# Agent Note: 结构化 index 注入表（webserver/index-inject 事件）
+# Agent Note: بنية تحويل index حقن جدول (webserver/index-inject حدث)
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-19-web-index-injection-table.md) | 中文
+[English](2026-08-19-web-index-injection-table.md) | العربية
 
 ## Problem
 
-Web 壳的启动 HTML 需要三类注入：client-modules 的引导协议（`__ModuleLoader__` 注册队列内联脚本、parser 阻塞的 preload `<script src>`、`__DSH_BOOT__` 全局图）与 ui-theme 的首帧主题脚本。旧机制是 `webServer.tapIndex(html => html)` 字符串变换：每个注册方各自用正则找 `<head>`/`<body>` 改 HTML。静态 worker 部署（页面是构建产物、host 树在 Web Worker 里）没有「服 HTML」这一步，于是 worker 侧只能在 `/__boot__` 载荷里手工重抄同一批数据（graph + theme，经 `ctx.get` 硬掏），页面侧再用手写代码（facade 安装、theme 应用、preload 循环）把 tap 干的事重演一遍——同一份启动语义存在三份实现。
+Web قشرة بدء HTML حاجة ثلاثة صنف حقن:client-modules جذب توجيه بروتوكول (`__ModuleLoader__` تسجيل طابور صف داخل ربط نص برمجي،parser منع سد preload `<script src>`،`__DSH_BOOT__` عام رسم) و ui-theme أول لقطة رئيسي عنوان نص برمجي. قديم آلية هو `webServer.tapIndex(html => html)` نص تغيير تبديل: كل تسجيل جهة كل منها استخدام صحيح فإن بحث `<head>`/`<body>` تعديل HTML. ساكن حالة worker نشر (صفحة هو بناء ناتج،host شجرة في Web Worker داخل) لا يوجد «خدمة HTML» هذا واحد خطوة، في هو worker جانب فقط قدرة في `/__boot__` تحميل حمل داخل يد عمل إعادة نسخ نفس دفعة بيانات (graph + theme، مرور `ctx.get` صلب إخراج) ، صفحة جانب مجددا استخدام يد كتابة شفرة (facade تثبيت،theme تطبيق،preload حلقة) يأخذ tap جاف أمر إعادة عرض واحد مرة——نفس نسخة بدء دلالة وجود ثلاثة نسخة تنفيذ.
 
 ## Decision
 
-注入面事件化、数据化：webserver 声明 `webserver/index-inject` 事件与纯数据行类型 `IndexInjection`（`global`/`script`/`script-src`/`script-preload`/`style`/`html`，在适用的行上携带定位）。想注入的插件订阅事件、往表里 push 行；每次收集（`collectIndexInjections()`）都是一次全新 emit，订阅方现读现填（模块图、主题偏好天然新鲜，无重注册问题），订阅随 fiber 销毁自动摘除。
+حقن وجه حدث تحويل، بيانات تحويل:webserver إعلان `webserver/index-inject` حدث و صاف بيانات سطر نوع `IndexInjection`(`global`/`script`/`script-src`/`script-preload`/`style`/`html`، في ملائم استخدام سطر فوق يحمل تحديد موضع). تفكير حقن إضافة حجز قراءة حدث، نحو جدول داخل push سطر؛ كل مرة استلام تجميع (`collectIndexInjections()`) كل هو مرة كل جديد emit، حجز قراءة جهة الآن قراءة الآن ملء (وحدة رسم، رئيسي عنوان انحراف جيد يوم لكن جديد طازج، بلا إعادة تسجيل مشكلة) ، حجز قراءة مع fiber إلغاء تدمير تلقائي اقتباس حذف.
 
-一张表两个渲染器：served 形态 `webServer.renderIndex(html)` 确定性把行渲染进 index.html（head 行插 head 首、body 行插 body 首，全局值 JSON `<` 转义、src 属性转义）；worker 形态 `/__boot__` 载荷就是 `{ injections }`，页面侧小解释器逐行执行（设全局 / 建脚本元素 / 经 tunnel loadBundle 载外链 / 挂样式与 DOM）。`script-preload` 行在 served HTML 中渲染为浏览器预加载提示；worker 解释器忽略它，因为 `/plugins` 资源只存在于 tunnel 后方，并在实际需要时加载。行是纯 JSON 数据，这是双端等价的纪律。
+واحد ورقة جدول اثنان عدد مصير:served شكل `webServer.renderIndex(html)` تحديد صفة يأخذ سطر تصيير دخول index.html(head سطر إدراج head أول،body سطر إدراج body أول، عام قيمة JSON `<` تحويل معنى،src خاصية تحويل معنى) ؛worker شكل `/__boot__` تحميل حمل حينئذ هو `{ injections }`، صفحة جانب صغير حل تفسير جهاز تدريجي سطر تنفيذ (ضبط عام / بناء نص برمجي عنصر عنصر / مرور tunnel loadBundle تحميل خارج سلسلة / تعليق مثال صيغة و DOM).`script-preload` سطر في served HTML في تصيير لـ متصفح مسبق تحميل تلميح؛worker حل تفسير جهاز تجاهل اختصار هو، لأن `/plugins` مورد فقط وجود في tunnel بعد جهة، و في فعلي حاجة وقت تحميل. سطر هو صاف JSON بيانات، هذا هو مزدوج طرف انتظار قيمة سجل قاعدة.
 
-`tapIndex`/`applyIndexTaps` 保留为原始 HTML 变换的逃生口，在行渲染之后执行；内部消费者全部迁走。
+`tapIndex`/`applyIndexTaps` إبقاء لـ أصلي HTML تغيير تبديل هروب توليد فتحة، في سطر تصيير بعد تنفيذ؛ داخلي إزالة استهلاك من الكل نقل مشي.
 
 ## Consequences
 
-- client-modules 与 ui-theme 不再各自正则改 HTML；worker 侧 `readBootPayload` 的 `ctx.get` 手掏（clientModules、settings、theme 常量 loader.load）删除；页面侧 `installModuleLoaderFacade`、`applyBootTheme`、`PARSER_PRELOAD_IDS` 三份重抄退役。
-- 顺序语义：跨订阅方按订阅注册顺序（与旧 tap 顺序一致），单订阅方内按 push 顺序；modules 自己保证队列→application preload→bootstrap script→全局的顺序。
-- `__DSH_BOOT__` 的 served 渲染文本从 `window.__DSH_BOOT__ =` 变为 `globalThis["__DSH_BOOT__"] =`；已核实无已提交快照期望含此文本，无需重录。
-- 新的模型可见/页面可见注入一律走行类型扩展，不再新增 tap 消费者。
+- client-modules و ui-theme لم يعد كل منها صحيح فإن تعديل HTML؛worker جانب `readBootPayload` `ctx.get` يد إخراج (clientModules،settings،theme معتاد كمية loader.load) حذف؛ صفحة جانب `installModuleLoaderFacade`،`applyBootTheme`،`PARSER_PRELOAD_IDS` ثلاثة نسخة إعادة نسخ تراجع دور.
+- ترتيب دلالة: عبر حجز قراءة جهة حسب حجز قراءة تسجيل ترتيب (و قديم tap ترتيب متسق) ، مفرد حجز قراءة جهة داخل حسب push ترتيب؛modules ذاتي ذات حفظ إثبات طابور صف→application preload→bootstrap script→عام ترتيب.
+- `__DSH_BOOT__` served تصيير نص من `window.__DSH_BOOT__ =` تغيير لـ `globalThis["__DSH_BOOT__"] =`؛ قد نواة فعلي بلا قد إيداع لقطة مدة نظر يحتوي هذا نص، بلا حاجة إعادة تسجيل.
+- جديد نموذج مرئي/صفحة مرئي حقن واحد قاعدة مشي سطر نوع توسيع، لم يعد إضافة جديدة tap إزالة استهلاك من.
 
 ## Alternatives considered
 
-- **保留 tap 函数、worker 侧对假 document 重放**——否决：tap 是不透明的 `html => html` 闭包，worker 无法序列化或重放，除非把 DOM 仿真塞进启动链。
-- **注册表式（`registerInjection(row): dispose`）**——否决于事件天然化解的两个问题：行数据会相对活状态（主题偏好、模块图）过期，除非每个生产者变更时重注册；且每个生产者多背一个 disposer。按次 emit 的拉取免费获得新鲜读取与 fiber 级清理。
-- **直接删除 `tapIndex`**——否决：表还年轻，原始 HTML 变换的逃生口零成本，外部组合可能还有行类型暂不能表达的变换。
+- **إبقاء tap دالة،worker جانب مقابل زائف document إعادة وضع**——مرفوض:tap هو لا نفاذ واضح `html => html` إغلاق حزمة،worker لا يمكن تسلسل تحويل أو إعادة وضع، حذف غير يأخذ DOM محاكاة حق سد دخول بدء سلسلة.
+- **سجل التسجيل صيغة (`registerInjection(row): dispose`)**——مرفوض في حدث يوم لكن تحويل حل اثنان عدد مشكلة: سطر بيانات سوف متبادل مقابل نشط حالة (رئيسي عنوان انحراف جيد، وحدة رسم) مرور مدة، حذف غير كل إنتاج من تغيير وقت إعادة تسجيل؛ كما كل إنتاج من كثير خلف واحد disposer. حسب مرة emit سحب أخذ تجنب استهلاك نيل نيل جديد طازج قراءة و fiber درجة تنظيف.
+- **مباشر حذف `tapIndex`**——مرفوض: جدول أيضا سنة خفيف، أصلي HTML تغيير تبديل هروب توليد فتحة صفر صار هذا، خارجي تركيب ممكن أيضا لديه سطر نوع مؤقت لا يستطيع جدول بلوغ تغيير تبديل.

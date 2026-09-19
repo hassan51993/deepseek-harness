@@ -1,36 +1,36 @@
-# Agent Note: Web 触发菜单呈现打磨
+# Agent Note: Web إطلاق قائمة مفرد عرض ضرب طحن
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-26-web-trigger-menu-presentation-polish.md) | 中文
+[English](2026-08-26-web-trigger-menu-presentation-polish.md) | العربية
 
 ## Problem
 
-Web composer 的 `/` 与 `@` 触发菜单存在多处呈现缺陷，使引用流程更难阅读和操作。候选行用本地化文字前缀标注类型（`Folder · name/`、`Session · label`），既与 section 标题重复又把名称挤向右侧。指针悬停用 CSS `:hover` 着色，而键盘导航驱动 reducer 持有的高亮，两行可能同时呈现焦点态。可下钻文件夹的操作标记是裸文本 `›`，与 composer 中其他 chevron 不一致，且没有任何提示告诉用户 Tab 可以下钻高亮的文件夹。来源加载中状态是一行"正在加载…"文字。下钻留下的可编辑 `@dir/` 文本在 `@` 前渲染文件夹图标，对一个并非 settled chip 的 token 形成视觉双重标记。composer 的 placeholder 从未提及 `/` 和 `@` 的存在（[#3080](https://github.com/deepseek-harness/deepseek-harness/issues/3080)）。
+Web composer `/` و `@` إطلاق قائمة مفرد وجود كثير موضع عرض نقص وقوع، جعل مرجع مسار أكثر صعب قراءة قراءة و عملية. مرشح سطر استخدام محلي تحويل نص حرف بادئة علامة ملاحظة نوع (`Folder · name/`،`Session · label`) ، حيث و section عنوان تكرار أيضا يأخذ اسم ضغط نحو يمين جانب. إشارة إبرة معلق توقف استخدام CSS `:hover` حال لون، بينما مفتاح قرص تنقل قيادة reducer يحتفظ عال مضيء، اثنان سطر ممكن معا عرض تركيز نقطة حالة. يمكن تحت حفر ملف مشبك عملية علامة هو عار نص `›`، و composer في أخرى chevron لا متسق، كما لا يوجد أي تلميح إبلاغ إبلاغ مستخدم Tab يمكن تحت حفر عال مضيء ملف مشبك. مصدر تحميل في حالة هو واحد سطر"صحيح في تحميل…"نص حرف. تحت حفر إبقاء تحت يمكن تحرير `@dir/` نص في `@` قبل تصيير ملف مشبك رسم علامة، مقابل واحد و غير settled chip token شكل صار نظر شعور مزدوج إعادة علامة.composer placeholder من لم رفع و `/` و `@` وجود ([#3080](https://github.com/deepseek-harness/deepseek-harness/issues/3080)).
 
 ## Decision
 
-候选行以领域图标开头，不再用文字前缀：`InputTriggerCandidate.icon` 从 `string` 收窄为封闭联合 `InputTriggerCandidateIcon`（`file | folder | session`），菜单视图将其映射到 `ReferenceIcon`，`ui-reference` 只输出裸名称（`folderx/`、session 标签）。删除 `candidate.file`/`candidate.folder`/`candidate.session` 三个 locale 键；session section 标题改为 `对话`/`Sessions`。菜单与 composer 卡片左右等宽（`left: 0; right: 0`），加载中的来源渲染两条与候选行同尺寸的呼吸骨架条，替代加载文字行。
+مرشح سطر بـ مجال رسم علامة فتح رأس، لم يعد استخدام نص حرف بادئة:`InputTriggerCandidate.icon` من `string` استلام ضيق لـ غلاف إغلاق ربط دمج `InputTriggerCandidateIcon`(`file | folder | session`) ، قائمة مفرد عرض سوف ذلك خريطة إلى `ReferenceIcon`،`ui-reference` فقط إخراج عار اسم (`folderx/`،session وسم). حذف `candidate.file`/`candidate.folder`/`candidate.session` ثلاثة عدد locale مفتاح؛session section عنوان تعديل لـ `محادثة`/`Sessions`. قائمة مفرد و composer بطاقة يسار يمين انتظار عرض (`left: 0; right: 0`) ، تحميل في مصدر تصيير اثنان بند و مرشح سطر نفس مقياس قياس نداء امتصاص هيكل هيكل بند، بديل تحميل نص حرف سطر.
 
-指针与键盘共享单一高亮，后到者优先：新增 `hover` MenuEvent 把 reducer 持有的高亮停在某个就绪行上，`MenuView` 从 `onMouseMove` 路由（不用 `mouseenter`，避免键盘滚动把新行送到静止指针下时抢回高亮），CSS `:hover` 着色整体移除。
+إشارة إبرة و مفتاح قرص مشترك مفرد واحد عال مضيء، بعد إلى من أولوية: إضافة جديدة `hover` MenuEvent يأخذ reducer يحتفظ عال مضيء توقف في بعض عدد حينئذ خيط سطر فوق،`MenuView` من `onMouseMove` توجيه (لا استخدام `mouseenter`، تجنب تجنب مفتاح قرص تمرير يأخذ جديد سطر إرسال إلى ساكن توقف إشارة إبرة تحت وقت انتزاع عودة عال مضيء) ،CSS `:hover` حال لون كامل جسم إزالة.
 
-高亮文件夹行上的下钻标记改为库内 `IconChevronRightOutline14`，使用访问模式 chevron 同款的弱色 `--dsw-alias-label-caption`，左侧为本地化"进入目录"文字加 `Tab` 键帽提示，仅当该行持有共享高亮时显示。
+عال مضيء ملف مشبك سطر فوق تحت حفر علامة تعديل لـ مكتبة داخل `IconChevronRightOutline14`، استخدام وصول نمط chevron نفس بند ضعيف لون `--dsw-alias-label-caption`، يسار جانب لـ محلي تحويل"دخول دليل"نص حرف إضافة `Tab` مفتاح قبعة تلميح، فقط عند هذا سطر يحتفظ مشترك عال مضيء وقت عرض.
 
-仍带触发符的 token 是可编辑文本而非 settled chip：text-ref 装饰只做染色，领域图标专属于 settled 的 `ReferenceChipNode`。原有的 appearance 通道（扫描的 `appearance` 字段、`TextRefNode.__appearance`、`data-ref-appearance` DOM 属性、CSS `::before` 图标）端到端删除。
+ما زال حمل إطلاق رمز token هو يمكن تحرير نص بينما غير settled chip:text-ref تركيب زينة فقط فعل صبغ لون، مجال رسم علامة مخصص يخص settled `ReferenceChipNode`. أصل لديه appearance عبر طريق (مسح `appearance` حقل،`TextRefNode.__appearance`،`data-ref-appearance` DOM خاصية،CSS `::before` رسم علامة) طرف إلى طرف حذف.
 
-composer placeholder 同时提示两个触发符（`描述你想要构建的内容… / 调用指令 @ 文件或对话` / `Describe what you want to build... / commands, @ files or sessions`），并将 `ui-chat`、`ui-conversation`、`ui-goal`、`ui-input-trigger` 中命令的中文文案统一为"指令"。
+composer placeholder معا تلميح اثنان عدد إطلاق رمز (`وصف أنت تفكير يلزم بناء محتوى… / استدعاء إشارة أمر @ ملف أو محادثة` / `Describe what you want to build... / commands, @ files or sessions`) ، و سوف `ui-chat`،`ui-conversation`،`ui-goal`،`ui-input-trigger` في أمر العربية نص سجل موحد واحد لـ"إشارة أمر".
 
 ## Alternatives considered
 
-**保留 CSS `:hover` 着色与键盘高亮并存。** 被否：两行可能同时呈现焦点态，而 `aria-activedescendant` 只指向一行；Enter 作用于键盘行，视线却可能停在悬停行上。
+**إبقاء CSS `:hover` حال لون و مفتاح قرص عال مضيء و تخزين.** يتم لا: اثنان سطر ممكن معا عرض تركيز نقطة حالة، بينما `aria-activedescendant` فقط إشارة نحو واحد سطر؛Enter أثر في مفتاح قرص سطر، نظر خط لكن ممكن توقف في معلق توقف سطر فوق.
 
-**从 `mouseenter` 路由悬停。** 被否：方向键把新行滚动到静止指针下方时，每个进入指针的行都会重新触发 `mouseenter`，抢走用户刚移走的高亮；`mousemove` 只在指针真实移动时触发。
+**من `mouseenter` توجيه معلق توقف.** يتم لا: جهة نحو مفتاح يأخذ جديد سطر تمرير إلى ساكن توقف إشارة إبرة تحت جهة وقت، كل دخول إشارة إبرة سطر كل سوف إعادة إطلاق `mouseenter`، انتزاع مشي مستخدم للتو نقل مشي عال مضيء؛`mousemove` فقط في إشارة إبرة حقيقي نقل حركة وقت إطلاق.
 
-**保留可编辑 `@dir/` 文本上的文件夹图标。** 被否：触发符前的图标对 token 形成双重标记，抹掉了"仍可编辑的文本"与"settled chip"之间的视觉区分；图标专属于 chip 才能让两种状态一眼可辨。
+**إبقاء يمكن تحرير `@dir/` نص فوق ملف مشبك رسم علامة.** يتم لا: إطلاق رمز قبل رسم علامة مقابل token شكل صار مزدوج إعادة علامة، مسح إسقاط"ما زال يمكن تحرير نص"و"settled chip"بين نظر شعور منطقة قسم؛ رسم علامة مخصص يخص chip عندئذ قدرة يجعل اثنان نوع حالة واحد عين يمكن تمييز.
 
-**在所有可下钻行上常驻 Tab 提示。** 被否：空闲行常驻键帽增加噪音；提示恰好在其生效时出现——该行正是 Tab 将作用的行。
+**في كل يمكن تحت حفر سطر فوق معتاد إقامة Tab تلميح.** يتم لا: فارغ خامل سطر معتاد إقامة مفتاح قبعة زيادة ضجيج صوت؛ تلميح تماما جيد في ذلك توليد فاعلية وقت ظهور——هذا سطر صحيح هو Tab سوف أثر سطر.
 
 ## Consequences
 
-过去每行用文字拼写的类型信息现在由图标和 section 标题承载；未来新增候选类型必须扩展 `InputTriggerCandidateIcon` 并选定图标，而非传任意字符串。指针移动经 reducer 往返（`hover` 对已高亮行是 no-op，mousemove 风暴不会搅动状态）。下钻的可发现性依赖高亮：空闲文件夹行在被悬停或键盘到达前只显示 chevron。延后的跟进项——精确匹配 token 的空格 settle、`name` 与 `name/` 标签——仍记录在 [#3154](https://github.com/deepseek-harness/deepseek-harness/issues/3154)；候选 description 内容、下钻后的回退导航与引用搜索延迟由 [@ mention 发现与行内容笔记](2026-08-27-web-at-mention-discovery-and-row-content.zh.md) 结清。
+مرور ذهاب كل سطر استخدام نص حرف تجميع كتابة نوع معلومة الآن من رسم علامة و section عنوان تحمل تحميل؛ لم قدوم إضافة جديدة مرشح نوع يجب توسيع `InputTriggerCandidateIcon` و اختيار تحديد رسم علامة، بينما غير نقل مهمة معنى نص. إشارة إبرة نقل حركة مرور reducer نحو إرجاع (`hover` مقابل قد عال مضيء سطر هو no-op،mousemove ريح كشف لن خلط حركة حالة). تحت حفر يمكن اكتشاف صفة اعتماد عال مضيء: فارغ خامل ملف مشبك سطر في يتم معلق توقف أو مفتاح قرص وصول قبل فقط عرض chevron. تأخير بعد تتبع دخول بند——دقيق مطابقة token فارغ إطار settle،`name` و `name/` وسم——ما زال سجل في [#3154](https://github.com/deepseek-harness/deepseek-harness/issues/3154) ؛ مرشح description محتوى، تحت حفر بعد رجوع تنقل و مرجع بحث تأخير متأخر من [@ mention اكتشاف و سطر محتوى قلم تسجيل](2026-08-27-web-at-mention-discovery-and-row-content.zh.md) ربط صاف.

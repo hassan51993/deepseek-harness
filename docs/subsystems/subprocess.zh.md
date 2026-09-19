@@ -1,18 +1,18 @@
-# 子进程
+# عملية فرعية
 
-[English](subprocess.md) | 中文
+[English](subprocess.md) | العربية
 
-子进程 seam 分为 Service Definition（[dsh-subprocess](../../packages/subprocess/subprocess)，`ctx.subprocess`）与 Service Provider（[dsh-subprocess-local](../../packages/subprocess/subprocess-local)）；它的 Consumer 是其他能力 seam 与进程外后端：[bash 执行器家族](shell.zh.md)使用收集模式的批量输出，LSP 使用原始协议管道，PTY 后端使用终端原语，ACP（Agent Client Protocol）subagent 后端则使用通过管道传输的 ndjson，并让 stderr 采用 inherit。该 seam 拥有受管的 `DSH_*` 环境命名空间、共享的凭据清除（`scrubbedParentEnv`）与 `CollectedOutput` 形状；[dsh-shell](../../packages/shell/shell) 重导出这套词汇，使 bash 消费方保持单一导入入口。
+عملية فرعية seam قسم لـ Service Definition([dsh-subprocess](../../packages/subprocess/subprocess) ،`ctx.subprocess`) و Service Provider([dsh-subprocess-local](../../packages/subprocess/subprocess-local)) ؛ هو Consumer هو أخرى قدرة seam و عملية خارج خلفية:[bash منفذ بيت عائلة](shell.zh.md) استخدام استلام تجميع نمط دفعة كمية إخراج،LSP استخدام أصلي بروتوكول إدارة طريق،PTY خلفية استخدام طرفية أصل لغة،ACP(Agent Client Protocol)subagent خلفية فإن استخدام عبر إدارة طريق نقل ndjson، و يجعل stderr اعتماد inherit. هذا seam يملك تلقي إدارة `DSH_*` بيئة نطاق الأسماء، مشترك اعتماد صاف حذف (`scrubbedParentEnv`) و `CollectedOutput` شكل حالة؛[dsh-shell](../../packages/shell/shell) إعادة توجيه خروج هذا طقم مفردات، جعل bash مستهلك إبقاء مفرد واحد استيراد مدخل.
 
-源码：[`packages/subprocess/subprocess/src/types.ts`](../../packages/subprocess/subprocess/src/types.ts) 与 [`packages/subprocess/subprocess/src/index.ts`](../../packages/subprocess/subprocess/src/index.ts)
+شفرة المصدر:[`packages/subprocess/subprocess/src/types.ts`](../../packages/subprocess/subprocess/src/types.ts) و [`packages/subprocess/subprocess/src/index.ts`](../../packages/subprocess/subprocess/src/index.ts)
 
-## 可执行文件查找
+## يمكن تنفيذ ملف فحص بحث
 
-一个提供方的 spawn 工作目录、可执行文件路径、普通进程与终端会话，和挂载的文件系统提供方处于同一路径与进程命名空间。`resolveExecutable(command, env?, signal?)` 验证绝对可执行文件路径，或通过提供方清理后的 `PATH` 加有意覆盖来解析裸名称。
+واحد مزود spawn عمل دليل، يمكن تنفيذ ملف مسار، عادي عملية و طرفية جلسة، و تركيب نظام الملفات مزود موضع في نفس مسار و عملية نطاق الأسماء.`resolveExecutable(command, env?, signal?)` تحقق قطعا مقابل يمكن تنفيذ ملف مسار، أو عبر مزود تنظيف بعد `PATH` إضافة متعمد تغطية قدوم تحليل عار اسم.
 
-## 受管环境命名空间与捕获的输出
+## تلقي إدارة بيئة نطاق الأسماء و التقاط إخراج
 
-`DSH_*` 变量是归 Harness 所有的子进程事实；实现会在合并调用方显式 `env` 之前丢弃环境中已有的 `DSH_*` 名称，因此当前事实只会以有意提供的字符串条目形式到达，而显式的 `undefined` tombstone 会删除普通环境中已有的值。每条被收集的流都通过 `CollectedOutput` 报告自身的截断与 spill 恢复状态。
+`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع؛ تنفيذ سوف في دمج استدعاء جهة صريح `env` قبل إسقاط بيئة في قد لديه `DSH_*` اسم، لذلك حالي واقع فقط سوف بـ متعمد توفير نص بند شكل صيغة وصول، بينما صريح `undefined` tombstone سوف حذف عادي بيئة في قد لديه قيمة. كل بند يتم استلام تجميع تدفق كل عبر `CollectedOutput` تقرير إبلاغ ذاته قطع قطع و spill استعادة حالة.
 
 ```ts type-equiv
 /** One environment key inside the managed {@link DSH_ENV_PREFIX} namespace. */
@@ -36,9 +36,9 @@ interface CollectedOutput {
 }
 ```
 
-## Node 风格的 stdio 处置方式（disposition）
+## Node ريح إطار stdio موضع وضع طريقة (disposition)
 
-每条流的处置方式都显式给出，由各消费方自行选择：原始管道用于协议分帧（LSP JSON-RPC、ACP ndjson），inherit 用于直通的诊断输出，收集模式用于有界的批量输出；其中 spill 文件是可选的，因此诊断尾部（语言服务器的 stderr）可以只在内存中缓冲，不留下任何文件。
+كل بند تدفق موضع وضع طريقة كل صريح إعطاء خروج، من كل مستهلك ذاتي سطر اختيار: أصلي إدارة طريق لأجل بروتوكول قسم لقطة (LSP JSON-RPC،ACP ndjson) ،inherit لأجل مباشر عبر تشخيص إخراج، استلام تجميع نمط لأجل محدود دفعة كمية إخراج؛ منها spill ملف هو اختياري، لذلك تشخيص ذيل جزء (لغة خادم stderr) يمكن فقط في داخل تخزين في مؤقت اندفاع، لا إبقاء تحت أي ملف.
 
 ```ts type-equiv
 /**
@@ -88,9 +88,9 @@ interface SubprocessStdio {
 }
 ```
 
-## 完全显式的 spawn spec
+## تماما صريح spawn spec
 
-该 seam 不应用任何默认值：每项处置方式、限制与目录都在 spec 上显式给出，因此由调用方自己的配置决定它们，而不是由某个隐藏的子进程服务默认值决定。`argv` 绝不经过 shell 解释。
+هذا seam لا تطبيق أي قيمة افتراضية: كل بند موضع وضع طريقة، حد و دليل كل في spec فوق صريح إعطاء خروج، لذلك من استدعاء جهة ذاتي ذات إعداد قرار هو جمع، بينما لا هو من بعض عدد إخفاء عملية فرعية خدمة قيمة افتراضية قرار.`argv` أبدا مرور مرور shell حل تفسير.
 
 ```ts type-equiv
 /**
@@ -132,9 +132,9 @@ interface SubprocessSpawnSpec {
 }
 ```
 
-## 句柄：流、读取器与 managed-range 终止
+## جملة مقبض: تدفق، قراءة جهاز و managed-range إنهاء
 
-spawn 会同步返回活动句柄，目标与受管范围标识则保留在 provider 内部。收集模式的读取器接受全流字节偏移量且从不消费，因此独立读取器不会抢走彼此的增量；管道化的流归调用方所有。`terminate()` 启动 provider 记录的终止过程，`waitForExit()` 观察同一个 provider-managed range；分阶段 provider 可以使用 `graceMs`，立即终止的 provider 不会等待。消费方可以在这两项操作上构建自己的分级清理流程；ACP 后端先关闭 stdin 的 `disposeAcpChild` 是参考实现。
+spawn سوف تزامن إرجاع نشط حركة جملة مقبض، هدف و تلقي إدارة نطاق معرف فإن إبقاء في provider داخلي. استلام تجميع نمط قراءة جهاز قبول كل تدفق بايت انحراف نقل كمية كما من لا إزالة استهلاك، لذلك مستقل قراءة جهاز لن انتزاع مشي ذاك هذا زيادة كمية؛ إدارة طريق تحويل تدفق عودة استدعاء جهة كل.`terminate()` بدء provider سجل إنهاء مرور مسار،`waitForExit()` مراقبة نفس عدد provider-managed range؛ قسم مرحلة مقطع provider يمكن استخدام `graceMs`، قيام أي إنهاء provider لن انتظار. مستهلك يمكن في هذا اثنان بند عملية فوق بناء ذاتي ذات قسم درجة تنظيف مسار؛ACP خلفية أولا إغلاق stdin `disposeAcpChild` هو مشاركة اعتبار تنفيذ.
 
 ```ts type-equiv
 /**
@@ -220,9 +220,9 @@ interface SubprocessCollectedOutputs {
 ```
 
 
-## 结果只承载退出事实
+## نتيجة فقط تحمل تحميل خروج واقع
 
-`done` 报告 Node close 事件的词汇，不携带原因分类：服务会在中止时终止进程，但绝不判定原因（调用方读取归自己所有的 deadline 信号，例如 bash 执行器的 `timedOut`/`aborted` 拆分）。收集到的输出在结算后仍可经 `handle.collected` 读取，因此批量与流式调用方共用一条访问路径。
+`done` تقرير إبلاغ Node close حدث مفردات، لا يحمل سبب تصنيف: خدمة سوف في في توقف وقت إنهاء عملية، لكن أبدا حكم تحديد سبب (استدعاء جهة قراءة عودة ذاتي ذات كل deadline إشارة، مثال مثل bash منفذ `timedOut`/`aborted` تفكيك قسم). استلام تجميع إلى إخراج في تسوية بعد ما زال يمكن مرور `handle.collected` قراءة، لذلك دفعة كمية و تدفق صيغة استدعاء جهة مشترك استخدام واحد بند وصول مسار.
 
 ```ts type-equiv
 /**
@@ -240,19 +240,19 @@ interface SubprocessOutcome {
 }
 ```
 
-## 终端进程原语
+## طرفية عملية أصل لغة
 
-`spawnTerminal(spec)` 是非管道进程原语。提供方分配控制终端，并负责 UTF-8 文本传输、前台进程组检查与信号发送，以及一项须等待的 TERM→KILL 操作；该操作会使提供方仍可观察到的每个会话成员完全停稳，提供方则会记录执行基底特有的可观察性限制。PTY 后端仍负责提示符检测、就绪推断、scrollback、沙箱策略和持久会话所有权；普通 `spawn()` 无法重建控制终端语义。
+`spawnTerminal(spec)` هو غير إدارة طريق عملية أصل لغة. مزود قسم إعداد تحكم طرفية، و مسؤول UTF-8 نص نقل، قبل منصة عملية مجموعة فحص و إشارة إرسال، و واحد بند يجب انتظار TERM→KILL عملية؛ هذا عملية سوف جعل مزود ما زال يمكن مراقبة إلى كل جلسة عضو تماما توقف مستقر، مزود فإن سوف سجل تنفيذ أساس قاع خاص لديه يمكن مراقبة صفة حد.PTY خلفية ما زال مسؤول تلميح رمز فحص قياس، حينئذ خيط دفع قطع،scrollback، صندوق رملي سياسة و حمل دائم جلسة كل حق؛ عادي `spawn()` لا يمكن إعادة بناء تحكم طرفية دلالة.
 
-终端 spec 完全指定 argv、cwd、环境覆盖、终端类型、尺寸、清理宽限期与可选的分配取消和 shell 活动观察。其句柄公开 `pid`、有序输出、`done`、`write`、`resize`、`inspectForeground`、`inspectActivity`、`signalForeground` 和须等待的 `terminate`；[`SubprocessTerminalSpawnSpec` 与 `SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) 定义这些字段和操作。`resize(cols, rows)` 更新正在运行的 PTY 尺寸，进程退出后拒绝调用。
+طرفية spec تماما إشارة تحديد argv،cwd، بيئة تغطية، طرفية نوع، مقياس قياس، تنظيف عرض حد مدة و اختياري قسم إعداد إلغاء و shell نشط حركة مراقبة. ذلك جملة مقبض عام `pid`، لديه ترتيب إخراج،`done`،`write`،`resize`،`inspectForeground`،`inspectActivity`،`signalForeground` و يجب انتظار `terminate`؛[`SubprocessTerminalSpawnSpec` و `SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) تعريف هذه حقل و عملية.`resize(cols, rows)` تحديث صحيح في تشغيل PTY مقياس قياس، عملية خروج بعد رفض استدعاء.
 
-`inspectActivity()` 返回 `SubprocessTerminalActivity`：`state` 为 `idle`、`busy` 或 `unknown`，`revision` 随 provider 观察到的活动或输入变化。终端请求通过 `shellActivity` 启用受支持的 shell 生命周期观察；各 provider 的支持范围和保守返回 unknown 的情况见 [subprocess-local](../../packages/subprocess/subprocess-local/README.zh.md#running-terminal-sessions)。
+`inspectActivity()` إرجاع `SubprocessTerminalActivity`:`state` لـ `idle`،`busy` أو `unknown`،`revision` مع provider مراقبة إلى نشط حركة أو إدخال تغير. طرفية طلب عبر `shellActivity` تفعيل تلقي دعم حمل shell دورة الحياة مراقبة؛ كل provider دعم حمل نطاق و حفظ حراسة إرجاع unknown حال حال رؤية [subprocess-local](../../packages/subprocess/subprocess-local/README.zh.md#running-terminal-sessions).
 
-`terminalEnvironment(signal?)` 返回 `SubprocessTerminalEnvironment`：执行环境平台（`posix` 或 `windows`）与可选的 `defaultShell`。这些事实来自提供方，而非 Web 服务器或浏览器。`resolveExecutable` 验证候选 shell；`SubprocessExecutableNotFoundError` 表示可执行文件不存在，提供方与传输故障仍作为错误报告。
+`terminalEnvironment(signal?)` إرجاع `SubprocessTerminalEnvironment`: تنفيذ بيئة منصة (`posix` أو `windows`) و اختياري `defaultShell`. هذه واقع قدوم ذاتي مزود، بينما غير Web خادم أو متصفح.`resolveExecutable` تحقق مرشح shell؛`SubprocessExecutableNotFoundError` يمثل يمكن تنفيذ ملف لا وجود، مزود و نقل لذا عائق ما زال بصفة خطأ تقرير إبلاغ.
 
-## 服务行为
+## خدمة سلوك
 
-抽象的 [`SubprocessRuntime`](../../packages/subprocess/subprocess/src/index.ts) Service Definition 规定执行世界坐标、可执行文件查找、普通 `spawn` 与 `spawnTerminal`。[`LocalSubprocessRuntime`](../../packages/subprocess/subprocess-local/src/index.ts) 以平台选择的 managed range、按处置方式接线、凭据清除、`node-pty`、平台进程检查，以及先终止再等待退出的资源释放提供这些能力。Service Definition 约定见 [`dsh-subprocess`](../../packages/subprocess/subprocess/README.zh.md)，本地机制见 [`dsh-subprocess-local`](../../packages/subprocess/subprocess-local/README.zh.md)。
+سحب كائن [`SubprocessRuntime`](../../packages/subprocess/subprocess/src/index.ts) Service Definition قاعدة تحديد تنفيذ عالم حد جلوس علامة، يمكن تنفيذ ملف فحص بحث، عادي `spawn` و `spawnTerminal`.[`LocalSubprocessRuntime`](../../packages/subprocess/subprocess-local/src/index.ts) بـ منصة اختيار managed range، حسب موضع وضع طريقة وصل خط، اعتماد صاف حذف،`node-pty`، منصة عملية فحص، و أولا إنهاء مجددا انتظار خروج مورد تحرير توفير هذه قدرة.Service Definition اتفاق رؤية [`dsh-subprocess`](../../packages/subprocess/subprocess/README.zh.md) ، محلي آلية رؤية [`dsh-subprocess-local`](../../packages/subprocess/subprocess-local/README.zh.md).
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

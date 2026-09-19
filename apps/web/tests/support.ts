@@ -148,15 +148,15 @@ export async function connectFreshWorkspace(page: Page, root: string, name = 'wo
  */
 export async function connectFreshWorkspaceZh(page: Page, root: string, name = 'workspace'): Promise<void> {
   mkdirSync(join(root, name), { recursive: true })
-  await page.getByRole('textbox', { name: '选择工作区' }).click()
-  const dialog = page.getByRole('dialog', { name: '选择工作区目录' })
+  await page.getByRole('textbox', { name: 'اختيار مساحة العمل' }).click()
+  const dialog = page.getByRole('dialog', { name: 'اختيار مساحة العمل دليل' })
   await dialog.waitFor({ timeout: 10_000 })
-  await dialog.getByRole('button', { name: '编辑路径' }).click()
-  const pathInput = dialog.getByRole('textbox', { name: '编辑路径' })
+  await dialog.getByRole('button', { name: 'تحرير مسار' }).click()
+  const pathInput = dialog.getByRole('textbox', { name: 'تحرير مسار' })
   await pathInput.fill(join(root, name))
   await pathInput.press('Enter')
-  await dialog.getByRole('button', { name: '打开', exact: true }).click()
-  await page.locator('[data-composer-input][contenteditable="true"][data-placeholder="描述你想要构建的内容, / 调用指令, @ 文件或对话"]')
+  await dialog.getByRole('button', { name: 'فتح', exact: true }).click()
+  await page.locator('[data-composer-input][contenteditable="true"][data-placeholder="وصف أنت تفكير يلزم بناء محتوى, / استدعاء إشارة أمر, @ ملف أو محادثة"]')
     .waitFor({ timeout: 15_000 })
 }
 

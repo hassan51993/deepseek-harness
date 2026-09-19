@@ -23,14 +23,14 @@ const MODE = webSnapshotMode()
 const SEED_ID = 'markdown-cjk-strong-web-e2e'
 const DONE = 'CJK_STRONG_DONE'
 const CASES = [
-  ['**注意：**内容', '注意：', '注意：内容'],
-  ['**Notice:**内容', 'Notice:', 'Notice:内容'],
-  ['**事件中间件（waterfall）**实现', '事件中间件（waterfall）', '事件中间件（waterfall）实现'],
-  ['**事件中间件(waterfall)**实现', '事件中间件(waterfall)', '事件中间件(waterfall)实现'],
-  ['**句号。**后续', '句号。', '句号。后续'],
-  ['**Period.**后续', 'Period.', 'Period.后续'],
-  ['**提醒！**继续', '提醒！', '提醒！继续'],
-  ['**Warning!**继续', 'Warning!', 'Warning!继续'],
+  ['**ملاحظة معنى:**محتوى', 'ملاحظة معنى:', 'ملاحظة معنى: محتوى'],
+  ['**Notice:**محتوى', 'Notice:', 'Notice: محتوى'],
+  ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)', 'حدث في بين عنصر (waterfall) تنفيذ'],
+  ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)', 'حدث في بين عنصر (waterfall) تنفيذ'],
+  ['**جملة رقم.**لاحق', 'جملة رقم.', 'جملة رقم. لاحق'],
+  ['**Period.**لاحق', 'Period.', 'Period. لاحق'],
+  ['**رفع تنبيه!**متابعة', 'رفع تنبيه!', 'رفع تنبيه! متابعة'],
+  ['**Warning!**متابعة', 'Warning!', 'Warning! متابعة'],
 ] as const
 
 /** Build one settled assistant reply covering CJK-adjacent strong punctuation boundaries. */

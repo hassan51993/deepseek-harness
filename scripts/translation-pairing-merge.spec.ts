@@ -141,26 +141,26 @@ function record(root: string, path: string, source: string, zh: string): string 
   return content
 }
 
-const baseSource = '# Guide\n\nEnglish | [中文](guide.zh.md)\n\nAlpha base.\n\nBeta base.\n'
-const baseZh = '# 指南\n\n[English](guide.md) | 中文\n\n甲基础。\n\n乙基础。\n'
+const baseSource = '# Guide\n\nEnglish | [العربية](guide.zh.md)\n\nAlpha base.\n\nBeta base.\n'
+const baseZh = '# إشارة جنوب\n\n[English](guide.md) | العربية\n\nدرع أساس أساس.\n\nثان أساس أساس.\n'
 const currentSource = baseSource.replace('Alpha base.', 'Alpha current.')
-const currentZh = baseZh.replace('甲基础。', '甲当前。')
+const currentZh = baseZh.replace('درع أساس أساس.', 'درع حالي.')
 const otherSource = baseSource.replace('Beta base.', 'Beta other.')
-const otherZh = baseZh.replace('乙基础。', '乙对侧。')
+const otherZh = baseZh.replace('ثان أساس أساس.', 'ثان مقابل جانب.')
 const mergedSource = currentSource.replace('Beta base.', 'Beta other.')
-const mergedZh = currentZh.replace('乙基础。', '乙对侧。')
+const mergedZh = currentZh.replace('ثان أساس أساس.', 'ثان مقابل جانب.')
 const generatedBaseSource = '# Module graph\n\nAlpha base.\n\nBeta base.\n'
-const generatedBaseZh = '# 模块图\n\n[English](module-graph.md) | 中文\n\n甲基础。\n\n乙基础。\n'
+const generatedBaseZh = '# وحدة رسم\n\n[English](module-graph.md) | العربية\n\nدرع أساس أساس.\n\nثان أساس أساس.\n'
 const generatedCurrentSource = generatedBaseSource.replace('Alpha base.', 'Alpha current.')
-const generatedCurrentZh = generatedBaseZh.replace('甲基础。', '甲当前。')
+const generatedCurrentZh = generatedBaseZh.replace('درع أساس أساس.', 'درع حالي.')
 const generatedOtherSource = generatedBaseSource.replace('Beta base.', 'Beta other.')
-const generatedOtherZh = generatedBaseZh.replace('乙基础。', '乙对侧。')
+const generatedOtherZh = generatedBaseZh.replace('ثان أساس أساس.', 'ثان مقابل جانب.')
 const manualBaseSource = baseSource.replace('guide.zh.md', 'manual.zh.md')
 const manualBaseZh = baseZh.replace('guide.md', 'manual.md')
 const manualCurrentSource = manualBaseSource.replace('Alpha base.', 'Alpha current.')
-const manualCurrentZh = manualBaseZh.replace('甲基础。', '甲当前。')
+const manualCurrentZh = manualBaseZh.replace('درع أساس أساس.', 'درع حالي.')
 const manualOtherSource = manualBaseSource.replace('Alpha base.', 'Alpha other.')
-const manualOtherZh = manualBaseZh.replace('甲基础。', '甲对侧。')
+const manualOtherZh = manualBaseZh.replace('درع أساس أساس.', 'درع مقابل جانب.')
 
 function commitPair(fixture: Fixture, source: string, zh: string, message: string): string {
   const sidecar = record(fixture.root, 'docs/guide.md', source, zh)
@@ -317,10 +317,10 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
   it('accepts locale-specific paths to the same paired document', () => {
     const fixture = createFixture(false)
     write(fixture.root, 'docs/reference.md', '# Overview\n')
-    write(fixture.root, 'docs/reference.zh.md', '# 概览\n')
+    write(fixture.root, 'docs/reference.zh.md', '# عام تصفح\n')
     git(fixture, ['add', 'docs/reference.md', 'docs/reference.zh.md'])
     const source = baseSource.replace('Alpha base.', '[Reference](reference.md#overview)')
-    const zh = baseZh.replace('甲基础。', '[参考](reference.zh.md#overview)')
+    const zh = baseZh.replace('درع أساس أساس.', '[مشاركة اعتبار](reference.zh.md#overview)')
     const ancestor = record(fixture.root, 'docs/guide.md', source, zh)
     const current = record(fixture.root, 'docs/guide.md', source, zh)
     const other = record(fixture.root, 'docs/guide.md', source, zh)
@@ -339,10 +339,10 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
   it('rejects a clean merge whose Chinese link uses the English sibling', () => {
     const fixture = createFixture(false)
     write(fixture.root, 'docs/reference.md', '# Overview\n')
-    write(fixture.root, 'docs/reference.zh.md', '# 概览\n')
+    write(fixture.root, 'docs/reference.zh.md', '# عام تصفح\n')
     git(fixture, ['add', 'docs/reference.md', 'docs/reference.zh.md'])
     const source = baseSource.replace('Alpha base.', '[Reference](reference.md)')
-    const zh = baseZh.replace('甲基础。', '[参考](reference.md)')
+    const zh = baseZh.replace('درع أساس أساس.', '[مشاركة اعتبار](reference.md)')
     const ancestor = record(fixture.root, 'docs/guide.md', source, zh)
     const current = record(fixture.root, 'docs/guide.md', source, zh)
     const other = record(fixture.root, 'docs/guide.md', source, zh)
@@ -373,12 +373,12 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     expect(result.sourceContent.toString('utf8')).toBe(
       generatedCurrentSource.replace('Beta base.', 'Beta other.'),
     )
-    expect(result.zhContent.toString('utf8')).toBe(generatedCurrentZh.replace('乙基础。', '乙对侧。'))
+    expect(result.zhContent.toString('utf8')).toBe(generatedCurrentZh.replace('ثان أساس أساس.', 'ثان مقابل جانب.'))
   })
 
   it('rejects an authored source without an English language switcher', () => {
     const fixture = createFixture(false)
-    const source = baseSource.replace('English | [中文](guide.zh.md)\n\n', '')
+    const source = baseSource.replace('English | [العربية](guide.zh.md)\n\n', '')
     const ancestor = record(fixture.root, 'docs/guide.md', source, baseZh)
     const current = record(fixture.root, 'docs/guide.md', source, baseZh)
     const other = record(fixture.root, 'docs/guide.md', source, baseZh)
@@ -394,7 +394,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
 
   it('rejects generated Chinese content without its English backlink', () => {
     const fixture = createFixture(false)
-    const zh = generatedBaseZh.replace('[English](module-graph.md) | 中文\n\n', '')
+    const zh = generatedBaseZh.replace('[English](module-graph.md) | العربية\n\n', '')
     const ancestor = record(fixture.root, 'docs/module-graph.md', generatedBaseSource, zh)
     const current = record(fixture.root, 'docs/module-graph.md', generatedBaseSource, zh)
     const other = record(fixture.root, 'docs/module-graph.md', generatedBaseSource, zh)
@@ -417,13 +417,13 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
       fixture.root,
       'docs/guide.md',
       baseSource.replace('Alpha base.', 'Alpha current.'),
-      baseZh.replace('甲基础。', '甲当前。'),
+      baseZh.replace('درع أساس أساس.', 'درع حالي.'),
     )
     const other = record(
       fixture.root,
       'docs/guide.md',
       baseSource.replace('Alpha base.', 'Alpha other.'),
-      baseZh.replace('甲基础。', '甲对侧。'),
+      baseZh.replace('درع أساس أساس.', 'درع مقابل جانب.'),
     )
 
     expect(() => mergeTranslationPairingRecords(
@@ -509,13 +509,13 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
       fixture.root,
       'docs/guide.md',
       baseSource.replace('Beta base.', '[Reference](reference.md#overview)'),
-      baseZh.replace('乙基础。', '[参考](reference.zh.md#overview)'),
+      baseZh.replace('ثان أساس أساس.', '[مشاركة اعتبار](reference.zh.md#overview)'),
     )
     record(
       fixture.root,
       'docs/reference.md',
-      '# Reference\n\nEnglish | [中文](reference.zh.md)\n\nOverview.\n',
-      '# 参考\n\n[English](reference.md) | 中文\n\n概览。\n',
+      '# Reference\n\nEnglish | [العربية](reference.zh.md)\n\nOverview.\n',
+      '# مشاركة اعتبار\n\n[English](reference.md) | العربية\n\nعام تصفح.\n',
     )
     git(fixture, ['add', '.'])
     git(fixture, ['commit', '-m', 'other guide and target'])
@@ -538,7 +538,7 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
       '[Reference](reference.md#overview)',
     )
     expect(readFileSync(join(fixture.root, 'docs/guide.zh.md'), 'utf8')).toContain(
-      '[参考](reference.zh.md#overview)',
+      '[مشاركة اعتبار](reference.zh.md#overview)',
     )
   })
 

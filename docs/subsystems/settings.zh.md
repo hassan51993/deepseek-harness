@@ -1,23 +1,23 @@
-# 用户设置
+# مستخدم ضبط
 
-[English](settings.md) | 中文
+[English](settings.md) | العربية
 
-[dsh-settings](../../packages/settings/settings) 的用户设置 seam 持有一份按 namespace 分节的用户文档，并把每个已注册 namespace 解析为：schema 默认值，然后注册方的组合 `base`，最后用户分节。[dsh-settings-file](../../packages/settings/settings-file) 这类提供方存储原始文档并推送外部编辑；消费方插件注册 schema 后读取或观察解析值。组合配置仍留在 `cordis.yml`——namespace 只承载用户可编辑子集。
+[dsh-settings](../../packages/settings/settings) مستخدم ضبط seam يحتفظ واحد نسخة حسب namespace قسم عقدة مستخدم وثيقة، و يأخذ كل قد تسجيل namespace تحليل لـ:schema قيمة افتراضية، لكن بعد تسجيل جهة تركيب `base`، الأكثر بعد مستخدم قسم عقدة.[dsh-settings-file](../../packages/settings/settings-file) هذا صنف مزود تخزين أصلي وثيقة و دفع إرسال خارجي تحرير؛ مستهلك إضافة تسجيل schema بعد قراءة أو مراقبة تحليل قيمة. تركيب إعداد ما زال إبقاء في `cordis.yml`——namespace فقط تحمل تحميل مستخدم يمكن تحرير فرعي تجميع.
 
-来源：[`packages/settings/settings/src/index.ts`](../../packages/settings/settings/src/index.ts)
+مصدر:[`packages/settings/settings/src/index.ts`](../../packages/settings/settings/src/index.ts)
 
-## 标识
+## معرف
 
-namespace 命名用户文档中一个归插件所有的分节。brand 防止调用方将设置 namespace 与在包或进程之间传递的其他 id 混用；构造时校验小写 kebab-case 语法。
+namespace تسمية مستخدم وثيقة في واحد عودة إضافة كل قسم عقدة.brand منع توقف استدعاء جهة سوف ضبط namespace و في حزمة أو عملية بين نقل تمرير أخرى id خلط استخدام؛ بنية صنع وقت تحقق صغير كتابة kebab-case لغة قاعدة.
 
 ```ts type-equiv
 /** Nominal id of one registered settings namespace. */
 type SettingsNamespace = Branded<'SettingsNamespace'>
 ```
 
-## 注册
+## تسجيل
 
-注册把 schemastery schema 绑定到调用方插件 fiber 上的 namespace——dispose（资源释放）该 fiber 即移除 namespace 及其观察者。options 携带组合层、owner 的生效时机，以及一个可选的、用于校验 schema 表达不了的约束的钩子。
+تسجيل يأخذ schemastery schema ربط إلى استدعاء جهة إضافة fiber فوق namespace——dispose(مورد تحرير) هذا fiber أي إزالة namespace و ذلك مراقبة من.options يحمل تركيب طبقة،owner توليد فاعلية وقت آلة، و واحد اختياري، لأجل تحقق schema جدول بلوغ لا قيد خطاف.
 
 ```ts type-equiv
 /** Registration options beyond the namespace schema. */
@@ -49,9 +49,9 @@ interface SettingsRegisterOptions<T> {
 }
 ```
 
-`validate` 在 schema 接纳该值之后运行，因此它看到的默认值和组合 base 与 owner 实际看到的完全一致。`dsh-llm-pi-ai` 用它在写入处拒绝自己无法服务的提供方 profile，而不是先存下来、再让该 namespace 下每条路由失效。
+`validate` في schema وصل قبول هذا قيمة بعد تشغيل، لذلك هو يرى قيمة افتراضية و تركيب base و owner فعلي يرى تماما متسق.`dsh-llm-pi-ai` استخدام هو في كتابة موضع رفض ذاتي ذات لا يمكن خدمة مزود profile، بينما لا هو أولا تخزين تحت قدوم، مجددا يجعل هذا namespace تحت كل بند توجيه بطلان.
 
-`applies` 是 UI 提示而非机制：`restart` 的 owner 从不 watch，其值在构造期读取一次，配置界面可为待生效变更加标。
+`applies` هو UI تلميح بينما غير آلية:`restart` owner من لا watch، ذلك قيمة في بنية صنع مدة قراءة مرة، إعداد واجهة يمكن لـ انتظار توليد فاعلية تغيير إضافة علامة.
 
 ```ts type-equiv
 /** When a namespace's changes take effect for its owner. */
@@ -60,7 +60,7 @@ type SettingsApplies = 'live' | 'restart'
 
 ## Owner scope
 
-scope 是面向 owner 的句柄。`update` 把稀疏 patch 只合并进用户分节（绝不进 `base`）；`replace` 整体替换分节，是删除/重置路径——替换中缺席的键重新继承 `base` 与 schema 默认值。同一 namespace 的写入按调用顺序串行，解析值是深冻结快照。
+scope هو موجه إلى owner جملة مقبض.`update` يأخذ نادر متباعد patch فقط دمج دخول مستخدم قسم عقدة (أبدا دخول `base`) ؛`replace` كامل جسم استبدال قسم عقدة، هو حذف/إعادة وضع مسار——استبدال في نقص مقعد مفتاح إعادة وراثة `base` و schema قيمة افتراضية. نفس namespace كتابة حسب استدعاء ترتيب سلسلة سطر، تحليل قيمة هو عميق تجميد ربط لقطة.
 
 ```ts type-equiv
 /** Owner-facing handle for one registered namespace. */
@@ -93,9 +93,9 @@ interface SettingsScope<T> {
 }
 ```
 
-## 描述符
+## وصف رمز
 
-`describe()` 为配置界面序列化每个已注册 namespace：schemastery 的 `toJSON()` 封装结构驱动 schema 渲染的表单，解析值填充表单，分离出的 `base`/`user` 层让表单按字段是否出现在 user 层标注「用户已覆盖」。`describe({ redactSecrets: true })`——每个对外传输接口都必须传入——从三层剥离 `role('secret')` 字段并枚举其 `{path, set}` slot，页面因此能渲染只写输入框而永远收不到机密值。
+`describe()` لـ إعداد واجهة تسلسل تحويل كل قد تسجيل namespace:schemastery `toJSON()` غلاف تركيب بنية قيادة schema تصيير جدول مفرد، تحليل قيمة ملء ملء جدول مفرد، قسم مغادرة خروج `base`/`user` طبقة يجعل جدول مفرد حسب حقل هل ظهور في user طبقة علامة ملاحظة «مستخدم قد تغطية».`describe({ redactSecrets: true })`——كل مقابل خارج نقل واجهة كل يجب نقل دخول——من ثلاثة طبقة تقشير مغادرة `role('secret')` حقل و قطعة رفع ذلك `{path, set}` slot، صفحة لذلك قدرة تصيير فقط كتابة إدخال إطار بينما دائم بعيد استلام لا إلى آلة سري قيمة.
 
 ```ts type-equiv
 /** One registered namespace as surfaced to configuration UIs. */
@@ -125,7 +125,7 @@ interface SettingsDescriptor {
 }
 ```
 
-只持有脱敏 descriptor 的调用方无法安全地重建分节，因此删除改以路径 op 传递。每个 descriptor 还携带针对原始分节的 `revision`；写入可以把它作为 `expectedRevision` 送回，不再匹配的写入会被拒绝，而不会覆盖先落地的写入。
+فقط يحتفظ انفصال حساس descriptor استدعاء جهة لا يمكن أمان أرض إعادة بناء قسم عقدة، لذلك حذف تعديل بـ مسار op نقل تمرير. كل descriptor أيضا يحمل إبرة مقابل أصلي قسم عقدة `revision`؛ كتابة يمكن يأخذ هو بصفة `expectedRevision` إرسال عودة، لم يعد مطابقة كتابة سوف يتم رفض، بينما لن تغطية أولا سقوط أرض كتابة.
 ```ts type-equiv
 /**
  * One path-addressed edit to a namespace's user section. Path mutation exists
@@ -152,18 +152,18 @@ interface SettingsDescribeOptions {
 }
 ```
 
-## 变更提交
+## تغيير إيداع
 
-每次提交的变更——进程内写入或提供方观察到的外部编辑——在新值成为权威值之后发出 `settings/updated (ns, next, prev, source)`，解析值深相等时绝不发出。source 标记区分两条入口路径。
+كل مرة إيداع تغيير——عملية داخل كتابة أو مزود مراقبة إلى خارجي تحرير——في جديد قيمة يصبح مرجعي قيمة بعد إرسال خروج `settings/updated (ns, next, prev, source)`، تحليل قيمة عميق متبادل انتظار وقت أبدا إرسال خروج.source علامة منطقة قسم اثنان بند مدخل مسار.
 
 ```ts type-equiv
 /** Origin of one committed settings change. */
 type SettingsUpdateSource = 'update' | 'provider'
 ```
 
-## 原生文档操作
+## أصلي وثيقة عملية
 
-`SettingsDocumentOpenValue` 确认 `settings/openSettingsDocument` 已准备好 provider 持有的文档，并将其交给原生文本编辑器。`AgentPresetDirectoryOpenValue` 报告已完成的原生交接，或在桌面打开不可用时返回解析后的用户 preset 目录。两项操作都不接受由浏览器选择的 Host 路径。
+`SettingsDocumentOpenValue` تأكيد `settings/openSettingsDocument` قد دقيق تجهيز جيد provider يحتفظ وثيقة، و سوف ذلك تسليم إعطاء أصلي نص تحرير جهاز.`AgentPresetDirectoryOpenValue` تقرير إبلاغ قد إتمام أصلي تسليم وصل، أو في طاولة وجه فتح غير ممكن استخدام وقت إرجاع تحليل بعد مستخدم preset دليل. اثنان بند عملية كل لا قبول من متصفح اختيار Host مسار.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

@@ -1,35 +1,35 @@
-# Agent Note: profile 插件组合包取代固定的表层 overlay
+# Agent Note: profile إضافة تركيب حزمة يحل محل ثابت جدول طبقة overlay
 
 Status: implemented
 
-[English](2026-08-05-profile-plugin-bundles.md) | 中文
+[English](2026-08-05-profile-plugin-bundles.md) | العربية
 
 ## Problem
 
-`dsh` 启动器硬编码了自己的组合：`base.cordis.yml` + `web.cordis.yml` 随 `apps/cli` 一起交付，三种各自定制的入口模式（`--config`、`web`、`-p`）各带一套层栈，外加一个全局的个人 overlay（`$DSH_HOME/config.yaml`）。想把树外插件（一个 TUI、一个提供方扩展包）装进已交付的表层，只能修改仓库；第三方包也没有任何位置可以贡献默认组合。
+`dsh` بدء جهاز صلب تحرير رمز ذاتي ذات تركيب:`base.cordis.yml` + `web.cordis.yml` مع `apps/cli` واحد بدء تسليم، ثلاثة نوع كل منها تحديد صنع مدخل نمط (`--config`،`web`،`-p`) كل حمل واحد طقم طبقة مكدس، خارج إضافة واحد عام عدد شخص overlay(`$DSH_HOME/config.yaml`). تفكير يأخذ شجرة خارج إضافة (واحد TUI، واحد مزود توسيع حزمة) تركيب دخول قد تسليم جدول طبقة، فقط قدرة تعديل مستودع؛ رقم ثلاثة جهة حزمة أيضا لا يوجد أي موضع يمكن مساهمة افتراضي تركيب.
 
 ## Decision
 
-一切都变成 **profile**：即目录 `$DSH_HOME/profiles/<name>`，其中包含一个 `package.json`（pnpm 管理的树外插件 `dependencies`，加上 profile manifest `dsh.profile` 及其有序的 `bundles` 层列表）和一份用户 `cordis.patch.yml`。**组合包**（bundle）是声明了 `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }` 的 npm 包；两种 manifest 分别位于互不相同的 `dsh.profile` / `dsh.bundle` 键下，因此一份 package.json 能说明自己扮演哪种角色。配置树在空的根之上组合：按 `dsh.profile.bundles` 顺序应用每个组合包的 patch，然后是用户层与 `--patch` overlay——启动与 `--dump-config` 共享同一条 `applyEntryPatches` 路径。随后，[应用持有命令行的决策](../../archived/architecture/2026-08-06-app-owned-command-line.md)又把调用期取值从启动器派生的 patch 迁移到了启动服务。
+واحد قطع كل تغيير صار **profile**: أي دليل `$DSH_HOME/profiles/<name>`، منها يتضمن واحد `package.json`(pnpm إدارة شجرة خارج إضافة `dependencies`، إضافة فوق profile manifest `dsh.profile` و ذلك لديه ترتيب `bundles` طبقة قائمة) و واحد نسخة مستخدم `cordis.patch.yml`.**تركيب حزمة**(bundle) هو إعلان `"dsh": { "bundle": { "patch": "./cordis.patch.yml" } }` npm حزمة؛ اثنان نوع manifest قسم آخر يقع في متبادل لا نفسه `dsh.profile` / `dsh.bundle` مفتاح تحت، لذلك واحد نسخة package.json قدرة شرح ذاتي ذات تنكر عرض أي نوع زاوية لون. إعداد شجرة في فارغ أصل لـ فوق تركيب: حسب `dsh.profile.bundles` ترتيب تطبيق كل تركيب حزمة patch، لكن بعد هو مستخدم طبقة و `--patch` overlay——بدء و `--dump-config` مشترك نفس بند `applyEntryPatches` مسار. مع بعد،[تطبيق يحتفظ أمر سطر قرار](../../archived/architecture/2026-08-06-app-owned-command-line.md) أيضا يأخذ استدعاء مدة أخذ قيمة من بدء جهاز إرسال توليد patch ترحيل إلى بدء خدمة.
 
-默认 Profile 模板为 `web`、`headless`、`sdk` 与 `acp` 使用 `@deepseek-ai/dsh-base` 作为共享核心，并在其上叠加一个模式组合包。[独立 `sdk-minimal` profile](../../../../packages/bundle/sdk-minimal/README.zh.md)则只列出一个拥有完整显式配置树的组合包。通用的 `dsh --profile <name>` 把剩余参数交给该 profile 的命令行启动行：Web 持有自己的 flag 家族，headless 持有任务位置参数，协议 profile 不接受应用选项。patch overlay 使用启动器持有的 `--patch`。新的非内置目标可以使用 `--from-default-profile <template>`，在启动或配置 dump 之前复制一个默认模板的 bundle 列表与 patch 重载策略。这会创建依赖为空、用户 patch 为空的独立 profile：它既不读取与模板同名的本地 profile，也不记录继承关系。launcher 会以独占方式领取完整的目标目录，因此既有状态和并发创建者都会在不作修改的情况下失败。`dsh plugin --profile <name> <args...>` 是一层薄薄的 pnpm 转发器，负责初始化一个以 base 为基础的 profile，并依据已安装包的组合包声明调和 `dsh.profile.bundles`；没有组合包声明的包保持为普通依赖。[Headless 作为直接 core 入口](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md)负责 headless 组合约定。
+افتراضي Profile نموذج لوح لـ `web`،`headless`،`sdk` و `acp` استخدام `@deepseek-ai/dsh-base` بصفة مشترك نواة قلب، و في ذلك فوق تراكم إضافة واحد نمط تركيب حزمة.[مستقل `sdk-minimal` profile](../../../../packages/bundle/sdk-minimal/README.zh.md) فإن فقط صف خروج واحد يملك كامل صريح إعداد شجرة تركيب حزمة. عام `dsh --profile <name>` يأخذ باق بقية معامل تسليم إعطاء هذا profile أمر سطر بدء سطر:Web يحتفظ ذاتي ذات flag بيت عائلة،headless يحتفظ مهمة موضع معامل، بروتوكول profile لا قبول تطبيق خيار.patch overlay استخدام بدء جهاز يحتفظ `--patch`. جديد غير داخل وضع هدف يمكن استخدام `--from-default-profile <template>`، في بدء أو إعداد dump قبل نسخ واحد افتراضي نموذج لوح bundle قائمة و patch إعادة تحميل سياسة. هذا سوف إنشاء اعتماد لـ فارغ، مستخدم patch لـ فارغ مستقل profile: هو حيث لا قراءة و نموذج لوح نفس اسم محلي profile، أيضا لا سجل وراثة علاقة.launcher سوف بـ وحيد احتلال طريقة قيادة أخذ كامل هدف دليل، لذلك قائم حالة و تزامن إنشاء من كل سوف في لا عمل تعديل حال حال تحت فشل.`dsh plugin --profile <name> <args...>` هو واحد طبقة رقيق رقيق pnpm تحويل إرسال جهاز، مسؤول ابتدائي تحويل واحد بـ base لـ أساس أساس profile، و اعتماد حسب قد تثبيت حزمة تركيب حزمة إعلان ضبط و `dsh.profile.bundles`؛ لا يوجد تركيب حزمة إعلان حزمة إبقاء لـ عادي اعتماد.[Headless بصفة مباشر core مدخل](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md) مسؤول headless تركيب اتفاق.
 
-解析在构造上就是双锚点的：`dsh.profile.bundles` 中的名称先从 dsh 安装目录解析，再从 profile 目录解析，因此内置组合包始终来自与运行中 `dsh` 相同的安装，pnpm 从不管理它们。patch 行中的裸插件名称使用[不可变 profile resolution generation](2026-09-09-profile-resolution-generations.zh.md)，在内存中应用相同的安装优先与有序 bundle 规则；保留的 link 与 dual 模式可以物化同一结果。
+تحليل في بنية صنع فوق حينئذ هو مزدوج مرساة نقطة:`dsh.profile.bundles` في اسم أولا من dsh تثبيت دليل تحليل، مجددا من profile دليل تحليل، لذلك داخل وضع تركيب حزمة بداية نهاية قدوم ذاتي و تشغيل في `dsh` نفسه تثبيت،pnpm من لا إدارة هو جمع.patch سطر في عار إضافة اسم استخدام[غير ممكن تغيير profile resolution generation](2026-09-09-profile-resolution-generations.zh.md) ، في داخل تخزين في تطبيق نفسه تثبيت أولوية و لديه ترتيب bundle قاعدة؛ إبقاء link و dual نمط يمكن شيء تحويل نفس نتيجة.
 
-两项配套重构：webserver 内置的静态 dist 服务改为单一所有者的**回退席位**（`registerFallback`／`applyIndexTaps`），SPA 服务器提取到 `@deepseek-ai/dsh-host-frontend-static`，使 web 组合包以组合的方式持有自己的 dist，而不是靠启动器代码；[dsh CLI 个人配置决策](../../archived/feature/2026-07-20-dsh-cli-personal-config.md)的个人 overlay 机制（`loadPersonalPatches`、`$DSH_HOME/config.yaml`）改为面向逐 profile 与 home 级的 `cordis.patch.yml` 层（`loadOptionalPatches`、接受文件名的 `watchUserPatches`），取代该笔记的各入口模式与文件位置，同时保留其 Harness home 根目录、patch 语义与响亮失败的解析。
+اثنان بند إعداد طقم إعادة بنية:webserver داخل وضع ساكن حالة dist خدمة تعديل لـ مفرد واحد كل من**رجوع مقعد موضع**(`registerFallback`/`applyIndexTaps`) ،SPA خادم رفع أخذ إلى `@deepseek-ai/dsh-host-frontend-static`، جعل web تركيب حزمة بـ تركيب طريقة يحتفظ ذاتي ذات dist، بينما لا هو اعتماد بدء جهاز شفرة؛[dsh CLI عدد شخص إعداد قرار](../../archived/feature/2026-07-20-dsh-cli-personal-config.md) عدد شخص overlay آلية (`loadPersonalPatches`،`$DSH_HOME/config.yaml`) تعديل لـ موجه إلى تدريجي profile و home درجة `cordis.patch.yml` طبقة (`loadOptionalPatches`، قبول ملف اسم `watchUserPatches`) ، يحل محل هذا قلم تسجيل كل مدخل نمط و ملف موضع، معا إبقاء ذلك Harness home أصل دليل،patch دلالة و صدى مضيء فشل تحليل.
 
 ## Alternatives considered
 
-- **依赖扫描加部分 `patchOrder`**（最初的草案）：扫描 `dependencies` 找出组合包、未列出者按字母序排列，会产生两个真源和一条隐式决胜规则；一份显式有序的 `dsh.profile.bundles` 列表更小、完全确定。在 profile 内直接 `pnpm add` 只会安装一个库，不激活任何 patch——行为显式，没有暗中扫描。
-- **内置组合包使用 `link:` 条目**：pnpm 无法对指向安装目录的 `link:` 做版本管理、安装或更新，它会把机器路径嵌进用户文件，并且在安装目录移动后失效。双锚点解析加上每次启动修复的符号链接回退提供了同样的保证（「组合包来自安装目录」），且没有这些繁文缛节。
-- **在组合包 manifest 中放一个启动前 `context` 模块**承载启动期取值（dist 路径、flag 事实）：否决，改用纯插件——粘合逻辑就是普通配置行和由应用持有的启动服务，因此组合始终可完整 dump，manifest 保持纯数据。启动器提供的宿主 slot（`ctx.cmdlineArgs`、`ctx.appExit` 与环境快照）在任何配置树条目挂载之前，于 `boot()` 的 `prepare` 钩子中提供。
-- **组合包的传递式自动应用**：只有直接列在 `dsh.profile.bundles` 中的条目才贡献层；想重新导出另一个组合包 patch 的元组合包，必须在自己的 patch 文件中显式完成。
-- **动态模板继承或克隆本地 profile**：记录父级会要求为 bundle 成员关系、依赖和用户 patch 制定合并与升级规则，而复制本地状态会重复机器特定选择。基于模板的创建只会一次性复制安装自有的默认值。
+- **اعتماد مسح إضافة جزء `patchOrder`**(الأكثر أول مسودة سجل): مسح `dependencies` بحث خروج تركيب حزمة، لم صف خروج من حسب حرف أم ترتيب ترتيب صف، سوف إنتاج اثنان عدد حق مصدر و واحد بند خفي صيغة قرار فوز قاعدة؛ واحد نسخة صريح لديه ترتيب `dsh.profile.bundles` قائمة أكثر صغير، تماما تحديد. في profile داخل مباشر `pnpm add` فقط سوف تثبيت واحد مكتبة، لا تنشيط أي patch——سلوك صريح، لا يوجد داكن في مسح.
+- **داخل وضع تركيب حزمة استخدام `link:` بند**:pnpm لا يمكن مقابل إشارة نحو تثبيت دليل `link:` فعل إصدار إدارة، تثبيت أو تحديث، هو سوف يأخذ آلة جهاز مسار تضمين دخول مستخدم ملف، و كما في تثبيت دليل نقل حركة بعد بطلان. مزدوج مرساة نقطة تحليل إضافة فوق كل مرة بدء إصلاح رمز رقم رابط رجوع توفير نفس مثال حفظ إثبات («تركيب حزمة قدوم ذاتي تثبيت دليل») ، كما لا يوجد هذه كثيف نص مفرط عقدة.
+- **في تركيب حزمة manifest في وضع واحد بدء قبل `context` وحدة**تحمل تحميل بدء مدة أخذ قيمة (dist مسار،flag واقع): مرفوض، تعديل استخدام صاف إضافة——لصق دمج منطق حينئذ هو عادي إعداد سطر و من تطبيق يحتفظ بدء خدمة، لذلك تركيب بداية نهاية يمكن كامل dump،manifest إبقاء صاف بيانات. بدء جهاز توفير مضيف slot(`ctx.cmdlineArgs`،`ctx.appExit` و بيئة لقطة) في أي إعداد شجرة بند تركيب قبل، في `boot()` `prepare` خطاف في توفير.
+- **تركيب حزمة نقل تمرير صيغة تلقائي تطبيق**: فقط لديه مباشر صف في `dsh.profile.bundles` في بند عندئذ مساهمة طبقة؛ تفكير إعادة توجيه خروج آخر عدد تركيب حزمة patch عنصر تركيب حزمة، يجب في ذاتي ذات patch ملف في صريح إتمام.
+- **حركة حالة نموذج لوح وراثة أو تغلب ضخم محلي profile**: سجل أب درجة سوف اشتراط لـ bundle عضو علاقة، اعتماد و مستخدم patch صنع تحديد دمج و ترقية قاعدة، بينما نسخ محلي حالة سوف تكرار آلة جهاز خاص تحديد اختيار. أساس في نموذج لوح إنشاء فقط سوف مرة صفة نسخ تثبيت ذاتي لديه قيمة افتراضية.
 
 ## Consequences
 
-- 新的组合表层（TUI、提供方扩展包）以普通 npm 包形式交付，可按 profile 安装，无需在仓库中为每种部署形态各留一行。
-- 用户可以从任意随附应用模板启动一个独立的自定义 profile，而不会复制机器本地的 profile 状态。
-- `apps/cli` 收缩为 argv 解析、profile 机制的消费方和 pnpm 转发器；`AppCLIEntry` 与各表层专属的启动路径全部移除。
-- 无密钥 web e2e 脚手架以与生产相同的空根形态启动相同的组合包层，并执行相同的 profile 包选择规则，因此测试与产品之间的组合漂移会响亮失败。
-- 按发布前姿态，后端不携带旧磁盘配置的兼容行为；`$DSH_HOME/config.yaml` 会被忽略。
+- جديد تركيب جدول طبقة (TUI، مزود توسيع حزمة) بـ عادي npm حزمة شكل صيغة تسليم، يمكن حسب profile تثبيت، بلا حاجة في مستودع في لـ كل نوع نشر شكل كل إبقاء واحد سطر.
+- مستخدم يمكن من مهمة معنى مع مرفق تطبيق نموذج لوح بدء واحد مستقل ذاتي تعريف profile، بينما لن نسخ آلة جهاز محلي profile حالة.
+- `apps/cli` استلام تقليص لـ argv تحليل،profile آلية مستهلك و pnpm تحويل إرسال جهاز؛`AppCLIEntry` و كل جدول طبقة مخصص تابع بدء مسار الكل إزالة.
+- بلا مفتاح web e2e قدم يد هيكل بـ و إنتاج نفسه فارغ أصل شكل بدء نفسه تركيب حزمة طبقة، و تنفيذ نفسه profile حزمة اختيار قاعدة، لذلك اختبار و منتج بين تركيب عائم نقل سوف صدى مضيء فشل.
+- حسب إصدار قبل وضع حالة، خلفية لا يحمل قديم مغناطيس قرص إعداد توافق سلوك؛`$DSH_HOME/config.yaml` سوف يتم تجاهل اختصار.

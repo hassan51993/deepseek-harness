@@ -44,7 +44,7 @@ function setup() {
   const parent = new fixture.FakeWindow({})
   dialogs = new DesktopUpdateDialog('preload-update-dialog.cjs', resolveDesktopLocale('zh-CN'))
   const show = (signal?: AbortSignal) => dialogs!.show(parent as unknown as BrowserWindow, {
-    message: '下载完成', buttons: ['安装并重启'], cancelId: 1, ...(signal === undefined ? {} : { signal }),
+    message: 'تحت تحميل إتمام', buttons: ['تثبيت و إعادة بدء'], cancelId: 1, ...(signal === undefined ? {} : { signal }),
   })
   const invoke = (channel: string, ...args: unknown[]) => {
     const window = fixture.windows.at(-1)!
@@ -57,7 +57,7 @@ it('accepts only a displayed choice from its own main frame and retains cancella
   const f = setup()
   const pending = f.show()
   const window = fixture.windows.at(-1)!
-  expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ closeLabel: '关闭', buttons: ['安装并重启'], cancelId: 1 })
+  expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ closeLabel: 'إغلاق', buttons: ['تثبيت و إعادة بدء'], cancelId: 1 })
   const respond = fixture.handlers.get(UPDATE_DIALOG_IPC.respond)!
   expect(() => respond({ sender: {}, senderFrame: window.webContents.mainFrame }, 0)).toThrow(/unowned/)
   expect(() => respond({ sender: window.webContents, senderFrame: { ...window.webContents.mainFrame } }, 0)).toThrow(/unowned/)
@@ -125,10 +125,10 @@ it('denies navigation away from the owned document', async () => {
 it('supplies localized disclosure copy without putting diagnostics in the ordinary detail', async () => {
   const f = setup()
   const pending = dialogs!.show(f.parent as unknown as BrowserWindow, {
-    message: '未能安全停止任务', technicalDetails: 'exit 0; shutdown acknowledged false',
+    message: 'لم قدرة أمان إيقاف مهمة', technicalDetails: 'exit 0; shutdown acknowledged false',
   })
   expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ detail: '',
-    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: '查看技术详情' })
+    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'فحص نظر تقنية فن تفصيل حال' })
   dialogs!.cancel()
   await pending
 })

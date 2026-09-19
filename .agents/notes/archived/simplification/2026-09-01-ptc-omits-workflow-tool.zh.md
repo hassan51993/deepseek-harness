@@ -1,30 +1,30 @@
-# Agent Note: PTC preset 不提供通用 workflow 工具
+# Agent Note: PTC preset لا توفير عام workflow أداة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-09-01-ptc-omits-workflow-tool.md) | 中文
+[English](2026-09-01-ptc-omits-workflow-tool.md) | العربية
 
-## 问题
+## مشكلة
 
-Web 端随附的 `ptc` preset 会通过生成的 SDK 提供通用 `workflow` 工具。PTC mode 已经把 `run_code` 作为模型编写的组合接口，因此 `workflow` 又增加了一套执行语义不同的编排语言。preset 描述还声称与标准模式能力完全相同，无法说明这个有意的差异。
+Web طرف مع مرفق `ptc` preset سوف عبر توليد SDK توفير عام `workflow` أداة.PTC mode قد يأخذ `run_code` بصفة نموذج تحرير كتابة تركيب واجهة، لذلك `workflow` أيضا زيادة واحد طقم تنفيذ دلالة مختلف تحرير ترتيب لغة.preset وصف أيضا صوت تسمية و معيار نمط قدرة تماما نفسه، لا يمكن شرح هذا عدد متعمد فرق مختلف.
 
-## 决策
+## قرار
 
-Web 端随附的 `ptc` preset 禁用自身的 `tool-workflow` 配置项。因此，它生成的 PTC mode SDK 不包含 `workflow` 绑定，模型可见的协议约定仍然只有一个 `run_code` 工具。
+Web طرف مع مرفق `ptc` preset منع استخدام ذاته `tool-workflow` بند إعداد. لذلك، هو توليد PTC mode SDK لا يتضمن `workflow` ربط، نموذج مرئي بروتوكول اتفاق ما زال فقط لديه واحد `run_code` أداة.
 
-preset 在隔离的 workflow realm 中保留 `workflow-worker-thread`，因为 `tool-ralph` 使用同一个引擎。PTC mode SDK 继续提供 `ralph`。标准模式与创造模式继续提供 `workflow`，用户自定义 preset 也可以显式挂载该工具。
+preset في عزل workflow realm في إبقاء `workflow-worker-thread`، لأن `tool-ralph` استخدام نفس عدد جذب محرك.PTC mode SDK متابعة توفير `ralph`. معيار نمط و إنشاء صنع نمط متابعة توفير `workflow`، مستخدم ذاتي تعريف preset أيضا يمكن صريح تركيب هذا أداة.
 
-workflow 包及其持久 Session 事件类型仍然随产品安装。现有 workflow 记录继续正常渲染；这次默认组合变更只会阻止使用随附 `ptc` preset 的 agent 发起新的顶层 workflow 调用。
+workflow حزمة و ذلك حمل دائم Session حدث نوع ما زال مع منتج تثبيت. قائم workflow سجل متابعة صحيح معتاد تصيير؛ هذا مرة افتراضي تركيب تغيير فقط سوف منع توقف استخدام مع مرفق `ptc` preset agent إرسال بدء جديد قمة طبقة workflow استدعاء.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**在 PTC mode 中禁用整个 workflow realm。** 不予采用，因为这也会移除 `ralph` 所需的 provider，而 Ralph 固定的全新 agent 循环不是第二套由模型编写的 workflow 语言。
+**في PTC mode في منع استخدام كامل workflow realm.** لا إعطاء اعتماد، لأن هذا أيضا سوف إزالة `ralph` الذي يحتاج provider، بينما Ralph ثابت كل جديد agent حلقة لا هو ثاني طقم من نموذج تحرير كتابة workflow لغة.
 
-**只在生成的 SDK 中隐藏 `workflow`。** 不予采用，因为只修改呈现会导致可执行工具查找与 preset 声明的组合不一致。禁用 consumer 配置项会同时从注册、查找与呈现中移除该绑定。
+**فقط في توليد SDK في إخفاء `workflow`.** لا إعطاء اعتماد، لأن فقط تعديل عرض سوف توجيه يؤدي يمكن تنفيذ أداة فحص بحث و preset إعلان تركيب لا متسق. منع استخدام consumer بند إعداد سوف معا من تسجيل، فحص بحث و عرض في إزالة هذا ربط.
 
-**等到 `run_code` 功能完全对等后再移除 `workflow`。** 不予采用，因为随附的 PTC 默认模式就是要以 `run_code` 作为组合接口。在独立评估能力缺口期间，需要声明式 workflow 语义的用户可以选择标准模式或显式自定义 preset。
+**انتظار إلى `run_code` وظيفة تماما مقابل انتظار بعد مجددا إزالة `workflow`.** لا إعطاء اعتماد، لأن مع مرفق PTC افتراضي نمط حينئذ هو يلزم بـ `run_code` بصفة تركيب واجهة. في مستقل تقييم تقدير قدرة نقص فتحة خلال، حاجة إعلان صيغة workflow دلالة مستخدم يمكن اختيار معيار نمط أو صريح ذاتي تعريف preset.
 
-## 后果
+## عاقبة
 
-PTC 选择器描述会说明这一例外，不再承诺与标准模式完全对等。真实 Web Loader 组合测试固定 `run_code` 协议工具清单、缺失的 `workflow` SDK 绑定和保留的 `ralph` 绑定。无密钥的 Web PTC 录制会话负责组装提示词证据，preset 测试则固定标准模式与创造模式保持不变。
+PTC اختيار جهاز وصف سوف شرح هذا واحد مثال خارج، لم يعد تحمل وعد و معيار نمط تماما مقابل انتظار. حقيقي Web Loader تركيب اختبار ثابت `run_code` بروتوكول أداة بيان، ناقص `workflow` SDK ربط و إبقاء `ralph` ربط. بلا مفتاح Web PTC تسجيل صنع جلسة مسؤول تجميع نص التوجيه دليل،preset اختبار فإن ثابت معيار نمط و إنشاء صنع نمط إبقاء ثابت.

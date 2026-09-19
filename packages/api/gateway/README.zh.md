@@ -1,94 +1,94 @@
 ---
-description: "带类型的 Client 到 Host 调用与流：分派、校验、取消、重连与转发的 Host 事件。"
+description: "حمل نوع Client إلى Host استدعاء و تدفق: قسم إرسال، تحقق، إلغاء، إعادة وصل و تحويل إرسال Host حدث."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-api-gateway
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-为 Host 与 Client 两侧的 Cordis 环境提供 Typert RPC endpoint。Host 入口提供 `ctx.typertGateway`，`@deepseek-ai/dsh-api-gateway/client` 则提供 `ctx.remote`；两者使用同一份生成的 `InvocationDescriptor` 约定，并将业务选择交给 API Remotes。Connection 承载一元调用的请求关联、信任和响应 envelope，Gateway 则拥有多路复用的 Remote 流。
+لـ Host و Client اثنان جانب Cordis بيئة توفير Typert RPC endpoint.Host مدخل توفير `ctx.typertGateway`،`@deepseek-ai/dsh-api-gateway/client` فإن توفير `ctx.remote`؛ اثنان من استخدام نفس نسخة توليد `InvocationDescriptor` اتفاق، و سوف عمل خدمة اختيار تسليم إعطاء API Remotes.Connection تحمل تحميل واحد عنصر استدعاء طلب صلة ربط، معلومة مهمة و استجابة envelope،Gateway فإن يملك كثير مسار إعادة استخدام Remote تدفق.
 
-## 目录
+## دليل
 
-- [Host 服务：`TypertGatewayService`（ctx key：`typertGateway`）](#host-service-typertgatewayservice-ctx-key-typertgateway)
-- [Client 服务：`ClientRemote`（ctx key：`remote`）](#client-service-clientremote-ctx-key-remote)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [Host خدمة:`TypertGatewayService`(ctx key:`typertGateway`)](#host-service-typertgatewayservice-ctx-key-typertgateway)
+- [Client خدمة:`ClientRemote`(ctx key:`remote`)](#client-service-clientremote-ctx-key-remote)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="host-service-typertgatewayservice-ctx-key-typertgateway"></a>
-## Host 服务：`TypertGatewayService`（ctx key：`typertGateway`）
+## Host خدمة:`TypertGatewayService`(ctx key:`typertGateway`)
 
-每次调用时，`ctx.typertGateway.invoke()` 都会解析当前的描述符和 Cordis 服务，校验具名参数是否完全匹配，解析已注册的对象或 Context 身份标识，并调用公开的业务方法。业务服务继承 [`dsh-typert-protocol`](../../typert/protocol/README.zh.md) 的 `TypertRemoteService`，并用 `@Remote` 或 `@RemoteScope` 标记方法；已有其他基类时仍可改用 `bindTypertRemote()`。
+كل مرة استدعاء وقت،`ctx.typertGateway.invoke()` كل سوف تحليل حالي وصف رمز و Cordis خدمة، تحقق أداة اسم معامل هل تماما مطابقة، تحليل قد تسجيل كائن أو Context هوية معرف، و استدعاء عام عمل خدمة طريقة. عمل خدمة خدمة وراثة [`dsh-typert-protocol`](../../typert/protocol/README.zh.md) `TypertRemoteService`، و استخدام `@Remote` أو `@RemoteScope` علامة طريقة؛ قد لديه أخرى أساس صنف وقت ما زال يمكن تعديل استخدام `bindTypertRemote()`.
 
-严格模式从 `ctx.typert.local` 读取生成的调用描述符。查找参数使用 `ctx.typert.lookups` 中当前有效的解析器：业务包注册稳定声明与默认策略，Host 组合可用 effect-scoped `configure()` 覆盖解析行为；`@RemoteScope` 则通过已注册的 Host Context 适配器解析其接收者。SRC 模式是开发阶段的回退路径，适用于从未具备严格定义的端点；它解析简单参数名，并且只允许非查找参数使用可安全表示为 JSON 的值。已观测到的严格定义一旦撤回，系统会直接报错，而不会降低校验强度。
+صارم إطار نمط من `ctx.typert.local` قراءة توليد استدعاء وصف رمز. فحص بحث معامل استخدام `ctx.typert.lookups` في حالي صالح محلل: عمل خدمة حزمة تسجيل مستقر إعلان و افتراضي سياسة،Host تركيب متاح effect-scoped `configure()` تغطية تحليل سلوك؛`@RemoteScope` فإن عبر قد تسجيل Host Context مهايئ تحليل ذلك استقبال من.SRC نمط هو تطوير مرحلة مقطع رجوع مسار، ملائم لأجل من لم أداة تجهيز صارم إطار تعريف طرف نقطة؛ هو تحليل بسيط مفرد معامل اسم، و كما فقط سماح غير فحص بحث معامل استخدام يمكن أمان يمثل لـ JSON قيمة. قد مراقبة قياس إلى صارم إطار تعريف واحد حالما سحب عودة، نظام سوف مباشر تقرير خطأ، بينما لن خفض منخفض تحقق قوي درجة.
 
-Connection 可用时，Host 入口会在 Connection 共享的 `/api` FetchHandler 上注册 trusted-host interceptor。Connection 把这个复合 handler 交给 HTTP bridge；handler 将已认领 endpoint 分发给 Gateway，未认领且没有精确 Fetch 路由负责的请求返回 404。直接调用 `invoke()` 会保留业务错误；`TypertGatewayError` 是 `RemoteError` 的子类，其 `gateway/*` 码命名了分发、绑定、提供方、查找、Context、参数和编解码器各自负责的故障。因策略而拒绝的解析器——冷恢复失败或 ownership fence——抛出自己的 `RemoteError`，它选定的码原样到达调用方。
+Connection متاح وقت،Host مدخل سوف في Connection مشترك `/api` FetchHandler فوق تسجيل trusted-host interceptor.Connection يأخذ هذا عدد تكرار دمج handler تسليم إعطاء HTTP bridge؛handler سوف قد إقرار قيادة endpoint توزيع إعطاء Gateway، لم إقرار قيادة كما لا يوجد دقيق Fetch توجيه مسؤول طلب إرجاع 404. مباشر استدعاء `invoke()` سوف إبقاء عمل خدمة خطأ؛`TypertGatewayError` هو `RemoteError` فرعي صنف، ذلك `gateway/*` رمز تسمية توزيع، ربط، مزود، فحص بحث،Context، معامل و تحرير حل رمز جهاز كل منها مسؤول لذا عائق. بسبب سياسة بينما رفض محلل——بارد استعادة فشل أو ownership fence——رمي خروج ذاتي ذات `RemoteError`، هو اختيار تحديد رمز أصل مثال وصول استدعاء جهة.
 
-支持取消的 Remote 方法会把 `signal: AbortSignal` 声明为最后一个 Host 参数。signal 是 descriptor 元数据，而不是 wire 参数：Connection 将它提供给 Gateway，Gateway 则在已解码的业务参数之后注入它。SRC 识别这个保留的末位参数名，严格生成还要求它具有全局 `AbortSignal` 类型。
+دعم حمل إلغاء Remote طريقة سوف يأخذ `signal: AbortSignal` إعلان لـ الأكثر بعد واحد Host معامل.signal هو descriptor بيانات وصفية، بينما لا هو wire معامل:Connection سوف هو توفير إعطاء Gateway،Gateway فإن في قد حل رمز عمل خدمة معامل بعد حقن هو.SRC تعرف آخر هذا عدد إبقاء نهاية موضع معامل اسم، صارم إطار توليد أيضا اشتراط هو أداة لديه عام `AbortSignal` نوع.
 
-流式 Remote 使用 `@Remote({ mode: 'stream' })` 并返回 `Iterable` 或 `AsyncIterable`。`ctx.typertGateway.stream()` 执行与一元调用相同的 endpoint、参数、lookup 和取消校验，再返回可取消的业务项 iterable。Client 插件激活时打开 Gateway 自有的 `/api/remote.mux` WebSocket，并让它在空闲时保持连接。Connection 拥有重试调度；每次 retry 前，它要求 mux 取消候选或活动 socket，并且只做一次全新的物理连接尝试。Host 按配置的 `websocketHeartbeatIntervalMs` 间隔（默认 2 秒）发送 Ping 控制帧，浏览器在 WebSocket 协议层自动回复 Pong，使空闲网络中间层持续看到流量，而不新增 Remote 流帧。若 socket 尚未回复上一次 Ping，Host 会在下一间隔终止它。可独立取消的逻辑流共享这条连接；进程内 Connection 载体直接提供等价的流，不打开该 WebSocket。
+تدفق صيغة Remote استخدام `@Remote({ mode: 'stream' })` و إرجاع `Iterable` أو `AsyncIterable`.`ctx.typertGateway.stream()` تنفيذ و واحد عنصر استدعاء نفسه endpoint، معامل،lookup و إلغاء تحقق، مجددا إرجاع يمكن إلغاء عمل خدمة بند iterable.Client إضافة تنشيط وقت فتح Gateway ذاتي لديه `/api/remote.mux` WebSocket، و يجعل هو في فارغ خامل وقت إبقاء اتصال.Connection يملك إعادة محاولة ضبط درجة؛ كل مرة retry قبل، هو اشتراط mux إلغاء مرشح أو نشط حركة socket، و كما فقط فعل مرة كل جديد شيء إدارة اتصال محاولة تجربة.Host حسب إعداد `websocketHeartbeatIntervalMs` بين فصل (افتراضي 2 ثانية) إرسال Ping تحكم لقطة، متصفح في WebSocket بروتوكول طبقة تلقائي عودة تكرار Pong، جعل فارغ خامل شبكة شبكة في بين طبقة حمل متابعة يرى تدفق كمية، بينما لا إضافة جديدة Remote تدفق لقطة. إذا socket بعد لم عودة تكرار فوق مرة Ping،Host سوف في تحت واحد بين فصل إنهاء هو. يمكن مستقل إلغاء منطق تدفق مشترك هذا بند اتصال؛ عملية داخل Connection تحميل جسم مباشر توفير انتظار قيمة تدفق، لا فتح هذا WebSocket.
 
-Host 组合可通过 `registerRemoteEvents()` 注册唯一的应用事件 source。Gateway 为它保留内部 `$events` logical endpoint，只接受空 `args`，并在 source 撤回时中止该注册打开的流。事件名单、参数校验、每个 Client 的队列及 opening `{ type: 'ready', clientId, host: { home } }` frame 中的 Host home 由 API Remotes 拥有。source factory 在返回 iterable 前同步挂好增量 listener，因此 Client 只在增量投递就绪后发布 generation 并开始 baseline 读取。
+Host تركيب يمكن عبر `registerRemoteEvents()` تسجيل وحيد تطبيق حدث source.Gateway لـ هو إبقاء داخلي `$events` logical endpoint، فقط قبول فارغ `args`، و في source سحب عودة وقت في توقف هذا تسجيل فتح تدفق. حدث اسم مفرد، معامل تحقق، كل Client طابور صف و opening `{ type: 'ready', clientId, host: { home } }` frame في Host home من API Remotes يملك.source factory في إرجاع iterable قبل تزامن تعليق جيد زيادة كمية listener، لذلك Client فقط في زيادة كمية إلقاء تمرير حينئذ خيط بعد إصدار generation و بدء baseline قراءة.
 
 <a id="client-service-clientremote-ctx-key-remote"></a>
-## Client 服务：`ClientRemote`（ctx key：`remote`）
+## Client خدمة:`ClientRemote`(ctx key:`remote`)
 
-浏览器载体接受 [Connection](../../client/connection/README.zh.md#use-this-package) 定义的 shell 所拥有的流 origin；逻辑流帧与生命周期保持一致。
+متصفح تحميل جسم قبول [Connection](../../client/connection/README.zh.md#use-this-package) تعريف shell الذي يملك تدفق origin؛ منطق تدفق لقطة و دورة الحياة إبقاء متسق.
 
-`ctx.remote.$mount()` 会校验并注册生成的 Host-for-Client 贡献项，然后为发起调用的 Cordis fiber 安装具体的直接方法和作用域方法。每个 namespace 都是可追踪的 `remote.<namespace>` 子 Service，并在最后一个方法撤回后卸载。重复端点、命名空间冲突，以及缺少生成的严格 codec 的 Client 供值字段，都会在方法可调用前报错。
+`ctx.remote.$mount()` سوف تحقق و تسجيل توليد Host-for-Client مساهمة بند، لكن بعد لـ إرسال بدء استدعاء Cordis fiber تثبيت أداة جسم مباشر طريقة و أثر مجال طريقة. كل namespace كل هو يمكن تتبع أثر `remote.<namespace>` فرعي Service، و في الأكثر بعد واحد طريقة سحب عودة بعد إزالة. تكرار طرف نقطة، نطاق الأسماء اندفاع مفاجئ، و نقص قليل توليد صارم إطار codec Client توفير قيمة حقل، كل سوف في طريقة يمكن استدعاء قبل تقرير خطأ.
 
-每次一元调用都会检查位置参数数量，构造与描述符完全匹配的具名 `args`，再把带类型的值原样交给 `ctx.connection.rpc.call('/api', endpoint, ...)`，而不执行 Client 侧 schema；Host 会在业务调用前校验收到的 wire 字段。生成的流方法返回 `AsyncIterable`，并在进程内 Connection 载体可用时通过它打开逻辑流，否则通过共享的 Gateway WebSocket 打开。生成的支持取消的方法接受最后一个可选 `AbortSignal`；Client 会在调用载体前将它与贡献项的挂载生命周期合并。成功的一元结果与流项不经 Client 侧类型解析直接传递。撤回贡献项会同时移除其描述符和方法、中止正在进行的调用与流，并使外部仍持有的方法句柄在调用时返回拒绝。
+كل مرة واحد عنصر استدعاء كل سوف فحص موضع معامل عدد كمية، بنية صنع و وصف رمز تماما مطابقة أداة اسم `args`، مجددا يأخذ حمل نوع قيمة أصل مثال تسليم إعطاء `ctx.connection.rpc.call('/api', endpoint, ...)`، بينما لا تنفيذ Client جانب schema؛Host سوف في عمل خدمة استدعاء قبل تحقق استلام إلى wire حقل. توليد تدفق طريقة إرجاع `AsyncIterable`، و في عملية داخل Connection تحميل جسم متاح وقت عبر هو فتح منطق تدفق، لا فإن عبر مشترك Gateway WebSocket فتح. توليد دعم حمل إلغاء طريقة قبول الأكثر بعد واحد اختياري `AbortSignal`؛Client سوف في استدعاء تحميل جسم قبل سوف هو و مساهمة بند تركيب دورة الحياة دمج. نجاح واحد عنصر نتيجة و تدفق بند لا مرور Client جانب نوع تحليل مباشر نقل تمرير. سحب عودة مساهمة بند سوف معا إزالة ذلك وصف رمز و طريقة، في توقف صحيح في إجراء استدعاء و تدفق، و جعل خارجي ما زال يحتفظ طريقة جملة مقبض في استدعاء وقت إرجاع رفض.
 
-每次一元调用都解析为 `RemoteResult<T>`——`{ ok: true, value }` 或 `{ ok: false, error }`——且绝不因载体问题 reject：本面把断线载体折入错误分支，调用方 signal 中止时答以 `gateway/cancelled`，因此没有消费方需要包一层来兜载体失败。只有装配故障仍会 reject：参数个数不符、方法未挂载、贡献已撤下、缺少 Context 适配器。`error` 是活的 `RemoteError` 实例，所以 `throw result.error` 保持 throw 语义；而 `isRemoteFailure(value)` 是消费方唯一需要的谓词——它认下的捕获值带着 Host 码，它拒绝的一律是本地故障，调用方应当让其崩掉。`carrierFailure(endpoint, error)` 与 `cancelledFailure(endpoint, cause)` 构造这两种折叠结果，测试里的替代实现据此采用相同的折叠方式。
+كل مرة واحد عنصر استدعاء كل تحليل لـ `RemoteResult<T>`——`{ ok: true, value }` أو `{ ok: false, error }`——كما أبدا بسبب تحميل جسم مشكلة reject: هذا وجه يأخذ قطع خط تحميل جسم طي دخول خطأ فرع، استدعاء جهة signal في توقف وقت جواب بـ `gateway/cancelled`، لذلك لا يوجد مستهلك حاجة حزمة واحد طبقة قدوم التقاط تحميل جسم فشل. فقط لديه تركيب إعداد لذا عائق ما زال سوف reject: معامل عدد عدد لا رمز، طريقة لم تركيب، مساهمة قد سحب تحت، نقص قليل Context مهايئ.`error` هو نشط `RemoteError` نسخة، الذي بـ `throw result.error` إبقاء throw دلالة؛ بينما `isRemoteFailure(value)` هو مستهلك وحيد حاجة يسمى كلمة——هو إقرار تحت التقاط قيمة حمل حال Host رمز، هو رفض واحد قاعدة هو محلي لذا عائق، استدعاء جهة ينبغي عند يجعل ذلك انهيار إسقاط.`carrierFailure(endpoint, error)` و `cancelledFailure(endpoint, cause)` بنية صنع هذا اثنان نوع طي نتيجة، اختبار داخل بديل تنفيذ حسب هذا اعتماد نفسه طي طريقة.
 
-`ctx.remote.$host` 以普通值读取固定的 Host 事实：`home`（首个 ready 帧之前为 undefined）与 `isLoopback`。它不是存储——没有订阅、没有代次计数——所以需要响应重连的消费方去监听 `connection/reset`，而不是轮询它。
+`ctx.remote.$host` بـ عادي قيمة قراءة ثابت Host واقع:`home`(أول عدد ready لقطة قبل لـ undefined) و `isLoopback`. هو لا هو تخزين——لا يوجد حجز قراءة، لا يوجد بديل مرة حساب عدد——الذي بـ حاجة استجابة إعادة وصل مستهلك ذهاب استماع `connection/reset`، بينما لا هو جولة استفسار هو.
 
-`ctx.remote.$stream()` 返回跨越多个物理载体代次的单消费方 `RemoteStream`。Host 仍在线时，它允许一次立即重试；Host 离线时，它等待下一代连接，并为每个流项标注物理代次。领域消费方校验并接受各代次的 opening value；业务与协议错误仍然终止流。一切终态失败离开本面时都是 `RemoteError`，包括重试耗尽和在 opening value 之前就结束的代次，因此流消费方与一元调用方用同一种方式判别。`RemoteStreamCarrierError` 命名的是可重试的物理丢失，它只作为 `carrierFailed` 回调参数到达领域，绝不作为终态结果。`RemoteSnapshotStream` 在此之上规定每代由一个初始快照和后续 delta 组成。`RemoteJournalStream` 基于领域提供的 entry 闭区间提供 follow-before-page、分页、重连追赶与缺口修复；它丢弃完整重复项，并拒绝缺口、倒置区间和部分重叠。领域还可以携带无 cursor 的通知：通知绝不推进或修复持久 cursor，在缺口修复期间收到的通知只会在 replacement page 提交后发布。若更新代次取代该修复，旧代次 held notification 会与其 page 一同丢弃。对任一种流执行 dispose（资源释放）时，系统会取消该流的请求，并在活动 iterator 完全停止后完成资源释放。
+`ctx.remote.$stream()` إرجاع عبر تجاوز كثير عدد شيء إدارة تحميل جسم بديل مرة مفرد مستهلك `RemoteStream`.Host ما زال في خط وقت، هو سماح مرة قيام أي إعادة محاولة؛Host مغادرة خط وقت، هو انتظار تحت واحد بديل اتصال، و لـ كل تدفق بند علامة ملاحظة شيء إدارة بديل مرة. مجال مستهلك تحقق و قبول كل بديل مرة opening value؛ عمل خدمة و بروتوكول خطأ ما زال إنهاء تدفق. واحد قطع نهاية حالة فشل مغادرة فتح هذا وجه وقت كل هو `RemoteError`، يشمل إعادة محاولة استهلاك كل و في opening value قبل حينئذ انتهاء بديل مرة، لذلك تدفق مستهلك و واحد عنصر استدعاء جهة استخدام نفس نوع طريقة حكم آخر.`RemoteStreamCarrierError` تسمية هو يمكن إعادة محاولة شيء إدارة فقد فقد، هو فقط بصفة `carrierFailed` عودة ضبط معامل وصول مجال، أبدا بصفة نهاية حالة نتيجة.`RemoteSnapshotStream` في هذا لـ فوق قاعدة تحديد كل بديل من واحد ابتدائي لقطة و لاحق delta مجموعة صار.`RemoteJournalStream` أساس في مجال توفير entry إغلاق منطقة بين توفير follow-before-page، قسم صفحة، إعادة وصل تتبع لحاق و نقص فتحة إصلاح؛ هو إسقاط كامل تكرار بند، و رفض نقص فتحة، قلب وضع منطقة بين و جزء إعادة تراكم. مجال أيضا يمكن يحمل بلا cursor إشعار: إشعار أبدا دفع دخول أو إصلاح حمل دائم cursor، في نقص فتحة إصلاح خلال استلام إلى إشعار فقط سوف في replacement page إيداع بعد إصدار. إذا تحديث بديل مرة يحل محل هذا إصلاح، قديم بديل مرة held notification سوف و ذلك page واحد نفس إسقاط. مقابل مهمة واحد نوع تدفق تنفيذ dispose(مورد تحرير) وقت، نظام سوف إلغاء هذا تدفق طلب، و في نشط حركة iterator تماما إيقاف بعد إتمام مورد تحرير.
 
-`ctx.remote.$on()` 订阅一条被转发的 Host 事件。它的合法键恰好等于 Host 装配声明的转发选择，listener 类型就是事件所属包自己的 Cordis `Events` 声明，因此不存在会与之漂移的第二份签名。每个订阅归属调用方 fiber，并随该 fiber 一起消失。Client Remote 服务激活时就把 `$events` pump 注册为 Connection generation source，无论当前是否存在 `$on` listener。浏览器使用 Remote mux，进程内组合使用 `connection.rpc.open`；opening `ready` 项建立 Connection generation 并提供 Host 信息。物理 carrier 失败、Remote 流故障、意外正常结束、非 ready 首项或畸形事件项都会终止该 generation，由 Connection 按持续且间隔封顶的带抖动指数退避重开。普通通知按注册顺序运行并隔离 listener 失败；Agent-scoped waterfall（瀑布式事件）允许 listener 返回结果、调用 `next()` 或拒绝，Gateway 再通过现有 HTTP 一元载体回送该结果。
+`ctx.remote.$on()` حجز قراءة واحد بند يتم تحويل إرسال Host حدث. هو دمج قاعدة مفتاح تماما جيد انتظار في Host تركيب إعداد إعلان تحويل إرسال اختيار،listener نوع حينئذ هو حدث الذي تابع حزمة ذاتي ذات Cordis `Events` إعلان، لذلك لا وجود سوف و لـ عائم نقل ثاني نسخة توقيع. كل حجز قراءة ملكية استدعاء جهة fiber، و مع هذا fiber واحد بدء إزالة فقد.Client Remote خدمة تنشيط وقت حينئذ يأخذ `$events` pump تسجيل لـ Connection generation source، بلا نقاش حالي هل وجود `$on` listener. متصفح استخدام Remote mux، عملية داخل تركيب استخدام `connection.rpc.open`؛opening `ready` بند بناء قيام Connection generation و توفير Host معلومة. شيء إدارة carrier فشل،Remote تدفق لذا عائق، معنى خارج صحيح معتاد انتهاء، غير ready أول بند أو شاذ شكل حدث بند كل سوف إنهاء هذا generation، من Connection حسب حمل متابعة كما بين فصل غلاف قمة حمل اهتزاز حركة إشارة عدد تراجع تجنب إعادة فتح. عادي إشعار حسب تسجيل ترتيب تشغيل و عزل listener فشل؛Agent-scoped waterfall(شلال نشر صيغة حدث) سماح listener إرجاع نتيجة، استدعاء `next()` أو رفض،Gateway مجددا عبر قائم HTTP واحد عنصر تحميل جسم عودة إرسال هذا نتيجة.
 
-Client waterfall 的 Context 解析保持同步。解析器可以返回借用的 Context 或 `TypertOwnedValue<Context>`；Gateway 仅在处理器使用和回复结算均结束后释放 owned value。Context 解析失败保留既有的记录错误并委托语义，处理器失败产生拒绝回复。取消会抑制迟到回复，但不会释放处理器仍在使用的 Context。每个 handler 都必须响应 `request.signal` 并在取消后结束；插件销毁与 Connection generation 替换会等待未结束的 handler 结算。Session Context 的获取本身不执行历史 I/O。
+Client waterfall Context تحليل إبقاء تزامن. محلل يمكن إرجاع استعارة استخدام Context أو `TypertOwnedValue<Context>`؛Gateway فقط في معالج استخدام و عودة تكرار تسوية متساو انتهاء بعد تحرير owned value.Context تحليل فشل إبقاء قائم سجل خطأ و تفويض حمل دلالة، معالج فشل إنتاج رفض عودة تكرار. إلغاء سوف كبح صنع متأخر إلى عودة تكرار، لكن لن تحرير معالج ما زال في استخدام Context. كل handler كل يجب استجابة `request.signal` و في إلغاء بعد انتهاء؛ إضافة إلغاء تدمير و Connection generation استبدال سوف انتظار لم انتهاء handler تسوية.Session Context نيل أخذ ذاته لا تنفيذ تاريخ I/O.
 
-`ctx.remote` 不暴露 Connection 生命周期控制。只有职责包含恢复的消费方才直接读取 `ctx.connection.state` 并调用 `ctx.connection.reconnect()`；普通 Remote 消费方仍只使用生成的 namespace 与 `$stream()`。
+`ctx.remote` لا كشف Connection دورة الحياة تحكم. فقط لديه مسؤولية يتضمن استعادة مستهلك عندئذ مباشر قراءة `ctx.connection.state` و استدعاء `ctx.connection.reconnect()`؛ عادي Remote مستهلك ما زال فقط استخدام توليد namespace و `$stream()`.
 
-生成的声明合并通过共享的 `TypertClientRemote` 约定提供 TypeScript API。Client 入口不包含 Host 服务或 Host Cordis 接口合并；方法查找和调用使用普通对象与函数，而不使用 JavaScript Proxy。
+توليد إعلان دمج عبر مشترك `TypertClientRemote` اتفاق توفير TypeScript API.Client مدخل لا يتضمن Host خدمة أو Host Cordis واجهة دمج؛ طريقة فحص بحث و استدعاء استخدام عادي كائن و دالة، بينما لا استخدام JavaScript Proxy.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为该包分发应用调用，不注册任何提示词、工具或会话事件。
+بلا، لأن هذا حزمة توزيع تطبيق استدعاء، لا تسجيل أي نص التوجيه، أداة أو جلسة حدث.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；被调用的业务服务负责产生任何模型可见结果。
+بلا مباشر أثر؛ يتم استدعاء عمل خدمة خدمة مسؤول إنتاج أي نموذج مرئي نتيجة.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- Connection 适配器对分发故障与未归类异常答以 `gateway/internal`，且不附带详细信息；拥有方或 Gateway 自己抛出的 `RemoteError` 带着自有码、message 与 details 过线。其 `cause` 链与 `TypertGatewayError` 子类身份只对同进程调用方留存。
-- SRC 模式仅支持名称唯一的标识符参数，不支持解构、默认值或剩余参数。它只校验值能否安全表示为 JSON，不校验生成的业务类型，也绝不会推断可选字段。
-- contribution 挂载时，每个由 Client 供值的字段都必须具备生成的严格 codec。SRC 标记没有 Client 类型投影，不是常规的 Client contribution 输入。
-- `$stream()` 监督载体替换，但不推断回放语义；各领域自行拥有恢复 cursor 或替换 baseline 的校验，以及正常结束的分类。Connection generation 会重开内部 `$events` 流；单向通知不会重放，仍处于 pending 的 scoped waterfall 则沿用同一个 event id 重放。
-- lookup 解析器按 key 配置；当前无法让单个 Remote 参数或 endpoint 在同一 `agent`/`session` key 下选择 live-only 策略。
-- 被转发的事件到达 `$on` 时不做业务载荷投影或脱敏。普通通知在重连后不重放；Agent-scoped waterfall 只投影选择 Client Context 所需的顶层 Agent 身份，并自行携带 pending 生命周期。
-- `websocketHeartbeatIntervalMs` 同时是 Ping 周期和 Pong 截止时间。对端未在下一周期前回复时，Host 会终止连接；如果部署的事件循环或网络可能停顿超过该间隔，必须调大此配置。
+- Connection مهايئ مقابل توزيع لذا عائق و لم عودة صنف استثناء جواب بـ `gateway/internal`، كما لا مرفق حمل تفصيل دقيق معلومة؛ يملك جهة أو Gateway ذاتي ذات رمي خروج `RemoteError` حمل حال ذاتي لديه رمز،message و details مرور خط. ذلك `cause` سلسلة و `TypertGatewayError` فرعي صنف هوية فقط مقابل نفس عملية استدعاء جهة إبقاء تخزين.
+- SRC نمط فقط دعم حمل اسم وحيد معرف رمز معامل، لا دعم حمل حل بنية، قيمة افتراضية أو باق بقية معامل. هو فقط تحقق قيمة قدرة لا أمان يمثل لـ JSON، لا تحقق توليد عمل خدمة نوع، أيضا أبدا سوف دفع قطع اختياري حقل.
+- contribution تركيب وقت، كل من Client توفير قيمة حقل كل يجب أداة تجهيز توليد صارم إطار codec.SRC علامة لا يوجد Client نوع إسقاط، لا هو معتاد قاعدة Client contribution إدخال.
+- `$stream()` مراقبة إشراف تحميل جسم استبدال، لكن لا دفع قطع إعادة تشغيل دلالة؛ كل مجال ذاتي سطر يملك استعادة cursor أو استبدال baseline تحقق، و صحيح معتاد انتهاء تصنيف.Connection generation سوف إعادة فتح داخلي `$events` تدفق؛ مفرد نحو إشعار لن إعادة وضع، ما زال موضع في pending scoped waterfall فإن امتداد استخدام نفس عدد event id إعادة وضع.
+- lookup محلل حسب key إعداد؛ حالي لا يمكن يجعل مفرد عدد Remote معامل أو endpoint في نفس `agent`/`session` key تحت اختيار live-only سياسة.
+- يتم تحويل إرسال حدث وصول `$on` وقت لا فعل عمل خدمة تحميل حمل إسقاط أو انفصال حساس. عادي إشعار في إعادة وصل بعد لا إعادة وضع؛Agent-scoped waterfall فقط إسقاط اختيار Client Context الذي يحتاج قمة طبقة Agent هوية، و ذاتي سطر يحمل pending دورة الحياة.
+- `websocketHeartbeatIntervalMs` معا هو Ping دورة مدة و Pong قطع توقف وقت. مقابل طرف لم في تحت واحد دورة مدة قبل عودة تكرار وقت،Host سوف إنهاء اتصال؛ إذا نشر حدث حلقة أو شبكة شبكة ممكن توقف توقف تجاوز مرور هذا بين فصل، يجب ضبط كبير هذا إعداد.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。Host 调用会重新读取权威的 Cordis 与 Typert 状态，Client 方法、描述符与 `$on` 订阅的变更则统一归属同一个 effect。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.Host استدعاء سوف إعادة قراءة مرجعي Cordis و Typert حالة،Client طريقة، وصف رمز و `$on` حجز قراءة تغيير فإن موحد واحد ملكية نفس عدد effect.

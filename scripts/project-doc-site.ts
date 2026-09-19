@@ -219,7 +219,7 @@ export function addProjectionFrontmatter(markdown: string, page: Pick<DocsPage, 
 }
 
 /** The switcher line a canonical page carries so its GitHub reader can reach the other language. */
-const LANGUAGE_SWITCHER = /^(?:English \| \[中文\]\([^)]*\)|\[English\]\([^)]*\) \| 中文)$/
+const LANGUAGE_SWITCHER = /^(?:English \| \[العربية\]\([^)]*\)|\[English\]\([^)]*\) \| العربية)$/
 
 /** The repository badge a canonical page carries for its GitHub reader. */
 const REPOSITORY_BADGE = /^\[!\[[^\]]*\]\(https:\/\/img\.shields\.io\/[^)]*\)\]\([^)]*\)$/
@@ -543,7 +543,7 @@ export interface LlmsTxtSite {
 
 /** Locale groups llms.txt lists, in the order the site's navigation presents them. */
 const llmsTxtLocales: readonly { heading: string; locale: DocsLocale }[] = [
-  { heading: '简体中文', locale: 'root' },
+  { heading: 'بسيط جسم العربية', locale: 'root' },
   { heading: 'English', locale: 'en' },
 ]
 
@@ -563,7 +563,7 @@ export function llmsTxt(site: LlmsTxtSite): string {
     '',
     `> ${site.description}`,
     '',
-    '页面 URL 去掉末尾斜杠再加 `.md` 即为该页原始 Markdown(根路径用 `/index.md`);下方列表是各页精确地址。Drop any trailing slash and append `.md` to a page URL for its raw Markdown (the site root is `/index.md`); the list below carries the exact addresses.',
+    'صفحة URL ذهاب إسقاط نهاية ذيل مائل عمود مجددا إضافة `.md` أي لـ هذا صفحة أصلي Markdown(أصل مسار استخدام `/index.md`);تحت جهة قائمة هو كل صفحة دقيق عنوان.Drop any trailing slash and append `.md` to a page URL for its raw Markdown (the site root is `/index.md`); the list below carries the exact addresses.',
   ]
   for (const { heading, locale } of llmsTxtLocales) {
     lines.push('', `## ${heading}`, '')

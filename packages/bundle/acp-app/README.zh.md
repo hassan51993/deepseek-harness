@@ -1,76 +1,76 @@
 ---
-description: "面向启动持久 harness agent（智能体）的用户与维护者，说明纯自动化 ACP（Agent Client Protocol）stdio 应用 profile。"
+description: "موجه إلى بدء حمل دائم harness agent(ذكي جسم) مستخدم و صيانة من، شرح صاف تلقائي تحويل ACP(Agent Client Protocol)stdio تطبيق profile."
 kind: "package-bundle"
 ---
 
 # `@deepseek-ai/dsh-acp-app`
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-以 [`dsh-base`](../base/README.zh.md) 为基础的纯自动化 ACP stdio 应用 `dsh` profile 组合包。它继承 base 禁用模块 HMR（热模块替换）的策略；其 patch 设置 coding agent（编程智能体）persona 与默认模型路由、挂载应用自有的零选项命令提供方，并且只在该提供方接受调用后启动 [`dsh-acp`](../../acp/acp/README.zh.md)。因此，`dsh --profile acp --help` 会写出 help 并退出，不会占用 stdin 或 stdout。
+بـ [`dsh-base`](../base/README.zh.md) لـ أساس أساس صاف تلقائي تحويل ACP stdio تطبيق `dsh` profile تركيب حزمة. هو وراثة base منع استخدام وحدة HMR(حار وحدة استبدال) سياسة؛ ذلك patch ضبط coding agent(تحرير مسار ذكي جسم)persona و افتراضي نموذج توجيه، تركيب تطبيق ذاتي لديه صفر خيار أمر مزود، و كما فقط في هذا مزود قبول استدعاء بعد بدء [`dsh-acp`](../../acp/acp/README.zh.md). لذلك،`dsh --profile acp --help` سوف كتابة خروج help و خروج، لن احتلال استخدام stdin أو stdout.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [标准自动化工作流](#standard-automation-workflow)
-- [模型体验](#model-experience)
-- [已知限制与待办事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [معيار تلقائي تحويل سير العمل](#standard-automation-workflow)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و انتظار إنجاز أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-启动提供方把 stdin EOF 绑定到启动器的有界成功关闭。ACP 连接关闭、SIGINT 与 SIGTERM 会在退出前排空 bridge 自有 agent 以及根 profile 树。Stdout 仅保留给换行分隔的 ACP JSON-RPC 帧。ACP 不提供标题呈现能力，因此本组合包禁用模型生成的会话 title；确定性的 fallback title 仍会持久化，但不发起辅助模型请求。继承的投影缓存会为 ACP 创建的会话写入检查点，供后续消费方使用；其持久性屏障会在发布缓存行前 flush 所覆盖的日志前缀，因此可能拆分原本会合并的 JSONL 连续段。部署方通过 profile 组合包与 patch 文件选择另一套完整组合，而不是使用另一个 app bin。
+بدء مزود يأخذ stdin EOF ربط إلى بدء جهاز محدود نجاح إغلاق.ACP اتصال إغلاق،SIGINT و SIGTERM سوف في خروج قبل ترتيب فارغ bridge ذاتي لديه agent و أصل profile شجرة.Stdout فقط إبقاء إعطاء تبديل سطر قسم فصل ACP JSON-RPC لقطة.ACP لا توفير عنوان عرض قدرة، لذلك هذا تركيب حزمة منع استخدام نموذج توليد جلسة title؛ تحديد صفة fallback title ما زال سوف حفظ دائم، لكن لا إرسال بدء مساعد مساعدة نموذج طلب. وراثة إسقاط ذاكرة مؤقتة سوف لـ ACP إنشاء جلسة كتابة فحص نقطة، توفير لاحق مستهلك استخدام؛ ذلك حمل دائم صفة شاشة عائق سوف في إصدار ذاكرة مؤقتة سطر قبل flush الذي تغطية سجل بادئة، لذلك ممكن تفكيك قسم أصل هذا سوف دمج JSONL وصل متابعة مقطع. نشر جهة عبر profile تركيب حزمة و patch ملف اختيار آخر طقم كامل تركيب، بينما لا هو استخدام آخر عدد app bin.
 
-随附配置项使用 `deepseek-official` 与 `deepseek-v4-flash` 创建会话；后续 patch 可以替换该配置项的完整配置。base profile 负责适配器、工具、持久化、策略、设置、凭据，以及 ACP client 为每个会话提供的工作区。
+مع مرفق بند إعداد استخدام `deepseek-official` و `deepseek-v4-flash` إنشاء جلسة؛ لاحق patch يمكن استبدال هذا بند إعداد كامل إعداد.base profile مسؤول مهايئ، أداة، حفظ دائم، سياسة، ضبط، اعتماد، و ACP client لـ كل جلسة توفير مساحة العمل.
 
 -----
 
 <a id="standard-automation-workflow"></a>
-## 标准自动化工作流
+## معيار تلقائي تحويل سير العمل
 
-ACP v1 SDK 客户端先初始化 `dsh --profile acp`，再用绝对 `cwd` 与可选的标准 stdio／HTTP MCP 声明创建会话，选择公开的 `model` 或 `reasoning_effort`，在观察标准语义更新的同时提交提示词，最后调用 `session/close`。另一个进程可以针对同一个 profile 持久化根目录使用 `session/list` 与 `session/resume`；恢复会重新连接该请求提供的 MCP 声明，但不会回放历史。
+ACP v1 SDK عميل أولا ابتدائي تحويل `dsh --profile acp`، مجددا استخدام قطعا مقابل `cwd` و اختياري معيار stdio/HTTP MCP إعلان إنشاء جلسة، اختيار عام `model` أو `reasoning_effort`، في مراقبة معيار دلالة تحديث معا إيداع نص التوجيه، الأكثر بعد استدعاء `session/close`. آخر عدد عملية يمكن إبرة مقابل نفس عدد profile حفظ دائم أصل دليل استخدام `session/list` و `session/resume`؛ استعادة سوف إعادة اتصال هذا طلب توفير MCP إعلان، لكن لن إعادة تشغيل تاريخ.
 
-完整的受支持方法矩阵、MCP 信任模型、更新映射与停止原因见 [`dsh-acp` 协议约定](../../acp/acp/README.zh.md#standard-acp-v1-surface)。该 profile 不增加私有方法、能力、`_meta`、环境变量或传输字段。免密钥控制面一致性测试通过公开 ACP SDK 驱动真实 profile。
+كامل تلقي دعم حمل طريقة مستطيل دفعة،MCP معلومة مهمة نموذج، تحديث خريطة و إيقاف سبب رؤية [`dsh-acp` بروتوكول اتفاق](../../acp/acp/README.zh.md#standard-acp-v1-surface). هذا profile لا زيادة خاص طريقة، قدرة،`_meta`، بيئة متغير أو نقل حقل. تجنب مفتاح تحكم وجه متسق صفة اختبار عبر عام ACP SDK قيادة حقيقي profile.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
 ### ACP coding-agent persona
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-profile 在第一方指导之前提供 `You are a coding agent powered by the {{model}} model.`，并在独立的 persona 后缀中提供 `Your working directory is {{cwd}}.`。ACP 配置项的路由与每个 `session/new` 的 cwd 会解析其中的占位符。
+profile في رقم واحد جهة إشارة توجيه قبل توفير `You are a coding agent powered by the {{model}} model.`، و في مستقل persona بعد لاحقة في توفير `Your working directory is {{cwd}}.`.ACP بند إعداد توجيه و كل `session/new` cwd سوف تحليل منها احتلال موضع رمز.
 
-#### Token 影响
+#### Token أثر
 
-一段简短稳定的 persona，加上 base 提示词中随数据变化的部分与已选工具 schema。
+واحد مقطع بسيط قصير مستقر persona، إضافة فوق base نص التوجيه في مع بيانات تغير جزء و قد اختيار أداة schema.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-固定 profile、提供方、模型与工具集合下保持稳定。随附 ACP profile 只在启动时加载 patch，因此 profile 更改会在下一个进程生效。
+ثابت profile، مزود، نموذج و أداة تجميع دمج تحت إبقاء مستقر. مع مرفق ACP profile فقط في بدء وقت تحميل patch، لذلك profile أكثر تعديل سوف في تحت واحد عملية توليد فاعلية.
 
-## 已知限制与待办事项
+## معروف حد و انتظار إنجاز أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **profile 可以省略 ACP bridge**：自定义 ACP 启动 profile 必须保留本组合包或另一个 `dsh-acp` 配置项；否则没有 peer 响应 client。
-- **用户插件可能破坏 stdout 纯净性**：profile 与单次启动 patch 属于受信任的应用组合。随附组合包不会向 stdout 写入非协议内容，但无法约束任意插入的插件。
-- **配置更改需要重启**：`acp-app` 组合包在 YAML 中禁用 HMR，确保一条 stdio 连接不会观察到 bridge 或 Agent 依赖被替换。
+- **profile يمكن حذف ACP bridge**: ذاتي تعريف ACP بدء profile يجب إبقاء هذا تركيب حزمة أو آخر عدد `dsh-acp` بند إعداد؛ لا فإن لا يوجد peer استجابة client.
+- **مستخدم إضافة ممكن كسر تالف stdout صاف صاف صفة**:profile و مفرد مرة بدء patch يخص تلقي معلومة مهمة تطبيق تركيب. مع مرفق تركيب حزمة لن نحو stdout كتابة غير بروتوكول محتوى، لكن لا يمكن قيد مهمة معنى إدراج دخول إضافة.
+- **إعداد أكثر تعديل حاجة إعادة بدء**:`acp-app` تركيب حزمة في YAML في منع استخدام HMR، تأكيد حفظ واحد بند stdio اتصال لن مراقبة إلى bridge أو Agent اعتماد يتم استبدال.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。该 bundle 只增加进程传输与启动 latch；帧纯度、help 排除和关闭行为由源码及构建产物的 stdio 测试负责。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذا bundle فقط زيادة عملية نقل و بدء latch؛ لقطة صاف درجة،help ترتيب حذف و إغلاق سلوك من شفرة المصدر و بناء ناتج stdio اختبار مسؤول.

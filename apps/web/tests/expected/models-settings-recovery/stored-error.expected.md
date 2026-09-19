@@ -1,45 +1,45 @@
-- dialog "设置":
+- dialog "ضبط":
   - navigation:
-    - text: 设置
-    - button "通用设置":
+    - text: ضبط
+    - button "عام ضبط":
       - img
-      - text: 通用设置
-    - button "模型":
+      - text: عام ضبط
+    - button "نموذج":
       - img
-      - text: 模型
-    - button "内置插件":
+      - text: نموذج
+    - button "داخل وضع إضافة":
       - img
-      - text: 内置插件
-    - button "Agent 预设":
+      - text: داخل وضع إضافة
+    - button "Agent مسبق ضبط":
       - img
-      - text: Agent 预设
-    - button "已归档会话":
+      - text: Agent مسبق ضبط
+    - button "قد عودة ملف جلسة":
       - img
-      - text: 已归档会话
-  - button "打开配置文件"
-  - button "关闭":
+      - text: قد عودة ملف جلسة
+  - button "فتح ملف إعداد"
+  - button "إغلاق":
     - img
-    - text: 关闭
-  - heading "模型" [level=2]
-  - paragraph: 填入各提供方的 API 密钥即可使用其模型。
+    - text: إغلاق
+  - heading "نموذج" [level=2]
+  - paragraph: ملء دخول كل مزود API مفتاح يكفي استخدام ذلك نموذج.
   - list:
     - listitem:
       - text: openrouter
-      - button "编辑 openrouter": 编辑
-      - button "删除 openrouter": 删除
+      - button "تحرير openrouter": تحرير
+      - button "حذف openrouter": حذف
       - alert: "llm-pi-ai: provider \"openrouter\" model \"111\" needs an api; the installed catalog does not describe it, so set the route's api to the wire protocol its endpoint speaks"
     - listitem:
       - text: zai
-      - button "编辑 zai": 编辑
-      - button "删除 zai": 删除
+      - button "تحرير zai": تحرير
+      - button "حذف zai": حذف
     - listitem:
-      - text: acme-gateway 自定义
-      - button "编辑 acme-gateway": 编辑
-      - button "删除 acme-gateway": 删除
+      - text: acme-gateway ذاتي تعريف
+      - button "تحرير acme-gateway": تحرير
+      - button "حذف acme-gateway": حذف
       - alert: "llm-pi-ai: provider \"acme-gateway\" model \"custom-model\" needs an api; the installed catalog does not describe it, so set the route's api to the wire protocol its endpoint speaks"
-  - button "添加提供方":
+  - button "إضافة مزود":
     - img
-    - text: 添加提供方
-  - button "添加自定义提供方":
+    - text: إضافة مزود
+  - button "إضافة ذاتي تعريف مزود":
     - img
-    - text: 添加自定义提供方
+    - text: إضافة ذاتي تعريف مزود

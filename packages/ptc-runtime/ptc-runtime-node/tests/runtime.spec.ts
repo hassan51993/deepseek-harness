@@ -105,10 +105,10 @@ describe('Node program process', () => {
 
   it('retains raw native stdout and stderr separately from control frames', async () => {
     const { run } = await setup()
-    const result = await run({ program: 'const fs = await import("node:fs"); fs.writeSync(1,"native-out你好"); fs.writeSync(2,"native-err🙂"); return 42;', bindings: [] })
+    const result = await run({ program: 'const fs = await import("node:fs"); fs.writeSync(1,"native-outأنت جيد"); fs.writeSync(2,"native-err🙂"); return 42;', bindings: [] })
     expect(result.error).toBeUndefined()
     expect(result.value).toBe(42)
-    expect(result.logs.join('')).toContain('native-out你好')
+    expect(result.logs.join('')).toContain('native-outأنت جيد')
     expect(result.logs.join('')).toContain('native-err🙂')
   })
 

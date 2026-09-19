@@ -1,33 +1,33 @@
-# Agent Note: Doc-sync 强制
+# Agent Note: Doc-sync قوي صنع
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-06-11-doc-sync-enforcement.md) | 中文
+[English](2026-06-11-doc-sync-enforcement.md) | العربية
 
-## 问题
+## مشكلة
 
-AGENTS.md 承诺文档与代码严格同步，但这一承诺此前仅靠人眼核查。评审曾两次发现漂移：一次是实操手册（cookbook）示例与类型策略矛盾，一次是 README 引用了错误的 `registerAdapter` 调用。失去同步的文档比没有文档更糟；而本代码库主要由 agent（智能体）构建，agent 遵守门禁远比遵守行文约定可靠（机械质量门禁）。有两类文档漂移可以被机械检查：不再能编译的代码块，以及与 `interface Events` 声明重复的事件分类体系表。
+AGENTS.md تحمل وعد وثيقة و شفرة صارم إطار تزامن، لكن هذا واحد تحمل وعد هذا قبل فقط اعتماد شخص عين نواة فحص. مراجعة سبق اثنان مرة اكتشاف عائم نقل: مرة هو فعلي تشغيل يد سجل (cookbook) عرض مثال و نوع سياسة تناقض درع، مرة هو README مرجع خطأ `registerAdapter` استدعاء. فقد ذهاب تزامن وثيقة مقارنة لا يوجد وثيقة أكثر سيئ؛ بينما هذا شفرة مكتبة رئيسي يلزم من agent(ذكي جسم) بناء،agent التزام حراسة بوابة بعيد مقارنة التزام حراسة سطر نص اتفاق يمكن اعتماد (آلة آلة جودة كمية بوابة). لديه اثنان صنف وثيقة عائم نقل يمكن يتم آلة آلة فحص: لم يعد قدرة تحرير ترجمة شفرة كتلة، و و `interface Events` إعلان تكرار حدث تصنيف جسم نظام جدول.
 
-## 决策
+## قرار
 
-两道门禁，沿用既有的 `scripts/` 风格（tsx ESM，每个脚本一项职责）：
+اثنان طريق بوابة، امتداد استخدام قائم `scripts/` ريح إطار (tsx ESM، كل نص برمجي واحد بند مسؤولية):
 
-1. **`doc-typecheck`** 从 `README.md`、`docs/**` 和 `packages/*/README.md` 中提取所有 ` ```ts ` 围栏代码块，写入一个继承根 `tsconfig.json` 的临时项目，然后用 `tsc -b` 编译。临时项目复用源码的 `paths` 映射和根 project references，因此文档示例能看到源码，而 vendor 代码仍在其自身的 tsconfig 设置下被检查。刻意作为草图的代码块可通过显式的 ` ```ts ignore-check ` 信息字符串来 opt-out；脚本会报告 opt-out 比例，超过一半即失败，防止该豁免机制悄然成为常态。
-2. **`verify-event-taxonomy`** 从 `packages/*/src` 中的 `interface Events` 块和 `docs/architecture.md` 中的分类体系表分别提取事件名称，断言两个集合完全一致。只校验，不生成：表格保留手写的 Mode/Purpose 列，仅检查名称集合。（落地此门禁时发现了表格遗漏的三个事件：`tools/change`、`llm/adapter-change`、`system-prompt/change`。）**已被取代**：由[生成式 Cordis 目录](2026-06-20-generated-cordis-catalog.md)取代。此门禁及其 `architecture.md` 表格已退役，取而代之的是完全生成的 `docs/cordis-catalog/events.md` + `docs/cordis-catalog/services.md` 及其 `verify-cordis-catalog` 新鲜度门禁。本 Agent Note（agent 决策记录）中的其他门禁（`doc-typecheck` 以及下文修订中的 `verify-md-wrap`）不受影响。
+1. **`doc-typecheck`** من `README.md`،`docs/**` و `packages/*/README.md` في رفع أخذ كل ` ```ts ` محيط شريط شفرة كتلة، كتابة واحد وراثة أصل `tsconfig.json` مؤقت مشروع، لكن بعد استخدام `tsc -b` تحرير ترجمة. مؤقت مشروع إعادة استخدام شفرة المصدر `paths` خريطة و أصل project references، لذلك وثيقة عرض مثال قدرة يرى شفرة المصدر، بينما vendor شفرة ما زال في ذلك ذاته tsconfig ضبط تحت يتم فحص. لحظة معنى بصفة مسودة رسم شفرة كتلة يمكن عبر صريح ` ```ts ignore-check ` معلومة نص قدوم opt-out؛ نص برمجي سوف تقرير إبلاغ opt-out مقارنة مثال، تجاوز مرور واحد نصف أي فشل، منع توقف هذا إعفاء تجنب آلية صامت لكن يصبح معتاد حالة.
+2. **`verify-event-taxonomy`** من `packages/*/src` في `interface Events` كتلة و `docs/architecture.md` في تصنيف جسم نظام جدول قسم آخر رفع أخذ حدث اسم، تأكيد اثنان عدد تجميع دمج تماما متسق. فقط تحقق، لا توليد: جدول إطار إبقاء يد كتابة Mode/Purpose صف، فقط فحص اسم تجميع دمج.(سقوط أرض هذا بوابة وقت اكتشاف جدول إطار متروك تسرب ثلاثة عدد حدث:`tools/change`،`llm/adapter-change`،`system-prompt/change`.)**قد يتم يحل محل**: من[توليد صيغة Cordis دليل](2026-06-20-generated-cordis-catalog.md) يحل محل. هذا بوابة و ذلك `architecture.md` جدول إطار قد تراجع دور، أخذ بينما بديل لـ هو تماما توليد `docs/cordis-catalog/events.md` + `docs/cordis-catalog/services.md` و ذلك `verify-cordis-catalog` جديد طازج درجة بوابة. هذا Agent Note(agent قرار سجل) في أخرى بوابة (`doc-typecheck` و تحت نص إصلاح حجز في `verify-md-wrap`) لا تلقي أثر.
 
-两者都通过 package.json 中共享的 `doc-sync` 脚本运行；贡献者在相关文档变更中调用它，CI 则执行完整检查。[快速本地 Git 钩子](2026-07-22-fast-local-git-hooks.md)决策使这类按变更面选择的工作不进入 commit 和 push 钩子。
+اثنان من كل عبر package.json في مشترك `doc-sync` نص برمجي تشغيل؛ مساهمة من في متبادل صلة وثيقة تغيير في استدعاء هو،CI فإن تنفيذ كامل فحص.[سريع سرعة محلي Git خطاف](2026-07-22-fast-local-git-hooks.md) قرار جعل هذا صنف حسب تغيير وجه اختيار عمل لا دخول commit و push خطاف.
 
-**修订（2026-06-17）：** 第三道门禁 **`verify-md-wrap`** 随后被纳入 `doc-sync`。它使用 `mdast-util-from-markdown` + GFM 解析范围内的每个 Markdown 文件（`README.md`、`docs/**`、`packages/*/README.md`，加上 `AGENTS.md` / `packages/AGENTS.md`），如果任何 `paragraph` 节点跨越多个源码行则失败，从而强制执行 docs/AGENTS.md 中「一个段落一个物理行」的写作规则。同样遵循只校验不生成的原则：它报告硬换行但从不重写，因此不会引入格式化噪音。`doc-sync` 现在包含三道门禁。
+**إصلاح حجز (2026-06-17):** رقم ثلاثة طريق بوابة **`verify-md-wrap`** مع بعد يتم قبول دخول `doc-sync`. هو استخدام `mdast-util-from-markdown` + GFM تحليل نطاق داخل كل Markdown ملف (`README.md`،`docs/**`،`packages/*/README.md`، إضافة فوق `AGENTS.md` / `packages/AGENTS.md`) ، إذا أي `paragraph` عقدة عبر تجاوز كثير عدد شفرة المصدر سطر فإن فشل، من بينما قوي صنع تنفيذ docs/AGENTS.md في «واحد مقطع سقوط واحد شيء إدارة سطر» كتابة عمل قاعدة. نفس مثال التزام دوران فقط تحقق لا توليد أصل فإن: هو تقرير إبلاغ صلب تبديل سطر لكن من لا إعادة كتابة، لذلك لن جذب دخول صيغة تحويل ضجيج صوت.`doc-sync` الآن يتضمن ثلاثة طريق بوابة.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **API-extractor 基准报告**（[已推迟的提案](../../proposed/process/2026-06-11-api-extractor-reports.md)）：有意推迟。对于评审者已能直接看到源码 diff 的内部 monorepo 而言价值有限，且依赖重、配置繁琐。
-- **从源码生成分类体系表**而非仅校验名称：否决，机制比问题本身更重；表格保留了手写的 Mode/Purpose 列，直到[生成式 Cordis 目录](2026-06-20-generated-cordis-catalog.md)完全取代了这项检查。
+- **API-extractor أساس دقيق تقرير إبلاغ**([قد دفع متأخر رفع سجل](../../proposed/process/2026-06-11-api-extractor-reports.md)): متعمد دفع متأخر. مقابل في مراجعة من قد قدرة مباشر يرى شفرة المصدر diff داخلي monorepo بينما قول قيمة قيمة لديه حد، كما اعتماد إعادة، إعداد كثيف تافه.
+- **من شفرة المصدر توليد تصنيف جسم نظام جدول**بينما غير فقط تحقق اسم: مرفوض، آلية مقارنة مشكلة ذاته أكثر إعادة؛ جدول إطار إبقاء يد كتابة Mode/Purpose صف، مباشر إلى[توليد صيغة Cordis دليل](2026-06-20-generated-cordis-catalog.md) تماما يحل محل هذا بند فحص.
 
-## 后果
+## عاقبة
 
-- 可检查类别中的文档漂移会直接使 `doc-sync` 和 CI 失败，而不是等评审人发现。这是「机械门禁优于行文规范」原则的具体应用。
-- 让文档代码片段可编译需要少量 stub import/`declare`；`ignore-check` 比例必须保持低位，否则门禁形同虚设（比例守卫强制执行此约束）。
-- 分类体系检查仅限名称——Mode 或 Purpose 列的错误仍需人工评审。
-- 如果包（package）未来对外发布，API 报告方案仍可重新考虑。
+- يمكن فحص صنف آخر في وثيقة عائم نقل سوف مباشر جعل `doc-sync` و CI فشل، بينما لا هو انتظار مراجعة شخص اكتشاف. هذا هو «آلة آلة بوابة أفضل في سطر نص مواصفة» أصل فإن أداة جسم تطبيق.
+- يجعل وثيقة شفرة قطعة مقطع يمكن تحرير ترجمة حاجة قليل كمية stub import/`declare`؛`ignore-check` مقارنة مثال يجب إبقاء منخفض موضع، لا فإن بوابة شكل نفس وهمي ضبط (مقارنة مثال حراسة حماية قوي صنع تنفيذ هذا قيد).
+- تصنيف جسم نظام فحص فقط حد اسم——Mode أو Purpose صف خطأ ما زال يحتاج شخص عمل مراجعة.
+- إذا حزمة (package) لم قدوم مقابل خارج إصدار،API تقرير إبلاغ خطة ما زال يمكن إعادة اعتبار.

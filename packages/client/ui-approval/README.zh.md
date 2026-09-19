@@ -1,47 +1,47 @@
 ---
-description: "通过作用域交互路径响应 Host 权限请求的浏览器批准界面。"
+description: "عبر أثر مجال تفاعل مسار استجابة Host إذن طلب متصفح دفعة دقيق واجهة."
 kind: "package-reference"
 ---
 # @deepseek-ai/dsh-client-ui-approval
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-基于 Agent-scoped Remote Event waterfall 的浏览器审批界面。插件通过 `ctx.uiSession` 发布每个待处理请求、接管 Conversation composer、按需渲染关联的 Tool 详情，并将用户决定返回给等待中的 Host 请求。当浏览器必须为等待中的 Host 操作收集批准时，请使用它。
+أساس في Agent-scoped Remote Event waterfall متصفح مراجعة دفعة واجهة. إضافة عبر `ctx.uiSession` إصدار كل انتظار معالجة طلب، وصل إدارة Conversation composer، حسب يحتاج تصيير صلة ربط Tool تفصيل حال، و سوف مستخدم قرار إرجاع إعطاء انتظار في Host طلب. عند متصفح يجب لـ انتظار في Host عملية استلام تجميع دفعة دقيق وقت، طلب استخدام هو.
 
-## 目录
+## دليل
 
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为本包只在浏览器中呈现审批请求，不注册任何面向模型的内容。
+بلا، لأن هذه الحزمة فقط في متصفح في عرض مراجعة دفعة طلب، لا تسجيل أي موجه إلى نموذج محتوى.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；审批请求和响应的呈现不会改变模型请求。
+بلا؛ مراجعة دفعة طلب و استجابة عرض لن تغيير نموذج طلب.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **面板只提供临时决定**——它支持仅本次允许和拒绝；持久权限策略仍由 Host 侧审批包拥有。
+- **وجه لوح فقط توفير مؤقت قرار**——هو دعم حمل فقط هذا مرة سماح و رفض؛ حمل دائم إذن سياسة ما زال من Host جانب مراجعة دفعة حزمة يملك.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。Remote listener 与临时 Slot entry 由各自注册表持有并观察。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل.Remote listener و مؤقت Slot entry من كل منها سجل التسجيل يحتفظ و مراقبة.

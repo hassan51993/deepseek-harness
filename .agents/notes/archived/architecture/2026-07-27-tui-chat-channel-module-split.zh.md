@@ -1,37 +1,37 @@
-# Agent Note: dsh-tui 聊天通道模块拆分
+# Agent Note: dsh-tui حديث يوم عبر طريق وحدة تفكيك قسم
 
 Status: implemented
 Archived: 2026-08-04
 
-[English](2026-07-27-tui-chat-channel-module-split.md) | 中文
+[English](2026-07-27-tui-chat-channel-module-split.md) | العربية
 
 ## Problem
 
-`packages/ui/tui/src/index.ts` 已超过 2000 行，其中绝大部分是单个 `createTuiChat` 工厂：一个约 1600 行的闭包，持有约四十个可变变量以及同等数量的嵌套闭包。模型选择、ask-user-question 队列、会话恢复都缠绕在这一个作用域里，读者无法在不把整份文件装进脑子的前提下理清任何单一关注点，互不相关的改动也会彼此冲突。此前一轮已把 `src/` 归组为 `components/`、`session/`、`extension/`，但入口文件本身以及散落在顶层的输入相关文件（`autocomplete.ts`、`file-autocomplete.ts`、`skill-invocation.ts`、`xml-tool-output.ts`）未动。
+`packages/ui/tui/src/index.ts` قد تجاوز مرور 2000 سطر، منها قطعا كبير جزء هو مفرد عدد `createTuiChat` عمل مصنع: واحد نحو 1600 سطر إغلاق حزمة، يحتفظ نحو أربعة عشرة عدد متغير متغير و نفس انتظار عدد كمية تضمين طقم إغلاق حزمة. نموذج اختيار،ask-user-question طابور صف، جلسة استعادة كل التفاف التفاف في هذا واحد أثر مجال داخل، قراءة من لا يمكن في لا يأخذ كامل نسخة ملف تركيب دخول دماغ فرعي قبل رفع تحت إدارة صاف أي مفرد واحد صلة ملاحظة نقطة، متبادل لا متبادل صلة تعديل أيضا سوف ذاك هذا اندفاع مفاجئ. هذا قبل واحد جولة قد يأخذ `src/` عودة مجموعة لـ `components/`،`session/`،`extension/`، لكن مدخل ملف ذاته و تفرق سقوط في قمة طبقة إدخال متبادل صلة ملف (`autocomplete.ts`،`file-autocomplete.ts`،`skill-invocation.ts`،`xml-tool-output.ts`) لم حركة.
 
 ## Decision
 
-聊天通道内聚的子机制从 `createTuiChat` 中抽出，迁入 `src/chat/`，每个都是接收显式依赖包的工厂，而非闭包捕获入口作用域：
+حديث يوم عبر طريق داخل تجمع فرعي آلية من `createTuiChat` في سحب خروج، نقل دخول `src/chat/`، كل كل هو استقبال صريح اعتماد حزمة عمل مصنع، بينما غير إغلاق حزمة التقاط مدخل أثر مجال:
 
-- `chat/model-command.ts` — `createModelController`：排队执行的 `/model` 命令、模型加推理力度（reasoning-effort）的选择浮层，以及所选模型上下文窗口的解析。持有供提示行与状态视图读取的上下文窗口缓存。
-- `chat/questions.ts` — `createQuestionQueue`：user-interaction provider 以及一次仅一个的 FIFO ask-user-question 浮层。
-- `chat/resume.ts` — `createResumeController`：`/resume` 选择器、逐候选摘要读取、交接前预检、终端交接，以及持久化的恢复提示命令。
-- `chat/helpers.ts` — 无状态辅助函数（`formatCwd`、`gitBranch`、surface/工具调用派生、会话引用卡片）、`HintEditor`，以及横幅揭示常量。
-- `chat/channel.ts` — `ChatChannelDeps`（每个子控制器共享的协作者面）与 `ChannelNotice`（由需要上报结果的控制器混入）。各 `*Deps` 继承它们，使共享面只有一处定义。
+- `chat/model-command.ts` — `createModelController`: ترتيب طابور تنفيذ `/model` أمر، نموذج إضافة دفع إدارة قوة درجة (reasoning-effort) اختيار طفو طبقة، و الذي اختيار نموذج سياق نافذة تحليل. يحتفظ توفير تلميح سطر و حالة عرض قراءة سياق نافذة ذاكرة مؤقتة.
+- `chat/questions.ts` — `createQuestionQueue`:user-interaction provider و مرة فقط واحد FIFO ask-user-question طفو طبقة.
+- `chat/resume.ts` — `createResumeController`:`/resume` اختيار جهاز، تدريجي مرشح ملخص قراءة، تسليم وصل قبل مسبق فحص، طرفية تسليم وصل، و حفظ دائم استعادة تلميح أمر.
+- `chat/helpers.ts` — بلا حالة مساعد مساعدة دالة (`formatCwd`،`gitBranch`،surface/أداة استدعاء إرسال توليد، جلسة مرجع بطاقة) ،`HintEditor`، و أفقي عرض كشف عرض معتاد كمية.
+- `chat/channel.ts` — `ChatChannelDeps`(كل فرعي تحكم جهاز مشترك تنسيق عمل من وجه) و `ChannelNotice`(من حاجة فوق تقرير نتيجة تحكم جهاز خلط دخول). كل `*Deps` وراثة هو جمع، جعل مشترك وجه فقط لديه واحد موضع تعريف.
 
-`src/` 随之重组，使 `chat/` 汇集所有聊天通道关注点：上述子控制器，加上原来的输入文件与原 `session/` 文件（`timing.ts`、`tokens.ts`）都迁到 `chat/` 之下。`xml-tool-output.ts` 迁到 `components/` 之下。宿主/进程边界接口（`TuiRuntime`、`TuiResumeHost`）迁到 `src/runtime.ts`。拆分后 `src/` 为 `chat/`、`components/`、`extension/`，以及顶层的 `index.ts` / `config.ts` / `prompt.ts` / `runtime.ts` / `invariant.ts`；`index.ts` 从 2067 行降至约 1530 行，现负责构造并接线这三个控制器。
+`src/` مع لـ إعادة مجموعة، جعل `chat/` تجميع تجميع كل حديث يوم عبر طريق صلة ملاحظة نقطة: فوق وصف فرعي تحكم جهاز، إضافة فوق أصل قدوم إدخال ملف و أصل `session/` ملف (`timing.ts`،`tokens.ts`) كل نقل إلى `chat/` لـ تحت.`xml-tool-output.ts` نقل إلى `components/` لـ تحت. مضيف/عملية حد واجهة (`TuiRuntime`،`TuiResumeHost`) نقل إلى `src/runtime.ts`. تفكيك قسم بعد `src/` لـ `chat/`،`components/`،`extension/`، و قمة طبقة `index.ts` / `config.ts` / `prompt.ts` / `runtime.ts` / `invariant.ts`؛`index.ts` من 2067 سطر خفض حتى نحو 1530 سطر، الآن مسؤول بنية صنع و وصل خط هذا ثلاثة عدد تحكم جهاز.
 
-控制器依赖包的约定：稳定的取值型协作者（`ctx`、`resolved`、`palette`、`overlayManager`，以及各控制器自有的服务）一次性解构；通道回调（`appendNotice`、`requestRender`、`isDisposed`、`agentStatus`）保留在 `deps` 上，使控制器始终调用通道当前的实现。`channel.ts` 的 JSDoc 陈述了此规则。
+تحكم جهاز اعتماد حزمة اتفاق: مستقر أخذ قيمة نوع تنسيق عمل من (`ctx`،`resolved`،`palette`،`overlayManager`، و كل تحكم جهاز ذاتي لديه خدمة) مرة صفة حل بنية؛ عبر طريق عودة ضبط (`appendNotice`،`requestRender`،`isDisposed`،`agentStatus`) إبقاء في `deps` فوق، جعل تحكم جهاز بداية نهاية استدعاء عبر طريق حالي تنفيذ.`channel.ts` JSDoc قديم وصف هذا قاعدة.
 
 ## Alternatives considered
 
-- **接收共享可变上下文对象的自由函数。** 否决：那会把拆分本要消除的四十字段大杂烩，仅换个参数名重新暴露出来。
-- **同时抽出状态/计时动画控制器。** 推迟：`runningStatus` 被 `updatePromptValues` 中的提示光标动画直接读取，在此设控制器边界会让其内部状态经 getter 反向泄漏——收益甚微的漏隙缝。它继续内联在 `index.ts` 中。
+- **استقبال مشترك متغير سياق كائن ذاتي من دالة.** مرفوض: ذلك سوف يأخذ تفكيك قسم هذا يلزم إزالة حذف أربعة عشرة حقل كبير مختلط خليط، فقط تبديل عدد معامل اسم إعادة كشف خروج قدوم.
+- **معا سحب خروج حالة/حساب وقت حركة رسم تحكم جهاز.** دفع متأخر:`runningStatus` يتم `updatePromptValues` في تلميح ضوء علامة حركة رسم مباشر قراءة، في هذا ضبط تحكم جهاز حد سوف يجعل ذلك داخلي حالة مرور getter عكس نحو تسرب تسرب——استلام فائدة جدا دقيق تسرب فجوة شق. هو متابعة داخل ربط في `index.ts` في.
 
 ## Consequences
 
-每个关注点现可独立阅读与测试，共享依赖面只定义一次，而非复制进三个接口。代价：`index.ts` 负责构造这些控制器并穿针引线地传入回调包；模型控制器是 `let` 前向引用（`updatePromptValues` 闭包捕获它，但它要待 `appendNotice`/`overlayManager` 就绪后才构造），因而带一处有正当理由的 `prefer-const` 禁用与一次延后的首帧绘制。
+كل صلة ملاحظة نقطة الآن يمكن مستقل قراءة قراءة و اختبار، مشترك اعتماد وجه فقط تعريف مرة، بينما غير نسخ دخول ثلاثة عدد واجهة. بديل قيمة:`index.ts` مسؤول بنية صنع هذه تحكم جهاز و اختراق إبرة جذب خط أرض نقل دخول عودة ضبط حزمة؛ نموذج تحكم جهاز هو `let` قبل نحو مرجع (`updatePromptValues` إغلاق حزمة التقاط هو، لكن هو يلزم انتظار `appendNotice`/`overlayManager` حينئذ خيط بعد عندئذ بنية صنع) ، بسبب بينما حمل واحد موضع لديه صحيح عند إدارة من `prefer-const` منع استخدام و مرة تأخير بعد أول لقطة رسم صنع.
 
 ## Testing
 
-行为不变：现有的包测试与 TUI 快照全部无需重录即通过，这正是本次重构的契约。
+سلوك ثابت: قائم حزمة اختبار و TUI لقطة الكل بلا حاجة إعادة تسجيل أي عبر، هذا صحيح هو هذا مرة إعادة بنية عقد نحو.

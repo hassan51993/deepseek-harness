@@ -1,37 +1,37 @@
 ---
-description: "open-in-app 的主机半边：在 macOS、Windows、Linux 上把已安装的编辑器、Git GUI、终端与文件管理器解析为已验证的启动器，并以三条 webServer 路由提供目录、图标与启动端点。"
+description: "open-in-app رئيسي آلة نصف حافة: في macOS،Windows،Linux فوق يأخذ قد تثبيت تحرير جهاز،Git GUI، طرفية و ملف إدارة جهاز تحليل لـ قد تحقق بدء جهاز، و بـ ثلاثة بند webServer توجيه توفير دليل، رسم علامة و بدء طرف نقطة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-host-open-in-app
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-将 `dsh-host-open-in-app` 与其[浏览器配套包](../../client/ui-open-in-app/README.zh.md)一起使用，让用户能在已安装的编辑器、Git GUI、终端或文件管理器中打开 workspace 目录。本包提供固定的应用目录，并只显示主机能够验证的条目；新安装的应用在重启后出现，而检测到启动器缺失时会移除对应条目。请求须通过部署的浏览器认证与主机来源信任检查。检测与启动命令使用可配置的期限，且不会把继承的凭据传给启动的应用。
+سوف `dsh-host-open-in-app` و ذلك[متصفح إعداد طقم حزمة](../../client/ui-open-in-app/README.zh.md) واحد بدء استخدام، يجعل مستخدم قدرة في قد تثبيت تحرير جهاز،Git GUI، طرفية أو ملف إدارة جهاز في فتح workspace دليل. هذه الحزمة توفير ثابت تطبيق دليل، و فقط عرض رئيسي آلة قدرة كاف تحقق بند؛ جديد تثبيت تطبيق في إعادة بدء بعد ظهور، بينما فحص قياس إلى بدء جهاز ناقص وقت سوف إزالة مقابل بند. طلب يجب عبر نشر متصفح إقرار إثبات و رئيسي آلة مصدر معلومة مهمة فحص. فحص قياس و بدء أمر استخدام يمكن إعداد مدة حد، كما لن يأخذ وراثة اعتماد نقل إعطاء بدء تطبيق.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延后工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و تأخير بعد عمل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-把本包挂进携带 `webServer`、`connection` 与 `subprocess` 的组合，通常与其浏览器表面 [`dsh-client-ui-open-in-app`](../../client/ui-open-in-app/README.zh.md) 并排；只要主机解析出目录中至少一个已安装的应用，这对包就会在 Web 会话头部放上 "Open In..." 分体按钮。
+يأخذ هذه الحزمة تعليق دخول يحمل `webServer`،`connection` و `subprocess` تركيب، عبر معتاد و ذلك متصفح جدول وجه [`dsh-client-ui-open-in-app`](../../client/ui-open-in-app/README.zh.md) و ترتيب؛ فقط يلزم رئيسي آلة تحليل خروج دليل في حتى قليل واحد قد تثبيت تطبيق، هذا مقابل حزمة حينئذ سوف في Web جلسة رأس جزء وضع فوق "Open In..." قسم جسم حسب زر.
 
-### 何时选择
+### أي وقت اختيار
 
-当 Web 部署的用户在本地编辑器、Git GUI、终端或文件管理器旁工作、希望一键在其中打开 workspace 目录时选择本包。若只需从主机代码用系统默认应用打开一个路径，请用 `dsh-apiproxy` 的 `openPath`——本包的主体是*用哪个*应用，带逐应用解析与启动器。
+عند Web نشر مستخدم في محلي تحرير جهاز،Git GUI، طرفية أو ملف إدارة جهاز جانب عمل، أمل نظر واحد مفتاح في منها فتح workspace دليل وقت اختيار هذه الحزمة. إذا فقط يحتاج من رئيسي آلة شفرة استخدام نظام افتراضي تطبيق فتح واحد مسار، طلب استخدام `dsh-apiproxy` `openPath`——هذه الحزمة رئيسي جسم هو*استخدام أي عدد*تطبيق، حمل تدريجي تطبيق تحليل و بدء جهاز.
 
-### 最小配置
+### الأكثر صغير إعداد
 
 ```yaml
 - name: '@deepseek-ai/dsh-host-open-in-app'
@@ -41,85 +41,85 @@ kind: "package-reference"
     launchWatchMs: 1000
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `probeTimeoutMs` | 必填 | 目录解析主机命令（`xcode-select`、Windows 注册表读取）的逐命令期限（毫秒）。 |
-| `iconTimeoutMs` | 必填 | 图标提取主机命令（macOS 的 `plutil`/`sips`、Windows 的 PowerShell 提取）的逐命令期限（毫秒）。 |
-| `launchWatchMs` | 必填 | 每次启动的早期失败看护窗口：窗口关闭时仍在运行的启动器计为已启动并继续运行，因此它约束的是 open 路由挂起一次成功启动的时长。 |
+| `probeTimeoutMs` | لا بد ملء | دليل تحليل رئيسي آلة أمر (`xcode-select`،Windows سجل التسجيل قراءة) تدريجي أمر مدة حد (جزء ثانية). |
+| `iconTimeoutMs` | لا بد ملء | رسم علامة رفع أخذ رئيسي آلة أمر (macOS `plutil`/`sips`،Windows PowerShell رفع أخذ) تدريجي أمر مدة حد (جزء ثانية). |
+| `launchWatchMs` | لا بد ملء | كل مرة بدء مبكر مدة فشل نظر حماية نافذة: نافذة إغلاق وقت ما زال في تشغيل بدء جهاز حساب لـ قد بدء و متابعة تشغيل، لذلك هو قيد هو open توجيه تعليق بدء مرة نجاح بدء وقت طويل. |
 
-三个期限彼此独立，调整一种操作的超时不会改变其他操作的响应时间；超时是失败上界而非延迟预算，命令健康时保守的解析/图标期限没有任何代价。生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-host-open-in-app)是所有可接受字段的详尽来源。
+ثلاثة عدد مدة حد ذاك هذا مستقل، ضبط كامل واحد نوع عملية مهلة لن تغيير أخرى عملية استجابة وقت؛ مهلة هو فشل فوق حد بينما غير تأخير متأخر ميزانية، أمر سليم سليم وقت حفظ حراسة تحليل/رسم علامة مدة حد لا يوجد أي بديل قيمة. توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-host-open-in-app) هو كل يمكن قبول حقل تفصيل كل مصدر.
 
-### 目录及其解析方式
+### دليل و ذلك تحليل طريقة
 
-目录是一份固定白名单，覆盖编辑器与 IDE（Cursor、VS Code 与 Insiders、Windsurf、Zed、Sublime Text、Xcode、Android Studio，以及 JetBrains 系 IntelliJ IDEA、PyCharm、WebStorm、PhpStorm、GoLand、Rider、RustRover）、Git GUI（Fork、Sourcetree、GitHub Desktop、Tower、GitKraken、SmartGit、Sublime Merge）、终端（Ghostty、Warp、iTerm2、kitty、Terminal、Windows Terminal、Git Bash、GNOME Terminal、Konsole）与各平台文件管理器（Finder、文件资源管理器、`xdg-open`）。每个条目按平台声明按序尝试的启动器来源，且每个来源产出的都是**已验证的启动器**——本机实际持有的产物——绝不是一条裸的安装记录：
+دليل هو واحد نسخة ثابت أبيض اسم مفرد، تغطية تحرير جهاز و IDE(Cursor،VS Code و Insiders،Windsurf،Zed،Sublime Text،Xcode،Android Studio، و JetBrains نظام IntelliJ IDEA،PyCharm،WebStorm،PhpStorm،GoLand،Rider،RustRover) ،Git GUI(Fork،Sourcetree،GitHub Desktop،Tower،GitKraken،SmartGit،Sublime Merge) ، طرفية (Ghostty،Warp،iTerm2،kitty،Terminal،Windows Terminal،Git Bash،GNOME Terminal،Konsole) و كل منصة ملف إدارة جهاز (Finder، ملف مورد إدارة جهاز،`xdg-open`). كل بند حسب منصة إعلان حسب ترتيب محاولة تجربة بدء جهاز مصدر، كما كل مصدر إنتاج خروج كل هو**قد تحقق بدء جهاز**——هذا آلة فعلي يحتفظ ناتج——أبدا هو واحد بند عار تثبيت سجل:
 
-- **macOS** 在已知应用目录（`/Applications`、`~/Applications`）中查找条目的 bundle 拼写，启动 `open -a <解析出的 bundle>`；Xcode 跟随 `xcode-select -p`，因此能找到 Beta 或改名的安装。不做 Launch Services 查询，也不扫描磁盘。
-- **Windows** 依次读取 `App Paths` 注册表键、Uninstall 记录（仅当它们能证明磁盘上存在可执行文件时才采用）、已知安装路径，以及采用版本化安装目录的应用中最新的目录。GitHub Desktop 会同时解析版本化可执行文件与随包提供的 `cli.js`，不经命令 shell 调用受支持的 `github open <path>` 行为。注册表读取按批进行，每次解析每个根只跑一条 `reg.exe query`。
-- **Linux 与 Windows 的 CLI（命令行界面）名称**经组合的 subprocess 能力在进程内解析（PATH/PATHEXT stat，无 shell、无 `which`）；CLI 不在 PATH 上的 Linux GUI 条目回退到其 XDG desktop 条目验证过的 `TryExec`/`Exec` 可执行文件，且只有主机声明了 display server 时才提供 `xdg-open` 文件管理器条目。
+- **macOS** في معروف تطبيق دليل (`/Applications`،`~/Applications`) في فحص بحث بند bundle تجميع كتابة، بدء `open -a <تحليل خروج bundle>`؛Xcode تتبع مع `xcode-select -p`، لذلك قدرة بحث إلى Beta أو تعديل اسم تثبيت. لا فعل Launch Services استعلام، أيضا لا مسح مغناطيس قرص.
+- **Windows** اعتماد مرة قراءة `App Paths` سجل التسجيل مفتاح،Uninstall سجل (فقط عند هو جمع قدرة إثبات مغناطيس قرص فوق وجود يمكن تنفيذ ملف وقت عندئذ اعتماد) ، معروف تثبيت مسار، و اعتماد إصدار تحويل تثبيت دليل تطبيق في الأكثر جديد دليل.GitHub Desktop سوف معا تحليل إصدار تحويل يمكن تنفيذ ملف و مع حزمة توفير `cli.js`، لا مرور أمر shell استدعاء تلقي دعم حمل `github open <path>` سلوك. سجل التسجيل قراءة حسب دفعة إجراء، كل مرة تحليل كل أصل فقط ركض واحد بند `reg.exe query`.
+- **Linux و Windows CLI(أمر سطر واجهة) اسم**مرور تركيب subprocess قدرة في عملية داخل تحليل (PATH/PATHEXT stat، بلا shell، بلا `which`) ؛CLI لا في PATH فوق Linux GUI بند رجوع إلى ذلك XDG desktop بند تحقق مرور `TryExec`/`Exec` يمكن تنفيذ ملف، كما فقط لديه رئيسي آلة إعلان display server وقت عندئذ توفير `xdg-open` ملف إدارة جهاز بند.
 
-### 预期行为
+### مسبق مدة سلوك
 
-[启动环境](../../util/launch-environment/README.zh.md)中继承的进程层的 `SSH_CONNECTION` 或 `SSH_TTY` 非空时，应用列表为空，Web 头部隐藏 Open In，包括已记住的应用选择。项目与用户 `.env` 中的值不作为 SSH 启动的依据。主机跳过应用探测，并拒绝不可用应用的图标和启动请求。SSH 会话即使携带显示服务或 VS Code IPC 连接，也遵循此规则；若启动器移除了两个 SSH 标记，本规则无法识别该远端部署。
+[بدء بيئة](../../util/launch-environment/README.zh.md) في وراثة عملية طبقة `SSH_CONNECTION` أو `SSH_TTY` غير فارغ وقت، تطبيق قائمة لـ فارغ،Web رأس جزء إخفاء Open In، يشمل قد تسجيل إقامة تطبيق اختيار. مشروع و مستخدم `.env` في قيمة لا بصفة SSH بدء اعتماد حسب. رئيسي آلة قفز مرور تطبيق استكشاف قياس، و رفض غير ممكن استخدام تطبيق رسم علامة و بدء طلب.SSH جلسة أي جعل يحمل عرض خدمة أو VS Code IPC اتصال، أيضا التزام دوران هذا قاعدة؛ إذا بدء جهاز إزالة اثنان عدد SSH علامة، هذا قاعدة لا يمكن تعرف آخر هذا بعيد طرف نشر.
 
-解析惰性执行，每主机进程一次，在首个需要它的请求上进行；安装应用要下次重启后生效，卸载方向则立即自愈——启动时发现可执行文件已消失会只重解析该条目一次，无法再证明时把它从列表中移除。图标路由在每个可提取的平台上提供应用真实图标：macOS 上 bundle 的 `.icns` 转 128px PNG，Windows 上可执行文件的关联图标转 32px PNG，Linux 上 desktop 条目在 hicolor 主题中的图标（PNG 或 SVG）；提取不到的图标应答 404，浏览器表面渲染通用占位图形。
+تحليل كسول صفة تنفيذ، كل رئيسي آلة عملية مرة، في أول عدد حاجة هو طلب فوق إجراء؛ تثبيت تطبيق يلزم تحت مرة إعادة بدء بعد توليد فاعلية، إزالة جهة نحو فإن قيام أي ذاتي شفاء——بدء وقت اكتشاف يمكن تنفيذ ملف قد إزالة فقد سوف فقط إعادة تحليل هذا بند مرة، لا يمكن مجددا إثبات وقت يأخذ هو من قائمة في إزالة. رسم علامة توجيه في كل يمكن رفع أخذ منصة فوق توفير تطبيق حقيقي رسم علامة:macOS فوق bundle `.icns` تحويل 128px PNG،Windows فوق يمكن تنفيذ ملف صلة ربط رسم علامة تحويل 32px PNG،Linux فوق desktop بند في hicolor رئيسي عنوان في رسم علامة (PNG أو SVG) ؛ رفع أخذ لا إلى رسم علامة ينبغي جواب 404، متصفح جدول وجه تصيير عام احتلال موضع رسم شكل.
 
-### `./shared` 子路径
+### `./shared` فرعي مسار
 
-路由路径与 wire 载荷类型以浏览器安全的 `./shared` 子路径发布（只有常量与类型，没有运行时身份）；浏览器包把它内联进自己的 client bundle。路由或载荷的变更落在 `src/shared.ts`，两个包都从那里获取。
+توجيه مسار و wire تحميل حمل نوع بـ متصفح أمان `./shared` فرعي مسار إصدار (فقط لديه معتاد كمية و نوع، لا يوجد وقت التشغيل هوية) ؛ متصفح حزمة يأخذ هو داخل ربط دخول ذاتي ذات client bundle. توجيه أو تحميل حمل تغيير سقوط في `src/shared.ts`، اثنان عدد حزمة كل من ذلك داخل نيل أخذ.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现内幕——点击展开</summary>
+<summary>تنفيذ داخل ستار——انقر للتوسيع</summary>
 
-本包拆为一张数据表与三个角色。[`src/catalog.ts`](src/catalog.ts) 是编译期表格：每个条目按平台的 locator 链（`fixed`、`app`、`xcode`、`cli`、`file`、`scan`、`app-paths`、`install-record`、`github-desktop`、`desktop`），以及 Linux 上拥有其图标的 desktop 条目 id。[`src/resolver.ts`](src/resolver.ts) 把表格解析到本机：一趟产出目录 id 到已验证启动的映射（主/回退 argv 加图标来源），共享一次批量的 Windows 注册表读取；argv 启动以清理过凭据的环境（`scrubbedParentEnv`）叠加适配器显式环境后 detached 派生，Windows GUI 默认保持可见，只有负责另行打开 GUI 的 CLI 适配器会隐藏自己的进程。`shell-open` 启动（文件管理器）在同一看护窗口下经 `dsh-native-command` 的路径打开器执行 OS shell 的 open verb，spawn 的 `ENOENT` 被归类为 `missing`，让路由能刷新失效条目。[`src/icons.ts`](src/icons.ts) 按平台提取图标：macOS 在解析出的 bundle 上跑 `plutil`/`sips`，Windows 在解析出的可执行文件上跑生成的 PowerShell `ExtractAssociatedIcon` 脚本（`-File` 位置参数让路径不经过命令行解析），Linux 走 desktop 条目/hicolor/pixmaps 的文件系统查找。
+هذه الحزمة تفكيك لـ واحد ورقة بيانات جدول و ثلاثة عدد زاوية لون.[`src/catalog.ts`](src/catalog.ts) هو تحرير ترجمة مدة جدول إطار: كل بند حسب منصة locator سلسلة (`fixed`،`app`،`xcode`،`cli`،`file`،`scan`،`app-paths`،`install-record`،`github-desktop`،`desktop`) ، و Linux فوق يملك ذلك رسم علامة desktop بند id.[`src/resolver.ts`](src/resolver.ts) يأخذ جدول إطار تحليل إلى هذا آلة: واحد مرة إنتاج خروج دليل id إلى قد تحقق بدء خريطة (رئيسي/رجوع argv إضافة رسم علامة مصدر) ، مشترك مرة دفعة كمية Windows سجل التسجيل قراءة؛argv بدء بـ تنظيف مرور اعتماد بيئة (`scrubbedParentEnv`) تراكم إضافة مهايئ صريح بيئة بعد detached إرسال توليد،Windows GUI افتراضي إبقاء مرئي، فقط لديه مسؤول آخر سطر فتح GUI CLI مهايئ سوف إخفاء ذاتي ذات عملية.`shell-open` بدء (ملف إدارة جهاز) في نفس نظر حماية نافذة تحت مرور `dsh-native-command` مسار فتح جهاز تنفيذ OS shell open verb،spawn `ENOENT` يتم عودة صنف لـ `missing`، يجعل توجيه قدرة تحديث جديد بطلان بند.[`src/icons.ts`](src/icons.ts) حسب منصة رفع أخذ رسم علامة:macOS في تحليل خروج bundle فوق ركض `plutil`/`sips`،Windows في تحليل خروج يمكن تنفيذ ملف فوق ركض توليد PowerShell `ExtractAssociatedIcon` نص برمجي (`-File` موضع معامل يجعل مسار لا مرور مرور أمر سطر تحليل) ،Linux مشي desktop بند/hicolor/pixmaps نظام الملفات فحص بحث.
 
-[`src/index.ts`](src/index.ts) 在 `ctx.webServer` 上注册三条路由：`GET /open-in-app/apps`（解析映射的 keys）、`GET /open-in-app/icon/<id>`（提取的图标，进程内内存缓存）、`POST /open-in-app/open`（直接使用映射中已验证的启动器——绝不重新检测）。每条路由都先向组合的 `connection` 服务询问是否拒绝；完整的信任叙述——Host/Origin 栅栏与浏览器认证——唯一的出处在 [`src/index.ts`](src/index.ts) 的模块注释。在该栅栏之上，open 路由在 wire 边界校验请求体：`application/json` 媒体类型、64 KiB 上限、解析为可用的目录 id、指向现存目录的绝对路径。解析与图标命令经 [`@deepseek-ai/dsh-native-command`](../../util/native-command/README.zh.md)（argv，绝不走 shell）在各自期限内执行；PATH 名称走 `ctx.subprocess.resolveExecutable()` 进程内解析。
+[`src/index.ts`](src/index.ts) في `ctx.webServer` فوق تسجيل ثلاثة بند توجيه:`GET /open-in-app/apps`(تحليل خريطة keys) ،`GET /open-in-app/icon/<id>`(رفع أخذ رسم علامة، عملية داخل داخل تخزين ذاكرة مؤقتة) ،`POST /open-in-app/open`(مباشر استخدام خريطة في قد تحقق بدء جهاز——أبدا إعادة فحص قياس). كل بند توجيه كل أولا نحو تركيب `connection` خدمة استفسار سؤال هل رفض؛ كامل معلومة مهمة سرد وصف——Host/Origin شبكة شريط و متصفح إقرار إثبات——وحيد خروج موضع في [`src/index.ts`](src/index.ts) وحدة ملاحظة تفسير. في هذا شبكة شريط لـ فوق،open توجيه في wire حد تحقق طلب جسم:`application/json` وسيط جسم نوع،64 KiB حد أعلى، تحليل لـ متاح دليل id، إشارة نحو الآن تخزين دليل قطعا مقابل مسار. تحليل و رسم علامة أمر مرور [`@deepseek-ai/dsh-native-command`](../../util/native-command/README.zh.md)(argv، أبدا مشي shell) في كل منها مدة حد داخل تنفيذ؛PATH اسم مشي `ctx.subprocess.resolveExecutable()` عملية داخل تحليل.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-- [dsh-client-ui-open-in-app](../../client/ui-open-in-app/README.zh.md)——消费这三条路由的浏览器分体按钮。
-- [dsh-subprocess](../../subprocess/subprocess/README.zh.md)——提供进程内 PATH 解析与清理过的子进程环境的能力。
-- [dsh-native-command](../../util/native-command/README.zh.md)——解析与图标命令的免 shell 主机命令运行器。
-- [dsh-host-webserver](../webserver/README.zh.md)——承载三条 HTTP 端点的路由注册表。
-- [Host 包地图](../README.zh.md)——本包所属的 GUI 主机家族。
+- [dsh-client-ui-open-in-app](../../client/ui-open-in-app/README.zh.md)——إزالة استهلاك هذا ثلاثة بند توجيه متصفح قسم جسم حسب زر.
+- [dsh-subprocess](../../subprocess/subprocess/README.zh.md)——توفير عملية داخل PATH تحليل و تنظيف مرور عملية فرعية بيئة قدرة.
+- [dsh-native-command](../../util/native-command/README.zh.md)——تحليل و رسم علامة أمر تجنب shell رئيسي آلة أمر تشغيل جهاز.
+- [dsh-host-webserver](../webserver/README.zh.md)——تحمل تحميل ثلاثة بند HTTP طرف نقطة توجيه سجل التسجيل.
+- [Host حزمة أرض رسم](../README.zh.md)——هذه الحزمة الذي تابع GUI رئيسي آلة بيت عائلة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无。本包为人打开主机应用，不触及任何提示词、消息、schema、流或工具结果。
+بلا. هذه الحزمة لـ شخص فتح رئيسي آلة تطبيق، لا لمس و أي نص التوجيه، رسالة،schema، تدفق أو أداة نتيجة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包从不组装或发送提供方请求。
+بلا؛ هذه الحزمة من لا تجميع أو إرسال مزود طلب.
 
-## 已知限制与延后工作
+## معروف حد و تأخير بعد عمل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **目录在构建期固定。** 部署无法从 cordis.yml 增加自己的编辑器或 Git GUI；扩展列表意味着同时扩展 `OPEN_IN_APP_CATALOG` 与浏览器包的词典。操作系统可以定位已知应用，但无法证明每个已安装应用都能接收 workspace 目录，也无法给出各应用需要的启动协议，因此本包不会无边界地枚举 OS 应用。可配置的 custom handler 仍然延后；其中由用户提供的 label 属于用户数据，不是 locale 拥有的产品文案。
-- **macOS 检测只查已知路径。** bundle 改名超出目录收录的拼写、或挪到 `/Applications` 与 `~/Applications` 之外就不会被检测；不做 Launch Services 查询（原生 LaunchServices/NSWorkspace 查询需要仓库尚无的 addon），也刻意不扫描磁盘。
-- **图标保真度受平台约束。** Windows 图标来自 32px 的 `ExtractAssociatedIcon`——不带原生 addon 时 .NET 标准面能给出的最大尺寸——在高分屏上可能略微发软；Linux 图标只查 hicolor 主题与 pixmaps，不追用户的自定义图标主题；若干条目（没有 desktop 条目的纯 CLI 启动器）没有图标来源，保持通用占位图形。
-- **新安装要重启后出现。** 解析每主机进程一次；只有卸载方向自愈（启动器缺失时当场只重解析该条目）。
+- **دليل في بناء مدة ثابت.** نشر لا يمكن من cordis.yml زيادة ذاتي ذات تحرير جهاز أو Git GUI؛ توسيع قائمة معنى طعم حال معا توسيع `OPEN_IN_APP_CATALOG` و متصفح حزمة كلمة قاموس. عملية نظام يمكن تحديد موضع معروف تطبيق، لكن لا يمكن إثبات كل قد تثبيت تطبيق كل قدرة استقبال workspace دليل، أيضا لا يمكن إعطاء خروج كل تطبيق حاجة بدء بروتوكول، لذلك هذه الحزمة لن بلا حد أرض قطعة رفع OS تطبيق. يمكن إعداد custom handler ما زال تأخير بعد؛ منها من مستخدم توفير label يخص مستخدم بيانات، لا هو locale يملك منتج نص سجل.
+- **macOS فحص قياس فقط فحص معروف مسار.** bundle تعديل اسم تجاوز خروج دليل استلام تسجيل تجميع كتابة، أو نقل إلى `/Applications` و `~/Applications` خارج حينئذ لن يتم فحص قياس؛ لا فعل Launch Services استعلام (أصلي LaunchServices/NSWorkspace استعلام حاجة مستودع بعد بلا addon) ، أيضا لحظة معنى لا مسح مغناطيس قرص.
+- **رسم علامة حفظ حق درجة تلقي منصة قيد.** Windows رسم علامة قدوم ذاتي 32px `ExtractAssociatedIcon`——لا حمل أصلي addon وقت .NET معيار وجه قدرة إعطاء خروج الأكثر كبير مقياس قياس——في عال قسم شاشة فوق ممكن اختصار دقيق إرسال لين؛Linux رسم علامة فقط فحص hicolor رئيسي عنوان و pixmaps، لا تتبع مستخدم ذاتي تعريف رسم علامة رئيسي عنوان؛ إذا جاف بند (لا يوجد desktop بند صاف CLI بدء جهاز) لا يوجد رسم علامة مصدر، إبقاء عام احتلال موضع رسم شكل.
+- **جديد تثبيت يلزم إعادة بدء بعد ظهور.** تحليل كل رئيسي آلة عملية مرة؛ فقط لديه إزالة جهة نحو ذاتي شفاء (بدء جهاز ناقص وقت عند ساحة فقط إعادة تحليل هذا بند).
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作语境——点击展开</summary>
+<summary>صيانة من عمل لغة بيئة——انقر للتوسيع</summary>
 
-转正期的各项决定——host/`ui-` 分包、为什么用裸 webServer 路由而非 Typert Remote、目录为什么保持编译期固定、resolver 重设计（已验证启动器、单趟解析、点击不再重新检测）、三期限配置、以及各平台图标策略与被拒的替代方案——记录在[转正 Agent Note](../../../.agents/notes/implemented/feature/2026-08-25-promote-open-anywhere-plugin.zh.md)。
+تحويل صحيح مدة كل بند قرار——host/`ui-` قسم حزمة، لـ ماذا استخدام عار webServer توجيه بينما غير Typert Remote، دليل لـ ماذا إبقاء تحرير ترجمة مدة ثابت،resolver إعادة تصميم (قد تحقق بدء جهاز، مفرد مرة تحليل، نقر لم يعد إعادة فحص قياس) ، ثلاثة مدة حد إعداد، و كل منصة رسم علامة سياسة و يتم رفض بديل خطة——سجل في[تحويل صحيح Agent Note](../../../.agents/notes/implemented/feature/2026-08-25-promote-open-anywhere-plugin.zh.md).
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。本包经三条无状态路由提供一趟主机解析的结果；路由注册已由各自的 HMR（热模块替换）安全测试证明可处置，不存在可能分叉的独立观测。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذه الحزمة مرور ثلاثة بند بلا حالة توجيه توفير واحد مرة رئيسي آلة تحليل نتيجة؛ توجيه تسجيل قد من كل منها HMR(حار وحدة استبدال) أمان اختبار إثبات يمكن موضع وضع، لا وجود ممكن قسم تقاطع مستقل مراقبة قياس.

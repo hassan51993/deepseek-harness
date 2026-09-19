@@ -1,23 +1,23 @@
-# 用户凭据
+# مستخدم اعتماد
 
-[English](credentials.md) | 中文
+[English](credentials.md) | العربية
 
-[dsh-credentials](../../packages/credentials/credentials) 的凭据 seam 把机密挡在配置之外：settings 分节与 `cordis.yml` 条目携带的是*引用*（环境变量名），值归 [dsh-credentials-local](../../packages/credentials/credentials-local) 这类提供方所有，消费方每个操作解析一次引用——LLM（大语言模型）适配器每次模型请求解析一次，因此轮换后的凭据无需任何重启即可作用于紧随其后的下一次请求。一条 seam 级规则约束每个提供方：空的存储值在任何地方都视为不存在。
+[dsh-credentials](../../packages/credentials/credentials) اعتماد seam يأخذ آلة سري حجب في إعداد خارج:settings قسم عقدة و `cordis.yml` بند يحمل هو*مرجع*(بيئة متغير اسم) ، قيمة عودة [dsh-credentials-local](../../packages/credentials/credentials-local) هذا صنف مزود كل، مستهلك كل عملية تحليل مرة مرجع——LLM(كبير لغة نموذج) مهايئ كل مرة نموذج طلب تحليل مرة، لذلك جولة تبديل بعد اعتماد بلا حاجة أي إعادة بدء يكفي أثر في ضيق مع ذلك بعد تحت مرة طلب. واحد بند seam درجة قاعدة قيد كل مزود: فارغ تخزين قيمة في أي أرض جهة كل نظر لـ لا وجود.
 
-来源：[`packages/credentials/credentials/src/index.ts`](../../packages/credentials/credentials/src/index.ts)
+مصدر:[`packages/credentials/credentials/src/index.ts`](../../packages/credentials/credentials/src/index.ts)
 
-## 标识
+## معرف
 
-引用以 POSIX 风格环境变量名命名一条凭据。brand 防止调用方将凭据引用与在包或进程之间传递的其他字符串混用；构造时校验 shell 标识符语法。
+مرجع بـ POSIX ريح إطار بيئة متغير اسم تسمية واحد بند اعتماد.brand منع توقف استدعاء جهة سوف اعتماد مرجع و في حزمة أو عملية بين نقل تمرير أخرى نص خلط استخدام؛ بنية صنع وقت تحقق shell معرف رمز لغة قاعدة.
 
 ```ts type-equiv
 /** Nominal reference to one credential: a POSIX-style environment-variable name. */
 type CredentialRef = Branded<'CredentialRef'>
 ```
 
-## 解析
+## تحليل
 
-`resolve(ref)` 返回值及提供该值的来源层（由提供方定义）；未配置期间返回 `undefined`。消费方在每个操作中重新解析，绝不跨操作缓存——这种按操作进行的读取正是热更新机制。
+`resolve(ref)` قيمة راجعة و توفير هذا قيمة مصدر طبقة (من مزود تعريف) ؛ لم إعداد خلال إرجاع `undefined`. مستهلك في كل عملية في إعادة تحليل، أبدا عبر عملية ذاكرة مؤقتة——هذا نوع حسب عملية إجراء قراءة صحيح هو حار تحديث آلية.
 
 ```ts type-equiv
 /** One resolved credential value and the source layer that supplied it. */
@@ -29,9 +29,9 @@ interface ResolvedCredential {
 }
 ```
 
-## 描述
+## وصف
 
-`describe(ref)` 在绝不暴露值的前提下回应配置界面：引用当前是否可解析、来自哪一层、`set` 当前能否成功。本地提供方把由当前进程环境供值的引用报告为 `writable: false`——那样的写入会表面成功而解析持续返回遮蔽值，因此 seam 直接拒绝，界面也得以提前把该引用渲染为只读。
+`describe(ref)` في أبدا كشف قيمة قبل رفع تحت عودة ينبغي إعداد واجهة: مرجع حالي هل يمكن تحليل، قدوم ذاتي أي واحد طبقة،`set` حالي قدرة لا نجاح. محلي مزود يأخذ من حالي عملية بيئة توفير قيمة مرجع تقرير إبلاغ لـ `writable: false`——ذلك مثال كتابة سوف جدول وجه نجاح بينما تحليل حمل متابعة إرجاع حجب حجب قيمة، لذلك seam مباشر رفض، واجهة أيضا نيل بـ رفع قبل يأخذ هذا مرجع تصيير لـ فقط قراءة.
 
 ```ts type-equiv
 /**
@@ -49,9 +49,9 @@ interface CredentialInfo {
 }
 ```
 
-## 已提交的变更
+## قد إيداع تغيير
 
-`credentials/reference-updated (ref)` 在提供方管理的来源发生已提交变更后发出——`set`、`unset` 或在存储中观察到的外部编辑。进程环境自身的变化不可观测，永不发出事件。消费方不需要该事件（它们按操作重新解析）；它服务于配置界面刷新「已配置」徽标。
+`credentials/reference-updated (ref)` في مزود إدارة مصدر حدوث قد إيداع تغيير بعد إرسال خروج——`set`،`unset` أو في تخزين في مراقبة إلى خارجي تحرير. عملية بيئة ذاته تغير غير ممكن مراقبة قياس، دائم لا إرسال خروج حدث. مستهلك لا حاجة هذا حدث (هو جمع حسب عملية إعادة تحليل) ؛ هو خدمة في إعداد واجهة تحديث جديد «قد إعداد» شعار علامة.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

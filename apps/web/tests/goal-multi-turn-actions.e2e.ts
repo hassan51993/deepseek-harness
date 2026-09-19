@@ -23,7 +23,7 @@ const UI_EXPECTED = join(SNAPSHOT_DIR, 'ui.expected.md')
 const UI_EXPANDED_EXPECTED = join(SNAPSHOT_DIR, 'ui-expanded.expected.md')
 const MODE = webSnapshotMode()
 
-const PROMPT = '做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的'
+const PROMPT = 'فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه'
 const COMMAND = `/goal ${PROMPT}`
 
 const PACKAGE_FILES: Readonly<Record<string, string>> = {

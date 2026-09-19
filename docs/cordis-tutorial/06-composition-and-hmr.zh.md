@@ -1,12 +1,12 @@
-# 6. 组合与 HMR（热模块替换）
+# 6. تركيب و HMR(حار وحدة استبدال)
 
-[English](06-composition-and-hmr.md) | 中文
+[English](06-composition-and-hmr.md) | العربية
 
-到目前为止构建的每项能力都是插件，`cordis.yml` 则选择应用的插件树。本章会改变这种组合、热重载一个插件，并诊断始终无法加载的插件。
+إلى هدف قبل لـ توقف بناء كل بند قدرة كل هو إضافة،`cordis.yml` فإن اختيار تطبيق إضافة شجرة. هذا فصل سوف تغيير هذا نوع تركيب، حار إعادة تحميل واحد إضافة، و تشخيص بداية نهاية لا يمكن تحميل إضافة.
 
-## Cordis 配置项不只有名称
+## Cordis بند إعداد لا فقط لديه اسم
 
-Cordis 配置项除了 `name` 和 `config`，还接受其他元数据：
+Cordis بند إعداد حذف `name` و `config`، أيضا قبول أخرى بيانات وصفية:
 
 ```yaml
 - id: greeter          # stable identity for this entry
@@ -16,15 +16,15 @@ Cordis 配置项除了 `name` 和 `config`，还接受其他元数据：
   disabled: true       # keep the entry, skip mounting it
 ```
 
-`id` 为 Cordis 配置项提供稳定标识，使 loader 能区分修改现有 Cordis 配置项与先删除再添加。`disabled: true` 会卸载插件而不删除其 Cordis 配置项；改回原值后，插件以及所有因依赖其服务而处于 PENDING 的插件都会再次加载。
+`id` لـ Cordis بند إعداد توفير مستقر معرف، جعل loader قدرة منطقة قسم تعديل قائم Cordis بند إعداد و أولا حذف مجددا إضافة.`disabled: true` سوف إزالة إضافة بينما لا حذف ذلك Cordis بند إعداد؛ تعديل عودة أصل قيمة بعد، إضافة و كل بسبب اعتماد ذلك خدمة بينما موضع في PENDING إضافة كل سوف مجددا مرة تحميل.
 
-组可以嵌套一份 Cordis 配置项子列表，并将其作为一个单元加载和卸载；`isolate` 则为一个组提供某项服务名称的独立实例，因此两个组可以各自看到配置不同的 `shell` 提供方，互不影响。[Cordis 入门](../cordis-primer.zh.md)和[服务隔离示例](../user/develop/framework/service.zh.md#service-isolation)介绍了详细内容。
+مجموعة يمكن تضمين طقم واحد نسخة Cordis بند إعداد فرعي قائمة، و سوف ذلك بصفة واحد وحدة تحميل و إزالة؛`isolate` فإن لـ واحد مجموعة توفير بعض بند خدمة اسم مستقل نسخة، لذلك اثنان عدد مجموعة يمكن كل منها يرى إعداد مختلف `shell` مزود، متبادل لا أثر.[Cordis دخول باب](../cordis-primer.zh.md) و[خدمة عزل عرض مثال](../user/develop/framework/service.zh.md#service-isolation) وسيط تعريف تفصيل دقيق محتوى.
 
-## 热模块替换
+## حار وحدة استبدال
 
-卸载会释放 effect（[第 2 章](02-lifecycle-and-effects.zh.md)），加载则遵循依赖关系（[第 3 章](03-services.zh.md)），因此 HMR 可以先卸载、再加载，以替换正在运行的插件。`@deepseek-ai/dsh-hmr` 插件会监视文件，并在保存时执行这一过程。
+إزالة سوف تحرير effect([رقم 2 فصل](02-lifecycle-and-effects.zh.md)) ، تحميل فإن التزام دوران اعتماد علاقة ([رقم 3 فصل](03-services.zh.md)) ، لذلك HMR يمكن أولا إزالة، مجددا تحميل، بـ استبدال صحيح في تشغيل إضافة.`@deepseek-ai/dsh-hmr` إضافة سوف مراقبة نظر ملف، و في حفظ وقت تنفيذ هذا واحد مرور مسار.
 
-在 `tmp/cordis-tutorial` 中编写 `cordis.yml`：
+في `tmp/cordis-tutorial` في تحرير كتابة `cordis.yml`:
 
 ```yaml
 - id: logger
@@ -39,15 +39,15 @@ Cordis 配置项除了 `name` 和 `config`，还接受其他元数据：
   name: './hello.ts'
 ```
 
-列表中增加了两个辅助插件：HMR 通过 Cordis logger 服务记录日志，因此没有控制台导出器时看不到其消息；它还会 `inject` `timer` 服务来实现去抖，如果没有 `@deepseek-ai/cordis-plugin-timer`，它就会永远停在 PENDING，而且不发出任何提示。下一节就讨论这种静默状态。
+قائمة في زيادة اثنان عدد مساعد مساعدة إضافة:HMR عبر Cordis logger خدمة سجل سجل، لذلك لا يوجد تحكم منصة توجيه خروج جهاز وقت نظر لا إلى ذلك رسالة؛ هو أيضا سوف `inject` `timer` خدمة قدوم تنفيذ ذهاب اهتزاز، إذا لا يوجد `@deepseek-ai/cordis-plugin-timer`، هو حينئذ سوف دائم بعيد توقف في PENDING، بينما كما لا إرسال خروج أي تلميح. تحت واحد عقدة حينئذ نقاش نقاش هذا نوع ساكن صامت حالة.
 
-HMR 通过 Loader 的原生辅助工具读取 Node 的 loader 内部结构。请在 tsx 下运行 Cordis：
+HMR عبر Loader أصلي مساعد مساعدة أداة قراءة Node loader داخلي بنية. طلب في tsx تحت تشغيل Cordis:
 
 ```sh
 node --import tsx ../../vendor/cordis/bin.js
 ```
 
-现在编辑 `hello.ts`，修改日志消息并保存：
+الآن تحرير `hello.ts`، تعديل سجل رسالة و حفظ:
 
 ```
 hello from my first plugin
@@ -56,13 +56,13 @@ hello from my first plugin
 hello from my EDITED plugin
 ```
 
-旧实例先卸载（其所有 effect 都会回卷），新代码随后加载，`apply` 再次运行。按 Ctrl-C 停止进程。编辑 `cordis.yml` 本身也会触发更新：loader 按 `id` 比较 Cordis 配置项，只挂载、卸载或重新配置发生变化的部分。这就是上述 Cordis 配置项显式携带 `id` 的原因：不带该字段的 Cordis 配置项在每次读取时都会获得一个新生成的 id，所以只要配置文件发生任何编辑，即使自身文本未变，它也会被视为先删除再添加并重新挂载。
+قديم نسخة أولا إزالة (ذلك كل effect كل سوف عودة لفة) ، جديد شفرة مع بعد تحميل،`apply` مجددا مرة تشغيل. حسب Ctrl-C إيقاف عملية. تحرير `cordis.yml` ذاته أيضا سوف إطلاق تحديث:loader حسب `id` مقارنة مقارنة Cordis بند إعداد، فقط تركيب، إزالة أو إعادة إعداد حدوث تغير جزء. هذا حينئذ هو فوق وصف Cordis بند إعداد صريح يحمل `id` سبب: لا حمل هذا حقل Cordis بند إعداد في كل مرة قراءة وقت كل سوف نيل نيل واحد جديد توليد id، الذي بـ فقط يلزم ملف إعداد حدوث أي تحرير، أي جعل ذاته نص لم تغيير، هو أيضا سوف يتم نظر لـ أولا حذف مجددا إضافة و إعادة تركيب.
 
-## 诊断始终无法加载的插件
+## تشخيص بداية نهاية لا يمكن تحميل إضافة
 
-依赖驱动加载也有另一面：如果插件的 `inject` 指定了无人提供的服务，它就会一直等待，不输出任何内容。这不是错误，因为 PENDING 是合法状态，提供方可能稍后才挂载。
+اعتماد قيادة تحميل أيضا لديه آخر وجه: إذا إضافة `inject` إشارة تحديد بلا شخص توفير خدمة، هو حينئذ سوف واحد مباشر انتظار، لا إخراج أي محتوى. هذا لا هو خطأ، لأن PENDING هو دمج قاعدة حالة، مزود ممكن قليلا بعد عندئذ تركيب.
 
-你可以直接查看这些状态。每个上下文都能枚举插件注册表；创建 `diagnose.ts`：
+أنت يمكن مباشر فحص نظر هذه حالة. كل سياق كل قدرة قطعة رفع إضافة سجل التسجيل؛ إنشاء `diagnose.ts`:
 
 ```ts
 import { FiberState, type Context } from '@deepseek-ai/cordis'
@@ -82,7 +82,7 @@ export function apply(ctx: Context) {
 }
 ```
 
-再创建一个依赖无法满足的插件 `needs-timer.ts`：
+مجددا إنشاء واحد اعتماد لا يمكن ممتلئ كاف إضافة `needs-timer.ts`:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -100,14 +100,14 @@ export function apply(ctx: Context) {
 - name: './diagnose.ts'
 ```
 
-运行它（直接执行 `node --import tsx ../../vendor/cordis/bin.js`，按 Ctrl-C 停止）：
+تشغيل هو (مباشر تنفيذ `node --import tsx ../../vendor/cordis/bin.js`، حسب Ctrl-C إيقاف):
 
 ```
 needs-timer is PENDING — a required service is missing
 ```
 
-`inject: ['timer']` 没有提供方。向列表添加 `- name: '@deepseek-ai/cordis-plugin-timer'` 后，插件就会加载。如果插件既不执行任何操作，也不报告任何内容，请检查其 fiber 状态。不加 PENDING 过滤条件进行迭代时，还会看到 loader 自身的插件（Loader、Include）处于 ACTIVE，因为配置文件本身也是通过插件挂载的。
+`inject: ['timer']` لا يوجد مزود. نحو قائمة إضافة `- name: '@deepseek-ai/cordis-plugin-timer'` بعد، إضافة حينئذ سوف تحميل. إذا إضافة حيث لا تنفيذ أي عملية، أيضا لا تقرير إبلاغ أي محتوى، طلب فحص ذلك fiber حالة. لا إضافة PENDING مرور ترشيح شرط إجراء تكرار بديل وقت، أيضا سوف يرى loader ذاته إضافة (Loader،Include) موضع في ACTIVE، لأن ملف إعداد ذاته أيضا هو عبر إضافة تركيب.
 
-下一章：[进入 harness](07-into-the-harness.zh.md)：把相同模式用于真实的 harness 服务。
+تحت واحد فصل:[دخول harness](07-into-the-harness.zh.md): يأخذ نفسه نمط لأجل حقيقي harness خدمة.
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

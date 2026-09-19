@@ -219,7 +219,7 @@ describe('AgentPresets.compositionInventory', () => {
       '  name: \'@deepseek-ai/dsh-system-prompt\'',
       '  disabled: !!js nothing.here',
     ].join('\n'))
-    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: 我的模式\n')
+    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: أنا نمط\n')
     const ctx = await harness({
       default: 'minimal',
       roots: [SYSTEM_ROOT, { path: userRoot, trust: 'user' }],
@@ -246,7 +246,7 @@ describe('AgentPresets.compositionInventory', () => {
       {
         id: 'documented',
         trust: 'user',
-        name: '我的模式',
+        name: 'أنا نمط',
         isDefault: false,
         rows: [
           { entryId: 'prompt', moduleName: '@deepseek-ai/dsh-system-prompt', enabled: true },

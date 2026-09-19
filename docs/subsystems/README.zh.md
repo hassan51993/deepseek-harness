@@ -1,70 +1,70 @@
-# 子系统
+# فرعي نظام
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-每个子系统一页，覆盖 DeepSeek Harness 的全部子系统：它是什么、它操作哪些数据结构，以及——当它由某个 `ctx` 服务或事件作用域支撑时——一段生成的 **Cordis API** 小节，承载其服务与事件参考。本目录与 [architecture.md](../architecture.zh.md) 互补：后者描述跨子系统的*行为*（服务映射、会话/轮次/步骤生命周期、事件分类体系）；这里的每一页是单个子系统词汇与接线的参考。
+كل فرعي نظام واحد صفحة، تغطية DeepSeek Harness الكل فرعي نظام: هو هو ماذا، هو عملية أي بعض بيانات بنية، و——عند هو من بعض عدد `ctx` خدمة أو حدث أثر مجال دعم دعم وقت——واحد مقطع توليد **Cordis API** صغير عقدة، تحمل تحميل ذلك خدمة و حدث مشاركة اعتبار. هذا دليل و [architecture.md](../architecture.zh.md) متبادل تكملة: بعد من وصف عبر فرعي نظام*سلوك*(خدمة خريطة، جلسة/جولة/خطوة دورة الحياة، حدث تصنيف جسم نظام) ؛ هذا داخل كل واحد صفحة هو مفرد عدد فرعي نظام مفردات و وصل خط مشاركة اعتبار.
 
-| 页面 | 负责内容 |
+| صفحة | مسؤول محتوى |
 |---|---|
-| [boot.md](boot.zh.md) | 当前 profile 插件管理与 launcher 重载协调 |
-| [core.md](core.zh.md) | `packages/core` 如何控制 agent loop（智能体循环）：逐包的循环说明、agent 创建与所有权（`AgentHandle`）、`Agent` 句柄的投递/取消/拦截约定，以及全仓通用类型模式（`…Map → derived-union`、品牌化 id） |
-| [llm-streaming.md](llm-streaming.zh.md) | `packages/llm` 的对话类型——`Message`/`ContentBlock`、组装完成的模型请求、`StreamChunk` wire protocol 和适配器约定（adapter contract）、`BlockAssembler`，以及 `LlmAdapter` 提供方约定 |
-| [token-meter.md](token-meter.zh.md) | 不可变的标量与位置回放度量，附带已消费日志修订号 |
-| [scope.md](scope.zh.md) | 作用域注册标识、dispatch 载体，以及拥有的 `Scope` 上下文 |
-| [typert.md](typert.zh.md) | 远程调用描述符、lookup/Context 声明、Typert 注册表，以及 Host Gateway/Client API 边界 |
-| [goal.md](goal.zh.md) | 持久 goal 标识、生命周期快照、激活、变更记录与 Round 归属 |
-| [schedule.md](schedule.zh.md) | 仅限会话内的提醒记录、持久转换、活动视图与普通对话交付 |
-| [todo.md](todo.zh.md) | todo 包的整列表条目类型、持久事件所有权、投影和未结束轮次不变式 |
-| [deliverables.md](deliverables.zh.md) | 一轮交给用户的东西：`present` 声明的 `PresentedFile` 交付，以及由 git 快照得出、由 Host 提供的 `WorkspaceChangesSummary` 改动摘要 |
-| [commands.md](commands.zh.md) | 人类命令注册表服务：定义、适配器发现、直接调用、结果与解析视图 |
-| [session.md](session.zh.md) | 完整的 `SessionEventMap` 变体目录、`TurnEndReason`、`deriveMessages()`、执行封闭与独立事件 |
-| [persistence.md](persistence.zh.md) | 持久性 seam：`SessionPersistence`、JSONL 提供方、`session/flush`、崩溃恢复、`SessionHeader` |
-| [settings.md](settings.zh.md) | 用户设置 seam：`SettingsNamespace` 注册、分层解析（默认值 → 组合 `base` → 用户文档）、owner scope、热提交 |
-| [credentials.md](credentials.zh.md) | 凭据 seam：配置中的 `CredentialRef` 引用（绝不含值）、按操作解析、对 UI 安全的 `CredentialInfo`、提供方来源层 |
-| [session-query.md](session-query.zh.md) | 逻辑记录、有界精确事件读取、关系追踪、语义筛选器/文档与全文检索结果页 |
-| [feedback.md](feedback.zh.md) | 绑定生命周期的逐消息反馈记录、乐观版本、伴随记录持久化与 Host Remote 约定 |
-| [session-title.md](session-title.zh.md) | 持久标题快照、被引用的来源消息 seq 与异步提供方约定 |
-| [session-reference.md](session-reference.zh.md) | 结构化跨会话引用：`SessionReferenceInput`/`Candidate`、prepared 消息上下文、稳定错误分类 |
-| [system-prompt.md](system-prompt.zh.md) | 逐次组装的上下文、工具提供方结果、提示词段落与协作式组装 |
-| [tools.md](tools.zh.md) | `ToolDefinition` 完整字段、schema DSL、`ToolExecution`/`ToolResult`、工具展示 UI 类型，以及受保护的执行流水线 |
-| [mcp.md](mcp.zh.md) | 外部 MCP 连接、作用域工具与资源、服务器指令、协议结果与配置归属 |
-| [user-questions.md](user-questions.zh.md) | UI 支持的人工问答 seam：`AskUserQuestionRequest`、answer/options 词汇、提供方 API、错误分类体系 |
-| [approval.md](approval.zh.md) | 一次性用户审批 seam：`ApprovalRequest`、`ApprovalOutcome`、逐会话策略、审计事件和 answerer 约定 |
-| [office-to-pdf.md](office-to-pdf.zh.md) | 已授权的 Office 到 PDF 转换、原生/WASM 引擎与有界共享复用 |
-| [attachment.md](attachment.zh.md) | 持久图片标识与元数据、校验输入、经校验读取，以及 `AttachmentStore` seam |
-| [shell.md](shell.zh.md) | shell 执行器 seam：`ShellExecRequest`/`Spec`、`ShellRunResult`、后台 `ShellProcess` 句柄 |
-| [subprocess.md](subprocess.zh.md) | 子进程 seam：完全显式的 `SubprocessSpawnSpec`、基于偏移的输出读取器、不含分类的 `SubprocessOutcome`，以及受管 `DSH_*` 环境词汇 |
-| [ssh.md](ssh.zh.md) | POSIX SSH 连接与远程文件系统、子进程和沙箱提供方 |
-| [terminal.md](terminal.zh.md) | 持久化终端 ID、后端/会话约定、发送就绪状态、有界读取与 owner 可见快照 |
-| [sandbox.md](sandbox.zh.md) | 每会话策略解析与进程约束 seam：文件效果模式、执行/提供方策略、`ConfinedArgv`、强制执行与故障关闭错误 |
-| [ptc-runtime.md](ptc-runtime.zh.md) | PTC 执行 seam：`PtcRunRequest`/`Result`、绑定命名空间、捕获日志、`PtcRunFailure` 分类体系 |
-| [computer-use.md](computer-use.zh.md) | 按名称独占注册计算机操作提供方，以及 Cua Driver 集成选项 |
-| [browser-use.md](browser-use.zh.md) | 按名称独占注册浏览器操作提供方、提供方选项与按 Session 管理的浏览器所有权 |
-| [extensions.md](extensions.zh.md) | 带版本的动态 Cordis 插件与包、Host/Client 激活、审批、运行时检查和生命周期清理 |
-| [filesystem.md](filesystem.zh.md) | 文件系统 seam：`FsTarget`、读/写/编辑结果、观测到的文件状态、`FsErrorCode` |
-| [lsp.md](lsp.zh.md) | LSP 导航 seam：`LspQueryRequest`/`Result`、`LspProvider`/`Service`、四种操作、`LspError` |
-| [skills.md](skills.zh.md) | skill（技能）服务：发现优先级、`SkillSummary`/`SkillDefinition`、会话前缀目录、面向模型的 `skill` 加载 |
-| [compaction.md](compaction.zh.md) | 压缩（compaction）seam：`compaction/*` 会话事件、`CompactionResult`、`CompactionEngine` 接口 |
-| [subagent.md](subagent.zh.md) | subagent seam：命名提供方注册表、`SubagentStartRequest`/`Result`/`Run`、启动时与运行时能力拆分 |
-| [agent-team.md](agent-team.zh.md) | Agent Teams：隐式 Lead 身份、具名 continuable teammate、持久 peer mailbox 与共享任务 DAG |
-| [web.md](web.zh.md) | Web 访问 seam：`WebSearchRequest`/`Result`、`WebFetchRequest`/`Result`、`WebFetchBody`、提供方可用性、`WebError` |
-| [spill.md](spill.zh.md) | spill 存储 seam：`SaveTextSpill`、`SpillOwner`/`SpillSource`、`SpillRef`、品牌类型 `SpillLocator` |
-| [workflow.md](workflow.zh.md) | 工作流 seam：`WorkflowStartRequest`、`WorkflowMeta`、`WorkflowRun`/`Result`、`workflow/*` 事件载荷、`WorkflowError` 致命性 |
-| [jobs.md](jobs.zh.md) | 后台任务运行时：品牌化 `JobId`、producer 约定、消费方视图和 `ctx.jobs` 服务行为 |
-| [permission-presets.md](permission-presets.zh.md) | 权限预设层：`PresetSpec`/`PresetOption`、派生的 `custom` 状态、仅记日志的 `permission/preset` 事件 |
-| [plan.md](plan.zh.md) | 计划模式：仅记日志的 `plan/mode` 状态、待定选择的冲刷、`PlanModeConfig`、`exit_plan_mode` 审阅流程 |
-| [invariants.md](invariants.zh.md) | 运行时不变式注册表：选择配置 `Config`、`InvariantInstaller`/`InvariantFailure`、空配套插件约定 |
-| [web-server.md](web-server.zh.md) | HTTP 载体：`WebRouteKind`/`WebRoute`、匹配顺序、可认领的回退席位、index 渲染挂接点 |
-| [webhook.md](webhook.zh.md) | 通过身份验证的提供方交付、任意程序化规则，以及发起 Workspace 会话创建后不等待结果 |
-| [storage.md](storage.zh.md) | 存储子系统：后端约定（`StorageBackend`）、`StorageForms`、`DomainSpec`/`Domain`、`domain/changed` |
-| [workspace.md](workspace.zh.md) | 工作区注册表：`Workspace`/`WorkspaceId`、注册与解析、与会话 `cwd` 的关系 |
-| [web-client.md](web-client.zh.md) | 浏览器架构：启动、Remote 通信、配对的 Client model、UI 适配器、Conversation 组装、slot 与重连语义 |
-| [client-modules.md](client-modules.zh.md) | Web 插件表：`dsh.client` 声明、`WebBootGraph` 协议格式组合、bundle 路由与 index 挂接点 |
-| [slots.md](slots.zh.md) | 类型化 Web UI 组合：声明所有权、cardinality 与 scope、框架与功能注入、props 推导及已交付的层级结构 |
-| [client-resources.md](client-resources.zh.md) | 客户端资源模型：`dsh-resource://<type>/…` 地址、协议提供方与 `ResourceProtocolMap`、`useResource` 全局钩子及其状态、钉住与释放 |
-| [sidebar-right.md](sidebar-right.zh.md) | 右侧 Sidebar：资源地址与导航地址、tab 类型注册与路由、`ctx.sidebarRight` 导航服务、pane-tab slot 与 owner props、资源模型及 Workspace Files 服务 |
-| [conversation.md](conversation.zh.md) | 目标无关的会话事件组装：上下文标识、位置数据、回放路径、视图构建器与目标自有的渲染节点 |
-| [session-projection.md](session-projection.zh.md) | 投影 seam：`SessionProjectionMap`、纯函数 `ProjectionDefinition` 单元、`ProjectionSnapshot` 的一致切面、变更馈送 |
-| [session-telemetry.md](session-telemetry.zh.md) | 对外会话上报能力 seam：`SessionTelemetryRecord`/`SessionTelemetrySeverity`、`SessionTelemetrySink` 约定和 `session-telemetry/record` 脱敏 waterfall（瀑布式事件） |
+| [boot.md](boot.zh.md) | حالي profile إضافة إدارة و launcher إعادة تحميل تنسيق ضبط |
+| [core.md](core.zh.md) | `packages/core` مثل أي تحكم agent loop(ذكي جسم حلقة): تدريجي حزمة حلقة شرح،agent إنشاء و كل حق (`AgentHandle`) ،`Agent` جملة مقبض إلقاء تمرير/إلغاء/اعتراض قطع اتفاق، و كل مستودع عام نوع نمط (`…Map → derived-union`، صنف لوحة تحويل id) |
+| [llm-streaming.md](llm-streaming.zh.md) | `packages/llm` محادثة نوع——`Message`/`ContentBlock`، تجميع إتمام نموذج طلب،`StreamChunk` wire protocol و مهايئ اتفاق (adapter contract) ،`BlockAssembler`، و `LlmAdapter` مزود اتفاق |
+| [token-meter.md](token-meter.zh.md) | غير ممكن تغيير علامة كمية و موضع إعادة تشغيل درجة كمية، مرفق حمل قد إزالة استهلاك سجل إصلاح حجز رقم |
+| [scope.md](scope.zh.md) | أثر مجال تسجيل معرف،dispatch تحميل جسم، و يملك `Scope` سياق |
+| [typert.md](typert.zh.md) | بعيد مسار استدعاء وصف رمز،lookup/Context إعلان،Typert سجل التسجيل، و Host Gateway/Client API حد |
+| [goal.md](goal.zh.md) | حمل دائم goal معرف، دورة الحياة لقطة، تنشيط، تغيير سجل و Round ملكية |
+| [schedule.md](schedule.zh.md) | فقط حد جلسة داخل رفع تنبيه سجل، حمل دائم تحويل، نشط حركة عرض و عادي محادثة تسليم |
+| [todo.md](todo.zh.md) | todo حزمة كامل قائمة بند نوع، حمل دائم حدث كل حق، إسقاط و لم انتهاء جولة ثابت صيغة |
+| [deliverables.md](deliverables.zh.md) | واحد جولة تسليم إعطاء مستخدم شرق غرب:`present` إعلان `PresentedFile` تسليم، و من git لقطة نيل خروج، من Host توفير `WorkspaceChangesSummary` تعديل ملخص |
+| [commands.md](commands.zh.md) | شخص صنف أمر سجل التسجيل خدمة: تعريف، مهايئ اكتشاف، مباشر استدعاء، نتيجة و تحليل عرض |
+| [session.md](session.zh.md) | كامل `SessionEventMap` تغيير جسم دليل،`TurnEndReason`،`deriveMessages()`، تنفيذ غلاف إغلاق و مستقل حدث |
+| [persistence.md](persistence.zh.md) | حمل دائم صفة seam:`SessionPersistence`،JSONL مزود،`session/flush`، انهيار انهيار استعادة،`SessionHeader` |
+| [settings.md](settings.zh.md) | مستخدم ضبط seam:`SettingsNamespace` تسجيل، قسم طبقة تحليل (قيمة افتراضية → تركيب `base` → مستخدم وثيقة) ،owner scope، حار إيداع |
+| [credentials.md](credentials.zh.md) | اعتماد seam: إعداد في `CredentialRef` مرجع (أبدا يحتوي قيمة) ، حسب عملية تحليل، مقابل UI أمان `CredentialInfo`، مزود مصدر طبقة |
+| [session-query.md](session-query.zh.md) | منطق سجل، محدود دقيق حدث قراءة، علاقة تتبع أثر، دلالة غربلة اختيار جهاز/وثيقة و كل نص فحص بحث نتيجة صفحة |
+| [feedback.md](feedback.zh.md) | ربط دورة الحياة تدريجي رسالة عكس تغذية سجل، مرح مراقبة إصدار، مرافق مع سجل حفظ دائم و Host Remote اتفاق |
+| [session-title.md](session-title.zh.md) | حمل دائم عنوان لقطة، يتم مرجع مصدر رسالة seq و مختلف خطوة مزود اتفاق |
+| [session-reference.md](session-reference.zh.md) | بنية تحويل عبر جلسة مرجع:`SessionReferenceInput`/`Candidate`،prepared رسالة سياق، مستقر خطأ تصنيف |
+| [system-prompt.md](system-prompt.zh.md) | تدريجي مرة تجميع سياق، أداة مزود نتيجة، نص التوجيه مقطع سقوط و تنسيق عمل صيغة تجميع |
+| [tools.md](tools.zh.md) | `ToolDefinition` كامل حقل،schema DSL،`ToolExecution`/`ToolResult`، أداة عرض UI نوع، و تلقي حفظ حماية تنفيذ خط الإنتاج |
+| [mcp.md](mcp.zh.md) | خارجي MCP اتصال، أثر مجال أداة و مورد، خادم إشارة أمر، بروتوكول نتيجة و إعداد ملكية |
+| [user-questions.md](user-questions.zh.md) | UI دعم حمل شخص عمل سؤال جواب seam:`AskUserQuestionRequest`،answer/options مفردات، مزود API، خطأ تصنيف جسم نظام |
+| [approval.md](approval.zh.md) | مرة صفة مستخدم مراجعة دفعة seam:`ApprovalRequest`،`ApprovalOutcome`، تدريجي جلسة سياسة، مراجعة حساب حدث و answerer اتفاق |
+| [office-to-pdf.md](office-to-pdf.zh.md) | قد تخويل Office إلى PDF تحويل، أصلي/WASM جذب محرك و محدود مشترك إعادة استخدام |
+| [attachment.md](attachment.zh.md) | حمل دائم صورة معرف و بيانات وصفية، تحقق إدخال، مرور تحقق قراءة، و `AttachmentStore` seam |
+| [shell.md](shell.zh.md) | shell منفذ seam:`ShellExecRequest`/`Spec`،`ShellRunResult`، خلفية `ShellProcess` جملة مقبض |
+| [subprocess.md](subprocess.zh.md) | عملية فرعية seam: تماما صريح `SubprocessSpawnSpec`، أساس في انحراف نقل إخراج قراءة جهاز، لا يحتوي تصنيف `SubprocessOutcome`، و تلقي إدارة `DSH_*` بيئة مفردات |
+| [ssh.md](ssh.zh.md) | POSIX SSH اتصال و بعيد مسار نظام الملفات، عملية فرعية و صندوق رملي مزود |
+| [terminal.md](terminal.zh.md) | حفظ دائم طرفية ID، خلفية/جلسة اتفاق، إرسال حينئذ خيط حالة، محدود قراءة و owner مرئي لقطة |
+| [sandbox.md](sandbox.zh.md) | كل جلسة سياسة تحليل و عملية قيد seam: ملف فاعلية نتيجة نمط، تنفيذ/مزود سياسة،`ConfinedArgv`، قوي صنع تنفيذ و لذا عائق إغلاق خطأ |
+| [ptc-runtime.md](ptc-runtime.zh.md) | PTC تنفيذ seam:`PtcRunRequest`/`Result`، ربط نطاق الأسماء، التقاط سجل،`PtcRunFailure` تصنيف جسم نظام |
+| [computer-use.md](computer-use.zh.md) | حسب اسم وحيد احتلال تسجيل حساب حساب آلة عملية مزود، و Cua Driver تجميع صار خيار |
+| [browser-use.md](browser-use.zh.md) | حسب اسم وحيد احتلال تسجيل متصفح عملية مزود، مزود خيار و حسب Session إدارة متصفح كل حق |
+| [extensions.md](extensions.zh.md) | حمل إصدار حركة حالة Cordis إضافة و حزمة،Host/Client تنشيط، مراجعة دفعة، وقت التشغيل فحص و دورة الحياة تنظيف |
+| [filesystem.md](filesystem.zh.md) | نظام الملفات seam:`FsTarget`، قراءة/كتابة/تحرير نتيجة، مراقبة قياس إلى ملف حالة،`FsErrorCode` |
+| [lsp.md](lsp.zh.md) | LSP تنقل seam:`LspQueryRequest`/`Result`،`LspProvider`/`Service`، أربعة نوع عملية،`LspError` |
+| [skills.md](skills.zh.md) | skill(تقنية قدرة) خدمة: اكتشاف أولوية درجة،`SkillSummary`/`SkillDefinition`، جلسة بادئة دليل، موجه إلى نموذج `skill` تحميل |
+| [compaction.md](compaction.zh.md) | ضغط (compaction)seam:`compaction/*` جلسة حدث،`CompactionResult`،`CompactionEngine` واجهة |
+| [subagent.md](subagent.zh.md) | subagent seam: تسمية مزود سجل التسجيل،`SubagentStartRequest`/`Result`/`Run`، بدء وقت و وقت التشغيل قدرة تفكيك قسم |
+| [agent-team.md](agent-team.zh.md) | Agent Teams: خفي صيغة Lead هوية، أداة اسم continuable teammate، حمل دائم peer mailbox و مشترك مهمة DAG |
+| [web.md](web.zh.md) | Web وصول seam:`WebSearchRequest`/`Result`،`WebFetchRequest`/`Result`،`WebFetchBody`، مزود متاح صفة،`WebError` |
+| [spill.md](spill.zh.md) | spill تخزين seam:`SaveTextSpill`،`SpillOwner`/`SpillSource`،`SpillRef`، صنف لوحة نوع `SpillLocator` |
+| [workflow.md](workflow.zh.md) | سير العمل seam:`WorkflowStartRequest`،`WorkflowMeta`،`WorkflowRun`/`Result`،`workflow/*` حدث تحميل حمل،`WorkflowError` يؤدي أمر صفة |
+| [jobs.md](jobs.zh.md) | خلفية مهمة وقت التشغيل: صنف لوحة تحويل `JobId`،producer اتفاق، مستهلك عرض و `ctx.jobs` خدمة سلوك |
+| [permission-presets.md](permission-presets.zh.md) | إذن مسبق ضبط طبقة:`PresetSpec`/`PresetOption`، إرسال توليد `custom` حالة، فقط تسجيل سجل `permission/preset` حدث |
+| [plan.md](plan.zh.md) | حساب تخطيط نمط: فقط تسجيل سجل `plan/mode` حالة، انتظار تحديد اختيار اندفاع تحديث،`PlanModeConfig`،`exit_plan_mode` مراجعة قراءة مسار |
+| [invariants.md](invariants.zh.md) | وقت التشغيل ثابت صيغة سجل التسجيل: اختيار إعداد `Config`،`InvariantInstaller`/`InvariantFailure`، فارغ إعداد طقم إضافة اتفاق |
+| [web-server.md](web-server.zh.md) | HTTP تحميل جسم:`WebRouteKind`/`WebRoute`، مطابقة ترتيب، يمكن إقرار قيادة رجوع مقعد موضع،index تصيير تعليق وصل نقطة |
+| [webhook.md](webhook.zh.md) | عبر هوية تحقق مزود تسليم، مهمة معنى برنامج تحويل قاعدة، و إرسال بدء Workspace جلسة إنشاء بعد لا انتظار نتيجة |
+| [storage.md](storage.zh.md) | تخزين فرعي نظام: خلفية اتفاق (`StorageBackend`) ،`StorageForms`،`DomainSpec`/`Domain`،`domain/changed` |
+| [workspace.md](workspace.zh.md) | مساحة العمل سجل التسجيل:`Workspace`/`WorkspaceId`، تسجيل و تحليل، و جلسة `cwd` علاقة |
+| [web-client.md](web-client.zh.md) | متصفح هيكل بنية: بدء،Remote عبر معلومة، إعداد مقابل Client model،UI مهايئ،Conversation تجميع،slot و إعادة وصل دلالة |
+| [client-modules.md](client-modules.zh.md) | Web إضافة جدول:`dsh.client` إعلان،`WebBootGraph` بروتوكول صيغة تركيب،bundle توجيه و index تعليق وصل نقطة |
+| [slots.md](slots.zh.md) | نوع تحويل Web UI تركيب: إعلان كل حق،cardinality و scope، إطار هيكل و وظيفة حقن،props دفع توجيه و قد تسليم طبقة درجة بنية |
+| [client-resources.md](client-resources.zh.md) | عميل مورد نموذج:`dsh-resource://<type>/…` عنوان، بروتوكول مزود و `ResourceProtocolMap`،`useResource` عام خطاف و ذلك حالة، تثبيت إقامة و تحرير |
+| [sidebar-right.md](sidebar-right.zh.md) | يمين جانب Sidebar: مورد عنوان و تنقل عنوان،tab نوع تسجيل و توجيه،`ctx.sidebarRight` تنقل خدمة،pane-tab slot و owner props، مورد نموذج و Workspace Files خدمة |
+| [conversation.md](conversation.zh.md) | هدف غير متصل جلسة حدث تجميع: سياق معرف، موضع بيانات، إعادة تشغيل مسار، عرض بناء جهاز و هدف ذاتي لديه تصيير عقدة |
+| [session-projection.md](session-projection.zh.md) | إسقاط seam:`SessionProjectionMap`، صاف دالة `ProjectionDefinition` وحدة،`ProjectionSnapshot` متسق قطع وجه، تغيير تغذية إرسال |
+| [session-telemetry.md](session-telemetry.zh.md) | مقابل خارج جلسة فوق تقرير قدرة seam:`SessionTelemetryRecord`/`SessionTelemetrySeverity`،`SessionTelemetrySink` اتفاق و `session-telemetry/record` انفصال حساس waterfall(شلال نشر صيغة حدث) |
 
-> 这些页面上的类型声明及其 JSDoc 与源码等价，并由 `pnpm run verify-type-equiv` 检查漂移（见 [development.md](../development.zh.md#documenting-types-verbatim-ts-type-equiv)）。普通块保留完整声明；`public-api` 块保留去除实现体的公开 class 声明。Cordis 服务与事件使用每页生成的 **Cordis API** 小节。
+> هذه صفحة فوق نوع إعلان و ذلك JSDoc و شفرة المصدر انتظار قيمة، و من `pnpm run verify-type-equiv` فحص عائم نقل (رؤية [development.md](../development.zh.md#documenting-types-verbatim-ts-type-equiv)). عادي كتلة إبقاء كامل إعلان؛`public-api` كتلة إبقاء ذهاب حذف تنفيذ جسم عام class إعلان.Cordis خدمة و حدث استخدام كل صفحة توليد **Cordis API** صغير عقدة.

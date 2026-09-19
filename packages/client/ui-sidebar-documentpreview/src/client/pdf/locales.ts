@@ -1,14 +1,14 @@
 /** Copy owned by the PDF renderer. */
 export const zh = {
   title: 'PDF',
-  pageImage: 'PDF 第 {page} 页',
-  loading: '正在读取…',
-  rendering: '正在绘制页面…',
-  failed: '无法显示 PDF：{message}',
-  password: '此 PDF 需要密码，暂不支持预览',
-  workerFailed: 'PDF 渲染进程无法继续，请重试',
-  unsupported: 'PDF 预览需要完整文件内容',
-  retry: '重试',
+  pageImage: 'PDF رقم {page} صفحة',
+  loading: 'صحيح في قراءة…',
+  rendering: 'صحيح في رسم صنع صفحة…',
+  failed: 'لا يمكن عرض PDF:{message}',
+  password: 'هذا PDF حاجة سري رمز، مؤقت لا دعم حمل معاينة',
+  workerFailed: 'PDF تصيير عملية لا يمكن متابعة، طلب إعادة محاولة',
+  unsupported: 'PDF معاينة حاجة كامل ملف محتوى',
+  retry: 'إعادة محاولة',
 } satisfies Record<string, string>
 
 /** PDF translation keys shared by both dictionaries. */

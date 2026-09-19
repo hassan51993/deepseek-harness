@@ -1,51 +1,51 @@
 ---
-description: "subagent 包组：委派 seam、其进程内与进程外后端，以及面向模型的委派工具。"
+description: "subagent حزمة مجموعة: تفويض إرسال seam، ذلك عملية داخل و عملية خارج خلفية، و موجه إلى نموذج تفويض إرسال أداة."
 kind: "package-group"
 ---
 
-# subagent/：subagent 能力家族
+# subagent/:subagent قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-subagent 包家族让 agent（智能体）将任务委派给子 agent、继续其工作，并发现自己创建的每个子级。隔离工作可选择全新的进程内子级；需要既有对话时可选择带父级历史的进程内子级；也可选择由 ACP（Agent Client Protocol）、Codex、Claude Code 或另一 Harness 运行时支持的进程外子级。面向模型的工具还让 agent 能够向相邻 agent 发送消息、中断工作并列出子级状态。无论子级正在运行还是已存储，父级都能看到它；各包 README 说明各提供方特定的设置与限制。
+subagent حزمة بيت عائلة يجعل agent(ذكي جسم) سوف مهمة تفويض إرسال إعطاء فرعي agent، متابعة ذلك عمل، تزامن الآن ذاتي ذات إنشاء كل فرعي درجة. عزل عمل اختياري اختيار كل جديد عملية داخل فرعي درجة؛ حاجة قائم محادثة وقت اختياري اختيار حمل أب درجة تاريخ عملية داخل فرعي درجة؛ أيضا اختياري اختيار من ACP(Agent Client Protocol) ،Codex،Claude Code أو آخر Harness وقت التشغيل دعم حمل عملية خارج فرعي درجة. موجه إلى نموذج أداة أيضا يجعل agent قدرة كاف نحو متبادل مجاور agent إرسال رسالة، في قطع عمل و صف خروج فرعي درجة حالة. بلا نقاش فرعي درجة صحيح في تشغيل أيضا هو قد تخزين، أب درجة كل قدرة يرى هو؛ كل حزمة README شرح كل مزود خاص تحديد ضبط و حد.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`subagent/`](subagent/README.zh.md) | 定义委派服务：提供方注册表、一次性运行、可继续子级与发现 | `ctx.subagents` |
-| [`subagent-in-process-driver/`](subagent-in-process-driver/README.zh.md) | 提供共享的进程内运行驱动器 | 无 |
-| [`subagent-spawn-in-process/`](subagent-spawn-in-process/README.zh.md) | 运行全新的进程内子 agent | 注册到 `ctx.subagents` |
-| [`subagent-fork-in-process/`](subagent-fork-in-process/README.zh.md) | 运行从父级已完成历史派生的进程内子 agent | 注册到 `ctx.subagents` |
-| [`subagent-acp/`](subagent-acp/README.zh.md) | 经 Agent Client Protocol 运行进程外子 agent | 注册到 `ctx.subagents` |
-| [`subagent-codex/`](subagent-codex/README.zh.md) | 经官方 app-server 协议运行真实 Codex 子 agent | 注册到 `ctx.subagents` |
-| [`subagent-claude-code/`](subagent-claude-code/README.zh.md) | 经官方 Agent SDK 运行真实 Claude Code 子 agent | 注册到 `ctx.subagents` |
-| [`subagent-dsh-sdk/`](subagent-dsh-sdk/README.zh.md) | 经 TypeScript SDK 运行进程外 Harness 子 agent | 注册到 `ctx.subagents` |
-| [`tool-subagent/`](tool-subagent/README.zh.md) | 向模型公开委派 | 注册到 `ctx.tools` |
-| [`tool-subagent-control/`](tool-subagent-control/README.zh.md) | 向模型提供向相邻 agent 发送消息、中断工作和列出子级状态的操作 | 注册到 `ctx.tools` |
+| [`subagent/`](subagent/README.zh.md) | تعريف تفويض إرسال خدمة: مزود سجل التسجيل، مرة صفة تشغيل، يمكن متابعة فرعي درجة و اكتشاف | `ctx.subagents` |
+| [`subagent-in-process-driver/`](subagent-in-process-driver/README.zh.md) | توفير مشترك عملية داخل تشغيل مشغل | بلا |
+| [`subagent-spawn-in-process/`](subagent-spawn-in-process/README.zh.md) | تشغيل كل جديد عملية داخل فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-fork-in-process/`](subagent-fork-in-process/README.zh.md) | تشغيل من أب درجة قد إتمام تاريخ إرسال توليد عملية داخل فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-acp/`](subagent-acp/README.zh.md) | مرور Agent Client Protocol تشغيل عملية خارج فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-codex/`](subagent-codex/README.zh.md) | مرور رسمي جهة app-server بروتوكول تشغيل حقيقي Codex فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-claude-code/`](subagent-claude-code/README.zh.md) | مرور رسمي جهة Agent SDK تشغيل حقيقي Claude Code فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-dsh-sdk/`](subagent-dsh-sdk/README.zh.md) | مرور TypeScript SDK تشغيل عملية خارج Harness فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`tool-subagent/`](tool-subagent/README.zh.md) | نحو نموذج عام تفويض إرسال | تسجيل إلى `ctx.tools` |
+| [`tool-subagent-control/`](tool-subagent-control/README.zh.md) | نحو نموذج توفير نحو متبادل مجاور agent إرسال رسالة، في قطع عمل و صف خروج فرعي درجة حالة عملية | تسجيل إلى `ctx.tools` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [Subagent 子系统](../../docs/subsystems/subagent.zh.md)——服务约定、提供方约定与终态结果语义。
-- [Subagent 能力 seam](../../.agents/notes/implemented/feature/2026-06-21-subagent-capability-seam.zh.md)——委派能力家族的设计记录。
-- [可继续的 subagent](../../.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.zh.md)——接受后续轮次的持久子级。
-- [tool-subagent-control README](tool-subagent-control/README.zh.md)——后续消息、中断与列举接口。
+- [Subagent فرعي نظام](../../docs/subsystems/subagent.zh.md)——خدمة اتفاق، مزود اتفاق و نهاية حالة نتيجة دلالة.
+- [Subagent قدرة seam](../../.agents/notes/implemented/feature/2026-06-21-subagent-capability-seam.zh.md)——تفويض إرسال قدرة بيت عائلة تصميم سجل.
+- [يمكن متابعة subagent](../../.agents/notes/implemented/feature/2026-07-28-continuable-subagent-conversations.zh.md)——قبول لاحق جولة حمل دائم فرعي درجة.
+- [tool-subagent-control README](tool-subagent-control/README.zh.md)——لاحق رسالة، في قطع و صف رفع واجهة.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

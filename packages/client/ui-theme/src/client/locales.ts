@@ -2,15 +2,15 @@
 
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
-  'appearance.title': '外观',
-  'appearance.light': '浅色',
-  'appearance.dark': '深色',
-  'appearance.system': '跟随系统',
-  'fontSize.title': '字号大小',
-  'fontSize.description': '仅影响会话内容的字号',
+  'appearance.title': 'خارج مراقبة',
+  'appearance.light': 'ضحل لون',
+  'appearance.dark': 'عميق لون',
+  'appearance.system': 'تتبع مع نظام',
+  'fontSize.title': 'حرف رقم كبير صغير',
+  'fontSize.description': 'فقط أثر جلسة محتوى حرف رقم',
   'fontSize.unit': 'px',
-  'fontSize.increase': '增大字号',
-  'fontSize.decrease': '减小字号',
+  'fontSize.increase': 'زيادة كبير حرف رقم',
+  'fontSize.decrease': 'نقص صغير حرف رقم',
 } satisfies Record<string, string>
 
 /** The settings.theme namespace key union. */

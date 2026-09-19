@@ -1,53 +1,53 @@
-<!-- 英文源文件由 scripts/gen-tool-catalog.ts 生成；本中文文件是通过双语配对维护的经评审对侧。
-     更新时先运行 `pnpm run gen-tool-catalog` 更新英文，再更新本文件并运行 `pnpm run verify-translation-pairing --write docs/tool-catalog.md` 重新记录配对。 -->
+<!-- إنجليزي نص مصدر ملف من scripts/gen-tool-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
+     تحديث وقت أولا تشغيل `pnpm run gen-tool-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/tool-catalog.md` إعادة سجل إعداد مقابل. -->
 
-# 工具 Schema 目录
+# أداة Schema دليل
 
-[English](tool-catalog.md) | 中文
+[English](tool-catalog.md) | العربية
 
-已发布插件向 `ctx.tools` 提供的所有面向模型的工具：模型通过系统提示词组装获得的 `name`、`description` 和 JSON Schema `parameters`。本目录是[子系统页面](subsystems/core.zh.md)（类型及每页生成的 `cordis-surface` 接线区域）的补充；本页列出的是向 agent（智能体）提供的*工具*。
+قد إصدار إضافة نحو `ctx.tools` توفير كل موجه إلى نموذج أداة: نموذج عبر توجيه النظام تجميع نيل نيل `name`،`description` و JSON Schema `parameters`. هذا دليل هو[فرعي نظام صفحة](subsystems/core.zh.md)(نوع و كل صفحة توليد `cordis-surface` وصل خط منطقة مجال) تكملة ملء؛ هذا صفحة صف خروج هو نحو agent(ذكي جسم) توفير*أداة*.
 
-英文源文件由系统**生成**，并通过 `pnpm run verify-tool-catalog`（`doc-sync`（文档同步门禁）的一部分）验证新鲜度；本中文文件作为经评审对侧通过双语配对维护。与 Cordis 目录（纯源码 AST 处理）不同，英文生成器会在真实上下文中**启动**每个工具插件并读取 `ctx.tools.schemas()`，因为工具 schema 无法通过静态分析完全确定，例如运行时展开的枚举、拼接的描述、由配置决定的名称以及使用原始 JSON Schema 的 MCP 工具。完整性守卫会 glob 匹配 `packages/*/tool-*`；如果生成器的启动 manifest（元数据清单）遗漏任何包，检查就会失败，因此新工具不会在无人察觉的情况下缺少文档。
+إنجليزي نص مصدر ملف من نظام**توليد**، و عبر `pnpm run verify-tool-catalog`(`doc-sync`(وثيقة تزامن بوابة) واحد جزء) تحقق جديد طازج درجة؛ هذا العربية ملف بصفة مرور مراجعة مقابل جانب عبر مزدوج لغة إعداد مقابل صيانة. و Cordis دليل (صاف شفرة المصدر AST معالجة) مختلف، إنجليزي نص توليد جهاز سوف في حقيقي سياق في**بدء**كل أداة إضافة و قراءة `ctx.tools.schemas()`، لأن أداة schema لا يمكن عبر ساكن حالة قسم تحليل تماما تحديد، مثال مثل وقت التشغيل توسيع قطعة رفع، تجميع وصل وصف، من إعداد قرار اسم و استخدام أصلي JSON Schema MCP أداة. كامل صفة حراسة حماية سوف glob مطابقة `packages/*/tool-*`؛ إذا توليد جهاز بدء manifest(بيانات وصفية بيان) متروك تسرب أي حزمة، فحص حينئذ سوف فشل، لذلك جديد أداة لن في بلا شخص ملاحظة شعور حال حال تحت نقص قليل وثيقة.
 
-范围：`packages/*/tool-*` 下已发布的产品工具，每个工具均使用其**默认**配置启动；但如果某个 Config 字段是**必填项**且没有默认值，生成器就必须作出选择，对应包的说明会记录本页展示的是哪个分支。注册的工具**名称**可以是加载时配置，例如 `tool-subagent` 的 `toolName`，因此部署可能以不同名称或额外名称提供某个包；如果存在随产品发布的别名，对应包的说明会予以记录。`examples/` 中的演示工具（例如 `echo`）不在范围内，这与 Cordis 目录仅涵盖包的范围一致。
+نطاق:`packages/*/tool-*` تحت قد إصدار منتج أداة، كل أداة متساو استخدام ذلك**افتراضي**إعداد بدء؛ لكن إذا بعض عدد Config حقل هو**لا بد ملء بند**كما لا يوجد قيمة افتراضية، توليد جهاز حينئذ يجب عمل خروج اختيار، مقابل حزمة شرح سوف سجل هذا صفحة عرض هو أي عدد فرع. تسجيل أداة**اسم**يمكن هو تحميل وقت إعداد، مثال مثل `tool-subagent` `toolName`، لذلك نشر ممكن بـ مختلف اسم أو مقدار خارج اسم توفير بعض عدد حزمة؛ إذا وجود مع منتج إصدار آخر اسم، مقابل حزمة شرح سوف إعطاء بـ سجل.`examples/` في عرض عرض أداة (مثال مثل `echo`) لا في نطاق داخل، هذا و Cordis دليل فقط شمول غطاء حزمة نطاق متسق.
 
 <a id="tool-package-map"></a>
 
-## 工具包映射
+## أداة حزمة خريطة
 
-下表将模型可见的工具名称与其背后的插件包和服务 seam 对应起来。各包章节随后给出确切的 JSON Schema。
+تحت جدول سوف نموذج مرئي أداة اسم و ذلك خلف بعد إضافة حزمة و خدمة seam مقابل بدء قدوم. كل حزمة فصل عقدة مع بعد إعطاء خروج تأكيد قطع JSON Schema.
 
-| 工具包 | 模型可见名称 | 依赖 | 写入／影响 | 随产品发布的别名 | 部署说明 |
+| أداة حزمة | نموذج مرئي اسم | اعتماد | كتابة/أثر | مع منتج إصدار آخر اسم | نشر شرح |
 | --- | --- | --- | --- | --- | --- |
 | `@deepseek-ai/dsh-plugin-manager` | `plugin_manager` | `ctx.tools`, `ctx.pluginManager`, `ctx.sandboxPolicy` | `tool/call`, `tool/result`, `user/message` | - | - |
 | `@deepseek-ai/dsh-mcp-resources` | `list_mcp_resource_templates`, `list_mcp_resources`, `read_mcp_resource` | `ctx.tools`, `ctx.mcpResources` | `tool/call`, `tool/result` | - | - |
-| `@deepseek-ai/dsh-experimental-browser-use-stagehand-native` | `stagehand_act`、`stagehand_extract`、`stagehand_navigate`、`stagehand_observe`、`stagehand_screenshot`、`stagehand_tabs` | `ctx.browserUse`、`ctx.agents`、`ctx.tools`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | - |
-| `@deepseek-ai/dsh-tool-ask-user` | `ask_user_question` | `ctx.tools`、`ctx.userQuestions` | `tool/call`、`tool/result after a UI/provider answers the question` | - | ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类答案。 |
-| `@deepseek-ai/dsh-tools` | `run_code` | `ctx.tools`、`ctx.ptcRuntime (execution time)`、`ctx.systemPrompt` | `tool/call`、`one tool/ptc-dispatch-start + tool/ptc-dispatch pair per bridged sub-call`、`tool/result` | - | 在 `mode: ptc`／`mode: both` 下，它由工具注册表所有，作为可过滤能力层之外的保留传输机制（参见 PTC mode Agent Note）。在 `ptc` 下，它是注册表对协议格式（wire format）的唯一贡献；其他可见能力在使用已加载运行时语言生成的 SDK 章节中声明。程序通过 binding 调用这些能力，调用按照原生并发约定调度：启动顺序和策略遵循提交顺序，并发安全的函数体最多重叠执行 `maxParallelSubCalls` 个。调用会重新进入完整且受守卫保护的工具流水线，并将每个嵌套执行关联到此外层结果。 |
-| `@deepseek-ai/dsh-plan-mode` | `exit_plan_mode` | `ctx.tools`、`ctx.systemPrompt`、`ctx.userQuestions (execution time, opportunistic)` | `tool/call`、`plan/mode inactive on an approved review`、`tool/result` | - | 规划未激活时，exit_plan_mode 仍保留在面向模型的 schema 中，这样状态转换不会在规划策略变更之外额外造成工具目录变动。其执行路径会拒绝规划模式之外的调用；在规划模式下，它通过用户交互 seam 提交计划（批准／根据反馈继续规划），批准后会在步骤边界记录规划模式已停用。 |
-| `@deepseek-ai/dsh-tool-bash` | `bash` | `ctx.tools`、`ctx.shell`、`ctx.systemPrompt`、`ctx.shellEnv`、`ctx.jobs at call time for run_in_background` | `tool/call`、`tool/result` | - | bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_background` 的运行会注册到通用 `ctx.jobs` 运行时，并通过 `job_*` 工具（来自 `@deepseek-ai/dsh-tool-jobs`）收集／停止；禁用 `enableRunInBackground` 配置（默认为 true）后，该参数会被完全移除。 |
-| `@deepseek-ai/dsh-tool-present` | `present` | `ctx.tools`, `ctx.fs`, `ctx.sessionProjections` | `tool/call`, `deliverables/presented 在成功的最终结果之后`, `tool/result` | - | 交付归调用方 Session 所有；Web ui-deliverables 提供源文件打开与卡片。 |
-| `@deepseek-ai/dsh-tool-pwsh` | `pwsh` | `ctx.tools`、`ctx.shell`、`ctx.systemPrompt`、`ctx.shellEnv`、`ctx.jobs at call time for run_in_background` | `tool/call`、`tool/result` | - | pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费方（由 `@deepseek-ai/dsh-pwsh-local` 等 PowerShell 执行器为 `ctx.shell` 提供后端）；除沙箱接口外，它逐项对应 bash 工具调用。使用 `run_in_background` 的运行会注册到通用 `ctx.jobs` 运行时，并通过 `job_*` 工具收集／停止；托管的 `DSH_*` 环境来自 `@deepseek-ai/dsh-shell-env`。每次调用都在新进程中运行，不使用持久 PTY 会话。路径采用原生 `C:\...` 形式，变量采用 `$env:NAME`。 |
-| `@deepseek-ai/dsh-tool-cordis` | `cordis_inspect_list`, `cordis_inspect_query` | `ctx.tools`, `ctx.cordisInspect` | `tool/call`, `tool/result` | - | 创造模式提供两个只读运行时检查工具。Cordis host runner 提供检查注册表；Client 查询需要已连接页面。持久化变更编写为组合包，再通过 plugin_manager 安装。 |
-| `@deepseek-ai/dsh-tool-bash-persistent` | `bash` | `ctx.tools`、`ctx.terminals`、`an owning Agent at execution time` | `tool/call`、`PTY shell state`、`tool/result` | - | 一个按所有者隔离的持久 bash 工具；部署组合提供 PTY 后端，并可覆盖面向模型的环境描述。 |
-| `@deepseek-ai/dsh-tool-pwsh-persistent` | `pwsh` | `ctx.tools`、`ctx.terminals`、`an owning Agent at execution time` | `tool/call`、`PTY shell state`、`tool/result` | - | 一个按所有者隔离的持久 pwsh 工具，持久 bash 工具的 Windows 对应物；部署组合提供 pwsh 方言的 PTY 后端，并可覆盖面向模型的环境描述。 |
-| `@deepseek-ai/dsh-tool-str-replace-editor` | `str_replace_editor` | `ctx.tools`、`ctx.fs` | `tool/call`、`fs/observed after view presence/absence, edit absence, or successful mutation`、`tool/result` | - | 基于文件系统 seam 的独立查看／创建／唯一字面量替换／按行插入工具；可与任何 shell 或终端接口组合。 |
-| `@deepseek-ai/dsh-tool-fs` | `edit`、`read`、`read_image`、`write` | `ctx.tools`、`ctx.fs`、`ctx.systemPrompt`、`ctx.attachments (image-tool registration)`、`ctx.llm + an image-capable route (image-tool execution)` | `tool/call`、`fs/write-intent or fs/edit-intent for mutations`、`fs/observed after read presence/absence or successful file operation`、`durable attachment (read_image)`、`tool/result` | - | 先读后写／编辑策略由 `@deepseek-ai/dsh-fs-observation-policy` 添加；它是一个 `fs/*` 事件门禁插件，不会改变 schema。加载这些工具的部署按预期也应加载该插件。没有 `ctx.attachments` 时图片工具不会注册；其 schema 与路由无关，执行时除非确切路由的模型声明图片输入，否则拒绝。 |
-| `@deepseek-ai/dsh-tool-fs-search` | `glob`、`grep` | `ctx.tools`、`ctx.subprocess`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn 随包提供的 ripgrep 二进制文件（`@vscode/ripgrep`），并作为普通前台调用运行，绝不作为后台任务；无需在宿主机安装 `rg`，也不经过 shell 层。本目录使用 `sampleOverCapGlobResults: true`；部署必须显式选择该行为。结果超过上限时，会通过可选的 ctx.spillStore 后端保存完整的格式化列表；在共置部署中，如果后端公开本地路径，返回的定位信息可供后续读取／搜索。 |
-| `@deepseek-ai/dsh-tool-terminal` | `terminal_close`、`terminal_list`、`terminal_open`、`terminal_read`、`terminal_send`、`terminal_signal` | `ctx.tools`、`ctx.terminals`、`ctx.systemPrompt`、`ctx.jobs at call time for run_in_background` | `tool/call`、`tool/result` | - | 这 6 个终端工具需要选择启用，用于补充一次性 bash／文件系统工具。`terminal_send(run_in_background: true)` 会注册到 `ctx.jobs`；schema 不包含 TUI、具名按键序列、BEL、调整尺寸、自动启动和跨 agent 共享。 |
-| `@deepseek-ai/dsh-tool-goal` | `create_goal`、`get_goal`、`update_goal` | `ctx.tools`、`ctx.agents`、`ctx.goals`、`ctx.systemPrompt`、`a calling Agent in an authorized open turn` | `tool/call`、`goal/change for mutations`、`tool/result` | - | create、edit、pause 和 resume 要求直接来自人类的根权限；complete 和 blocked 也接受确切的当前 Goal Round。blocked 的默认下限是 3 个获准的 Round。 |
-| `@deepseek-ai/dsh-schedule` | `schedule_create`、`schedule_delete`、`schedule_list` | `ctx.tools`、`ctx.sessions`、Session 持久化、未来创建的 live 根 Agent | `tool/call`、`schedule/change create or delete`、`tool/result` | - | 仅在选择启用的 Schedule 插件加载后创建的 live 根 Agent scope 内注册。版本 1 接受 after_seconds、显式绝对 at 和有界固定速率 every_seconds，并披露 session-local 交付；管理读取与变更必须通过共享的 Session 持久化 barrier。 |
-| `@deepseek-ai/dsh-tool-lsp` | `lsp` | `ctx.tools`、`ctx.lsp`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，因此其模型可见 schema 在更换提供方时保持稳定。运行时要求已注册提供方，例如 `@deepseek-ai/dsh-lsp-stdio`；如果没有提供方，查询会返回结构化 `LSP_UNAVAILABLE` 错误，而不会改变 schema。 |
-| `@deepseek-ai/dsh-tool-ralph` | `ralph` | `ctx.tools`、`ctx.workflowEngine`、`ctx.subagents`、`ctx.systemPrompt`、`a calling Agent (exec.agent parents every fresh round)` | `tool/call`、`tool/result`、`workflow and child session events during execution` | - | 固定的前台工作流会在每个 Round 启动一个全新的结构化子级；模型只能选择不可变目标和可选的 Round 上限。 |
-| `@deepseek-ai/dsh-tool-skill` | `skill` | `ctx.tools`、`ctx.agents`、`ctx.skills` | `tool/call`、`tool/result`、`user/message replacement catalogs via agent.inject()` | - | - |
-| `@deepseek-ai/dsh-tool-session-query` | `session_event_read`、`session_event_search`、`session_event_trace`、`session_search`、`session_trace` | `ctx.tools`、`ctx.systemPrompt`、`ctx.sessionQuery`、`a calling Agent for workspace authority` | `tool/call`、`tool/result` | - | 这 5 个只读工具会隐藏提供方游标，并根据不可变的调用 agent 会话为每个结果授权。该包需要选择启用；需要强制截止时间或限制行内输出的组合还会挂载通用超时或 spill 策略。 |
-| `@deepseek-ai/dsh-tool-subagent` | `list_subagent_models`、`subagent` | `ctx.tools`、`ctx.subagents`、`ctx.systemPrompt`、`用于模型发现和所选路由校验的 ctx.llm` | `tool/call`、`tool/result`、`child session events through the chosen provider` | `subagent`、`subagent_fork` | 注册的委派工具名称取决于加载时 `toolName` 配置（默认为 `subagent`）；上述默认 schema 关闭模型选择，而发现 schema 则展示为已启用 Session 中可用的固定配套工具。Web preset 会在每个新顶层 Session 创建时读取插件页偏好，并为其子 Session 保留该决定；`subagent_fork` 始终使用固定路由。每个实例通过 `modelSelectionSettings`、`backgroundMode` 与 `enableRunInBackground` 独立控制是否读取模型选择设置及其后台行为。 |
-| `@deepseek-ai/dsh-tool-subagent-control` | `interrupt_agent`、`list_agents`、`send_message` | `ctx.tools`、`ctx.subagents`、`ctx.agents and ctx.sessionProjections (list_agents only)` | `tool/call`、`tool/result`、`child session events through ctx.subagents` | - | 这些是控制可继续后台 subagent 的全局命名工具：绑定提供方的 `tool-subagent` 实例注册不同的委派工具；本包注册一次 `send_message` 和 `interrupt_agent`，另由 `list_agents` 通过单独加载的 `/list-agents` 插件提供，其目录行使用 sessionProjections 和实时 Agent 注册表。 |
-| `@deepseek-ai/dsh-tool-jobs` | `job_kill`、`job_list`、`job_output` | `ctx.tools`、`ctx.jobs`、`ctx.systemPrompt` | `tool/call`、`tool/result`、`user/message via agent.inject() for background completion notices` | - | 与任务种类无关的后台任务控制器：后台 bash 命令、PTY 发送和 subagent 都通过相同的 3 个工具读取、列出和终止。加载该插件会挂接控制器，从而启用生产方的 `ctx.jobs.start()`。 |
-| `@deepseek-ai/dsh-experimental-tool-agent-team` | `interrupt_agent`、`list_agents`、`send_message`、`spawn_teammate`、`team_task_create`、`team_task_get`、`team_task_list`、`team_task_update`、`wait_agent` | `ctx.tools`、`ctx.systemPrompt`、`ctx.agentTeams`、`an exact live Team member Agent` | `tool/call`、`team/member`、`team/message/queued`、`team/message/delivered`、`team/task`、`tool/result` | - | 这 9 个工具限定于隐式 Team Lead 与持久 teammate 作用域。随产品发布的 dsh-base bundle 默认禁用该包；文档中的 Agent Teams profile patch 会启用它，并禁用旧 continuable child 的同名控制工具。 |
-| `@deepseek-ai/dsh-tool-todo` | `todo_write` | `ctx.tools`、`owning Agent session` | `tool/call`、`todo/write`、`tool/result` | - | todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为检查清单。`allowParallelInProgress` 是没有默认值的必填项，因此本目录明确选择 `true`，对应描述允许同时存在多个 `in_progress` 项。选择 `false` 的部署会获得同一工具，但描述会要求只能有 1 个活动任务。 |
-| `@deepseek-ai/dsh-tool-workflow` | `workflow` | `ctx.tools`、`ctx.workflowEngine`、`ctx.systemPrompt`、`a calling Agent (exec.agent parents the script children)` | `tool/call`、`tool/result` | - | - |
-| `@deepseek-ai/dsh-tool-web` | `web_fetch`、`web_search` | `ctx.tools`、`ctx.web`、`ctx.systemPrompt` | `tool/call`、`tool/result` | - | web_search 和 web_fetch 将提供方选择置于 ctx.web 之后，使模型可见 schema 在更换后端时保持稳定。 |
+| `@deepseek-ai/dsh-experimental-browser-use-stagehand-native` | `stagehand_act`،`stagehand_extract`،`stagehand_navigate`،`stagehand_observe`،`stagehand_screenshot`،`stagehand_tabs` | `ctx.browserUse`،`ctx.agents`،`ctx.tools`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | - |
+| `@deepseek-ai/dsh-tool-ask-user` | `ask_user_question` | `ctx.tools`،`ctx.userQuestions` | `tool/call`،`tool/result after a UI/provider answers the question` | - | ask_user_question سوف مؤقت توقف أداة استدعاء، مباشر إلى حالي UI مزود إرجاع شخص صنف جواب سجل. |
+| `@deepseek-ai/dsh-tools` | `run_code` | `ctx.tools`،`ctx.ptcRuntime (execution time)`،`ctx.systemPrompt` | `tool/call`،`one tool/ptc-dispatch-start + tool/ptc-dispatch pair per bridged sub-call`،`tool/result` | - | في `mode: ptc`/`mode: both` تحت، هو من أداة سجل التسجيل كل، بصفة يمكن مرور ترشيح قدرة طبقة خارج إبقاء نقل آلية (مشاركة رؤية PTC mode Agent Note). في `ptc` تحت، هو هو سجل التسجيل مقابل بروتوكول صيغة (wire format) وحيد مساهمة؛ أخرى مرئي قدرة في استخدام قد تحميل وقت التشغيل لغة توليد SDK فصل عقدة في إعلان. برنامج عبر binding استدعاء هذه قدرة، استدعاء حسب وفق أصلي تزامن اتفاق ضبط درجة: بدء ترتيب و سياسة التزام دوران إيداع ترتيب، تزامن أمان دالة جسم الأكثر كثير إعادة تراكم تنفيذ `maxParallelSubCalls` عدد. استدعاء سوف إعادة دخول كامل كما تلقي حراسة حماية حفظ حماية أداة خط الإنتاج، و سوف كل تضمين طقم تنفيذ صلة ربط إلى هذا خارج طبقة نتيجة. |
+| `@deepseek-ai/dsh-plan-mode` | `exit_plan_mode` | `ctx.tools`،`ctx.systemPrompt`،`ctx.userQuestions (execution time, opportunistic)` | `tool/call`،`plan/mode inactive on an approved review`،`tool/result` | - | قاعدة تخطيط لم تنشيط وقت،exit_plan_mode ما زال إبقاء في موجه إلى نموذج schema في، هذا مثال حالة تحويل لن في قاعدة تخطيط سياسة تغيير خارج مقدار خارج صنع صار أداة دليل تغيير حركة. ذلك تنفيذ مسار سوف رفض قاعدة تخطيط نمط خارج استدعاء؛ في قاعدة تخطيط نمط تحت، هو عبر مستخدم تفاعل seam إيداع حساب تخطيط (دفعة دقيق/أصل حسب عكس تغذية متابعة قاعدة تخطيط) ، دفعة دقيق بعد سوف في خطوة حد سجل قاعدة تخطيط نمط قد توقف استخدام. |
+| `@deepseek-ai/dsh-tool-bash` | `bash` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة (قدوم ذاتي `@deepseek-ai/dsh-tool-jobs`) استلام تجميع/إيقاف؛ منع استخدام `enableRunInBackground` إعداد (افتراضي لـ true) بعد، هذا معامل سوف يتم تماما إزالة. |
+| `@deepseek-ai/dsh-tool-present` | `present` | `ctx.tools`, `ctx.fs`, `ctx.sessionProjections` | `tool/call`, `deliverables/presented في نجاح نهائي نتيجة بعد`, `tool/result` | - | تسليم عودة استدعاء جهة Session كل؛Web ui-deliverables توفير مصدر ملف فتح و بطاقة. |
+| `@deepseek-ai/dsh-tool-pwsh` | `pwsh` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة قول مستهلك (من `@deepseek-ai/dsh-pwsh-local` انتظار PowerShell منفذ لـ `ctx.shell` توفير خلفية) ؛ حذف صندوق رملي واجهة خارج، هو تدريجي بند مقابل bash أداة استدعاء. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة استلام تجميع/إيقاف؛ حمل إدارة `DSH_*` بيئة قدوم ذاتي `@deepseek-ai/dsh-shell-env`. كل مرة استدعاء كل في جديد عملية في تشغيل، لا استخدام حمل دائم PTY جلسة. مسار اعتماد أصلي `C:\...` شكل صيغة، متغير اعتماد `$env:NAME`. |
+| `@deepseek-ai/dsh-tool-cordis` | `cordis_inspect_list`, `cordis_inspect_query` | `ctx.tools`, `ctx.cordisInspect` | `tool/call`, `tool/result` | - | إنشاء صنع نمط توفير اثنان عدد فقط قراءة وقت التشغيل فحص أداة.Cordis host runner توفير فحص سجل التسجيل؛Client استعلام حاجة قد اتصال صفحة. حفظ دائم تغيير تحرير كتابة لـ تركيب حزمة، مجددا عبر plugin_manager تثبيت. |
+| `@deepseek-ai/dsh-tool-bash-persistent` | `bash` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | واحد حسب كل من عزل حمل دائم bash أداة؛ نشر تركيب توفير PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف. |
+| `@deepseek-ai/dsh-tool-pwsh-persistent` | `pwsh` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | واحد حسب كل من عزل حمل دائم pwsh أداة، حمل دائم bash أداة Windows مقابل شيء؛ نشر تركيب توفير pwsh جهة قول PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف. |
+| `@deepseek-ai/dsh-tool-str-replace-editor` | `str_replace_editor` | `ctx.tools`،`ctx.fs` | `tool/call`،`fs/observed after view presence/absence, edit absence, or successful mutation`،`tool/result` | - | أساس في نظام الملفات seam مستقل فحص نظر/إنشاء/وحيد حرف وجه كمية استبدال/حسب سطر إدراج دخول أداة؛ يمكن و أي shell أو طرفية واجهة تركيب. |
+| `@deepseek-ai/dsh-tool-fs` | `edit`،`read`،`read_image`،`write` | `ctx.tools`،`ctx.fs`،`ctx.systemPrompt`،`ctx.attachments (image-tool registration)`،`ctx.llm + an image-capable route (image-tool execution)` | `tool/call`،`fs/write-intent or fs/edit-intent for mutations`،`fs/observed after read presence/absence or successful file operation`،`durable attachment (read_image)`،`tool/result` | - | أولا قراءة بعد كتابة/تحرير سياسة من `@deepseek-ai/dsh-fs-observation-policy` إضافة؛ هو هو واحد `fs/*` حدث بوابة إضافة، لن تغيير schema. تحميل هذه أداة نشر حسب مسبق مدة أيضا ينبغي تحميل هذا إضافة. لا يوجد `ctx.attachments` وقت صورة أداة لن تسجيل؛ ذلك schema و توجيه غير متصل، تنفيذ وقت حذف غير تأكيد قطع توجيه نموذج إعلان صورة إدخال، لا فإن رفض. |
+| `@deepseek-ai/dsh-tool-fs-search` | `glob`،`grep` | `ctx.tools`،`ctx.subprocess`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subprocess spawn مع حزمة توفير ripgrep اثنان دخول صنع ملف (`@vscode/ripgrep`) ، و بصفة عادي قبل منصة استدعاء تشغيل، أبدا بصفة خلفية مهمة؛ بلا حاجة في مضيف آلة تثبيت `rg`، أيضا لا مرور مرور shell طبقة. هذا دليل استخدام `sampleOverCapGlobResults: true`؛ نشر يجب صريح اختيار هذا سلوك. نتيجة تجاوز مرور حد أعلى وقت، سوف عبر اختياري ctx.spillStore خلفية حفظ كامل صيغة تحويل قائمة؛ في مشترك وضع نشر في، إذا خلفية عام محلي مسار، إرجاع تحديد موضع معلومة يمكن توفير لاحق قراءة/بحث. |
+| `@deepseek-ai/dsh-tool-terminal` | `terminal_close`،`terminal_list`،`terminal_open`،`terminal_read`،`terminal_send`،`terminal_signal` | `ctx.tools`،`ctx.terminals`،`ctx.systemPrompt`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | هذا 6 عدد طرفية أداة حاجة اختيار تفعيل، لأجل تكملة ملء مرة صفة bash/نظام الملفات أداة.`terminal_send(run_in_background: true)` سوف تسجيل إلى `ctx.jobs`؛schema لا يتضمن TUI، أداة اسم حسب مفتاح تسلسل،BEL، ضبط كامل مقياس قياس، تلقائي بدء و عبر agent مشترك. |
+| `@deepseek-ai/dsh-tool-goal` | `create_goal`،`get_goal`،`update_goal` | `ctx.tools`،`ctx.agents`،`ctx.goals`،`ctx.systemPrompt`،`a calling Agent in an authorized open turn` | `tool/call`،`goal/change for mutations`،`tool/result` | - | create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص صنف أصل إذن؛complete و blocked أيضا قبول تأكيد قطع حالي Goal Round.blocked افتراضي تحت حد هو 3 عدد نيل دقيق Round. |
+| `@deepseek-ai/dsh-schedule` | `schedule_create`،`schedule_delete`،`schedule_list` | `ctx.tools`،`ctx.sessions`،Session حفظ دائم، لم قدوم إنشاء live أصل Agent | `tool/call`،`schedule/change create or delete`،`tool/result` | - | فقط في اختيار تفعيل Schedule إضافة تحميل بعد إنشاء live أصل Agent scope داخل تسجيل. إصدار 1 قبول after_seconds، صريح قطعا مقابل at و محدود ثابت سرعة معدل every_seconds، و كشف كشف session-local تسليم؛ إدارة قراءة و تغيير يجب عبر مشترك Session حفظ دائم barrier. |
+| `@deepseek-ai/dsh-tool-lsp` | `lsp` | `ctx.tools`،`ctx.lsp`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | lsp أداة سوف مزود اختيار و لغة خادم عملية فرعية وضع في ctx.lsp بعد، لذلك ذلك نموذج مرئي schema في أكثر تبديل مزود وقت إبقاء مستقر. وقت التشغيل اشتراط قد تسجيل مزود، مثال مثل `@deepseek-ai/dsh-lsp-stdio`؛ إذا لا يوجد مزود، استعلام سوف إرجاع بنية تحويل `LSP_UNAVAILABLE` خطأ، بينما لن تغيير schema. |
+| `@deepseek-ai/dsh-tool-ralph` | `ralph` | `ctx.tools`،`ctx.workflowEngine`،`ctx.subagents`،`ctx.systemPrompt`،`a calling Agent (exec.agent parents every fresh round)` | `tool/call`،`tool/result`،`workflow and child session events during execution` | - | ثابت قبل منصة سير العمل سوف في كل Round بدء واحد كل جديد بنية تحويل فرعي درجة؛ نموذج فقط قدرة اختيار غير ممكن تغيير هدف و اختياري Round حد أعلى. |
+| `@deepseek-ai/dsh-tool-skill` | `skill` | `ctx.tools`،`ctx.agents`،`ctx.skills` | `tool/call`،`tool/result`،`user/message replacement catalogs via agent.inject()` | - | - |
+| `@deepseek-ai/dsh-tool-session-query` | `session_event_read`،`session_event_search`،`session_event_trace`،`session_search`،`session_trace` | `ctx.tools`،`ctx.systemPrompt`،`ctx.sessionQuery`،`a calling Agent for workspace authority` | `tool/call`،`tool/result` | - | هذا 5 عدد فقط قراءة أداة سوف إخفاء مزود تنقل علامة، و أصل حسب غير ممكن تغيير استدعاء agent جلسة لـ كل نتيجة تخويل. هذا حزمة حاجة اختيار تفعيل؛ حاجة قوي صنع قطع توقف وقت أو حد سطر داخل إخراج تركيب أيضا سوف تركيب عام مهلة أو spill سياسة. |
+| `@deepseek-ai/dsh-tool-subagent` | `list_subagent_models`،`subagent` | `ctx.tools`،`ctx.subagents`،`ctx.systemPrompt`،`لأجل نموذج اكتشاف و الذي اختيار توجيه تحقق ctx.llm` | `tool/call`،`tool/result`،`child session events through the chosen provider` | `subagent`،`subagent_fork` | تسجيل تفويض إرسال أداة اسم أخذ قرار في تحميل وقت `toolName` إعداد (افتراضي لـ `subagent`) ؛ فوق وصف افتراضي schema إغلاق نموذج اختيار، بينما اكتشاف schema فإن عرض لـ قد تفعيل Session في متاح ثابت إعداد طقم أداة.Web preset سوف في كل جديد قمة طبقة Session إنشاء وقت قراءة إضافة صفحة انحراف جيد، و لـ ذلك فرعي Session إبقاء هذا قرار؛`subagent_fork` بداية نهاية استخدام ثابت توجيه. كل نسخة عبر `modelSelectionSettings`،`backgroundMode` و `enableRunInBackground` مستقل تحكم هل قراءة نموذج اختيار ضبط و ذلك خلفية سلوك. |
+| `@deepseek-ai/dsh-tool-subagent-control` | `interrupt_agent`،`list_agents`،`send_message` | `ctx.tools`،`ctx.subagents`،`ctx.agents and ctx.sessionProjections (list_agents only)` | `tool/call`،`tool/result`،`child session events through ctx.subagents` | - | هذه هو تحكم يمكن متابعة خلفية subagent عام تسمية أداة: ربط مزود `tool-subagent` نسخة تسجيل مختلف تفويض إرسال أداة؛ هذه الحزمة تسجيل مرة `send_message` و `interrupt_agent`، آخر من `list_agents` عبر مفرد وحيد تحميل `/list-agents` إضافة توفير، ذلك دليل سطر استخدام sessionProjections و فوري Agent سجل التسجيل. |
+| `@deepseek-ai/dsh-tool-jobs` | `job_kill`،`job_list`،`job_output` | `ctx.tools`،`ctx.jobs`،`ctx.systemPrompt` | `tool/call`،`tool/result`،`user/message via agent.inject() for background completion notices` | - | و مهمة نوع صنف غير متصل خلفية مهمة تحكم جهاز: خلفية bash أمر،PTY إرسال و subagent كل عبر نفسه 3 عدد أداة قراءة، صف خروج و إنهاء. تحميل هذا إضافة سوف تعليق وصل تحكم جهاز، من بينما تفعيل إنتاج جهة `ctx.jobs.start()`. |
+| `@deepseek-ai/dsh-experimental-tool-agent-team` | `interrupt_agent`،`list_agents`،`send_message`،`spawn_teammate`،`team_task_create`،`team_task_get`،`team_task_list`،`team_task_update`،`wait_agent` | `ctx.tools`،`ctx.systemPrompt`،`ctx.agentTeams`،`an exact live Team member Agent` | `tool/call`،`team/member`،`team/message/queued`،`team/message/delivered`،`team/task`،`tool/result` | - | هذا 9 عدد أداة حد تحديد في خفي صيغة Team Lead و حمل دائم teammate أثر مجال. مع منتج إصدار dsh-base bundle افتراضي منع استخدام هذا حزمة؛ وثيقة في Agent Teams profile patch سوف تفعيل هو، و منع استخدام قديم continuable child نفس اسم تحكم أداة. |
+| `@deepseek-ai/dsh-tool-todo` | `todo_write` | `ctx.tools`،`owning Agent session` | `tool/call`،`todo/write`،`tool/result` | - | todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/write حدث تصيير لـ فحص بيان.`allowParallelInProgress` هو لا يوجد قيمة افتراضية لا بد ملء بند، لذلك هذا دليل واضح اختيار `true`، مقابل وصف سماح معا وجود كثير عدد `in_progress` بند. اختيار `false` نشر سوف نيل نيل نفس أداة، لكن وصف سوف اشتراط فقط قدرة لديه 1 عدد نشط حركة مهمة. |
+| `@deepseek-ai/dsh-tool-workflow` | `workflow` | `ctx.tools`،`ctx.workflowEngine`،`ctx.systemPrompt`،`a calling Agent (exec.agent parents the script children)` | `tool/call`،`tool/result` | - | - |
+| `@deepseek-ai/dsh-tool-web` | `web_fetch`،`web_search` | `ctx.tools`،`ctx.web`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | web_search و web_fetch سوف مزود اختيار وضع في ctx.web بعد، جعل نموذج مرئي schema في أكثر تبديل خلفية وقت إبقاء مستقر. |
 
 <a id="deepseek-aidsh-plugin-manager"></a>
 
@@ -55,7 +55,7 @@
 
 ### `plugin_manager`
 
-列出当前 profile 中的插件或组合包，启用或禁用它们，安装组合包或移除已安装的组合包。每项操作都要求 danger-full-access 权限或本次调用的批准。批准不改变会话权限模式。变更影响该 profile 的所有会话。先列出条目以获取准确标识。包安装可能运行已获批准的构建脚本。支持热更新的 profile 立即应用变更；仅启动时加载的 profile 需要重启。
+صف خروج حالي profile في إضافة أو تركيب حزمة، تفعيل أو منع استخدام هو جمع، تثبيت تركيب حزمة أو إزالة قد تثبيت تركيب حزمة. كل بند عملية كل اشتراط danger-full-access إذن أو هذا مرة استدعاء دفعة دقيق. دفعة دقيق لا تغيير جلسة إذن نمط. تغيير أثر هذا profile كل جلسة. أولا صف خروج بند بـ نيل أخذ دقيق تأكيد معرف. حزمة تثبيت ممكن تشغيل قد نيل دفعة دقيق بناء نص برمجي. دعم حمل حار تحديث profile قيام أي تطبيق تغيير؛ فقط بدء وقت تحميل profile حاجة إعادة بدء.
 
 ```json
 {
@@ -103,7 +103,7 @@
 }
 ```
 
-来源： [`packages/boot/plugin-manager/src/tools.ts`](../packages/boot/plugin-manager/src/tools.ts)
+مصدر: [`packages/boot/plugin-manager/src/tools.ts`](../packages/boot/plugin-manager/src/tools.ts)
 
 <a id="deepseek-aidsh-mcp-resources"></a>
 
@@ -111,7 +111,7 @@
 
 ### `list_mcp_resource_templates`
 
-列出 MCP 服务器提供的参数化资源 URI 模板。
+صف خروج MCP خادم توفير معامل تحويل مورد URI نموذج لوح.
 
 ```json
 {
@@ -132,11 +132,11 @@
 }
 ```
 
-来源： [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 ### `list_mcp_resources`
 
-列出 MCP 服务器提供的资源。
+صف خروج MCP خادم توفير مورد.
 
 ```json
 {
@@ -157,11 +157,11 @@
 }
 ```
 
-来源： [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 ### `read_mcp_resource`
 
-按 URI 从指定服务器读取 MCP 资源。使用已列出的 URI 或展开后的资源模板。
+حسب URI من إشارة تحديد خادم قراءة MCP مورد. استخدام قد صف خروج URI أو توسيع بعد مورد نموذج لوح.
 
 ```json
 {
@@ -183,7 +183,7 @@
 }
 ```
 
-来源： [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 <a id="deepseek-aidsh-experimental-browser-use-stagehand-native"></a>
 
@@ -191,7 +191,7 @@
 
 ### `stagehand_act`
 
-使用配置的 Stagehand 模型执行一次自然语言浏览器操作。
+استخدام إعداد Stagehand نموذج تنفيذ مرة ذاتي لكن لغة متصفح عملية.
 
 ```json
 {
@@ -214,11 +214,11 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_extract`
 
-使用配置的 Stagehand 模型与可选的 JSON Schema 提取页面数据。
+استخدام إعداد Stagehand نموذج و اختياري JSON Schema رفع أخذ صفحة بيانات.
 
 ```json
 {
@@ -283,11 +283,11 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_navigate`
 
-将 Stagehand 浏览器标签页导航至指定 URL。
+سوف Stagehand متصفح وسم صفحة تنقل حتى إشارة تحديد URL.
 
 ```json
 {
@@ -310,11 +310,11 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_observe`
 
-使用配置的 Stagehand 模型查找符合指令的浏览器操作。
+استخدام إعداد Stagehand نموذج فحص بحث رمز دمج إشارة أمر متصفح عملية.
 
 ```json
 {
@@ -337,11 +337,11 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_screenshot`
 
-截取 Stagehand 标签页图像以供视觉检查。
+قطع أخذ Stagehand وسم صفحة رسم مثل بـ توفير نظر شعور فحص.
 
 ```json
 {
@@ -364,11 +364,11 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_tabs`
 
-列出、创建、选择或关闭 Stagehand 浏览器标签页。
+صف خروج، إنشاء، اختيار أو إغلاق Stagehand متصفح وسم صفحة.
 
 ```json
 {
@@ -430,7 +430,7 @@
 }
 ```
 
-来源：[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 <a id="deepseek-aidsh-tool-ask-user"></a>
 
@@ -438,7 +438,7 @@
 
 ### `ask_user_question`
 
-继续操作前，如果需要确认、选择或缺失的信息，请向用户提出简明问题。发送一个或多个问题，每个问题都带一个稳定 id，该 id 会在答案中原样返回。
+متابعة عملية قبل، إذا حاجة تأكيد، اختيار أو ناقص معلومة، طلب نحو مستخدم رفع خروج بسيط واضح مشكلة. إرسال واحد أو كثير عدد مشكلة، كل مشكلة كل حمل واحد مستقر id، هذا id سوف في جواب سجل في أصل مثال إرجاع.
 
 ```json
 {
@@ -502,9 +502,9 @@
 }
 ```
 
-来源：[`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts)
+مصدر:[`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts)
 
-ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类答案。
+ask_user_question سوف مؤقت توقف أداة استدعاء، مباشر إلى حالي UI مزود إرجاع شخص صنف جواب سجل.
 
 <a id="deepseek-aidsh-tools"></a>
 
@@ -512,7 +512,7 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 
 ### `run_code`
 
-针对可用工具执行 TypeScript 程序。接受两个必填参数：`code`，即异步函数的**函数体**（仅使用可擦除语法；支持顶层 `await` 和 `return`）；以及 `description`，简要说明该程序做什么。请根据系统提示词中的声明，以 `await tools.name(args)` 形式调用工具。只有打印或返回的内容属于程序输出，请谨慎筛选。含图片的子工具结果会在运行结束后附加。
+إبرة مقابل متاح أداة تنفيذ TypeScript برنامج. قبول اثنان عدد لا بد ملء معامل:`code`، أي مختلف خطوة دالة**دالة جسم**(فقط استخدام يمكن مسح حذف لغة قاعدة؛ دعم حمل قمة طبقة `await` و `return`) ؛ و `description`، بسيط يلزم شرح هذا برنامج فعل ماذا. طلب أصل حسب توجيه النظام في إعلان، بـ `await tools.name(args)` شكل صيغة استدعاء أداة. فقط لديه ضرب طبع أو إرجاع محتوى يخص برنامج إخراج، طلب حذر حذر غربلة اختيار. يحتوي صورة فرعي أداة نتيجة سوف في تشغيل انتهاء بعد مرفق إضافة.
 
 ```json
 {
@@ -550,9 +550,9 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 }
 ```
 
-来源：[`packages/core/tools/src/ptc.ts`](../packages/core/tools/src/ptc.ts)
+مصدر:[`packages/core/tools/src/ptc.ts`](../packages/core/tools/src/ptc.ts)
 
-在 `mode: ptc`／`mode: both` 下，它由工具注册表所有，作为可过滤能力层之外的保留传输机制（参见 PTC mode Agent Note）。在 `ptc` 下，它是注册表对协议格式的唯一贡献；其他可见能力在使用已加载运行时语言生成的 SDK 章节中声明。程序通过 binding 调用这些能力，调用按照原生并发约定调度：启动顺序和策略遵循提交顺序，并发安全的函数体最多重叠执行 `maxParallelSubCalls` 个。调用会重新进入完整且受守卫保护的工具流水线，并将每个嵌套执行关联到此外层结果。
+في `mode: ptc`/`mode: both` تحت، هو من أداة سجل التسجيل كل، بصفة يمكن مرور ترشيح قدرة طبقة خارج إبقاء نقل آلية (مشاركة رؤية PTC mode Agent Note). في `ptc` تحت، هو هو سجل التسجيل مقابل بروتوكول صيغة وحيد مساهمة؛ أخرى مرئي قدرة في استخدام قد تحميل وقت التشغيل لغة توليد SDK فصل عقدة في إعلان. برنامج عبر binding استدعاء هذه قدرة، استدعاء حسب وفق أصلي تزامن اتفاق ضبط درجة: بدء ترتيب و سياسة التزام دوران إيداع ترتيب، تزامن أمان دالة جسم الأكثر كثير إعادة تراكم تنفيذ `maxParallelSubCalls` عدد. استدعاء سوف إعادة دخول كامل كما تلقي حراسة حماية حفظ حماية أداة خط الإنتاج، و سوف كل تضمين طقم تنفيذ صلة ربط إلى هذا خارج طبقة نتيجة.
 
 <a id="deepseek-aidsh-plan-mode"></a>
 
@@ -560,7 +560,7 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 
 ### `exit_plan_mode`
 
-仅在规划模式下使用。提交计划供用户评审，并在获批后退出规划模式。发送**完整的** Markdown 计划，以一个为计划命名的 # 标题开头。用户可以批准（从你的下一步骤起执行计划），也可以要求继续规划；其反馈会通过工具结果返回，请修改后再次提交。
+فقط في قاعدة تخطيط نمط تحت استخدام. إيداع حساب تخطيط توفير مستخدم مراجعة، و في نيل دفعة بعد خروج قاعدة تخطيط نمط. إرسال**كامل** Markdown حساب تخطيط، بـ واحد لـ حساب تخطيط تسمية # عنوان فتح رأس. مستخدم يمكن دفعة دقيق (من أنت تحت واحد خطوة بدء تنفيذ حساب تخطيط) ، أيضا يمكن اشتراط متابعة قاعدة تخطيط؛ ذلك عكس تغذية سوف عبر أداة نتيجة إرجاع، طلب تعديل بعد مجددا مرة إيداع.
 
 ```json
 {
@@ -577,9 +577,9 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 }
 ```
 
-来源：[`packages/plan/plan-mode/src/index.ts`](../packages/plan/plan-mode/src/index.ts)
+مصدر:[`packages/plan/plan-mode/src/index.ts`](../packages/plan/plan-mode/src/index.ts)
 
-规划未激活时，exit_plan_mode 仍保留在面向模型的 schema 中，这样状态转换不会在规划策略变更之外额外造成工具目录变动。其执行路径会拒绝规划模式之外的调用；在规划模式下，它通过用户交互 seam 提交计划（批准／根据反馈继续规划），批准后会在步骤边界记录规划模式已停用。
+قاعدة تخطيط لم تنشيط وقت،exit_plan_mode ما زال إبقاء في موجه إلى نموذج schema في، هذا مثال حالة تحويل لن في قاعدة تخطيط سياسة تغيير خارج مقدار خارج صنع صار أداة دليل تغيير حركة. ذلك تنفيذ مسار سوف رفض قاعدة تخطيط نمط خارج استدعاء؛ في قاعدة تخطيط نمط تحت، هو عبر مستخدم تفاعل seam إيداع حساب تخطيط (دفعة دقيق/أصل حسب عكس تغذية متابعة قاعدة تخطيط) ، دفعة دقيق بعد سوف في خطوة حد سجل قاعدة تخطيط نمط قد توقف استخدام.
 
 <a id="deepseek-aidsh-tool-bash"></a>
 
@@ -587,7 +587,7 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 
 ### `bash`
 
-执行 bash 命令（`bash -c`）并返回 stdout/stderr。每次调用都在新 shell 中运行：调用之间不保留任何状态（cwd、变量、函数），请传入 `workdir`，不要使用 `cd`。非零退出会报告为 `[exit code: N]`。当前 harness 环境信息通过托管的 `$DSH_*` 变量公开，需要时请检查这些变量。命令可能在文件沙箱中运行；被阻止的文件操作报告为 `[sandbox: file access denied under <mode> mode]`，这是策略拒绝，而不是命令缺陷，请勿换一种方式重试。较长的输出会截断，只保留尾部；如可用，完整输出会保存到文件并报告其路径。对于长时间运行的命令，请设置 `run_in_background: true`：调用会立即返回 job id；使用 `job_output` 读取输出，使用 `job_kill` 停止任务。
+تنفيذ bash أمر (`bash -c`) و إرجاع stdout/stderr. كل مرة استدعاء كل في جديد shell في تشغيل: استدعاء بين لا إبقاء أي حالة (cwd، متغير، دالة) ، طلب نقل دخول `workdir`، لا يلزم استخدام `cd`. غير صفر خروج سوف تقرير إبلاغ لـ `[exit code: N]`. حالي harness بيئة معلومة عبر حمل إدارة `$DSH_*` متغير عام، حاجة وقت طلب فحص هذه متغير. أمر ممكن في ملف صندوق رملي في تشغيل؛ يتم منع توقف ملف عملية تقرير إبلاغ لـ `[sandbox: file access denied under <mode> mode]`، هذا هو سياسة رفض، بينما لا هو أمر نقص وقوع، طلب لا تبديل واحد نوع طريقة إعادة محاولة. مقارنة طويل إخراج سوف قطع قطع، فقط إبقاء ذيل جزء؛ مثل متاح، كامل إخراج سوف حفظ إلى ملف و تقرير إبلاغ ذلك مسار. مقابل في طويل وقت تشغيل أمر، طلب ضبط `run_in_background: true`: استدعاء سوف قيام أي إرجاع job id؛ استخدام `job_output` قراءة إخراج، استخدام `job_kill` إيقاف مهمة.
 
 ```json
 {
@@ -621,9 +621,9 @@ ask_user_question 会暂停工具调用，直到当前 UI 提供方返回人类�
 }
 ```
 
-来源：[`packages/shell/tool-bash/src/index.ts`](../packages/shell/tool-bash/src/index.ts)
+مصدر:[`packages/shell/tool-bash/src/index.ts`](../packages/shell/tool-bash/src/index.ts)
 
-bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_background` 的运行会注册到通用 `ctx.jobs` 运行时，并通过 `job_*` 工具（来自 `@deepseek-ai/dsh-tool-jobs`）收集／停止；禁用 `enableRunInBackground` 配置（默认为 true）后，该参数会被完全移除。
+bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة (قدوم ذاتي `@deepseek-ai/dsh-tool-jobs`) استلام تجميع/إيقاف؛ منع استخدام `enableRunInBackground` إعداد (افتراضي لـ true) بعد، هذا معامل سوف يتم تماما إزالة.
 
 <a id="deepseek-aidsh-tool-present"></a>
 
@@ -631,7 +631,7 @@ bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_bac
 
 ### `present`
 
-声明交付 Session 文件系统可访问的已有文件。如果你创建或更新的文件是用户要求接收的成果，则必须在写入完成后、最终回复前调用 present，包括通过 Bash 或代码执行创建的文件。在回复中提到文件路径不能替代这次调用。文件必须已存在。用户打开当前源文件；不复制或保存其内容。
+إعلان تسليم Session نظام الملفات يمكن وصول قد لديه ملف. إذا أنت إنشاء أو تحديث ملف هو مستخدم اشتراط استقبال صار نتيجة، فإن يجب في كتابة إتمام بعد، نهائي عودة تكرار قبل استدعاء present، يشمل عبر Bash أو شفرة تنفيذ إنشاء ملف. في عودة تكرار في رفع إلى ملف مسار لا يستطيع بديل هذا مرة استدعاء. ملف يجب قد وجود. مستخدم فتح حالي مصدر ملف؛ لا نسخ أو حفظ ذلك محتوى.
 
 ```json
 {
@@ -664,9 +664,9 @@ bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_bac
 }
 ```
 
-来源： [`packages/deliverables/tool-present/src/index.ts`](../packages/deliverables/tool-present/src/index.ts)
+مصدر: [`packages/deliverables/tool-present/src/index.ts`](../packages/deliverables/tool-present/src/index.ts)
 
-交付归调用方 Session 所有；Web ui-deliverables 提供源文件打开与卡片。
+تسليم عودة استدعاء جهة Session كل؛Web ui-deliverables توفير مصدر ملف فتح و بطاقة.
 
 <a id="deepseek-aidsh-tool-pwsh"></a>
 
@@ -674,7 +674,7 @@ bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_bac
 
 ### `pwsh`
 
-执行 PowerShell 命令（`pwsh -Command`）并返回 stdout/stderr。每次调用都在新的 pwsh 进程中运行：调用之间不保留任何状态（cwd、变量、函数），请传入 `workdir`，不要使用 `cd`。路径采用 Windows 原生形式（`C:\...`）；使用 `$env:NAME` 读取环境变量。非零退出会报告为 `[exit code: N]`。当前 harness 环境信息通过托管的 `$env:DSH_*` 变量公开，需要时请检查这些变量。命令可能在文件沙箱中运行；被阻止的文件操作报告为 `[sandbox: file access denied under <mode> mode]`，这是策略拒绝，而不是命令缺陷，请勿换一种方式重试。较长的输出会截断，只保留尾部；如可用，完整输出会保存到文件并报告其路径。在 Windows 上，被强制终止的命令会以 `[exit code: 1]` 结算且不带信号标记，请将其视为中断，而不是命令失败。对于长时间运行的命令，请设置 `run_in_background: true`：调用会立即返回 job id；使用 `job_output` 读取输出，使用 `job_kill` 停止任务。
+تنفيذ PowerShell أمر (`pwsh -Command`) و إرجاع stdout/stderr. كل مرة استدعاء كل في جديد pwsh عملية في تشغيل: استدعاء بين لا إبقاء أي حالة (cwd، متغير، دالة) ، طلب نقل دخول `workdir`، لا يلزم استخدام `cd`. مسار اعتماد Windows أصلي شكل صيغة (`C:\...`) ؛ استخدام `$env:NAME` قراءة بيئة متغير. غير صفر خروج سوف تقرير إبلاغ لـ `[exit code: N]`. حالي harness بيئة معلومة عبر حمل إدارة `$env:DSH_*` متغير عام، حاجة وقت طلب فحص هذه متغير. أمر ممكن في ملف صندوق رملي في تشغيل؛ يتم منع توقف ملف عملية تقرير إبلاغ لـ `[sandbox: file access denied under <mode> mode]`، هذا هو سياسة رفض، بينما لا هو أمر نقص وقوع، طلب لا تبديل واحد نوع طريقة إعادة محاولة. مقارنة طويل إخراج سوف قطع قطع، فقط إبقاء ذيل جزء؛ مثل متاح، كامل إخراج سوف حفظ إلى ملف و تقرير إبلاغ ذلك مسار. في Windows فوق، يتم قوي صنع إنهاء أمر سوف بـ `[exit code: 1]` تسوية كما لا حمل إشارة علامة، طلب سوف ذلك نظر لـ في قطع، بينما لا هو أمر فشل. مقابل في طويل وقت تشغيل أمر، طلب ضبط `run_in_background: true`: استدعاء سوف قيام أي إرجاع job id؛ استخدام `job_output` قراءة إخراج، استخدام `job_kill` إيقاف مهمة.
 
 ```json
 {
@@ -708,9 +708,9 @@ bash 工具是 bash 执行器 seam 面向模型的消费方。使用 `run_in_bac
 }
 ```
 
-来源：[`packages/shell/tool-pwsh/src/index.ts`](../packages/shell/tool-pwsh/src/index.ts)
+مصدر:[`packages/shell/tool-pwsh/src/index.ts`](../packages/shell/tool-pwsh/src/index.ts)
 
-pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费方（由 `@deepseek-ai/dsh-pwsh-local` 等 PowerShell 执行器为 `ctx.shell` 提供后端）；除沙箱接口外，它逐项对应 bash 工具调用。使用 `run_in_background` 的运行会注册到通用 `ctx.jobs` 运行时，并通过 `job_*` 工具收集／停止；托管的 `DSH_*` 环境来自 `@deepseek-ai/dsh-shell-env`。每次调用都在新进程中运行，不使用持久 PTY 会话。路径采用原生 `C:\...` 形式，变量采用 `$env:NAME`。
+pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة قول مستهلك (من `@deepseek-ai/dsh-pwsh-local` انتظار PowerShell منفذ لـ `ctx.shell` توفير خلفية) ؛ حذف صندوق رملي واجهة خارج، هو تدريجي بند مقابل bash أداة استدعاء. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة استلام تجميع/إيقاف؛ حمل إدارة `DSH_*` بيئة قدوم ذاتي `@deepseek-ai/dsh-shell-env`. كل مرة استدعاء كل في جديد عملية في تشغيل، لا استخدام حمل دائم PTY جلسة. مسار اعتماد أصلي `C:\...` شكل صيغة، متغير اعتماد `$env:NAME`.
 
 <a id="deepseek-aidsh-tool-cordis"></a>
 
@@ -718,7 +718,7 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `cordis_inspect_list`
 
-列出 Host 当前已知的所有 Cordis Inspect Provider，包括本地 Host Provider 和 Client 同步的最新清单。每项包含平台、用途、只读方法以及输入输出 schema。编写或配置插件前先调用本工具，再从结果选择 cordis_inspect_query 的 provider 和方法。不要猜测名称，也不要把 Inspect 方法当作插件代码可调用的业务 Service。
+صف خروج Host حالي معروف كل Cordis Inspect Provider، يشمل محلي Host Provider و Client تزامن الأكثر جديد بيان. كل بند يتضمن منصة، استخدام طريق، فقط قراءة طريقة و إدخال إخراج schema. تحرير كتابة أو إعداد إضافة قبل أولا استدعاء هذا أداة، مجددا من نتيجة اختيار cordis_inspect_query provider و طريقة. لا يلزم تخمين قياس اسم، أيضا لا يلزم يأخذ Inspect طريقة عند عمل إضافة شفرة يمكن استدعاء عمل خدمة Service.
 
 ```json
 {
@@ -727,11 +727,11 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源： [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
+مصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
 
 ### `cordis_inspect_query`
 
-执行 Inspect Provider 明确声明的只读查询。platform、provider 和 method 必须来自 cordis_inspect_list，input 必须符合该方法的 schema。编写插件代码前，用本工具读取准确的 Service 方法、Event 模式、Builtin 签名、Tool schema、主题 token，或实时 Slot 树与 props。Host 查询在本地运行。Client 查询等待页面首个有效响应，直到页面回应或工具取消。本工具不能调用业务 Service 方法或修改运行时。对于 Service.listService 和 Event.listEvents，不传 input 可浏览精简签名目录，再查询准确服务或事件以获得完整约定及引用类型。对于 Slots.listSubTree，不传 root 可浏览精简树；查询准确的 Slot root 可获得完整注册约定和 props，而查询准确的 Factory root 只返回 identity、scope 与 registrant。
+تنفيذ Inspect Provider واضح إعلان فقط قراءة استعلام.platform،provider و method يجب قدوم ذاتي cordis_inspect_list،input يجب رمز دمج هذا طريقة schema. تحرير كتابة إضافة شفرة قبل، استخدام هذا أداة قراءة دقيق تأكيد Service طريقة،Event نمط،Builtin توقيع،Tool schema، رئيسي عنوان token، أو فوري Slot شجرة و props.Host استعلام في محلي تشغيل.Client استعلام انتظار صفحة أول عدد صالح استجابة، مباشر إلى صفحة عودة ينبغي أو أداة إلغاء. هذا أداة لا يستطيع استدعاء عمل خدمة Service طريقة أو تعديل وقت التشغيل. مقابل في Service.listService و Event.listEvents، لا نقل input يمكن تصفح تصفح دقيق بسيط توقيع دليل، مجددا استعلام دقيق تأكيد خدمة أو حدث بـ نيل نيل كامل اتفاق و مرجع نوع. مقابل في Slots.listSubTree، لا نقل root يمكن تصفح تصفح دقيق بسيط شجرة؛ استعلام دقيق تأكيد Slot root يمكن نيل نيل كامل تسجيل اتفاق و props، بينما استعلام دقيق تأكيد Factory root فقط إرجاع identity،scope و registrant.
 
 ```json
 {
@@ -765,9 +765,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源： [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
+مصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
 
-创造模式提供两个只读运行时检查工具。Cordis host runner 提供检查注册表；Client 查询需要已连接页面。持久化变更编写为组合包，再通过 plugin_manager 安装。
+إنشاء صنع نمط توفير اثنان عدد فقط قراءة وقت التشغيل فحص أداة.Cordis host runner توفير فحص سجل التسجيل؛Client استعلام حاجة قد اتصال صفحة. حفظ دائم تغيير تحرير كتابة لـ تركيب حزمة، مجددا عبر plugin_manager تثبيت.
 
 <a id="deepseek-aidsh-tool-bash-persistent"></a>
 
@@ -775,7 +775,7 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `bash`
 
-在持久 bash shell 中运行命令。包括当前目录和已导出环境变量在内的状态会在此 agent 的多次调用之间保留。
+في حمل دائم bash shell في تشغيل أمر. يشمل حالي دليل و قد توجيه خروج بيئة متغير في داخل حالة سوف في هذا agent كثير مرة استدعاء بين إبقاء.
 
 ```json
 {
@@ -792,9 +792,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/shell/tool-bash-persistent/src/index.ts`](../packages/shell/tool-bash-persistent/src/index.ts)
+مصدر:[`packages/shell/tool-bash-persistent/src/index.ts`](../packages/shell/tool-bash-persistent/src/index.ts)
 
-一个按所有者隔离的持久 bash 工具；部署组合提供 PTY 后端，并可覆盖面向模型的环境描述。
+واحد حسب كل من عزل حمل دائم bash أداة؛ نشر تركيب توفير PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف.
 
 <a id="deepseek-aidsh-tool-pwsh-persistent"></a>
 
@@ -802,7 +802,7 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `pwsh`
 
-在持久 PowerShell shell 中运行命令。包括当前目录和已导出环境变量在内的状态会在此 agent 的多次调用之间保留。
+في حمل دائم PowerShell shell في تشغيل أمر. يشمل حالي دليل و قد توجيه خروج بيئة متغير في داخل حالة سوف في هذا agent كثير مرة استدعاء بين إبقاء.
 
 ```json
 {
@@ -819,9 +819,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/shell/tool-pwsh-persistent/src/index.ts`](../packages/shell/tool-pwsh-persistent/src/index.ts)
+مصدر:[`packages/shell/tool-pwsh-persistent/src/index.ts`](../packages/shell/tool-pwsh-persistent/src/index.ts)
 
-一个按所有者隔离的持久 pwsh 工具，持久 bash 工具的 Windows 对应物；部署组合提供 pwsh 方言的 PTY 后端，并可覆盖面向模型的环境描述。
+واحد حسب كل من عزل حمل دائم pwsh أداة، حمل دائم bash أداة Windows مقابل شيء؛ نشر تركيب توفير pwsh جهة قول PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف.
 
 <a id="deepseek-aidsh-tool-str-replace-editor"></a>
 
@@ -829,19 +829,19 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `str_replace_editor`
 
-用于查看、创建和编辑文件的自定义编辑工具：
+لأجل فحص نظر، إنشاء و تحرير ملف ذاتي تعريف تحرير أداة:
 
-* 状态会在命令调用以及与用户的讨论之间持久保留
-* 如果 `path` 是文件，`view` 会显示应用 `cat -n` 后的结果。如果 `path` 是目录，`view` 会列出最多向下 2 层的非隐藏文件和目录
-* 如果指定的 `create` 命令目标 `path` 已作为文件存在，则不能使用该命令
-* 如果 `command` 产生较长输出，输出会被截断并标记为 `<response clipped>`
-* 当前命令不使用某个参数时，值为 `null` 的占位参数视为未提供。必填参数仍须提供值；删除匹配内容时应省略 `str_replace.new_str`，而不是将其设为 `null`
+* حالة سوف في أمر استدعاء و و مستخدم نقاش نقاش بين حمل دائم إبقاء
+* إذا `path` هو ملف،`view` سوف عرض تطبيق `cat -n` بعد نتيجة. إذا `path` هو دليل،`view` سوف صف خروج الأكثر كثير نحو تحت 2 طبقة غير إخفاء ملف و دليل
+* إذا إشارة تحديد `create` أمر هدف `path` قد بصفة ملف وجود، فإن لا يستطيع استخدام هذا أمر
+* إذا `command` إنتاج مقارنة طويل إخراج، إخراج سوف يتم قطع قطع و علامة لـ `<response clipped>`
+* حالي أمر لا استخدام بعض عدد معامل وقت، قيمة لـ `null` احتلال موضع معامل نظر لـ لم توفير. لا بد ملء معامل ما زال يجب توفير قيمة؛ حذف مطابقة محتوى وقت ينبغي حذف `str_replace.new_str`، بينما لا هو سوف ذلك ضبط لـ `null`
 
-使用 `str_replace` 命令时请注意：
+استخدام `str_replace` أمر وقت طلب ملاحظة معنى:
 
-* `old_str` 参数应与原文件中一行或多行连续内容**完全**匹配。请留意空白字符！
-* 如果 `old_str` 参数在文件中不唯一，则不会执行替换。请确保在 `old_str` 中包含足够的上下文，使其唯一
-* `new_str` 参数应包含用于替换 `old_str` 的已编辑行
+* `old_str` معامل ينبغي و أصل ملف في واحد سطر أو كثير سطر وصل متابعة محتوى**تماما**مطابقة. طلب إبقاء معنى فارغ أبيض محرف!
+* إذا `old_str` معامل في ملف في لا وحيد، فإن لن تنفيذ استبدال. طلب تأكيد حفظ في `old_str` في يتضمن كاف كاف سياق، جعل ذلك وحيد
+* `new_str` معامل ينبغي يتضمن لأجل استبدال `old_str` قد تحرير سطر
 
 ```json
 {
@@ -927,9 +927,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-str-replace-editor/src/index.ts`](../packages/fs/tool-str-replace-editor/src/index.ts)
+مصدر:[`packages/fs/tool-str-replace-editor/src/index.ts`](../packages/fs/tool-str-replace-editor/src/index.ts)
 
-基于文件系统 seam 的独立查看／创建／唯一字面量替换／按行插入工具；可与任何 shell 或终端接口组合。
+أساس في نظام الملفات seam مستقل فحص نظر/إنشاء/وحيد حرف وجه كمية استبدال/حسب سطر إدراج دخول أداة؛ يمكن و أي shell أو طرفية واجهة تركيب.
 
 <a id="deepseek-aidsh-tool-fs"></a>
 
@@ -937,7 +937,7 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `edit`
 
-通过替换字面量文本来编辑现有 UTF-8 文本文件。
+عبر استبدال حرف وجه كمية نص قدوم تحرير قائم UTF-8 نص ملف.
 
 ```json
 {
@@ -968,11 +968,11 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `read`
 
-读取 UTF-8 文本文件，并返回带行号的内容。
+قراءة UTF-8 نص ملف، و إرجاع حمل سطر رقم محتوى.
 
 ```json
 {
@@ -997,11 +997,11 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `read_image`
 
-读取 PNG/JPEG/WebP/GIF 文件并返回图像本身。无扩展名的路径同样被接受；格式按文件内容检测，因此规范化附件路径可以直接传入，无需复制或重命名。Harness 会在下一次模型请求前校验并缩小受支持的大图，因此仅为查看图片时应直接使用此工具，无需安装图片库或创建缩略图。可以用小批次并发读取彼此独立的文件。要求当前模型接受图像输入。
+قراءة PNG/JPEG/WebP/GIF ملف و إرجاع رسم مثل ذاته. بلا توسيع اسم مسار نفس مثال يتم قبول؛ صيغة حسب ملف محتوى فحص قياس، لذلك مواصفة تحويل مرفق عنصر مسار يمكن مباشر نقل دخول، بلا حاجة نسخ أو إعادة تسمية.Harness سوف في تحت مرة نموذج طلب قبل تحقق و تقليص صغير تلقي دعم حمل كبير رسم، لذلك فقط لـ فحص نظر صورة وقت ينبغي مباشر استخدام هذا أداة، بلا حاجة تثبيت صورة مكتبة أو إنشاء تقليص اختصار رسم. يمكن استخدام صغير دفعة مرة تزامن قراءة ذاك هذا مستقل ملف. اشتراط حالي نموذج قبول رسم مثل إدخال.
 
 ```json
 {
@@ -1018,11 +1018,11 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `write`
 
-创建或完全替换 UTF-8 文本文件。
+إنشاء أو تماما استبدال UTF-8 نص ملف.
 
 ```json
 {
@@ -1044,9 +1044,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
-先读后写／编辑策略由 `@deepseek-ai/dsh-fs-observation-policy` 添加；它是一个 `fs/*` 事件门禁插件，不会改变 schema。加载这些工具的部署按预期也应加载该插件。没有 `ctx.attachments` 时图片工具不会注册；其 schema 与路由无关，执行时除非确切路由的模型声明图片输入，否则拒绝。
+أولا قراءة بعد كتابة/تحرير سياسة من `@deepseek-ai/dsh-fs-observation-policy` إضافة؛ هو هو واحد `fs/*` حدث بوابة إضافة، لن تغيير schema. تحميل هذه أداة نشر حسب مسبق مدة أيضا ينبغي تحميل هذا إضافة. لا يوجد `ctx.attachments` وقت صورة أداة لن تسجيل؛ ذلك schema و توجيه غير متصل، تنفيذ وقت حذف غير تأكيد قطع توجيه نموذج إعلان صورة إدخال، لا فإن رفض.
 
 <a id="deepseek-aidsh-tool-fs-search"></a>
 
@@ -1054,7 +1054,7 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 
 ### `glob`
 
-查找路径匹配 glob 模式的文件。只返回匹配的文件路径，绝不返回目录；包括隐藏文件和被忽略的文件，但排除 VCS 元数据目录。最多按修改时间顺序返回 100 条路径；如果结果更多，则改为返回从顶层条目中抽样的 100 条路径，说明已抽样，并报告完整排序列表的保存位置。该工具不枚举目录条目。
+فحص بحث مسار مطابقة glob نمط ملف. فقط إرجاع مطابقة ملف مسار، أبدا إرجاع دليل؛ يشمل إخفاء ملف و يتم تجاهل اختصار ملف، لكن ترتيب حذف VCS بيانات وصفية دليل. الأكثر كثير حسب تعديل وقت ترتيب إرجاع 100 بند مسار؛ إذا نتيجة أكثر كثير، فإن تعديل لـ إرجاع من قمة طبقة بند في سحب مثال 100 بند مسار، شرح قد سحب مثال، و تقرير إبلاغ كامل ترتيب تسلسل جدول حفظ موضع. هذا أداة لا قطعة رفع دليل بند.
 
 ```json
 {
@@ -1075,11 +1075,11 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
+مصدر:[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
 
 ### `grep`
 
-使用 ripgrep 正则表达式搜索文件内容。返回带行号的匹配行，并按文件分组。前 250 条匹配会直接返回；结果达到上限时会报告完整匹配列表的保存位置。如需周边上下文，请对匹配的文件使用 read。
+استخدام ripgrep صحيح فإن جدول بلوغ صيغة بحث ملف محتوى. إرجاع حمل سطر رقم مطابقة سطر، و حسب ملف قسم مجموعة. قبل 250 بند مطابقة سوف مباشر إرجاع؛ نتيجة بلوغ إلى حد أعلى وقت سوف تقرير إبلاغ كامل مطابقة قائمة حفظ موضع. مثل يحتاج دورة حافة سياق، طلب مقابل مطابقة ملف استخدام read.
 
 ```json
 {
@@ -1104,9 +1104,9 @@ pwsh 工具是 Windows 组合中 bash 执行器 seam 的 PowerShell 方言消费
 }
 ```
 
-来源：[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
+مصدر:[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
 
-glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn 随包提供的 ripgrep 二进制文件（`@vscode/ripgrep`），并作为普通前台调用运行，绝不作为后台任务；无需在宿主机安装 `rg`，也不经过 shell 层。本目录使用 `sampleOverCapGlobResults: true`；部署必须显式选择该行为。结果超过上限时，会通过可选的 ctx.spillStore 后端保存完整的格式化列表；在共置部署中，如果后端公开本地路径，返回的定位信息可供后续读取／搜索。
+glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subprocess spawn مع حزمة توفير ripgrep اثنان دخول صنع ملف (`@vscode/ripgrep`) ، و بصفة عادي قبل منصة استدعاء تشغيل، أبدا بصفة خلفية مهمة؛ بلا حاجة في مضيف آلة تثبيت `rg`، أيضا لا مرور مرور shell طبقة. هذا دليل استخدام `sampleOverCapGlobResults: true`؛ نشر يجب صريح اختيار هذا سلوك. نتيجة تجاوز مرور حد أعلى وقت، سوف عبر اختياري ctx.spillStore خلفية حفظ كامل صيغة تحويل قائمة؛ في مشترك وضع نشر في، إذا خلفية عام محلي مسار، إرجاع تحديد موضع معلومة يمكن توفير لاحق قراءة/بحث.
 
 <a id="deepseek-aidsh-tool-terminal"></a>
 
@@ -1114,7 +1114,7 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 
 ### `terminal_close`
 
-关闭一个持久终端，并等待其捕获且所有的进程树完全退出。
+إغلاق واحد حمل دائم طرفية، و انتظار ذلك التقاط كما كل عملية شجرة تماما خروج.
 
 ```json
 {
@@ -1131,11 +1131,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_list`
 
-列出当前 agent 所有的持久终端会话。
+صف خروج حالي agent كل حمل دائم طرفية جلسة.
 
 ```json
 {
@@ -1144,11 +1144,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_open`
 
-通过已注册的后端类型创建按所有者隔离的持久终端会话。需要在多次工具调用之间保留 shell 或 REPL 状态时，请使用此工具。
+عبر قد تسجيل خلفية نوع إنشاء حسب كل من عزل حمل دائم طرفية جلسة. حاجة في كثير مرة أداة استدعاء بين إبقاء shell أو REPL حالة وقت، طلب استخدام هذا أداة.
 
 ```json
 {
@@ -1173,11 +1173,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_read`
 
-从持久终端读取一页有界的保留输出，不发送输入。
+من حمل دائم طرفية قراءة واحد صفحة محدود إبقاء إخراج، لا إرسال إدخال.
 
 ```json
 {
@@ -1202,11 +1202,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_send`
 
-向持久终端发送文本。默认会提交 Enter，并等待提示符、stdin 等待、输出静默、超时或会话退出。后台模式会返回供 job_output／job_kill 使用的 job id。
+نحو حمل دائم طرفية إرسال نص. افتراضي سوف إيداع Enter، و انتظار تلميح رمز،stdin انتظار، إخراج ساكن صامت، مهلة أو جلسة خروج. خلفية نمط سوف إرجاع توفير job_output/job_kill استخدام job id.
 
 ```json
 {
@@ -1236,11 +1236,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_signal`
 
-向持久终端当前的前台进程组发送允许的信号。
+نحو حمل دائم طرفية حالي قبل منصة عملية مجموعة إرسال سماح إشارة.
 
 ```json
 {
@@ -1269,9 +1269,9 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
-这 6 个终端工具需要选择启用，用于补充一次性 bash／文件系统工具。`terminal_send(run_in_background: true)` 会注册到 `ctx.jobs`；schema 不包含 TUI、具名按键序列、BEL、调整尺寸、自动启动和跨 agent 共享。
+هذا 6 عدد طرفية أداة حاجة اختيار تفعيل، لأجل تكملة ملء مرة صفة bash/نظام الملفات أداة.`terminal_send(run_in_background: true)` سوف تسجيل إلى `ctx.jobs`؛schema لا يتضمن TUI، أداة اسم حسب مفتاح تسلسل،BEL، ضبط كامل مقياس قياس، تلقائي بدء و عبر agent مشترك.
 
 <a id="deepseek-aidsh-tool-goal"></a>
 
@@ -1279,7 +1279,7 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 
 ### `create_goal`
 
-当当前直接人类请求是需要跨自主 Goal Round 持续推进的长期目标时，创建一个持久化的同会话完成目标。即使用户没有明确说「创建目标」，你也可以推断其意图。不要用于简单的单轮工作。执行时会拒绝非人类权限和 subagent 权限。
+عند حالي مباشر شخص صنف طلب هو حاجة عبر ذاتي رئيسي Goal Round حمل متابعة دفع دخول طويل مدة هدف وقت، إنشاء واحد حفظ دائم نفس جلسة إتمام هدف. أي استخدام مستخدم لا يوجد واضح قول «إنشاء هدف» ، أنت أيضا يمكن دفع قطع ذلك معنى رسم. لا يلزم لأجل بسيط مفرد مفرد جولة عمل. تنفيذ وقت سوف رفض غير شخص صنف إذن و subagent إذن.
 
 ```json
 {
@@ -1300,11 +1300,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
 ### `get_goal`
 
-读取当前的同会话目标，包括确切的 id／revision、目标、阶段、已完成的延续 Round 数、Round 上限、存在时的阻塞原因，以及是否已准备下一次延续。更新目标前请先调用此工具。
+قراءة حالي نفس جلسة هدف، يشمل تأكيد قطع id/revision، هدف، مرحلة مقطع، قد إتمام تأخير متابعة Round عدد،Round حد أعلى، وجود وقت منع سد سبب، و هل قد دقيق تجهيز تحت مرة تأخير متابعة. تحديث هدف قبل طلب أولا استدعاء هذا أداة.
 
 ```json
 {
@@ -1313,11 +1313,11 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
 ### `update_goal`
 
-更新确切的当前目标 revision。edit、pause 和 resume 要求直接的顶层人类请求。在自动延续当前目标期间，也允许 complete 和 blocked。在达到配置的最小 Round 数之前会拒绝 blocked；模型仍须判断相同条件是否在这些 Round 中持续存在，并在 blocked_reason 中予以说明。
+تحديث تأكيد قطع حالي هدف revision.edit،pause و resume اشتراط مباشر قمة طبقة شخص صنف طلب. في تلقائي تأخير متابعة حالي هدف خلال، أيضا سماح complete و blocked. في بلوغ إلى إعداد الأكثر صغير Round عدد قبل سوف رفض blocked؛ نموذج ما زال يجب حكم قطع نفسه شرط هل في هذه Round في حمل متابعة وجود، و في blocked_reason في إعطاء بـ شرح.
 
 ```json
 {
@@ -1363,9 +1363,9 @@ glob 和 grep 是无条件可用的发现工具，通过 ctx.subprocess spawn �
 }
 ```
 
-来源：[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
-create、edit、pause 和 resume 要求直接来自人类的根权限；complete 和 blocked 也接受确切的当前 Goal Round。blocked 的默认下限是 3 个获准的 Round。
+create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص صنف أصل إذن؛complete و blocked أيضا قبول تأكيد قطع حالي Goal Round.blocked افتراضي تحت حد هو 3 عدد نيل دقيق Round.
 
 <a id="deepseek-aidsh-schedule"></a>
 
@@ -1373,7 +1373,7 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 
 ### `schedule_create`
 
-在当前会话中创建一条提醒。请提供非空 prompt 和恰好一个 selector：正的安全整数 after_seconds 延时；作为严格带偏移日期时间或本地日期／时间对象的 at；或不小于 300 的安全整数 every_seconds。固定速率提醒始终与创建时刻对齐，会跳过错过的发生时点，并把每条逾期规则的最新一个发生时点合并到一个批次中。交付模式是 session-local：只有此会话处于 live 状态时，提醒才会准时运行；否则提醒会进入 overdue 状态，直至会话恢复。
+في حالي جلسة في إنشاء واحد بند رفع تنبيه. طلب توفير غير فارغ prompt و تماما جيد واحد selector: صحيح أمان كامل عدد after_seconds تأخير وقت؛ بصفة صارم إطار حمل انحراف نقل يوم مدة وقت أو محلي يوم مدة/وقت كائن at؛ أو لا صغير في 300 أمان كامل عدد every_seconds. ثابت سرعة معدل رفع تنبيه بداية نهاية و إنشاء وقت لحظة مقابل متساو، سوف قفز مرور خطأ مرور حدوث وقت نقطة، و يأخذ كل بند تجاوز مدة قاعدة الأكثر جديد واحد حدوث وقت نقطة دمج إلى واحد دفعة مرة في. تسليم نمط هو session-local: فقط لديه هذا جلسة موضع في live حالة وقت، رفع تنبيه عندئذ سوف دقيق وقت تشغيل؛ لا فإن رفع تنبيه سوف دخول overdue حالة، مباشر حتى جلسة استعادة.
 
 ```json
 {
@@ -1426,11 +1426,11 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 }
 ```
 
-来源：[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
 ### `schedule_delete`
 
-使用 schedule_create 或 schedule_list 返回的确切 id，删除当前会话中的一条活动提醒。未知或已经结束的 id 会返回 deleted false。
+استخدام schedule_create أو schedule_list إرجاع تأكيد قطع id، حذف حالي جلسة في واحد بند نشط حركة رفع تنبيه. لم معرفة أو قد انتهاء id سوف إرجاع deleted false.
 
 ```json
 {
@@ -1447,11 +1447,11 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 }
 ```
 
-来源：[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
 ### `schedule_list`
 
-按创建顺序列出当前会话中的所有活动提醒，包括确切 id、UTC 目标、scheduled 或 overdue 状态，以及 session-local 交付模式。
+حسب إنشاء ترتيب صف خروج حالي جلسة في كل نشط حركة رفع تنبيه، يشمل تأكيد قطع id،UTC هدف،scheduled أو overdue حالة، و session-local تسليم نمط.
 
 ```json
 {
@@ -1460,9 +1460,9 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 }
 ```
 
-来源：[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
-仅在选择启用的 Schedule 插件加载后创建的 live 根 Agent scope 内注册。版本 1 接受 after_seconds、显式绝对 at 和有界固定速率 every_seconds，并披露 session-local 交付；管理读取与变更必须通过共享的 Session 持久化 barrier。
+فقط في اختيار تفعيل Schedule إضافة تحميل بعد إنشاء live أصل Agent scope داخل تسجيل. إصدار 1 قبول after_seconds، صريح قطعا مقابل at و محدود ثابت سرعة معدل every_seconds، و كشف كشف session-local تسليم؛ إدارة قراءة و تغيير يجب عبر مشترك Session حفظ دائم barrier.
 
 <a id="deepseek-aidsh-tool-lsp"></a>
 
@@ -1470,7 +1470,7 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 
 ### `lsp`
 
-查询语言服务器，以精确导航代码。operation 可取 goToDefinition、findReferences、goToImplementation 或 hover。line 和 character 是从 1 开始的 UTF-16 光标坐标。findReferences 包含声明。
+استعلام لغة خادم، بـ دقيق تنقل شفرة.operation يمكن أخذ goToDefinition،findReferences،goToImplementation أو hover.line و character هو من 1 بدء UTF-16 ضوء علامة جلوس علامة.findReferences يتضمن إعلان.
 
 ```json
 {
@@ -1508,9 +1508,9 @@ create、edit、pause 和 resume 要求直接来自人类的根权限；complete
 }
 ```
 
-来源：[`packages/lsp/tool-lsp/src/index.ts`](../packages/lsp/tool-lsp/src/index.ts)
+مصدر:[`packages/lsp/tool-lsp/src/index.ts`](../packages/lsp/tool-lsp/src/index.ts)
 
-lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，因此其模型可见 schema 在更换提供方时保持稳定。运行时要求已注册提供方，例如 `@deepseek-ai/dsh-lsp-stdio`；如果没有提供方，查询会返回结构化 `LSP_UNAVAILABLE` 错误，而不会改变 schema。
+lsp أداة سوف مزود اختيار و لغة خادم عملية فرعية وضع في ctx.lsp بعد، لذلك ذلك نموذج مرئي schema في أكثر تبديل مزود وقت إبقاء مستقر. وقت التشغيل اشتراط قد تسجيل مزود، مثال مثل `@deepseek-ai/dsh-lsp-stdio`؛ إذا لا يوجد مزود، استعلام سوف إرجاع بنية تحويل `LSP_UNAVAILABLE` خطأ، بينما لن تغيير schema.
 
 <a id="deepseek-aidsh-tool-ralph"></a>
 
@@ -1518,7 +1518,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `ralph`
 
-围绕一个不可变目标运行使用全新 agent 的前台 Ralph 循环。仅当直接人类明确要求 Ralph 或使用全新 agent 迭代时使用。每个 Round 都会启动一个全新子级，该子级看不到父级对话或先前子会话；共享工作区充当长期记忆，Round 之间只传递有界的结构化报告。当工作进程报告完成、报告具体阻塞项或达到 Round 上限时，调用返回。普通的长期同会话工作应使用 goal 工具。
+محيط التفاف واحد غير ممكن تغيير هدف تشغيل استخدام كل جديد agent قبل منصة Ralph حلقة. فقط عند مباشر شخص صنف واضح اشتراط Ralph أو استخدام كل جديد agent تكرار بديل وقت استخدام. كل Round كل سوف بدء واحد كل جديد فرعي درجة، هذا فرعي درجة نظر لا إلى أب درجة محادثة أو أولا قبل فرعي جلسة؛ مشترك مساحة العمل ملء عند طويل مدة تسجيل ذاكرة،Round بين فقط نقل تمرير محدود بنية تحويل تقرير إبلاغ. عند عمل عملية تقرير إبلاغ إتمام، تقرير إبلاغ أداة جسم منع سد بند أو بلوغ إلى Round حد أعلى وقت، استدعاء إرجاع. عادي طويل مدة نفس جلسة عمل ينبغي استخدام goal أداة.
 
 ```json
 {
@@ -1539,9 +1539,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/workflow/tool-ralph/src/index.ts`](../packages/workflow/tool-ralph/src/index.ts)
+مصدر:[`packages/workflow/tool-ralph/src/index.ts`](../packages/workflow/tool-ralph/src/index.ts)
 
-固定的前台工作流会在每个 Round 启动一个全新的结构化子级；模型只能选择不可变目标和可选的 Round 上限。
+ثابت قبل منصة سير العمل سوف في كل Round بدء واحد كل جديد بنية تحويل فرعي درجة؛ نموذج فقط قدرة اختيار غير ممكن تغيير هدف و اختياري Round حد أعلى.
 
 <a id="deepseek-aidsh-tool-skill"></a>
 
@@ -1549,7 +1549,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `skill`
 
-加载可用 skill（技能）的完整说明。在执行点名某项 skill 或与其明确匹配的任务前，请使用会话 skill 目录中的确切名称调用此工具。
+تحميل متاح skill(تقنية قدرة) كامل شرح. في تنفيذ نقطة اسم بعض بند skill أو و ذلك واضح مطابقة مهمة قبل، طلب استخدام جلسة skill دليل في تأكيد قطع اسم استدعاء هذا أداة.
 
 ```json
 {
@@ -1566,7 +1566,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/skill/tool-skill/src/index.ts`](../packages/skill/tool-skill/src/index.ts)
+مصدر:[`packages/skill/tool-skill/src/index.ts`](../packages/skill/tool-skill/src/index.ts)
 
 <a id="deepseek-aidsh-tool-session-query"></a>
 
@@ -1574,7 +1574,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `session_event_read`
 
-从一个已获授权的会话中读取一个完整且未删节的事件，以及可选的相邻原始事件概述。
+من واحد قد نيل تخويل جلسة في قراءة واحد كامل كما لم حذف عقدة حدث، و اختياري متبادل مجاور أصلي حدث عام وصف.
 
 ```json
 {
@@ -1603,11 +1603,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_event_search`
 
-在一个已获授权的会话中搜索先前事件；如果搜索当前会话，则排除执行此次调用的步骤。
+في واحد قد نيل تخويل جلسة في بحث أولا قبل حدث؛ إذا بحث حالي جلسة، فإن ترتيب حذف تنفيذ هذا مرة استدعاء خطوة.
 
 ```json
 {
@@ -1663,11 +1663,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_event_trace`
 
-读取已获授权会话中某个事件的所有直接替换关系，以及该事件与其引用的来源事件之间的关系。
+قراءة قد نيل تخويل جلسة في بعض عدد حدث كل مباشر استبدال علاقة، و هذا حدث و ذلك مرجع مصدر حدث بين علاقة.
 
 ```json
 {
@@ -1688,11 +1688,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_search`
 
-搜索调用方工作区中的先前会话，并从每个会话返回匹配度最高的事件。
+بحث استدعاء جهة مساحة العمل في أولا قبل جلسة، و من كل جلسة إرجاع مطابقة درجة الأكثر عال حدث.
 
 ```json
 {
@@ -1781,11 +1781,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_trace`
 
-读取围绕一个会话的已授权会话谱系，包括完整可见的祖先和后代关系。
+قراءة محيط التفاف واحد جلسة قد تخويل جلسة جدول نظام، يشمل كامل مرئي أصل أولا و بعد بديل علاقة.
 
 ```json
 {
@@ -1799,9 +1799,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
-这 5 个只读工具会隐藏提供方游标，并根据不可变的调用 agent 会话为每个结果授权。该包需要选择启用；需要强制截止时间或限制行内输出的组合还会挂载通用超时或 spill 策略。
+هذا 5 عدد فقط قراءة أداة سوف إخفاء مزود تنقل علامة، و أصل حسب غير ممكن تغيير استدعاء agent جلسة لـ كل نتيجة تخويل. هذا حزمة حاجة اختيار تفعيل؛ حاجة قوي صنع قطع توقف وقت أو حد سطر داخل إخراج تركيب أيضا سوف تركيب عام مهلة أو spill سياسة.
 
 <a id="deepseek-aidsh-tool-subagent"></a>
 
@@ -1809,7 +1809,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `list_subagent_models`
 
-发现 subagent 可用的 LLM 路由，不更改当前 Agent。无参数调用会列出已注册提供方；提供 `provider` 时会列出其公布的模型；同时提供 `provider` 和 `model` 时会检查该精确模型及其推理强度。目录条目只提供建议：adapter 可能接受未列出的模型 id。把返回的 id 用于委派工具的 `provider`、`model` 与 `reasoning_effort` 字段。
+اكتشاف subagent متاح LLM توجيه، لا أكثر تعديل حالي Agent. بلا معامل استدعاء سوف صف خروج قد تسجيل مزود؛ توفير `provider` وقت سوف صف خروج ذلك عام نشر نموذج؛ معا توفير `provider` و `model` وقت سوف فحص هذا دقيق نموذج و ذلك دفع إدارة قوي درجة. دليل بند فقط توفير بناء اقتراح:adapter ممكن قبول لم صف خروج نموذج id. يأخذ إرجاع id لأجل تفويض إرسال أداة `provider`،`model` و `reasoning_effort` حقل.
 
 ```json
 {
@@ -1827,11 +1827,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/subagent/tool-subagent/src/list-models.ts`](../packages/subagent/tool-subagent/src/list-models.ts)
+مصدر:[`packages/subagent/tool-subagent/src/list-models.ts`](../packages/subagent/tool-subagent/src/list-models.ts)
 
 ### `subagent`
 
-将一项自包含任务委派给 subagent（在自身上下文中工作的独立 agent），用它卸载聚焦且独立的工作，例如研究、限定范围的实现或分析，以免消耗当前对话的上下文。subagent 会返回结果，但不会返回中间步骤。请提供完整、独立的提示词，因为它看不到当前对话。此调用默认等待结果。设置 `run_in_background: true` 可返回 job id；使用 `job_output` 收集结果，使用 `job_kill` 停止任务。
+سوف واحد بند ذاتي يتضمن مهمة تفويض إرسال إعطاء subagent(في ذاته سياق في عمل مستقل agent) ، استخدام هو إزالة تجمع تركيز كما مستقل عمل، مثال مثل بحث بحث، حد تحديد نطاق تنفيذ أو قسم تحليل، بـ تجنب إزالة استهلاك حالي محادثة سياق.subagent سوف إرجاع نتيجة، لكن لن إرجاع في بين خطوة. طلب توفير كامل، مستقل نص التوجيه، لأن هو نظر لا إلى حالي محادثة. هذا استدعاء افتراضي انتظار نتيجة. ضبط `run_in_background: true` يمكن إرجاع job id؛ استخدام `job_output` استلام تجميع نتيجة، استخدام `job_kill` إيقاف مهمة.
 
 ```json
 {
@@ -1857,9 +1857,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/subagent/tool-subagent/src/index.ts`](../packages/subagent/tool-subagent/src/index.ts)
+مصدر:[`packages/subagent/tool-subagent/src/index.ts`](../packages/subagent/tool-subagent/src/index.ts)
 
-注册的委派工具名称取决于加载时 `toolName` 配置（默认为 `subagent`）；上述默认 schema 关闭模型选择，而发现 schema 则展示为已启用 Session 中可用的固定配套工具。Web preset 会在每个新顶层 Session 创建时读取插件页偏好，并为其子 Session 保留该决定；`subagent_fork` 始终使用固定路由。每个实例通过 `modelSelectionSettings`、`backgroundMode` 与 `enableRunInBackground` 独立控制是否读取模型选择设置及其后台行为。
+تسجيل تفويض إرسال أداة اسم أخذ قرار في تحميل وقت `toolName` إعداد (افتراضي لـ `subagent`) ؛ فوق وصف افتراضي schema إغلاق نموذج اختيار، بينما اكتشاف schema فإن عرض لـ قد تفعيل Session في متاح ثابت إعداد طقم أداة.Web preset سوف في كل جديد قمة طبقة Session إنشاء وقت قراءة إضافة صفحة انحراف جيد، و لـ ذلك فرعي Session إبقاء هذا قرار؛`subagent_fork` بداية نهاية استخدام ثابت توجيه. كل نسخة عبر `modelSelectionSettings`،`backgroundMode` و `enableRunInBackground` مستقل تحكم هل قراءة نموذج اختيار ضبط و ذلك خلفية سلوك.
 
 <a id="deepseek-aidsh-tool-subagent-control"></a>
 
@@ -1867,7 +1867,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `interrupt_agent`
 
-根据 agent id 请求取消后台 agent 的当前轮次。目标可以是你的直接子级，也可以是在你下方创建的更深层 agent。只有当前轮次会停止：已经排队发给该 agent 的消息会一直搁置到后续的 send_message；它启动的 agent 会继续运行；该 agent 本身仍可接受后续操作。停止请求被接受后，此调用立即返回，因此目标可能还会短暂运行；中断一个已经完成的 agent 是可接受的空操作。
+أصل حسب agent id طلب إلغاء خلفية agent حالي جولة. هدف يمكن هو أنت مباشر فرعي درجة، أيضا يمكن هو في أنت تحت جهة إنشاء أكثر عميق طبقة agent. فقط لديه حالي جولة سوف إيقاف: قد ترتيب طابور إرسال إعطاء هذا agent رسالة سوف واحد مباشر وضع وضع إلى لاحق send_message؛ هو بدء agent سوف متابعة تشغيل؛ هذا agent ذاته ما زال يمكن قبول لاحق عملية. إيقاف طلب يتم قبول بعد، هذا استدعاء قيام أي إرجاع، لذلك هدف ممكن أيضا سوف قصير مؤقت تشغيل؛ في قطع واحد قد إتمام agent هو يمكن قبول فارغ عملية.
 
 ```json
 {
@@ -1884,11 +1884,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
+مصدر:[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
 
 ### `list_agents`
 
-按持久 id 和标签列出你的可继续后台 subagent。用它回忆你启动过哪些 subagent，而不是轮询完成情况——subagent 完成时你会被告知。状态来自实时注册表：running 表示 agent 此刻正在工作；idle 表示已加载但处于轮次之间，可能正在等待它启动的 agent；ready 表示它只存在于存储中——可恢复而非终态，也不表示有结果等待收集；`send_message` 会在运行中 child 的最近 step 边界 steer 消息，或为 idle、ready child 启动轮次，且无论处于哪种状态，直接子级都仍可作为 `send_message` 的目标。该快照并非投递承诺；`send_message` 会执行权威检查，仍可能失败。无法读取的子级会作为诊断信息报告，而不会被静默丢弃。`descendants` 作用域会按稳定的前序顺序遍历你下方的整棵树，并为每个条目标注其持久的直接父会话 id 和深度。只有深度为 1 的条目可以使用 `send_message`；更深的条目只能作为 `interrupt_agent` 的候选目标。
+حسب حمل دائم id و وسم صف خروج أنت يمكن متابعة خلفية subagent. استخدام هو عودة ذاكرة أنت بدء مرور أي بعض subagent، بينما لا هو جولة استفسار إتمام حال حال——subagent إتمام وقت أنت سوف يتم إبلاغ معرفة. حالة قدوم ذاتي فوري سجل التسجيل:running يمثل agent هذا لحظة صحيح في عمل؛idle يمثل قد تحميل لكن موضع في جولة بين، ممكن صحيح في انتظار هو بدء agent؛ready يمثل هو فقط وجود في تخزين في——يمكن استعادة بينما غير نهاية حالة، أيضا لا يمثل لديه نتيجة انتظار استلام تجميع؛`send_message` سوف في تشغيل في child الأكثر قريب step حد steer رسالة، أو لـ idle،ready child بدء جولة، كما بلا نقاش موضع في أي نوع حالة، مباشر فرعي درجة كل ما زال يمكن بصفة `send_message` هدف. هذا لقطة و غير إلقاء تمرير تحمل وعد؛`send_message` سوف تنفيذ مرجعي فحص، ما زال ممكن فشل. لا يمكن قراءة فرعي درجة سوف بصفة تشخيص معلومة تقرير إبلاغ، بينما لن يتم ساكن صامت إسقاط.`descendants` أثر مجال سوف حسب مستقر قبل ترتيب ترتيب مرة تاريخ أنت تحت جهة كامل شجرة شجرة، و لـ كل بند علامة ملاحظة ذلك حمل دائم مباشر أب جلسة id و عميق درجة. فقط لديه عميق درجة لـ 1 بند يمكن استخدام `send_message`؛ أكثر عميق بند فقط قدرة بصفة `interrupt_agent` مرشح هدف.
 
 ```json
 {
@@ -1906,11 +1906,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/subagent/tool-subagent-control/src/list-agents.ts`](../packages/subagent/tool-subagent-control/src/list-agents.ts)
+مصدر:[`packages/subagent/tool-subagent-control/src/list-agents.ts`](../packages/subagent/tool-subagent-control/src/list-agents.ts)
 
 ### `send_message`
 
-根据 agent id 向直接可继续 child 发送消息。如果你是驻留的可继续 child，也可以把自己的直接 parent 作为目标。如果目标仍在工作，消息会 steer 其最近的 step；如果目标处于 idle，消息会启动一个轮次。此调用不会返回该 agent 的答案，只会确认消息已投递。调用失败表示消息**未**投递。
+أصل حسب agent id نحو مباشر يمكن متابعة child إرسال رسالة. إذا أنت هو إقامة إبقاء يمكن متابعة child، أيضا يمكن يأخذ ذاتي ذات مباشر parent بصفة هدف. إذا هدف ما زال في عمل، رسالة سوف steer ذلك الأكثر قريب step؛ إذا هدف موضع في idle، رسالة سوف بدء واحد جولة. هذا استدعاء لن إرجاع هذا agent جواب سجل، فقط سوف تأكيد رسالة قد إلقاء تمرير. استدعاء فشل يمثل رسالة**لم**إلقاء تمرير.
 
 ```json
 {
@@ -1932,9 +1932,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
+مصدر:[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
 
-这些是控制可继续后台 subagent 的全局命名工具：绑定提供方的 `tool-subagent` 实例注册不同的委派工具；本包注册一次 `send_message` 和 `interrupt_agent`，另由 `list_agents` 通过单独加载的 `/list-agents` 插件提供，其目录行使用 sessionProjections 和实时 Agent 注册表。
+هذه هو تحكم يمكن متابعة خلفية subagent عام تسمية أداة: ربط مزود `tool-subagent` نسخة تسجيل مختلف تفويض إرسال أداة؛ هذه الحزمة تسجيل مرة `send_message` و `interrupt_agent`، آخر من `list_agents` عبر مفرد وحيد تحميل `/list-agents` إضافة توفير، ذلك دليل سطر استخدام sessionProjections و فوري Agent سجل التسجيل.
 
 <a id="deepseek-aidsh-tool-jobs"></a>
 
@@ -1942,7 +1942,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `job_kill`
 
-根据 job id 请求取消正在运行的后台任务。此调用立即返回；任务的工作真正停止后，会以 killed 状态结算。
+أصل حسب job id طلب إلغاء صحيح في تشغيل خلفية مهمة. هذا استدعاء قيام أي إرجاع؛ مهمة عمل حق صحيح إيقاف بعد، سوف بـ killed حالة تسوية.
 
 ```json
 {
@@ -1963,11 +1963,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
 ### `job_list`
 
-列出你的后台任务（包括正在运行和已完成的任务）及其 id、种类和状态。
+صف خروج أنت خلفية مهمة (يشمل صحيح في تشغيل و قد إتمام مهمة) و ذلك id، نوع صنف و حالة.
 
 ```json
 {
@@ -1976,11 +1976,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
 ### `job_output`
 
-读取后台任务。流式任务只返回自上次读取以来的输出；最终输出任务会在结算后返回结果。每个响应都以 `[status: ...]` 结尾。读取默认不阻塞；设置 `wait: true` 后，最长等待到配置的上限。
+قراءة خلفية مهمة. تدفق صيغة مهمة فقط إرجاع ذاتي فوق مرة قراءة بـ قدوم إخراج؛ نهائي إخراج مهمة سوف في تسوية بعد إرجاع نتيجة. كل استجابة كل بـ `[status: ...]` ربط ذيل. قراءة افتراضي لا منع سد؛ ضبط `wait: true` بعد، الأكثر طويل انتظار إلى إعداد حد أعلى.
 
 ```json
 {
@@ -2005,9 +2005,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
-与任务种类无关的后台任务控制器：后台 bash 命令、PTY 发送和 subagent 都通过相同的 3 个工具读取、列出和终止。加载该插件会挂接控制器，从而启用生产方的 `ctx.jobs.start()`。
+و مهمة نوع صنف غير متصل خلفية مهمة تحكم جهاز: خلفية bash أمر،PTY إرسال و subagent كل عبر نفسه 3 عدد أداة قراءة، صف خروج و إنهاء. تحميل هذا إضافة سوف تعليق وصل تحكم جهاز، من بينما تفعيل إنتاج جهة `ctx.jobs.start()`.
 
 <a id="deepseek-aidsh-experimental-tool-agent-team"></a>
 
@@ -2015,7 +2015,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `interrupt_agent`
 
-中断一名 teammate 的当前 turn，同时保留其待处理 inbox。仅 Team Lead 可用。
+في قطع واحد اسم teammate حالي turn، معا إبقاء ذلك انتظار معالجة inbox. فقط Team Lead متاح.
 
 ```json
 {
@@ -2032,11 +2032,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `list_agents`
 
-列出 Lead 与所有持久 teammate，以及各自当前的运行时状态。
+صف خروج Lead و كل حمل دائم teammate، و كل منها حالي وقت التشغيل حالة.
 
 ```json
 {
@@ -2045,11 +2045,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `send_message`
 
-向另一名 Team member 发送一条持久消息。running target 会在最近的步骤边界收到消息；idle target 会启动一个 turn；inactive teammate 会冷恢复。
+نحو آخر اسم Team member إرسال واحد بند حمل دائم رسالة.running target سوف في الأكثر قريب خطوة حد استلام إلى رسالة؛idle target سوف بدء واحد turn؛inactive teammate سوف بارد استعادة.
 
 ```json
 {
@@ -2071,11 +2071,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `spawn_teammate`
 
-创建一名具名、持久的 teammate。只有 Team Lead 可以调用此工具。
+إنشاء واحد اسم أداة اسم، حمل دائم teammate. فقط لديه Team Lead يمكن استدعاء هذا أداة.
 
 ```json
 {
@@ -2110,11 +2110,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_create`
 
-在共享 Team 任务板上创建一个无 owner 的 pending task。
+في مشترك Team مهمة لوح فوق إنشاء واحد بلا owner pending task.
 
 ```json
 {
@@ -2150,11 +2150,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_get`
 
-在修改或执行共享任务前，读取其完整的最新值。
+في تعديل أو تنفيذ مشترك مهمة قبل، قراءة ذلك كامل الأكثر جديد قيمة.
 
 ```json
 {
@@ -2171,11 +2171,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_list`
 
-列出共享任务，包括 readiness、owner、revision、blocker 与 write-scope warning。
+صف خروج مشترك مهمة، يشمل readiness،owner،revision،blocker و write-scope warning.
 
 ```json
 {
@@ -2210,11 +2210,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_update`
 
-使用 team_task_get 或 team_task_list 返回的最新 revision，对共享任务操作执行 compare-and-set。
+استخدام team_task_get أو team_task_list إرجاع الأكثر جديد revision، مقابل مشترك مهمة عملية تنفيذ compare-and-set.
 
 ```json
 {
@@ -2277,11 +2277,11 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `wait_agent`
 
-等待本次调用开始后下一次 teammate 状态、mailbox 或共享任务变更。它绝不会唤醒 inactive member；若没有其他 member 正在 running 或 provisioning，则立即返回 noProgress。唤醒或超时后应重新列出状态，而不是轮询。
+انتظار هذا مرة استدعاء بدء بعد تحت مرة teammate حالة،mailbox أو مشترك مهمة تغيير. هو أبدا سوف نداء تنبيه inactive member؛ إذا لا يوجد أخرى member صحيح في running أو provisioning، فإن قيام أي إرجاع noProgress. نداء تنبيه أو مهلة بعد ينبغي إعادة صف خروج حالة، بينما لا هو جولة استفسار.
 
 ```json
 {
@@ -2295,9 +2295,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
-这 10 个工具限定于隐式 Team Lead 与持久 teammate 作用域。随产品发布的 dsh-base bundle 默认禁用该包；文档中的 Agent Teams profile patch 会启用它，并禁用旧 continuable child 的同名控制工具。
+هذا 10 عدد أداة حد تحديد في خفي صيغة Team Lead و حمل دائم teammate أثر مجال. مع منتج إصدار dsh-base bundle افتراضي منع استخدام هذا حزمة؛ وثيقة في Agent Teams profile patch سوف تفعيل هو، و منع استخدام قديم continuable child نفس اسم تحكم أداة.
 
 
 <a id="deepseek-aidsh-tool-todo"></a>
@@ -2306,7 +2306,7 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 
 ### `todo_write`
 
-记录并更新当前工作的结构化任务列表。每次调用都要发送**完整列表**，它会**替换**之前的列表，不支持局部更新或逐项编辑。请用它规划多步骤工作并展示进度：开始前为每个具体步骤添加一项 todo。将当前正在处理的每项 todo 标记为 `in_progress`；确实并行运行时（例如并发 subagent 或后台命令）可同时标记多项，顺序工作则标记 1 项。只要工作尚未完成，就应至少有一项任务为 `in_progress`。某项 todo 完成后立即标记为 `completed`，不要批量标记完成；只有全部工作完成后，才可以没有 `in_progress` 项。简单的单步骤任务无需使用列表。状态：`pending`（未开始）、`in_progress`（正在处理）、`completed`（已完成）。
+سجل و تحديث حالي عمل بنية تحويل مهمة قائمة. كل مرة استدعاء كل يلزم إرسال**كامل قائمة**، هو سوف**استبدال**قبل قائمة، لا دعم حمل نطاق جزء تحديث أو تدريجي بند تحرير. طلب استخدام هو قاعدة تخطيط كثير خطوة عمل و عرض دخول درجة: بدء قبل لـ كل أداة جسم خطوة إضافة واحد بند todo. سوف حالي صحيح في معالجة كل بند todo علامة لـ `in_progress`؛ تأكيد فعلي و سطر وقت التشغيل (مثال مثل تزامن subagent أو خلفية أمر) يمكن معا علامة كثير بند، ترتيب عمل فإن علامة 1 بند. فقط يلزم عمل بعد لم إتمام، حينئذ ينبغي حتى قليل لديه واحد بند مهمة لـ `in_progress`. بعض بند todo إتمام بعد قيام أي علامة لـ `completed`، لا يلزم دفعة كمية علامة إتمام؛ فقط لديه الكل عمل إتمام بعد، عندئذ يمكن لا يوجد `in_progress` بند. بسيط مفرد مفرد خطوة مهمة بلا حاجة استخدام قائمة. حالة:`pending`(لم بدء) ،`in_progress`(صحيح في معالجة) ،`completed`(قد إتمام).
 
 ```json
 {
@@ -2346,9 +2346,9 @@ lsp 工具将提供方选择和语言服务器子进程置于 ctx.lsp 之后，�
 }
 ```
 
-来源：[`packages/todo/tool-todo/src/index.ts`](../packages/todo/tool-todo/src/index.ts)
+مصدر:[`packages/todo/tool-todo/src/index.ts`](../packages/todo/tool-todo/src/index.ts)
 
-todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为检查清单。`allowParallelInProgress` 是没有默认值的必填项，因此本目录明确选择 `true`，对应描述允许同时存在多个 `in_progress` 项。选择 `false` 的部署会获得同一工具，但描述会要求只能有 1 个活动任务。
+todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/write حدث تصيير لـ فحص بيان.`allowParallelInProgress` هو لا يوجد قيمة افتراضية لا بد ملء بند، لذلك هذا دليل واضح اختيار `true`، مقابل وصف سماح معا وجود كثير عدد `in_progress` بند. اختيار `false` نشر سوف نيل نيل نفس أداة، لكن وصف سوف اشتراط فقط قدرة لديه 1 عدد نشط حركة مهمة.
 
 <a id="deepseek-aidsh-tool-workflow"></a>
 
@@ -2356,20 +2356,20 @@ todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为
 
 ### `workflow`
 
-运行用于大规模编排 subagent 的 JavaScript 工作流脚本。当工作会分散到许多相互独立的部分时，请使用此工具，例如审查大量文件、执行迁移、开展多角度研究或对发现进行对抗式验证；此时应将编排写成脚本，而不是逐轮委派。
+تشغيل لأجل كبير قاعدة نموذج تحرير ترتيب subagent JavaScript سير العمل نص برمجي. عند عمل سوف قسم تفرق إلى سماح كثير متبادل متبادل مستقل جزء وقت، طلب استخدام هذا أداة، مثال مثل مراجعة فحص كبير كمية ملف، تنفيذ ترحيل، فتح عرض كثير زاوية درجة بحث بحث أو مقابل اكتشاف إجراء مقابل مقاومة صيغة تحقق؛ هذا وقت ينبغي سوف تحرير ترتيب كتابة صار نص برمجي، بينما لا هو تدريجي جولة تفويض إرسال.
 
-工作流的身份通过 `meta` 参数以 JSON 形式传入：必填的 `name`（简短 kebab-case）和 `description` 字符串，以及可选的 `whenToUse` 字符串和 `phases` 数组（`{title, detail?, provider?, model?}`）。`script` 参数只能是纯 JavaScript **函数体**，不能是 TypeScript，也不能包含 `export const meta` 语句；meta 是参数而非代码。脚本支持顶层 await；请以 `return <value>` 结尾，该值必须可以 JSON 序列化，并作为此工具的结果。
+سير العمل هوية عبر `meta` معامل بـ JSON شكل صيغة نقل دخول: لا بد ملء `name`(بسيط قصير kebab-case) و `description` نص، و اختياري `whenToUse` نص و `phases` عدد مجموعة (`{title, detail?, provider?, model?}`).`script` معامل فقط قدرة هو صاف JavaScript **دالة جسم**، لا يستطيع هو TypeScript، أيضا لا يستطيع يتضمن `export const meta` لغة جملة؛meta هو معامل بينما غير شفرة. نص برمجي دعم حمل قمة طبقة await؛ طلب بـ `return <value>` ربط ذيل، هذا قيمة يجب يمكن JSON تسلسل تحويل، و بصفة هذا أداة نتيجة.
 
-脚本函数体提供以下钩子：
+نص برمجي دالة جسم توفير التالي خطاف:
 
-- `agent(prompt, opts?): Promise<any>`：运行一个 subagent 直至完成。不提供 `opts.schema` 时，解析为子级最终文本；提供 `opts.schema` 时，它必须是以对象为根、且**只能**使用 type/properties/required/additionalProperties/items/enum/const/oneOf 的 JSON Schema，不支持 pattern/format/数值边界，此时解析为通过校验的对象。子级失败时解析为 `null`，可使用 `.filter(Boolean)` 过滤。其他选项包括 `label`（显示名称）、`phase`（进度组），以及相互独立的 `provider`／`model` LLM（大语言模型）目标覆盖项，两者可单独提供。其他任何选项（`effort`／`isolation`／`agentType`）都会明确报错。
-- `pipeline(items, ...stages): Promise<any[]>`：让每个条目分别经过各阶段，阶段之间**没有**屏障；多阶段工作优先使用它。每个阶段接收 `(prev, item, index)`。普通的阶段异常会将该**条目**变为 `null`，并跳过它的剩余阶段。
-- `parallel(thunks): Promise<any[]>`：并发运行零参数函数并等待**全部**完成。它会形成屏障，仅当某个阶段确实需要汇总全部先前结果时使用。抛出异常的 thunk 解析为 `null`。
-- `phase(title)`：开始一个进度阶段；`log(message)`：说明进度；`args`：工具调用的 `args` 输入，原样提供。
+- `agent(prompt, opts?): Promise<any>`: تشغيل واحد subagent مباشر حتى إتمام. لا توفير `opts.schema` وقت، تحليل لـ فرعي درجة نهائي نص؛ توفير `opts.schema` وقت، هو يجب هو بـ كائن لـ أصل، كما**فقط قدرة**استخدام type/properties/required/additionalProperties/items/enum/const/oneOf JSON Schema، لا دعم حمل pattern/format/عدد قيمة حد، هذا وقت تحليل لـ عبر تحقق كائن. فرعي درجة فشل وقت تحليل لـ `null`، يمكن استخدام `.filter(Boolean)` مرور ترشيح. أخرى خيار يشمل `label`(عرض اسم) ،`phase`(دخول درجة مجموعة) ، و متبادل متبادل مستقل `provider`/`model` LLM(كبير لغة نموذج) هدف تغطية بند، اثنان من يمكن مفرد وحيد توفير. أخرى أي خيار (`effort`/`isolation`/`agentType`) كل سوف واضح تقرير خطأ.
+- `pipeline(items, ...stages): Promise<any[]>`: يجعل كل بند قسم آخر مرور مرور كل مرحلة مقطع، مرحلة مقطع بين**لا يوجد**شاشة عائق؛ كثير مرحلة مقطع عمل أولوية استخدام هو. كل مرحلة مقطع استقبال `(prev, item, index)`. عادي مرحلة مقطع استثناء سوف سوف هذا**بند**تغيير لـ `null`، و قفز مرور هو باق بقية مرحلة مقطع.
+- `parallel(thunks): Promise<any[]>`: تزامن تشغيل صفر معامل دالة و انتظار**الكل**إتمام. هو سوف شكل صار شاشة عائق، فقط عند بعض عدد مرحلة مقطع تأكيد فعلي حاجة تجميع مجموع الكل أولا قبل نتيجة وقت استخدام. رمي خروج استثناء thunk تحليل لـ `null`.
+- `phase(title)`: بدء واحد دخول درجة مرحلة مقطع؛`log(message)`: شرح دخول درجة؛`args`: أداة استدعاء `args` إدخال، أصل مثال توفير.
 
-如果误用钩子（参数错误、未知选项、不受支持的 schema、触发上限），抛出的错误**总会**终止脚本，绝不会退化为单个条目的 `null`。
+إذا خطأ استخدام خطاف (معامل خطأ، لم معرفة خيار، لا تلقي دعم حمل schema، إطلاق حد أعلى) ، رمي خروج خطأ**مجموع سوف**إنهاء نص برمجي، أبدا سوف تراجع تحويل لـ مفرد عدد بند `null`.
 
-约束：并发上限和 agent 总数上限均会生效；不提供文件系统、网络、定时器或 Node.js API。具体工作由 agent 完成，脚本只负责编排。该运行在前台执行：整个脚本完成后，调用才会返回。
+قيد: تزامن حد أعلى و agent مجموع عدد حد أعلى متساو سوف توليد فاعلية؛ لا توفير نظام الملفات، شبكة شبكة، تحديد وقت جهاز أو Node.js API. أداة جسم عمل من agent إتمام، نص برمجي فقط مسؤول تحرير ترتيب. هذا تشغيل في قبل منصة تنفيذ: كامل نص برمجي إتمام بعد، استدعاء عندئذ سوف إرجاع.
 
 ```json
 {
@@ -2444,7 +2444,7 @@ todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为
 }
 ```
 
-来源：[`packages/workflow/tool-workflow/src/index.ts`](../packages/workflow/tool-workflow/src/index.ts)
+مصدر:[`packages/workflow/tool-workflow/src/index.ts`](../packages/workflow/tool-workflow/src/index.ts)
 
 <a id="deepseek-aidsh-tool-web"></a>
 
@@ -2452,7 +2452,7 @@ todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为
 
 ### `web_fetch`
 
-获取指定 HTTP(S) URL 的内容，并将其解码为文本后返回。
+نيل أخذ إشارة تحديد HTTP(S) URL محتوى، و سوف ذلك حل رمز لـ نص بعد إرجاع.
 
 ```json
 {
@@ -2469,11 +2469,11 @@ todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为
 }
 ```
 
-来源：[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
+مصدر:[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
 
 ### `web_search`
 
-在 Web 上搜索最新信息。在必填的 `queries` 数组中提供 1–4 个查询。返回可选的摘要答案和来源 URL 列表。
+في Web فوق بحث الأكثر جديد معلومة. في لا بد ملء `queries` عدد مجموعة في توفير 1–4 عدد استعلام. إرجاع اختياري ملخص جواب سجل و مصدر URL قائمة.
 
 ```json
 {
@@ -2493,6 +2493,6 @@ todo_write 是会话所有的状态；UI 将最新的 todo/write 事件渲染为
 }
 ```
 
-来源：[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
+مصدر:[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
 
-web_search 和 web_fetch 将提供方选择置于 ctx.web 之后，使模型可见 schema 在更换后端时保持稳定。
+web_search و web_fetch سوف مزود اختيار وضع في ctx.web بعد، جعل نموذج مرئي schema في أكثر تبديل خلفية وقت إبقاء مستقر.

@@ -1,64 +1,64 @@
-# Agent Note: 领域 KV 存储能力 seam 与 workspace 实体
+# Agent Note: مجال KV تخزين قدرة seam و workspace فعلي جسم
 
 Status: proposed
 
-[English](2026-07-24-domain-kv-storage-and-workspace.md) | 中文
+[English](2026-07-24-domain-kv-storage-and-workspace.md) | العربية
 
-## 问题
+## مشكلة
 
-host 侧唯一的持久化面是 session 事件日志（`packages/session/session-persistence`：仅追加、一 session 一文件）。凡是"不属于某个 session"的信息就没有落盘处，存在两个已交付需求：
+host جانب وحيد حفظ دائم وجه هو session حدث سجل (`packages/session/session-persistence`: فقط إلحاق، واحد session واحد ملف). كل هو"لا يخص بعض عدد session"معلومة حينئذ لا يوجد سقوط قرص موضع، وجود اثنان عدد قد تسليم يحتاج طلب:
 
-- **workspace 实体**。GUI 要把 workspace 做成真实对象：路径、标题、关联 session 清单。归属关系由 workspace 持有——"哪些 session 属于这个 workspace"不是任何单个 session 自己的事实，塞进 session log 语义不成立。在本设计之前，workspace 只是 sidebar 上按 cwd 分组的视觉概念，没有实体。
-- **session 动态元信息**（可预见的第二个消费方）。冷会话列表只读日志首行 header（创建时的不可变快照），title、结束状态这类随会话推进变化的信息拿不到；补齐方向是 sidecar 元数据表——正是一张按 key 高频点更新的 KV 表。
+- **workspace فعلي جسم**.GUI يلزم يأخذ workspace فعل صار حقيقي كائن: مسار، عنوان، صلة ربط session بيان. ملكية علاقة من workspace يحتفظ——"أي بعض session يخص هذا عدد workspace"لا هو أي مفرد عدد session ذاتي ذات واقع، سد دخول session log دلالة لا صار قيام. في هذا تصميم قبل،workspace فقط هو sidebar فوق حسب cwd قسم مجموعة نظر شعور عام فكرة، لا يوجد فعلي جسم.
+- **session حركة حالة عنصر معلومة**(يمكن مسبق رؤية ثاني عدد مستهلك). بارد جلسة قائمة فقط قراءة سجل أول سطر header(إنشاء وقت غير ممكن تغيير لقطة) ،title، انتهاء حالة هذا صنف مع جلسة دفع دخول تغير معلومة أخذ لا إلى؛ تكملة متساو جهة نحو هو sidecar بيانات وصفية جدول——صحيح هو واحد ورقة حسب key عال تردد نقطة تحديث KV جدول.
 
-另外，Session 删除需要 `SessionPersistence` 删除原语和 `session.delete` 端点。该空白的设计随本 Note 定案，但实现仍属未来工作。
+آخر خارج،Session حذف حاجة `SessionPersistence` حذف أصل لغة و `session.delete` طرف نقطة. هذا فارغ أبيض تصميم مع هذا Note تحديد سجل، لكن تنفيذ ما زال تابع لم قدوم عمل.
 
-后续的 [Workspace 注册记录删除决策](../../implemented/feature/2026-07-27-workspace-registration-deletion.zh.md)取代的仅是上述耦合关系：删除 Workspace 注册记录会保留相关 Session 及其日志，Session 删除仍是独立的未来工作。因此，下文的级联设计并不是 Workspace GUI 的删除语义。
+لاحق [Workspace تسجيل سجل حذف قرار](../../implemented/feature/2026-07-27-workspace-registration-deletion.zh.md) يحل محل فقط هو فوق وصف اقتران دمج علاقة: حذف Workspace تسجيل سجل سوف إبقاء متبادل صلة Session و ذلك سجل،Session حذف ما زال هو مستقل لم قدوم عمل. لذلك، تحت نص درجة ربط تصميم و لا هو Workspace GUI حذف دلالة.
 
-## 方案
+## خطة
 
-新建 `packages/storage/` 组——`ctx.storage` 存储枢纽（后端注册面 + 数据形式挂载面）、两个后端、domain 领域数据形式——及 workspace 消费方包；给 `SessionPersistence` 扩删除原语。
+جديد بناء `packages/storage/` مجموعة——`ctx.storage` تخزين محور عقدة (خلفية تسجيل وجه + بيانات شكل صيغة تركيب وجه) ، اثنان عدد خلفية،domain مجال بيانات شكل صيغة——و workspace مستهلك حزمة؛ إعطاء `SessionPersistence` توسيع حذف أصل لغة.
 
-| 包 | 路径 | ctx 面 | 本期 |
+| حزمة | مسار | ctx وجه | هذا مدة |
 | --- | --- | --- | --- |
-| `@deepseek-ai/dsh-storage` | `packages/storage/storage/` | `ctx.storage`（枢纽） | ✓ |
-| `@deepseek-ai/dsh-storage-json` | `packages/storage/storage-json/` | 注册后端 `json` | ✓ |
-| `@deepseek-ai/dsh-storage-sqlite` | `packages/storage/storage-sqlite/` | 注册后端 `sqlite` | ✓ |
-| `@deepseek-ai/dsh-storage-domain` | `packages/storage/storage-domain/` | 挂载 `ctx.storage.domain` | ✓ |
+| `@deepseek-ai/dsh-storage` | `packages/storage/storage/` | `ctx.storage`(محور عقدة) | ✓ |
+| `@deepseek-ai/dsh-storage-json` | `packages/storage/storage-json/` | تسجيل خلفية `json` | ✓ |
+| `@deepseek-ai/dsh-storage-sqlite` | `packages/storage/storage-sqlite/` | تسجيل خلفية `sqlite` | ✓ |
+| `@deepseek-ai/dsh-storage-domain` | `packages/storage/storage-domain/` | تركيب `ctx.storage.domain` | ✓ |
 | `@deepseek-ai/dsh-workspace` | `packages/workspace/workspace/` | `ctx.workspaceRegistry` | ✓ |
-| `SessionPersistence.delete` 扩面 + 级联删编排 | `packages/session/*` | 既有 seam 新方法 | ✗ future work（本期不动 session 侧） |
-| `workspace.*` / `session.delete` RPC、GUI 接线、boot 组装 | — | — | ✗ 下期 |
+| `SessionPersistence.delete` توسيع وجه + درجة ربط حذف تحرير ترتيب | `packages/session/*` | قائم seam جديد طريقة | ✗ future work(هذا مدة لا حركة session جانب) |
+| `workspace.*` / `session.delete` RPC،GUI وصل خط،boot تجميع | — | — | ✗ تحت مدة |
 
-（workspace 放独立组不放 `packages/host/`：host 组命名规则要求 `dsh-host-*` 前缀，而包名定为 `dsh-workspace`；且 workspace 实体是领域概念，不绑定 host 装配层。与既有 `agent-instructions` 包无关——那是 AGENTS.md 指令加载器。）
+(workspace وضع مستقل مجموعة لا وضع `packages/host/`:host مجموعة تسمية قاعدة اشتراط `dsh-host-*` بادئة، بينما حزمة اسم تحديد لـ `dsh-workspace`؛ كما workspace فعلي جسم هو مجال عام فكرة، لا ربط host تركيب إعداد طبقة. و قائم `agent-instructions` حزمة غير متصل——ذلك هو AGENTS.md إشارة أمر تحميل جهاز.)
 
-依赖方向：`dsh-workspace` → `dsh-domain` → `dsh-storage` ← 两后端。`dsh-workspace` 另依赖 `ctx.sessionPersistence` 的只读面（attach 的 cwd 校验读 session header；服务缺席时 attach 直接拒绝——无法校验即不写账）。session 删除相关的 `ctx.sessions` 运行中检查随级联删一并归入 future work。
+اعتماد جهة نحو:`dsh-workspace` → `dsh-domain` → `dsh-storage` ← اثنان خلفية.`dsh-workspace` آخر اعتماد `ctx.sessionPersistence` فقط قراءة وجه (attach cwd تحقق قراءة session header؛ خدمة نقص مقعد وقت attach مباشر رفض——لا يمكن تحقق أي لا كتابة حساب).session حذف متبادل صلة `ctx.sessions` تشغيل في فحص مع درجة ربط حذف واحد و عودة دخول future work.
 
-### `dsh-storage`：存储枢纽
+### `dsh-storage`: تخزين محور عقدة
 
-纯注册枢纽，自身不做 IO，无 Config。`Storage` 服务挂 `ctx.storage`，两个面：`backend`（`BackendRegistry`：`register(name, backend)` 返回 disposer、重名 throw；`get(name)` 未知名 throw `backend-not-found`）与数据形式挂载（`mount(form, facility)` 配 merge-extensible 的 `StorageForms` map，`dsh-domain` merge 进 `domain` 键；未挂载访问 throw `form-not-mounted`）。签名正文见 `packages/storage/storage/src/index.ts` 与 `src/registry.ts`。
+صاف تسجيل محور عقدة، ذاته لا فعل IO، بلا Config.`Storage` خدمة تعليق `ctx.storage`، اثنان عدد وجه:`backend`(`BackendRegistry`:`register(name, backend)` إرجاع disposer، إعادة اسم throw؛`get(name)` لم معرفة اسم throw `backend-not-found`) و بيانات شكل صيغة تركيب (`mount(form, facility)` إعداد merge-extensible `StorageForms` map،`dsh-domain` merge دخول `domain` مفتاح؛ لم تركيب وصول throw `form-not-mounted`). توقيع متن رؤية `packages/storage/storage/src/index.ts` و `src/registry.ts`.
 
-**多后端同时挂载**；域→后端的选择是 `dsh-domain` 的配置（见下），不是全局二选一。disposer 语义 = 从表中摘名；后端自身的 close 由后端包的 effect 闭包负责，顺序先摘名后 close。
+**كثير خلفية معا تركيب**؛ مجال→خلفية اختيار هو `dsh-domain` إعداد (رؤية تحت) ، لا هو عام اثنان اختيار واحد.disposer دلالة = من جدول في اقتباس اسم؛ خلفية ذاته close من خلفية حزمة effect إغلاق حزمة مسؤول، ترتيب أولا اقتباس اسم بعد close.
 
-一个后端是一个**介质 owner**（一棵文件树 root / 一个 db 文件），通过**数据形状 facet** 暴露原语——本期只有 `kv`；session 迁移期加 `log`（见迁移节）。facet 是可选成员，缺席即该后端不支持该形状，解析时 fail loud。`kv` facet 的原语面：`open(descriptor)`（descriptor = 名字/版本/表名清单/有无 global，名字与表名限 `^[a-z][a-z0-9_]*$` 兼作文件名与 SQL 表名段）返回 unit，unit 提供 `loadAll` / `putRecord` / `deleteRecord`（缺 key 为 no-op）/ `setGlobal` / `close`（幂等）；值对后端是不透明 JSON。规范正文（含逐方法 JSDoc）在 `packages/storage/storage/src/backend.ts`。
+واحد خلفية هو واحد**وسيط جودة owner**(واحد شجرة ملف شجرة root / واحد db ملف) ، عبر**بيانات شكل حالة facet** كشف أصل لغة——هذا مدة فقط لديه `kv`؛session ترحيل مدة إضافة `log`(رؤية ترحيل عقدة).facet هو اختياري عضو، نقص مقعد أي هذا خلفية لا دعم حمل هذا شكل حالة، تحليل وقت fail loud.`kv` facet أصل لغة وجه:`open(descriptor)`(descriptor = اسم حرف/إصدار/جدول اسم بيان/لديه بلا global، اسم حرف و جدول اسم حد `^[a-z][a-z0-9_]*$` كذلك عمل ملف اسم و SQL جدول اسم مقطع) إرجاع unit،unit توفير `loadAll` / `putRecord` / `deleteRecord`(نقص key لـ no-op)/ `setGlobal` / `close`(قوة انتظار) ؛ قيمة مقابل خلفية هو لا نفاذ واضح JSON. مواصفة متن (يحتوي تدريجي طريقة JSDoc) في `packages/storage/storage/src/backend.ts`.
 
-后端约定（共享约定测试逐条断言，两后端同套件）：
+خلفية اتفاق (مشترك اتفاق اختبار تدريجي بند تأكيد، اثنان خلفية نفس طقم عنصر):
 
-1. `open` 对不存在的介质创建（懒物化允许：可延迟到首写，但 `loadAll` 立即可用返回空表）；对已存在介质载入。
-2. 介质上版本 ≠ descriptor.version → `StorageError('version-mismatch')`，不迁移不重建。
-3. 持久性：写原语 resolve 后进程崩溃再 open，`loadAll` 必须反映该写入。
-4. 后端不承诺 unit 内写并发序——**调用方负责串行**；后端只保证单次调用原子（JSON 整文件替换 / SQLite 单语句）。
-5. `deleteRecord` 幂等；`putRecord` 覆写。
-6. 任意字符串 key / 任意 JSON 值安全（key 不进文件路径，结构性质）。
-7. `close` 幂等；close 后任何操作 → `StorageError('closed')`。
+1. `open` مقابل لا وجود وسيط جودة إنشاء (كسول شيء تحويل سماح: يمكن تأخير متأخر إلى أول كتابة، لكن `loadAll` قيام يكفي استخدام إرجاع فارغ جدول) ؛ مقابل قد وجود وسيط جودة تحميل دخول.
+2. وسيط جودة فوق إصدار ≠ descriptor.version → `StorageError('version-mismatch')`، لا ترحيل لا إعادة بناء.
+3. حمل دائم صفة: كتابة أصل لغة resolve بعد عملية انهيار انهيار مجددا open،`loadAll` يجب عكس عكس هذا كتابة.
+4. خلفية لا تحمل وعد unit داخل كتابة تزامن ترتيب——**استدعاء جهة مسؤول سلسلة سطر**؛ خلفية فقط حفظ إثبات مفرد مرة استدعاء أصل فرعي (JSON كامل ملف استبدال / SQLite مفرد لغة جملة).
+5. `deleteRecord` قوة انتظار؛`putRecord` تغطية كتابة.
+6. مهمة معنى نص key / مهمة معنى JSON قيمة أمان (key لا دخول ملف مسار، بنية صفة جودة).
+7. `close` قوة انتظار؛close بعد أي عملية → `StorageError('closed')`.
 
-错误词汇是带 code 判别的 `StorageError`，码表：`backend-not-found` / `form-not-mounted` / `duplicate-backend` / `duplicate-mount` / `version-mismatch` / `malformed-medium` / `closed`（`packages/storage/storage/src/error.ts`）。
+خطأ مفردات هو حمل code حكم آخر `StorageError`، رمز جدول:`backend-not-found` / `form-not-mounted` / `duplicate-backend` / `duplicate-mount` / `version-mismatch` / `malformed-medium` / `closed`(`packages/storage/storage/src/error.ts`).
 
 ### `dsh-storage-json`
 
-Config 仅 `root`（必填无默认，schemastery）；apply 在 `ctx.effect()` 里注册后端 `json`，disposer 先摘名再 `backend.close()`。
+Config فقط `root`(لا بد ملء بلا افتراضي،schemastery) ؛apply في `ctx.effect()` داخل تسجيل خلفية `json`،disposer أولا اقتباس اسم مجددا `backend.close()`.
 
-- 布局 `<root>/<unitName>.json`，一 unit 一文件；目录 0o700、文件 0o600。
-- 文件格式（版本戳在头，文件即当前净值，`JSON.stringify(…, null, 2)` 肉眼可读——这是该后端的存在理由）：
+- تخطيط `<root>/<unitName>.json`، واحد unit واحد ملف؛ دليل 0o700، ملف 0o600.
+- ملف صيغة (إصدار ختم في رأس، ملف أي حالي صاف قيمة،`JSON.stringify(…, null, 2)` لحم عين يمكن قراءة——هذا هو هذا خلفية وجود إدارة من):
 
 ```json
 {
@@ -68,16 +68,16 @@ Config 仅 `root`（必填无默认，schemastery）；apply 在 `ctx.effect()` 
 }
 ```
 
-- 写入：任何一次写原语 = 内存态全量序列化 → temp 写 + fsync → rename 原子发布（Windows 变体照抄 session-persistence-jsonl 的 win32 路径）。内存态是权威，盘是投影。
-- `loadAll`：open 时整文件 parse；缺 `unit` 头、tables 非对象等 → `malformed-medium`。文件不存在 = 空单元，首写才落盘。
+- كتابة: أي مرة كتابة أصل لغة = داخل تخزين حالة كل كمية تسلسل تحويل → temp كتابة + fsync → rename أصل فرعي إصدار (Windows تغيير جسم وفق نسخ session-persistence-jsonl win32 مسار). داخل تخزين حالة هو مرجعي، قرص هو إسقاط.
+- `loadAll`:open وقت كامل ملف parse؛ نقص `unit` رأس،tables غير كائن انتظار → `malformed-medium`. ملف لا وجود = فارغ وحدة، أول كتابة عندئذ سقوط قرص.
 
 ### `dsh-storage-sqlite`
 
-Config 为 `path`（必填，`':memory:'` 允许）+ `journalMode`（枚举，默认 `wal`）；apply 同 json，注册后端 `sqlite`。
+Config لـ `path`(لا بد ملء،`':memory:'` سماح)+ `journalMode`(قطعة رفع، افتراضي `wal`) ؛apply نفس json، تسجيل خلفية `sqlite`.
 
-- `node:sqlite` `DatabaseSync`；打开序列为 mkdir 0o700 → 不存在则 `open(path,'wx',0o600)` 独占建文件 → `PRAGMA foreign_keys=ON` → journal_mode → 版本检查 → 建表。
-- 物理布局版本 `STORAGE_SQLITE_SCHEMA_VERSION = 1` 存 `PRAGMA user_version`：0 → 盖章；≠ → `version-mismatch`。
-- DDL（全 STRICT；表名由受限字符集拼接加 `u_` 前缀，杜绝外部输入进 DDL）：
+- `node:sqlite` `DatabaseSync`؛ فتح تسلسل لـ mkdir 0o700 → لا وجود فإن `open(path,'wx',0o600)` وحيد احتلال بناء ملف → `PRAGMA foreign_keys=ON` → journal_mode → إصدار فحص → بناء جدول.
+- شيء إدارة تخطيط إصدار `STORAGE_SQLITE_SCHEMA_VERSION = 1` تخزين `PRAGMA user_version`:0 → غطاء فصل؛≠ → `version-mismatch`.
+- DDL(كل STRICT؛ جدول اسم من تلقي حد محرف تجميع تجميع وصل إضافة `u_` بادئة، منع قطعا خارجي إدخال دخول DDL):
 
 ```sql
 CREATE TABLE IF NOT EXISTS units (name TEXT PRIMARY KEY, version INTEGER NOT NULL) STRICT;
@@ -88,12 +88,12 @@ CREATE TABLE IF NOT EXISTS "u_<unit>_<table>" (
   key TEXT PRIMARY KEY, value TEXT NOT NULL) STRICT;             -- value = record JSON document
 ```
 
-- unit 版本存 `units` 行，descriptor 不符 → `version-mismatch`。行粒度 document-per-row，保住按 key 精确落盘更新（为 session sidecar 这类高频点更新大表留路）；查询需求出现时 JSON1 直查 value 列。
-- 写原语单语句即原子，无跨语句事务需求（domain 层无跨表事务，见不做清单）。
+- unit إصدار تخزين `units` سطر،descriptor لا رمز → `version-mismatch`. سطر حبة درجة document-per-row، حفظ إقامة حسب key دقيق سقوط قرص تحديث (لـ session sidecar هذا صنف عال تردد نقطة تحديث كبير جدول إبقاء مسار) ؛ استعلام يحتاج طلب ظهور وقت JSON1 مباشر فحص value صف.
+- كتابة أصل لغة مفرد لغة جملة أي أصل فرعي، بلا عبر لغة جملة أمر خدمة يحتاج طلب (domain طبقة بلا عبر جدول أمر خدمة، رؤية لا فعل بيان).
 
-### `dsh-domain`：领域数据形式
+### `dsh-domain`: مجال بيانات شكل صيغة
 
-单实现不抽象；消费方只依赖这层，不直接触后端。
+مفرد تنفيذ لا سحب كائن؛ مستهلك فقط اعتماد هذا طبقة، لا مباشر لمس خلفية.
 
 ```ts ignore-check
 export const Config = z.object({
@@ -106,9 +106,9 @@ export function apply(ctx: Context, config: Config) {
 }
 ```
 
-（facility 卸载顺序：先 dispose 各域（排空写链）再从枢纽摘名——排空期间在途写仍发 `domain/changed`，事件一致性 invariant 经 facility 反查域，要求此时域名仍可解析。）
+(facility إزالة ترتيب: أولا dispose كل مجال (ترتيب فارغ كتابة سلسلة) مجددا من محور عقدة اقتباس اسم——ترتيب فارغ خلال في طريق كتابة ما زال إرسال `domain/changed`، حدث متسق صفة invariant مرور facility عكس فحص مجال، اشتراط هذا وقت مجال اسم ما زال يمكن تحليل.)
 
-域声明（spec 对象由拥有该域的包定义导出，是类型与运行时的唯一真源；schema 用 zod，`z.infer` 推导类型不重复声明——记录模型下期要投影成 RPC wire schema，wire 边界全是 zod；schemastery 仍只管插件 Config）：
+مجال إعلان (spec كائن من يملك هذا مجال حزمة تعريف توجيه خروج، هو نوع و وقت التشغيل وحيد حق مصدر؛schema استخدام zod،`z.infer` دفع توجيه نوع لا تكرار إعلان——سجل نموذج تحت مدة يلزم إسقاط صار RPC wire schema،wire حد كل هو zod؛schemastery ما زال فقط إدارة إضافة Config):
 
 ```ts ignore-check
 export interface DomainGlobalSpec<G> { readonly schema: ZodType<G>; readonly initial: G }
@@ -125,14 +125,14 @@ export function defineDomain<S extends DomainSpec>(spec: S): S
 export function domainTable<K extends string, V>(schema: ZodType<V>): DomainTableSpec<K, V>
 ```
 
-`DomainFacility.open(spec)` 精确语义（顺序执行，任一步失败即整体失败）：
+`DomainFacility.open(spec)` دقيق دلالة (ترتيب تنفيذ، مهمة واحد خطوة فشل أي كامل جسم فشل):
 
-1. 同名域已打开 → `DomainError('already-open')`。
-2. 后端名 = `config.routes[spec.name] ?? config.backend`；`ctx.storage.backend.get(name)`（未挂载穿透 `backend-not-found`——misconfiguration fails loud）。
-3. 后端无 `kv` facet → `DomainError('facet-unsupported')`。
-4. `kv.open(descriptorOf(spec))`（descriptor 由 spec 直接投影）。
-5. `loadAll()`；每条记录 `valueSchema.parse`，global 过 schema（null 取 `initial`，不落盘，首写才落盘）。失败 → `DomainError('invalid-record', { table, key })`（durable 边界必须校验；写侧不重复校验）。
-6. 构造 `Domain` 并注册 `ctx.effect()`：disposer 排空写链 → `unit.close()`。
+1. نفس اسم مجال قد فتح → `DomainError('already-open')`.
+2. خلفية اسم = `config.routes[spec.name] ?? config.backend`؛`ctx.storage.backend.get(name)`(لم تركيب اختراق نفاذ `backend-not-found`——misconfiguration fails loud).
+3. خلفية بلا `kv` facet → `DomainError('facet-unsupported')`.
+4. `kv.open(descriptorOf(spec))`(descriptor من spec مباشر إسقاط).
+5. `loadAll()`؛ كل بند سجل `valueSchema.parse`،global مرور schema(null أخذ `initial`، لا سقوط قرص، أول كتابة عندئذ سقوط قرص). فشل → `DomainError('invalid-record', { table, key })`(durable حد يجب تحقق؛ كتابة جانب لا تكرار تحقق).
+6. بنية صنع `Domain` و تسجيل `ctx.effect()`:disposer ترتيب فارغ كتابة سلسلة → `unit.close()`.
 
 ```ts ignore-check
 export interface Domain</* inferred from spec */> {
@@ -153,17 +153,17 @@ export interface KvTable<K extends string, V> {
 }
 ```
 
-规则：
+قاعدة:
 
-- **一级 mapping**：key → 记录，不做嵌套表；层级需求用复合 key 或值内字段。两后端因此同构（JSON object 一层 ↔ SQLite 一行）。
-- **记录是纯数据**：可直接 JSON 序列化的不可变 POJO；`get`/`entries` 返回值不得原地改（TypeScript readonly 投影，不做运行时冻结）。带行为的领域对象属于消费方包。
-- **写串行**：域内一条 promise 链，`put`/`delete`/`update`/`global.set` 全排队；`update` 的 fn 在链上执行，并发不交错。不做 active-record（取出可变对象自动落盘——落盘时机不可控，与整域原子覆写冲突）。
-- **版本 fail loud**：盘上版本与 spec 不符直接报错，不迁移不重建（数据不可再生，pre-release 拒绝旧格式）。
-- **变更事件**：每次写落盘 resolve 后 emit `domain/changed`（`@mode emit`），逐条发、不带旧值（对齐仓库"新快照 + 操作判别"惯例，范本 `goal/changed`）；payload `DomainChanged` 是 put/deleted 判别联合——域名 + 表名 + key（global 变更两者为 `''`）+ operation，put 支带新快照 value、deleted 支无 value（`packages/storage/storage-domain/src/events.ts`）。此为下期 RPC 推帧的事件源。错误词汇 `DomainError`，码表：`already-open` / `facet-unsupported` / `invalid-record`（带 `{ table, key }`）/ `missing-key` / `closed`。
+- **واحد درجة mapping**:key → سجل، لا فعل تضمين طقم جدول؛ طبقة درجة يحتاج طلب استخدام تكرار دمج key أو قيمة داخل حقل. اثنان خلفية لذلك نفس بنية (JSON object واحد طبقة ↔ SQLite واحد سطر).
+- **سجل هو صاف بيانات**: يمكن مباشر JSON تسلسل تحويل غير ممكن تغيير POJO؛`get`/`entries` قيمة راجعة لا نيل أصل أرض تعديل (TypeScript readonly إسقاط، لا فعل وقت التشغيل تجميد ربط). حمل سلوك مجال كائن يخص مستهلك حزمة.
+- **كتابة سلسلة سطر**: مجال داخل واحد بند promise سلسلة،`put`/`delete`/`update`/`global.set` كل ترتيب طابور؛`update` fn في سلسلة فوق تنفيذ، تزامن لا تسليم خطأ. لا فعل active-record(أخذ خروج متغير كائن تلقائي سقوط قرص——سقوط قرص وقت آلة غير ممكن تحكم، و كامل مجال أصل فرعي تغطية كتابة اندفاع مفاجئ).
+- **إصدار fail loud**: قرص فوق إصدار و spec لا رمز مباشر تقرير خطأ، لا ترحيل لا إعادة بناء (بيانات غير ممكن مجددا توليد،pre-release رفض قديم صيغة).
+- **تغيير حدث**: كل مرة كتابة سقوط قرص resolve بعد emit `domain/changed`(`@mode emit`) ، تدريجي بند إرسال، لا حمل قديم قيمة (مقابل متساو مستودع"جديد لقطة + عملية حكم آخر"معتاد مثال، نطاق هذا `goal/changed`) ؛payload `DomainChanged` هو put/deleted حكم آخر ربط دمج——مجال اسم + جدول اسم + key(global تغيير اثنان من لـ `''`)+ operation،put دعم حمل جديد لقطة value،deleted دعم بلا value(`packages/storage/storage-domain/src/events.ts`). هذا لـ تحت مدة RPC دفع لقطة حدث مصدر. خطأ مفردات `DomainError`، رمز جدول:`already-open` / `facet-unsupported` / `invalid-record`(حمل `{ table, key }`)/ `missing-key` / `closed`.
 
-### Future work：session 侧删除（设计定案，本期不实施）
+### Future work:session جانب حذف (تصميم تحديد سجل، هذا مدة لا فعلي تطبيق)
 
-本节是定案的施工规范，实施期不动语义只动代码；本期 session-persistence 的任何文件都不修改。
+هذا عقدة هو تحديد سجل تطبيق عمل مواصفة، فعلي تطبيق مدة لا حركة دلالة فقط حركة شفرة؛ هذا مدة session-persistence أي ملف كل لا تعديل.
 
 ```ts ignore-check
 export abstract class SessionPersistence extends Service {
@@ -177,29 +177,29 @@ export abstract class SessionPersistence extends Service {
 }
 ```
 
-- JSONL 后端：unlink 该 session 文件（含 `.zstd` 变体）；文件与 intent 均无 → reject。
-- 仓库外后端在自己的介质中原子删除，并保留相同的未知 id 与已取消 intent 结果；本提案不定义其他 first-party 物理路径。
-- 删除成功后 emit `'session-persistence/deleted'(id: SessionId)`（`@mode emit`；session-persistence 层事件面，与 `domain/changed` 无关）。派生数据（session-query 全文索引等）订阅自清；持久层不直连索引，崩溃窗口靠派生索引可丢弃重建兜底。
+- JSONL خلفية:unlink هذا session ملف (يحتوي `.zstd` تغيير جسم) ؛ ملف و intent متساو بلا → reject.
+- مستودع خارج خلفية في ذاتي ذات وسيط جودة في أصل فرعي حذف، و إبقاء نفسه لم معرفة id و قد إلغاء intent نتيجة؛ هذا رفع سجل لا تعريف أخرى first-party شيء إدارة مسار.
+- حذف نجاح بعد emit `'session-persistence/deleted'(id: SessionId)`(`@mode emit`؛session-persistence طبقة حدث وجه، و `domain/changed` غير متصل). إرسال توليد بيانات (session-query كل نص بحث جذب انتظار) حجز قراءة ذاتي صاف؛ حمل دائم طبقة لا مباشر وصل بحث جذب، انهيار انهيار نافذة اعتماد إرسال توليد بحث جذب يمكن إسقاط إعادة بناء التقاط قاع.
 
-编排层规则（随级联删一起实施；`session.delete` RPC 与 workspace 级联复用同一规则）：
+تحرير ترتيب طبقة قاعدة (مع درجة ربط حذف واحد بدء فعلي تطبيق؛`session.delete` RPC و workspace درجة ربط إعادة استخدام نفس قاعدة):
 
-| 检查（按序） | 不满足时 |
+| فحص (حسب ترتيب) | لا ممتلئ كاف وقت |
 | --- | --- |
-| 目标（递归时含整棵子树）无一在 `ctx.sessions` 运行 | throw，什么都不删；调用方先 cancel 再删，持久层不反向牵动运行时 |
-| 非递归时目标无后代（后代 = `parentSessionId` 传递闭包，由 `list()` header 求得） | throw：默认只能删叶子，`recursive: true` 显式递归 |
-| 递归序自底向上（叶→根） | ——中途崩溃只留"子树删一半、祖先在"，重跑收敛，任何时刻无悬空 parent |
-| 级联中某 id 已不在盘上 | 跳过（幂等续删）；其余错误中止 |
+| هدف (تمرير عودة وقت يحتوي كامل شجرة فرعي شجرة) بلا واحد في `ctx.sessions` تشغيل | throw، ماذا كل لا حذف؛ استدعاء جهة أولا cancel مجددا حذف، حمل دائم طبقة لا عكس نحو جر حركة وقت التشغيل |
+| غير تمرير عودة وقت هدف بلا بعد بديل (بعد بديل = `parentSessionId` نقل تمرير إغلاق حزمة، من `list()` header طلب نيل) | throw: افتراضي فقط قدرة حذف ورقة فرعي،`recursive: true` صريح تمرير عودة |
+| تمرير عودة ترتيب ذاتي قاع نحو فوق (ورقة→أصل) | ——في طريق انهيار انهيار فقط إبقاء"فرعي شجرة حذف واحد نصف، أصل أولا في"، إعادة ركض استلام جمع، أي وقت لحظة بلا معلق فارغ parent |
+| درجة ربط في بعض id قد لا في قرص فوق | قفز مرور (قوة انتظار متابعة حذف) ؛ ذلك بقية خطأ في توقف |
 
 ### `dsh-workspace`
 
-包拥有 `WorkspaceId` brand，暴露 `ctx.workspaceRegistry`。记录 key 为生成的 uuid——path 不做 key：规范化会改写它，引用锚点必须稳定。
+حزمة يملك `WorkspaceId` brand، كشف `ctx.workspaceRegistry`. سجل key لـ توليد uuid——path لا فعل key: مواصفة تحويل سوف تعديل كتابة هو، مرجع مرساة نقطة يجب مستقر.
 
 ```ts ignore-check
 export type WorkspaceId = Branded<'WorkspaceId'>
 export function WorkspaceId(id: string): WorkspaceId
 
 const workspaceRecord = z.object({
-  path: z.string(),                              // realpath，见下
+  path: z.string(), // realpath، رؤية تحت
   title: z.string(),
   sessionIds: z.array(z.string().transform(SessionId)),
   createdAt: z.string(),                         // ISO
@@ -218,7 +218,7 @@ export interface Workspace {
   readonly id: WorkspaceId
   readonly path: string
   readonly title: string
-  readonly sessionIds: readonly SessionId[]      // 唯一真相且有序：数组序即展示序
+  readonly sessionIds: readonly SessionId[] // وحيد حق متبادل كما لديه ترتيب: عدد مجموعة ترتيب أي عرض ترتيب
   setTitle(title: string): Promise<void>
   /** Record a session under this workspace (idempotent). Rejects when the session
    *  header's cwd (realpath) differs from this workspace's path. */
@@ -231,99 +231,99 @@ export interface Workspace {
 export class WorkspaceRegistry extends Service {
   constructor(ctx: Context)                      // super(ctx, 'workspaceRegistry')
   // start(): this.domain = await ctx.storage.domain.open(workspaceDomainSpec)
-  //          实体缓存 Map<WorkspaceId, WorkspaceEntity> 重建
-  create(path: string, title?: string): Promise<Workspace>   // realpath 后撞已有 → reject
+  // فعلي جسم ذاكرة مؤقتة Map<WorkspaceId, WorkspaceEntity> إعادة بناء
+  create(path: string, title?: string): Promise<Workspace> // realpath بعد اصطدام قد لديه → reject
   get(id: WorkspaceId): Workspace | undefined
   list(): Workspace[]
-  resolveByPath(path: string): Promise<Workspace | undefined> // 同 realpath 口径，故 async
-  delete(id: WorkspaceId): Promise<boolean>      // 只删注册记录；目录与 session 日志保留
+  resolveByPath(path: string): Promise<Workspace | undefined> // نفس realpath فتحة مسار، لذا async
+  delete(id: WorkspaceId): Promise<boolean> // فقط حذف تسجيل سجل؛ دليل و session سجل إبقاء
 }
 ```
 
-- **path 规范**：落盘值 = `fs.realpath(输入)`（尾斜杠、`..`、符号链接全解析）；唯一性 = 规范化后字符串相等（符号链接指向同一目录算撞）。目录不存在时 create 直接 reject（realpath 失败——workspace 必须指向存在目录；"Create new = 建目录"是上层交互，先 mkdir 再 create）。attach 校验的 session cwd 同口径。cwd 单值 + path 唯一 ⇒ 一个 session 结构上最多归属一个 workspace，双重记账写侧不可能。
-- **title**：显示名，默认 `basename(path)`，可改，允许重复。归属不用 cwd 派生兜底——cwd 表达不了排序，归属是 workspace 侧事实；headless 直开的 session 不属于任何 workspace。
-- 消费方只见 `Workspace` 接口，`WorkspaceEntity` 不出包（单实现不预拆 seam）；实体按 id 唯一（注册表缓存），记录快照写后原地换新，外部只见 getter；所有写收敛到实体内 `mutate(fn)` → `table.update`，`updatedAt` 在 mutate 内统一刷。领域对象不过 RPC，下期 wire 层把记录投影成 zod wire schema。
-- **Session 删除仍属未来工作。** 后续的 [Workspace 注册记录删除决策](../../implemented/feature/2026-07-27-workspace-registration-deletion.zh.md)已将 `ctx.workspaceRegistry.delete(id)` 作为仅删除元数据、保留 Session 与日志的操作交付。递归删除 Session、运行中检查和崩溃重跑收敛属于独立的 `session.delete` 能力。
+- **path مواصفة**: سقوط قرص قيمة = `fs.realpath(إدخال)`(ذيل مائل عمود،`..`، رمز رقم رابط كل تحليل) ؛ وحيد صفة = مواصفة تحويل بعد نص متبادل انتظار (رمز رقم رابط إشارة نحو نفس دليل حساب اصطدام). دليل لا وجود وقت create مباشر reject(realpath فشل——workspace يجب إشارة نحو وجود دليل؛"Create new = بناء دليل"هو فوق طبقة تفاعل، أولا mkdir مجددا create).attach تحقق session cwd نفس فتحة مسار.cwd مفرد قيمة + path وحيد ⇒ واحد session بنية فوق الأكثر كثير ملكية واحد workspace، مزدوج إعادة تسجيل حساب كتابة جانب غير ممكن قدرة.
+- **title**: عرض اسم، افتراضي `basename(path)`، يمكن تعديل، سماح تكرار. ملكية لا استخدام cwd إرسال توليد التقاط قاع——cwd جدول بلوغ لا ترتيب ترتيب، ملكية هو workspace جانب واقع؛headless مباشر فتح session لا يخص أي workspace.
+- مستهلك فقط رؤية `Workspace` واجهة،`WorkspaceEntity` لا خروج حزمة (مفرد تنفيذ لا مسبق تفكيك seam) ؛ فعلي جسم حسب id وحيد (سجل التسجيل ذاكرة مؤقتة) ، سجل لقطة كتابة بعد أصل أرض تبديل جديد، خارجي فقط رؤية getter؛ كل كتابة استلام جمع إلى فعلي جسم داخل `mutate(fn)` → `table.update`،`updatedAt` في mutate داخل موحد واحد تحديث. مجال كائن لا مرور RPC، تحت مدة wire طبقة يأخذ سجل إسقاط صار zod wire schema.
+- **Session حذف ما زال تابع لم قدوم عمل.** لاحق [Workspace تسجيل سجل حذف قرار](../../implemented/feature/2026-07-27-workspace-registration-deletion.zh.md) قد سوف `ctx.workspaceRegistry.delete(id)` بصفة فقط حذف بيانات وصفية، إبقاء Session و سجل عملية تسليم. تمرير عودة حذف Session، تشغيل في فحص و انهيار انهيار إعادة ركض استلام جمع يخص مستقل `session.delete` قدرة.
 
-一致性口径（账 = 归属唯一依据；实现与测试基准）：
+متسق صفة فتحة مسار (حساب = ملكية وحيد اعتماد حسب؛ تنفيذ و اختبار أساس دقيق):
 
-| 情形 | 行为 |
+| حال شكل | سلوك |
 | --- | --- |
-| 账中 id 盘上无 session | `list()`/实体投影时过滤；下次任何 mutate 顺手摘除；不报错（删除崩溃一致性的正常产物） |
-| session cwd 匹配某 workspace 但未上账 | 不属于：不合并不收编。GUI 将来可做"游离 session"专区（游离 = 全部账的补集） |
-| 同一 session 上两本账 | 写侧结构性堵死（attach 校验）；load 检出 → throw（外部手改数据，不掩盖） |
-| workspace 目录不存在 | 记录与账保留，`status()` = `'missing-dir'`；存储层不自动删（目录可能只是暂时挪走） |
+| حساب في id قرص فوق بلا session | `list()`/فعلي جسم إسقاط وقت مرور ترشيح؛ تحت مرة أي mutate ترتيب يد اقتباس حذف؛ لا تقرير خطأ (حذف انهيار انهيار متسق صفة صحيح معتاد ناتج) |
+| session cwd مطابقة بعض workspace لكن لم فوق حساب | لا يخص: لا دمج لا استلام تحرير.GUI سوف قدوم يمكن فعل"تنقل مغادرة session"مخصص منطقة (تنقل مغادرة = الكل حساب تكملة تجميع) |
+| نفس session فوق اثنان هذا حساب | كتابة جانب بنية صفة سد ميت (attach تحقق) ؛load فحص خروج → throw(خارجي يد تعديل بيانات، لا إخفاء غطاء) |
+| workspace دليل لا وجود | سجل و حساب إبقاء،`status()` = `'missing-dir'`؛ تخزين طبقة لا تلقائي حذف (دليل ممكن فقط هو مؤقت وقت نقل مشي) |
 
-### 复用与 session 后端迁移展望
+### إعادة استخدام و session خلفية ترحيل عرض نظر
 
-**长期方向**：Session-persistence JSONL provider 的纯介质操作可以下沉到 `dsh-storage` log facet（Session package 保留，`SessionPersistence` seam 与 coordinator 语义不动；只移动下层文件操作）。复用动机是让介质层拥有 Windows 原子发布、fsync 语义与独占建文件等文件系统和跨平台工作，业务语义（Session 如何 append、何时 append、append 什么）留在上层。Session 日志是仅追加流，与 KV 形式不同，因此接口保留**介质 owner + 数据形式 facet**，而不强迫二者共用一套原语。
+**طويل مدة جهة نحو**:Session-persistence JSONL provider صاف وسيط جودة عملية يمكن تحت غرق إلى `dsh-storage` log facet(Session package إبقاء،`SessionPersistence` seam و coordinator دلالة لا حركة؛ فقط نقل حركة تحت طبقة ملف عملية). إعادة استخدام حركة آلة هو يجعل وسيط جودة طبقة يملك Windows أصل فرعي إصدار،fsync دلالة و وحيد احتلال بناء ملف انتظار نظام الملفات و عبر منصة عمل، عمل خدمة دلالة (Session مثل أي append، أي وقت append،append ماذا) إبقاء في فوق طبقة.Session سجل هو فقط إلحاق تدفق، و KV شكل صيغة مختلف، لذلك واجهة إبقاء**وسيط جودة owner + بيانات شكل صيغة facet**، بينما لا قوي إجبار اثنان من مشترك استخدام واحد طقم أصل لغة.
 
-现状复用审计（迁移前就能看清的账）：
+الآن حالة إعادة استخدام مراجعة حساب (ترحيل قبل حينئذ قدرة نظر صاف حساب):
 
-| session-persistence 现有逻辑 | 归属 | 处置 |
+| session-persistence قائم منطق | ملكية | موضع وضع |
 | --- | --- | --- |
-| JSONL：temp 写 + fsync + link/unlink 原子发布、0o700/0o600 权限、Windows 变体（win32.ts） | 纯介质 | 本期 `dsh-storage-json` 直接抄用（整文件原子覆写正是同一套）；迁移期成为共享实现 |
-| JSONL：逐行 append、首行 header 快读、zstd 逐帧压缩 | log 形状 | 留在原地；迁移期进 `log` facet |
-| coordinator（per-id 写链、懒物化、崩溃修复、flush 屏障） | session 语义 | 永不下沉——事件日志的领域逻辑，在 domain 层对应的是写串行链，各归各 |
-| encodeSegment（id 进路径转义） | 介质工具 | domain 侧 key 不进路径用不到；`log` facet（一 session 一文件）迁移时随之下沉 |
+| JSONL:temp كتابة + fsync + link/unlink أصل فرعي إصدار،0o700/0o600 إذن،Windows تغيير جسم (win32.ts) | صاف وسيط جودة | هذا مدة `dsh-storage-json` مباشر نسخ استخدام (كامل ملف أصل فرعي تغطية كتابة صحيح هو نفس طقم) ؛ ترحيل مدة يصبح مشترك تنفيذ |
+| JSONL: تدريجي سطر append، أول سطر header سريع قراءة،zstd تدريجي لقطة ضغط | log شكل حالة | إبقاء في أصل أرض؛ ترحيل مدة دخول `log` facet |
+| coordinator(per-id كتابة سلسلة، كسول شيء تحويل، انهيار انهيار إصلاح،flush شاشة عائق) | session دلالة | دائم لا تحت غرق——حدث سجل مجال منطق، في domain طبقة مقابل هو كتابة سلسلة سطر سلسلة، كل عودة كل |
+| encodeSegment(id دخول مسار تحويل معنى) | وسيط جودة أداة | domain جانب key لا دخول مسار استخدام لا إلى؛`log` facet(واحد session واحد ملف) ترحيل وقت مع لـ تحت غرق |
 
-**本期不改 Session-persistence 的介质代码**（只加 delete 原语）。未来 log-facet 变更需要自己的 consumer 与证据；上表记录剩余 JSONL 复用边界，但不承诺一定提取。
+**هذا مدة لا تعديل Session-persistence وسيط جودة شفرة**(فقط إضافة delete أصل لغة). لم قدوم log-facet تغيير حاجة ذاتي ذات consumer و دليل؛ فوق جدول سجل باق بقية JSONL إعادة استخدام حد، لكن لا تحمل وعد واحد تحديد رفع أخذ.
 
-### 测试矩阵
+### اختبار مستطيل دفعة
 
-| 套件 | 覆盖 | 后端 |
+| طقم عنصر | تغطية | خلفية |
 | --- | --- | --- |
-| 后端约定（共享套件，一次编写两端跑） | 七条约定 + 版本拒绝 + close 幂等 | json、sqlite（`:memory:` + 临时目录） |
-| 注册表/mount | 重复注册、未挂载访问、disposer 摘除 | — |
-| domain 层 | open 六步语义、schema 拒绝、update 串行（并发交错压测）、`domain/changed` 逐条、global 初值懒物化、路由与 `facet-unsupported` | 任一（json） |
-| workspace | create/唯一性/realpath、attach 校验（含 sessionPersistence 缺席拒绝）、一致性口径四情形 | mock domain 或 json |
-| session delete 约定（future work，随实施并入 runPersistenceContract） | 未知 id、已删 id 复用、未物化 intent、与在途 append 串行、deleted 事件 | jsonl |
+| خلفية اتفاق (مشترك طقم عنصر، مرة تحرير كتابة اثنان طرف ركض) | سبعة بند اتفاق + إصدار رفض + close قوة انتظار | json،sqlite(`:memory:` + مؤقت دليل) |
+| سجل التسجيل/mount | تكرار تسجيل، لم تركيب وصول،disposer اقتباس حذف | — |
+| domain طبقة | open ستة خطوة دلالة،schema رفض،update سلسلة سطر (تزامن تسليم خطأ ضغط قياس) ،`domain/changed` تدريجي بند،global أول قيمة كسول شيء تحويل، توجيه و `facet-unsupported` | مهمة واحد (json) |
+| workspace | create/وحيد صفة/realpath،attach تحقق (يحتوي sessionPersistence نقص مقعد رفض) ، متسق صفة فتحة مسار أربعة حال شكل | mock domain أو json |
+| session delete اتفاق (future work، مع فعلي تطبيق و دخول runPersistenceContract) | لم معرفة id، قد حذف id إعادة استخدام، لم شيء تحويل intent، و في طريق append سلسلة سطر،deleted حدث | jsonl |
 
-快照：本期无模型可见面与组装面，不新增；下期 RPC 接线时随 `workspace.*` 域补。
+لقطة: هذا مدة بلا نموذج مرئي وجه و تجميع وجه، لا إضافة جديدة؛ تحت مدة RPC وصل خط وقت مع `workspace.*` مجال تكملة.
 
-### 不做清单
+### لا فعل بيان
 
-| 不做 | 触发条件 | 返工点 | 预埋 |
+| لا فعل | إطلاق شرط | إرجاع عمل نقطة | مسبق دفن |
 | --- | --- | --- | --- |
-| Session 删除（`SessionPersistence.delete`、deleted 事件、递归删除、运行中检查） | 破坏性的 Session 删除产品流启动 | 实现 Session 原语及 `session.delete`；与 Workspace 注册记录删除保持独立 | 上文编排规则和拒绝清单仍是基础；Workspace 删除会保留 Session 与日志 |
-| `log` facet 与 Session provider 迁移 | 本期后任意期启动 | 有真实 consumer 证明需要时下沉 JSONL 介质操作 | facet 组织保留选项，但不承诺提取 |
-| 多进程并发写保护 | 两 host 进程同写一介质 | JSON 后端文件锁；SQLite WAL 天然多进程 | 写全经 domain 单点串行，加锁只动后端 |
-| 跨进程变更观测 | GUI 断线重连感知 | revision 模式（抄 session-persistence） | 进程内已有 `domain/changed` |
-| 数据迁移 | 首个 tagged release 后模型再变 | 版本号驱动逐域迁移 | 版本号自第一天入介质 |
-| 大表性能 | 千级记录域挂 json | `routes` 改指 sqlite，数据手工导一次 | 路由即配置，消费方零改动 |
-| 多段 key | 两段 key 消费方出现（每 workspace 每 session 维度数据） | key 泛型换 tuple、SQLite 复合主键、JSON 嵌套层 | 一级表 = 段数 1 特例；不做任意深度嵌套；不拼字符串 key |
-| scope 维度 | "每 workspace 一份"的域出现且复合 key 表达不动 | DomainSpec 加 scope + 文件名 scope 段（encodeSegment） | 名字字符集已收紧，文件名不冲突 |
-| 跨表原子事务 | 同域两表一次原子操作需求 | `domain.transact(fn)`；JSON 天然原子，SQLite 包事务 | — |
-| 二级索引/条件查询 | 内存过滤不动（万级记录） | SQLite JSON1 查 value 列，加只读 query 面 | JSON 后端不陪跑 |
-| session 跨 workspace 移动 | 产品需求出现 | attach 校验放宽为"先 detach 后 attach"编排 | — |
-| Session 删除 RPC／GUI | 破坏性的 Session 删除产品流启动 | `session.delete` 端点、wire schema 与明确的确认 UI | Workspace RPC／GUI 已独立交付，不再存在级联耦合 |
+| Session حذف (`SessionPersistence.delete`،deleted حدث، تمرير عودة حذف، تشغيل في فحص) | كسر تالف صفة Session حذف منتج تدفق بدء | تنفيذ Session أصل لغة و `session.delete`؛ و Workspace تسجيل سجل حذف إبقاء مستقل | فوق نص تحرير ترتيب قاعدة و رفض بيان ما زال هو أساس أساس؛Workspace حذف سوف إبقاء Session و سجل |
+| `log` facet و Session provider ترحيل | هذا مدة بعد مهمة معنى مدة بدء | لديه حقيقي consumer إثبات حاجة وقت تحت غرق JSONL وسيط جودة عملية | facet مجموعة نسج إبقاء خيار، لكن لا تحمل وعد رفع أخذ |
+| كثير عملية تزامن كتابة حفظ حماية | اثنان host عملية نفس كتابة واحد وسيط جودة | JSON خلفية ملف قفل؛SQLite WAL يوم لكن كثير عملية | كتابة كل مرور domain مفرد نقطة سلسلة سطر، إضافة قفل فقط حركة خلفية |
+| عبر عملية تغيير مراقبة قياس | GUI قطع خط إعادة وصل شعور معرفة | revision نمط (نسخ session-persistence) | عملية داخل قد لديه `domain/changed` |
+| بيانات ترحيل | أول عدد tagged release بعد نموذج مجددا تغيير | رقم الإصدار قيادة تدريجي مجال ترحيل | رقم الإصدار ذاتي رقم واحد يوم دخول وسيط جودة |
+| كبير جدول صفة قدرة | ألف درجة سجل مجال تعليق json | `routes` تعديل إشارة sqlite، بيانات يد عمل توجيه مرة | توجيه أي إعداد، مستهلك صفر تعديل |
+| كثير مقطع key | اثنان مقطع key مستهلك ظهور (كل workspace كل session صيانة درجة بيانات) | key عام نوع تبديل tuple،SQLite تكرار دمج رئيسي مفتاح،JSON تضمين طقم طبقة | واحد درجة جدول = مقطع عدد 1 خاص مثال؛ لا فعل مهمة معنى عميق درجة تضمين طقم؛ لا تجميع نص key |
+| scope صيانة درجة | "كل workspace واحد نسخة"مجال ظهور كما تكرار دمج key جدول بلوغ لا حركة | DomainSpec إضافة scope + ملف اسم scope مقطع (encodeSegment) | اسم حرف محرف تجميع قد استلام ضيق، ملف اسم لا اندفاع مفاجئ |
+| عبر جدول أصل فرعي أمر خدمة | نفس مجال اثنان جدول مرة أصل فرعي عملية يحتاج طلب | `domain.transact(fn)`؛JSON يوم لكن أصل فرعي،SQLite حزمة أمر خدمة | — |
+| اثنان درجة بحث جذب/شرط استعلام | داخل تخزين مرور ترشيح لا حركة (ألف درجة سجل) | SQLite JSON1 فحص value صف، إضافة فقط قراءة query وجه | JSON خلفية لا مرافقة ركض |
+| session عبر workspace نقل حركة | منتج يحتاج طلب ظهور | attach تحقق وضع عرض لـ"أولا detach بعد attach"تحرير ترتيب | — |
+| Session حذف RPC/GUI | كسر تالف صفة Session حذف منتج تدفق بدء | `session.delete` طرف نقطة،wire schema و واضح تأكيد UI | Workspace RPC/GUI قد مستقل تسليم، لم يعد وجود درجة ربط اقتران دمج |
 
-## 备选方案
+## تجهيز اختيار خطة
 
-- **复用 session-persistence 的 coordinator/后端**：事件日志语义（仅追加、turn 崩溃修复、懒物化）与 KV 覆写语义不匹配；只借其分层思想（协调层持写序、后端只实现最小原语）。
-- **workspace 专用存储包，后续再抽 seam**：第二个消费方（session sidecar）已可预见，届时泛化要再动一次接口。
-- **domain 与 storage 合为一层**：后端会被迫接触 schema 校验、变更事件、写串行等领域关切；拆开后 storage 后端只做不透明原语（可替换面最小），domain 单实现收敛全部领域逻辑（zod/事件/串行化只写一遍，不随后端翻倍）。
-- **整库单后端二选一（学 session-persistence 单 slot 模式）**：否决——存储枢纽要承载多种数据形式，不同形式/域对后端的偏好（肉眼可读 vs 高频点更新）注定分化，单 slot 会逼出"整体换挂 + 手工导数据"的粗粒度动作。代价是按名查找多一步，fail-loud 兜底。
-- **JSON 后端 jsonl 追加 + 墓碑 + 压实（compaction）**：temp+fsync+rename 的崩溃安全与 append 等价；覆写让文件永远是净值、肉眼可读，免掉折叠／压实／断行容错。域规模下整写与追加一行同量级。
-- **JSON 一表一文件**：覆写下文件粒度不影响写成本，按域合并文件更少，global 单例有落点。
-- **SQLite 整域存单行 blob**：任何一条记录变更都重写整域，失去按 key 精确更新——SQLite 相对 JSON 的唯一优势归零。
-- **SQLite 按 schema 生成 typed columns**：DDL 生成器过度建设；document-per-row 足够，查询需求出现再议。
-- **每域独立 sqlite db 文件**：与仓库一库多表惯例相反。
-- **path 作为 workspace key**：规范化/符号链接解析会改写 path；引用锚点必须稳定。
-- **归属用 cwd 派生（或与账合并）**：双真相源；cwd 表达不了排序；归属本就是 workspace 侧事实。
-- **变更事件带旧值**：仓库变更事件惯例是"新快照 + 操作判别"（唯一例外 fs 的 before/after 是方法返回值而非事件，因旧值事后不可重建且有 diff 消费方）；需要 diff 的消费方自己持有上次快照。
-- **删除自动 cancel 运行中 session**：持久层/编排层反向牵动运行时，层次变脏；cancel 机制已存在，调用方组合即可。
+- **إعادة استخدام session-persistence coordinator/خلفية**: حدث سجل دلالة (فقط إلحاق،turn انهيار انهيار إصلاح، كسول شيء تحويل) و KV تغطية كتابة دلالة لا مطابقة؛ فقط استعارة ذلك قسم طبقة تفكير تفكير (تنسيق ضبط طبقة حمل كتابة ترتيب، خلفية فقط تنفيذ الأكثر صغير أصل لغة).
+- **workspace مخصص استخدام تخزين حزمة، لاحق مجددا سحب seam**: ثاني عدد مستهلك (session sidecar) قد يمكن مسبق رؤية، دورة وقت عام تحويل يلزم مجددا حركة مرة واجهة.
+- **domain و storage دمج لـ واحد طبقة**: خلفية سوف يتم إجبار وصل لمس schema تحقق، تغيير حدث، كتابة سلسلة سطر انتظار مجال صلة قطع؛ تفكيك فتح بعد storage خلفية فقط فعل لا نفاذ واضح أصل لغة (يمكن استبدال وجه الأكثر صغير) ،domain مفرد تنفيذ استلام جمع الكل مجال منطق (zod/حدث/سلسلة سطر تحويل فقط كتابة واحد مرة، لا مع خلفية قلب ضعف).
+- **كامل مكتبة مفرد خلفية اثنان اختيار واحد (تعلم session-persistence مفرد slot نمط)**: مرفوض——تخزين محور عقدة يلزم تحمل تحميل كثير نوع بيانات شكل صيغة، مختلف شكل صيغة/مجال مقابل خلفية انحراف جيد (لحم عين يمكن قراءة vs عال تردد نقطة تحديث) ملاحظة تحديد قسم تحويل، مفرد slot سوف إجبار خروج"كامل جسم تبديل تعليق + يد عمل توجيه بيانات"خشن حبة درجة حركة عمل. بديل قيمة هو حسب اسم فحص بحث كثير واحد خطوة،fail-loud التقاط قاع.
+- **JSON خلفية jsonl إلحاق + قبر نصب + ضغط فعلي (compaction)**:temp+fsync+rename انهيار انهيار أمان و append انتظار قيمة؛ تغطية كتابة يجعل ملف دائم بعيد هو صاف قيمة، لحم عين يمكن قراءة، تجنب إسقاط طي/ضغط فعلي/قطع سطر سعة خطأ. مجال قاعدة نموذج تحت كامل كتابة و إلحاق واحد سطر نفس كمية درجة.
+- **JSON واحد جدول واحد ملف**: تغطية كتابة تحت ملف حبة درجة لا أثر كتابة صار هذا، حسب مجال دمج ملف أكثر قليل،global مفرد مثال لديه سقوط نقطة.
+- **SQLite كامل مجال تخزين مفرد سطر blob**: أي واحد بند سجل تغيير كل إعادة كتابة كامل مجال، فقد ذهاب حسب key دقيق تحديث——SQLite متبادل مقابل JSON وحيد أفضل اتجاه عودة صفر.
+- **SQLite حسب schema توليد typed columns**:DDL توليد جهاز مرور درجة بناء ضبط؛document-per-row كاف كاف، استعلام يحتاج طلب ظهور مجددا اقتراح.
+- **كل مجال مستقل sqlite db ملف**: و مستودع واحد مكتبة كثير جدول معتاد مثال متبادل عكس.
+- **path بصفة workspace key**: مواصفة تحويل/رمز رقم رابط تحليل سوف تعديل كتابة path؛ مرجع مرساة نقطة يجب مستقر.
+- **ملكية استخدام cwd إرسال توليد (أو و حساب دمج)**: مزدوج حق متبادل مصدر؛cwd جدول بلوغ لا ترتيب ترتيب؛ ملكية هذا حينئذ هو workspace جانب واقع.
+- **تغيير حدث حمل قديم قيمة**: مستودع تغيير حدث معتاد مثال هو"جديد لقطة + عملية حكم آخر"(وحيد مثال خارج fs before/after هو طريقة قيمة راجعة بينما غير حدث، بسبب قديم قيمة أمر بعد غير ممكن إعادة بناء كما لديه diff مستهلك) ؛ حاجة diff مستهلك ذاتي ذات يحتفظ فوق مرة لقطة.
+- **حذف تلقائي cancel تشغيل في session**: حمل دائم طبقة/تحرير ترتيب طبقة عكس نحو جر حركة وقت التشغيل، طبقة مرة تغيير قذر؛cancel آلية قد وجود، استدعاء جهة تركيب يكفي.
 
-## 验收标准
+## تحقق استلام معيار
 
-- 测试矩阵本期四套件全绿：后端约定共享套件在 json/sqlite 双端、注册表/mount disposer 语义、domain 层（含 open 六步与路由 fail-loud）、workspace 全语义（create/attach 校验/一致性口径）。
-- `ctx.workspaceRegistry` 可在测试组装下完成 create → attach → list → 仅删除元数据的 delete 生命周期。
-- session-persistence 包零 diff（本期不动 session 侧的验收线）。
-- 本期无新快照（无模型可见面与组装面）；下期 RPC 接线时补。
+- اختبار مستطيل دفعة هذا مدة أربعة طقم عنصر كل أخضر: خلفية اتفاق مشترك طقم عنصر في json/sqlite مزدوج طرف، سجل التسجيل/mount disposer دلالة،domain طبقة (يحتوي open ستة خطوة و توجيه fail-loud) ،workspace كل دلالة (create/attach تحقق/متسق صفة فتحة مسار).
+- `ctx.workspaceRegistry` يمكن في اختبار تجميع تحت إتمام create → attach → list → فقط حذف بيانات وصفية delete دورة الحياة.
+- session-persistence حزمة صفر diff(هذا مدة لا حركة session جانب تحقق استلام خط).
+- هذا مدة بلا جديد لقطة (بلا نموذج مرئي وجه و تجميع وجه) ؛ تحت مدة RPC وصل خط وقت تكملة.
 
-## 风险
+## ريح خطر
 
-- **仓库持久化面第一个推式变更事件**（session-persistence 靠 revision 轮询）：形态虽有 `goal/changed` 范本，但"存储层发事件"是新先例，下期 RPC 消费时才能验证形态是否合适。
-- **JSON 后端整域覆写的规模前提**：若第二个消费方（session sidecar）在路由到 SQLite 前就以千级记录落在 JSON 后端，整写成本会先于预期显现；缓解即 `routes` 改指 sqlite。
-- **删除编排对 `ctx.sessions` 的弱依赖**：headless 组装拿不到运行时注册表时按"无热 session"处理，存在窗口（外部进程正在跑该 session）；多进程本就在不做清单内，接受。
-- **facet 泛化以未来的 `log` facet 为设计依据但本期不实现它**：存在"预留形状不合身"的风险；缓解是本期后端介质代码按复用审计表的下沉形状组织，`log` facet 真正落地时只动 facet 层。
+- **مستودع حفظ دائم وجه رقم واحد دفع صيغة تغيير حدث**(session-persistence اعتماد revision جولة استفسار): شكل رغم لديه `goal/changed` نطاق هذا، لكن"تخزين طبقة إرسال حدث"هو جديد أولا مثال، تحت مدة RPC إزالة استهلاك وقت عندئذ قدرة تحقق شكل هل دمج ملائم.
+- **JSON خلفية كامل مجال تغطية كتابة قاعدة نموذج قبل رفع**: إذا ثاني عدد مستهلك (session sidecar) في توجيه إلى SQLite قبل حينئذ بـ ألف درجة سجل سقوط في JSON خلفية، كامل كتابة صار هذا سوف أولا في مسبق مدة إظهار الآن؛ مؤقت حل أي `routes` تعديل إشارة sqlite.
+- **حذف تحرير ترتيب مقابل `ctx.sessions` ضعيف اعتماد**:headless تجميع أخذ لا إلى وقت التشغيل سجل التسجيل وقت حسب"بلا حار session"معالجة، وجود نافذة (خارجي عملية صحيح في ركض هذا session) ؛ كثير عملية هذا حينئذ في لا فعل بيان داخل، قبول.
+- **facet عام تحويل بـ لم قدوم `log` facet لـ تصميم اعتماد حسب لكن هذا مدة لا تنفيذ هو**: وجود"مسبق إبقاء شكل حالة لا دمج ذات"ريح خطر؛ مؤقت حل هو هذا مدة خلفية وسيط جودة شفرة حسب إعادة استخدام مراجعة حساب جدول تحت غرق شكل حالة مجموعة نسج،`log` facet حق صحيح سقوط أرض وقت فقط حركة facet طبقة.

@@ -1,27 +1,27 @@
-# Agent Note: 构建产物豁免以失败的样式表为准
+# Agent Note: بناء ناتج إعفاء تجنب بـ فشل مثال صيغة جدول لـ دقيق
 
 Status: implemented
 
-[English](2026-09-10-built-bundle-css-exemption.md) | 中文
+[English](2026-09-10-built-bundle-css-exemption.md) | العربية
 
-## 问题
+## مشكلة
 
-[Node import sweep](../../../../packages/experimental/webworker-runtime/tests/compile/transform-corpus-check.ts)因 Node 无法加载 Dockkit bundle 的样式表而豁免该 bundle，并曾以一个精确的样式表路径作为接受证据：`packages/client/ui-dockkit/lib/components/dockkit.module.css`。该已构建 bundle 在导入自身样式表之前先导入 workspace 包 `@deepseek-ai/dsh-client-ui-primitives`，`tsx` 启动器又通过 tsconfig `paths` 把这个说明符解析进依赖的 `src` 树，因此 sweep 报告的是 `packages/client/ui-primitives/src/StateDot.module.css` 的 `ERR_UNKNOWN_FILE_EXTENSION`。固定路径在带有 client 构建输出的树上无法匹配，Windows 完整门禁的清单于是把这个豁免 bundle 报告为意外的基线失败。
+[Node import sweep](../../../../packages/experimental/webworker-runtime/tests/compile/transform-corpus-check.ts) بسبب Node لا يمكن تحميل Dockkit bundle مثال صيغة جدول بينما إعفاء تجنب هذا bundle، و سبق بـ واحد دقيق مثال صيغة جدول مسار بصفة قبول دليل:`packages/client/ui-dockkit/lib/components/dockkit.module.css`. هذا قد بناء bundle في استيراد ذاته مثال صيغة جدول قبل أولا استيراد workspace حزمة `@deepseek-ai/dsh-client-ui-primitives`،`tsx` بدء جهاز أيضا عبر tsconfig `paths` يأخذ هذا عدد شرح رمز تحليل دخول اعتماد `src` شجرة، لذلك sweep تقرير إبلاغ هو `packages/client/ui-primitives/src/StateDot.module.css` `ERR_UNKNOWN_FILE_EXTENSION`. ثابت مسار في حمل لديه client بناء إخراج شجرة فوق لا يمكن مطابقة،Windows كامل بوابة بيان في هو يأخذ هذا عدد إعفاء تجنب bundle تقرير إبلاغ لـ معنى خارج أساس خط فشل.
 
-## 决策
+## قرار
 
-Dockkit 豁免接受 Node 对任意样式表因未知 `.css` 扩展名而拒绝加载。其他扩展名、其他错误码和无关的错误消息仍计为发现，能顺利完成导入的豁免 bundle 同样计为发现。
+Dockkit إعفاء تجنب قبول Node مقابل مهمة معنى مثال صيغة جدول بسبب لم معرفة `.css` توسيع اسم بينما رفض تحميل. أخرى توسيع اسم، أخرى رمز خطأ و غير متصل خطأ رسالة ما زال حساب لـ اكتشاف، قدرة ترتيب فائدة إتمام استيراد إعفاء تجنب bundle نفس مثال حساب لـ اكتشاف.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**在固定路径之外同时接受依赖的源样式表。** sweep 报告的正是该文件，但选中它的是 bundle 的导入顺序和启动器的路径映射。固定该路径认定的将是这两处细节，而非 `.css` 豁免。
+**في ثابت مسار خارج معا قبول اعتماد مصدر مثال صيغة جدول.** sweep تقرير إبلاغ صحيح هو هذا ملف، لكن اختيار في هو هو bundle استيراد ترتيب و بدء جهاز مسار خريطة. ثابت هذا مسار إقرار تحديد سوف هو هذا اثنان موضع دقيق عقدة، بينما غير `.css` إعفاء تجنب.
 
-**用同一规则分类每个 CSS 豁免。** Dockkit 固定路径是本次修改所纠正的已记录证据；另外两个样式表豁免从未被分类，收窄它们会在所报告缺陷之外改变其接受的内容。
+**استخدام نفس قاعدة تصنيف كل CSS إعفاء تجنب.** Dockkit ثابت مسار هو هذا مرة تعديل الذي تصحيح صحيح قد سجل دليل؛ آخر خارج اثنان عدد مثال صيغة جدول إعفاء تجنب من لم يتم تصنيف، استلام ضيق هو جمع سوف في الذي تقرير إبلاغ نقص وقوع خارج تغيير ذلك قبول محتوى.
 
-**放弃分类，接受任何失败。** 届时因无关原因停止导入的 bundle 会隐藏在豁免总数之内。
+**وضع ترك تصنيف، قبول أي فشل.** دورة وقت بسبب غير متصل سبب إيقاف استيراد bundle سوف إخفاء في إعفاء تجنب مجموع عدد لـ داخل.
 
-## 后果
+## عاقبة
 
-只要 Dockkit bundle 因 Node 未知 `.css` 扩展名拒绝之外的任何原因停止导入，sweep 就会报告它，该条目也不再断言失败的是哪个样式表。[限定范围的 resolve/load hook](../../../../packages/experimental/webworker-runtime/tests/compile/transform-corpus.spec.ts)覆盖被接受的 Dockkit 样式表、依赖的源样式表、其他扩展名、任意消息、其他错误码和陈旧豁免，不修改共享构建产物。
+فقط يلزم Dockkit bundle بسبب Node لم معرفة `.css` توسيع اسم رفض خارج أي سبب إيقاف استيراد،sweep حينئذ سوف تقرير إبلاغ هو، هذا بند أيضا لم يعد تأكيد فشل هو أي عدد مثال صيغة جدول.[حد تحديد نطاق resolve/load hook](../../../../packages/experimental/webworker-runtime/tests/compile/transform-corpus.spec.ts) تغطية يتم قبول Dockkit مثال صيغة جدول، اعتماد مصدر مثال صيغة جدول، أخرى توسيع اسم، مهمة معنى رسالة، أخرى رمز خطأ و قديم قديم إعفاء تجنب، لا تعديل مشترك بناء ناتج.
 
-[CI 观察决策](../testing/2026-09-08-ci-completion-observations.zh.md)保留其拥有的 fixture 完成与隔离决策；其已构建 Client 导入分类段落保留 sweep 摘要，并就被接受的证据链接到本文。
+[CI مراقبة قرار](../testing/2026-09-08-ci-completion-observations.zh.md) إبقاء ذلك يملك fixture إتمام و عزل قرار؛ ذلك قد بناء Client استيراد تصنيف مقطع سقوط إبقاء sweep ملخص، و حينئذ يتم قبول دليل رابط إلى هذا نص.

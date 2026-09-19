@@ -1,26 +1,26 @@
-# Agent Note: 用 unlink 删除过期的 profile 回退链接而非 rmSync
+# Agent Note: استخدام unlink حذف مرور مدة profile رجوع رابط بينما غير rmSync
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-12-unlink-stale-profile-fallback-links.md) | 中文
+[English](2026-08-12-unlink-stale-profile-fallback-links.md) | العربية
 
-## 问题
+## مشكلة
 
-`healProfilesModuleFallback` 在安装位置迁移时会把 `$DSH_HOME/profiles/node_modules` 中的条目重新指向新目标，而 Windows 主机上这些条目是 junction。`ensureSymlink` 原先用 `rmSync(link)` 删除过期条目，但 Node 在删除时把 junction 当作目录处理：不带 `recursive` 的 `rmSync` 会抛 `ERR_FS_EISDIR`，于是从迁移后的安装或第二个 worktree 启动时，每次都会在应用引导前崩溃。`replaces a wrong symlink` 单元测试在 Windows 上正好在该删除调用处复现了这一崩溃。
+`healProfilesModuleFallback` في تثبيت موضع ترحيل وقت سوف يأخذ `$DSH_HOME/profiles/node_modules` في بند إعادة إشارة نحو جديد هدف، بينما Windows رئيسي آلة فوق هذه بند هو junction.`ensureSymlink` أصل أولا استخدام `rmSync(link)` حذف مرور مدة بند، لكن Node في حذف وقت يأخذ junction عند عمل دليل معالجة: لا حمل `recursive` `rmSync` سوف رمي `ERR_FS_EISDIR`، في هو من ترحيل بعد تثبيت أو ثاني عدد worktree بدء وقت، كل مرة كل سوف في تطبيق جذب توجيه قبل انهيار انهيار.`replaces a wrong symlink` اختبار وحدة في Windows فوق صحيح جيد في هذا حذف استدعاء موضع تكرار الآن هذا واحد انهيار انهيار.
 
-## 决策
+## قرار
 
-`ensureSymlink` 改用 `unlinkSync(link)` 删除过期链接。`unlink` 在所有平台上都只删除重解析点或符号链接本身、绝不进入目标目录，从而保住该函数“真实目录永远不会被删除”的大声失败保证。[profile-plugin-bundles 决策](../architecture/2026-08-05-profile-plugin-bundles.zh.md)继续拥有回退目录的双锚点解析；本 note 只拥有“用哪个删除原语”这一决定。
+`ensureSymlink` تعديل استخدام `unlinkSync(link)` حذف مرور مدة رابط.`unlink` في كل منصة فوق كل فقط حذف إعادة تحليل نقطة أو رمز رقم رابط ذاته، أبدا دخول هدف دليل، من بينما حفظ إقامة هذا دالة “حقيقي دليل دائم بعيد لن يتم حذف” كبير صوت فشل حفظ إثبات.[profile-plugin-bundles قرار](../architecture/2026-08-05-profile-plugin-bundles.zh.md) متابعة يملك رجوع دليل مزدوج مرساة نقطة تحليل؛ هذا note فقط يملك “استخدام أي عدد حذف أصل لغة” هذا واحد قرار.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**`rmSync(link, { recursive: true })`。** Node 24 上它只删 junction、不跟随目标，但 `recursive` 会在 `lstat` 守卫与删除之间链接被替换成真实目录时静默删除该目录，削弱守卫存在所依据的大声失败契约。
+**`rmSync(link, { recursive: true })`.** Node 24 فوق هو فقط حذف junction، لا تتبع مع هدف، لكن `recursive` سوف في `lstat` حراسة حماية و حذف بين رابط يتم استبدال صار حقيقي دليل وقت ساكن صامت حذف هذا دليل، تقليل ضعيف حراسة حماية وجود الذي اعتماد حسب كبير صوت فشل عقد نحو.
 
-**`rmdirSync(link)`。** Windows 上同样能删 junction，但它读起来像“删目录”，而 `unlinkSync` 才是仓库现有的 junction 清理惯例。
+**`rmdirSync(link)`.** Windows فوق نفس مثال قدرة حذف junction، لكن هو قراءة بدء قدوم مثل “حذف دليل” ، بينما `unlinkSync` عندئذ هو مستودع قائم junction تنظيف معتاد مثال.
 
-**无条件删除并重建所有条目。** 正确，但每次启动都翻动未变化的链接，并扩大并发修复的竞态窗口。
+**بلا شرط حذف و إعادة بناء كل بند.** صحيح تأكيد، لكن كل مرة بدء كل قلب حركة لم تغير رابط، و توسيع كبير تزامن إصلاح تنافس حالة نافذة.
 
-## 后果
+## عاقبة
 
-Windows 启动现在可以修复迁移后的安装或第二个 checkout，而不是以 `ERR_FS_EISDIR` 崩溃；POSIX 行为不变，因为 `unlinkSync` 同样能 unlink 普通符号链接。现有的 `replaces a wrong symlink` 测试在 Windows 上从复现崩溃变为通过。两个并发 healer 删除同一过期链接时，第二次删除仍会以 `ENOENT` 浮现，与原先的 `rmSync` 实现一致。
+Windows بدء الآن يمكن إصلاح ترحيل بعد تثبيت أو ثاني عدد checkout، بينما لا هو بـ `ERR_FS_EISDIR` انهيار انهيار؛POSIX سلوك ثابت، لأن `unlinkSync` نفس مثال قدرة unlink عادي رمز رقم رابط. قائم `replaces a wrong symlink` اختبار في Windows فوق من تكرار الآن انهيار انهيار تغيير لـ عبر. اثنان عدد تزامن healer حذف نفس مرور مدة رابط وقت، ثاني مرة حذف ما زال سوف بـ `ENOENT` طفو الآن، و أصل أولا `rmSync` تنفيذ متسق.

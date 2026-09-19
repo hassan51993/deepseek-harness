@@ -1,39 +1,39 @@
-# Agent Note: 事件域语义——会话是事实日志，agent 是实时事件通道
+# Agent Note: حدث مجال دلالة——جلسة هو واقع سجل،agent هو فوري حدث عبر طريق
 
 Status: implemented
 
-[English](2026-06-30-event-domain-semantics.md) | 中文
+[English](2026-06-30-event-domain-semantics.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 通过 Cordis 事件分类体系扩展 agent loop（智能体循环）（见[微内核事件分类体系 Agent Note](2026-06-11-microkernel-event-taxonomy.zh.md)）。随着该分类体系的增长，三个事件域之间的界限变得模糊：
+harness عبر Cordis حدث تصنيف جسم نظام توسيع agent loop(ذكي جسم حلقة)(رؤية[دقيق داخل نواة حدث تصنيف جسم نظام Agent Note](2026-06-11-microkernel-event-taxonomy.zh.md)). مع حال هذا تصنيف جسم نظام زيادة طويل، ثلاثة عدد حدث مجال بين حد حد تغيير نيل نموذج غامض:
 
-- `session/*` 承载持久的、事件溯源的日志（`SessionEventMap`）。
-- `agent/*` 承载运行时实时信号，向插件传递 `Agent` 句柄。
-- `tools/*` 承载工具注册表与执行流水线。
+- `session/*` تحمل تحميل حمل دائم، حدث تتبع مصدر سجل (`SessionEventMap`).
+- `agent/*` تحمل تحميل وقت التشغيل فوري إشارة، نحو إضافة نقل تمرير `Agent` جملة مقبض.
+- `tools/*` تحمل تحميل أداة سجل التسجيل و تنفيذ خط الإنتاج.
 
-两个问题促使我们固定语义。第一，若干轮次/步骤边界同时作为持久的 `SessionEvent`（`turn/start`、`turn/end`、`step/start`、`step/end`）和镜像的 `agent/*` emit（`agent/turn-start`、`agent/turn-end`、`agent/step-start`、`agent/step-end`）存在。消费方对同一事实有两个真源，每次生命周期变更都必须同时更新两处。第二，钩子子系统需要一个连贯且有文档的订阅表面——插件作者（以及基于其上构建的 Claude Code / Codex 钩子桥接）必须在不阅读循环代码的情况下知道应该监听会话事件还是 agent 事件，以及原因。
+اثنان عدد مشكلة حث جعل أنا جمع ثابت دلالة. رقم واحد، إذا جاف جولة/خطوة حد معا بصفة حمل دائم `SessionEvent`(`turn/start`،`turn/end`،`step/start`،`step/end`) و مرآة مثل `agent/*` emit(`agent/turn-start`،`agent/turn-end`،`agent/step-start`،`agent/step-end`) وجود. مستهلك مقابل نفس واقع لديه اثنان عدد حق مصدر، كل مرة دورة الحياة تغيير كل يجب معا تحديث اثنان موضع. ثاني، خطاف فرعي نظام حاجة واحد وصل اختراق كما لديه وثيقة حجز قراءة جدول وجه——إضافة عمل من (و أساس في ذلك فوق بناء Claude Code / Codex خطاف جسر وصل) يجب في لا قراءة قراءة حلقة شفرة حال حال تحت معرفة طريق ينبغي هذا استماع جلسة حدث أيضا هو agent حدث، و سبب.
 
-这套词汇是拦截决策、持久的 `hook/*` 日志，以及 Claude Code 和 Codex 桥接的基础。
+هذا طقم مفردات هو اعتراض قطع قرار، حمل دائم `hook/*` سجل، و Claude Code و Codex جسر وصل أساس أساس.
 
-## 决策
+## قرار
 
-**三个域，各司其职，以一条边界规则统一。**
+**ثلاثة عدد مجال، كل شركة ذلك وظيفة، بـ واحد بند حد قاعدة موحد واحد.**
 
-- **`session/*`——持久的、可回放的事实日志。** 拥有 `SessionEventMap`；每条记录仅含 JSON（无活对象）。每次追加触发一次 `session/event` emit，加上 `session/flush` 并行持久性检查点。它同时也是实时 transcript（文本记录）源：想渲染或响应已发生事件的消费方在此订阅，因此实时渲染与回放投影共享同一路径。
-- **`agent/*`——运行时实时表面。** 始终携带活的 `Agent`。拦截 waterfall（瀑布式事件）（`agent/pre-step`、`agent/request`、`agent/request-error`）负责变换、拒绝或恢复；awaited `agent/turn-stopping` 观察停止边界；瞬态 emit 报告生命周期、状态、inbox 插入、领取与丢弃、错误，以及进程本地 `agent/assistant-stream` frame。轮次和步骤边界不在此处——它们是从 `session/event` 读取的持久 Session event；Assistant stream 证据只在一个 `assistant/message` 或 `assistant/attempt` settlement 内变为持久事实，轮次中途 steering 则是持久 `user/message`。
-- **`tools/*`——工具注册表与执行流水线。**
+- **`session/*`——حمل دائم، يمكن إعادة تشغيل واقع سجل.** يملك `SessionEventMap`؛ كل بند سجل فقط يحتوي JSON(بلا نشط كائن). كل مرة إلحاق إطلاق مرة `session/event` emit، إضافة فوق `session/flush` و سطر حمل دائم صفة فحص نقطة. هو معا أيضا هو فوري transcript(نص سجل) مصدر: تفكير تصيير أو استجابة قد حدوث حدث مستهلك في هذا حجز قراءة، لذلك فوري تصيير و إعادة تشغيل إسقاط مشترك نفس مسار.
+- **`agent/*`——وقت التشغيل فوري جدول وجه.** بداية نهاية يحمل نشط `Agent`. اعتراض قطع waterfall(شلال نشر صيغة حدث)(`agent/pre-step`،`agent/request`،`agent/request-error`) مسؤول تغيير تبديل، رفض أو استعادة؛awaited `agent/turn-stopping` مراقبة إيقاف حد؛ لحظة حالة emit تقرير إبلاغ دورة الحياة، حالة،inbox إدراج دخول، قيادة أخذ و إسقاط، خطأ، و عملية محلي `agent/assistant-stream` frame. جولة و خطوة حد لا في هذا موضع——هو جمع هو من `session/event` قراءة حمل دائم Session event؛Assistant stream دليل فقط في واحد `assistant/message` أو `assistant/attempt` settlement داخل تغيير لـ حمل دائم واقع، جولة في طريق steering فإن هو حمل دائم `user/message`.
+- **`tools/*`——أداة سجل التسجيل و تنفيذ خط الإنتاج.**
 
-**边界规则：** 持久的、可回放的事实是 `SessionEvent`；实时拦截或瞬态/活对象信号是 `agent`/`tools` Cordis 事件。轮次或步骤边界是持久事实，因此存在于会话日志中并从 `session/event` 源读取——不会被镜像为 `agent/*` emit。
+**حد قاعدة:** حمل دائم، يمكن إعادة تشغيل واقع هو `SessionEvent`؛ فوري اعتراض قطع أو لحظة حالة/نشط كائن إشارة هو `agent`/`tools` Cordis حدث. جولة أو خطوة حد هو حمل دائم واقع، لذلك وجود في جلسة سجل في و من `session/event` مصدر قراءة——لن يتم مرآة مثل لـ `agent/*` emit.
 
-**将规则应用于边界镜像：** 全部四个边界镜像——`agent/turn-start`、`agent/turn-end`、`agent/step-start`、`agent/step-end`——被**移除**。没有生产消费方需要在边界处获取活的 `Agent`：ACP（Agent Client Protocol）桥接将其进行中的提示词与精确对应的 `session/event` `turn/start`/`turn/end` 事件对关联，其他 transcript 消费方同样从持久流派生边界。见[移除边界镜像事件 Agent Note](../../archived/simplification/2026-06-20-remove-agent-boundary-mirror-events.md)，该决策由它负责。移除 emit 也简化了循环的 `closeStep`/`closeTurn`（各只需一次 append，无需配对 emit）。
+**سوف قاعدة تطبيق في حد مرآة مثل:** الكل أربعة عدد حد مرآة مثل——`agent/turn-start`،`agent/turn-end`،`agent/step-start`،`agent/step-end`——يتم**إزالة**. لا يوجد إنتاج مستهلك حاجة في حد موضع نيل أخذ نشط `Agent`:ACP(Agent Client Protocol) جسر وصل سوف ذلك إجراء في نص التوجيه و دقيق مقابل `session/event` `turn/start`/`turn/end` حدث مقابل صلة ربط، أخرى transcript مستهلك نفس مثال من حمل دائم تدفق إرسال توليد حد. رؤية[إزالة حد مرآة مثل حدث Agent Note](../../archived/simplification/2026-06-20-remove-agent-boundary-mirror-events.md) ، هذا قرار من هو مسؤول. إزالة emit أيضا بسيط تحويل حلقة `closeStep`/`closeTurn`(كل فقط يحتاج مرة append، بلا حاجة إعداد مقابل emit).
 
-## 后果
+## عاقبة
 
-- 循环不再 emit 任何边界镜像；`closeStep` 仅追加 `step/end`，`closeTurn` 仅追加 `turn/end`。`Session.append` 负责 post-commit observer 隔离，因此抛出异常的边界 observer 无法改变轮次结果或饿死后续消费方；事件接纳失败或内部校验失败仍会在边界进入日志之前向外抛出。
-- 之前通过已移除 emit 观察边界的测试，现在观察持久的 `turn/start`/`turn/end`/`step/start`/`step/end` 会话事件——它们所锁定的行为（边界顺序、步骤计数）不变；只是读取的源移到了规范源。那些测试*抛出异常的轮次边界 emit 监听器*的用例被删除，因为该代码路径不再存在（没有 emit 可供抛出）。按照 [AGENTS.md「测试记录行为，而非黄金真相」](../../../../AGENTS.md)，行为与其测试一同迁移（或一同消亡）。
-- 循环仅在 `append('step/start')` 返回后才标记步骤已打开（`stepOpen = true`）。内部分发校验在日志推入之前运行，可能在不打开步骤的情况下拒绝；post-commit `session/event` observer 的失败被隔离在 `Session.append` 内部。因此该标记精确表示已提交的、欠一个后续 `step/end` 的边界。
-- 完整实现见[简化 Agent Note「停止将持久边界镜像为 agent 事件」](../../archived/simplification/2026-06-20-remove-agent-boundary-mirror-events.md)：全部四个边界镜像被移除，所有消费方从 `session/event` 读取边界。`agent/steering`（不是边界镜像）不在该 Agent Note 范围内，由其后续 Agent Note [移除 `agent/steering` 镜像 emit](../../archived/simplification/2026-07-04-remove-agent-steering-mirror.md) 单独移除——它镜像的是持久的中途 steering `user/message`。
-- 生成的 Cordis 事件表面（`docs/subsystems/` 各页）不再列出镜像事件。
+- حلقة لم يعد emit أي حد مرآة مثل؛`closeStep` فقط إلحاق `step/end`،`closeTurn` فقط إلحاق `turn/end`.`Session.append` مسؤول post-commit observer عزل، لذلك رمي خروج استثناء حد observer لا يمكن تغيير جولة نتيجة أو جوع ميت لاحق مستهلك؛ حدث وصل قبول فشل أو داخلي تحقق فشل ما زال سوف في حد دخول سجل قبل نحو خارج رمي خروج.
+- قبل عبر قد إزالة emit مراقبة حد اختبار، الآن مراقبة حمل دائم `turn/start`/`turn/end`/`step/start`/`step/end` جلسة حدث——هو جمع الذي قفل تحديد سلوك (حد ترتيب، خطوة حساب عدد) ثابت؛ فقط هو قراءة مصدر نقل إلى مواصفة مصدر. ذلك بعض اختبار*رمي خروج استثناء جولة حد emit مستمع*حالة استخدام يتم حذف، لأن هذا شفرة مسار لم يعد وجود (لا يوجد emit يمكن توفير رمي خروج). حسب وفق [AGENTS.md«اختبار سجل سلوك، بينما غير أصفر ذهب حق متبادل»](../../../../AGENTS.md) ، سلوك و ذلك اختبار واحد نفس ترحيل (أو واحد نفس إزالة هلاك).
+- حلقة فقط في `append('step/start')` إرجاع بعد عندئذ علامة خطوة قد فتح (`stepOpen = true`). داخلي توزيع تحقق في سجل دفع دخول قبل تشغيل، ممكن في لا فتح خطوة حال حال تحت رفض؛post-commit `session/event` observer فشل يتم عزل في `Session.append` داخلي. لذلك هذا علامة دقيق يمثل قد إيداع، نقص واحد لاحق `step/end` حد.
+- كامل تنفيذ رؤية[بسيط تحويل Agent Note«إيقاف سوف حمل دائم حد مرآة مثل لـ agent حدث»](../../archived/simplification/2026-06-20-remove-agent-boundary-mirror-events.md): الكل أربعة عدد حد مرآة مثل يتم إزالة، كل مستهلك من `session/event` قراءة حد.`agent/steering`(لا هو حد مرآة مثل) لا في هذا Agent Note نطاق داخل، من ذلك لاحق Agent Note [إزالة `agent/steering` مرآة مثل emit](../../archived/simplification/2026-07-04-remove-agent-steering-mirror.md) مفرد وحيد إزالة——هو مرآة مثل هو حمل دائم في طريق steering `user/message`.
+- توليد Cordis حدث جدول وجه (`docs/subsystems/` كل صفحة) لم يعد صف خروج مرآة مثل حدث.
 
 <!-- agent-note-format: alternatives-not-recorded (pre-format Agent Note) -->

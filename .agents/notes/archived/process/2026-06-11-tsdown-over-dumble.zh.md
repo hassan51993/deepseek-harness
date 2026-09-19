@@ -1,31 +1,31 @@
-# Agent Note: 使用 tsdown 替代 dumble 进行 JS 打包
+# Agent Note: استخدام tsdown بديل dumble إجراء JS تحزيم
 
 Status: implemented
 Archived: 2026-07-27
 
-[English](2026-06-11-tsdown-over-dumble.md) | 中文
+[English](2026-06-11-tsdown-over-dumble.md) | العربية
 
-## 问题
+## مشكلة
 
-最初的构建使用 **dumble**，即 cordiverse 的零配置 esbuild 包装层——上游 Cordis 自身也用它构建——与 vendor 包（package）的约定最大程度对齐（它读取每个 package.json 并从 `exports` 字段推断入口/格式）。但 dumble 作为本仓库的承重工具存在隐患：v0.2.x，每周约 530 次 npm 下载，实质上只有一位维护者，而且由于它没有 workspace 模式，我们不得不通过自定义编排脚本（`scripts/build.ts`）来调用它。
+الأكثر أول بناء استخدام **dumble**، أي cordiverse صفر إعداد esbuild حزمة تركيب طبقة——فوق تنقل Cordis ذاته أيضا استخدام هو بناء——و vendor حزمة (package) اتفاق الأكثر كبير مسار درجة مقابل متساو (هو قراءة كل package.json و من `exports` حقل دفع قطع مدخل/صيغة). لكن dumble بصفة هذا مستودع تحمل إعادة أداة وجود خفي علة:v0.2.x، كل دورة نحو 530 مرة npm تحت تحميل، فعلي جودة فوق فقط لديه واحد موضع صيانة من، بينما كما من في هو لا يوجد workspace نمط، أنا جمع لا نيل لا عبر ذاتي تعريف تحرير ترتيب نص برمجي (`scripts/build.ts`) قدوم استدعاء هو.
 
-目前构建产物只在 `pnpm run build` + publint 中有意义（尚未发布任何包；开发/测试/演示通过 tsx 直接运行未打包的源码），因此切换成本现在最低，一旦包开始发布就只会更高。
+هدف قبل بناء ناتج فقط في `pnpm run build` + publint في متعمد معنى (بعد لم إصدار أي حزمة؛ تطوير/اختبار/عرض عرض عبر tsx مباشر تشغيل لم تحزيم شفرة المصدر) ، لذلك تبديل صار هذا الآن الأكثر منخفض، واحد حالما حزمة بدء إصدار حينئذ فقط سوف أكثر عال.
 
-## 决策
+## قرار
 
-用 **tsdown**（基于 rolldown，每周约 250 万次下载，VoidZero 支持，活跃发布）替代 dumble：
+استخدام **tsdown**(أساس في rolldown، كل دورة نحو 250 ألف مرة تحت تحميل،VoidZero دعم حمل، نشط وثب إصدار) بديل dumble:
 
-- 根目录 `tsdown.config.ts`，配置 `workspace: ['vendor/*', 'packages/*/*']`（显式 glob 将打包范围限定在 vendor 的 Cordis 与 TypeScript 包目录树内；`workspace: true` 还会发现示例 manifest 和不需要打包的 workspace 成员）。
-- 共享形状：入口为 `lib/types/index.js`，`outDir: 'lib'`，ESM，`platform: node`，`target: es2024`，`fixedExtension: false`（为 `"type": "module"` 包保留 `.js`），`dts: false`（声明归 tsc -b 所有），`clean: false`（lib/ 还保存 TSC 的 `lib/types` 中间树）。入口最初是 `src/index.ts`；[TSC 优先构建 Agent Note（agent 决策记录）](2026-06-17-ts-build-config.md)随后将 tsdown 改为打包 TSC 输出的 JS，使 TypeScript 转换行为统一由一个编译器提供。
-- vendor/ 中有两个按包覆盖的配置（属于我们自己的修改，与重新生成的 tsconfig 类似；记录在 vendor/README.md 中）：schemastery（通过 `outExtensions` 输出双格式 `.mjs`/`.cjs`）、logger-console（两次单入口 pass，使共享基类被内联到每个入口而非生成哈希命名的分片，与上游发布形态一致）。
-- `scripts/build.ts` 删除；`pnpm run build` = `tsc -b && tsdown`（根 solution 拥有 emit 图）。
+- أصل دليل `tsdown.config.ts`، إعداد `workspace: ['vendor/*', 'packages/*/*']`(صريح glob سوف تحزيم نطاق حد تحديد في vendor Cordis و TypeScript حزمة دليل شجرة داخل؛`workspace: true` أيضا سوف اكتشاف عرض مثال manifest و لا حاجة تحزيم workspace عضو).
+- مشترك شكل حالة: مدخل لـ `lib/types/index.js`،`outDir: 'lib'`،ESM،`platform: node`،`target: es2024`،`fixedExtension: false`(لـ `"type": "module"` حزمة إبقاء `.js`) ،`dts: false`(إعلان عودة tsc -b كل) ،`clean: false`(lib/ أيضا حفظ TSC `lib/types` في بين شجرة). مدخل الأكثر أول هو `src/index.ts`؛[TSC أولوية بناء Agent Note(agent قرار سجل)](2026-06-17-ts-build-config.md) مع بعد سوف tsdown تعديل لـ تحزيم TSC إخراج JS، جعل TypeScript تحويل سلوك موحد واحد من واحد تحرير ترجمة جهاز توفير.
+- vendor/ في لديه اثنان عدد حسب حزمة تغطية إعداد (يخص أنا جمع ذاتي ذات تعديل، و إعادة توليد tsconfig صنف يشبه؛ سجل في vendor/README.md في):schemastery(عبر `outExtensions` إخراج مزدوج صيغة `.mjs`/`.cjs`) ،logger-console(اثنان مرة مفرد مدخل pass، جعل مشترك أساس صنف يتم داخل ربط إلى كل مدخل بينما غير توليد ها أمل تسمية قسم قطعة، و فوق تنقل إصدار شكل متسق).
+- `scripts/build.ts` حذف؛`pnpm run build` = `tsc -b && tsdown`(أصل solution يملك emit رسم).
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **直接编写 esbuild 脚本**：最成熟的引擎，零包装层风险，但需要手动维护 tsdown workspace 模式自动提供的按包规格表。
-- **pkgroll**：理念上最接近的直接替代品，但每周仅 78k 下载且基于 Rollup，维护前景严格弱于 tsdown。
-- **保留 dumble**：与上游完美对齐，但巴士因子不可接受。
+- **مباشر تحرير كتابة esbuild نص برمجي**: الأكثر صار ناضج جذب محرك، صفر حزمة تركيب طبقة ريح خطر، لكن حاجة يد حركة صيانة tsdown workspace نمط تلقائي توفير حسب حزمة قاعدة إطار جدول.
+- **pkgroll**: إدارة فكرة فوق الأكثر وصل قريب مباشر بديل صنف، لكن كل دورة فقط 78k تحت تحميل كما أساس في Rollup، صيانة قبل مشهد صارم إطار ضعيف في tsdown.
+- **إبقاء dumble**: و فوق تنقل تمام جميل مقابل متساو، لكن با فرد بسبب فرعي غير ممكن قبول.
 
-## 后果
+## عاقبة
 
-运行时 bundle 输出仍沿用 dumble 时代的公开入口形状（`lib/index.js`，以及包特有的变体，例如 `schemastery` 的 `lib/index.mjs`/`lib/index.cjs` 与 `logger-console` 的 `lib/browser.js`）；根据 [TSC 优先构建 Agent Note](2026-06-17-ts-build-config.md)，声明现位于 `lib/types` 下。External 仍来自各包的 dependencies/peerDependencies。我们放弃了 dumble 的 exports 字段推断：采用非默认形状的新包需要逐包提供 `tsdown.config.ts`，不能只依赖 package.json 字段。未来如果 `tsc -b` 成为瓶颈，tsdown 也可以接管声明打包（isolatedDeclarations）；这需要另写一份 Agent Note。
+وقت التشغيل bundle إخراج ما زال امتداد استخدام dumble وقت بديل عام مدخل شكل حالة (`lib/index.js`، و حزمة خاص لديه تغيير جسم، مثال مثل `schemastery` `lib/index.mjs`/`lib/index.cjs` و `logger-console` `lib/browser.js`) ؛ أصل حسب [TSC أولوية بناء Agent Note](2026-06-17-ts-build-config.md) ، إعلان الآن يقع في `lib/types` تحت.External ما زال قدوم ذاتي كل حزمة dependencies/peerDependencies. أنا جمع وضع ترك dumble exports حقل دفع قطع: اعتماد غير افتراضي شكل حالة جديد حزمة حاجة تدريجي حزمة توفير `tsdown.config.ts`، لا يستطيع فقط اعتماد package.json حقل. لم قدوم إذا `tsc -b` يصبح زجاجة عنق،tsdown أيضا يمكن وصل إدارة إعلان تحزيم (isolatedDeclarations) ؛ هذا حاجة آخر كتابة واحد نسخة Agent Note.

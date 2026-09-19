@@ -1,55 +1,55 @@
 ---
-description: "会话压缩（compaction）功能家族的包映射：自动压缩、按需 /compact 命令与工具输出修剪。"
+description: "جلسة ضغط (compaction) وظيفة بيت عائلة حزمة خريطة: تلقائي ضغط، حسب يحتاج /compact أمر و أداة إخراج إصلاح قص."
 kind: "package-group"
 ---
 
-# compaction/ — 压缩能力家族
+# compaction/ — ضغط قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`compaction/` 组让长时 agent（智能体）会话在接近模型上下文上限时仍能正常工作：token 压力上升时自动把较早历史压缩为摘要，可用 `/compact` 按需压缩，超大工具输出也可以先被修剪，从而减少需要压缩的内容，支持图片的路由发不出的图片则被替换为占位文本。随附 `dsh` 基础配置默认启用该功能。显式挂载各包即可调整压缩发生的时机与方式。决定何时压缩的 token 测量属于独立的 LLM（大语言模型）家族服务。
+`compaction/` مجموعة يجعل طويل وقت agent(ذكي جسم) جلسة في وصل قريب نموذج سياق حد أعلى وقت ما زال قدرة صحيح معتاد عمل:token ضغط قوة فوق رفع وقت تلقائي يأخذ مقارنة مبكر تاريخ ضغط لـ ملخص، متاح `/compact` حسب يحتاج ضغط، تجاوز كبير أداة إخراج أيضا يمكن أولا يتم إصلاح قص، من بينما نقص قليل حاجة ضغط محتوى، دعم حمل صورة توجيه إرسال لا خروج صورة فإن يتم استبدال لـ احتلال موضع نص. مع مرفق `dsh` أساس أساس إعداد افتراضي تفعيل هذا وظيفة. صريح تركيب كل حزمة يكفي ضبط كامل ضغط حدوث وقت آلة و طريقة. قرار أي وقت ضغط token قياس كمية يخص مستقل LLM(كبير لغة نموذج) بيت عائلة خدمة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-以下每个包提供该功能的一个环节；打开对应包页面了解如何使用。
+التالي كل حزمة توفير هذا وظيفة واحد حلقة عقدة؛ فتح مقابل حزمة صفحة حل مثل أي استخدام.
 
-| 包 | 职责 | ctx key |
+| حزمة | مسؤولية | ctx key |
 |---|---|---|
-| [`compaction/`](compaction/README.zh.md) | 共享的压缩约定：所有后端与触发器使用的操作与摘要格式 | `ctx.compaction` |
-| [`compaction-basic/`](compaction-basic/README.zh.md) | 随 token 压力上升自动把较早历史压缩为摘要 | 注册 `ctx.compaction` |
-| [`compaction-tool-result-pruner/`](compaction-tool-result-pruner/README.zh.md) | 修剪超大工具输出，减少需要压缩的历史 | `ctx.toolResultPruner` |
-| [`compaction-image-offload/`](compaction-image-offload/README.zh.md) | 支持图片的路由拒绝请求时，把超出预算的请求图片替换为占位文本 | 监听 `agent/request-error` |
-| [`command-compact/`](command-compact/README.zh.md) | 按需压缩历史的 `/compact` 命令 | 注册到 `ctx.commands` |
+| [`compaction/`](compaction/README.zh.md) | مشترك ضغط اتفاق: كل خلفية و إطلاق جهاز استخدام عملية و ملخص صيغة | `ctx.compaction` |
+| [`compaction-basic/`](compaction-basic/README.zh.md) | مع token ضغط قوة فوق رفع تلقائي يأخذ مقارنة مبكر تاريخ ضغط لـ ملخص | تسجيل `ctx.compaction` |
+| [`compaction-tool-result-pruner/`](compaction-tool-result-pruner/README.zh.md) | إصلاح قص تجاوز كبير أداة إخراج، نقص قليل حاجة ضغط تاريخ | `ctx.toolResultPruner` |
+| [`compaction-image-offload/`](compaction-image-offload/README.zh.md) | دعم حمل صورة توجيه رفض طلب وقت، يأخذ تجاوز خروج ميزانية طلب صورة استبدال لـ احتلال موضع نص | استماع `agent/request-error` |
+| [`command-compact/`](command-compact/README.zh.md) | حسب يحتاج ضغط تاريخ `/compact` أمر | تسجيل إلى `ctx.commands` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解共享词汇，再阅读两份 Agent Note 了解设计依据。
+أولا من فرعي نظام مشاركة اعتبار حل مشترك مفردات، مجددا قراءة قراءة اثنان نسخة Agent Note حل تصميم اعتماد حسب.
 
-- [压缩子系统参考](../../docs/subsystems/compaction.zh.md)——压缩词汇、结果与服务行为。
-- [压缩能力 seam Agent Note](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.zh.md)——家族如何拆分，以及为何依赖会话与 LLM 词汇。
-- [排队手动压缩 Agent Note](../../.agents/notes/implemented/feature/2026-07-30-queued-manual-compaction.zh.md)——按需 `/compact` 如何与运行中的轮次串行化。
-- [能力 seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md)——本家族遵循的 Service Definition / Service Provider / Consumer 拆分。
+- [ضغط فرعي نظام مشاركة اعتبار](../../docs/subsystems/compaction.zh.md)——ضغط مفردات، نتيجة و خدمة سلوك.
+- [ضغط قدرة seam Agent Note](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.zh.md)——بيت عائلة مثل أي تفكيك قسم، و لـ أي اعتماد جلسة و LLM مفردات.
+- [ترتيب طابور يد حركة ضغط Agent Note](../../.agents/notes/implemented/feature/2026-07-30-queued-manual-compaction.zh.md)——حسب يحتاج `/compact` مثل أي و تشغيل في جولة سلسلة سطر تحويل.
+- [قدرة seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md)——هذا بيت عائلة التزام دوران Service Definition / Service Provider / Consumer تفكيك قسم.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

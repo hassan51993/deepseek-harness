@@ -1,65 +1,65 @@
-# Agent Note: 拉平交付的工具清单
+# Agent Note: سحب مستو تسليم أداة بيان
 
 Status: implemented
 
-[English](2026-07-31-even-out-shipped-tool-rosters.md) | 中文
+[English](2026-07-31-even-out-shipped-tool-rosters.md) | العربية
 
-## 问题
+## مشكلة
 
-两个交付的 `dsh` surface 提供着不同的工具，而没有任何记录说明为什么。会话检查点、工具结果裁剪、goal 工具和 Ralph 在 `tui.cordis.yml`；`tool-todo` 以及后来的 web 搜索在 `web.cordis.yml`。两个 surface 都没有会话搜索、字符串替换编辑器和重复工具守卫，尽管这三者都已成包存在，且没有一个是 surface 专属的。
+اثنان عدد تسليم `dsh` surface توفير حال مختلف أداة، بينما لا يوجد أي سجل شرح لـ ماذا. جلسة فحص نقطة، أداة نتيجة قطع قص،goal أداة و Ralph في `tui.cordis.yml`؛`tool-todo` و بعد قدوم web بحث في `web.cordis.yml`. اثنان عدد surface كل لا يوجد جلسة بحث، نص استبدال تحرير جهاز و تكرار أداة حراسة حماية، كل إدارة هذا ثلاثة من كل قد صار حزمة وجود، كما لا يوجد واحد هو surface مخصص تابع.
 
-结果是一处没人做过决定的用户可见差异：同一个模型、同一个请求，在终端上能定目标而在浏览器里不能，在浏览器里能搜网页而在终端上不能。
+نتيجة هو واحد موضع لا شخص فعل مرور قرار مستخدم مرئي فرق مختلف: نفس عدد نموذج، نفس عدد طلب، في طرفية فوق قدرة تحديد هدف بينما في متصفح داخل لا يستطيع، في متصفح داخل قدرة بحث شبكة صفحة بينما في طرفية فوق لا يستطيع.
 
-## 决策
+## قرار
 
-那些并非 surface 专属的行移入 [`base.cordis.yml`](../../../../packages/bundle/base/cordis.patch.yml)，另有三行加入：`tool-session-query`、`tool-str-replace-editor` 和 `repeat-tool-reminder`。Web 搜索也一并移入；其[部署决策](2026-07-31-web-default-search.zh.md)负责安全边界，共享 base 则负责与 surface 无关的挂载。两个 surface 组装同一份清单，其中 `glob` 和 `grep` 是固定成员，因为 `dsh-tool-fs-search` 直接 spawn [打包的 ripgrep 二进制](../../archived/architecture/2026-08-01-packaged-ripgrep-search.md)。后续决策收窄了这份清单：[session-search 决策](../../archived/feature/2026-08-02-session-search-not-shipped-default.md)让 `tool-session-query` 保持需显式启用，[单一 editor 决策](../../archived/simplification/2026-08-10-default-presets-single-editor.md)从通用 preset 移除 `tool-str-replace-editor`，[仅持久 shell 决策](../simplification/2026-09-03-minimal-profiles-persistent-shell-only.zh.md)则从极简组合移除它，[ralph 降级决策](../simplification/2026-09-12-ralph-off-in-shipped-defaults.zh.md)让 `ralph` 在这份 base 清单与镜像它的 preset 中默认关闭。
+ذلك بعض و غير surface مخصص تابع سطر نقل دخول [`base.cordis.yml`](../../../../packages/bundle/base/cordis.patch.yml) ، آخر لديه ثلاثة سطر إضافة دخول:`tool-session-query`،`tool-str-replace-editor` و `repeat-tool-reminder`.Web بحث أيضا واحد و نقل دخول؛ ذلك[نشر قرار](2026-07-31-web-default-search.zh.md) مسؤول أمان حد، مشترك base فإن مسؤول و surface غير متصل تركيب. اثنان عدد surface تجميع نفس نسخة بيان، منها `glob` و `grep` هو ثابت عضو، لأن `dsh-tool-fs-search` مباشر spawn [تحزيم ripgrep اثنان دخول صنع](../../archived/architecture/2026-08-01-packaged-ripgrep-search.md). لاحق قرار استلام ضيق هذا نسخة بيان:[session-search قرار](../../archived/feature/2026-08-02-session-search-not-shipped-default.md) يجعل `tool-session-query` إبقاء يحتاج صريح تفعيل،[مفرد واحد editor قرار](../../archived/simplification/2026-08-10-default-presets-single-editor.md) من عام preset إزالة `tool-str-replace-editor`،[فقط حمل دائم shell قرار](../simplification/2026-09-03-minimal-profiles-persistent-shell-only.zh.md) فإن من أقصى بسيط تركيب إزالة هو،[ralph تخفيض قرار](../simplification/2026-09-12-ralph-off-in-shipped-defaults.zh.md) يجعل `ralph` في هذا نسخة base بيان و مرآة مثل هو preset في افتراضي إغلاق.
 
-有两行仍是 surface 专属。`tmux-context` 只在 TUI，因为浏览器 surface 没有终端复用器可描述。`session-reference` 只在 TUI，因为它以 launcher 的进程本地路径驱动共享的 session-query 索引，而浏览器侧边栏会在自己的首次搜索里重建该索引。
+لديه اثنان سطر ما زال هو surface مخصص تابع.`tmux-context` فقط في TUI، لأن متصفح surface لا يوجد طرفية إعادة استخدام جهاز يمكن وصف.`session-reference` فقط في TUI، لأن هو بـ launcher عملية محلي مسار قيادة مشترك session-query بحث جذب، بينما متصفح جانب حافة شريط سوف في ذاتي ذات أول مرة بحث داخل إعادة بناء هذا بحث جذب.
 
-**本次工具清单决策当时只做加法。** 落地时两个 surface 均未移除任何工具行，目录对比只发现了新增，别无其他。后续的 session-search 与单一编辑器决策分别负责对应的默认清单例外。共享执行器、沙箱组合与访问默认值独立归属[workspace-write 默认值决策](../../archived/feature/2026-07-31-workspace-write-surface-default.md)。
+**هذا مرة أداة بيان قرار عند وقت فقط فعل إضافة قاعدة.** سقوط أرض وقت اثنان عدد surface متساو لم إزالة أي أداة سطر، دليل مقابل مقارنة فقط اكتشاف إضافة جديدة، آخر بلا أخرى. لاحق session-search و مفرد واحد تحرير جهاز قرار قسم آخر مسؤول مقابل افتراضي بيان مثال خارج. مشترك منفذ، صندوق رملي تركيب و وصول قيمة افتراضية مستقل ملكية[workspace-write قيمة افتراضية قرار](../../archived/feature/2026-07-31-workspace-write-surface-default.md).
 
-### 什么保持不挂，以及为什么
+### ماذا إبقاء لا تعليق، و لـ ماذا
 
-有两项能力基于其自身包所记录的证据保持在外,列在这里是为了让「我们忘了」和「我们决定不要」保持可区分。
+لديه اثنان بند قدرة أساس في ذلك ذاته حزمة الذي سجل دليل إبقاء في خارج,صف في هذا داخل هو لـ يجعل «أنا جمع نسيان» و «أنا جمع قرار لا يلزم» إبقاء يمكن منطقة قسم.
 
-**`dsh-tool-cordis`** 让模型写一段 JavaScript 并挂成临时插件。它的 README 写明了这个界限:「The sandbox is containment for honest code, not a security boundary — host-realm helpers on the sandbox global are reachable, so mount code can reach Node」([Known limitations](../../../../packages/extensions/tool-cordis/README.zh.md))。`node:vm` 的 realm 就在 harness 进程内,而 `dsh-sandbox-local` 只约束它 spawn 出去的 argv,因此在 Web surface 上,沙箱与批准接缝是被绕过而非被执行。
+**`dsh-tool-cordis`** يجعل نموذج كتابة واحد مقطع JavaScript و تعليق صار مؤقت إضافة. هو README كتابة واضح هذا عدد حد حد:«The sandbox is containment for honest code, not a security boundary — host-realm helpers on the sandbox global are reachable, so mount code can reach Node»([Known limitations](../../../../packages/extensions/tool-cordis/README.zh.md)).`node:vm` realm حينئذ في harness عملية داخل,بينما `dsh-sandbox-local` فقط قيد هو spawn خروج ذهاب argv,لذلك في Web surface فوق,صندوق رملي و دفعة دقيق وصل شق هو يتم التفاف مرور بينما غير يتم تنفيذ.
 
-**LSP 三件套**留在外面是运维原因而非安全原因:`command` 在插件加载时从 `PATH` 解析,因此缺少语言服务器会让整次启动失败,而不只是失去一个工具。等到「缺失」退化为「跳过注册」之后,它就可以挂了。
+**LSP ثلاثة عنصر طقم**إبقاء في خارج وجه هو تشغيل صيانة سبب بينما غير أمان سبب:`command` في إضافة تحميل وقت من `PATH` تحليل,لذلك نقص قليل لغة خادم سوف يجعل كامل مرة بدء فشل,بينما لا فقط هو فقد ذهاب واحد أداة. انتظار إلى «ناقص» تراجع تحويل لـ «قفز مرور تسجيل» بعد,هو حينئذ يمكن تعليق.
 
-### MCP 是依赖,不是配置行
+### MCP هو اعتماد,لا هو إعداد سطر
 
-`@deepseek-ai/dsh-mcp-client` 成为本 CLI（命令行界面）的运行时依赖,但在任何交付配置里都没有对应的行。该插件每个实例只挂载一台服务器,且 `command` 是必填,因此一个默认值必须点名一台第三方服务器,并在每次启动时把它作为子进程 spawn——不经 `ctx.shell`,因而也在 Web surface 所组合的沙箱策略之外。
+`@deepseek-ai/dsh-mcp-client` يصبح هذا CLI(أمر سطر واجهة) وقت التشغيل اعتماد,لكن في أي تسليم إعداد داخل كل لا يوجد مقابل سطر. هذا إضافة كل نسخة فقط تركيب واحد منصة خادم,كما `command` هو لا بد ملء,لذلك واحد قيمة افتراضية يجب نقطة اسم واحد منصة رقم ثلاثة جهة خادم,و في كل مرة بدء وقت يأخذ هو بصفة عملية فرعية spawn——لا مرور `ctx.shell`,بسبب بينما أيضا في Web surface الذي تركيب صندوق رملي سياسة خارج.
 
-真正能让 MCP 成为默认的那一层,恰恰是本仓库尚未拥有的:一个读取用户服务器清单、按条目逐台挂载客户端的桥接,形态与 [`dsh-hooks-claude-code`](../../../../packages/hooks/hooks-claude-code/README.zh.md) 读取 Claude Code 的 `hooks.json` 完全相同。交付这个依赖意味着已安装的 `dsh` 能从 `$DSH_HOME/config.yaml` 挂载服务器;CLI README 里给了那段 YAML。
+حق صحيح قدرة يجعل MCP يصبح افتراضي ذلك واحد طبقة,تماما تماما هو هذا مستودع بعد لم يملك: واحد قراءة مستخدم خادم بيان، حسب بند تدريجي منصة تركيب عميل جسر وصل,شكل و [`dsh-hooks-claude-code`](../../../../packages/hooks/hooks-claude-code/README.zh.md) قراءة Claude Code `hooks.json` تماما نفسه. تسليم هذا عدد اعتماد معنى طعم حال قد تثبيت `dsh` قدرة من `$DSH_HOME/config.yaml` تركيب خادم;CLI README داخل إعطاء ذلك مقطع YAML.
 
-## 测试
+## اختبار
 
-`apps/cli/tests/shipped-composition.e2e.ts` 曾在伪终端中通过真实 Loader 启动交付树，并从会话日志持久化的 `request/header` 中读出工具名，因此断言的是模型实际收到的目录。它传入的 `--config` overlay `composition-keyless-tail.cordis.yml` 只用于测试隔离：一个无网络适配器，以及落在工作区内的会话产物。
+`apps/cli/tests/shipped-composition.e2e.ts` سبق في زائف طرفية في عبر حقيقي Loader بدء تسليم شجرة، و من جلسة سجل حفظ دائم `request/header` في قراءة خروج أداة اسم، لذلك تأكيد هو نموذج فعلي استلام إلى دليل. هو نقل دخول `--config` overlay `composition-keyless-tail.cordis.yml` فقط لأجل اختبار عزل: واحد بلا شبكة شبكة مهايئ، و سقوط في مساحة العمل داخل جلسة ناتج.
 
-该尾部还曾插入 `composition-settled.ts`，用于在终端字节流上宣告 Loader 激活已 settle。TUI 在自己的 fiber 一启动就渲染，因此在 banner 处敲下的提示词可能在工具行与持久化仍在激活时就抵达循环，从而组装出不完整的目录；把冒烟的首个提示词 gate 在该标记上，正是断言得以确定的原因。
+هذا ذيل جزء أيضا سبق إدراج دخول `composition-settled.ts`، لأجل في طرفية بايت تدفق فوق إعلان إبلاغ Loader تنشيط قد settle.TUI في ذاتي ذات fiber واحد بدء حينئذ تصيير، لذلك في banner موضع طرق تحت نص التوجيه ممكن في أداة سطر و حفظ دائم ما زال في تنشيط وقت حينئذ مقاومة بلوغ حلقة، من بينما تجميع خروج لا كامل دليل؛ يأخذ خطر دخان أول عدد نص التوجيه gate في هذا علامة فوق، صحيح هو تأكيد نيل بـ تحديد سبب.
 
-同一份冒烟还根据同一份产物固定 TUI 的执行姿态。那些沙箱 schema 与初始权限断言归[workspace-write 默认值决策](../../archived/feature/2026-07-31-workspace-write-surface-default.md)所有，独立于本工具清单决策。
+نفس نسخة خطر دخان أيضا أصل حسب نفس نسخة ناتج ثابت TUI تنفيذ وضع حالة. ذلك بعض صندوق رملي schema و ابتدائي إذن تأكيد عودة[workspace-write قيمة افتراضية قرار](../../archived/feature/2026-07-31-workspace-write-surface-default.md) كل، مستقل في هذا أداة بيان قرار.
 
-[`apps/web/tests/shipped-composition.e2e.ts`](../../../../apps/web/tests/shipped-composition.e2e.ts) 在构建产物 lane 中覆盖 Web surface,断言它的工具目录、它的访问默认值未被触碰,以及 `workspace-write` 的可写根包含临时目录——一个会让沙箱测试说谎的陷阱,当工作区落在 `/tmp` 下时([`roots.ts`](../../../../packages/sandbox/sandbox/src/roots.ts))。
+[`apps/web/tests/shipped-composition.e2e.ts`](../../../../apps/web/tests/shipped-composition.e2e.ts) في بناء ناتج lane في تغطية Web surface,تأكيد هو أداة دليل، هو وصول قيمة افتراضية لم يتم لمس اصطدام,و `workspace-write` يمكن كتابة أصل يتضمن مؤقت دليل——واحد سوف يجعل صندوق رملي اختبار قول كذب وقوع فخ,عند مساحة العمل سقوط في `/tmp` تحت وقت ([`roots.ts`](../../../../packages/sandbox/sandbox/src/roots.ts)).
 
-`glob` 与 `grep` 被作为固定成员断言，而不是一对宿主依赖：`dsh-tool-fs-search` spawn 打包的 ripgrep 二进制并无条件注册两个工具，因此这一对始终在场。
+`glob` و `grep` يتم بصفة ثابت عضو تأكيد، بينما لا هو واحد مقابل مضيف اعتماد:`dsh-tool-fs-search` spawn تحزيم ripgrep اثنان دخول صنع و بلا شرط تسجيل اثنان عدد أداة، لذلك هذا واحد مقابل بداية نهاية في ساحة.
 
-除入库测试外,两个 surface 都以 plain Node 从构建产物 `apps/cli/lib/bin.js` 出发、用真实密钥驱动过。每一个已挂载的工具都执行成功,包括 `ralph` 与 `web_search`;模型从未触达 `cordis_*` 或 `mcp_*`,被要求做 LSP 跳转时退化到 `grep`,被要求开持久终端时用了后台 `bash` 任务。
+حذف دخول مكتبة اختبار خارج,اثنان عدد surface كل بـ plain Node من بناء ناتج `apps/cli/lib/bin.js` خروج إرسال، استخدام حقيقي مفتاح قيادة مرور. كل واحد قد تركيب أداة كل تنفيذ نجاح,يشمل `ralph` و `web_search`;نموذج من لم لمس بلوغ `cordis_*` أو `mcp_*`,يتم اشتراط فعل LSP قفز تحويل وقت تراجع تحويل إلى `grep`,يتم اشتراط فتح حمل دائم طرفية وقت استخدام خلفية `bash` مهمة.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**把共享的行复制进两份 overlay,而不是提升到 base。** 基于「一处归属」原则否决:新增行里有三行会存在两份,而这些副本没有任何理由发生分歧,下一次改工具清单还得记着改两处。
+**يأخذ مشترك سطر نسخ دخول اثنان نسخة overlay,بينما لا هو رفع رفع إلى base.** أساس في «واحد موضع ملكية» أصل فإن مرفوض: إضافة جديدة سطر داخل لديه ثلاثة سطر سوف وجود اثنان نسخة,بينما هذه فرعي هذا لا يوجد أي إدارة من حدوث قسم اختلاف,تحت مرة تعديل أداة بيان أيضا نيل تسجيل حال تعديل اثنان موضع.
 
-**在同一次改动里给 TUI 加沙箱。** 不予采纳，因为这是一个不属于工具清单改动的独立决定：TUI 挂的是不受限执行器，替换它们会改变一个既有 surface 做什么，而非它提供什么。这个决定需要自己的证据——尤其因为 TUI 没有 `approval/request` 的应答方，升权请求在那里会 fail-closed，而不是弹出提示。
+**في نفس مرة تعديل داخل إعطاء TUI إضافة صندوق رملي.** غير مقبول، لأن هذا هو واحد لا يخص أداة بيان تعديل مستقل قرار:TUI تعليق هو لا تلقي حد منفذ، استبدال هو جمع سوف تغيير واحد قائم surface فعل ماذا، بينما غير هو توفير ماذا. هذا عدد قرار حاجة ذاتي ذات دليل——خاصة ذلك لأن TUI لا يوجد `approval/request` ينبغي جواب جهة، رفع حق طلب في ذلك داخل سوف fail-closed، بينما لا هو نابض خروج تلميح.
 
-**开启 PTC mode。** 它的信任立场按设计与 bash 同级,工具调用要过与 bash 相同的 `tools/pre-execute` 闸门,所以它与上面那些模型写码工具不是同一个判断。在这里仍被否决:`both` 会改变两个 surface 上每一个模型可见请求,而 `ptc` 是把线路替换而非加一个——两者都是呈现方式的决定,不是工具清单的决定。
+**فتح بدء PTC mode.** هو معلومة مهمة قيام ساحة حسب تصميم و bash نفس درجة,أداة استدعاء يلزم مرور و bash نفسه `tools/pre-execute` بوابة باب,الذي بـ هو و فوق وجه ذلك بعض نموذج كتابة رمز أداة لا هو نفس عدد حكم قطع. في هذا داخل ما زال يتم مرفوض:`both` سوف تغيير اثنان عدد surface فوق كل واحد نموذج مرئي طلب,بينما `ptc` هو يأخذ خط مسار استبدال بينما غير إضافة واحد——اثنان من كل هو عرض طريقة قرار,لا هو أداة بيان قرار.
 
-**默认挂一台 MCP 服务器。**否决，因为交付默认值必须点名一台，而任何选择都会在每个用户的机器上、在沙箱之外 spawn 一个第三方子进程。改为交付依赖。
+**افتراضي تعليق واحد منصة MCP خادم.**مرفوض، لأن تسليم قيمة افتراضية يجب نقطة اسم واحد منصة، بينما أي اختيار كل سوف في كل مستخدم آلة جهاز فوق، في صندوق رملي خارج spawn واحد رقم ثلاثة جهة عملية فرعية. تعديل لـ تسليم اعتماد.
 
-## 后果
+## عاقبة
 
-同一个模型在两个 surface 上拿到同样的工具,那处没有记录理由的差异消失了。测试会精确断言二十个无条件提供的名称，并把 `glob` 与 `grep` 作为固定成员钉在两侧，因此日后只改一个 surface 都会让检查失败而不是悄悄发出去；[session-search-not-shipped-default 决策](../../archived/feature/2026-08-02-session-search-not-shipped-default.md)正是这样一次后来的改动，两个测试也随之移动。
+نفس عدد نموذج في اثنان عدد surface فوق أخذ إلى نفس مثال أداة,ذلك موضع لا يوجد سجل إدارة من فرق مختلف إزالة فقد. اختبار سوف دقيق تأكيد اثنان عشرة عدد بلا شرط توفير اسم، و يأخذ `glob` و `grep` بصفة ثابت عضو تثبيت في اثنان جانب، لذلك يوم بعد فقط تعديل واحد surface كل سوف يجعل فحص فشل بينما لا هو صامت صامت إرسال خروج ذهاب؛[session-search-not-shipped-default قرار](../../archived/feature/2026-08-02-session-search-not-shipped-default.md) صحيح هو هذا مثال مرة بعد قدوم تعديل، اثنان عدد اختبار أيضا مع لـ نقل حركة.
 
-`apps/cli` 增加了五个 workspace 依赖:四个是交付树当时挂载的,外加 `dsh-mcp-client`——它并不被挂载,存在的意义是让已安装的 `dsh` 能挂。四个保留了下来——[session-search-not-shipped-default 决策](../../archived/feature/2026-08-02-session-search-not-shipped-default.md)把 `@deepseek-ai/dsh-tool-session-query` 连同它的行一起移除了。
+`apps/cli` زيادة خمسة عدد workspace اعتماد: أربعة عدد هو تسليم شجرة عند وقت تركيب,خارج إضافة `dsh-mcp-client`——هو و لا يتم تركيب,وجود معنى معنى هو يجعل قد تثبيت `dsh` قدرة تعليق. أربعة عدد إبقاء تحت قدوم——[session-search-not-shipped-default قرار](../../archived/feature/2026-08-02-session-search-not-shipped-default.md) يأخذ `@deepseek-ai/dsh-tool-session-query` وصل نفس هو سطر واحد بدء إزالة.
 
-执行策略独立于工具清单。[共享 workspace-write 决策](../../archived/feature/2026-07-31-workspace-write-surface-default.md)拥有两个 surface 的沙箱执行器与默认权限；更改该策略不会增加或移除工具。
+تنفيذ سياسة مستقل في أداة بيان.[مشترك workspace-write قرار](../../archived/feature/2026-07-31-workspace-write-surface-default.md) يملك اثنان عدد surface صندوق رملي منفذ و افتراضي إذن؛ أكثر تعديل هذا سياسة لن زيادة أو إزالة أداة.

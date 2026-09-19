@@ -1,102 +1,102 @@
 ---
-description: "Host 与 Client 会话控制：创建、恢复、提示、跟随历史并投影实时会话状态。"
+description: "Host و Client جلسة تحكم: إنشاء، استعادة، تلميح، تتبع مع تاريخ و إسقاط فوري جلسة حالة."
 kind: "package-reference"
 ---
 # Session Controller
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`@deepseek-ai/dsh-api-session-controller` 拥有 Host 的 `ctx.sessionController` 服务，以及生成的 Client `session`、`skills` 和 `fileReferences` Remote namespace。它提供 Session 生命周期与历史、Host generation 模型目录、工作区路径打开、用户可调用 skill（技能）发现和 Agent（智能体）范围的文件引用。当 Client 需要按 Session 寻址的操作时，请通过 API Gateway 使用它。
+`@deepseek-ai/dsh-api-session-controller` يملك Host `ctx.sessionController` خدمة، و توليد Client `session`،`skills` و `fileReferences` Remote namespace. هو توفير Session دورة الحياة و تاريخ،Host generation نموذج دليل، مساحة العمل مسار فتح، مستخدم يمكن استدعاء skill(تقنية قدرة) اكتشاف و Agent(ذكي جسم) نطاق ملف مرجع. عند Client حاجة حسب Session بحث عنوان عملية وقت، طلب عبر API Gateway استخدام هو.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [Client 引用](#client-references)
-- [会话媒体引用](#session-media-references)
-- [配置](#configuration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [Client مرجع](#client-references)
+- [جلسة وسيط جسم مرجع](#session-media-references)
+- [إعداد](#configuration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-历史页与 follow opening 快照为每个持久 Session 事件携带一条 `{ type: 'event', event: SessionWireEvent }` record。Client 把每条已接受 record 保留为一个持久 `SessionEventLikeEntry`；Assistant token 边界保留在 `assistant/message` 或 `assistant/attempt` 的紧凑流内。工具参数、结果内容、失败信息和 `tool/result.data.meta` 原样通过；控制器不解析工具定义、不运行展示转换器，也不附加 UI 数据。
+تاريخ صفحة و follow opening لقطة لـ كل حمل دائم Session حدث يحمل واحد بند `{ type: 'event', event: SessionWireEvent }` record.Client يأخذ كل بند قد قبول record إبقاء لـ واحد حمل دائم `SessionEventLikeEntry`؛Assistant token حد إبقاء في `assistant/message` أو `assistant/attempt` ضيق تجميع تدفق داخل. أداة معامل، نتيجة محتوى، فشل معلومة و `tool/result.data.meta` أصل مثال عبر؛ تحكم جهاز لا تحليل أداة تعريف، لا تشغيل عرض تحويل جهاز، أيضا لا مرفق إضافة UI بيانات.
 
-Client journal 在发布 follow 快照、live entry 或历史页之前验证精确的 V3 事件 envelope。它复用浏览器安全的 Session validator，检查必需的 surface marker、精确的 replacement endpoint、更早且唯一的 source seq、内嵌 Assistant 提供方元数据、request header 可选字段的省略规则以及工具错误一致性。无效 record 直接失败，不删除字段或归一化；范围成员与来源存在性仍由 Host 的持久日志检查。
+Client journal في إصدار follow لقطة،live entry أو تاريخ صفحة قبل تحقق دقيق V3 حدث envelope. هو إعادة استخدام متصفح أمان Session validator، فحص مطلوب surface marker، دقيق replacement endpoint، أكثر مبكر كما وحيد source seq، داخل تضمين Assistant مزود بيانات وصفية،request header اختياري حقل حذف قاعدة و أداة خطأ متسق صفة. بلا فاعلية record مباشر فشل، لا حذف حقل أو عودة واحد تحويل؛ نطاق عضو و مصدر وجود ما زال من Host حمل دائم سجل فحص.
 
-每个 endpoint 都声明自己的激活策略。列表只读取持久化 header 与 projection cache row，绝不调用逐 Session stat 或打开冷 Session body。当前格式 cache identity 可以提供全部列表 hint；生命周期匹配的 predecessor cache 只能提供版本兼容的 title，作为可能过时的展示事实，绝不能作为权威 fold seed。搜索、附件、历史页、日志跟随、skill 发现和工作区路径打开可以在不激活 Agent 的情况下检查 persistence；`canOpenWorkspacePath()` 无需指定 Session 即可报告原生打开能力。取消要求 live 状态；queue 变更、模型、重命名、prompt 和文件引用操作可以解析或恢复普通 Session。提示词会在解析 Agent 或追加 Session 事件前，拒绝既没有非空白文本也没有附件的 content；queue edit 只接受非空文本 content。prompt 准入从注入的 [`fileUploads`](../../client/file-upload/README.zh.md) Host 服务取得不透明凭证，在把完整有序内容列表交给 `ctx.attachments` 前解析每个属于同一 Agent 的凭证。`requestId` 已进入 queue 或日志时，prompt 重试直接返回原来的接受结果，不会重复插入消息。只有 create 与 fork 会直接创建新 Agent。该服务把同一套感知 preset 的恢复策略和 subagent ownership fence 同时用于自身方法，以及其他 Remote namespace 使用的 Typert Agent 与 Session lookup。Queue 变更只有一个狭窄例外：当前 projection identity 为 continuable 且来自自身非 seed suffix 的在线 child，可以在两个 inbox 目标上使用普通 Edit、Remove 与 QueueDock Steer action。One-shot、缺失、未知、损坏、仅含 seed identity 或冷 child 继续被拒绝，且不会恢复。skill 目录优先使用已有 live Agent，否则使用所记录 preset 的常驻 scope，因此列表查询绝不会启动 Agent。经过鉴权的文件交付路由通过 `workspaceDesktop()` 获取提供服务的 Host 名称和文件管理器行为。`openWorkspacePath({ path, action: "reveal" })` 将文件管理器导航委托给原生适配器；省略 `action` 时打开默认应用。
+كل endpoint كل إعلان ذاتي ذات تنشيط سياسة. قائمة فقط قراءة حفظ دائم header و projection cache row، أبدا استدعاء تدريجي Session stat أو فتح بارد Session body. حالي صيغة cache identity يمكن توفير الكل قائمة hint؛ دورة الحياة مطابقة predecessor cache فقط قدرة توفير إصدار توافق title، بصفة ممكن مرور وقت عرض واقع، أبدا قدرة بصفة مرجعي fold seed. بحث، مرفق عنصر، تاريخ صفحة، سجل تتبع مع،skill اكتشاف و مساحة العمل مسار فتح يمكن في لا تنشيط Agent حال حال تحت فحص persistence؛`canOpenWorkspacePath()` بلا حاجة إشارة تحديد Session يكفي تقرير إبلاغ أصلي فتح قدرة. إلغاء اشتراط live حالة؛queue تغيير، نموذج، إعادة تسمية،prompt و ملف مرجع عملية يمكن تحليل أو استعادة عادي Session. نص التوجيه سوف في تحليل Agent أو إلحاق Session حدث قبل، رفض حيث لا يوجد غير فارغ أبيض نص أيضا لا يوجد مرفق عنصر content؛queue edit فقط قبول غير فارغ نص content.prompt دقيق دخول من حقن [`fileUploads`](../../client/file-upload/README.zh.md) Host خدمة أخذ نيل لا نفاذ واضح سند إثبات، في يأخذ كامل لديه ترتيب محتوى قائمة تسليم إعطاء `ctx.attachments` قبل تحليل كل يخص نفس Agent سند إثبات.`requestId` قد دخول queue أو سجل وقت،prompt إعادة محاولة مباشر إرجاع أصل قدوم قبول نتيجة، لن تكرار إدراج دخول رسالة. فقط لديه create و fork سوف مباشر إنشاء جديد Agent. هذا خدمة يأخذ نفس طقم شعور معرفة preset استعادة سياسة و subagent ownership fence معا لأجل ذاته طريقة، و أخرى Remote namespace استخدام Typert Agent و Session lookup.Queue تغيير فقط لديه واحد ضيق ضيق مثال خارج: حالي projection identity لـ continuable كما قدوم ذاتي ذاته غير seed suffix في خط child، يمكن في اثنان عدد inbox هدف فوق استخدام عادي Edit،Remove و QueueDock Steer action.One-shot، ناقص، لم معرفة، ضرر تالف، فقط يحتوي seed identity أو بارد child متابعة يتم رفض، كما لن استعادة.skill دليل أولوية استخدام قد لديه live Agent، لا فإن استخدام الذي سجل preset معتاد إقامة scope، لذلك قائمة استعلام أبدا سوف بدء Agent. مرور مرور تمييز حق ملف تسليم توجيه عبر `workspaceDesktop()` نيل أخذ توفير خدمة Host اسم و ملف إدارة جهاز سلوك.`openWorkspacePath({ path, action: "reveal" })` سوف ملف إدارة جهاز تنقل تفويض حمل إعطاء أصلي مهايئ؛ حذف `action` وقت فتح افتراضي تطبيق.
 
-Client 列表刷新保留未变化的行对象，并在顺序和值均相同时复用条目数组。每行的 `retainedBy` 包含本地引用来源的正计数；Host 元数据刷新不能覆盖它们。缓存成员检查使用每次刷新构建的 ID 集合，因此对账成本随当前列表和保留缓存的规模线性增长。
+Client قائمة تحديث جديد إبقاء لم تغير سطر كائن، و في ترتيب و قيمة متساو نفسه وقت إعادة استخدام بند عدد مجموعة. كل سطر `retainedBy` يتضمن محلي مرجع مصدر صحيح حساب عدد؛Host بيانات وصفية تحديث جديد لا يستطيع تغطية هو جمع. ذاكرة مؤقتة عضو فحص استخدام كل مرة تحديث جديد بناء ID تجميع دمج، لذلك مقابل حساب صار هذا مع حالي قائمة و إبقاء ذاكرة مؤقتة قاعدة نموذج خط صفة زيادة طويل.
 
-Client 适配器提供 `SessionEventStream`，即绑定到一个普通 Session 或 direct subagent address 的 Gateway `RemoteJournalStream`。它在读取首个 page 前打开 follow，只发布连续的 `replace`、`prepend`、`append` 与 `settle-assistant` 变更，并通过 tail page 修复重连或 seq 缺口。向后分页有两个动词：`loadOlder()` 拉一页 50 条消息，而 `loadThrough(seq)`——轮次跳转加载器——按每页 200 条消息循环拉取直到窗口覆盖目标 seq，重复调用会下调共享目标，遇到无进展的页即停止，忙碌状态复用同一个 `loadingOlder` 快照位。Web 适配器显式选择接收无 cursor 的 Assistant frame：每个 opening 携带活跃 attempt 的 `startedAfterSeq`、`nextIndex` 与紧凑 stream，每个 stream member 都成为排在持久 cursor 之间的 Client-only `assistant/live-chunk` 条目。Host 会随该 baseline 捕获 follower 本地到达序号，并抑制该 cut 及之前的 buffered frame；replacement Agent 可以从 revision 一重新开始。活跃 opening 之后到达的持久 `assistant/message` 或 `assistant/attempt` 只有在其 seq 晚于 `startedAfterSeq` 且轮次与步骤匹配时才会保持暂存；匹配的 end type、seq 与 index 会发布一个具名 settlement delta，删除该 attempt 的瞬态 row、加入持久条目，并保留同一步骤中更早的 retry。已知 attempt 的 revision、密集 index 或 settlement 缺口会重新打开 follow；若 controller 错过 start，则忽略 unknown-attempt frame，并正常发布其持久 settlement。Abandoned end 会发布不含持久条目的 settlement delta，使瞬态 row 立即退出。持久缺口修复 page 不携带 Assistant baseline，因此 held notification 会重新打开 follow 一次，以取得配对的 page 与 baseline。每条历史 record 只覆盖自身的事件 seq。业务、persistence 或无法恢复的连续性错误会终止 stream，只有物理载体断开才触发自动恢复。`SessionControlStream` 是 Gateway `RemoteSnapshotStream`；每代都以完整的进程本地 baseline 开始，因此重连会替换 jobs 和 projection 状态，而不会把瞬态值当作 durable event。每次 Host generation 就绪时，同步的 Client 订阅会先清除保留的投影值及其水位，再刷新查询并重新打开 control stream，其中也包括 control baseline 中没有列出的 Session。首次 control stream 会等待 generation 就绪，确保其 opening 值不会先于旧状态清理到达。上一代尚未完成的 list 响应无法重新发布这些值。同一 generation 内，延迟到达的 control baseline 不能覆盖或清除较新的 list、history 或 live 值。持久 `inbox` 投影通过与其他投影相同的冷读取和重连路径传输两份待处理列表。Client Agent 上下文提供独立 [`fileUpload`](../../client/file-upload/README.zh.md) 服务使用的身份；Session 对象提供生命周期、prompt、queue 与历史操作，不提供文件传输。
+Client مهايئ توفير `SessionEventStream`، أي ربط إلى واحد عادي Session أو direct subagent address Gateway `RemoteJournalStream`. هو في قراءة أول عدد page قبل فتح follow، فقط إصدار وصل متابعة `replace`،`prepend`،`append` و `settle-assistant` تغيير، و عبر tail page إصلاح إعادة وصل أو seq نقص فتحة. نحو بعد قسم صفحة لديه اثنان عدد حركة كلمة:`loadOlder()` سحب واحد صفحة 50 بند رسالة، بينما `loadThrough(seq)`——جولة قفز تحويل تحميل جهاز——حسب كل صفحة 200 بند رسالة حلقة سحب أخذ مباشر إلى نافذة تغطية هدف seq، تكرار استدعاء سوف تحت ضبط مشترك هدف، لقاء إلى بلا دخول عرض صفحة أي إيقاف، مشغول مشغول حالة إعادة استخدام نفس عدد `loadingOlder` لقطة موضع.Web مهايئ صريح اختيار استقبال بلا cursor Assistant frame: كل opening يحمل نشط وثب attempt `startedAfterSeq`،`nextIndex` و ضيق تجميع stream، كل stream member كل يصبح ترتيب في حمل دائم cursor بين Client-only `assistant/live-chunk` بند.Host سوف مع هذا baseline التقاط follower محلي وصول ترتيب رقم، و كبح صنع هذا cut و قبل buffered frame؛replacement Agent يمكن من revision واحد إعادة بدء. نشط وثب opening بعد وصول حمل دائم `assistant/message` أو `assistant/attempt` فقط لديه في ذلك seq متأخر في `startedAfterSeq` كما جولة و خطوة مطابقة وقت عندئذ سوف إبقاء مؤقت تخزين؛ مطابقة end type،seq و index سوف إصدار واحد أداة اسم settlement delta، حذف هذا attempt لحظة حالة row، إضافة دخول حمل دائم بند، و إبقاء نفس خطوة في أكثر مبكر retry. معروف attempt revision، سري تجميع index أو settlement نقص فتحة سوف إعادة فتح follow؛ إذا controller خطأ مرور start، فإن تجاهل اختصار unknown-attempt frame، و صحيح معتاد إصدار ذلك حمل دائم settlement.Abandoned end سوف إصدار لا يحتوي حمل دائم بند settlement delta، جعل لحظة حالة row قيام أي خروج. حمل دائم نقص فتحة إصلاح page لا يحمل Assistant baseline، لذلك held notification سوف إعادة فتح follow مرة، بـ أخذ نيل إعداد مقابل page و baseline. كل بند تاريخ record فقط تغطية ذاته حدث seq. عمل خدمة،persistence أو لا يمكن استعادة وصل متابعة صفة خطأ سوف إنهاء stream، فقط لديه شيء إدارة تحميل جسم قطع فتح عندئذ إطلاق تلقائي استعادة.`SessionControlStream` هو Gateway `RemoteSnapshotStream`؛ كل بديل كل بـ كامل عملية محلي baseline بدء، لذلك إعادة وصل سوف استبدال jobs و projection حالة، بينما لن يأخذ لحظة حالة قيمة عند عمل durable event. كل مرة Host generation حينئذ خيط وقت، تزامن Client حجز قراءة سوف أولا صاف حذف إبقاء إسقاط قيمة و ذلك ماء موضع، مجددا تحديث جديد استعلام و إعادة فتح control stream، منها أيضا يشمل control baseline في لا يوجد صف خروج Session. أول مرة control stream سوف انتظار generation حينئذ خيط، تأكيد حفظ ذلك opening قيمة لن أولا في قديم حالة تنظيف وصول. فوق واحد بديل بعد لم إتمام list استجابة لا يمكن إعادة إصدار هذه قيمة. نفس generation داخل، تأخير متأخر وصول control baseline لا يستطيع تغطية أو صاف حذف مقارنة جديد list،history أو live قيمة. حمل دائم `inbox` إسقاط عبر و أخرى إسقاط نفسه بارد قراءة و إعادة وصل مسار نقل اثنان نسخة انتظار معالجة قائمة.Client Agent سياق توفير مستقل [`fileUpload`](../../client/file-upload/README.zh.md) خدمة استخدام هوية؛Session كائن توفير دورة الحياة،prompt،queue و تاريخ عملية، لا توفير ملف نقل.
 
-Session 对象还承载本地提交回显：`session.beginSubmission` 在调用方序列化与提示词之前，同步把一条回显写入 `SessionSnapshot.pendingSubmissions`，会话 UI 因此能在点击提交的当帧显示消息。回显按顺序存放图片预览与持久文件引用。Session 根据当前运行状态与请求的投递模式推导其 `transcript`、`queued` 或 `steering` 位置，并在序列化期间保留该位置。提示词的 `requestId` 是关联标识：Host 把它回显为 durable user source 的 `rpcId`，`inbox` 投影中的待处理消息也保留同一 source。回显在观察到其 durable event 或 queue occurrence 后延迟一个动画帧退休，带标识的提示词失败或被放弃时立即退休，销毁时按 failed 退休。每次退休恰好触发一次 `onRetire`；observed 退休还会携带有序的持久附件引用，让 composer 释放成功卡片并保留失败草稿。回显只存在于 Client 内存；刷新与重连只从持久事件重建会话。
+Session كائن أيضا تحمل تحميل محلي إيداع عودة إظهار:`session.beginSubmission` في استدعاء جهة تسلسل تحويل و نص التوجيه قبل، تزامن يأخذ واحد بند عودة إظهار كتابة `SessionSnapshot.pendingSubmissions`، جلسة UI لذلك قدرة في نقر إيداع عند لقطة عرض رسالة. عودة إظهار حسب ترتيب تخزين وضع صورة معاينة و حمل دائم ملف مرجع.Session أصل حسب حالي تشغيل حالة و طلب إلقاء تمرير نمط دفع توجيه ذلك `transcript`،`queued` أو `steering` موضع، و في تسلسل تحويل خلال إبقاء هذا موضع. نص التوجيه `requestId` هو صلة ربط معرف:Host يأخذ هو عودة إظهار لـ durable user source `rpcId`،`inbox` إسقاط في انتظار معالجة رسالة أيضا إبقاء نفس source. عودة إظهار في مراقبة إلى ذلك durable event أو queue occurrence بعد تأخير متأخر واحد حركة رسم لقطة تراجع راحة، حمل معرف نص التوجيه فشل أو يتم وضع ترك وقت قيام أي تراجع راحة، إلغاء تدمير وقت حسب failed تراجع راحة. كل مرة تراجع راحة تماما جيد إطلاق مرة `onRetire`؛observed تراجع راحة أيضا سوف يحمل لديه ترتيب حمل دائم مرفق عنصر مرجع، يجعل composer تحرير نجاح بطاقة و إبقاء فشل مسودة مسودة. عودة إظهار فقط وجود في Client داخل تخزين؛ تحديث جديد و إعادة وصل فقط من حمل دائم حدث إعادة بناء جلسة.
 
 
-面向用户调用的 `skills/list` 元数据包含胜出提供方可选的指令文件 `path`。输入框可据此预览文件，无需加载每个 skill 的正文或激活冷态 Agent。
+موجه إلى مستخدم استدعاء `skills/list` بيانات وصفية يتضمن فوز خروج مزود اختياري إشارة أمر ملف `path`. إدخال إطار يمكن حسب هذا معاينة ملف، بلا حاجة تحميل كل skill متن أو تنشيط بارد حالة Agent.
 
-分叉复制截至选中已结束轮次的历史，并包含其 `turn/end`。该位置之后的事件均被排除，包括排队输入和模型设置变更。省略锚点或锚点超出日志末尾时，选择最后一个已结束轮次；位于未结束轮次内的锚点会被拒绝。
+قسم تقاطع نسخ قطع حتى اختيار في قد انتهاء جولة تاريخ، و يتضمن ذلك `turn/end`. هذا موضع بعد حدث متساو يتم ترتيب حذف، يشمل ترتيب طابور إدخال و نموذج ضبط تغيير. حذف مرساة نقطة أو مرساة نقطة تجاوز خروج سجل نهاية ذيل وقت، اختيار الأكثر بعد واحد قد انتهاء جولة؛ يقع في لم انتهاء جولة داخل مرساة نقطة سوف يتم رفض.
 
-恢复会话时若已有写句柄占用，返回 `session/writer-held`，并携带会话 id；其他恢复失败仍返回 `gateway/internal`。
+استعادة جلسة وقت إذا قد لديه كتابة جملة مقبض احتلال استخدام، إرجاع `session/writer-held`، و يحمل جلسة id؛ أخرى استعادة فشل ما زال إرجاع `gateway/internal`.
 
 <a id="client-references"></a>
-## Client 引用
+## Client مرجع
 
-`sessions.retain(target, { source, signal? })` 立即获取一个精确 Client generation 的引用，并启动其共享的首次历史打开。目标是已知 Session id 或持久的直接父子 subagent 地址；Host 在打开历史时校验显式地址。返回引用支持幂等的 `release()` 和 `Symbol.dispose`；其 `ready` Promise 跟随共享的 `Session.open()` 结果，并在该次尝试结算时解析为确切 binding，包括 Remote failure 以 `openState: 'error'` 表示的情况。仅当 `Session.open()` 拒绝、等待方取消或引用提前释放时，`ready` 才拒绝。取消一个等待方不会取消其他 owner 的打开。`sessions.using(target, options, operation)` 等待该次结算，持有引用直到回调结束，并传播被拒绝的就绪与回调失败。
+`sessions.retain(target, { source, signal? })` قيام أي نيل أخذ واحد دقيق Client generation مرجع، و بدء ذلك مشترك أول مرة تاريخ فتح. هدف هو معروف Session id أو حمل دائم مباشر أب فرعي subagent عنوان؛Host في فتح تاريخ وقت تحقق صريح عنوان. إرجاع مرجع دعم حمل قوة انتظار `release()` و `Symbol.dispose`؛ ذلك `ready` Promise تتبع مع مشترك `Session.open()` نتيجة، و في هذا مرة محاولة تجربة تسوية وقت تحليل لـ تأكيد قطع binding، يشمل Remote failure بـ `openState: 'error'` يمثل حال حال. فقط عند `Session.open()` رفض، انتظار جهة إلغاء أو مرجع رفع قبل تحرير وقت،`ready` عندئذ رفض. إلغاء واحد انتظار جهة لن إلغاء أخرى owner فتح.`sessions.using(target, options, operation)` انتظار هذا مرة تسوية، يحتفظ مرجع مباشر إلى عودة ضبط انتهاء، و نقل بث يتم رفض حينئذ خيط و عودة ضبط فشل.
 
-引用保活本地会话数据、作用域 Context 和历史流，不保活 Host Agent。最后一个引用释放时，generation 先退出可访问映射，再执行清理；后续获取可以为同一 id 创建新 generation。`binding(id)` 和 `scope(id)` 只借用已有 generation。`retainInfo(id)` 独立于目录成员关系观察稳定的只读来源计数，不执行历史 I/O。消费方来源键可通过声明合并扩展；导航和完成确认属于 UI 消费方，不属于本控制器。所有权与清理规则见 [Client 会话引用](../../../.agents/notes/implemented/architecture/2026-09-15-client-session-references.zh.md)。
+مرجع حفظ نشط محلي جلسة بيانات، أثر مجال Context و تاريخ تدفق، لا حفظ نشط Host Agent. الأكثر بعد واحد مرجع تحرير وقت،generation أولا خروج يمكن وصول خريطة، مجددا تنفيذ تنظيف؛ لاحق نيل أخذ يمكن لـ نفس id إنشاء جديد generation.`binding(id)` و `scope(id)` فقط استعارة استخدام قد لديه generation.`retainInfo(id)` مستقل في دليل عضو علاقة مراقبة مستقر فقط قراءة مصدر حساب عدد، لا تنفيذ تاريخ I/O. مستهلك مصدر مفتاح يمكن عبر إعلان دمج توسيع؛ تنقل و إتمام تأكيد يخص UI مستهلك، لا يخص هذا تحكم جهاز. كل حق و تنظيف قاعدة رؤية [Client جلسة مرجع](../../../.agents/notes/implemented/architecture/2026-09-15-client-session-references.zh.md).
 
 <a id="session-media-references"></a>
-## 会话媒体引用
+## جلسة وسيط جسم مرجع
 
-当 `connection`、`fs` 与 `attachments` 均被组合时，`SessionMediaReferences` 在鉴权 `connection.fetch` 通道上挂载 `GET|HEAD /api/file?path=<绝对路径>`。它通过 `ctx.fs` 读取普通文件，包括已注册工作区之外的临时路径与远程提供方中的文件。目录包含关系与 MIME 类别均不限制访问；`mime-types` 提供响应类型，未知扩展名使用 `application/octet-stream`。GET 复用 `readBytes` 执行读取前及读取中的字节限制；HEAD 只读取元数据。所有文件均使用 `ctx.attachments.imageLimits.maxImageBytes`（通常为 20 MiB）；超过此上限返回 413。响应包含完整文件，忽略 Range，并携带 `private, no-store`、`nosniff` 与沙箱 CSP，使直接打开的 HTML/SVG 无法以 API 源身份执行脚本。客户端重写位于 `ui-chat`（`AssistantMarkdown`）；音视频文件响应已可用，Markdown 音视频播放器节点仍是独立工作。
+عند `connection`،`fs` و `attachments` متساو يتم تركيب وقت،`SessionMediaReferences` في تمييز حق `connection.fetch` عبر طريق فوق تركيب `GET|HEAD /api/file?path=<قطعا مقابل مسار>`. هو عبر `ctx.fs` قراءة عادي ملف، يشمل قد تسجيل مساحة العمل خارج مؤقت مسار و بعيد مسار مزود في ملف. دليل يتضمن علاقة و MIME صنف آخر متساو لا حد وصول؛`mime-types` توفير استجابة نوع، لم معرفة توسيع اسم استخدام `application/octet-stream`.GET إعادة استخدام `readBytes` تنفيذ قراءة قبل و قراءة في بايت حد؛HEAD فقط قراءة بيانات وصفية. كل ملف متساو استخدام `ctx.attachments.imageLimits.maxImageBytes`(عبر معتاد لـ 20 MiB) ؛ تجاوز مرور هذا حد أعلى إرجاع 413. استجابة يتضمن كامل ملف، تجاهل اختصار Range، و يحمل `private, no-store`،`nosniff` و صندوق رملي CSP، جعل مباشر فتح HTML/SVG لا يمكن بـ API مصدر هوية تنفيذ نص برمجي. عميل إعادة كتابة يقع في `ui-chat`(`AssistantMarkdown`) ؛ صوت نظر تردد ملف استجابة قد متاح،Markdown صوت نظر تردد بث وضع جهاز عقدة ما زال هو مستقل عمل.
 
 -----
 
 <a id="configuration"></a>
-## 配置
+## إعداد
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---:|---|
-| `nativeOpen` | 平台探测 | 是否能把 Session 工作区路径交给原生桌面打开器 |
+| `nativeOpen` | منصة استكشاف قياس | هل قدرة يأخذ Session مساحة العمل مسار تسليم إعطاء أصلي طاولة وجه فتح جهاز |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-api-session-controller)是所有受支持字段及其 JSDoc 的完整来源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-api-session-controller) هو كل تلقي دعم حمل حقل و ذلك JSDoc كامل مصدر.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无；任何模型可见效果都由被调用的 Agent 命令负责。
+بلا؛ أي نموذج مرئي فاعلية نتيجة كل من يتم استدعاء Agent أمر مسؤول.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；模型请求仍由 Agent 和 LLM（大语言模型）包拥有。
+بلا مباشر أثر؛ نموذج طلب ما زال من Agent و LLM(كبير لغة نموذج) حزمة يملك.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- 图片字节上限不校验解码后的尺寸或像素数。
-- Control baseline 表示进程本地状态，因此 Host 重启后无法重建 jobs。
-- follow 恢复失败会对调用方可见，而不会无限重试。
-- 浏览器原始字节上传使用一次不带断点续传偏移的流式 HTTP 请求；重试会从第零字节重新传输整个文件。
-- 文件引用补全使用共享 Agent lookup，因此可能恢复冷 Session；`skills/list` 目录是不激活 Agent 的 skill 元数据读取路径。
+- صورة بايت حد أعلى لا تحقق حل رمز بعد مقياس قياس أو مثل عنصر عدد.
+- Control baseline يمثل عملية محلي حالة، لذلك Host إعادة بدء بعد لا يمكن إعادة بناء jobs.
+- follow استعادة فشل سوف مقابل استدعاء جهة مرئي، بينما لن بلا حد إعادة محاولة.
+- متصفح أصلي بايت فوق نقل استخدام مرة لا حمل قطع نقطة متابعة نقل انحراف نقل تدفق صيغة HTTP طلب؛ إعادة محاولة سوف من رقم صفر بايت إعادة نقل كامل ملف.
+- ملف مرجع تكملة كل استخدام مشترك Agent lookup، لذلك ممكن استعادة بارد Session؛`skills/list` دليل هو لا تنشيط Agent skill بيانات وصفية قراءة مسار.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。每个分页与帧都会对照其指向的持久 Session 校验。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. كل قسم صفحة و لقطة كل سوف مقابل وفق ذلك إشارة نحو حمل دائم Session تحقق.

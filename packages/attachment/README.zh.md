@@ -1,51 +1,51 @@
 ---
-description: "持久图片附件能力族的包映射：你可以用图片附件做什么，以及你的图片存放在哪里。"
+description: "حمل دائم صورة مرفق عنصر قدرة عائلة حزمة خريطة: أنت يمكن استخدام صورة مرفق عنصر فعل ماذا، و أنت صورة تخزين وضع في أي داخل."
 kind: "package-group"
 ---
 
-# attachment/：持久附件能力族
+# attachment/: حمل دائم مرفق عنصر قدرة عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`attachment/` 组提供持久图片附件：把图片附加到提示词和命令，harness 会把它保存到你的机器上，重新显示在对话历史中，并在后续轮次发送给模型。随附的 `dsh` 组合无需任何设置即可支持这一点。该能力与它的存储拆分为两个包，见下文。已存储的图片在重启后依然存在且永远不会被自动删除，并且只支持光栅图片格式。
+`attachment/` مجموعة توفير حمل دائم صورة مرفق عنصر: يأخذ صورة مرفق إضافة إلى نص التوجيه و أمر،harness سوف يأخذ هو حفظ إلى أنت آلة جهاز فوق، إعادة عرض في محادثة تاريخ في، و في لاحق جولة إرسال إعطاء نموذج. مع مرفق `dsh` تركيب بلا حاجة أي ضبط يكفي دعم حمل هذا واحد نقطة. هذا قدرة و هو تخزين تفكيك قسم لـ اثنان عدد حزمة، رؤية تحت نص. قد تخزين صورة في إعادة بدء بعد اعتماد لكن وجود كما دائم بعيد لن يتم تلقائي حذف، و كما فقط دعم حمل ضوء شبكة صورة صيغة.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-这两个包提供持久图片附件；每个 README 描述其各自部分可以做什么。
+هذا اثنان عدد حزمة توفير حمل دائم صورة مرفق عنصر؛ كل README وصف ذلك كل منها جزء يمكن فعل ماذا.
 
-| 包 | 角色 | ctx 键 |
+| حزمة | زاوية لون | ctx مفتاح |
 |---|---|---|
-| [`attachment/`](attachment/README.zh.md) | 可用于提示词与命令、会持久保存并回到历史中的图片附件 | `ctx.attachments` |
-| [`attachment-local/`](attachment-local/README.zh.md) | 把附加图片存储在本机 `DSH_HOME` 下 | 注册到 `ctx.attachments` |
+| [`attachment/`](attachment/README.zh.md) | متاح في نص التوجيه و أمر، سوف حمل دائم حفظ و عودة إلى تاريخ في صورة مرفق عنصر | `ctx.attachments` |
+| [`attachment-local/`](attachment-local/README.zh.md) | يأخذ مرفق إضافة صورة تخزين في هذا آلة `DSH_HOME` تحت | تسجيل إلى `ctx.attachments` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解服务约定，再看能力 seam 表与本地后端的配置面。
+أولا من فرعي نظام مشاركة اعتبار حل خدمة اتفاق، مجددا نظر قدرة seam جدول و محلي خلفية إعداد وجه.
 
-- [附件子系统参考](../../docs/subsystems/attachment.zh.md)——服务约定、载荷类型与 `ctx.attachments` 的 Cordis 接口面。
-- [能力 seam](../../docs/capability-seams.zh.md)——本家族遵循的 Service Definition / Service Provider / Consumer 拆分。
-- [生成配置目录](../../docs/config-catalog.zh.md#deepseek-aidsh-attachment-local)——本地后端的每个受支持字段。
+- [مرفق عنصر فرعي نظام مشاركة اعتبار](../../docs/subsystems/attachment.zh.md)——خدمة اتفاق، تحميل حمل نوع و `ctx.attachments` Cordis واجهة وجه.
+- [قدرة seam](../../docs/capability-seams.zh.md)——هذا بيت عائلة التزام دوران Service Definition / Service Provider / Consumer تفكيك قسم.
+- [توليد إعداد دليل](../../docs/config-catalog.zh.md#deepseek-aidsh-attachment-local)——محلي خلفية كل تلقي دعم حمل حقل.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -1,347 +1,347 @@
-# Agent Note: Client Conversation 业务节点组装与 Chat keyed snapshot
+# Agent Note: Client Conversation عمل خدمة عقدة تجميع و Chat keyed snapshot
 
 Status: implemented
 
-[English](2026-08-09-client-conversation-node-assembly.md) | 中文
+[English](2026-08-09-client-conversation-node-assembly.md) | العربية
 
-## 问题
+## مشكلة
 
-Client Session 既维护传输窗口、连接状态和待处理交互，也在中心化 transcript fold 中解释 Assistant、Tool、消息、命令、压缩、重试及 turn tail 等业务事件。每增加一种业务节点，都要修改 Session 的 switch、历史 replay、索引、缓存和 React 分组；业务 identity、状态演进与最终展示没有独立所有者。
+Client Session حيث صيانة نقل نافذة، اتصال حالة و انتظار معالجة تفاعل، أيضا في في قلب تحويل transcript fold في حل تفسير Assistant،Tool، رسالة، أمر، ضغط، إعادة محاولة و turn tail انتظار عمل خدمة حدث. كل زيادة واحد نوع عمل خدمة عقدة، كل يلزم تعديل Session switch، تاريخ replay، بحث جذب، ذاكرة مؤقتة و React قسم مجموعة؛ عمل خدمة identity، حالة عرض دخول و نهائي عرض لا يوجد مستقل كل من.
 
-缺少 target-neutral assembly 时，运行中的 Assistant 和 Tool 会位于 finalized flow 之外，结算后才进入按日志排序的节点列表。React parent 因而改变，即使业务 ID 和 `key` 稳定也会重新挂载。全量历史加载、older prepend、实时 append 与 token streaming 若分别走不同更新路径，引用稳定和局部重算也只能依赖各处特化缓存。
+نقص قليل target-neutral assembly وقت، تشغيل في Assistant و Tool سوف يقع في finalized flow خارج، تسوية بعد عندئذ دخول حسب سجل ترتيب ترتيب عقدة قائمة.React parent بسبب بينما تغيير، أي جعل عمل خدمة ID و `key` مستقر أيضا سوف إعادة تركيب. كل كمية تاريخ تحميل،older prepend، فوري append و token streaming إذا قسم آخر مشي مختلف تحديث مسار، مرجع مستقر و نطاق جزء إعادة حساب أيضا فقط قدرة اعتماد كل موضع خاص تحويل ذاكرة مؤقتة.
 
-业务事件之间的关联方式并不统一。Tool 有 call ID，Assistant 以 turn/step 关联，Compaction 有独立生命周期和 checkpoint，Inbox splice 则表示一个连续状态的瞬间。把这些差异继续塞进统一 fold，会让任一业务变化都经过全局查表并使无关缓存失效。
+عمل خدمة حدث بين صلة ربط طريقة و لا موحد واحد.Tool لديه call ID،Assistant بـ turn/step صلة ربط،Compaction لديه مستقل دورة الحياة و checkpoint،Inbox splice فإن يمثل واحد وصل متابعة حالة لحظة بين. يأخذ هذه فرق مختلف متابعة سد دخول موحد واحد fold، سوف يجعل مهمة واحد عمل خدمة تغير كل مرور مرور عام فحص جدول و جعل غير متصل ذاكرة مؤقتة بطلان.
 
-## 决策
+## قرار
 
-Client Runtime 提供 target-neutral 的 Conversation Node 组装引擎，业务插件注册 Event Definition，视图插件注册 per-Session View Builder。`ui-conversation` 注册第一批内建 Definition 和 `chat` builder；Session 只负责把当前连续 `SessionEventLikeEntry` window 送入引擎并发布它的 snapshot，且不解释具体 conversation 业务。entry 的外层 discriminator 区分标准与 packed record，两者都携带字段对齐的内部 `SessionEventLike`，供 Definition dispatch。
+Client Runtime توفير target-neutral Conversation Node تجميع جذب محرك، عمل خدمة إضافة تسجيل Event Definition، عرض إضافة تسجيل per-Session View Builder.`ui-conversation` تسجيل رقم واحد دفعة داخل بناء Definition و `chat` builder؛Session فقط مسؤول يأخذ حالي وصل متابعة `SessionEventLikeEntry` window إرسال دخول جذب محرك تزامن نشر هو snapshot، كما لا حل تفسير أداة جسم conversation عمل خدمة.entry خارج طبقة discriminator منطقة قسم معيار و packed record، اثنان من كل يحمل حقل مقابل متساو داخلي `SessionEventLike`، توفير Definition dispatch.
 
-本 Note 保留实现后仍有价值的方案推导、逐业务适配、职责、算法和取舍。
+هذا Note إبقاء تنفيذ بعد ما زال لديه قيمة قيمة خطة دفع توجيه، تدريجي عمل خدمة ملائم إعداد، مسؤولية، حساب قاعدة و أخذ ترك.
 
-Chat 只注册 `next-step` Inbox Definition，因为消息分类是其唯一消费方；`next-turn` splice 仍是持久 Session input，但不会创建 Chat Context。Chat 与 Trajectory 各自维护 target 专属 next-step state。每次插入只把消息 ID 写入不可变 splice 节点。成功 claim 时只 materialize 一次 pending 链，以当前批次替换上一个 claimed Set，并让后续 Context 共享该 Set，直到下一次 claim。AgentLoop 会在领取下一批消息之前追加当前 claim 接纳的全部消息；被拒绝的 claim 不追加 `user/message`，因此后续分类只需当前批次。历史 Context 因而只保留线性 ID state，不再保留累计数组和 Set 快照。
+Chat فقط تسجيل `next-step` Inbox Definition، لأن رسالة تصنيف هو ذلك وحيد مستهلك؛`next-turn` splice ما زال هو حمل دائم Session input، لكن لن إنشاء Chat Context.Chat و Trajectory كل منها صيانة target مخصص تابع next-step state. كل مرة إدراج دخول فقط يأخذ رسالة ID كتابة غير ممكن تغيير splice عقدة. نجاح claim وقت فقط materialize مرة pending سلسلة، بـ حالي دفعة مرة استبدال فوق واحد claimed Set، و يجعل لاحق Context مشترك هذا Set، مباشر إلى تحت مرة claim.AgentLoop سوف في قيادة أخذ تحت واحد دفعة رسالة قبل إلحاق حالي claim وصل قبول الكل رسالة؛ يتم رفض claim لا إلحاق `user/message`، لذلك لاحق تصنيف فقط يحتاج حالي دفعة مرة. تاريخ Context بسبب بينما فقط إبقاء خط صفة ID state، لم يعد إبقاء تراكم حساب عدد مجموعة و Set لقطة.
 
-### 责任分层
+### مسؤولية مهمة قسم طبقة
 
-| 层 | 长期职责 | 明确不负责 |
+| طبقة | طويل مدة مسؤولية | واضح لا مسؤول |
 |---|---|---|
-| Session | 维护连续逻辑 event window，区分 replace、prepend 与 scalar append，调度 snapshot 通知 | 解释 Tool、Assistant、Compaction 等业务事件 |
-| Event Registry | 按 Cordis 生命周期保存唯一 `kind` 的 Definition 和唯一 fallback | 保存某个 Session 的 Context 或 State |
-| Assembler | 匹配标准 event 或 packed run，维护 Context、Location、依赖和发布脏集 | 理解业务 State 字段或 Chat 排序 |
-| Node Definition | 定义一个业务对象的 identity、State 演进、Location data 和 target Node | 创建 Context、修改别的业务 State 或扫描全部 Context |
-| View Builder | 把最终 target Node 增量整理成该视图的 snapshot | 重新解释 `SessionEventLike` input |
-| React renderer | 按最终 Node 的 `kind` 展示 renderer-owned data，并读取当前 Node 所属 Location 的只读业务 data | 配对业务 Event、扫描全局 Nodes 或决定业务生命周期 |
+| Session | صيانة وصل متابعة منطق event window، منطقة قسم replace،prepend و scalar append، ضبط درجة snapshot إشعار | حل تفسير Tool،Assistant،Compaction انتظار عمل خدمة حدث |
+| Event Registry | حسب Cordis دورة الحياة حفظ وحيد `kind` Definition و وحيد fallback | حفظ بعض عدد Session Context أو State |
+| Assembler | مطابقة معيار event أو packed run، صيانة Context،Location، اعتماد و إصدار قذر تجميع | إدارة حل عمل خدمة State حقل أو Chat ترتيب ترتيب |
+| Node Definition | تعريف واحد عمل خدمة كائن identity،State عرض دخول،Location data و target Node | إنشاء Context، تعديل آخر عمل خدمة State أو مسح الكل Context |
+| View Builder | يأخذ نهائي target Node زيادة كمية كامل إدارة صار هذا عرض snapshot | إعادة حل تفسير `SessionEventLike` input |
+| React renderer | حسب نهائي Node `kind` عرض renderer-owned data، و قراءة حالي Node الذي تابع Location فقط قراءة عمل خدمة data | إعداد مقابل عمل خدمة Event، مسح عام Nodes أو قرار عمل خدمة دورة الحياة |
 
-Registry 注册是 Cordis effect，Definition 卸载会触发现有 Session 的低频 registry rebuild。普通业务 Event 不改变 Registry，也不会因此重建全部业务类型。
+Registry تسجيل هو Cordis effect،Definition إزالة سوف إطلاق قائم Session منخفض تردد registry rebuild. عادي عمل خدمة Event لا تغيير Registry، أيضا لن لذلك إعادة بناء الكل عمل خدمة نوع.
 
-### `ConversationNodeDefinition` 总体契约
+### `ConversationNodeDefinition` مجموع جسم عقد نحو
 
-每个 [`ConversationNodeDefinition`](../../../../packages/client/ui-conversation/src/client/contract/conversation.ts) 独立拥有一种业务对象从 `SessionEventLike` input 到 State 和最终 view Node 的转换。Definition 的 `kind` 是 Registry 内唯一名称，也是业务 ID 的命名空间。
+كل [`ConversationNodeDefinition`](../../../../packages/client/ui-conversation/src/client/contract/conversation.ts) مستقل يملك واحد نوع عمل خدمة كائن من `SessionEventLike` input إلى State و نهائي view Node تحويل.Definition `kind` هو Registry داخل وحيد اسم، أيضا هو عمل خدمة ID نطاق الأسماء.
 
-同一个 input 可以被多个普通 Definition 认领。例如一条 Assistant event 或 packed run 同时更新 Assistant Node 和 Turn Tail；一条 Retry Event 同时更新 Retry、Assistant 和 Turn Tail。Assembler 只有在全部普通 Definition 都返回 `null` 时才询问 fallback。
+نفس عدد input يمكن يتم كثير عدد عادي Definition إقرار قيادة. مثال مثل واحد بند Assistant event أو packed run معا تحديث Assistant Node و Turn Tail؛ واحد بند Retry Event معا تحديث Retry،Assistant و Turn Tail.Assembler فقط لديه في الكل عادي Definition كل إرجاع `null` وقت عندئذ استفسار سؤال fallback.
 
-Definition 不持有跨 Session 的可变业务数据。每个 Session 的 Context、State、依赖和 View Builder 都由该 Session 的 Assembler 隔离持有。
+Definition لا يحتفظ عبر Session متغير عمل خدمة بيانات. كل Session Context،State، اعتماد و View Builder كل من هذا Session Assembler عزل يحتفظ.
 
-#### `kind`、业务 ID 与 Context key
+#### `kind`، عمل خدمة ID و Context key
 
-`match()` 返回的 `id` 只要求在当前 Definition 内稳定。Tool 的 ID 可以是 call ID，Assistant 的 ID 可以是 `turn:step`，Inbox 的 ID 可以是 splice Event seq。
+`match()` إرجاع `id` فقط اشتراط في حالي Definition داخل مستقر.Tool ID يمكن هو call ID،Assistant ID يمكن هو `turn:step`،Inbox ID يمكن هو splice Event seq.
 
-Assembler 使用 `conversationContextKey(kind, id)` 组合无碰撞 key；不同 Definition 即使返回相同 `id` 也不会共享 Context。最终 view Node 必须沿用这个 engine-owned key，不能把 `seq` 或渲染位置当 identity。
+Assembler استخدام `conversationContextKey(kind, id)` تركيب بلا اصطدام اصطدام key؛ مختلف Definition أي جعل إرجاع نفسه `id` أيضا لن مشترك Context. نهائي view Node يجب امتداد استخدام هذا عدد engine-owned key، لا يستطيع يأخذ `seq` أو تصيير موضع عند identity.
 
-每个 `(kind, id)` 最多存在一个 start Match。第二个 start 会立即报错；Definition 需要表达新生命周期时必须返回新 ID。
+كل `(kind, id)` الأكثر كثير وجود واحد start Match. ثاني عدد start سوف قيام أي تقرير خطأ؛Definition حاجة جدول بلوغ جديد دورة الحياة وقت يجب إرجاع جديد ID.
 
 #### `match(event)`
 
-`match(event)` 只读取当前 `SessionEventLike`，返回 `{ id, role: 'start' | 'update' }` 或 `null`。它拿不到 Context、history、Reader、Location 或 view envelope。Client-only `assistant/live-chunk` event 只能作为 update；Assembler 会拒绝每个 transient start，`start()` 接收的 `ConversationStartMatch` 只包含持久 `SessionEvent`。
+`match(event)` فقط قراءة حالي `SessionEventLike`، إرجاع `{ id, role: 'start' | 'update' }` أو `null`. هو أخذ لا إلى Context،history،Reader،Location أو view envelope.Client-only `assistant/live-chunk` event فقط قدرة بصفة update؛Assembler سوف رفض كل transient start،`start()` استقبال `ConversationStartMatch` فقط يتضمن حمل دائم `SessionEvent`.
 
-这项限制使单条 scalar event 或 packed run 的路由成本只随已注册 Definition 数量增长。Assembler 不会为了判断一条 update 属于谁而遍历该 Definition 的历史 Context。
+هذا بند حد جعل مفرد بند scalar event أو packed run توجيه صار هذا فقط مع قد تسجيل Definition عدد كمية زيادة طويل.Assembler لن لـ حكم قطع واحد بند update يخص من بينما مرة تاريخ هذا Definition تاريخ Context.
 
-start、result、resource、checkpoint 及业务自有终止 Event 必须携带或可直接推导同一 ID。若单个 Event 不能算出 ID，生产 Event 的协议负责补足关联字段，Client 不通过“最近一个未完成对象”猜测。
+start،result،resource،checkpoint و عمل خدمة ذاتي لديه إنهاء Event يجب يحمل أو يمكن مباشر دفع توجيه نفس ID. إذا مفرد عدد Event لا يستطيع حساب خروج ID، إنتاج Event بروتوكول مسؤول تكملة كاف صلة ربط حقل،Client لا عبر “الأكثر قريب واحد لم إتمام كائن” تخمين قياس.
 
-`role` 描述 State 生命周期，不描述可见性。start 可以立即生成 terminal Node；update 也可以在 start 尚未加载时先进入 pending Context。
+`role` وصف State دورة الحياة، لا وصف مرئي صفة.start يمكن قيام أي توليد terminal Node؛update أيضا يمكن في start بعد لم تحميل وقت أولا دخول pending Context.
 
 #### `ConversationMatch`
 
-匹配成功后，Assembler 把标准或 packed event、`role` 和引擎计算的 `location` 组成只读 `ConversationMatch`。一个 packed run 始终只占一个 Match，并保留 fragment 与 timestamp-gap 数组。
+مطابقة نجاح بعد،Assembler يأخذ معيار أو packed event،`role` و جذب محرك حساب حساب `location` مجموعة صار فقط قراءة `ConversationMatch`. واحد packed run بداية نهاية فقط احتلال واحد Match، و إبقاء fragment و timestamp-gap عدد مجموعة.
 
-Context 的 `matches` 永远按首 `seq` 升序保存，而不是按网络到达或分页摄入顺序保存。Session journal 已经拒绝逻辑 range 重叠。历史尾页先出现 result、older 页后出现 call 时，最终 Match 顺序仍然是 call 在前、result 在后。
+Context `matches` دائم بعيد حسب أول `seq` رفع ترتيب حفظ، بينما لا هو حسب شبكة شبكة وصول أو قسم صفحة التقاط دخول ترتيب حفظ.Session journal قد رفض منطق range إعادة تراكم. تاريخ ذيل صفحة أولا ظهور result،older صفحة بعد ظهور call وقت، نهائي Match ترتيب ما زال هو call في قبل،result في بعد.
 
-Location 可以随 prepend 补齐边界或 append 关闭边界而改变。Assembler 替换受影响 Match 的只读 Location 并 replay Context；业务不把旧 Location 副本当权威保存。
+Location يمكن مع prepend تكملة متساو حد أو append إغلاق حد بينما تغيير.Assembler استبدال تلقي أثر Match فقط قراءة Location و replay Context؛ عمل خدمة لا يأخذ قديم Location فرعي هذا عند مرجعي حفظ.
 
 #### `ConversationNodeContext`
 
-| 字段 | 所有者 | Definition 可见语义 |
+| حقل | كل من | Definition مرئي دلالة |
 |---|---|---|
-| `key` | Assembler | `kind + id` 的稳定最终 identity |
-| `kind` / `id` | Definition + Assembler | 当前业务命名空间和业务 ID |
-| `matches` | Assembler | 当前窗口已收集且按首 `seq` 排序的完整 scalar 与 packed 业务证据 |
-| `start` | Assembler | 唯一 scalar start Match；尚未加载时为 `undefined` |
-| `state` | Definition 返回、Assembler 持有 | 最近一次 `start`/`update` 返回值；未初始化时为 `undefined` |
-| `current` | Assembler | 各 target 最近一次 materialize 的 Node 或 `null` |
+| `key` | Assembler | `kind + id` مستقر نهائي identity |
+| `kind` / `id` | Definition + Assembler | حالي عمل خدمة نطاق الأسماء و عمل خدمة ID |
+| `matches` | Assembler | حالي نافذة قد استلام تجميع كما حسب أول `seq` ترتيب ترتيب كامل scalar و packed عمل خدمة دليل |
+| `start` | Assembler | وحيد scalar start Match؛ بعد لم تحميل وقت لـ `undefined` |
+| `state` | Definition إرجاع،Assembler يحتفظ | الأكثر قريب مرة `start`/`update` قيمة راجعة؛ لم ابتدائي تحويل وقت لـ `undefined` |
+| `current` | Assembler | كل target الأكثر قريب مرة materialize Node أو `null` |
 
-Context 字段只读，不表示业务 State 必须是深度 immutable。Definition 可以返回新对象，也可以原地修改旧对象后返回同一引用。
+Context حقل فقط قراءة، لا يمثل عمل خدمة State يجب هو عميق درجة immutable.Definition يمكن إرجاع جديد كائن، أيضا يمكن أصل أرض تعديل قديم كائن بعد إرجاع نفس مرجع.
 
-Assembler 只采纳函数返回值。`start()` 或 `update()` 返回 `undefined` 是契约错误并立即报错；修改了对象却不返回它同样不成立。
+Assembler فقط قبول دالة قيمة راجعة.`start()` أو `update()` إرجاع `undefined` هو عقد نحو خطأ و قيام أي تقرير خطأ؛ تعديل كائن لكن لا إرجاع هو نفس مثال لا صار قيام.
 
-Definition 可以读取完整 `matches` 辅助构造 State 或 fallback Node，但不能增删 Match、替换 Context 字段或修改另一个 Context。
+Definition يمكن قراءة كامل `matches` مساعد مساعدة بنية صنع State أو fallback Node، لكن لا يستطيع زيادة حذف Match، استبدال Context حقل أو تعديل آخر عدد Context.
 
 #### `start(context, match, reader)`
 
-`start()` 是 State 的唯一初始化入口。Assembler 首次得到唯一 start 后调用它，并采用其返回 State。
+`start()` هو State وحيد ابتدائي تحويل مدخل.Assembler أول مرة نيل إلى وحيد start بعد استدعاء هو، و اعتماد ذلك إرجاع State.
 
-当更早分页改变 Context 的 Match 顺序、Reader 前序答案或 Location 事实时，Assembler 从 `start()` 重新计算，而不是对旧 State 做方向相反的补丁。
+عند أكثر مبكر قسم صفحة تغيير Context Match ترتيب،Reader قبل ترتيب جواب سجل أو Location واقع وقت،Assembler من `start()` إعادة حساب حساب، بينما لا هو مقابل قديم State فعل جهة نحو متبادل عكس رقعة.
 
-调用 `start()` 时，Context 可能已经收集 start 之后的 updates。`start()` 返回初始 State 后，Assembler 仍会从 start 之后按日志正序逐条调用 `update()`，因此摄入方向不会改变最终 fold 结果。
+استدعاء `start()` وقت،Context ممكن قد استلام تجميع start بعد updates.`start()` إرجاع ابتدائي State بعد،Assembler ما زال سوف من start بعد حسب سجل صحيح ترتيب تدريجي بند استدعاء `update()`، لذلك التقاط دخول جهة نحو لن تغيير نهائي fold نتيجة.
 
-`reader` 只在 `start()` 中可用。它允许初始化逻辑读取严格位于当前 start seq 之前、指定 `kind` 的最近 active Context，但不给业务一个任意扫描引擎内部 Map 的接口。
+`reader` فقط في `start()` في متاح. هو سماح ابتدائي تحويل منطق قراءة صارم إطار يقع في حالي start seq قبل، إشارة تحديد `kind` الأكثر قريب active Context، لكن لا إعطاء عمل خدمة واحد مهمة معنى مسح جذب محرك داخلي Map واجهة.
 
-每次重新调用 `start()` 都会替换上一次调用登记的 Reader 依赖，保证 Definition 改变查询分支时不会保留陈旧边。
+كل مرة إعادة استدعاء `start()` كل سوف استبدال فوق مرة استدعاء تسجيل تسجيل Reader اعتماد، حفظ إثبات Definition تغيير استعلام فرع وقت لن إبقاء قديم قديم حافة.
 
 #### `reader.previous(kind)`
 
-`reader.previous(kind)` 查找满足 `candidate.startSeq < current.startSeq` 且 State 已初始化的最近 Context。它不会返回同 seq、未来 Context 或尚无 State 的 pending Context。
+`reader.previous(kind)` فحص بحث ممتلئ كاف `candidate.startSeq < current.startSeq` كما State قد ابتدائي تحويل الأكثر قريب Context. هو لن إرجاع نفس seq، لم قدوم Context أو بعد بلا State pending Context.
 
-返回值包含前序 Context 的 key、kind、id、start seq、只读 State 和 Matches。消费者自行解释 State；提供方只负责把自己的 State 维护正确，不需要注册特化 query 方法。
+قيمة راجعة يتضمن قبل ترتيب Context key،kind،id،start seq، فقط قراءة State و Matches. إزالة استهلاك من ذاتي سطر حل تفسير State؛ مزود فقط مسؤول يأخذ ذاتي ذات State صيانة صحيح تأكيد، لا حاجة تسجيل خاص تحويل query طريقة.
 
-Reader 每次查询都记录 `{ key, revision, windowGap }` 依赖。命中前序 Context 时，其 revision 变化会 replay 消费者；未命中且仍有 older 历史时，window gap 会等待后续 prepend。
+Reader كل مرة استعلام كل سجل `{ key, revision, windowGap }` اعتماد. أمر في قبل ترتيب Context وقت، ذلك revision تغير سوف replay إزالة استهلاك من؛ لم أمر في كما ما زال لديه older تاريخ وقت،window gap سوف انتظار لاحق prepend.
 
-若窗口已经到达 Session 起点仍未命中，`undefined` 是确定答案。若 `hasMore` 为 true，Definition 看到的仍是同一个 `undefined`，但 Assembler 会记住这是暂定结果。
+إذا نافذة قد وصول Session بدء نقطة ما زال لم أمر في،`undefined` هو تحديد جواب سجل. إذا `hasMore` لـ true،Definition يرى ما زال هو نفس عدد `undefined`، لكن Assembler سوف تسجيل إقامة هذا هو مؤقت تحديد نتيجة.
 
-依赖严格从较早 start 指向较晚 start，因此传递 replay 不形成时序环。Inbox 瞬间态链和 Message 对 Inbox 的读取都使用这一约束。
+اعتماد صارم إطار من مقارنة مبكر start إشارة نحو مقارنة متأخر start، لذلك نقل تمرير replay لا شكل صار وقت ترتيب حلقة.Inbox لحظة بين حالة سلسلة و Message مقابل Inbox قراءة كل استخدام هذا واحد قيد.
 
 #### `update(context, match)`
 
-`update()` 只处理已由 `match()` 精确路由到当前 `(kind, id)` 的 post-start durable 或 transient Match。它不判断 input 属于哪个 Context。Assistant Definition 会直接 fold 每个 `assistant/live-chunk` update，并在 history replay 期间展开嵌入式 `assistant/message` 或 `assistant/attempt` stream。
+`update()` فقط معالجة قد من `match()` دقيق توجيه إلى حالي `(kind, id)` post-start durable أو transient Match. هو لا حكم قطع input يخص أي عدد Context.Assistant Definition سوف مباشر fold كل `assistant/live-chunk` update، و في history replay خلال توسيع تضمين دخول صيغة `assistant/message` أو `assistant/attempt` stream.
 
-Assembler 按 `seq` 升序调用 `update()`。实时尾部 update 可以直接增量应用；任何非尾部证据插入、start 补齐或依赖失效都会从 `start()` 完整 replay。
+Assembler حسب `seq` رفع ترتيب استدعاء `update()`. فوري ذيل جزء update يمكن مباشر زيادة كمية تطبيق؛ أي غير ذيل جزء دليل إدراج دخول،start تكملة متساو أو اعتماد بطلان كل سوف من `start()` كامل replay.
 
-没有业务变化时，`update()` 返回原 State。存在业务变化时，它可以返回 immutable replacement，也可以原地修改并返回同一对象。
+لا يوجد عمل خدمة تغير وقت،`update()` إرجاع أصل State. وجود عمل خدمة تغير وقت، هو يمكن إرجاع immutable replacement، أيضا يمكن أصل أرض تعديل و إرجاع نفس كائن.
 
-Assembler 不以 State 引用相等判断是否需要发布或传播。每次成功 update 都增加 Context revision、标记 dirty，并使直接或传递 Reader 消费者重新求值。
+Assembler لا بـ State مرجع متبادل انتظار حكم قطع هل حاجة إصدار أو نقل بث. كل مرة نجاح update كل زيادة Context revision، علامة dirty، و جعل مباشر أو نقل تمرير Reader إزالة استهلاك من إعادة طلب قيمة.
 
 #### `publication(match)`
 
-`publication()` 只决定最新 State 何时 materialize 成 view Node，不改变 `match()`、`start()` 或 `update()` 的同步执行。
+`publication()` فقط قرار الأكثر جديد State أي وقت materialize صار view Node، لا تغيير `match()`،`start()` أو `update()` تزامن تنفيذ.
 
-| 返回值 | 行为 |
+| قيمة راجعة | سلوك |
 |---|---|
-| `immediate` | 请求当前 microtask 通知与 flush |
-| `animation-frame` | 跨过三个浏览器 animation frame 后，把多条高频更新合并为一次 materialization |
-| `none` | 本 Match 不主动安排 flush，State 和 dirty 标记仍被保留 |
+| `immediate` | طلب حالي microtask إشعار و flush |
+| `animation-frame` | عبر مرور ثلاثة عدد متصفح animation frame بعد، يأخذ كثير بند عال تردد تحديث دمج لـ مرة materialization |
+| `none` | هذا Match لا رئيسي حركة أمان ترتيب flush،State و dirty علامة ما زال يتم إبقاء |
 
-省略 `publication()` 等于 `immediate`。Assistant token delta 与 packed run 使用 `animation-frame`，不可见 Inbox Context 使用 `none`，final、依赖 replay 和 Location 边界会以 immediate 路径发布最新结果。
+حذف `publication()` انتظار في `immediate`.Assistant token delta و packed run استخدام `animation-frame`، غير ممكن رؤية Inbox Context استخدام `none`،final، اعتماد replay و Location حد سوف بـ immediate مسار إصدار الأكثر جديد نتيجة.
 
-三帧间隔内的每条 live delta 仍执行 `update()`，一个历史 packed run 则执行一次 batch `update()`；Location-data publication、`buildViewNode()`、View Builder 与 React snapshot 通知会合并执行，不会丢失 fragment。immediate publication 会取消等待中的帧间隔，并立即发布最新 State。
+ثلاثة لقطة بين فصل داخل كل بند live delta ما زال تنفيذ `update()`، واحد تاريخ packed run فإن تنفيذ مرة batch `update()`؛Location-data publication،`buildViewNode()`،View Builder و React snapshot إشعار سوف دمج تنفيذ، لن فقد فقد fragment.immediate publication سوف إلغاء انتظار في لقطة بين فصل، و قيام أي إصدار الأكثر جديد State.
 
 #### `buildLocationData(context, scope)`
 
-`buildLocationData()` 让 Definition 把 State 的只读派生值发布到 Engine-owned Step 或 Turn，而不把另一个业务的可变 State 暴露出去。Assembler 会把前一次 publication 传回它的 owner；业务数据未变时，owner 原样返回该值。Assembler 在每次 materialize 中固定先处理 `step`、再处理 `turn`，因此 Turn 级聚合可以读取同一轮已经更新的 Step data；全部 Location data 就绪后才调用 `buildViewNode()`。
+`buildLocationData()` يجعل Definition يأخذ State فقط قراءة إرسال توليد قيمة إصدار إلى Engine-owned Step أو Turn، بينما لا يأخذ آخر عدد عمل خدمة متغير State كشف خروج ذهاب.Assembler سوف يأخذ قبل مرة publication نقل عودة هو owner؛ عمل خدمة بيانات لم تغيير وقت،owner أصل مثال إرجاع هذا قيمة.Assembler في كل مرة materialize في ثابت أولا معالجة `step`، مجددا معالجة `turn`، لذلك Turn درجة تجمع دمج يمكن قراءة نفس جولة قد تحديث Step data؛ الكل Location data حينئذ خيط بعد عندئذ استدعاء `buildViewNode()`.
 
-Definition 分别收到 `step` 和 `turn` scope，可以在任一阶段返回一个值或 `null`。返回值必须声明准确的 turn/step 坐标，并使用与 Definition `kind` 相同的 key；Assembler 拥有替换和移除，并拒绝另一个 Context 占用同一 Location key。
+Definition قسم آخر استلام إلى `step` و `turn` scope، يمكن في مهمة واحد مرحلة مقطع إرجاع واحد قيمة أو `null`. قيمة راجعة يجب إعلان دقيق تأكيد turn/step جلوس علامة، و استخدام و Definition `kind` نفسه key؛Assembler يملك استبدال و إزالة، و رفض آخر عدد Context احتلال استخدام نفس Location key.
 
-`ConversationStepDataMap` 和 `ConversationTurnDataMap` 通过 declaration merging 约束 key 与 value。Location 只暴露稳定的 `data.get(key)` reader，消费者不能取得提供方 Context 或修改它的 State。
+`ConversationStepDataMap` و `ConversationTurnDataMap` عبر declaration merging قيد key و value.Location فقط كشف مستقر `data.get(key)` reader، إزالة استهلاك من لا يستطيع أخذ نيل مزود Context أو تعديل هو State.
 
 #### `buildViewNode(context, target)`
 
-`buildViewNode()` 在发布阶段读取最新 Context，为指定 target 直接生成最终业务 Node。Assembler 不在它之后附加通用 activity、tail candidate 或 layout 业务层。
+`buildViewNode()` في إصدار مرحلة مقطع قراءة الأكثر جديد Context، لـ إشارة تحديد target مباشر توليد نهائي عمل خدمة Node.Assembler لا في هو بعد مرفق إضافة عام activity،tail candidate أو layout عمل خدمة طبقة.
 
-`null` 表示该 Context 对这个 target 尚未 materialize。普通增量路径中，一个已经返回过非空 Node 的 Context 不能再返回 `null`；暂时隐藏必须保留同 key Node，并使用 target 自己的 visibility。
+`null` يمثل هذا Context مقابل هذا عدد target بعد لم materialize. عادي زيادة كمية مسار في، واحد قد إرجاع مرور غير فارغ Node Context لا يستطيع مجددا إرجاع `null`؛ مؤقت وقت إخفاء يجب إبقاء نفس key Node، و استخدام target ذاتي ذات visibility.
 
-Assembler 校验 Node `key === context.key` 且 Node `target === target`。业务可以改变 `anchorSeq`、data、Location 或 visibility，但不能在一次生命周期内改变 identity。
+Assembler تحقق Node `key === context.key` كما Node `target === target`. عمل خدمة يمكن تغيير `anchorSeq`،data،Location أو visibility، لكن لا يستطيع في مرة دورة الحياة داخل تغيير identity.
 
-`current` 让 Definition 区分“从未生成”与“已经生成后需要隐藏”。Assistant retry suppression 使用它避免非法的 Node 撤回。
+`current` يجعل Definition منطقة قسم “من لم توليد” و “قد توليد بعد حاجة إخفاء”.Assistant retry suppression استخدام هو تجنب تجنب غير قاعدة Node سحب عودة.
 
-一个 Definition 最多拥有一个 view target；仅维护状态的 Definition 同时省略 `target` 与 `buildViewNode()`。即使 Chat 与 Trajectory 识别同一持久 Event 族，它们也分别注册自己的业务 Definition；共享 Assembler 则为两个 target 提供相同的匹配、replay、Location 与发布机制。
+واحد Definition الأكثر كثير يملك واحد view target؛ فقط صيانة حالة Definition معا حذف `target` و `buildViewNode()`. أي جعل Chat و Trajectory تعرف آخر نفس حمل دائم Event عائلة، هو جمع أيضا قسم آخر تسجيل ذاتي ذات عمل خدمة Definition؛ مشترك Assembler فإن لـ اثنان عدد target توفير نفسه مطابقة،replay،Location و إصدار آلية.
 
-#### 不提供通用 `end()`
+#### لا توفير عام `end()`
 
-引擎不提供固定 `end()` 生命周期。单 Event 业务在 `start()` 中完成，多 Event 业务在自己的 update 中记录完成，长期瞬间态业务则每条 Event 建立新 Context。
+جذب محرك لا توفير ثابت `end()` دورة الحياة. مفرد Event عمل خدمة في `start()` في إتمام، كثير Event عمل خدمة في ذاتي ذات update في سجل إتمام، طويل مدة لحظة بين حالة عمل خدمة فإن كل بند Event بناء قيام جديد Context.
 
-Step/Turn 关闭属于外部 Location 事实，不替业务修改 State。边界变化会 replay 并 build 受影响 Context；业务结合“自己的 State 是否完成”和“Location 是否 closed”生成正常、running 或 interrupted 表现。
+Step/Turn إغلاق يخص خارجي Location واقع، لا بديل عمل خدمة تعديل State. حد تغير سوف replay و build تلقي أثر Context؛ عمل خدمة ربط دمج “ذاتي ذات State هل إتمام” و “Location هل closed” توليد صحيح معتاد،running أو interrupted جدول الآن.
 
-ID 不复用，完成的 Context 继续存在于当前窗口，既提供稳定渲染 identity，也可以作为后续 Reader 的前序证据。
+ID لا إعادة استخدام، إتمام Context متابعة وجود في حالي نافذة، حيث توفير مستقر تصيير identity، أيضا يمكن بصفة لاحق Reader قبل ترتيب دليل.
 
-### Location 是一级引擎事实
+### Location هو واحد درجة جذب محرك واقع
 
-[`ConversationLocationIndex`](../../../../packages/client/ui-conversation/src/client/conversation/location-index.ts) 根据 `turn/start`、`step/start`、显式 turn/step payload、`step/end` 和 `turn/end` 建立标准 event 与 packed run 到 Location 的映射。同一 row 的成员共享 turn、step、block index 与 delta kind，因此只需以首 `seq` 建立一条 Location entry。
+[`ConversationLocationIndex`](../../../../packages/client/ui-conversation/src/client/conversation/location-index.ts) أصل حسب `turn/start`،`step/start`، صريح turn/step payload،`step/end` و `turn/end` بناء قيام معيار event و packed run إلى Location خريطة. نفس row عضو مشترك turn،step،block index و delta kind، لذلك فقط يحتاج بـ أول `seq` بناء قيام واحد بند Location entry.
 
-Location 有 `session`、`turn`、`step` 和 `unresolved` 四种形状。Turn/Step 各自带 `open`、`closed` 或 `unknown` 状态，以及已加载的 start/end Event。
+Location لديه `session`،`turn`،`step` و `unresolved` أربعة نوع شكل حالة.Turn/Step كل منها حمل `open`،`closed` أو `unknown` حالة، و قد تحميل start/end Event.
 
-每个 Turn 和 Step 还持有 reference-stable 的 Location data store。Definition 更新只替换自己拥有的 key；同一个 store identity 可以随 append 或 prepend 获得新值，使 Context、View Builder 和 React renderer 共享已经确定的层级业务事实，而不复制或遍历全局 Node 数组。
+كل Turn و Step أيضا يحتفظ reference-stable Location data store.Definition تحديث فقط استبدال ذاتي ذات يملك key؛ نفس عدد store identity يمكن مع append أو prepend نيل نيل جديد قيمة، جعل Context،View Builder و React renderer مشترك قد تحديد طبقة درجة عمل خدمة واقع، بينما لا نسخ أو مرة تاريخ عام Node عدد مجموعة.
 
-`unresolved` 表示当前历史窗口缺少足够前序边界，不等于 session-level。older prepend 补入边界后，索引修正 Match Location，并只 replay 拥有这些 seq 的 Context。
+`unresolved` يمثل حالي تاريخ نافذة نقص قليل كاف كاف قبل ترتيب حد، لا انتظار في session-level.older prepend تكملة دخول حد بعد، بحث جذب إصلاح صحيح Match Location، و فقط replay يملك هذه seq Context.
 
-Append 标准 Event 只继承当前坐标；append 边界只重算所属 Turn。Prepend 会基于连续 `SessionEventLikeEntry` window 重建 Location facts，但引用稳定逻辑保留未变化 Turn/Step 对象。
+Append معيار Event فقط وراثة حالي جلوس علامة؛append حد فقط إعادة حساب الذي تابع Turn.Prepend سوف أساس في وصل متابعة `SessionEventLikeEntry` window إعادة بناء Location facts، لكن مرجع مستقر منطق إبقاء لم تغير Turn/Step كائن.
 
-Assembler 还把 reference-stable timeline 交给 View Builder。业务不重复维护 turn order、step list、last step 或边界 Map。
+Assembler أيضا يأخذ reference-stable timeline تسليم إعطاء View Builder. عمل خدمة لا تكرار صيانة turn order،step list،last step أو حد Map.
 
-## 三种 input window 链路
+## ثلاثة نوع input window سلسلة مسار
 
-“历史反扫”描述 UI 从最新尾页向 Session 起点逐页加载的方向，不表示 Definition 逆序执行 `update()`。Session journal 会在发布前校验每条 record 的逻辑 range；无论分页加载方向如何，Assembler 都按每个已接受标准 event 或 packed run 的首 `seq` 排序。
+“تاريخ عكس مسح” وصف UI من الأكثر جديد ذيل صفحة نحو Session بدء نقطة تدريجي صفحة تحميل جهة نحو، لا يمثل Definition عكس ترتيب تنفيذ `update()`.Session journal سوف في إصدار قبل تحقق كل بند record منطق range؛ بلا نقاش قسم صفحة تحميل جهة نحو مثل أي،Assembler كل حسب كل قد قبول معيار event أو packed run أول `seq` ترتيب ترتيب.
 
-| 场景 | 输入范围 | Context/State 处理 | View Builder |
+| مشهد | إدخال نطاق | Context/State معالجة | View Builder |
 |---|---|---|---|
-| 初始历史尾页或 resync | 当前完整连续逻辑窗口 | 清空并按首 `seq` 正序重建全部 Context | `replace()` |
-| 加载一页 older history | 只传通过 range 校验的更早标准 event 或 packed run | 保留现有 Context identity，补 Match、Location 和依赖后局部 replay | `apply(upserts)` |
-| 实时 append | 一条连续尾部 Event | 只匹配 Definitions 并精确更新命中 ID，边界只影响所属 Turn | `apply(upserts)` |
+| ابتدائي تاريخ ذيل صفحة أو resync | حالي كامل وصل متابعة منطق نافذة | صاف فارغ و حسب أول `seq` صحيح ترتيب إعادة بناء الكل Context | `replace()` |
+| تحميل واحد صفحة older history | فقط نقل عبر range تحقق أكثر مبكر معيار event أو packed run | إبقاء قائم Context identity، تكملة Match،Location و اعتماد بعد نطاق جزء replay | `apply(upserts)` |
+| فوري append | واحد بند وصل متابعة ذيل جزء Event | فقط مطابقة Definitions و دقيق تحديث أمر في ID، حد فقط أثر الذي تابع Turn | `apply(upserts)` |
 
-### 初始历史尾页与逻辑反扫
+### ابتدائي تاريخ ذيل صفحة و منطق عكس مسح
 
-1. `Session.open()` 拉取最新 tail page，并把连续 `SessionEventLike` entry 交给 `replaceWindow(entries, hasMore)`。
-2. `replaceWindow` 清空旧 Context、start-seq 索引、seq 反向索引、Reader 依赖和输入 Map。
-3. 全部 entry 按首个逻辑 `seq` 升序排序并写入当前窗口。
-4. LocationIndex 对这个窗口重建 Turn/Step facts。
-5. Assembler 按升序访问标准 event 与 packed run，并逐条调用每个普通 Definition 的 `match(event)`。
-6. 每个命中结果按 `(kind, id)` 取得或创建 Context，并把 Match 插入该 Context 的有序数组。
-7. 遇到 start 时执行 `start()`；已有 State 的尾部 update 直接执行 `update()`。
-8. 当前页只含 result/resource 而缺 start 时，Context 仍会按 ID 创建并收集 Matches，但 State 保持 `undefined`。
-9. 全部 input 匹配后，Assembler 复查 Reader 依赖，使同一窗口内较早瞬间态先稳定、较晚消费者再读取它。
-10. 所有 Context 标记 dirty，下一次 flush 先按 Step→Turn 完整重建 Location data，再对每个 target 调用 `buildViewNode()`。
-11. 某些业务在缺 start 时返回 `null`；Compaction、Command、Tool result 或 Turn Error 等可根据充分 update 证据构造 fallback Node。
-12. 每个 View Builder 收到完整 Node 集和 timeline，通过 `replace()` 建立初始 snapshot。
+1. `Session.open()` سحب أخذ الأكثر جديد tail page، و يأخذ وصل متابعة `SessionEventLike` entry تسليم إعطاء `replaceWindow(entries, hasMore)`.
+2. `replaceWindow` صاف فارغ قديم Context،start-seq بحث جذب،seq عكس نحو بحث جذب،Reader اعتماد و إدخال Map.
+3. الكل entry حسب أول عدد منطق `seq` رفع ترتيب ترتيب ترتيب و كتابة حالي نافذة.
+4. LocationIndex مقابل هذا عدد نافذة إعادة بناء Turn/Step facts.
+5. Assembler حسب رفع ترتيب وصول معيار event و packed run، و تدريجي بند استدعاء كل عادي Definition `match(event)`.
+6. كل أمر في نتيجة حسب `(kind, id)` أخذ نيل أو إنشاء Context، و يأخذ Match إدراج دخول هذا Context لديه ترتيب عدد مجموعة.
+7. لقاء إلى start وقت تنفيذ `start()`؛ قد لديه State ذيل جزء update مباشر تنفيذ `update()`.
+8. حالي صفحة فقط يحتوي result/resource بينما نقص start وقت،Context ما زال سوف حسب ID إنشاء و استلام تجميع Matches، لكن State إبقاء `undefined`.
+9. الكل input مطابقة بعد،Assembler تكرار فحص Reader اعتماد، جعل نفس نافذة داخل مقارنة مبكر لحظة بين حالة أولا مستقر، مقارنة متأخر إزالة استهلاك من مجددا قراءة هو.
+10. كل Context علامة dirty، تحت مرة flush أولا حسب Step→Turn كامل إعادة بناء Location data، مجددا مقابل كل target استدعاء `buildViewNode()`.
+11. بعض بعض عمل خدمة في نقص start وقت إرجاع `null`؛Compaction،Command،Tool result أو Turn Error انتظار يمكن أصل حسب ملء قسم update دليل بنية صنع fallback Node.
+12. كل View Builder استلام إلى كامل Node تجميع و timeline، عبر `replace()` بناء قيام ابتدائي snapshot.
 
-这条链路“从最新页开始”只发生在分页选择层。页面内部 State 始终正序计算，因此同一个窗口不会因为扫描方向不同产生不同业务结果。
+هذا بند سلسلة مسار “من الأكثر جديد صفحة بدء” فقط حدوث في قسم صفحة اختيار طبقة. صفحة داخلي State بداية نهاية صحيح ترتيب حساب حساب، لذلك نفس عدد نافذة لن لأن مسح جهة نحو مختلف إنتاج مختلف عمل خدمة نتيجة.
 
-缺 start 的 Context 不是错误。它是等待 older 页补齐的 pending 聚合容器；是否提前可见由该 Definition 的 `buildViewNode()` 决定。
+نقص start Context لا هو خطأ. هو هو انتظار older صفحة تكملة متساو pending تجمع دمج حاوية؛ هل رفع قبل مرئي من هذا Definition `buildViewNode()` قرار.
 
-若当前页中的同 ID update 在日志顺序上真的早于 start，而不是仅仅先被加载，补齐 start 后 replay 会报协议错误。到达顺序可以反向，业务日志顺序不能反向。
+إذا حالي صفحة في نفس ID update في سجل ترتيب فوق حق مبكر في start، بينما لا هو فقط فقط أولا يتم تحميل، تكملة متساو start بعد replay سوف تقرير بروتوكول خطأ. وصول ترتيب يمكن عكس نحو، عمل خدمة سجل ترتيب لا يستطيع عكس نحو.
 
-### 新 older 分页的 prepend
+### جديد older قسم صفحة prepend
 
-1. `Session.loadOlder()` 以当前 `baseSeq` 拉取紧邻前页，并先验证页尾与当前窗口连续。
-2. Session 把已接受的标准或 packed entry prepend 到自己的窗口，只把这一页传给 `assembler.prepend(entries, hasMore)`。
-3. Journal 已经丢弃完整重复 range 并拒绝部分重叠；Assembler 再按首 `seq` 排列 fresh page。
-4. 已存在的 Context、State、current Nodes 和 View Builder 实例不清空。
-5. LocationIndex 用扩展后的完整输入重建 facts，并报告 Location identity 真正变化的 seq。
-6. 拥有这些 seq 的 Context 更新 Match Location，并从 start replay；无关 Context 不参与 Location replay。
-7. fresh 标准 event 与 packed run 通过同一 Definition matcher 和稳定 ID 进入已有或新 Context。
-8. 新页补出 pending Context 的 start 时，该 Context 从 start 初始化，再正序应用已经收集的所有 updates。
-9. 新页建立更近的 Reader predecessor、改变 predecessor revision 或消除 window gap 时，消费者从 `start()` 重算。
-10. Reader 依赖沿 start seq 向后传递 replay；同一传播批次不会把 Event 逆序应用。
-11. `hasMore` 从 true 变为 false 的空页也会复查依赖，把暂定 `undefined` 收敛为确定不存在。
-12. flush 只为 dirty Context 重新发布 Step/Turn Location data 和 target Node，并把非空结果作为 `upserts` 交给 View Builder `apply()`。
+1. `Session.loadOlder()` بـ حالي `baseSeq` سحب أخذ ضيق مجاور قبل صفحة، و أولا تحقق صفحة ذيل و حالي نافذة وصل متابعة.
+2. Session يأخذ قد قبول معيار أو packed entry prepend إلى ذاتي ذات نافذة، فقط يأخذ هذا واحد صفحة نقل إعطاء `assembler.prepend(entries, hasMore)`.
+3. Journal قد إسقاط كامل تكرار range و رفض جزء إعادة تراكم؛Assembler مجددا حسب أول `seq` ترتيب صف fresh page.
+4. قد وجود Context،State،current Nodes و View Builder نسخة لا صاف فارغ.
+5. LocationIndex استخدام توسيع بعد كامل إدخال إعادة بناء facts، و تقرير إبلاغ Location identity حق صحيح تغير seq.
+6. يملك هذه seq Context تحديث Match Location، و من start replay؛ غير متصل Context لا مشاركة و Location replay.
+7. fresh معيار event و packed run عبر نفس Definition matcher و مستقر ID دخول قد لديه أو جديد Context.
+8. جديد صفحة تكملة خروج pending Context start وقت، هذا Context من start ابتدائي تحويل، مجددا صحيح ترتيب تطبيق قد استلام تجميع كل updates.
+9. جديد صفحة بناء قيام أكثر قريب Reader predecessor، تغيير predecessor revision أو إزالة حذف window gap وقت، إزالة استهلاك من من `start()` إعادة حساب.
+10. Reader اعتماد امتداد start seq نحو بعد نقل تمرير replay؛ نفس نقل بث دفعة مرة لن يأخذ Event عكس ترتيب تطبيق.
+11. `hasMore` من true تغيير لـ false فارغ صفحة أيضا سوف تكرار فحص اعتماد، يأخذ مؤقت تحديد `undefined` استلام جمع لـ تحديد لا وجود.
+12. flush فقط لـ dirty Context إعادة إصدار Step/Turn Location data و target Node، و يأخذ غير فارغ نتيجة بصفة `upserts` تسليم إعطاء View Builder `apply()`.
 
-Prepend 保留已有 Context key 和 current Node identity。新页可以在 Chat `order` 前部增加 key，也可以修正既有 Node 的 anchor、Location、visibility 或 data，但不会为无关业务重新创建 Context。
+Prepend إبقاء قد لديه Context key و current Node identity. جديد صفحة يمكن في Chat `order` قبل جزء زيادة key، أيضا يمكن إصلاح صحيح قائم Node anchor،Location،visibility أو data، لكن لن لـ غير متصل عمل خدمة إعادة إنشاء Context.
 
-Chat Builder 遇到结构变化时会从 keyed store 重算可见 `order` 和 Location 二级索引；这是视图索引计算，不会重新执行全部业务 Definition 或替换未变化 Node value。
+Chat Builder لقاء إلى بنية تغير وقت سوف من keyed store إعادة حساب مرئي `order` و Location اثنان درجة بحث جذب؛ هذا هو عرض بحث جذب حساب حساب، لن إعادة تنفيذ الكل عمل خدمة Definition أو استبدال لم تغير Node value.
 
-Reader gap 修复是 prepend 与普通 append 最大的算法差异。新页不仅可能创建可见历史 Node，也可能改变后续 Inbox 瞬间态以及依赖它的 Message 分类。
+Reader gap إصلاح هو prepend و عادي append الأكثر كبير حساب قاعدة فرق مختلف. جديد صفحة لا فقط ممكن إنشاء مرئي تاريخ Node، أيضا ممكن تغيير لاحق Inbox لحظة بين حالة و اعتماد هو Message تصنيف.
 
-### 正向实时 append
+### صحيح نحو فوري append
 
-1. Session 只接受紧邻当前逻辑 tail seq 的标准 live Event；重叠时去重，出现 gap 时先走 tail-page repair。
-2. 非边界 Event 增量写入当前 Turn/Step 坐标；边界 Event 更新所属 Turn 的 Location facts。
-3. Assembler 对这一个 Event 的每个普通 Definition 调用一次 `match()`，不会遍历任何 Definition 的 Context 集合。
-4. 每个命中结果通过 `(kind, id)` 直接定位一个 Context。
-5. 新 ID 创建 Context；已有 ID 的正常尾部 update 直接调用一次 `update()`。
-6. start 或任何需要插入非尾部位置的证据会走完整 `replayContext()`，保持同一正序语义。
-7. Context revision 变化后，只沿已登记 Reader 依赖 replay 消费者。
-8. Location close 会更新所属 Turn 中受影响 Match 的 Location，并 replay 这些 Context，使未完成 Assistant、Tool 或 Retry 得到 interrupted/cancelled 语气。
-9. Assembler 汇总所有命中 Definition 的 publication urgency；`immediate` 高于 `animation-frame`，后者高于 `none`。
-10. Session 把 immediate 交给 microtask notifier，把 animation-frame 交给 RAF notifier。
-11. flush 先为 dirty Context 更新 Step/Turn Location data，再调用 `buildViewNode()`，最后把本轮 upserts 和最新 timeline 交给 View Builder。
-12. React 订阅的新 snapshot 复用稳定 Context key；同一 Tool running→settled 或 Assistant streaming→final 不跨父节点移动。
+1. Session فقط قبول ضيق مجاور حالي منطق tail seq معيار live Event؛ إعادة تراكم وقت ذهاب إعادة، ظهور gap وقت أولا مشي tail-page repair.
+2. غير حد Event زيادة كمية كتابة حالي Turn/Step جلوس علامة؛ حد Event تحديث الذي تابع Turn Location facts.
+3. Assembler مقابل هذا واحد Event كل عادي Definition استدعاء مرة `match()`، لن مرة تاريخ أي Definition Context تجميع دمج.
+4. كل أمر في نتيجة عبر `(kind, id)` مباشر تحديد موضع واحد Context.
+5. جديد ID إنشاء Context؛ قد لديه ID صحيح معتاد ذيل جزء update مباشر استدعاء مرة `update()`.
+6. start أو أي حاجة إدراج دخول غير ذيل جزء موضع دليل سوف مشي كامل `replayContext()`، إبقاء نفس صحيح ترتيب دلالة.
+7. Context revision تغير بعد، فقط امتداد قد تسجيل تسجيل Reader اعتماد replay إزالة استهلاك من.
+8. Location close سوف تحديث الذي تابع Turn في تلقي أثر Match Location، و replay هذه Context، جعل لم إتمام Assistant،Tool أو Retry نيل إلى interrupted/cancelled لغة هواء.
+9. Assembler تجميع مجموع كل أمر في Definition publication urgency؛`immediate` عال في `animation-frame`، بعد من عال في `none`.
+10. Session يأخذ immediate تسليم إعطاء microtask notifier، يأخذ animation-frame تسليم إعطاء RAF notifier.
+11. flush أولا لـ dirty Context تحديث Step/Turn Location data، مجددا استدعاء `buildViewNode()`، الأكثر بعد يأخذ هذا جولة upserts و الأكثر جديد timeline تسليم إعطاء View Builder.
+12. React حجز قراءة جديد snapshot إعادة استخدام مستقر Context key؛ نفس Tool running→settled أو Assistant streaming→final لا عبر أب عقدة نقل حركة.
 
-Append 的业务匹配成本是 Definition 数量加实际命中的 Context 更新，不随历史 Context 数量增长。Reader 消费者和 Location 关闭会增加与真实依赖或所属 Turn 成比例的 replay。
+Append عمل خدمة مطابقة صار هذا هو Definition عدد كمية إضافة فعلي أمر في Context تحديث، لا مع تاريخ Context عدد كمية زيادة طويل.Reader إزالة استهلاك من و Location إغلاق سوف زيادة و حقيقي اعتماد أو الذي تابع Turn صار مقارنة مثال replay.
 
-Chat `order` 的结构性变化仍可能重排当前可见 key；纯 data 更新只替换 keyed store 中一个 Node，并 touch 所属 Location 索引。这里保证的是无关业务不 refold、Node identity 不替换，而不是宣称所有视图索引操作都是常数复杂度。
+Chat `order` بنية صفة تغير ما زال ممكن إعادة ترتيب حالي مرئي key؛ صاف data تحديث فقط استبدال keyed store في واحد Node، و touch الذي تابع Location بحث جذب. هذا داخل حفظ إثبات هو غير متصل عمل خدمة لا refold،Node identity لا استبدال، بينما لا هو إعلان تسمية كل عرض بحث جذب عملية كل هو معتاد عدد تكرار مختلط درجة.
 
-### Replace、prepend 与 append 的一致性
+### Replace،prepend و append متسق صفة
 
-三条链路最终都遵守同一不变量：Context Matches 按 seq 排序，State 从唯一 start 正序 fold，Reader 只看严格前序 active Context，Location data 按 Step→Turn 发布，Node key 只由 kind 和 ID 决定。
+ثلاثة بند سلسلة مسار نهائي كل التزام حراسة نفس ثابت كمية:Context Matches حسب seq ترتيب ترتيب،State من وحيد start صحيح ترتيب fold،Reader فقط نظر صارم إطار قبل ترتيب active Context،Location data حسب Step→Turn إصدار،Node key فقط من kind و ID قرار.
 
-`replaceWindow` 是初始打开、resync、gap repair 和 registry 变化的低频完整替换，不用于实现普通 load older。`prepend` 与 `append` 都保留现有 Builder 和 Context identity。
+`replaceWindow` هو ابتدائي فتح،resync،gap repair و registry تغير منخفض تردد كامل استبدال، لا لأجل تنفيذ عادي load older.`prepend` و `append` كل إبقاء قائم Builder و Context identity.
 
-分页页宽、record packing、历史加载次数和 RAF 合批只影响何时得到更多证据或何时发布，不改变逻辑证据相同时的最终 Context State 与 Node。
+قسم صفحة صفحة عرض،record packing، تاريخ تحميل مرة عدد و RAF دمج دفعة فقط أثر أي وقت نيل إلى أكثر كثير دليل أو أي وقت إصدار، لا تغيير منطق دليل نفسه وقت نهائي Context State و Node.
 
-## 内建业务如何使用 Definition
+## داخل بناء عمل خدمة مثل أي استخدام Definition
 
-### 匹配、ID 与 State
+### مطابقة،ID و State
 
-| 业务 / `kind` | 稳定 ID | start Match | update Matches | State 与跨 Context 读取 |
+| عمل خدمة / `kind` | مستقر ID | start Match | update Matches | State و عبر Context قراءة |
 |---|---|---|---|---|
-| Next-step Inbox / `inbox-next-step` | splice Event seq | 每条目标为 next-step 的 `agent/inbox/spliced` | 无 | 把消息 ID 追加到持久 splice state；每次 claim 只 materialize 一次，并向 Message 暴露共享的当前 claimed batch |
-| Message / `input-message` | message ID | append-surface `user/message` | 无 | 根据 source 生成 context message，或读取最近 next-step Inbox 判断 user/steering |
-| Request Prompt / `request-prompt` | header Event seq | 每条 `request/header` | 无 | 通过 Reader 读取前一条 Request Prompt，保留完整 prompt 状态，并判定 system/tool 变化 |
-| Assistant / `assistant-step` | `turn:step` | `step/start` | Live `assistant/live-chunk`、持久 `assistant/message` 或 `assistant/attempt`、同 step Retry | 聚合 block、usage、首 token 时间、settlement 证据与 retry-hidden state，再发布同 key Step data |
-| Tool / `tool-call` | root call ID | root `tool/call` | root result、PTC dispatch start/result | 聚合 root、children 和 parent Map；Dispatch Event 用 `rootCallId` 精确路由 |
-| Command / `command` | command ID | `command/run` | `command/done`、带 source command ID 的 compact lifecycle/checkpoint | 聚合 command outcome 和手动压缩证据 |
-| Automatic Compaction / `compaction` | compaction ID | 无 source command ID 的 `compaction/start` | summary、end、replacement checkpoint | 聚合 summary/checkpoint；checkpoint 足够时可在缺 start 下 fallback |
-| Retry / `model-retry` | retry ID | attempt 1 的 `llm/retry` | 后续 `llm/retry` 与 `llm/retry-started` | 聚合同一 RetryId 的 attempts 与 scheduled/started 状态 |
-| Turn Error / `turn-error` | turn number | `turn/start` | error `turn/end` | 聚合 terminal failure；该 turn 的 Retry 历史经由 Retry 渲染，绝不会隐藏此行 |
-| Turn Tail / `turn-tail` | turn number | `turn/start` | Assistant、Retry、`step/end`、`turn/end` | 保存 turn end，读取各 Step 的 Assistant data，发布 Turn data；完整 Matches 用于选择视觉尾部 anchor |
-| Deliverables / `deliverables` | turn number | `turn/start` | 该 Turn 的 Tool call/result | 聚合成功 mutation paths 并发布 Turn data，不生成 view Node |
-| Unknown fallback / `unknown-surface` | Event seq | 未被普通 Definition 认领的 append-surface Event | 无 | 保存原始 type/data 作为 JSON fallback |
+| Next-step Inbox / `inbox-next-step` | splice Event seq | كل بند علامة لـ next-step `agent/inbox/spliced` | بلا | يأخذ رسالة ID إلحاق إلى حمل دائم splice state؛ كل مرة claim فقط materialize مرة، و نحو Message كشف مشترك حالي claimed batch |
+| Message / `input-message` | message ID | append-surface `user/message` | بلا | أصل حسب source توليد context message، أو قراءة الأكثر قريب next-step Inbox حكم قطع user/steering |
+| Request Prompt / `request-prompt` | header Event seq | كل بند `request/header` | بلا | عبر Reader قراءة قبل واحد بند Request Prompt، إبقاء كامل prompt حالة، و حكم تحديد system/tool تغير |
+| Assistant / `assistant-step` | `turn:step` | `step/start` | Live `assistant/live-chunk`، حمل دائم `assistant/message` أو `assistant/attempt`، نفس step Retry | تجمع دمج block،usage، أول token وقت،settlement دليل و retry-hidden state، مجددا إصدار نفس key Step data |
+| Tool / `tool-call` | root call ID | root `tool/call` | root result،PTC dispatch start/result | تجمع دمج root،children و parent Map؛Dispatch Event استخدام `rootCallId` دقيق توجيه |
+| Command / `command` | command ID | `command/run` | `command/done`، حمل source command ID compact lifecycle/checkpoint | تجمع دمج command outcome و يد حركة ضغط دليل |
+| Automatic Compaction / `compaction` | compaction ID | بلا source command ID `compaction/start` | summary،end،replacement checkpoint | تجمع دمج summary/checkpoint؛checkpoint كاف كاف وقت يمكن في نقص start تحت fallback |
+| Retry / `model-retry` | retry ID | attempt 1 `llm/retry` | لاحق `llm/retry` و `llm/retry-started` | تجمع دمج نفس RetryId attempts و scheduled/started حالة |
+| Turn Error / `turn-error` | turn number | `turn/start` | error `turn/end` | تجمع دمج terminal failure؛ هذا turn Retry تاريخ مرور من Retry تصيير، أبدا سوف إخفاء هذا سطر |
+| Turn Tail / `turn-tail` | turn number | `turn/start` | Assistant،Retry،`step/end`،`turn/end` | حفظ turn end، قراءة كل Step Assistant data، إصدار Turn data؛ كامل Matches لأجل اختيار نظر شعور ذيل جزء anchor |
+| Deliverables / `deliverables` | turn number | `turn/start` | هذا Turn Tool call/result | تجمع دمج نجاح mutation paths تزامن نشر Turn data، لا توليد view Node |
+| Unknown fallback / `unknown-surface` | Event seq | لم يتم عادي Definition إقرار قيادة append-surface Event | بلا | حفظ أصلي type/data بصفة JSON fallback |
 
-### Chat Node 与历史/实时特性
+### Chat Node و تاريخ/فوري خاص صفة
 
-| 业务 | `publication()` | Chat 产物 | 历史分页与运行时行为 |
+| عمل خدمة | `publication()` | Chat ناتج | تاريخ قسم صفحة و وقت التشغيل سلوك |
 |---|---|---|---|
-| Inbox | `none` | 不生成 Node | prepend 补前序 splice 时沿 Reader 链重算 next-step ID state；next-turn 不创建 Chat Context |
-| Message | 默认 immediate | `user`、`steering` 或 `context` | window gap 修复可让同一 message key 重新分类 |
-| Request Prompt | 默认 immediate | 初始请求、每个显式序列或真实 system 变化各生成一个非空 `system-prompt` | Step 首条 header 锚定在请求消息之前；prepend 补入前序 header 并证明 system 未变后，可隐藏此前保守渲染的 resume |
-| Assistant | scalar chunk 与 packed run 为 RAF，final immediate，纯 usage/finish 为 none | 同 key `assistant-step`，状态为 running/settled/interrupted | scalar 与 packed reducer 等价；缺 `step/start` 可先用 Matches fallback；Location close 生成中断表现 |
-| Tool | 默认 immediate | 一个递归 `tool-call` root，包含全部 `subCalls` | result-only 历史窗口可 fallback；running→settled 保持 key |
-| Command | 默认 immediate | 普通 `command` 或集成 `manual-compaction` | checkpoint 到达可改变 anchor，但不改变 Context key |
-| Compaction | 默认 immediate | `compaction` marker | checkpoint 可先展示，older 补 start 后正序 replay |
-| Retry | 默认 immediate | 一个 `model-retry` Node 内含 attempts | 多次 retry 更新同一 key；Location close 把最后 scheduled 表现为 cancelled |
-| Turn Error | 默认 immediate | terminal failure 时的 `turn-error` | 缺 start 可从 error end fallback；该 turn 定格的 Retry 链在其旁渲染 |
-| Turn Tail | 仅 `turn/end` immediate，其余 none | 独立 `turn-tail` footer | 从 Step Assistant data 计算 closing/metrics，并通过同 turn Matches 决定 anchor |
-| Deliverables | 默认 immediate | 不生成 Node | Tool 结算增量更新所属 Turn data，Turn Tail 扩展槽读取 produced files |
-| Fallback | 默认 immediate | `unknown` JSON row | 只兜底 append surface，普通业务已认领但暂不可见时不会重复生成 |
+| Inbox | `none` | لا توليد Node | prepend تكملة قبل ترتيب splice وقت امتداد Reader سلسلة إعادة حساب next-step ID state؛next-turn لا إنشاء Chat Context |
+| Message | افتراضي immediate | `user`،`steering` أو `context` | window gap إصلاح يمكن يجعل نفس message key إعادة تصنيف |
+| Request Prompt | افتراضي immediate | ابتدائي طلب، كل صريح تسلسل أو حقيقي system تغير كل توليد واحد غير فارغ `system-prompt` | Step أول بند header مرساة تحديد في طلب رسالة قبل؛prepend تكملة دخول قبل ترتيب header و إثبات system لم تغيير بعد، يمكن إخفاء هذا قبل حفظ حراسة تصيير resume |
+| Assistant | scalar chunk و packed run لـ RAF،final immediate، صاف usage/finish لـ none | نفس key `assistant-step`، حالة لـ running/settled/interrupted | scalar و packed reducer انتظار قيمة؛ نقص `step/start` يمكن أولا استخدام Matches fallback؛Location close توليد في قطع جدول الآن |
+| Tool | افتراضي immediate | واحد تمرير عودة `tool-call` root، يتضمن الكل `subCalls` | result-only تاريخ نافذة يمكن fallback؛running→settled إبقاء key |
+| Command | افتراضي immediate | عادي `command` أو تجميع صار `manual-compaction` | checkpoint وصول يمكن تغيير anchor، لكن لا تغيير Context key |
+| Compaction | افتراضي immediate | `compaction` marker | checkpoint يمكن أولا عرض،older تكملة start بعد صحيح ترتيب replay |
+| Retry | افتراضي immediate | واحد `model-retry` Node داخل يحتوي attempts | كثير مرة retry تحديث نفس key؛Location close يأخذ الأكثر بعد scheduled جدول الآن لـ cancelled |
+| Turn Error | افتراضي immediate | terminal failure وقت `turn-error` | نقص start يمكن من error end fallback؛ هذا turn تحديد إطار Retry سلسلة في ذلك جانب تصيير |
+| Turn Tail | فقط `turn/end` immediate، ذلك بقية none | مستقل `turn-tail` footer | من Step Assistant data حساب حساب closing/metrics، و عبر نفس turn Matches قرار anchor |
+| Deliverables | افتراضي immediate | لا توليد Node | Tool تسوية زيادة كمية تحديث الذي تابع Turn data،Turn Tail توسيع مجرى قراءة produced files |
+| Fallback | افتراضي immediate | `unknown` JSON row | فقط التقاط قاع append surface، عادي عمل خدمة قد إقرار قيادة لكن مؤقت غير ممكن رؤية وقت لن تكرار توليد |
 
-Inbox 展示了“每条 Event 都是一个 start-only 瞬间态 Context”，不是所有业务都需要 start/update 配对。每个 next-step state 通过 Reader 与前一个同 kind Context 形成连续 fold，而非给整个 Inbox 人工制造生命周期 ID。state 自身共享不可变 pending splice 节点和一个当前 claimed-batch Set；未消费的 next-turn input 不进入 Conversation，因为 Chat 与 Trajectory 都不读取它来分类。
+Inbox عرض “كل بند Event كل هو واحد start-only لحظة بين حالة Context” ، لا هو كل عمل خدمة كل حاجة start/update إعداد مقابل. كل next-step state عبر Reader و قبل واحد نفس kind Context شكل صار وصل متابعة fold، بينما غير إعطاء كامل Inbox شخص عمل صنع صنع دورة الحياة ID.state ذاته مشترك غير ممكن تغيير pending splice عقدة و واحد حالي claimed-batch Set؛ لم إزالة استهلاك next-turn input لا دخول Conversation، لأن Chat و Trajectory كل لا قراءة هو قدوم تصنيف.
 
-Request Prompt 展示了如何在不共享 target State 的前提下共用纯解释逻辑：Chat 与 Trajectory 各自在自己的 Definition 中调用 `inspectRequestPrompt()`。该函数规范化完整 header，并判定面向模型的 system/tool 差异；随后每个 target 自行选择产物。Chat 会物化非空的初始 system 字段、真实 system 变化，以及每个显式开启消息序列或紧随表层替换的 `series` 快照。未变化的 `resume` 会留在 Trajectory 和重建状态中，但前序 header 已加载时不会重复可见的 Chat 行。普通的仅追加后续 Turn 不会再次写入未变 header。一个 Step 中的首条 header 遵循提供方信封，而不是 header Event 位置：step one 使用所属 Turn start，后续 step 使用各自的 Step start，把 system 字段放到该请求的 user-role 消息之前；同一 Step 的后续 header 保留在开启新序列的表层改写之后。部分窗口未包含前序 header 时，非 `initial` header 会保留在自身 Event 并保守渲染。prepend 补入相同的前序 header 后，内容未变的 resume 会隐藏但不撤回其稳定 Node key；真实变化仍然可见。每条 header 都是完整快照，因此已加载窗口中的首条 `resume`、`change` 或 `series` header 无需凭空构造与未加载历史的比较，也能渲染其 system 字段（[resume 展示决策](../bug-fix/2026-09-03-resume-headers-do-not-repeat-system-prompts.zh.md)）。
+Request Prompt عرض مثل أي في لا مشترك target State قبل رفع تحت مشترك استخدام صاف حل تفسير منطق:Chat و Trajectory كل منها في ذاتي ذات Definition في استدعاء `inspectRequestPrompt()`. هذا دالة مواصفة تحويل كامل header، و حكم تحديد موجه إلى نموذج system/tool فرق مختلف؛ مع بعد كل target ذاتي سطر اختيار ناتج.Chat سوف شيء تحويل غير فارغ ابتدائي system حقل، حقيقي system تغير، و كل صريح فتح بدء رسالة تسلسل أو ضيق مع جدول طبقة استبدال `series` لقطة. لم تغير `resume` سوف إبقاء في Trajectory و إعادة بناء حالة في، لكن قبل ترتيب header قد تحميل وقت لن تكرار مرئي Chat سطر. عادي فقط إلحاق لاحق Turn لن مجددا مرة كتابة لم تغيير header. واحد Step في أول بند header التزام دوران مزود معلومة غلاف، بينما لا هو header Event موضع:step one استخدام الذي تابع Turn start، لاحق step استخدام كل منها Step start، يأخذ system حقل وضع إلى هذا طلب user-role رسالة قبل؛ نفس Step لاحق header إبقاء في فتح بدء جديد تسلسل جدول طبقة تعديل كتابة بعد. جزء نافذة لم يتضمن قبل ترتيب header وقت، غير `initial` header سوف إبقاء في ذاته Event و حفظ حراسة تصيير.prepend تكملة دخول نفسه قبل ترتيب header بعد، محتوى لم تغيير resume سوف إخفاء لكن لا سحب عودة ذلك مستقر Node key؛ حقيقي تغير ما زال مرئي. كل بند header كل هو كامل لقطة، لذلك قد تحميل نافذة في أول بند `resume`،`change` أو `series` header بلا حاجة سند فارغ بنية صنع و لم تحميل تاريخ مقارنة مقارنة، أيضا قدرة تصيير ذلك system حقل ([resume عرض قرار](../bug-fix/2026-09-03-resume-headers-do-not-repeat-system-prompts.zh.md)).
 
-Retry、Assistant 和 Turn Tail 展示了同一 Event 被多个 Definition 独立认领。每个 Definition 只更新自己的 State，最终分别生成原子 Chat Node。
+Retry،Assistant و Turn Tail عرض نفس Event يتم كثير عدد Definition مستقل إقرار قيادة. كل Definition فقط تحديث ذاتي ذات State، نهائي قسم آخر توليد أصل فرعي Chat Node.
 
-Assistant、Turn Tail 和 Deliverables 展示了 Location data 的分层组合。Assistant 负责写好每个 Step 的 `assistant-step` data；Turn Tail 从这些 Step values 计算 `turn-tail` data；Deliverables 独立维护同一 Turn 的 `deliverables` data。消费者只读取声明合并后的 key，不扫描其他业务 Node，也不取得提供方的 Context State。
+Assistant،Turn Tail و Deliverables عرض Location data قسم طبقة تركيب.Assistant مسؤول كتابة جيد كل Step `assistant-step` data؛Turn Tail من هذه Step values حساب حساب `turn-tail` data؛Deliverables مستقل صيانة نفس Turn `deliverables` data. إزالة استهلاك من فقط قراءة إعلان دمج بعد key، لا مسح أخرى عمل خدمة Node، أيضا لا أخذ نيل مزود Context State.
 
-Tool 和 Command 展示了多 Event 聚合：生产者提供共同 ID，Context 在业务内部构树或整合 Compaction，不把配对工作推给 Chat Builder。
+Tool و Command عرض كثير Event تجمع دمج: إنتاج من توفير مشترك نفس ID،Context في عمل خدمة داخلي بنية شجرة أو كامل دمج Compaction، لا يأخذ إعداد مقابل عمل دفع إعطاء Chat Builder.
 
-Compaction 和历史 Tool result 展示了缺 start 时的业务 fallback。引擎不统一规定“没有 start 就不渲染”；Definition 根据当前 Matches 是否足够自行决定。
+Compaction و تاريخ Tool result عرض نقص start وقت عمل خدمة fallback. جذب محرك لا موحد واحد قاعدة تحديد “لا يوجد start حينئذ لا تصيير” ؛Definition أصل حسب حالي Matches هل كاف كاف ذاتي سطر قرار.
 
-Retry 展示了业务 State 与 Location 的分工。scheduled/started 属于 Retry State；Step/Turn 是否关闭属于引擎 Location；`buildViewNode()` 组合两者得到 cancelled 视觉状态。
+Retry عرض عمل خدمة State و Location قسم عمل.scheduled/started يخص Retry State؛Step/Turn هل إغلاق يخص جذب محرك Location؛`buildViewNode()` تركيب اثنان من نيل إلى cancelled نظر شعور حالة.
 
-Unknown fallback 展示了 Registry ownership：fallback 只处理没有任何普通 matcher 认领的 append surface Event，不会因为普通 Context 暂时返回 `null` 而误生成第二个 Node。
+Unknown fallback عرض Registry ownership:fallback فقط معالجة لا يوجد أي عادي matcher إقرار قيادة append surface Event، لن لأن عادي Context مؤقت وقت إرجاع `null` بينما خطأ توليد ثاني عدد Node.
 
-## View Builder 与 React identity
+## View Builder و React identity
 
-[`ConversationViewRegistry`](../../../../packages/client/ui-conversation/src/client/conversation/view-registry.ts) 为每个 target 保存独立的 builder factory，不共享某个 Session 的排序或缓存。
+[`ConversationViewRegistry`](../../../../packages/client/ui-conversation/src/client/conversation/view-registry.ts) لـ كل target حفظ مستقل builder factory، لا مشترك بعض عدد Session ترتيب ترتيب أو ذاكرة مؤقتة.
 
-shell 选择或 target source 的首个 subscriber 会把该 target 加入 Session 单调增长的 active-target set。Assembler 按唯一 target 索引每个 Context，但不会为 inactive target 创建 builder、Node 或 snapshot。首次激活会 flush 尚未发布的 target-neutral 工作、创建 builder，并从该 target 的当前 Context 调用一次 `replace({ nodes, timeline })`。
+shell اختيار أو target source أول عدد subscriber سوف يأخذ هذا target إضافة دخول Session مفرد ضبط زيادة طويل active-target set.Assembler حسب وحيد target بحث جذب كل Context، لكن لن لـ inactive target إنشاء builder،Node أو snapshot. أول مرة تنشيط سوف flush بعد لم إصدار target-neutral عمل، إنشاء builder، و من هذا target حالي Context استدعاء مرة `replace({ nodes, timeline })`.
 
-Session binding 可用、缓存的 binding 成为 current 或 View roster 变化时，shell 会同步解析持久化选择，再显式激活已注册的偏好 View 或 Chat fallback。Tab 与 focus action 在更新选择状态前先激活解析出的 target。blank Session 不渲染 View slot；`ConversationSnapshot.activeTargets` 只从已物化的 active snapshot 派生，不查询 inactive target Context 的 activity。
+Session binding متاح، ذاكرة مؤقتة binding يصبح current أو View roster تغير وقت،shell سوف تزامن تحليل حفظ دائم اختيار، مجددا صريح تنشيط قد تسجيل انحراف جيد View أو Chat fallback.Tab و focus action في تحديث اختيار حالة قبل أولا تنشيط تحليل خروج target.blank Session لا تصيير View slot؛`ConversationSnapshot.activeTargets` فقط من قد شيء تحويل active snapshot إرسال توليد، لا استعلام inactive target Context activity.
 
-普通 prepend 与 append flush 只对 active target 调用 `apply({ upserts, timeline })`。完整 window replace 与 Registry rebuild 只对 active target 调用 `replace()`。取消订阅不会移除 target，因此返回已打开的 View 不会重建。
+عادي prepend و append flush فقط مقابل active target استدعاء `apply({ upserts, timeline })`. كامل window replace و Registry rebuild فقط مقابل active target استدعاء `replace()`. إلغاء حجز قراءة لن إزالة target، لذلك إرجاع قد فتح View لن إعادة بناء.
 
-[`ChatSnapshotBuilder`](../../../../packages/client/ui-chat/src/client/conversation-nodes/chat-snapshot-builder.ts) 维护 `order`、带身份稳定 Node 与 Turn-process source 的 keyed `nodes` store、turn/step `locations` index、`timeline`，以及由 StatsPills 使用并镜像到顶层公共兼容字段的 `legacy` slice。
+[`ChatSnapshotBuilder`](../../../../packages/client/ui-chat/src/client/conversation-nodes/chat-snapshot-builder.ts) صيانة `order`، حمل هوية مستقر Node و Turn-process source keyed `nodes` store،turn/step `locations` index،`timeline`، و من StatsPills استخدام و مرآة مثل إلى قمة طبقة عام مشترك توافق حقل `legacy` slice.
 
-Chat 结构变化只由新 key、`anchorSeq`、visibility 或 Location identity 变化触发。普通内容变化不重建 `order`；keyed Node store 只替换该 key 的 value 并发布其 source。Turn-process projector 仅为结构、规格或状态发生变化的 Turn 重算跨 Node 呈现，再只发布该 Turn 的 process source。
+Chat بنية تغير فقط من جديد key،`anchorSeq`،visibility أو Location identity تغير إطلاق. عادي محتوى تغير لا إعادة بناء `order`؛keyed Node store فقط استبدال هذا key value تزامن نشر ذلك source.Turn-process projector فقط لـ بنية، قاعدة إطار أو حالة حدوث تغير Turn إعادة حساب عبر Node عرض، مجددا فقط إصدار هذا Turn process source.
 
-Builder 遇到结构变化时从 store 的当前 values 计算 visible order，并按未变化引用复用索引数组。Prepend 可以增加前部历史 key，append 可以增加尾部或按业务 anchor 落位，既有 key 不因排序变化而重命名。
+Builder لقاء إلى بنية تغير وقت من store حالي values حساب حساب visible order، و حسب لم تغير مرجع إعادة استخدام بحث جذب عدد مجموعة.Prepend يمكن زيادة قبل جزء تاريخ key،append يمكن زيادة ذيل جزء أو حسب عمل خدمة anchor سقوط موضع، قائم key لا بسبب ترتيب ترتيب تغير بينما إعادة تسمية.
 
-[`ChatView`](../../../../packages/client/ui-chat/src/client/chat/ChatView.tsx) 只遍历 `order`，并为每个 key 解析两份稳定 source。每个 [`ChatNodeSeat`](../../../../packages/client/ui-chat/src/client/chat/ChatNodeSeat.tsx) 以 Context key 固定在同一个父列表中，只订阅自身的 Node 与 Turn-process source，并按 `node.kind` 分发 `'conversation.chat.node'` keyed slot。
+[`ChatView`](../../../../packages/client/ui-chat/src/client/chat/ChatView.tsx) فقط مرة تاريخ `order`، و لـ كل key تحليل اثنان نسخة مستقر source. كل [`ChatNodeSeat`](../../../../packages/client/ui-chat/src/client/chat/ChatNodeSeat.tsx) بـ Context key ثابت في نفس عدد أب قائمة في، فقط حجز قراءة ذاته Node و Turn-process source، و حسب `node.kind` توزيع `'conversation.chat.node'` keyed slot.
 
-[`ChatNodeDataMap`](../../../../packages/client/ui-chat/src/client/contract/chat-nodes.ts) 是 declaration-merged 的 renderer payload registry。每个业务模块分别注册自己的 Definition 和 keyed renderer；`registerConversationNodes()` 与 `registerChatNodeRenderers()` 只负责装配这些独立贡献，不通过 closed union 或中心 switch 解释业务。内建实现位于 `ui-chat`，且该类型和注册边界允许业务迁入独立 package 而不修改 Chat dispatcher。
+[`ChatNodeDataMap`](../../../../packages/client/ui-chat/src/client/contract/chat-nodes.ts) هو declaration-merged renderer payload registry. كل عمل خدمة وحدة قسم آخر تسجيل ذاتي ذات Definition و keyed renderer؛`registerConversationNodes()` و `registerChatNodeRenderers()` فقط مسؤول تركيب إعداد هذه مستقل مساهمة، لا عبر closed union أو في قلب switch حل تفسير عمل خدمة. داخل بناء تنفيذ يقع في `ui-chat`، كما هذا نوع و تسجيل حد سماح عمل خدمة نقل دخول مستقل package بينما لا تعديل Chat dispatcher.
 
-`conversation.view` 的 Chat entry 在声明 `conversation.chat.node` child slot 时统一注册 `ChatNodeTurnDataInjected`。`ChatNodeSeat` 把 Node 所属 Turn 的稳定 data store 作为 `hookContext` 传给 slot；Slot renderer 直接在该 store 上绑定 `useTurnData(businessKey)`，因此每个 keyed Chat renderer 都能读取自己 Node 所属 Turn 的强类型只读 data，Assistant renderer 不拥有特殊注入权限。
+`conversation.view` Chat entry في إعلان `conversation.chat.node` child slot وقت موحد واحد تسجيل `ChatNodeTurnDataInjected`.`ChatNodeSeat` يأخذ Node الذي تابع Turn مستقر data store بصفة `hookContext` نقل إعطاء slot؛Slot renderer مباشر في هذا store فوق ربط `useTurnData(businessKey)`، لذلك كل keyed Chat renderer كل قدرة قراءة ذاتي ذات Node الذي تابع Turn قوي نوع فقط قراءة data،Assistant renderer لا يملك خاص خاص حقن إذن.
 
-Slot-level contextual Hook 与 entry-owned `inject.hooks` 是两条独立路径。后者继续只绑定 registration-owned Observable；前者按稳定 slot inject face 缓存定义，并按稳定 render occurrence 绑定 factory 和 Hook。`useTurnData()` 订阅 `turn.data.source(key)`，其他 Location-data key 或 Session snapshot 的发布不会通知它。
+Slot-level contextual Hook و entry-owned `inject.hooks` هو اثنان بند مستقل مسار. بعد من متابعة فقط ربط registration-owned Observable؛ قبل من حسب مستقر slot inject face ذاكرة مؤقتة تعريف، و حسب مستقر render occurrence ربط factory و Hook.`useTurnData()` حجز قراءة `turn.data.source(key)`، أخرى Location-data key أو Session snapshot إصدار لن إشعار هو.
 
-标准 `useSession` 仍属于所有 session-scoped slot renderer 的公开能力，但 `ChatNodeSeat` 不再需要它或聚合 `useChat`。`useTurnData()` 是收窄常见读取方式而不是权限沙箱。全窗口统计或任意对象索引仍可显式使用 Session snapshot；它们不能伪装成“当前 Node 的 Turn data”。
+معيار `useSession` ما زال يخص كل session-scoped slot renderer عام قدرة، لكن `ChatNodeSeat` لم يعد حاجة هو أو تجمع دمج `useChat`.`useTurnData()` هو استلام ضيق معتاد رؤية قراءة طريقة بينما لا هو إذن صندوق رملي. كل نافذة موحد حساب أو مهمة معنى كائن بحث جذب ما زال يمكن صريح استخدام Session snapshot؛ هو جمع لا يستطيع زائف تركيب صار “حالي Node Turn data”.
 
-Assistant streaming 到 final、Tool running 到 settled 始终留在同一个 Seat，只更新 data 和必要的排序属性。结算不会因跨 parent 移动而重置组件内部 State。
+Assistant streaming إلى final،Tool running إلى settled بداية نهاية إبقاء في نفس عدد Seat، فقط تحديث data و لا بد يلزم ترتيب ترتيب خاصية. تسوية لن بسبب عبر parent نقل حركة بينما إعادة وضع مكون داخلي State.
 
-业务主动把已发布 Node 改成 hidden 时，它会退出 visible order，恢复 visible 时会重新 mount。这是明确的业务撤显语义，与 running→settled 的稳定 Seat 保证不同。
+عمل خدمة رئيسي حركة يأخذ قد إصدار Node تعديل صار hidden وقت، هو سوف خروج visible order، استعادة visible وقت سوف إعادة mount. هذا هو واضح عمل خدمة سحب إظهار دلالة، و running→settled مستقر Seat حفظ إثبات مختلف.
 
-具体 Tool renderer 仍由 [`ui-tool ownership decision`](../../archived/architecture/2026-08-08-client-tool-presentation-ownership.md) 约束。Tool Definition 只交付递归 root/subcall data，`ui-tool` 再按 Tool name keyed slot 分发具体表现。
+أداة جسم Tool renderer ما زال من [`ui-tool ownership decision`](../../archived/architecture/2026-08-08-client-tool-presentation-ownership.md) قيد.Tool Definition فقط تسليم تمرير عودة root/subcall data،`ui-tool` مجددا حسب Tool name keyed slot توزيع أداة جسم جدول الآن.
 
-Trajectory 针对与 Chat 相同的 Assembler 和 `SessionEventLikeEntry` window 注册自己的 target 与业务 Definition。它的 target builder 保留 stage-oriented read model，既不消费 Chat Builder 的 legacy slice，也不运行独立 history fold。Chat 与 Trajectory 分别维护独立的 scalar 和 packed Assistant reducer；target 专属 Definition 不改变共享的 Context、Reader 或 Location 契约。
+Trajectory إبرة مقابل و Chat نفسه Assembler و `SessionEventLikeEntry` window تسجيل ذاتي ذات target و عمل خدمة Definition. هو target builder إبقاء stage-oriented read model، حيث لا إزالة استهلاك Chat Builder legacy slice، أيضا لا تشغيل مستقل history fold.Chat و Trajectory قسم آخر صيانة مستقل scalar و packed Assistant reducer؛target مخصص تابع Definition لا تغيير مشترك Context،Reader أو Location عقد نحو.
 
-target 专属 Trajectory Definition、保留的 stage model、Steering 适配、复杂度上界与表现层热点由 [Trajectory Context 组装决策](../../archived/architecture/2026-08-11-trajectory-conversation-context-assembly.md)负责。
+target مخصص تابع Trajectory Definition، إبقاء stage model،Steering ملائم إعداد، تكرار مختلط درجة فوق حد و جدول الآن طبقة حار نقطة من [Trajectory Context تجميع قرار](../../archived/architecture/2026-08-11-trajectory-conversation-context-assembly.md) مسؤول.
 
-## 运行时与渲染链路
+## وقت التشغيل و تصيير سلسلة مسار
 
 ```text
 SessionEventLike window
@@ -356,72 +356,72 @@ SessionEventLike window
        -> trajectory: TrajectorySnapshotBuilder -> stages/layout/table
 ```
 
-## 验证
+## تحقق
 
-Runtime tests 固定 Definition 生命周期注册、exact-ID append、update-before-start 收集与 start 后正序 replay、prepend identity、Reader window-gap 修复、传递依赖、Location closure、Step→Turn data phase order、Location data replacement、publication cadence、非法撤回、首次订阅 activation、单调 active target 和 per-target Builder。
+Runtime tests ثابت Definition دورة الحياة تسجيل،exact-ID append،update-before-start استلام تجميع و start بعد صحيح ترتيب replay،prepend identity،Reader window-gap إصلاح، نقل تمرير اعتماد،Location closure،Step→Turn data phase order،Location data replacement،publication cadence، غير قاعدة سحب عودة، أول مرة حجز قراءة activation، مفرد ضبط active target و per-target Builder.
 
-Conversation tests 覆盖全部内建 Chat Definition、Assistant Step data、Turn Tail 与 Deliverables Turn data、Chat 排序和结构共享、selector isolation、Assistant/Tool running-to-settled identity、nested PTC dispatch、steering、Compaction、Retry、interruption、load-older anchoring 和 slot dispatch。Trajectory tests 则覆盖它独立注册的 Message、Assistant、Tool、Compaction、Request-header 与 boundary Definition，以及继续保留的 stage-oriented view model。
+Conversation tests تغطية الكل داخل بناء Chat Definition،Assistant Step data،Turn Tail و Deliverables Turn data،Chat ترتيب ترتيب و بنية مشترك،selector isolation،Assistant/Tool running-to-settled identity،nested PTC dispatch،steering،Compaction،Retry،interruption،load-older anchoring و slot dispatch.Trajectory tests فإن تغطية هو مستقل تسجيل Message،Assistant،Tool،Compaction،Request-header و boundary Definition، و متابعة إبقاء stage-oriented view model.
 
-Slot type/runtime tests 固定父注册必须提供声明的 common inject、`hookContext` 类型、不同 Node context 的 Hook 隔离、factory/Hook identity 稳定，以及无关 Session publication 不重渲染业务 renderer。原 entry-owned Observable Hook 测试继续固定未使用 contextual factory 的路径。
+Slot type/runtime tests ثابت أب تسجيل يجب توفير إعلان common inject،`hookContext` نوع، مختلف Node context Hook عزل،factory/Hook identity مستقر، و غير متصل Session publication لا إعادة تصيير عمل خدمة renderer. أصل entry-owned Observable Hook اختبار متابعة ثابت لم استخدام contextual factory مسار.
 
-Assembled Web snapshot、GUI 和浏览器场景覆盖真实 plugin graph。浏览器证据比较 Assistant streaming→settled、Bash running→settled 以及 PTC mode root + nested subcalls 与 master 的布局。
+Assembled Web snapshot،GUI و متصفح مشهد تغطية حقيقي plugin graph. متصفح دليل مقارنة مقارنة Assistant streaming→settled،Bash running→settled و PTC mode root + nested subcalls و master تخطيط.
 
-历史链路验证同时覆盖完整 replace、非重叠 prepend、完整 range 去重、部分重叠拒绝、空页 `hasMore` 收敛和 scalar live append。相同 Assistant 历史的 scalar 与 packed 表示产生相同 Chat/Trajectory State、timing boundary 与最终 Node；一个 packed run 在 replace、prepend、Location replay 与 registry rebuild 中始终只保留一个 Match。
+تاريخ سلسلة مسار تحقق معا تغطية كامل replace، غير إعادة تراكم prepend، كامل range ذهاب إعادة، جزء إعادة تراكم رفض، فارغ صفحة `hasMore` استلام جمع و scalar live append. نفسه Assistant تاريخ scalar و packed يمثل إنتاج نفسه Chat/Trajectory State،timing boundary و نهائي Node؛ واحد packed run في replace،prepend،Location replay و registry rebuild في بداية نهاية فقط إبقاء واحد Match.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**保留中心化 Session transcript fold，只抽 helper。** 拒绝：业务 identity、历史 replay 和 cache invalidation 仍属于一个闭合 switch，移动函数不会产生独立所有权。
+**إبقاء في قلب تحويل Session transcript fold، فقط سحب helper.** رفض: عمل خدمة identity، تاريخ replay و cache invalidation ما زال يخص واحد إغلاق دمج switch، نقل حركة دالة لن إنتاج مستقل كل حق.
 
-**让 React renderer 自己扫描 Session Event。** 拒绝：每种 view 都会重复匹配和生命周期 State，React 会成为业务权威，paging 与 streaming 也会重算无关组件树。
+**يجعل React renderer ذاتي ذات مسح Session Event.** رفض: كل نوع view كل سوف تكرار مطابقة و دورة الحياة State،React سوف يصبح عمل خدمة مرجعي،paging و streaming أيضا سوف إعادة حساب غير متصل مكون شجرة.
 
-**把全局 Nodes 或 Location 索引传给每个业务 renderer。** 拒绝：业务组件会自行扫描和推断当前 Turn/Step，订阅范围随窗口增长。Definition 把聚合值发布到 Engine-owned Location，renderer 只读取自己 Node 的 Location data。
+**يأخذ عام Nodes أو Location بحث جذب نقل إعطاء كل عمل خدمة renderer.** رفض: عمل خدمة مكون سوف ذاتي سطر مسح و دفع قطع حالي Turn/Step، حجز قراءة نطاق مع نافذة زيادة طويل.Definition يأخذ تجمع دمج قيمة إصدار إلى Engine-owned Location،renderer فقط قراءة ذاتي ذات Node Location data.
 
-**每个新 Event 都调用同 Definition 的全部 Context。** 拒绝：append 成本随历史增长，`update()` 也会同时承担匹配与转换。无 Context 的 `match(event)` 先算出 ID，随后只更新一个 Context。
+**كل جديد Event كل استدعاء نفس Definition الكل Context.** رفض:append صار هذا مع تاريخ زيادة طويل،`update()` أيضا سوف معا تحمل تحمل مطابقة و تحويل. بلا Context `match(event)` أولا حساب خروج ID، مع بعد فقط تحديث واحد Context.
 
-**让 Definition 的 matcher 读取 Context 或扫描历史。** 拒绝：匹配将依赖摄入方向，result-first 历史页无法独立算出归属，实时 append 也退化成开放对象查找。
+**يجعل Definition matcher قراءة Context أو مسح تاريخ.** رفض: مطابقة سوف اعتماد التقاط دخول جهة نحو،result-first تاريخ صفحة لا يمكن مستقل حساب خروج ملكية، فوري append أيضا تراجع تحويل صار فتح وضع كائن فحص بحث.
 
-**为历史反扫定义逆向 State fold。** 拒绝：每个业务都要维护互为逆运算的两套逻辑，删除、非可逆聚合和跨 Context 依赖很难保持一致。统一 Matches 后从 start 正序 replay 只有一套业务语义。
+**لـ تاريخ عكس مسح تعريف عكس نحو State fold.** رفض: كل عمل خدمة كل يلزم صيانة متبادل لـ عكس تشغيل حساب اثنان طقم منطق، حذف، غير يمكن عكس تجمع دمج و عبر Context اعتماد جدا صعب إبقاء متسق. موحد واحد Matches بعد من start صحيح ترتيب replay فقط لديه واحد طقم عمل خدمة دلالة.
 
-**增加独立 live-stream matcher 与 update lifecycle。** 拒绝：第二条 Definition path 会重复 dispatch、replay、publication 与 Context type。Client-only `assistant/live-chunk` 与持久 settlement 使用既有 `match(event)` 和 `update(context, match)` lifecycle；只有 event discriminator 与 stream expansion 不同。
+**زيادة مستقل live-stream matcher و update lifecycle.** رفض: ثاني بند Definition path سوف تكرار dispatch،replay،publication و Context type.Client-only `assistant/live-chunk` و حمل دائم settlement استخدام قائم `match(event)` و `update(context, match)` lifecycle؛ فقط لديه event discriminator و stream expansion مختلف.
 
-**把 Inbox 做成引擎一级公民或一个窗口级 Context。** 拒绝：Inbox 是普通业务状态，不应污染通用引擎；逐 splice 瞬间态加严格前序 Reader 同时支持 prepend、append 和 Message 查询。
+**يأخذ Inbox فعل صار جذب محرك واحد درجة عام شعب أو واحد نافذة درجة Context.** رفض:Inbox هو عادي عمل خدمة حالة، لا ينبغي تلوث صبغ عام جذب محرك؛ تدريجي splice لحظة بين حالة إضافة صارم إطار قبل ترتيب Reader معا دعم حمل prepend،append و Message استعلام.
 
-**给跨业务查询注册特化 query method。** 拒绝：消费者仍要依赖提供方 API，新增关系会扩张中心接口。Reader 暴露指定 kind 的只读前序 Context，由提供方写好 State、消费者读懂 State。
+**إعطاء عبر عمل خدمة استعلام تسجيل خاص تحويل query method.** رفض: إزالة استهلاك من ما زال يلزم اعتماد مزود API، إضافة جديدة علاقة سوف توسيع ورقة في قلب واجهة.Reader كشف إشارة تحديد kind فقط قراءة قبل ترتيب Context، من مزود كتابة جيد State، إزالة استهلاك من قراءة فهم State.
 
-**让 Location data 消费者直接读取提供方 Context State。** 拒绝：消费者会依赖另一个业务的可变内部形状，也无法表达值属于哪个 Turn/Step。declaration-merged data map 只公开提供方选择发布的只读值和 Engine-owned 坐标。
+**يجعل Location data إزالة استهلاك من مباشر قراءة مزود Context State.** رفض: إزالة استهلاك من سوف اعتماد آخر عدد عمل خدمة متغير داخلي شكل حالة، أيضا لا يمكن جدول بلوغ قيمة يخص أي عدد Turn/Step.declaration-merged data map فقط عام مزود اختيار إصدار فقط قراءة قيمة و Engine-owned جلوس علامة.
 
-**按 State identity 缓存每个 Definition 的 Location data。** 拒绝：Definition 可以原地修改并返回同一个 State 对象，其 Location data 也可能依赖 Match Location 或其他 Definition 发布的 value。各 Definition 改为自行判断业务值是否变化；未变化时原样返回前一次 publication。
+**حسب State identity ذاكرة مؤقتة كل Definition Location data.** رفض:Definition يمكن أصل أرض تعديل و إرجاع نفس عدد State كائن، ذلك Location data أيضا ممكن اعتماد Match Location أو أخرى Definition إصدار value. كل Definition تعديل لـ ذاتي سطر حكم قطع عمل خدمة قيمة هل تغير؛ لم تغير وقت أصل مثال إرجاع قبل مرة publication.
 
-**增加通用 `end()`、prepared 或 window reset 生命周期。** 拒绝：不同业务完成条件不同，分页缺口也不是业务生命周期。业务 Event 更新 State，Location close 触发 replay/build，Reader dependency 负责补页失效。
+**زيادة عام `end()`،prepared أو window reset دورة الحياة.** رفض: مختلف عمل خدمة إتمام شرط مختلف، قسم صفحة نقص فتحة أيضا لا هو عمل خدمة دورة الحياة. عمل خدمة Event تحديث State،Location close إطلاق replay/build،Reader dependency مسؤول تكملة صفحة بطلان.
 
-**在同一个 Event Definition 内通过 `buildViewNode(target)` 为 Chat 与 Trajectory 分支。** 拒绝：两种视图需要不同的业务 State 与中间记录，共用 Definition 会迫使每个 package 携带另一边的条件与 payload。target 自有的 Definition 把这些选择留在本地，同时复用 Assembler 的摄入与生命周期约定。
+**في نفس عدد Event Definition داخل عبر `buildViewNode(target)` لـ Chat و Trajectory فرع.** رفض: اثنان نوع عرض حاجة مختلف عمل خدمة State و في بين سجل، مشترك استخدام Definition سوف إجبار جعل كل package يحمل آخر حافة شرط و payload.target ذاتي لديه Definition يأخذ هذه اختيار إبقاء في محلي، معا إعادة استخدام Assembler التقاط دخول و دورة الحياة اتفاق.
 
-**最后一个 subscriber 离开时停用 target。** 拒绝：返回该 View 会反复重建完整 snapshot。订阅只确认首次使用；随后 target 在 Session 剩余生命周期中保持增量更新。
+**الأكثر بعد واحد subscriber مغادرة فتح وقت توقف استخدام target.** رفض: إرجاع هذا View سوف عكس تكرار إعادة بناء كامل snapshot. حجز قراءة فقط تأكيد أول مرة استخدام؛ مع بعد target في Session باق بقية دورة الحياة في إبقاء زيادة كمية تحديث.
 
-**在最终业务 Node 上再叠一层通用 layout model。** 拒绝：activity、tail candidacy 和 layout enum 会把当前 Chat 的业务语义重新集中到引擎。最终 Node 直接携带 renderer 所需 data，只共享 identity、排序和 Location 事实。
+**في نهائي عمل خدمة Node فوق مجددا تراكم واحد طبقة عام layout model.** رفض:activity،tail candidacy و layout enum سوف يأخذ حالي Chat عمل خدمة دلالة إعادة تجميع في إلى جذب محرك. نهائي Node مباشر يحمل renderer الذي يحتاج data، فقط مشترك identity، ترتيب ترتيب و Location واقع.
 
-**只在 Assistant renderer 注册 Turn data Hook。** 拒绝：访问当前 Node Location 是 `conversation.chat.node` slot 的公共能力，不属于某个业务 renderer。父 Chat entry 注册一次 common inject，所有 keyed renderer 共享同一强类型约定。
+**فقط في Assistant renderer تسجيل Turn data Hook.** رفض: وصول حالي Node Location هو `conversation.chat.node` slot عام مشترك قدرة، لا يخص بعض عدد عمل خدمة renderer. أب Chat entry تسجيل مرة common inject، كل keyed renderer مشترك نفس قوي نوع اتفاق.
 
-**把 running Assistant 或 Tool 保留在独立 tail container。** 拒绝：结算时会跨 React parent 移动，稳定业务 key 也无法阻止 remount。统一 keyed order 允许 data 和排序位置改变，但不改变 Seat identity。
+**يأخذ running Assistant أو Tool إبقاء في مستقل tail container.** رفض: تسوية وقت سوف عبر React parent نقل حركة، مستقر عمل خدمة key أيضا لا يمكن منع توقف remount. موحد واحد keyed order سماح data و ترتيب ترتيب موضع تغيير، لكن لا تغيير Seat identity.
 
-## 后果
+## عاقبة
 
-新增业务节点可以局部注册自己的 matcher、State 转换、可选 Location data、最终 target Node 和 renderer，无需修改 Session 的业务 switch。`ChatNodeDataMap` 和 Location data maps 允许业务 package 通过 declaration merging 合入强类型 data；所有相关 Event 仍须暴露可单 Event 推导的稳定 ID。
+إضافة جديدة عمل خدمة عقدة يمكن نطاق جزء تسجيل ذاتي ذات matcher،State تحويل، اختياري Location data، نهائي target Node و renderer، بلا حاجة تعديل Session عمل خدمة switch.`ChatNodeDataMap` و Location data maps سماح عمل خدمة package عبر declaration merging دمج دخول قوي نوع data؛ كل متبادل صلة Event ما زال يجب كشف يمكن مفرد Event دفع توجيه مستقر ID.
 
-Host 业务 package 把自己的持久 Event 成员 declaration-merge 到 `@deepseek-ai/dsh-session/types`，Client Definition 则通过对应业务 package 的 `/types` 子路径进行 type-only import。增强实际声明接口而不是重导出 barrel，使 Host 和 Client 的独立 TypeScript Program 都能获得相同的 Event narrowing，同时不把 Host runtime 带入 Client 图。
+Host عمل خدمة package يأخذ ذاتي ذات حمل دائم Event عضو declaration-merge إلى `@deepseek-ai/dsh-session/types`،Client Definition فإن عبر مقابل عمل خدمة package `/types` فرعي مسار إجراء type-only import. زيادة قوي فعلي إعلان واجهة بينما لا هو إعادة توجيه خروج barrel، جعل Host و Client مستقل TypeScript Program كل قدرة نيل نيل نفسه Event narrowing، معا لا يأخذ Host runtime حمل دخول Client رسم.
 
-初始尾页、older prepend 和 live append 共享一套 Context 不变量。缺 start、Reader window gap、Location unknown 以及 packed 高频 delta 都是引擎明确表达的状态，不需要业务另建方向相关 cache。
+ابتدائي ذيل صفحة،older prepend و live append مشترك واحد طقم Context ثابت كمية. نقص start،Reader window gap،Location unknown و packed عال تردد delta كل هو جذب محرك واضح جدول بلوغ حالة، لا حاجة عمل خدمة آخر بناء جهة نحو متبادل صلة cache.
 
-Append 不扫描历史 Context；prepend 只 replay Match、Location 或 Reader 答案真正受影响的 Context。Chat 结构变化仍可能重算 visible order 和索引，但不会重跑无关业务 fold 或替换未变化 Node identity。
+Append لا مسح تاريخ Context؛prepend فقط replay Match،Location أو Reader جواب سجل حق صحيح تلقي أثر Context.Chat بنية تغير ما زال ممكن إعادة حساب visible order و بحث جذب، لكن لن إعادة ركض غير متصل عمل خدمة fold أو استبدال لم تغير Node identity.
 
-State update 与 publication cadence 分离后，Assistant 的每条 live delta 与每个历史 packed run 都会被 fold，同时每三个 animation frame 最多 materialize 一次。Assistant view 读取前置 Step Location 阶段刚写入的同一 projection。Turn Process 对持续 Assistant chunk 直接返回已有 open data 和 Node，不再重复派生或编码；Turn Tail 到 `turn/end` 才执行完整 Match 扫描。Step/Turn close 与 final Event 会立即发布最新 State。
+State update و publication cadence قسم مغادرة بعد،Assistant كل بند live delta و كل تاريخ packed run كل سوف يتم fold، معا كل ثلاثة عدد animation frame الأكثر كثير materialize مرة.Assistant view قراءة قبل وضع Step Location مرحلة مقطع للتو كتابة نفس projection.Turn Process مقابل حمل متابعة Assistant chunk مباشر إرجاع قد لديه open data و Node، لم يعد تكرار إرسال توليد أو تحرير رمز؛Turn Tail إلى `turn/end` عندئذ تنفيذ كامل Match مسح.Step/Turn close و final Event سوف قيام أي إصدار الأكثر جديد State.
 
-inactive target 会保留 Definition State 和 target Context 索引，但不保留 builder、已物化 Node 或 snapshot。已挂载的内建或第三方 View 通过正常订阅激活自己的 target；已经打开的 target 则继续接收增量更新。
+inactive target سوف إبقاء Definition State و target Context بحث جذب، لكن لا إبقاء builder، قد شيء تحويل Node أو snapshot. قد تركيب داخل بناء أو رقم ثلاثة جهة View عبر صحيح معتاد حجز قراءة تنشيط ذاتي ذات target؛ قد فتح target فإن متابعة استقبال زيادة كمية تحديث.
 
-Step/Turn 是业务间共享聚合的稳定宿主。Turn Tail 和 Deliverables 无需由 renderer 扫描全局 Nodes 即可派生值；Slot-level `useTurnData()` 把常见读取限制到当前 Node 所属 Turn，并通过 keyed Location source 隔离无关更新。
+Step/Turn هو عمل خدمة بين مشترك تجمع دمج مستقر مضيف.Turn Tail و Deliverables بلا حاجة من renderer مسح عام Nodes يكفي إرسال توليد قيمة؛Slot-level `useTurnData()` يأخذ معتاد رؤية قراءة حد إلى حالي Node الذي تابع Turn، و عبر keyed Location source عزل غير متصل تحديث.
 
-Inbox Context 的保留量随 splice 数和已 claim 消息数增长，不再随其累计前缀增长。该结构消除了重复 state 增长，但不会对持久 Session event 中的消息正文去重，也不会限制已加载 event window。
+Inbox Context إبقاء كمية مع splice عدد و قد claim رسالة عدد زيادة طويل، لم يعد مع ذلك تراكم حساب بادئة زيادة طويل. هذا بنية إزالة حذف تكرار state زيادة طويل، لكن لن مقابل حمل دائم Session event في رسالة متن ذهاب إعادة، أيضا لن حد قد تحميل event window.
 
-代价是 Runtime 新增 Registry、Assembler、Location data、依赖重放和 per-target Builder 契约，UI Slots 也新增 parent-owned common inject 与 per-occurrence `hookContext`。消费 Assistant delta 的 Definition 还需要维护等价的 scalar 与 packed update 分支。Definition 作者必须理解稳定 ID、唯一 scalar start、正序 replay、Step→Turn 发布顺序、只读 Reader 和 Node 不撤回规则。
+بديل قيمة هو Runtime إضافة جديدة Registry،Assembler،Location data، اعتماد إعادة وضع و per-target Builder عقد نحو،UI Slots أيضا إضافة جديدة parent-owned common inject و per-occurrence `hookContext`. إزالة استهلاك Assistant delta Definition أيضا حاجة صيانة انتظار قيمة scalar و packed update فرع.Definition عمل من يجب إدارة حل مستقر ID، وحيد scalar start، صحيح ترتيب replay،Step→Turn إصدار ترتيب، فقط قراءة Reader و Node لا سحب عودة قاعدة.
 
-`useTurnData()` 不撤销 session-scoped renderer 的标准 `useSession`，因此该边界依靠 API 引导和测试，而不是能力隔离。Registry 变化仍是低频完整 rebuild；Chat Builder 继续为 StatsPills 和顶层公共字段维护 legacy slice，Trajectory 则在共享 Session 窗口上拥有 target 专属 Definition 与 Builder。内建 Definition 分别留在所属 UI package；这些兼容边界不把业务解释权交还给 Session。
+`useTurnData()` لا سحب إلغاء session-scoped renderer معيار `useSession`، لذلك هذا حد اعتماد اعتماد API جذب توجيه و اختبار، بينما لا هو قدرة عزل.Registry تغير ما زال هو منخفض تردد كامل rebuild؛Chat Builder متابعة لـ StatsPills و قمة طبقة عام مشترك حقل صيانة legacy slice،Trajectory فإن في مشترك Session نافذة فوق يملك target مخصص تابع Definition و Builder. داخل بناء Definition قسم آخر إبقاء في الذي تابع UI package؛ هذه توافق حد لا يأخذ عمل خدمة حل تفسير حق تسليم أيضا إعطاء Session.

@@ -1,47 +1,47 @@
-# Vendored 包改名
+# Vendored حزمة تعديل اسم
 
-[English](rescope.md) | 中文
+[English](rescope.md) | العربية
 
-Cordis 框架及其基础库以源码形式 vendored 在 [`vendor/`](../vendor/README.md) 下，并以 `@deepseek-ai` scope 发布：每个 harness 包都把框架声明为 peer dependency，发布 harness 就会连带发布这一层，用上游名发布等于在 registry 上占用别人的名字。本页是名字映射表；决策与影响见 [改名 Agent Note](../.agents/notes/archived/process/2026-08-10-vendor-package-rescope.md)，上游 commit 见 [`vendor/README.md`](../vendor/README.md)。
+Cordis إطار هيكل و ذلك أساس أساس مكتبة بـ شفرة المصدر شكل صيغة vendored في [`vendor/`](../vendor/README.md) تحت، و بـ `@deepseek-ai` scope إصدار: كل harness حزمة كل يأخذ إطار هيكل إعلان لـ peer dependency، إصدار harness حينئذ سوف وصل حمل إصدار هذا واحد طبقة، استخدام فوق تنقل اسم إصدار انتظار في في registry فوق احتلال استخدام آخر شخص اسم حرف. هذا صفحة هو اسم حرف خريطة جدول؛ قرار و أثر رؤية [تعديل اسم Agent Note](../.agents/notes/archived/process/2026-08-10-vendor-package-rescope.md) ، فوق تنقل commit رؤية [`vendor/README.md`](../vendor/README.md).
 
-## 名字映射
+## اسم حرف خريطة
 
-| 目录 | 上游名 | 发布名 | 上游版本 | 角色 |
+| دليل | فوق تنقل اسم | إصدار اسم | فوق تنقل إصدار | زاوية لون |
 |---|---|---|---|---|
-| `vendor/cordis/` | `cordis` | `@deepseek-ai/cordis` | 4.0.0-rc.7 | 框架核心：`Context`、`Service`、`Fiber`、事件 |
-| `vendor/cosmokit/` | `cosmokit` | `@deepseek-ai/cosmokit` | 1.8.1 | 框架与 Schemastery 共用的基础工具 |
-| `vendor/schemastery/` | `schemastery` | `@deepseek-ai/schemastery` | 3.18.0 | 配置 schema（`Schema`），每个插件的 `Config` 都基于它 |
-| `vendor/loader/` | `@cordisjs/plugin-loader` | `@deepseek-ai/cordis-plugin-loader` | 1.0.0-rc.5 | `cordis.yml` 装载、插件解析、repository 缓存 |
-| `vendor/include/` | `@cordisjs/plugin-include` | `@deepseek-ai/cordis-plugin-include` | 1.0.4 | 配置包含与 patch 叠加 |
-| `vendor/group/` | `@cordisjs/plugin-group` | `@deepseek-ai/cordis-plugin-group` | 1.0.0 | 嵌套插件分组 |
-| `vendor/timer/` | `@cordisjs/plugin-timer` | `@deepseek-ai/cordis-plugin-timer` | 1.1.2 | `ctx` 上随 disposal 回收的定时器 |
-| `vendor/hmr/` | `@cordisjs/plugin-hmr` | `@deepseek-ai/cordis-plugin-hmr` | 1.0.15 | 插件与配置的热替换 |
-| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | 控制台日志导出 |
+| `vendor/cordis/` | `cordis` | `@deepseek-ai/cordis` | 4.0.0-rc.7 | إطار هيكل نواة قلب:`Context`،`Service`،`Fiber`، حدث |
+| `vendor/cosmokit/` | `cosmokit` | `@deepseek-ai/cosmokit` | 1.8.1 | إطار هيكل و Schemastery مشترك استخدام أساس أساس أداة |
+| `vendor/schemastery/` | `schemastery` | `@deepseek-ai/schemastery` | 3.18.0 | إعداد schema(`Schema`) ، كل إضافة `Config` كل أساس في هو |
+| `vendor/loader/` | `@cordisjs/plugin-loader` | `@deepseek-ai/cordis-plugin-loader` | 1.0.0-rc.5 | `cordis.yml` تركيب تحميل، إضافة تحليل،repository ذاكرة مؤقتة |
+| `vendor/include/` | `@cordisjs/plugin-include` | `@deepseek-ai/cordis-plugin-include` | 1.0.4 | إعداد يتضمن و patch تراكم إضافة |
+| `vendor/group/` | `@cordisjs/plugin-group` | `@deepseek-ai/cordis-plugin-group` | 1.0.0 | تضمين طقم إضافة قسم مجموعة |
+| `vendor/timer/` | `@cordisjs/plugin-timer` | `@deepseek-ai/cordis-plugin-timer` | 1.1.2 | `ctx` فوق مع disposal عودة استلام تحديد وقت جهاز |
+| `vendor/hmr/` | `@cordisjs/plugin-hmr` | `@deepseek-ai/cordis-plugin-hmr` | 1.0.15 | إضافة و إعداد حار استبدال |
+| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | تحكم منصة سجل توجيه خروج |
 
-子路径导出保持原路径：`@cordisjs/plugin-loader/repository` 变成 `@deepseek-ai/cordis-plugin-loader/repository`。
+فرعي مسار توجيه خروج إبقاء أصل مسار:`@cordisjs/plugin-loader/repository` تغيير صار `@deepseek-ai/cordis-plugin-loader/repository`.
 
-## 改名不碰什么
+## تعديل اسم لا اصطدام ماذا
 
-- **目录名与上游源码版本。** `vendor/hmr/` 仍是 `vendor/hmr/`，清单表记录的是所钉住源码快照的上游版本，因此清单读作一份上游快照；而每个 vendored 包 `package.json` 自身的 `version` 字段是 harness 发布的清单版本，`pnpm run release:vendor` 会提升它，重新 sync 时会恢复成上游版本。
-- **依赖 range。** 改名只修改依赖键，不改变范围。Workspace 清单对仓库内的运行时依赖使用 `workspace:^`，因此 pnpm 会解析到固定的本地包，并在发布时替换为版本范围。
-- **Loader 的 `cordis:` 内建前缀。** `cordis:include`、`cordis:group` 是协议前缀，不是包名。
-- **`cordis.yml` 配置文件家族**，包括 `*.cordis.yml`、`*.cordis.snapshot.yml`、`cordis.patch.yml`。
-- **名字里带这个词的 harness 包**，例如 `@deepseek-ai/dsh-tool-cordis`。
-- **上游运行时标识符**，例如 Schemastery 的 `Symbol.for('schemastery')` 及其 `vendor:` 元数据字段。
-- **`docs/` 之外的散文。** `vendor/*/README.md`、各包 README 与 Agent Note 保留写作当时的名字；那里的裸 `cordis` 也可能是 Python SDK 的选项名或某个 agent-preset 的 id。`docs/` 之内，散文与所有 Markdown 围栏都跟着改。
+- **دليل اسم و فوق تنقل شفرة المصدر إصدار.** `vendor/hmr/` ما زال هو `vendor/hmr/`، بيان جدول سجل هو الذي تثبيت إقامة شفرة المصدر لقطة فوق تنقل إصدار، لذلك بيان قراءة عمل واحد نسخة فوق تنقل لقطة؛ بينما كل vendored حزمة `package.json` ذاته `version` حقل هو harness إصدار بيان إصدار،`pnpm run release:vendor` سوف رفع رفع هو، إعادة sync وقت سوف استعادة صار فوق تنقل إصدار.
+- **اعتماد range.** تعديل اسم فقط تعديل اعتماد مفتاح، لا تغيير نطاق.Workspace بيان مقابل مستودع داخل وقت التشغيل اعتماد استخدام `workspace:^`، لذلك pnpm سوف تحليل إلى ثابت محلي حزمة، و في إصدار وقت استبدال لـ إصدار نطاق.
+- **Loader `cordis:` داخل بناء بادئة.** `cordis:include`،`cordis:group` هو بروتوكول بادئة، لا هو حزمة اسم.
+- **`cordis.yml` ملف إعداد بيت عائلة**، يشمل `*.cordis.yml`،`*.cordis.snapshot.yml`،`cordis.patch.yml`.
+- **اسم حرف داخل حمل هذا عدد كلمة harness حزمة**، مثال مثل `@deepseek-ai/dsh-tool-cordis`.
+- **فوق تنقل وقت التشغيل معرف رمز**، مثال مثل Schemastery `Symbol.for('schemastery')` و ذلك `vendor:` بيانات وصفية حقل.
+- **`docs/` خارج تفرق نص.** `vendor/*/README.md`، كل حزمة README و Agent Note إبقاء كتابة عمل عند وقت اسم حرف؛ ذلك داخل عار `cordis` أيضا ممكن هو Python SDK خيار اسم أو بعض عدد agent-preset id.`docs/` لـ داخل، تفرق نص و كل Markdown محيط شريط كل تتبع حال تعديل.
 
-## 你的代码要改什么
+## أنت شفرة يلزم تعديل ماذا
 
-| 位置 | 改前 | 改后 |
+| موضع | تعديل قبل | تعديل بعد |
 |---|---|---|
-| 模块 import | `import { Context } from 'cordis'` | `import { Context } from '@deepseek-ai/cordis'` |
-| 类型事件声明合并 | `declare module 'cordis'` | `declare module '@deepseek-ai/cordis'` |
-| `package.json` 依赖键 | `"@cordisjs/plugin-hmr": "^1.0.15"` | `"@deepseek-ai/cordis-plugin-hmr": "^1.0.15"` |
-| `cordis.yml` 插件条目 | `name: '@cordisjs/plugin-include'` | `name: '@deepseek-ai/cordis-plugin-include'` |
+| وحدة import | `import { Context } from 'cordis'` | `import { Context } from '@deepseek-ai/cordis'` |
+| نوع حدث إعلان دمج | `declare module 'cordis'` | `declare module '@deepseek-ai/cordis'` |
+| `package.json` اعتماد مفتاح | `"@cordisjs/plugin-hmr": "^1.0.15"` | `"@deepseek-ai/cordis-plugin-hmr": "^1.0.15"` |
+| `cordis.yml` إضافة بند | `name: '@cordisjs/plugin-include'` | `name: '@deepseek-ai/cordis-plugin-include'` |
 
-## 施加、核验与回退
+## تطبيق إضافة، نواة تحقق و رجوع
 
-上面这份映射由 [`scripts/rescope-vendor.ts`](../scripts/rescope-vendor.ts) 承载并执行改名，任何引用都不靠手改：
+فوق وجه هذا نسخة خريطة من [`scripts/rescope-vendor.ts`](../scripts/rescope-vendor.ts) تحمل تحميل و تنفيذ تعديل اسم، أي مرجع كل لا اعتماد يد تعديل:
 
 ```sh
 pnpm run rescope-vendor            # report what would change
@@ -50,4 +50,4 @@ pnpm run rescope-vendor:check      # assert the post-state; runs in the hygiene 
 pnpm run rescope-vendor --apply --reverse   # return to the upstream names
 ```
 
-上游 sync 之后重跑它（[流程](../vendor/README.md)），并接上它打印的重生成：`pnpm install` 重生成 lockfile、`pnpm run gen-third-party-notices`、以及对它触及的双语对跑 `pnpm run verify-translation-pairing --write`。
+فوق تنقل sync بعد إعادة ركض هو ([مسار](../vendor/README.md)) ، و وصل فوق هو ضرب طبع إعادة توليد:`pnpm install` إعادة توليد lockfile،`pnpm run gen-third-party-notices`، و مقابل هو لمس و مزدوج لغة مقابل ركض `pnpm run verify-translation-pairing --write`.

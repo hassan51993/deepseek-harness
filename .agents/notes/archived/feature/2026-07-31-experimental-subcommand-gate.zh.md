@@ -1,36 +1,36 @@
-# Agent Note: 实验性子命令由 `--experimental` 或 `DSH_EXPERIMENTAL=1` 把守
+# Agent Note: فعلي تحقق صفة فرعي أمر من `--experimental` أو `DSH_EXPERIMENTAL=1` يأخذ حراسة
 
 Status: implemented
 Archived: 2026-08-03
 
-[English](2026-07-31-experimental-subcommand-gate.md) | 中文
+[English](2026-07-31-experimental-subcommand-gate.md) | العربية
 
 ## Problem
 
-`meta` 与 `upgrade` 两个入口把实验性状态写在名字里：`dsh experimental-meta` 和 `dsh experimental-upgrade`。前缀让每次调用都变得冗长，而在稳定时重命名命令会破坏对它的所有引用——肌肉记忆、脚本与文档皆然。这种状态应当由一个显式选择加入的门槛承载，而不是由名字承载。
+`meta` و `upgrade` اثنان عدد مدخل يأخذ فعلي تحقق صفة حالة كتابة في اسم حرف داخل:`dsh experimental-meta` و `dsh experimental-upgrade`. بادئة يجعل كل مرة استدعاء كل تغيير نيل زائد طويل، بينما في مستقر وقت إعادة تسمية أمر سوف كسر تالف مقابل هو كل مرجع——عضلة لحم تسجيل ذاكرة، نص برمجي و وثيقة جميع لكن. هذا نوع حالة ينبغي عند من واحد صريح اختيار إضافة دخول باب عتبة تحمل تحميل، بينما لا هو من اسم حرف تحمل تحميل.
 
 ## Decision
 
-`dsh experimental-meta` 改为 `dsh meta`，`dsh experimental-upgrade` 改为 `dsh upgrade`。二者只有在调用时传入各自的 `--experimental` 标志、或环境中带有 `DSH_EXPERIMENTAL=1` 时才会运行；否则命令在 stderr 上明确报错并以退出码 1 结束，同时指明两种选择加入方式。依据发布前立场，旧名称已移除且没有别名，`args.spec.ts` 钉住了对它们的拒绝。
+`dsh experimental-meta` تعديل لـ `dsh meta`،`dsh experimental-upgrade` تعديل لـ `dsh upgrade`. اثنان من فقط لديه في استدعاء وقت نقل دخول كل منها `--experimental` علامة سجل، أو بيئة في حمل لديه `DSH_EXPERIMENTAL=1` وقت عندئذ سوف تشغيل؛ لا فإن أمر في stderr فوق واضح تقرير خطأ و بـ خروج رمز 1 انتهاء، معا إشارة واضح اثنان نوع اختيار إضافة دخول طريقة. اعتماد حسب إصدار قبل قيام ساحة، قديم اسم قد إزالة كما لا يوجد آخر اسم،`args.spec.ts` تثبيت إقامة مقابل هو جمع رفض.
 
-该门槛分为两半，各有其归属。按调用的一半是每个实验性子命令上的 Commander `--experimental` 选项，在其 action 内、泄漏父级选项的拒绝之后检查。环境的一半是 `parseDshArgs` 的一个布尔参数：`bin.ts` 在进程边界读取 `process.env.DSH_EXPERIMENTAL === '1'`（在 `loadEnv` 之后，因此项目 `.env` 也可以设置它）并向下传递结果，因此解析器对环境的依赖显式体现在签名中，测试也无需改动环境变量。`1` 是唯一的启用值——该变量是显式的选择加入，而不是真值判断。
+هذا باب عتبة قسم لـ اثنان نصف، كل لديه ذلك ملكية. حسب استدعاء واحد نصف هو كل فعلي تحقق صفة فرعي أمر فوق Commander `--experimental` خيار، في ذلك action داخل، تسرب تسرب أب درجة خيار رفض بعد فحص. بيئة واحد نصف هو `parseDshArgs` واحد نشر ذلك معامل:`bin.ts` في عملية حد قراءة `process.env.DSH_EXPERIMENTAL === '1'`(في `loadEnv` بعد، لذلك مشروع `.env` أيضا يمكن ضبط هو) و نحو تحت نقل تمرير نتيجة، لذلك محلل مقابل بيئة اعتماد صريح جسم الآن توقيع في، اختبار أيضا بلا حاجة تعديل بيئة متغير.`1` هو وحيد تفعيل قيمة——هذا متغير هو صريح اختيار إضافة دخول، بينما لا هو حق قيمة حكم قطع.
 
-之后要稳定某个命令，只需删除它的 `--experimental` 选项和 `requireExperimental` 调用；名字不再变动。
+بعد يلزم مستقر بعض عدد أمر، فقط يحتاج حذف هو `--experimental` خيار و `requireExperimental` استدعاء؛ اسم حرف لم يعد تغيير حركة.
 
 ## Testing
 
-`args.spec.ts` 钉住两条准入路径、裸名称拒绝、旧名称拒绝，以及在环境选择加入下对泄漏选项的拒绝。`built-bin.e2e.ts` 端到端地证明组装后的入口：stderr 上的门槛诊断与退出码 1，以及 `--experimental`、`DSH_EXPERIMENTAL=1`（而非 `DSH_EXPERIMENTAL=0`）会到达 TUI 的管道 stdio 拒绝——即此门之后的下一道关卡。两个被把守的命令还在 tmux 中做了交互式验证：`dsh meta --experimental` 与 `DSH_EXPERIMENTAL=1 dsh meta` 以检出目录为 workspace 启动 TUI，`DSH_EXPERIMENTAL=1 dsh upgrade` 播种 `dsh-upgrade` skill。
+`args.spec.ts` تثبيت إقامة اثنان بند دقيق دخول مسار، عار اسم رفض، قديم اسم رفض، و في بيئة اختيار إضافة دخول تحت مقابل تسرب تسرب خيار رفض.`built-bin.e2e.ts` طرف إلى طرف أرض إثبات تجميع بعد مدخل:stderr فوق باب عتبة تشخيص و خروج رمز 1، و `--experimental`،`DSH_EXPERIMENTAL=1`(بينما غير `DSH_EXPERIMENTAL=0`) سوف وصول TUI إدارة طريق stdio رفض——أي هذا باب بعد تحت واحد طريق صلة بطاقة. اثنان عدد يتم يأخذ حراسة أمر أيضا في tmux في فعل تفاعل صيغة تحقق:`dsh meta --experimental` و `DSH_EXPERIMENTAL=1 dsh meta` بـ فحص خروج دليل لـ workspace بدء TUI،`DSH_EXPERIMENTAL=1 dsh upgrade` بث نوع `dsh-upgrade` skill.
 
 ## Alternatives considered
 
-**保留 `experimental-` 名称前缀。** 按用户的指示拒绝：前缀让每次调用都付出代价，稳定时也会变成破坏性的重命名，而不是删除一个门槛。
+**إبقاء `experimental-` اسم بادئة.** حسب مستخدم إشارة عرض رفض: بادئة يجعل كل مرة استدعاء كل دفع خروج بديل قيمة، مستقر وقت أيضا سوف تغيير صار كسر تالف صفة إعادة تسمية، بينما لا هو حذف واحد باب عتبة.
 
-**父级 `--experimental` 标志（`dsh --experimental meta`）。** 拒绝：默认界面刻意保持纯选项形式并启用 `enablePositionalOptions`，跨子命令边界泄漏的父级选项都被视为拼错的调用。一个只被两个子命令消费的父级标志，恰恰就是适配器在其他所有地方都拒绝的泄漏选项形态。
+**أب درجة `--experimental` علامة سجل (`dsh --experimental meta`).** رفض: افتراضي واجهة لحظة معنى إبقاء صاف خيار شكل صيغة و تفعيل `enablePositionalOptions`، عبر فرعي أمر حد تسرب تسرب أب درجة خيار كل يتم نظر لـ تجميع خطأ استدعاء. واحد فقط يتم اثنان عدد فرعي أمر إزالة استهلاك أب درجة علامة سجل، تماما تماما حينئذ هو مهايئ في أخرى كل أرض جهة كل رفض تسرب تسرب خيار شكل.
 
-**在 `parseDshArgs` 内部读取 `process.env`。** 拒绝：本仓库在进程边界做验证，并保持类型化接缝的纯粹性；否则测试必须在每个用例前后修改并恢复 `process.env`。
+**في `parseDshArgs` داخلي قراءة `process.env`.** رفض: هذا مستودع في عملية حد فعل تحقق، و إبقاء نوع تحويل وصل شق صاف خالص صفة؛ لا فإن اختبار يجب في كل حالة استخدام قبل بعد تعديل و استعادة `process.env`.
 
-**接受任何非空的 `DSH_EXPERIMENTAL`。** 拒绝：遥测开关作为隐私控制倾向于误关而非误开，但实验性门槛是一种确认——`DSH_EXPERIMENTAL=0` 绝不能启用它所指名的命令。
+**قبول أي غير فارغ `DSH_EXPERIMENTAL`.** رفض: بعيد قياس فتح صلة بصفة خفي خاص تحكم ميل نحو في خطأ صلة بينما غير خطأ فتح، لكن فعلي تحقق صفة باب عتبة هو واحد نوع تأكيد——`DSH_EXPERIMENTAL=0` أبدا قدرة تفعيل هو الذي إشارة اسم أمر.
 
 ## Consequences
 
-日常调用缩短为 `dsh meta --experimental` 和 `dsh upgrade --experimental`；在环境中设置了 `DSH_EXPERIMENTAL=1` 的开发者可以直接使用 `dsh meta`/`dsh upgrade`。`dsh --help` 将这两个命令标注为 `(experimental)`。在命令稳定之前，门槛的代价是一个额外的标志或环境变量；稳定时删除门槛即可，名字已是最终形态。
+يوم معتاد استدعاء تقليص قصير لـ `dsh meta --experimental` و `dsh upgrade --experimental`؛ في بيئة في ضبط `DSH_EXPERIMENTAL=1` تطوير من يمكن مباشر استخدام `dsh meta`/`dsh upgrade`.`dsh --help` سوف هذا اثنان عدد أمر علامة ملاحظة لـ `(experimental)`. في أمر مستقر قبل، باب عتبة بديل قيمة هو واحد مقدار خارج علامة سجل أو بيئة متغير؛ مستقر وقت حذف باب عتبة يكفي، اسم حرف قد هو نهائي شكل.

@@ -669,8 +669,8 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
       expect(workerNames).toContain('dsh-pdf')
       expect(workerNames.some(name => /libreoffice|soffice/i.test(name))).toBe(false)
       await copyPdfText(page, preview, 'Office preview')
-      await copyPdfText(page, preview, '中文文档')
-      expect((await preview.locator('[data-pdf-text]').allTextContents()).join('')).toContain('中文文档')
+      await copyPdfText(page, preview, 'العربية وثيقة')
+      expect((await preview.locator('[data-pdf-text]').allTextContents()).join('')).toContain('العربية وثيقة')
       expect(convert).toHaveBeenCalledTimes(1)
       await preview.getByRole('button', { name: 'Read the file again', exact: true }).click()
       await canvas.waitFor({ state: 'visible' })
@@ -712,7 +712,7 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
       for (const extension of ['doc', 'xls', 'xlsx', 'ppt', 'pptx']) {
         await openPreviewFile(column, filesTab, preview, `chinese.${extension}`)
         await preview.getByRole('img', { name: 'PDF page 1', exact: true }).waitFor({ state: 'visible', timeout: 60_000 })
-        await expect.poll(async () => (await preview.locator('[data-pdf-text]').allTextContents()).join(''), { timeout: 30_000 }).toContain('中文文档')
+        await expect.poll(async () => (await preview.locator('[data-pdf-text]').allTextContents()).join(''), { timeout: 30_000 }).toContain('العربية وثيقة')
         await successShot(page, `office-${extension}`)
       }
       expect(convert).toHaveBeenCalledTimes(6)

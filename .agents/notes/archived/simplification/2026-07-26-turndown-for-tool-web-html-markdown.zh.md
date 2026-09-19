@@ -1,38 +1,38 @@
-# Agent Note: 用 turndown 替换 tool-web 的正则 HTML 转 markdown 转换器
+# Agent Note: استخدام turndown استبدال tool-web صحيح فإن HTML تحويل markdown تحويل جهاز
 
 Status: implemented
 Archived: 2026-08-07
 
-[English](2026-07-26-turndown-for-tool-web-html-markdown.md) | 中文
+[English](2026-07-26-turndown-for-tool-web-html-markdown.md) | العربية
 
-## 问题
+## مشكلة
 
-`dsh-tool-web` 的 `src/html.ts`（约 86 行，另有约 40 行专属测试；已由本变更删除）曾用正则表达式把抓取到的 HTML 转成 markdown：剥离 script、style、noscript 标签与注释，转换 `<a>`/`<h1-6>`/`<li>`，解码数字实体外加一张 12 项的命名实体表，并折叠空白。该模块自身的 JSDoc 写明「A richer converter can replace it without changing the seam or tool schema」，README 的 Known Limitations 章节也把它记载为「a minimal regex converter, not an HTML parser — tables, images, and nested formatting are lost」。[web 能力 seam 决策记录](../architecture/2026-06-24-web-capability-seam.md)把 HTML 转 markdown 作为呈现职责划归本包，因此替换点恰好就在这里。每个抓取到的 HTML 页面上，该转换器的输出都对模型可见；此前没有任何无密钥快照执行到 `web_fetch`，因此没有预期输出固定它的行为。
+`dsh-tool-web` `src/html.ts`(نحو 86 سطر، آخر لديه نحو 40 سطر مخصص تابع اختبار؛ قد من هذا تغيير حذف) سبق استخدام صحيح فإن جدول بلوغ صيغة يأخذ إمساك أخذ إلى HTML تحويل صار markdown: تقشير مغادرة script،style،noscript وسم و ملاحظة تفسير، تحويل `<a>`/`<h1-6>`/`<li>`، حل رمز عدد حرف فعلي جسم خارج إضافة واحد ورقة 12 بند تسمية فعلي جسم جدول، و طي فارغ أبيض. هذا وحدة ذاته JSDoc كتابة واضح «A richer converter can replace it without changing the seam or tool schema» ،README Known Limitations فصل عقدة أيضا يأخذ هو تسجيل تحميل لـ «a minimal regex converter, not an HTML parser — tables, images, and nested formatting are lost».[web قدرة seam قرار سجل](../architecture/2026-06-24-web-capability-seam.md) يأخذ HTML تحويل markdown بصفة عرض مسؤولية تخطيط عودة هذه الحزمة، لذلك استبدال نقطة تماما جيد حينئذ في هذا داخل. كل إمساك أخذ إلى HTML صفحة فوق، هذا تحويل جهاز إخراج كل مقابل نموذج مرئي؛ هذا قبل لا يوجد أي بلا مفتاح لقطة تنفيذ إلى `web_fetch`، لذلك لا يوجد مسبق مدة إخراج ثابت هو سلوك.
 
-## 决策
+## قرار
 
-`packages/web/tool-web/src/fetch.ts` 持有一个模块级 [`turndown`](https://github.com/mixmark-io/turndown) 实例（`headingStyle: 'atx'`、`codeBlockStyle: 'fenced'`、`bulletListMarker: '-'`——固定的面向模型呈现方式，不是部署可调项），配合 `@joplin/turndown-plugin-gfm` 的组合 `gfm` 插件提供表格／删除线支持，并用 `remove(['script', 'style', 'noscript'])` 替代旧实现的整体剥离。`formatFetchOutput` 通过 `fetchMaxOutputChars`（默认 200,000）同时限制同步转换的源前缀和完整渲染输出，因此自定义提供方无法在输出上限生效前造成无界的转换工作。随后，HTML 分支对转换做双重防护：保守的线性词法扫描会保守处理注释内容，跳过原始文本元素的内容，正确处理标签内的引号文本，并在栈深超过 512 层时将主体作为原始 HTML 直接透传；当 turndown 拒绝守卫无法建模的标记时，try/catch 同样回退为原始 HTML。GFM 单元格规则被覆写为忽略 `colspan`；Markdown 无法表示它，这也避免了不受信任的数值属性凭空合成任意数量的空单元格。`html.ts` 及其转换测试已删除；源／输出上限、回退以及状态头／截断页脚格式化均在 `tests/tool-web.spec.ts` 中有测试覆盖，README 的 Known Limitations 用有界降级情形替换了正则转换器警示。gfm 插件不带类型声明；`src/turndown-plugin-gfm.d.ts` 基于 `@types/turndown`（devDependency）声明了唯一被导入的导出。
+`packages/web/tool-web/src/fetch.ts` يحتفظ واحد وحدة درجة [`turndown`](https://github.com/mixmark-io/turndown) نسخة (`headingStyle: 'atx'`،`codeBlockStyle: 'fenced'`،`bulletListMarker: '-'`——ثابت موجه إلى نموذج عرض طريقة، لا هو نشر يمكن ضبط بند) ، إعداد دمج `@joplin/turndown-plugin-gfm` تركيب `gfm` إضافة توفير جدول إطار/حذف خط دعم حمل، و استخدام `remove(['script', 'style', 'noscript'])` بديل قديم تنفيذ كامل جسم تقشير مغادرة.`formatFetchOutput` عبر `fetchMaxOutputChars`(افتراضي 200,000) معا حد تزامن تحويل مصدر بادئة و كامل تصيير إخراج، لذلك ذاتي تعريف مزود لا يمكن في إخراج حد أعلى توليد فاعلية قبل صنع صار بلا حد تحويل عمل. مع بعد،HTML فرع مقابل تحويل فعل مزدوج إعادة منع حماية: حفظ حراسة خط صفة كلمة قاعدة مسح سوف حفظ حراسة معالجة ملاحظة تفسير محتوى، قفز مرور أصلي نص عنصر عنصر محتوى، صحيح تأكيد معالجة وسم داخل جذب رقم نص، و في مكدس عميق تجاوز مرور 512 طبقة وقت سوف رئيسي جسم بصفة أصلي HTML مباشر نفاذ نقل؛ عند turndown رفض حراسة حماية لا يمكن بناء نموذج علامة وقت،try/catch نفس مثال رجوع لـ أصلي HTML.GFM وحدة إطار قاعدة يتم تغطية كتابة لـ تجاهل اختصار `colspan`؛Markdown لا يمكن يمثل هو، هذا أيضا تجنب تجنب لا تلقي معلومة مهمة عدد قيمة خاصية سند فارغ دمج صار مهمة معنى عدد كمية فارغ وحدة إطار.`html.ts` و ذلك تحويل اختبار قد حذف؛ مصدر/إخراج حد أعلى، رجوع و حالة رأس/قطع قطع صفحة قدم صيغة تحويل متساو في `tests/tool-web.spec.ts` في لديه اختبار تغطية،README Known Limitations استخدام محدود تخفيض حال شكل استبدال صحيح فإن تحويل جهاز تحذير عرض.gfm إضافة لا حمل نوع إعلان؛`src/turndown-plugin-gfm.d.ts` أساس في `@types/turndown`(devDependency) إعلان وحيد يتم استيراد توجيه خروج.
 
-提案标记的依赖体积问题的裁决结果支持替换：`@deepseek-ai/dsh-tool-web` 在单文件可执行文件闭包内（[single-exe 决策记录](../architecture/2026-07-10-single-file-executable-sdk-runtime-distribution.md)），可执行文件的资产 glob 会把这三个包按发布原样打入约 7.9 MB——但其中约 6 MB 是 `@mixmark-io/domino` 的测试语料（`test/**`），运行时 `lib/` 仅约 550 KB，相对约 174 MB 的产物，两种口径都不到 0.5%。
+رفع سجل علامة اعتماد جسم تراكم مشكلة قطع قرار نتيجة دعم حمل استبدال:`@deepseek-ai/dsh-tool-web` في مفرد ملف يمكن تنفيذ ملف إغلاق حزمة داخل ([single-exe قرار سجل](../architecture/2026-07-10-single-file-executable-sdk-runtime-distribution.md)) ، يمكن تنفيذ ملف مورد إنتاج glob سوف يأخذ هذا ثلاثة عدد حزمة حسب إصدار أصل مثال ضرب دخول نحو 7.9 MB——لكن منها نحو 6 MB هو `@mixmark-io/domino` اختبار لغة مادة (`test/**`) ، وقت التشغيل `lib/` فقط نحو 550 KB، متبادل مقابل نحو 174 MB ناتج، اثنان نوع فتحة مسار كل لا إلى 0.5%.
 
-## 快照覆盖
+## لقطة تغطية
 
-此前缺失的无密钥 `web_fetch` 快照随本变更以 acp-agent 场景 `web-fetch` 落地：`examples/acp-agent/web.cordis.yml` 组合了 web seam、真实的 `dsh-web-fetch-local` 提供方、`search: false` 的 `tool-web`，以及 `web-fetch-fixture-server.mjs`——一个固定端口（抓取的 URL 是录制 transcript（文本记录）的一部分）上的回环 HTTP fixture（测试前置数据），提供包含命名实体、GFM 表格与嵌套格式的确定性 HTML。录制与无密钥回放都驱动真实的 HTTP 抓取与转换；固定住的工具结果就是 turndown 的输出，该场景同时固定 `web` header 类（`web_fetch` 的 schema 与指引）。
+هذا قبل ناقص بلا مفتاح `web_fetch` لقطة مع هذا تغيير بـ acp-agent مشهد `web-fetch` سقوط أرض:`examples/acp-agent/web.cordis.yml` تركيب web seam، حقيقي `dsh-web-fetch-local` مزود،`search: false` `tool-web`، و `web-fetch-fixture-server.mjs`——واحد ثابت طرف فتحة (إمساك أخذ URL هو تسجيل صنع transcript(نص سجل) واحد جزء) فوق عودة حلقة HTTP fixture(اختبار قبل وضع بيانات) ، توفير يتضمن تسمية فعلي جسم،GFM جدول إطار و تضمين طقم صيغة تحديد صفة HTML. تسجيل صنع و بلا مفتاح إعادة تشغيل كل قيادة حقيقي HTTP إمساك أخذ و تحويل؛ ثابت إقامة أداة نتيجة حينئذ هو turndown إخراج، هذا مشهد معا ثابت `web` header صنف (`web_fetch` schema و إشارة جذب).
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **`@mozilla/readability` 加一个 DOM。** 它解决的是另一个问题（内容提取，而非格式转换），还会拖入更重的 DOM 依赖；这个 seam 只要求把抓取返回的内容渲染成 markdown。
-- **保留正则转换器。** 按其自身 JSDoc 的说法，它本来就是明确的 v1 占位实现；保留它意味着模型可见的质量（表格、图片、嵌套格式）继续缺失，代价还是维护一套自制实体表。
-- **仅引入 `entities` 的最小变体。** 提案中的退守方案：只用零依赖的 `entities` 包替换 `html.ts` 中的实体解码部分，删得更少但完全避开依赖体积问题。未采纳：上述闭包测算表明体积无关紧要，而完整替换能删掉整个手写转换器及其记录在案的质量缺口。
-- **用原版 `turndown-plugin-gfm` 而非 `@joplin/turndown-plugin-gfm`。** 原版已无人维护（最后发布于 2018 年）；Joplin 分叉与 turndown 7 保持同步并持续发布。
+- **`@mozilla/readability` إضافة واحد DOM.** هو حل قرار هو آخر عدد مشكلة (محتوى رفع أخذ، بينما غير صيغة تحويل) ، أيضا سوف سحب دخول أكثر إعادة DOM اعتماد؛ هذا عدد seam فقط اشتراط يأخذ إمساك أخذ إرجاع محتوى تصيير صار markdown.
+- **إبقاء صحيح فإن تحويل جهاز.** حسب ذلك ذاته JSDoc قول قاعدة، هو هذا قدوم حينئذ هو واضح v1 احتلال موضع تنفيذ؛ إبقاء هو معنى طعم حال نموذج مرئي جودة كمية (جدول إطار، صورة، تضمين طقم صيغة) متابعة ناقص، بديل قيمة أيضا هو صيانة واحد طقم ذاتي صنع فعلي جسم جدول.
+- **فقط جذب دخول `entities` الأكثر صغير تغيير جسم.** رفع سجل في تراجع حراسة خطة: فقط استخدام صفر اعتماد `entities` حزمة استبدال `html.ts` في فعلي جسم حل رمز جزء، حذف نيل أكثر قليل لكن تماما تجنب فتح اعتماد جسم تراكم مشكلة. لم قبول: فوق وصف إغلاق حزمة قياس حساب جدول واضح جسم تراكم غير متصل ضيق يلزم، بينما كامل استبدال قدرة حذف إسقاط كامل يد كتابة تحويل جهاز و ذلك سجل في سجل جودة كمية نقص فتحة.
+- **استخدام أصل إصدار `turndown-plugin-gfm` بينما غير `@joplin/turndown-plugin-gfm`.** أصل إصدار قد بلا شخص صيانة (الأكثر بعد إصدار في 2018 سنة) ؛Joplin قسم تقاطع و turndown 7 إبقاء تزامن و حمل متابعة إصدار.
 
-## 后果
+## عاقبة
 
-- **收益**：基于标准的模型可见 markdown——普通表格、图片、删除线、嵌套强调、围栏代码块以及完整的命名实体集——并删除了自制转换器及其实体表。
-- **代价**：两个运行时依赖（`turndown` → `@mixmark-io/domino`）进入 tool-web 进而进入可执行文件闭包（如上实测约 550 KB 运行时代码）；超长输入只转换有界前缀，病态嵌套回退为原始 HTML，跨列表格单元格会被展平，因为 GFM 没有对应语法。
-- 每个抓取到的 HTML 页面上模型可见的输出都已变化；旧输出本无任何固定，新快照固定了新输出。
+- **استلام فائدة**: أساس في معيار نموذج مرئي markdown——عادي جدول إطار، صورة، حذف خط، تضمين طقم قوي ضبط، محيط شريط شفرة كتلة و كامل تسمية فعلي جسم تجميع——و حذف ذاتي صنع تحويل جهاز و ذلك فعلي جسم جدول.
+- **بديل قيمة**: اثنان عدد وقت التشغيل اعتماد (`turndown` → `@mixmark-io/domino`) دخول tool-web دخول بينما دخول يمكن تنفيذ ملف إغلاق حزمة (مثل فوق فعلي قياس نحو 550 KB وقت التشغيل شفرة) ؛ تجاوز طويل إدخال فقط تحويل محدود بادئة، مرض حالة تضمين طقم رجوع لـ أصلي HTML، عبر قائمة إطار وحدة إطار سوف يتم عرض مستو، لأن GFM لا يوجد مقابل لغة قاعدة.
+- كل إمساك أخذ إلى HTML صفحة فوق نموذج مرئي إخراج كل قد تغير؛ قديم إخراج هذا بلا أي ثابت، جديد لقطة ثابت جديد إخراج.
 
-## 测试
+## اختبار
 
-- `packages/web/tool-web/tests/tool-web.spec.ts` 覆盖 turndown 转换面（实体、链接、表格、嵌套、script/style/noscript 移除）、被忽略的表格跨列、源前缀与完整输出上限、深层或带欺骗性闭合嵌套的快速原始 HTML 透传、畸形标签的线性处理、残余的转换器抛错回退，以及恰好达到上限和极小的输出预算；该包 src 的逐文件覆盖率为 100%。
-- acp-agent 的 `web-fetch` 快照无密钥地端到端固定组装后的行为（真实 Loader 组合、真实 HTTP 抓取、真实转换）。
+- `packages/web/tool-web/tests/tool-web.spec.ts` تغطية turndown تحويل وجه (فعلي جسم، رابط، جدول إطار، تضمين طقم،script/style/noscript إزالة) ، يتم تجاهل اختصار جدول إطار عبر صف، مصدر بادئة و كامل إخراج حد أعلى، عميق طبقة أو حمل خداع خداع صفة إغلاق دمج تضمين طقم سريع سرعة أصلي HTML نفاذ نقل، شاذ شكل وسم خط صفة معالجة، ناقص بقية تحويل جهاز رمي خطأ رجوع، و تماما جيد بلوغ إلى حد أعلى و أقصى صغير إخراج ميزانية؛ هذا حزمة src تدريجي ملف نسبة التغطية لـ 100%.
+- acp-agent `web-fetch` لقطة بلا مفتاح أرض طرف إلى طرف ثابت تجميع بعد سلوك (حقيقي Loader تركيب، حقيقي HTTP إمساك أخذ، حقيقي تحويل).

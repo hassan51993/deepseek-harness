@@ -1,63 +1,63 @@
 ---
-description: "共享工具家族的包映射：原子文件写入、品牌化 id、双端队列、JSON 值、harness 主目录路径、启动环境、原生命令、输出保留、时区与超时。"
+description: "مشترك أداة بيت عائلة حزمة خريطة: أصل فرعي ملف كتابة، صنف لوحة تحويل id، مزدوج طرف طابور صف،JSON قيمة،harness رئيسي دليل مسار، بدء بيئة، أصلي أمر، إخراج إبقاء، وقت منطقة و مهلة."
 kind: "package-group"
 ---
 
-# util/：共享工具
+# util/: مشترك أداة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`util/` 组为能力包提供共享的机制原语，避免重复实现。它涵盖原子写入、品牌化 id、双端队列、无损 JSON 值、UUID、Harness home 路径、启动环境、出站代理策略、原生命令、输出保留、时区规范化和超时处理。这里的每个根入口都是库：它不注册产品服务或事件，业务语义仍由消费它的能力负责。
+`util/` مجموعة لـ قدرة حزمة توفير مشترك آلية أصل لغة، تجنب تجنب تكرار تنفيذ. هو شمول غطاء أصل فرعي كتابة، صنف لوحة تحويل id، مزدوج طرف طابور صف، بلا ضرر JSON قيمة،UUID،Harness home مسار، بدء بيئة، خروج محطة بديل إدارة سياسة، أصلي أمر، إخراج إبقاء، وقت منطقة مواصفة تحويل و مهلة معالجة. هذا داخل كل أصل مدخل كل هو مكتبة: هو لا تسجيل منتج خدمة أو حدث، عمل خدمة دلالة ما زال من إزالة استهلاك هو قدرة مسؤول.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-每个包提供一个原语；打开对应包页面了解如何使用。
+كل حزمة توفير واحد أصل لغة؛ فتح مقابل حزمة صفحة حل مثل أي استخدام.
 
-| 包 | 职责 |
+| حزمة | مسؤولية |
 |---|---|
-| [`brand/`](brand/README.zh.md) | 提供名义字符串类型及其无状态构造函数 |
-| [`package-manifest/`](package-manifest/README.zh.md) | 包 manifest（元数据清单）的共享 TypeScript 声明 |
-| [`crypto/`](crypto/README.zh.md) | 基于跨运行时 `crypto.getRandomValues` 原语生成 RFC 9562 v4 UUID |
-| [`deque/`](deque/README.zh.md) | 提供摊销常数时间的队列操作和有界空闲存储 |
-| [`chunked-list/`](chunked-list/README.zh.md) | 通过有界追加复制和检查点校验保留不可变列表版本 |
-| [`values/`](values/README.zh.md) | 校验、创建快照、比较和冻结无损 JSON 兼容值 |
-| [`home-paths/`](home-paths/README.zh.md) | 解析统一的 Harness 主目录并拼接共享的用户数据路径 |
-| [`http-proxy/`](http-proxy/README.zh.md) | 解析出唯一的出站代理策略，并为 `fetch`、SDK agent（智能体）与 spawn 的子进程安装它 |
-| [`launch-environment/`](launch-environment/README.zh.md) | 冻结的启动环境，记住每个值来自哪一层 |
-| [`atomic-write/`](atomic-write/README.zh.md) | 原子文件替换与跨进程写锁 |
-| [`lazy-require/`](lazy-require/README.zh.md) | 在首次使用时按调用方位置加载兼容 CommonJS 的 Host 依赖 |
-| [`native-command/`](native-command/README.zh.md) | 直接运行宿主原生命令，绝不拼 shell 字符串 |
-| [`workspace-path/`](workspace-path/README.zh.md) | 提供浏览器安全的 Workspace 路径与显示辅助函数 |
-| [`output-retention/`](output-retention/README.zh.md) | 限制面向模型的输出并报告精确的省略元数据 |
-| [`time/`](time/README.zh.md) | 校验并规范化调用方所报的 IANA 时区 |
-| [`timeout/`](timeout/README.zh.md) | 截止时间运算、信号融合与超时和取消分类 |
+| [`brand/`](brand/README.zh.md) | توفير اسم معنى نص نوع و ذلك بلا حالة بنية صنع دالة |
+| [`package-manifest/`](package-manifest/README.zh.md) | حزمة manifest(بيانات وصفية بيان) مشترك TypeScript إعلان |
+| [`crypto/`](crypto/README.zh.md) | أساس في عبر وقت التشغيل `crypto.getRandomValues` أصل لغة توليد RFC 9562 v4 UUID |
+| [`deque/`](deque/README.zh.md) | توفير توزيع إلغاء معتاد عدد وقت طابور صف عملية و محدود فارغ خامل تخزين |
+| [`chunked-list/`](chunked-list/README.zh.md) | عبر محدود إلحاق نسخ و فحص نقطة تحقق إبقاء غير ممكن تغيير قائمة إصدار |
+| [`values/`](values/README.zh.md) | تحقق، إنشاء لقطة، مقارنة مقارنة و تجميد ربط بلا ضرر JSON توافق قيمة |
+| [`home-paths/`](home-paths/README.zh.md) | تحليل موحد واحد Harness رئيسي دليل و تجميع وصل مشترك مستخدم بيانات مسار |
+| [`http-proxy/`](http-proxy/README.zh.md) | تحليل خروج وحيد خروج محطة بديل إدارة سياسة، و لـ `fetch`،SDK agent(ذكي جسم) و spawn عملية فرعية تثبيت هو |
+| [`launch-environment/`](launch-environment/README.zh.md) | تجميد ربط بدء بيئة، تسجيل إقامة كل قيمة قدوم ذاتي أي واحد طبقة |
+| [`atomic-write/`](atomic-write/README.zh.md) | أصل فرعي ملف استبدال و عبر عملية كتابة قفل |
+| [`lazy-require/`](lazy-require/README.zh.md) | في أول مرة استخدام وقت حسب استدعاء جهة موضع تحميل توافق CommonJS Host اعتماد |
+| [`native-command/`](native-command/README.zh.md) | مباشر تشغيل مضيف أصلي أمر، أبدا تجميع shell نص |
+| [`workspace-path/`](workspace-path/README.zh.md) | توفير متصفح أمان Workspace مسار و عرض مساعد مساعدة دالة |
+| [`output-retention/`](output-retention/README.zh.md) | حد موجه إلى نموذج إخراج و تقرير إبلاغ دقيق حذف بيانات وصفية |
+| [`time/`](time/README.zh.md) | تحقق و مواصفة تحويل استدعاء جهة الذي تقرير IANA وقت منطقة |
+| [`timeout/`](timeout/README.zh.md) | قطع توقف وقت تشغيل حساب، إشارة دمج دمج و مهلة و إلغاء تصنيف |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [根包映射](../README.zh.md)——`util/` 在所有包组中的位置。
-- [生成配置目录](../../docs/config-catalog.zh.md)——本组所属的库包索引。
-- [添加包实操手册](../../docs/cookbook/adding-a-package.zh.md)——新的共享原语如何落入本组。
+- [أصل حزمة خريطة](../README.zh.md)——`util/` في كل حزمة مجموعة في موضع.
+- [توليد إعداد دليل](../../docs/config-catalog.zh.md)——هذا مجموعة الذي تابع مكتبة حزمة بحث جذب.
+- [إضافة حزمة فعلي تشغيل يد سجل](../../docs/cookbook/adding-a-package.zh.md)——جديد مشترك أصل لغة مثل أي سقوط دخول هذا مجموعة.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

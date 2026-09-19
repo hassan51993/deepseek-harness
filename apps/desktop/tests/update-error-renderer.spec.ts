@@ -77,9 +77,9 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
   expect([p.element('error').textContent, p.element('technical-details-label').textContent,
     p.element('update').textContent]).toMatchInlineSnapshot(`
       [
-        "未能安全停止任务，更新未安装。请稍后重试。",
-        "查看技术详情",
-        "重试更新",
+        "لم قدرة أمان إيقاف مهمة، تحديث لم تثبيت. طلب قليلا بعد إعادة محاولة.",
+        "فحص نظر تقنية فن تفصيل حال",
+        "إعادة محاولة تحديث",
       ]
     `)
   p.element('technical-details-label').click()
@@ -107,7 +107,7 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
 function mandatoryPage(update: MandatoryUpdateView['update']) {
   const p = page('mandatory-update')
   const initial: MandatoryUpdateView = { locale: resolveDesktopLocale('zh'), deferred: false,
-    policy: { blocking: true, checking: false, title: '需要更新', page: 'https://downloads.example.com/desktop' }, update }
+    policy: { blocking: true, checking: false, title: 'حاجة تحديث', page: 'https://downloads.example.com/desktop' }, update }
   const action = vi.fn(async () => {})
   let publish!: (view: MandatoryUpdateView) => void
   Object.defineProperty(p.dom.window, 'dshMandatoryUpdate', { value: {
@@ -130,19 +130,19 @@ it('uses client copy and retry when optional policy fields are absent', async ()
 
 it('uses the same modal for download, verification, inspected confirmation and task-aware restart', async () => {
   const p = mandatoryPage({ phase: 'available', version: '1.0.1-nightly.1' })
-  await expect.poll(() => p.element('update').textContent).toBe('下载更新')
+  await expect.poll(() => p.element('update').textContent).toBe('تحت تحميل تحديث')
   const modal = p.document.querySelector('main')
   const pending = Promise.withResolvers<undefined>()
   p.action.mockReturnValueOnce(pending.promise)
   p.element('update').focus()
   p.element('update').click()
   p.publish({ ...p.initial, update: { phase: 'verifying', version: '1.0.1-nightly.1' } })
-  expect(p.element('status').textContent).toBe('正在校验更新文件…')
+  expect(p.element('status').textContent).toBe('صحيح في تحقق تحديث ملف…')
   expect(p.element('update').hidden).toBe(true)
   p.publish({ ...p.initial, update: { phase: 'installing', version: '1.0.1-nightly.1' },
     confirmation: { active: false, version: '1.0.1-nightly.1', revision: 1 } })
   expect(p.document.activeElement?.id).not.toBe('update')
-  expect(p.element('update').textContent).toBe('安装并重启')
+  expect(p.element('update').textContent).toBe('تثبيت و إعادة بدء')
   expect((p.element('update') as HTMLButtonElement).disabled).toBe(false)
   expect(p.element('page').hidden).toBe(true)
   expect(p.element('refresh').hidden).toBe(true)
@@ -157,18 +157,18 @@ it('uses the same modal for download, verification, inspected confirmation and t
   expect(p.action).toHaveBeenLastCalledWith('install', '1.0.1-nightly.1', 1)
   pending.resolve(undefined)
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'preparing' })
-  expect(p.element('detail').textContent).toBe('应用即将重启，请稍候。')
+  expect(p.element('detail').textContent).toBe('تطبيق أي سوف إعادة بدء، طلب قليلا انتظار.')
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'stopping-tasks' })
-  expect(p.element('detail').textContent).toBe('正在安全结束应用中的任务。')
+  expect(p.element('detail').textContent).toBe('صحيح في أمان انتهاء تطبيق في مهمة.')
   expect(p.document.querySelector('main')).toBe(modal)
 })
 
 it('reveals the complete selectable address only after copy failure, without replacing updater diagnostics', async () => {
   const p = mandatoryPage({ phase: 'error', failedOperation: 'download', message: 'HASH_MISMATCH' })
-  await expect.poll(() => p.element('error').textContent).toBe('更新文件下载或准备失败，请重试。')
+  await expect.poll(() => p.element('error').textContent).toBe('تحديث ملف تحت تحميل أو دقيق تجهيز فشل، طلب إعادة محاولة.')
   const originalError = p.element('error').textContent
   p.publish({ ...p.initial, navigation: { page: 'requested' } })
-  expect(p.element('browser-message').textContent).toBe('若页面未打开，可')
+  expect(p.element('browser-message').textContent).toBe('إذا صفحة لم فتح، يمكن')
   expect(p.element('manual-copy').hidden).toBe(true)
   p.publish({ ...p.initial, navigation: { page: 'failed', copy: 'failed' } })
   expect(p.element('manual-copy').hidden).toBe(false)
@@ -176,19 +176,19 @@ it('reveals the complete selectable address only after copy failure, without rep
   expect((p.element('address') as HTMLTextAreaElement).readOnly).toBe(true)
   expect(p.element('error').textContent).toBe(originalError)
   expect(p.element('technical-details-content').textContent).toBe('HASH_MISMATCH')
-  expect(p.element('copy-message').textContent).toBe('复制失败，请手动选择下方地址复制。')
+  expect(p.element('copy-message').textContent).toBe('نسخ فشل، طلب يد حركة اختيار تحت جهة عنوان نسخ.')
   p.publish({ ...p.initial, navigation: { page: 'failed', copy: 'copied' } })
   expect(p.element('manual-copy').hidden).toBe(true)
   expect((p.element('address') as HTMLTextAreaElement).value).toBe('')
-  expect(p.element('copy').textContent).toBe('已复制链接')
+  expect(p.element('copy').textContent).toBe('قد نسخ رابط')
   expect(p.action).not.toHaveBeenCalled()
 })
 
 it('renders server markup literally in a dedicated safety case', async () => {
   const p = mandatoryPage({ phase: 'available', version: '1.0.1-nightly.1' })
-  await expect.poll(() => p.element('update').textContent).toBe('下载更新')
-  p.publish({ ...p.initial, policy: { ...p.initial.policy, title: '<b>请更新</b>', detail: '<img src=x onerror=alert(1)>' } })
-  expect(p.element('title').textContent).toBe('<b>请更新</b>')
+  await expect.poll(() => p.element('update').textContent).toBe('تحت تحميل تحديث')
+  p.publish({ ...p.initial, policy: { ...p.initial.policy, title: '<b>طلب تحديث</b>', detail: '<img src=x onerror=alert(1)>' } })
+  expect(p.element('title').textContent).toBe('<b>طلب تحديث</b>')
   expect(p.element('title').childElementCount).toBe(0)
   expect(p.element('detail').childElementCount).toBe(0)
 })

@@ -1,48 +1,48 @@
 ---
-description: "会话检索能力家族的包映射：搜索、追踪与读取实时和持久会话历史，以及 Web 端会话日志导出。"
+description: "جلسة فحص بحث قدرة بيت عائلة حزمة خريطة: بحث، تتبع أثر و قراءة فوري و حمل دائم جلسة تاريخ، و Web طرف جلسة سجل توجيه خروج."
 kind: "package-group"
 ---
 
-# session-query/：会话检索能力家族
+# session-query/: جلسة فحص بحث قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`session-query/` 组提供对实时与持久会话历史的检索，且独立于压缩（compaction）：程序化调用方通过一个统一服务查询精确日志、过滤后的列表、关系追踪与全文搜索；SQLite 后端支撑搜索；模型获得五个经工作区授权的工具；Web 界面获得下载会话 ZIP 的 `/export` 命令。搜索结果与模型看到的对话历史一致。本页概述该组；各包的 README 分别说明各自的包级约定。
+`session-query/` مجموعة توفير مقابل فوري و حمل دائم جلسة تاريخ فحص بحث، كما مستقل في ضغط (compaction): برنامج تحويل استدعاء جهة عبر واحد موحد واحد خدمة استعلام دقيق سجل، مرور ترشيح بعد قائمة، علاقة تتبع أثر و كل نص بحث؛SQLite خلفية دعم دعم بحث؛ نموذج نيل نيل خمسة عدد مرور مساحة العمل تخويل أداة؛Web واجهة نيل نيل تحت تحميل جلسة ZIP `/export` أمر. بحث نتيجة و نموذج يرى محادثة تاريخ متسق. هذا صفحة عام وصف هذا مجموعة؛ كل حزمة README قسم آخر شرح كل منها حزمة درجة اتفاق.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-每个包的 README 都会说明该包在此组中的用途。
+كل حزمة README كل سوف شرح هذا حزمة في هذا مجموعة في استخدام طريق.
 
-| 包 | 职责 | ctx 键 |
+| حزمة | مسؤولية | ctx مفتاح |
 |---|---|---|
-| [`session-query/`](session-query/README.zh.md) | 统一的会话历史查询服务：精确读取、关系追踪与过滤 | `ctx.sessionQuery` |
-| [`session-query-sqlite/`](session-query-sqlite/README.zh.md) | 基于 SQLite FTS5 索引的会话历史全文搜索 | 注册到 `ctx.sessionQuery` |
-| [`session-log-export/`](session-log-export/README.zh.md) | Web `/export` 命令与浏览器下载会话 ZIP | `ctx.sessionLogDownload`（浏览器） |
-| [`tool-session-query/`](tool-session-query/README.zh.md) | 面向模型的搜索、追踪与读取会话历史工具 | 注册到 `ctx.tools` |
+| [`session-query/`](session-query/README.zh.md) | موحد واحد جلسة تاريخ استعلام خدمة: دقيق قراءة، علاقة تتبع أثر و مرور ترشيح | `ctx.sessionQuery` |
+| [`session-query-sqlite/`](session-query-sqlite/README.zh.md) | أساس في SQLite FTS5 بحث جذب جلسة تاريخ كل نص بحث | تسجيل إلى `ctx.sessionQuery` |
+| [`session-log-export/`](session-log-export/README.zh.md) | Web `/export` أمر و متصفح تحت تحميل جلسة ZIP | `ctx.sessionLogDownload`(متصفح) |
+| [`tool-session-query/`](tool-session-query/README.zh.md) | موجه إلى نموذج بحث، تتبع أثر و قراءة جلسة تاريخ أداة | تسجيل إلى `ctx.tools` |
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-先从子系统参考了解共享的查询词汇，再看追踪与搜索背后的设计记录。
+أولا من فرعي نظام مشاركة اعتبار حل مشترك استعلام مفردات، مجددا نظر تتبع أثر و بحث خلف بعد تصميم سجل.
 
-- [会话查询子系统参考](../../docs/subsystems/session-query.zh.md)——逻辑记录、过滤器、搜索页、血缘、有界读取与事件关系。
-- [会话查询关系追踪](../../.agents/notes/archived/feature/2026-07-13-session-query-tracing.md)——追踪语义与校验边界。
-- [SQLite FTS5 会话搜索](../../.agents/notes/archived/feature/2026-07-10-sqlite-session-query-provider.md)——搜索语义、对账与 tokenizer 决策。
+- [جلسة استعلام فرعي نظام مشاركة اعتبار](../../docs/subsystems/session-query.zh.md)——منطق سجل، مرور ترشيح جهاز، بحث صفحة، دم حافة، محدود قراءة و حدث علاقة.
+- [جلسة استعلام علاقة تتبع أثر](../../.agents/notes/archived/feature/2026-07-13-session-query-tracing.md)——تتبع أثر دلالة و تحقق حد.
+- [SQLite FTS5 جلسة بحث](../../.agents/notes/archived/feature/2026-07-10-sqlite-session-query-provider.md)——بحث دلالة، مقابل حساب و tokenizer قرار.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

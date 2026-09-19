@@ -1,48 +1,48 @@
-# Agent Note: TSC 优先构建与编译器单一归属
+# Agent Note: TSC أولوية بناء و تحرير ترجمة جهاز مفرد واحد ملكية
 
 Status: implemented
 
-[English](2026-06-17-ts-build-config.md) | 中文
+[English](2026-06-17-ts-build-config.md) | العربية
 
-> 根项目拓扑由一个 solution 根文件统辖两个 aggregate program；见 [solution 根文件 Agent Note](../../archived/process/2026-07-22-tsconfig-solution-root-two-aggregates.md)。Host 生成 Remote 约定后再编译 Client 的当前命令顺序见 [API Remotes 构建 Agent Note](../../archived/process/2026-08-08-api-remotes-generated-contract-build.md)。本文确定的 tsc-first 职责保持不变。
+> أصل مشروع توسيع اندفاع من واحد solution أصل ملف موحد ولاية اثنان عدد aggregate program؛ رؤية [solution أصل ملف Agent Note](../../archived/process/2026-07-22-tsconfig-solution-root-two-aggregates.md).Host توليد Remote اتفاق بعد مجددا تحرير ترجمة Client حالي أمر ترتيب رؤية [API Remotes بناء Agent Note](../../archived/process/2026-08-08-api-remotes-generated-contract-build.md). هذا نص تحديد tsc-first مسؤولية إبقاء ثابت.
 
-## 问题
+## مشكلة
 
-此前的 TypeScript 构建与类型检查配置存在以下问题：
+هذا قبل TypeScript بناء و نوع فحص إعداد وجود التالي مشكلة:
 
-- `build` 使用 `tsc` 将 `packages/<group>/<pkg>` 和 `vendor/*` 下的 `.ts` 转换为 `.d.ts` 文件，然后使用 `tsdown` 将 `.ts` 转换为打包后的 `.js` 文件。这导致两个工具各自执行 TypeScript 转换。
-- `typecheck` 倾向于通过一个根目录的类型检查配置来校验包、vendor 源码、示例、测试和脚本。
+- `build` استخدام `tsc` سوف `packages/<group>/<pkg>` و `vendor/*` تحت `.ts` تحويل لـ `.d.ts` ملف، لكن بعد استخدام `tsdown` سوف `.ts` تحويل لـ تحزيم بعد `.js` ملف. هذا توجيه يؤدي اثنان عدد أداة كل منها تنفيذ TypeScript تحويل.
+- `typecheck` ميل نحو في عبر واحد أصل دليل نوع فحص إعداد قدوم تحقق حزمة،vendor شفرة المصدر، عرض مثال، اختبار و نص برمجي.
 
-构建与类型检查使用一致的 tsconfig 边界和 TypeScript 解析/转换行为。构建通过单一编译器和配置生成 `.js`、`.d.ts`、`.js.map` 和 `.d.ts.map`，使发布产物与类型校验保持一致。
+بناء و نوع فحص استخدام متسق tsconfig حد و TypeScript تحليل/تحويل سلوك. بناء عبر مفرد واحد تحرير ترجمة جهاز و إعداد توليد `.js`،`.d.ts`،`.js.map` و `.d.ts.map`، جعل إصدار ناتج و نوع تحقق إبقاء متسق.
 
-具体约束：
+أداة جسم قيد:
 
-- `tsdown` 使用 `oxc` 进行 TypeScript 转换，其行为与 `tsc` 不同。
-    - `tsdown` 输出的打包 `.d.ts` 与 Cordis 内部的相对模块增强（module augmentation）结构冲突。
-    - tsc 的输出受 `allowImportingTsExtensions` 影响：生成的 `.js` 文件不得导入 `.ts` 文件，且生成的 `.d.ts` 文件必须保留 NodeNext/Node16 接受的显式相对说明符。为此，包内相对导入在 TypeScript 源码中使用显式 `.ts` 说明符，由 `rewriteRelativeImportExtensions` 在输出的 JS 中将其重写为 `.js`。
-    - `tsdown` 输出的打包 `.js` 与 `tsc -b` 逐文件输出的 `.js` 行为不同，例如装饰器转换行为。
-- `vendor/*/src`、示例、测试和脚本无法全部以 plain-include 方式纳入一个根目录的严格程序。
-    - 在根目录严格配置下直接对 `vendor/*/src` 做类型检查，会触发大量不属于本项目所有权范围的类型错误。
-    - `packages/*/*` 对 `vendor` 的包依赖解析到 `vendor/*/lib`，以适应不同的 tsconfig 严格度。
+- `tsdown` استخدام `oxc` إجراء TypeScript تحويل، ذلك سلوك و `tsc` مختلف.
+    - `tsdown` إخراج تحزيم `.d.ts` و Cordis داخلي متبادل مقابل وحدة زيادة قوي (module augmentation) بنية اندفاع مفاجئ.
+    - tsc إخراج تلقي `allowImportingTsExtensions` أثر: توليد `.js` ملف لا نيل استيراد `.ts` ملف، كما توليد `.d.ts` ملف يجب إبقاء NodeNext/Node16 قبول صريح متبادل مقابل شرح رمز. لـ هذا، حزمة داخل متبادل مقابل استيراد في TypeScript شفرة المصدر في استخدام صريح `.ts` شرح رمز، من `rewriteRelativeImportExtensions` في إخراج JS في سوف ذلك إعادة كتابة لـ `.js`.
+    - `tsdown` إخراج تحزيم `.js` و `tsc -b` تدريجي ملف إخراج `.js` سلوك مختلف، مثال مثل تركيب زينة جهاز تحويل سلوك.
+- `vendor/*/src`، عرض مثال، اختبار و نص برمجي لا يمكن الكل بـ plain-include طريقة قبول دخول واحد أصل دليل صارم إطار برنامج.
+    - في أصل دليل صارم إطار إعداد تحت مباشر مقابل `vendor/*/src` فعل نوع فحص، سوف إطلاق كبير كمية لا يخص هذا مشروع كل حق نطاق نوع خطأ.
+    - `packages/*/*` مقابل `vendor` حزمة اعتماد تحليل إلى `vendor/*/lib`، بـ ملائم ينبغي مختلف tsconfig صارم إطار درجة.
 
 
-## 决策
+## قرار
 
-包内相对导入使用显式 `.ts` 说明符。
+حزمة داخل متبادل مقابل استيراد استخدام صريح `.ts` شرح رمز.
 
-`pnpm run build` 依次执行 Host lib、Client lib 和 Web；每个 lib 阶段都保持 tsc 先发射、tsdown 后打包：
+`pnpm run build` اعتماد مرة تنفيذ Host lib،Client lib و Web؛ كل lib مرحلة مقطع كل إبقاء tsc أولا إرسال إطلاق،tsdown بعد تحزيم:
 
-- Host tsc 对 `tsconfig.host.json` 执行 `tsc -b`，把逐模块 `.js`、`.d.ts`、`.js.map` 与 `.d.ts.map` 输出到 Host 图各包的 `lib/types`；Host tsdown 随后读取这些 JS，生成发布入口并运行 Host Typert。
-- Client tsc 在 Host Typert 已生成 Remote Client 声明后对 `tsconfig.client.json` 执行 `tsc -b`；Client tsdown 再读取 Client 图发射的 JS，生成 Client 包的 Node loader 入口与 browser bundle。
-- Web build 只在两个 lib 阶段完成后启动。
+- Host tsc مقابل `tsconfig.host.json` تنفيذ `tsc -b`، يأخذ تدريجي وحدة `.js`،`.d.ts`،`.js.map` و `.d.ts.map` إخراج إلى Host رسم كل حزمة `lib/types`؛Host tsdown مع بعد قراءة هذه JS، توليد إصدار مدخل و تشغيل Host Typert.
+- Client tsc في Host Typert قد توليد Remote Client إعلان بعد مقابل `tsconfig.client.json` تنفيذ `tsc -b`؛Client tsdown مجددا قراءة Client رسم إرسال إطلاق JS، توليد Client حزمة Node loader مدخل و browser bundle.
+- Web build فقط في اثنان عدد lib مرحلة مقطع إتمام بعد بدء.
 
-`tsdown` 不再负责 TypeScript 编译或声明文件输出。
+`tsdown` لم يعد مسؤول TypeScript تحرير ترجمة أو إعلان ملف إخراج.
 
-`pnpm run typecheck` 先执行 Host lib 阶段，以生成 Client 类型检查所需的 Remote 声明，再对 `tsconfig.client.json` 执行 `tsc -b`。两个 aggregate 本身以 `noEmit` 方式检查各自的示例、测试与脚本；被引用的包项目和 vendor 项目保持与构建相同的发射行为。
+`pnpm run typecheck` أولا تنفيذ Host lib مرحلة مقطع، بـ توليد Client نوع فحص الذي يحتاج Remote إعلان، مجددا مقابل `tsconfig.client.json` تنفيذ `tsc -b`. اثنان عدد aggregate ذاته بـ `noEmit` طريقة فحص كل منها عرض مثال، اختبار و نص برمجي؛ يتم مرجع حزمة مشروع و vendor مشروع إبقاء و بناء نفسه إرسال إطلاق سلوك.
 
-复合项目将增量构建信息保存在各项目本地的 `lib/` 输出中。`pnpm run clean` 会根据根 TypeScript project-reference 图确定当前有效的输出目录，删除遗留的根目录构建信息，并删除已删除包留下且仅包含已知生成残留的 `packages/*/*` 目录。在删除现有目标前，该命令会解析目标父目录的真实路径；如果解析后的父目录位于仓库之外，则拒绝删除，防止使用符号链接的 project reference 将清理操作重定向到工作副本之外。对于仍有 `package.json` 的每个包，该命令都会保留 `node_modules`；如果不含 `package.json` 的目录中存在未知文件，则拒绝删除。构建不会自动调用 clean，因此常规构建会保留增量状态。
+تكرار دمج مشروع سوف زيادة كمية بناء معلومة حفظ في كل مشروع محلي `lib/` إخراج في.`pnpm run clean` سوف أصل حسب أصل TypeScript project-reference رسم تحديد حالي صالح إخراج دليل، حذف متروك إبقاء أصل دليل بناء معلومة، و حذف قد حذف حزمة إبقاء تحت كما فقط يتضمن معروف توليد ناقص إبقاء `packages/*/*` دليل. في حذف قائم هدف قبل، هذا أمر سوف تحليل هدف أب دليل حقيقي مسار؛ إذا تحليل بعد أب دليل يقع في مستودع خارج، فإن رفض حذف، منع توقف استخدام رمز رقم رابط project reference سوف تنظيف عملية إعادة تحديد نحو إلى عمل فرعي هذا خارج. مقابل في ما زال لديه `package.json` كل حزمة، هذا أمر كل سوف إبقاء `node_modules`؛ إذا لا يحتوي `package.json` دليل في وجود لم معرفة ملف، فإن رفض حذف. بناء لن تلقائي استدعاء clean، لذلك معتاد قاعدة بناء سوف إبقاء زيادة كمية حالة.
 
-命令编排结构如下：
+أمر تحرير ترتيب بنية مثل تحت:
 
 ```sh
 pnpm run build:
@@ -63,27 +63,27 @@ pnpm run clean:
 tsx scripts/clean.ts
 ```
 
-源码模式 demo 通过各自声明的 TypeScript 启动器和根路径映射运行。`dsh` TUI 链使用 Node 原生转换及应用自有的路径 loader，Web demo 在进入同一条 CLI 源码链路前先构建所需产物，其他源码 demo 继续使用 tsx。
+شفرة المصدر نمط demo عبر كل منها إعلان TypeScript بدء جهاز و أصل مسار خريطة تشغيل.`dsh` TUI سلسلة استخدام Node أصلي تحويل و تطبيق ذاتي لديه مسار loader،Web demo في دخول نفس بند CLI شفرة المصدر سلسلة مسار قبل أولا بناء الذي يحتاج ناتج، أخرى شفرة المصدر demo متابعة استخدام tsx.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **继续使用 `tsdown`/oxc 作为 TypeScript 转换器**：oxc 的转换行为与 `tsc` 不同（装饰器转换有差异、打包 JS 与逐文件输出不同），且其打包 `.d.ts` 与 Cordis 内部的相对模块增强结构冲突。
-- **用一个根目录严格程序覆盖包、vendor、示例、测试和脚本**：vendor 源码在根目录严格标志下会触发不属于本项目所有权范围的类型错误；带有逐项目严格度的 project references 才是可行的边界。
-- **每次构建前都执行清理**：即使工作区布局没有变化，这也会丢弃 `tsc` 和打包器拥有的增量状态。
-- **删除所有包级 `node_modules`**：有效的包依赖链接不会导致工作区发现失败，而删除这些链接会使构建清理变成重新安装依赖。
+- **متابعة استخدام `tsdown`/oxc بصفة TypeScript تحويل جهاز**:oxc تحويل سلوك و `tsc` مختلف (تركيب زينة جهاز تحويل لديه فرق مختلف، تحزيم JS و تدريجي ملف إخراج مختلف) ، كما ذلك تحزيم `.d.ts` و Cordis داخلي متبادل مقابل وحدة زيادة قوي بنية اندفاع مفاجئ.
+- **استخدام واحد أصل دليل صارم إطار برنامج تغطية حزمة،vendor، عرض مثال، اختبار و نص برمجي**:vendor شفرة المصدر في أصل دليل صارم إطار علامة سجل تحت سوف إطلاق لا يخص هذا مشروع كل حق نطاق نوع خطأ؛ حمل لديه تدريجي مشروع صارم إطار درجة project references عندئذ هو يمكن سطر حد.
+- **كل مرة بناء قبل كل تنفيذ تنظيف**: أي جعل مساحة العمل تخطيط لا يوجد تغير، هذا أيضا سوف إسقاط `tsc` و تحزيم جهاز يملك زيادة كمية حالة.
+- **حذف كل حزمة درجة `node_modules`**: صالح حزمة اعتماد رابط لن توجيه يؤدي مساحة العمل اكتشاف فشل، بينما حذف هذه رابط سوف جعل بناء تنظيف تغيير صار إعادة تثبيت اعتماد.
 
-## 后果
+## عاقبة
 
-构建职责更加清晰：
+بناء مسؤولية أكثر إضافة صاف واضح:
 
-- `packages/<group>/<pkg>` 和 `vendor/*` 下的每个普通模块有一份本地 tsconfig，同时服务于构建、类型检查和直接运行源码的工具（如 `dsh` 源码 loader、`tsx` 和 `vitest`）。`api/remotes` 因生成约定顺序使用一个 solution 和两个互斥的 emitting project，是唯一例外。
-- `build` 命令依次运行 Host 和 Client 的 Project Reference 图。每个阶段都由 `tsc -b` 负责可发布的逐模块 `.js` 和 `.d.ts` 输出，打包器仅负责发布 runtime bundle。
-    - `lib/types/*.d.ts` 是发布用的声明输出；`.d.ts.map` 只作为本地编译产物保留。
-    - `lib/types/*.d.ts` 使用显式 `.ts` 相对说明符，TypeScript 的 NodeNext/Node16 解析器会将其映射到同级的 `.d.ts` 文件。
-    - `lib/types/*.js` 通常仅作为打包器输入。只有显式运行时 export 指向该输出树时，才会发布这些文件。
-    - `lib/index.*` 是发布用的运行时输出，由打包器（当前为 `tsdown`）生成。
-- `pnpm run verify-node-next-types` 扫描构建出的声明文件，检查是否存在缺少文件扩展名的相对说明符，然后以 `moduleResolution: "NodeNext"` 对构建出的 `types`/`exports` 接口进行临时外部 ESM 消费方的类型检查，确保声明说明符的回归在发布前被捕获。
-- `typecheck` 命令使用 `tsconfig.json`。示例、测试和脚本由根 no-emit 项目检查，包和 vendor 模块保持与 `build` 相同的输出行为。包和 vendor 源码始终处于 project-reference 边界之后。
-- 切换分支或更新工作副本后，如果其中删除了包，贡献者可在重新构建前运行 `pnpm run clean`，删除陈旧的包目录。不含 `package.json` 的包目录如果存在未知文件，必须手动判定其类别，不能直接删除。
+- `packages/<group>/<pkg>` و `vendor/*` تحت كل عادي وحدة لديه واحد نسخة محلي tsconfig، معا خدمة في بناء، نوع فحص و مباشر تشغيل شفرة المصدر أداة (مثل `dsh` شفرة المصدر loader،`tsx` و `vitest`).`api/remotes` بسبب توليد اتفاق ترتيب استخدام واحد solution و اثنان عدد متبادل رفض emitting project، هو وحيد مثال خارج.
+- `build` أمر اعتماد مرة تشغيل Host و Client Project Reference رسم. كل مرحلة مقطع كل من `tsc -b` مسؤول يمكن إصدار تدريجي وحدة `.js` و `.d.ts` إخراج، تحزيم جهاز فقط مسؤول إصدار runtime bundle.
+    - `lib/types/*.d.ts` هو إصدار استخدام إعلان إخراج؛`.d.ts.map` فقط بصفة محلي تحرير ترجمة ناتج إبقاء.
+    - `lib/types/*.d.ts` استخدام صريح `.ts` متبادل مقابل شرح رمز،TypeScript NodeNext/Node16 محلل سوف سوف ذلك خريطة إلى نفس درجة `.d.ts` ملف.
+    - `lib/types/*.js` عبر معتاد فقط بصفة تحزيم جهاز إدخال. فقط لديه صريح وقت التشغيل export إشارة نحو هذا إخراج شجرة وقت، عندئذ سوف إصدار هذه ملف.
+    - `lib/index.*` هو إصدار استخدام وقت التشغيل إخراج، من تحزيم جهاز (حالي لـ `tsdown`) توليد.
+- `pnpm run verify-node-next-types` مسح بناء خروج إعلان ملف، فحص هل وجود نقص قليل ملف توسيع اسم متبادل مقابل شرح رمز، لكن بعد بـ `moduleResolution: "NodeNext"` مقابل بناء خروج `types`/`exports` واجهة إجراء مؤقت خارجي ESM مستهلك نوع فحص، تأكيد حفظ إعلان شرح رمز ارتداد في إصدار قبل يتم التقاط.
+- `typecheck` أمر استخدام `tsconfig.json`. عرض مثال، اختبار و نص برمجي من أصل no-emit مشروع فحص، حزمة و vendor وحدة إبقاء و `build` نفسه إخراج سلوك. حزمة و vendor شفرة المصدر بداية نهاية موضع في project-reference حد بعد.
+- تبديل فرع أو تحديث عمل فرعي هذا بعد، إذا منها حذف حزمة، مساهمة من يمكن في إعادة بناء قبل تشغيل `pnpm run clean`، حذف قديم قديم حزمة دليل. لا يحتوي `package.json` حزمة دليل إذا وجود لم معرفة ملف، يجب يد حركة حكم تحديد ذلك صنف آخر، لا يستطيع مباشر حذف.
 
-Cordis 的 vendor 副本现在与上游多了一处类型结构差异。在上游同步时，该差异必须被重新应用或明确废弃。
+Cordis vendor فرعي هذا الآن و فوق تنقل كثير واحد موضع نوع بنية فرق مختلف. في فوق تنقل تزامن وقت، هذا فرق مختلف يجب يتم إعادة تطبيق أو واضح ملغى ترك.

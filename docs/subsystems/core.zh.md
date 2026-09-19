@@ -1,31 +1,31 @@
-# 核心
+# نواة قلب
 
-[English](core.md) | 中文
+[English](core.md) | العربية
 
-**核心**子系统即 [`packages/core`](../../packages/core/README.zh.md)，包含每个组合都会启动的包：事件溯源的会话日志、系统提示词组装、工具注册表、agent（智能体）类型，以及驱动它们的具体循环。本页说明 `agent`/`agent-loop` 这对包所声明的内容：agent 如何被创建与拥有，以及 `Agent` 句柄的投递、取消与拦截约定；本页还说明每个子系统都遵循的两个类型模式。该组的专属页面与目录其余部分见[子系统 README](README.zh.md)。
+**نواة قلب**فرعي نظام أي [`packages/core`](../../packages/core/README.zh.md) ، يتضمن كل تركيب كل سوف بدء حزمة: حدث تتبع مصدر جلسة سجل، توجيه النظام تجميع، أداة سجل التسجيل،agent(ذكي جسم) نوع، و قيادة هو جمع أداة جسم حلقة. هذا صفحة شرح `agent`/`agent-loop` هذا مقابل حزمة الذي إعلان محتوى:agent مثل أي يتم إنشاء و يملك، و `Agent` جملة مقبض إلقاء تمرير، إلغاء و اعتراض قطع اتفاق؛ هذا صفحة أيضا شرح كل فرعي نظام كل التزام دوران اثنان عدد نوع نمط. هذا مجموعة مخصص تابع صفحة و دليل ذلك بقية جزء رؤية[فرعي نظام README](README.zh.md).
 
-## 主干逐包速览
+## رئيسي جاف تدريجي حزمة سرعة تصفح
 
-一个轮次按同一条循环流经六个包：[`agent-loop`](../../packages/core/agent-loop) 中的 driver 认领一条排队的提示词，在[会话日志](session.zh.md)（`ctx.sessions`）上开启轮次，通过 [system-prompt](system-prompt.zh.md)（`ctx.systemPrompt`）组装请求前缀并从日志派生历史，经 [LLM（大语言模型） seam](llm-streaming.zh.md) 流式获取模型响应，经[工具注册表](tools.zh.md)（`ctx.tools`）分发工具调用，并把每个模型可见的事实追加回日志，供下一步派生。循环搬运的对话词汇——`Message`、`ContentBlock`、`StreamChunk`、模型请求——由 [`packages/llm`](../../packages/llm/README.zh.md) 声明，记录在 [llm-streaming.md](llm-streaming.zh.md)。
+واحد جولة حسب نفس بند حلقة تدفق مرور ستة عدد حزمة:[`agent-loop`](../../packages/core/agent-loop) في driver إقرار قيادة واحد بند ترتيب طابور نص التوجيه، في[جلسة سجل](session.zh.md)(`ctx.sessions`) فوق فتح بدء جولة، عبر [system-prompt](system-prompt.zh.md)(`ctx.systemPrompt`) تجميع طلب بادئة و من سجل إرسال توليد تاريخ، مرور [LLM(كبير لغة نموذج) seam](llm-streaming.zh.md) تدفق صيغة نيل أخذ نموذج استجابة، مرور[أداة سجل التسجيل](tools.zh.md)(`ctx.tools`) توزيع أداة استدعاء، و يأخذ كل نموذج مرئي واقع إلحاق عودة سجل، توفير تحت واحد خطوة إرسال توليد. حلقة نقل تشغيل محادثة مفردات——`Message`،`ContentBlock`،`StreamChunk`، نموذج طلب——من [`packages/llm`](../../packages/llm/README.zh.md) إعلان، سجل في [llm-streaming.md](llm-streaming.zh.md).
 
-| 包 | 负责内容 | 页面 |
+| حزمة | مسؤول محتوى | صفحة |
 |---|---|---|
-| `session/` | 仅追加的 `SessionEvent` 日志与内存 store——唯一真源（`ctx.sessions`） | [session.md](session.zh.md) |
-| `system-prompt/` | 提示词段落与工具 schema 组装（`ctx.systemPrompt`） | [system-prompt.md](system-prompt.zh.md) |
-| `tools/` | 带作用域的工具注册表与受保护的执行流水线（`ctx.tools`） | [tools.md](tools.zh.md) |
-| `agent/` | `Agent` 接口、实时注册表、发起者作用域与 `agent/*` 事件词汇（`ctx.agents`） | 本页 |
-| `agent-loop/` | 实现公开 `Agent` 约定的具体 driver（`ctx.agentLoop`） | 本页 |
-| `scope/` | 注册表与循环用于构建按 agent 作用域的注册原语 | [scope.md](scope.zh.md) |
+| `session/` | فقط إلحاق `SessionEvent` سجل و داخل تخزين store——وحيد حق مصدر (`ctx.sessions`) | [session.md](session.zh.md) |
+| `system-prompt/` | نص التوجيه مقطع سقوط و أداة schema تجميع (`ctx.systemPrompt`) | [system-prompt.md](system-prompt.zh.md) |
+| `tools/` | حمل أثر مجال أداة سجل التسجيل و تلقي حفظ حماية تنفيذ خط الإنتاج (`ctx.tools`) | [tools.md](tools.zh.md) |
+| `agent/` | `Agent` واجهة، فوري سجل التسجيل، إرسال بدء من أثر مجال و `agent/*` حدث مفردات (`ctx.agents`) | هذا صفحة |
+| `agent-loop/` | تنفيذ عام `Agent` اتفاق أداة جسم driver(`ctx.agentLoop`) | هذا صفحة |
+| `scope/` | سجل التسجيل و حلقة لأجل بناء حسب agent أثر مجال تسجيل أصل لغة | [scope.md](scope.zh.md) |
 
-`scope/` 是这里唯一的非服务包：一个零依赖库（`createScope`/`scopeOf`/`scopeTarget`），在模块图中位于 `session/` 与 `system-prompt/` 之下，正是为了让它们消费它而不形成环。`agent-loop` 是公开 `Agent` 约定的唯一具体实现，放在这里因为它是 harness 的默认产品循环；它在 `ctx.agents.withInitiator()` 内运行每个 driver。扩展插件依赖 `agent`——包括需要发起 Agent 时——而绝不直接依赖 `agent-loop`，因此循环保持可替换。[`dsh-base`](../../packages/bundle/base/README.zh.md) 是默认产品组合，[`dsh-sdk-minimal`](../../packages/bundle/sdk-minimal/README.zh.md) 则声明一棵更小的独立配置树。
+`scope/` هو هذا داخل وحيد غير خدمة حزمة: واحد صفر اعتماد مكتبة (`createScope`/`scopeOf`/`scopeTarget`) ، في وحدة رسم في يقع في `session/` و `system-prompt/` لـ تحت، صحيح هو لـ يجعل هو جمع إزالة استهلاك هو بينما لا شكل صار حلقة.`agent-loop` هو عام `Agent` اتفاق وحيد أداة جسم تنفيذ، وضع في هذا داخل لأن هو هو harness افتراضي منتج حلقة؛ هو في `ctx.agents.withInitiator()` داخل تشغيل كل driver. توسيع إضافة اعتماد `agent`——يشمل حاجة إرسال بدء Agent وقت——بينما أبدا مباشر اعتماد `agent-loop`، لذلك حلقة إبقاء يمكن استبدال.[`dsh-base`](../../packages/bundle/base/README.zh.md) هو افتراضي منتج تركيب،[`dsh-sdk-minimal`](../../packages/bundle/sdk-minimal/README.zh.md) فإن إعلان واحد شجرة أكثر صغير مستقل إعداد شجرة.
 
 <a id="creation-and-ownership"></a>
 
-## 创建与所有权
+## إنشاء و كل حق
 
-消费方通过 `ctx.agents` 创建 agent——`create()` 在一个调用方提供的 `SessionId` 下构建全新会话与 agent，`resume()` 先加载持久会话——或者通过循环的声明式配置条目创建。编程式创建返回归属所有者的句柄：
+مستهلك عبر `ctx.agents` إنشاء agent——`create()` في واحد استدعاء جهة توفير `SessionId` تحت بناء كل جديد جلسة و agent،`resume()` أولا تحميل حمل دائم جلسة——أو من عبر حلقة إعلان صيغة إعداد بند إنشاء. تحرير مسار صيغة إنشاء إرجاع ملكية كل من جملة مقبض:
 
-源码：[`packages/core/agent/src/index.ts`](../../packages/core/agent/src/index.ts)
+شفرة المصدر:[`packages/core/agent/src/index.ts`](../../packages/core/agent/src/index.ts)
 
 ```ts type-equiv
 /**
@@ -48,17 +48,17 @@ interface AgentHandle {
 }
 ```
 
-`CreateAgentOptions` 携带共享标识以及新 agent 发布前所需的一切：可选的存活 `parentAgent`、会话元数据（`meta`——已校验的 `cwd`、fork 谱系、`isSeeded` 标记、来源分类、委派深度与 `agentPreset`）、同级字段 `inheritedEventCount` 所表示的精确 fork cut、可选的 `seed` 回放前缀、按 agent 的 `AgentOptions`、仅创建期有效的取消 `signal`，以及 `setup`。`ResumeAgentOptions` 是持久标识的对应项：`resumeSessionId`、`parentAgent`、`agentOptions`、`signal` 与 `setup`。`setup` 回调（`AgentSetup`）在两个 id 均未发布时接收 `(agentCtx, agent)`：上下文拥有作用域注册，显式 Agent 提供确切的子 Session，Context 无需反向属性。凡经 `agentCtx` 注册的内容都先于 `agent/created` 与第一次提示词组装存在。Setup 可以返回在发布前一刻调用的同步 commit；setup 拒绝、commit 抛出或所有者 dispose（资源释放）都会回滚事务，两个 id 均不发布。
+`CreateAgentOptions` يحمل مشترك معرف و جديد agent إصدار قبل الذي يحتاج واحد قطع: اختياري تخزين نشط `parentAgent`، جلسة بيانات وصفية (`meta`——قد تحقق `cwd`،fork جدول نظام،`isSeeded` علامة، مصدر تصنيف، تفويض إرسال عميق درجة و `agentPreset`) ، نفس درجة حقل `inheritedEventCount` الذي يمثل دقيق fork cut، اختياري `seed` إعادة تشغيل بادئة، حسب agent `AgentOptions`، فقط إنشاء مدة صالح إلغاء `signal`، و `setup`.`ResumeAgentOptions` هو حمل دائم معرف مقابل بند:`resumeSessionId`،`parentAgent`،`agentOptions`،`signal` و `setup`.`setup` عودة ضبط (`AgentSetup`) في اثنان عدد id متساو لم إصدار وقت استقبال `(agentCtx, agent)`: سياق يملك أثر مجال تسجيل، صريح Agent توفير تأكيد قطع فرعي Session،Context بلا حاجة عكس نحو خاصية. كل مرور `agentCtx` تسجيل محتوى كل أولا في `agent/created` و رقم مرة نص التوجيه تجميع وجود.Setup يمكن إرجاع في إصدار قبل واحد لحظة استدعاء تزامن commit؛setup رفض،commit رمي خروج أو كل من dispose(مورد تحرير) كل سوف تراجع أمر خدمة، اثنان عدد id متساو لا إصدار.
 
-`AgentFactory` 是注册表背后的创建接口：循环经 `ctx.agents.setFactory()` 注册其工厂，因此消费方使用 `ctx.agents` 时无需依赖具体循环包。运行时子 Agent 的创建方设置 `options.parentAgent`；注册表把 options 与调用方 Context 传给工厂，不从其中一项推导另一项。确切的 `create`/`resume` 签名及回滚约定见下方[生成区块](#ctxagents--agentregistry)。
+`AgentFactory` هو سجل التسجيل خلف بعد إنشاء واجهة: حلقة مرور `ctx.agents.setFactory()` تسجيل ذلك عمل مصنع، لذلك مستهلك استخدام `ctx.agents` وقت بلا حاجة اعتماد أداة جسم حلقة حزمة. وقت التشغيل فرعي Agent إنشاء جهة ضبط `options.parentAgent`؛ سجل التسجيل يأخذ options و استدعاء جهة Context نقل إعطاء عمل مصنع، لا من منها واحد بند دفع توجيه آخر بند. تأكيد قطع `create`/`resume` توقيع و تراجع اتفاق رؤية تحت جهة[توليد منطقة كتلة](#ctxagents--agentregistry).
 
 <a id="the-agent-handle"></a>
 
-## Agent 句柄
+## Agent جملة مقبض
 
-`Agent` 是每个插件（UI、钩子、orchestrator）面向编程的 surface；`ctx.agents.get(id)` 返回它，[发起者作用域](#initiating-agent)携带它。具体实现为 dsh-agent-loop 包内部细节；循环外没有任何组件依赖它。统一的 `send` 方法直接暴露 target 与 wakeup 路由；`followup`、`steer` 与 `inject` 是固定预设的别名方法。
+`Agent` هو كل إضافة (UI، خطاف،orchestrator) موجه إلى تحرير مسار surface؛`ctx.agents.get(id)` إرجاع هو،[إرسال بدء من أثر مجال](#initiating-agent) يحمل هو. أداة جسم تنفيذ لـ dsh-agent-loop حزمة داخلي دقيق عقدة؛ حلقة خارج لا يوجد أي مكون اعتماد هو. موحد واحد `send` طريقة مباشر كشف target و wakeup توجيه؛`followup`،`steer` و `inject` هو ثابت مسبق ضبط آخر اسم طريقة.
 
-源码：[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
+شفرة المصدر:[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
 
 ```ts type-equiv
 /** Public live-agent handle; the runtime face augments its live capabilities. */
@@ -194,7 +194,7 @@ type AssistantStreamFrame =
   }
 ```
 
-`running` 描述整个驱动器的排空区间，可能跨越连续的排队轮次；它不能证明某个轮次仍然打开。dispose 会把 agent 从注册表移除并发出 `agent/disposed`；它不是一个终态 status 值。`followup()` 不返回句柄：其 `MessageId` 标识的是持久的 inbox 插入、认领与丢弃事实，而非之后的助手输出或轮次结束。`whenIdle()` 观察的是整个 agent，因此只有当调用方明确拥有从回执到空闲的这段区间时，才能把它称为一次 run（[决策](../../.agents/notes/implemented/architecture/2026-07-30-followup-enqueue-and-owned-runs.zh.md)）。
+`running` وصف كامل مشغل ترتيب فارغ منطقة بين، ممكن عبر تجاوز وصل متابعة ترتيب طابور جولة؛ هو لا يستطيع إثبات بعض عدد جولة ما زال فتح.dispose سوف يأخذ agent من سجل التسجيل إزالة تزامن خروج `agent/disposed`؛ هو لا هو واحد نهاية حالة status قيمة.`followup()` لا إرجاع جملة مقبض: ذلك `MessageId` معرف هو حمل دائم inbox إدراج دخول، إقرار قيادة و إسقاط واقع، بينما غير بعد مساعدة يد إخراج أو جولة انتهاء.`whenIdle()` مراقبة هو كامل agent، لذلك فقط لديه عند استدعاء جهة واضح يملك من عودة تنفيذ إلى فارغ خامل هذا مقطع منطقة بين وقت، عندئذ قدرة يأخذ هو تسمية لـ مرة run([قرار](../../.agents/notes/implemented/architecture/2026-07-30-followup-enqueue-and-owned-runs.zh.md)).
 
 ```ts type-equiv
 /** Merge-extensible agent creation options. Persona belongs to system-prompt sections. */
@@ -210,9 +210,9 @@ interface AgentOptions {
 }
 ```
 
-在 `agent/request` 之后，分发要求 `provider` 与 `model` 都存在。显式 `reasoningEffort` 会为该路由的首次请求提供初始值；确切模型解析会校验该值，省略时则允许填入适配器默认值。提供 `maxTokens` 时，它必须是正安全整数，并限制每次对话模型请求的输出；省略时，系统会在写入请求 header 前填入确切模型的适配器默认值，否则提供方行为保持不变。agent 作用域的 `deployment:persona-prefix` 提示词段落可以遮蔽全局默认 persona。
+في `agent/request` بعد، توزيع اشتراط `provider` و `model` كل وجود. صريح `reasoningEffort` سوف لـ هذا توجيه أول مرة طلب توفير ابتدائي قيمة؛ تأكيد قطع نموذج تحليل سوف تحقق هذا قيمة، حذف وقت فإن سماح ملء دخول مهايئ قيمة افتراضية. توفير `maxTokens` وقت، هو يجب هو صحيح أمان كامل عدد، و حد كل مرة محادثة نموذج طلب إخراج؛ حذف وقت، نظام سوف في كتابة طلب header قبل ملء دخول تأكيد قطع نموذج مهايئ قيمة افتراضية، لا فإن مزود سلوك إبقاء ثابت.agent أثر مجال `deployment:persona-prefix` نص التوجيه مقطع سقوط يمكن حجب حجب عام افتراضي persona.
 
-inbox 即投递词汇——agent 以持久投影形式拥有的两条有序待处理消息列表：
+inbox أي إلقاء تمرير مفردات——agent بـ حمل دائم إسقاط شكل صيغة يملك اثنان بند لديه ترتيب انتظار معالجة رسالة قائمة:
 
 ```ts type-equiv
 /** Agent-owned access to pending work; concrete storage belongs to the driver. */
@@ -276,9 +276,9 @@ interface Inbox {
 type InboxTarget = 'next-turn' | 'next-step'
 ```
 
-每个待处理入队项就是其 `UserMessage`；`MessageId` 是唯一标识。结构化 `Inbox` 方法会记录规范化的持久 `agent/inbox/spliced` 变更，并拒绝重复的待处理 id。`replace(messageId, newMessage)` 与 `remove(messageId)` 通过 `MessageId` 跨两份列表定位待处理消息；替换可以改变标识，并先将旧消息作为 discarded 发布，再将新消息作为 inserted 发布。普通删除和 `clear()` 都表示取消。在步骤边界，dsh-agent-loop 包内部的 `ReactLoopInbox` 会通过纯删除 splice 移除拟进入步骤的批次——全部 `next-step` 输入，外加轮次边界上的一条 `next-turn` 消息——且不发出 discarded 通知，随后逐条发出 claimed 通知。仅供循环使用的待处理检测与领取操作不属于 `Agent.inbox`。`AgentLoop` 服务在发布工厂之前注册标准 `inbox` 投影；其 cell 是唯一 live 状态，同一份折叠在没有 Agent 时也服务于冷消费方。该 fold 会拒绝不安全或越界的 splice 坐标，以及跨两份列表重复的标识，并通过事件 seq 指出格式错误的持久历史。跟踪单条消息的消费方使用精确的 `agent/inbox/inserted`、`claimed` 与 `discarded` 通知。
+كل انتظار معالجة دخول طابور بند حينئذ هو ذلك `UserMessage`؛`MessageId` هو وحيد معرف. بنية تحويل `Inbox` طريقة سوف سجل مواصفة تحويل حمل دائم `agent/inbox/spliced` تغيير، و رفض تكرار انتظار معالجة id.`replace(messageId, newMessage)` و `remove(messageId)` عبر `MessageId` عبر اثنان نسخة قائمة تحديد موضع انتظار معالجة رسالة؛ استبدال يمكن تغيير معرف، و أولا سوف قديم رسالة بصفة discarded إصدار، مجددا سوف جديد رسالة بصفة inserted إصدار. عادي حذف و `clear()` كل يمثل إلغاء. في خطوة حد،dsh-agent-loop حزمة داخلي `ReactLoopInbox` سوف عبر صاف حذف splice إزالة محاكاة دخول خطوة دفعة مرة——الكل `next-step` إدخال، خارج إضافة جولة حد فوق واحد بند `next-turn` رسالة——كما لا إرسال خروج discarded إشعار، مع بعد تدريجي بند إرسال خروج claimed إشعار. فقط توفير حلقة استخدام انتظار معالجة فحص قياس و قيادة أخذ عملية لا يخص `Agent.inbox`.`AgentLoop` خدمة في إصدار عمل مصنع قبل تسجيل معيار `inbox` إسقاط؛ ذلك cell هو وحيد live حالة، نفس نسخة طي في لا يوجد Agent وقت أيضا خدمة في بارد مستهلك. هذا fold سوف رفض لا أمان أو تجاوز حد splice جلوس علامة، و عبر اثنان نسخة قائمة تكرار معرف، و عبر حدث seq إشارة خروج صيغة خطأ حمل دائم تاريخ. تتبع أثر مفرد بند رسالة مستهلك استخدام دقيق `agent/inbox/inserted`،`claimed` و `discarded` إشعار.
 
-取消：
+إلغاء:
 
 ```ts type-equiv
 /** Options for {@link Agent.cancel}. */
@@ -301,27 +301,27 @@ type AgentCancelCause =
   | { readonly kind: 'disposed' }
 ```
 
-cause 是由 TypeScript 强制约束的同进程输入。活跃的取消持有者会将它复制到仅运行时的 `AbortSignal.reason`；signal 不授予协作监听器任何分类权限。持久 `turn/end` 以 `{ kind: 'aborted', reason: TurnEndCancelCause }` 记录结果，取消原因随终态结果一起持久化。
+cause هو من TypeScript قوي صنع قيد نفس عملية إدخال. نشط وثب إلغاء يحتفظ من سوف سوف هو نسخ إلى فقط وقت التشغيل `AbortSignal.reason`؛signal لا منح إعطاء تنسيق عمل مستمع أي تصنيف إذن. حمل دائم `turn/end` بـ `{ kind: 'aborted', reason: TurnEndCancelCause }` سجل نتيجة، إلغاء سبب مع نهاية حالة نتيجة واحد بدء حفظ دائم.
 
-[事件分类](../architecture.zh.md#events)负责 `agent/*` 生命周期、检查点与 waterfall（瀑布式事件）约定。轮次和步骤边界是持久会话事件，而不是 agent emit。
+[حدث تصنيف](../architecture.zh.md#events) مسؤول `agent/*` دورة الحياة، فحص نقطة و waterfall(شلال نشر صيغة حدث) اتفاق. جولة و خطوة حد هو حمل دائم جلسة حدث، بينما لا هو agent emit.
 
 <a id="initiating-agent"></a>
 
-## 发起 Agent
+## إرسال بدء Agent
 
-`ctx.agents` 携带的进程本地 initiator 就是上面的确切 `Agent`，不是单独的 frame 或复制的标识。环境中存在该值既不能证明存活，也不代表授权；[initiator 作用域决策](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.zh.md)定义其生命周期和作用域规则。
+`ctx.agents` يحمل عملية محلي initiator حينئذ هو فوق وجه تأكيد قطع `Agent`، لا هو مفرد وحيد frame أو نسخ معرف. بيئة في وجود هذا قيمة حيث لا يستطيع إثبات تخزين نشط، أيضا لا بديل جدول تخويل؛[initiator أثر مجال قرار](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.zh.md) تعريف ذلك دورة الحياة و أثر مجال قاعدة.
 
 <a id="interception-decisions"></a>
 
-## 拦截决策
+## اعتراض قطع قرار
 
-pre-step 决策使用与持久 user-role 输入相同、带标识的 `UserMessage` 类型。进入步骤的批次具有权威性，并保留每条消息的 `id` 和 `source`。钩子桥接层把其原生决策字段映射到这一类型化结果上。
+pre-step قرار استخدام و حمل دائم user-role إدخال نفسه، حمل معرف `UserMessage` نوع. دخول خطوة دفعة مرة أداة لديه مرجعي صفة، و إبقاء كل بند رسالة `id` و `source`. خطاف جسر وصل طبقة يأخذ ذلك أصلي قرار حقل خريطة إلى هذا واحد نوع تحويل نتيجة فوق.
 
-源码：[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
+شفرة المصدر:[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
 
-`agent/pre-step` 接收一个 payload，携带独占的已领取批次（`messages`）、拟进入步骤的坐标（`turn`、`step`）与当前轮次的取消 `signal`。首次提案在已打开的轮次内、任何步骤开始前运行；工具 continuation 可以在步骤之间提交空的已领取批次：
+`agent/pre-step` استقبال واحد payload، يحمل وحيد احتلال قد قيادة أخذ دفعة مرة (`messages`) ، محاكاة دخول خطوة جلوس علامة (`turn`،`step`) و حالي جولة إلغاء `signal`. أول مرة رفع سجل في قد فتح جولة داخل، أي خطوة بدء قبل تشغيل؛ أداة continuation يمكن في خطوة بين إيداع فارغ قد قيادة أخذ دفعة مرة:
 
-它返回 `PreStepDecision`。reject 不会打开步骤。enter 提供在 `step/start` 后追加的完整消息批次；最终决策省略的已领取消息保持已删除，而领取后插入的输入仍留待后续处理：
+هو إرجاع `PreStepDecision`.reject لن فتح خطوة.enter توفير في `step/start` بعد إلحاق كامل رسالة دفعة مرة؛ نهائي قرار حذف قد قيادة إلغاء خبر إبقاء قد حذف، بينما قيادة أخذ بعد إدراج دخول إدخال ما زال إبقاء انتظار لاحق معالجة:
 
 ```ts type-equiv
 /** Whether and with which messages the loop enters a proposed step. */
@@ -335,43 +335,43 @@ type PreStepDecision =
   }
 ```
 
-`agent/request-error` 在失败的模型步骤关闭之后、其轮次关闭之前运行。listener 可以在失败轮次的 signal 仍然存活时修复持久状态或 await 策略工作。处理该错误的 listener 返回 `{ kind: 'retry' }` 且不调用 `next()`；默认的 `undefined` 会让失败保持终态。
+`agent/request-error` في فشل نموذج خطوة إغلاق بعد، ذلك جولة إغلاق قبل تشغيل.listener يمكن في فشل جولة signal ما زال تخزين نشط وقت إصلاح حمل دائم حالة أو await سياسة عمل. معالجة هذا خطأ listener إرجاع `{ kind: 'retry' }` كما لا استدعاء `next()`؛ افتراضي `undefined` سوف يجعل فشل إبقاء نهاية حالة.
 
 ```ts type-equiv
 /** Action returned by a listener that owns model-request recovery. */
 type RequestErrorAction = { kind: 'retry' } | undefined
 ```
 
-`agent/pre-step` 是请求推导前唯一的 waterfall（瀑布式）监听器链。`agent/turn-stopping` 在轮次没有工具或 steering（中途引导）后续时运行，先于最后一次 steering 排空。
+`agent/pre-step` هو طلب دفع توجيه قبل وحيد waterfall(شلال نشر صيغة) مستمع سلسلة.`agent/turn-stopping` في جولة لا يوجد أداة أو steering(في طريق جذب توجيه) لاحق وقت تشغيل، أولا في الأكثر بعد مرة steering ترتيب فارغ.
 
-`agent/created` 携带 `SessionStartSource`（会话生命周期为何开始；桥接层据此匹配其 SessionStart）：
+`agent/created` يحمل `SessionStartSource`(جلسة دورة الحياة لـ أي بدء؛ جسر وصل طبقة حسب هذا مطابقة ذلك SessionStart):
 
 ```ts type-equiv
 /** Why a session lifecycle began; seeded creates are `startup`, while persisted loads are `resume`. */
 type SessionStartSource = 'startup' | 'resume' | 'clear' | 'compact'
 ```
 
-## 会话
+## جلسة
 
-`Session` 是一份类型化 `SessionEvent` 的**仅追加日志**——唯一的真源。LLM 消息历史从日志*派生*（`deriveMessages()`），而非单独存储。每个条目携带单调的 `seq`、`time` 与按 `type` 判别的 `data` payload；surface 变体还可以在 `sourceEventSeqs` 中列出被引用的较早事件，并携带 `surfaceOp`。
+`Session` هو واحد نسخة نوع تحويل `SessionEvent` **فقط إلحاق سجل**——وحيد حق مصدر.LLM رسالة تاريخ من سجل*إرسال توليد*(`deriveMessages()`) ، بينما غير مفرد وحيد تخزين. كل بند يحمل مفرد ضبط `seq`،`time` و حسب `type` حكم آخر `data` payload؛surface تغيير جسم أيضا يمكن في `sourceEventSeqs` في صف خروج يتم مرجع مقارنة مبكر حدث، و يحمل `surfaceOp`.
 
-`SessionEvent` 信封的确切条件字段、十三种核心事件变体（`turn/start`、`turn/end`、`step/start`、`step/end`、`user/message`、`system/message`、`assistant/message`、`assistant/attempt`、`tool/call`、`tool/result`、`request/header`、`request/context`、`session/end-seed`）、`deriveMessages()` 投影规则、`TurnEndReason` 原因以及执行封闭和独立事件规则都在 **[session.md](session.zh.md)** 中。日志如何持久化——`SessionPersistence` 接口、JSONL provider、`session/flush` 检查点、崩溃恢复与 `SessionHeader`——则在 **[persistence.md](persistence.zh.md)** 中。
+`SessionEvent` معلومة غلاف تأكيد قطع شرط حقل، عشرة ثلاثة نوع نواة قلب حدث تغيير جسم (`turn/start`،`turn/end`،`step/start`،`step/end`،`user/message`،`system/message`،`assistant/message`،`assistant/attempt`،`tool/call`،`tool/result`،`request/header`،`request/context`،`session/end-seed`) ،`deriveMessages()` إسقاط قاعدة،`TurnEndReason` سبب و تنفيذ غلاف إغلاق و مستقل حدث قاعدة كل في **[session.md](session.zh.md)** في. سجل مثل أي حفظ دائم——`SessionPersistence` واجهة،JSONL provider،`session/flush` فحص نقطة، انهيار انهيار استعادة و `SessionHeader`——فإن في **[persistence.md](persistence.zh.md)** في.
 
 ## `ToolDefinition`
 
-唯一属于核心的流水线编写类型：每个已注册工具*是什么*——一个面向模型的 `ToolSchema` 加上一个 `execute` 函数，以及可选的最终内容回调与 UI 回调。工具作者很少手动构造它（`defineTool` DSL 会使用类型化参数构建），但它是注册表存储并由循环用于分发的约定。
+وحيد يخص نواة قلب خط الإنتاج تحرير كتابة نوع: كل قد تسجيل أداة*هو ماذا*——واحد موجه إلى نموذج `ToolSchema` إضافة فوق واحد `execute` دالة، و اختياري نهائي محتوى عودة ضبط و UI عودة ضبط. أداة عمل من جدا قليل يد حركة بنية صنع هو (`defineTool` DSL سوف استخدام نوع تحويل معامل بناء) ، لكن هو هو سجل التسجيل تخزين و من حلقة لأجل توزيع اتفاق.
 
-其完整字段、`defineTool`/`ValueSchemaSpec`/`ParameterSchemaSpec` 类型化 schema DSL、`ToolExecution`/`ToolExecutionResult` waterfall 类型，以及工具展示 UI 类型都在 **[tools.md](tools.zh.md)** 中。
+ذلك كامل حقل،`defineTool`/`ValueSchemaSpec`/`ParameterSchemaSpec` نوع تحويل schema DSL،`ToolExecution`/`ToolExecutionResult` waterfall نوع، و أداة عرض UI نوع كل في **[tools.md](tools.zh.md)** في.
 
-## 全仓通用类型模式
+## كل مستودع عام نوع نمط
 
-两个模式在每个子系统中反复出现，只在此处记录一次。
+اثنان عدد نمط في كل فرعي نظام في عكس تكرار ظهور، فقط في هذا موضع سجل مرة.
 
 <a id="the-map--derived-union-pattern"></a>
 
-### `…Map → derived-union` 模式
+### `…Map → derived-union` نمط
 
-harness 中几乎所有可扩展的和类型都遵循同一模式：一个以判别标签为键的接口（`…Map`），联合类型由 `keyof` 派生。插件通过**声明合并**添加变体——无需修改拥有该类型的包。
+harness في بضعة نحو كل يمكن توسيع و نوع كل التزام دوران نفس نمط: واحد بـ حكم آخر وسم لـ مفتاح واجهة (`…Map`) ، ربط دمج نوع من `keyof` إرسال توليد. إضافة عبر**إعلان دمج**إضافة تغيير جسم——بلا حاجة تعديل يملك هذا نوع حزمة.
 
 ```ts ignore-check
 // The pattern, schematically:
@@ -390,9 +390,9 @@ declare module '@deepseek-ai/dsh-llm' {
 }
 ```
 
-五个规范 map 使用此模式；插件作者扩展它们：
+خمسة عدد مواصفة map استخدام هذا نمط؛ إضافة عمل من توسيع هو جمع:
 
-| Map | 包 | 派生 | 目录 |
+| Map | حزمة | إرسال توليد | دليل |
 |---|---|---|---|
 | `ContentBlockMap` | dsh-llm | `ContentBlock` | [llm-streaming.md](llm-streaming.zh.md#content-blocks-and-messages) |
 | `MessageSourceMap` | dsh-llm | `MessageSource` | [llm-streaming.md](llm-streaming.zh.md#content-blocks-and-messages) |
@@ -400,24 +400,24 @@ declare module '@deepseek-ai/dsh-llm' {
 | `TurnEndReasonMap` | dsh-session | `TurnEndReason` | [session.md](session.zh.md) |
 | `SessionEventMap` | dsh-session | `SessionEvent` | [session.md](session.zh.md) |
 
-消费方最常 `switch` 的两个大型判别联合类型是：**`StreamChunk`**（流式协议）和 **`SessionEvent`**（日志条目）。按仓库约定，对标签做 `switch`——不要链式 `if`——这样每个分支都能窄化类型，拼错的标签会编译失败。
+مستهلك الأكثر معتاد `switch` اثنان عدد كبير نوع حكم آخر ربط دمج نوع هو:**`StreamChunk`**(تدفق صيغة بروتوكول) و **`SessionEvent`**(سجل بند). حسب مستودع اتفاق، مقابل وسم فعل `switch`——لا يلزم سلسلة صيغة `if`——هذا مثال كل فرع كل قدرة ضيق تحويل نوع، تجميع خطأ وسم سوف تحرير ترجمة فشل.
 
 <a id="branded-ids"></a>
 
-### 品牌化 ID
+### صنف لوحة تحويل ID
 
-在包之间传递的 ID 都经过**品牌化**——结构上是字符串，但在类型层面不可互换（不能把 `SessionId` 传给需要 `ToolCallId` 的位置）。构造使用共享 `brandString<T>()` helper 或所属方自定义的校验工厂；比较、日志记录和 JSON 行为与普通字符串相同。
+في حزمة بين نقل تمرير ID كل مرور مرور**صنف لوحة تحويل**——بنية فوق هو نص، لكن في نوع طبقة وجه غير ممكن متبادل تبديل (لا يستطيع يأخذ `SessionId` نقل إعطاء حاجة `ToolCallId` موضع). بنية صنع استخدام مشترك `brandString<T>()` helper أو الذي تابع جهة ذاتي تعريف تحقق عمل مصنع؛ مقارنة مقارنة، سجل سجل و JSON سلوك و عادي نص نفسه.
 
-`Branded<B>` 原语与无状态构造函数位于 [dsh-brand](../../packages/util/brand)，该包不依赖 harness 能力。`brandString<T>()` 应用仅编译期存在的字符串品牌。
+`Branded<B>` أصل لغة و بلا حالة بنية صنع دالة يقع في [dsh-brand](../../packages/util/brand) ، هذا حزمة لا اعتماد harness قدرة.`brandString<T>()` تطبيق فقط تحرير ترجمة مدة وجود نص صنف لوحة.
 
-源码：[`packages/util/brand/src/index.ts`](../../packages/util/brand/src/index.ts)
+شفرة المصدر:[`packages/util/brand/src/index.ts`](../../packages/util/brand/src/index.ts)
 
 ```ts type-equiv
 /** A string carrying a compile-time-only brand `B`. */
 type Branded<B extends string> = string & { readonly [BRAND]: B }
 ```
 
-两个核心 ID 是 `ToolCallId`（关联工具调用及其结果；dsh-llm）和 `SessionId`（活跃 agent 与持久会话共享的标识；dsh-session）。能力包也会品牌化各自的 id，例如 [jobs.md](jobs.zh.md) 中的 `JobId`。
+اثنان عدد نواة قلب ID هو `ToolCallId`(صلة ربط أداة استدعاء و ذلك نتيجة؛dsh-llm) و `SessionId`(نشط وثب agent و حمل دائم جلسة مشترك معرف؛dsh-session). قدرة حزمة أيضا سوف صنف لوحة تحويل كل منها id، مثال مثل [jobs.md](jobs.zh.md) في `JobId`.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

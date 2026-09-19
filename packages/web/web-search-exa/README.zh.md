@@ -1,39 +1,39 @@
 ---
-description: "ctx.web 的 Exa 搜索提供方：部署方如何挂载厂商原生 web 搜索，获得可移植 snippet 与发布日期。"
+description: "ctx.web Exa بحث مزود: نشر جهة مثل أي تركيب مصنع تجارة أصلي web بحث، نيل نيل يمكن نقل غرس snippet و إصدار يوم مدة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-web-search-exa
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-有了 `dsh-web-search-exa`，harness 可以通过 Exa 搜索 web，获得带可移植 snippet 与发布日期的厂商原生结果。当部署持有 Exa API 密钥、并希望使用 Exa 的关键词或神经搜索时选择它。Exa 不返回生成答案，因此结果不携带 `content`——只产出可引用的来源。没有非空白高亮的来源会被丢弃，因此一次调用返回的来源可能少于请求数量。面向模型的 `web_search` 工具位于 `dsh-tool-web`。
+لديه `dsh-web-search-exa`،harness يمكن عبر Exa بحث web، نيل نيل حمل يمكن نقل غرس snippet و إصدار يوم مدة مصنع تجارة أصلي نتيجة. عند نشر يحتفظ Exa API مفتاح، و أمل نظر استخدام Exa صلة مفتاح كلمة أو روح مرور بحث وقت اختيار هو.Exa لا إرجاع توليد جواب سجل، لذلك نتيجة لا يحمل `content`——فقط إنتاج خروج يمكن مرجع مصدر. لا يوجد غير فارغ أبيض عال مضيء مصدر سوف يتم إسقاط، لذلك مرة استدعاء إرجاع مصدر ممكن قليل في طلب عدد كمية. موجه إلى نموذج `web_search` أداة يقع في `dsh-tool-web`.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在已加载 web 服务的组合中挂载本提供方；它以 `exa` 搜索提供方身份注册，因此当它是唯一可用的搜索后端时，`ctx.web.search()` 会自动解析到它——也可以用 `searchProvider: exa` 固定。
+في قد تحميل web خدمة تركيب في تركيب هذا مزود؛ هو بـ `exa` بحث مزود هوية تسجيل، لذلك عند هو هو وحيد متاح بحث خلفية وقت،`ctx.web.search()` سوف تلقائي تحليل إلى هو——أيضا يمكن استخدام `searchProvider: exa` ثابت.
 
-### 何时选择
+### أي وقت اختيار
 
-当部署持有 Exa API 密钥，并希望使用 Exa 的关键词或神经搜索、获得每项结果的高亮 snippet 与发布日期时，选择此后端。密钥为空或端点基址无法解析时，提供方不可用——每次搜索调用都会以结构化错误失败。
+عند نشر يحتفظ Exa API مفتاح، و أمل نظر استخدام Exa صلة مفتاح كلمة أو روح مرور بحث، نيل نيل كل بند نتيجة عال مضيء snippet و إصدار يوم مدة وقت، اختيار هذا خلفية. مفتاح لـ فارغ أو طرف نقطة أساس عنوان لا يمكن تحليل وقت، مزود غير ممكن استخدام——كل مرة بحث استدعاء كل سوف بـ بنية تحويل خطأ فشل.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-加载 web 服务与本提供方；API 密钥回退到启动环境中的 `$EXA_API_KEY`，其余设置都有安全默认值。
+تحميل web خدمة و هذا مزود؛API مفتاح رجوع إلى بدء بيئة في `$EXA_API_KEY`، ذلك بقية ضبط كل لديه أمان قيمة افتراضية.
 
 ```yaml
 - name: '@deepseek-ai/dsh-web'
@@ -42,102 +42,102 @@ kind: "package-reference"
     apiKey: !!js process.env.EXA_API_KEY
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `apiKey` | `$EXA_API_KEY` | Exa API 密钥；为空或缺失时提供方不可用 |
-| `baseURL` | `https://api.exa.ai` | 端点基址；追加 `/search`。无法解析时提供方不可用 |
-| `searchType` | `auto` | 以 Exa `type` 发送的检索模式：`auto`、`keyword` 或 `neural` |
-| `numResults` | （未设置） | 请求不含 `maxResults` 时使用的默认结果数；必须是正整数 |
-| `highlightsPerResult` | `1` | 每个结果请求的 highlight 句子数（Exa `highlightsPerUrl`）；必须是正整数 |
+| `apiKey` | `$EXA_API_KEY` | Exa API مفتاح؛ لـ فارغ أو ناقص وقت مزود غير ممكن استخدام |
+| `baseURL` | `https://api.exa.ai` | طرف نقطة أساس عنوان؛ إلحاق `/search`. لا يمكن تحليل وقت مزود غير ممكن استخدام |
+| `searchType` | `auto` | بـ Exa `type` إرسال فحص بحث نمط:`auto`،`keyword` أو `neural` |
+| `numResults` | (لم ضبط) | طلب لا يحتوي `maxResults` وقت استخدام افتراضي نتيجة عدد؛ يجب هو صحيح كامل عدد |
+| `highlightsPerResult` | `1` | كل نتيجة طلب highlight جملة فرعي عدد (Exa `highlightsPerUrl`) ؛ يجب هو صحيح كامل عدد |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-exa)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-exa) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
-### 搜索返回什么
+### بحث إرجاع ماذا
 
-每项 Exa 结果映射为 `WebSearchSource`：`url`、`title`、以首个非空白高亮作为 `snippet`、`publishedDate` 作为 `publishedAt`；没有高亮的来源缺少可移植的 snippet，会被丢弃。请求的 `maxResults` 优先于已配置的默认 `numResults`，并作为成本与延迟优化发送给 Exa——最终上限由服务强制执行：截断并标记。Exa 不返回生成答案，因此结果不携带 `content`。
+كل بند Exa نتيجة خريطة لـ `WebSearchSource`:`url`،`title`، بـ أول عدد غير فارغ أبيض عال مضيء بصفة `snippet`،`publishedDate` بصفة `publishedAt`؛ لا يوجد عال مضيء مصدر نقص قليل يمكن نقل غرس snippet، سوف يتم إسقاط. طلب `maxResults` أولوية في قد إعداد افتراضي `numResults`، و بصفة صار هذا و تأخير متأخر أفضل تحويل إرسال إعطاء Exa——نهائي حد أعلى من خدمة قوي صنع تنفيذ: قطع قطع و علامة.Exa لا إرجاع توليد جواب سجل، لذلك نتيجة لا يحمل `content`.
 
-### 失败与恢复
+### فشل و استعادة
 
-提供方失败——HTTP 错误、网络失败、响应体无法解析或结构不符——以 `WebError` `WEB_PROVIDER_ERROR` 呈现；中止请求以 `WEB_ABORTED` 呈现。HTTP 重定向会在访问 `Location` 指向的目标之前被拒绝，并以 `WEB_PROVIDER_ERROR` 呈现。调用方根据错误码进行分流；面向模型的 `web_search` 工具会在自己的错误包装层内把失败呈现给模型。
+مزود فشل——HTTP خطأ، شبكة شبكة فشل، استجابة جسم لا يمكن تحليل أو بنية لا رمز——بـ `WebError` `WEB_PROVIDER_ERROR` عرض؛ في توقف طلب بـ `WEB_ABORTED` عرض.HTTP إعادة تحديد نحو سوف في وصول `Location` إشارة نحو هدف قبل يتم رفض، و بـ `WEB_PROVIDER_ERROR` عرض. استدعاء جهة أصل حسب رمز خطأ إجراء قسم تدفق؛ موجه إلى نموذج `web_search` أداة سوف في ذاتي ذات خطأ حزمة تركيب طبقة داخل يأخذ فشل عرض إعطاء نموذج.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释提供方背后的设计决策；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير مزود خلف بعد تصميم قرار؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-该提供方是 Exa API 之上的薄适配器，遵循两条刻意的规则：
+هذا مزود هو Exa API لـ فوق رقيق مهايئ، التزام دوران اثنان بند لحظة معنى قاعدة:
 
-- **只取可移植的 snippet。** 来源只有在真实高亮存在时才获得 `snippet`；用其他字段捏造会让 seam 说谎，因此没有 snippet 的结果被整个丢弃。
-- **不虚构答案。** Exa 不返回生成答案，因此省略 `content`，而不是编造模型可能信任的提供方文本。
+- **فقط أخذ يمكن نقل غرس snippet.** مصدر فقط لديه في حقيقي عال مضيء وجود وقت عندئذ نيل نيل `snippet`؛ استخدام أخرى حقل قرص صنع سوف يجعل seam قول كذب، لذلك لا يوجد snippet نتيجة يتم كامل إسقاط.
+- **لا وهمي بنية جواب سجل.** Exa لا إرجاع توليد جواب سجل، لذلك حذف `content`، بينما لا هو تحرير صنع نموذج ممكن معلومة مهمة مزود نص.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：配置 schema、环境变量回退、提供方注册 |
-| [`src/provider.ts`](src/provider.ts) | `ExaSearchProvider`：请求分发、中止分类、结果映射 |
-| [`src/types.ts`](src/types.ts) | Exa 协议类型：`ExaSearchResponse`、`ExaResult`、`ExaError` |
-| — | 不发布运行时不变量配套入口；除所属 seam 强制执行的约定外，本包没有独立的事件序列或可变数据关系。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: إعداد schema، بيئة متغير رجوع، مزود تسجيل |
+| [`src/provider.ts`](src/provider.ts) | `ExaSearchProvider`: طلب توزيع، في توقف تصنيف، نتيجة خريطة |
+| [`src/types.ts`](src/types.ts) | Exa بروتوكول نوع:`ExaSearchResponse`،`ExaResult`،`ExaError` |
+| — | لا إصدار وقت التشغيل ثابت كمية إعداد طقم مدخل؛ حذف الذي تابع seam قوي صنع تنفيذ اتفاق خارج، هذه الحزمة لا يوجد مستقل حدث تسلسل أو متغير بيانات علاقة. |
 
-### 请求与映射流程
+### طلب و خريطة مسار
 
-`search()` 以 `redirect: 'error'` 把查询、检索模式、高亮请求与可选结果数 POST 到 `{baseURL}/search`，因此重定向会在不接触目标的情况下使请求失败。解析后的 `results[]` 逐项映射，没有 snippet 的条目被丢弃，服务在返回路径上应用最终的 `maxResults` 上限。中止——名为 `AbortError` 的 `DOMException`——变为 `WEB_ABORTED`；其余情况变为 `WEB_PROVIDER_ERROR`。
+`search()` بـ `redirect: 'error'` يأخذ استعلام، فحص بحث نمط، عال مضيء طلب و اختياري نتيجة عدد POST إلى `{baseURL}/search`، لذلك إعادة تحديد نحو سوف في لا وصل لمس هدف حال حال تحت جعل طلب فشل. تحليل بعد `results[]` تدريجي بند خريطة، لا يوجد snippet بند يتم إسقاط، خدمة في إرجاع مسار فوق تطبيق نهائي `maxResults` حد أعلى. في توقف——اسم لـ `AbortError` `DOMException`——تغيير لـ `WEB_ABORTED`؛ ذلك بقية حال حال تغيير لـ `WEB_PROVIDER_ERROR`.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享词汇逐步进入服务、面向模型的工具与设计依据。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك مفردات تدريجي خطوة دخول خدمة، موجه إلى نموذج أداة و تصميم اعتماد حسب.
 
-- [web 子系统](../../../docs/subsystems/web.zh.md)——穷尽式的搜索请求／结果词汇与错误码。
-- [web 包映射](../README.zh.md)——六包家族与各角色。
-- [dsh-web](../web/README.zh.md)——本提供方注册进入的 web 服务。
-- [dsh-tool-web](../tool-web/README.zh.md)——渲染本提供方来源的面向模型 `web_search` 工具。
-- [生成配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-exa)——每个受支持配置字段及其源声明。
-- [web 能力 seam 决策](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——搜索与抓取为何共用一项提供方选择服务。
+- [web فرعي نظام](../../../docs/subsystems/web.zh.md)——نفاد كل صيغة بحث طلب/نتيجة مفردات و رمز خطأ.
+- [web حزمة خريطة](../README.zh.md)——ستة حزمة بيت عائلة و كل زاوية لون.
+- [dsh-web](../web/README.zh.md)——هذا مزود تسجيل دخول web خدمة.
+- [dsh-tool-web](../tool-web/README.zh.md)——تصيير هذا مزود مصدر موجه إلى نموذج `web_search` أداة.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-web-search-exa)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
+- [web قدرة seam قرار](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)——بحث و إمساك أخذ لـ أي مشترك استخدام واحد بند مزود اختيار خدمة.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过 `dsh-tool-web` 间接影响模型体验。该工具保留本提供方经 `maxResults` 限制的 URL、标题、首条高亮与发布日期；如果发生失败，则会在消费方的错误包装层内保留原样错误消息 `Exa search aborted`、`Exa search request failed: <error>` 和 `Exa returned an unprocessable response body: <error>`。
+عبر `dsh-tool-web` بين وصل أثر تجربة النموذج. هذا أداة إبقاء هذا مزود مرور `maxResults` حد URL، عنوان، أول بند عال مضيء و إصدار يوم مدة؛ إذا حدوث فشل، فإن سوف في مستهلك خطأ حزمة تركيب طبقة داخل إبقاء أصل مثال خطأ رسالة `Exa search aborted`،`Exa search request failed: <error>` و `Exa returned an unprocessable response body: <error>`.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-不会直接导致 KV Cache 失效；请求前缀变更由上述消费方负责。
+لن مباشر توجيه يؤدي KV Cache بطلان؛ طلب بادئة تغيير من فوق وصف مستهلك مسؤول.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明提供方在哪些情况下不合适。它们是当前包约束。
+هذه حد شرح مزود في أي بعض حال حال تحت لا دمج ملائم. هو جمع هو حالي حزمة قيد.
 
-- **没有非空白高亮的来源会被整个丢弃**——没有可映射的可移植 snippet，因此返回来源可能少于请求数量。
-- **只公开 `searchType`／`numResults`／`highlightsPerResult`**——Exa 的其他控制项（livecrawl、category、域名／日期过滤条件、全文内容）等待提供方无关的服务字段（见 [seam Agent Note](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)）。
-- **按错误形状分类中止**——只有名为 `AbortError` 的 `DOMException` 才映射为 `WEB_ABORTED`；携带自定义原因的中止（例如 `dsh-timeout` 的 `TimeoutReason`）呈现为 `WEB_PROVIDER_ERROR`。
+- **لا يوجد غير فارغ أبيض عال مضيء مصدر سوف يتم كامل إسقاط**——لا يوجد يمكن خريطة يمكن نقل غرس snippet، لذلك إرجاع مصدر ممكن قليل في طلب عدد كمية.
+- **فقط عام `searchType`/`numResults`/`highlightsPerResult`**——Exa أخرى تحكم بند (livecrawl،category، مجال اسم/يوم مدة مرور ترشيح شرط، كل نص محتوى) انتظار مزود غير متصل خدمة حقل (رؤية [seam Agent Note](../../../.agents/notes/implemented/architecture/2026-06-24-web-capability-seam.zh.md)).
+- **حسب خطأ شكل حالة تصنيف في توقف**——فقط لديه اسم لـ `AbortError` `DOMException` عندئذ خريطة لـ `WEB_ABORTED`؛ يحمل ذاتي تعريف سبب في توقف (مثال مثل `dsh-timeout` `TimeoutReason`) عرض لـ `WEB_PROVIDER_ERROR`.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文：开放问题与尚未决定的探索方向。它明确不具权威性——已交付的行为、限制与既定理由以上文和相关 Agent Note 为准。
+هذا ملاحظة تطوير هو صيانة من عمل سياق: فتح وضع مشكلة و بعد لم قرار استكشاف جهة نحو. هو واضح لا أداة مرجعي صفة——قد تسليم سلوك، حد و حيث تحديد إدارة من بـ فوق نص و متبادل صلة Agent Note لـ دقيق.
 
-#### 未来：更宽的 Exa 控制面
+#### لم قدوم: أكثر عرض Exa تحكم وجه
 
-Exa 的 livecrawl、category、域名与日期过滤条件以及全文内容仍未公开。公开它们需要先有提供方无关的服务字段，让家族以一个协调一致的控制项、而非厂商专有参数的方式新增。
+Exa livecrawl،category، مجال اسم و يوم مدة مرور ترشيح شرط و كل نص محتوى ما زال لم عام. عام هو جمع حاجة أولا لديه مزود غير متصل خدمة حقل، يجعل بيت عائلة بـ واحد تنسيق ضبط متسق تحكم بند، بينما غير مصنع تجارة مخصص لديه معامل طريقة إضافة جديدة.
 
 </details>

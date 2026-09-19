@@ -1,14 +1,14 @@
-# 会话引用
+# جلسة مرجع
 
-[English](session-reference.md) | 中文
+[English](session-reference.md) | العربية
 
-由 Host 支撑的文件发现，以及结构化的跨会话引用请求与准备后的消息上下文。[文件引用约定](../../packages/context/file-reference)负责仅含路径的补全记录与语法；[会话引用约定](../../packages/context/session-reference)定义规范 URI、当前表层投影、标签安全的 JSON 与字节保留、稳定错误和不可信的模型提示词。宿主适配器使用这些类型，而不会把各自 UI 的提及语法传入 agent（智能体）核心。
+من Host دعم دعم ملف اكتشاف، و بنية تحويل عبر جلسة مرجع طلب و دقيق تجهيز بعد رسالة سياق.[ملف مرجع اتفاق](../../packages/context/file-reference) مسؤول فقط يحتوي مسار تكملة كل سجل و لغة قاعدة؛[جلسة مرجع اتفاق](../../packages/context/session-reference) تعريف مواصفة URI، حالي جدول طبقة إسقاط، وسم أمان JSON و بايت إبقاء، مستقر خطأ و غير ممكن معلومة نموذج نص التوجيه. مضيف مهايئ استخدام هذه نوع، بينما لن يأخذ كل منها UI رفع و لغة قاعدة نقل دخول agent(ذكي جسم) نواة قلب.
 
-来源：[`packages/context/file-reference/src/types.ts`](../../packages/context/file-reference/src/types.ts) · [`packages/context/session-reference/src/types.ts`](../../packages/context/session-reference/src/types.ts)
+مصدر:[`packages/context/file-reference/src/types.ts`](../../packages/context/file-reference/src/types.ts) · [`packages/context/session-reference/src/types.ts`](../../packages/context/session-reference/src/types.ts)
 
-## 文件候选项
+## ملف مرشح بند
 
-`FileReferenceCandidate` 是仅含路径的发现结果。被寻址的 agent 提供工作目录范围；提供方负责排序和命名空间访问，但不会读取文件内容。
+`FileReferenceCandidate` هو فقط يحتوي مسار اكتشاف نتيجة. يتم بحث عنوان agent توفير عمل دليل نطاق؛ مزود مسؤول ترتيب ترتيب و نطاق الأسماء وصول، لكن لن قراءة ملف محتوى.
 
 ```ts type-equiv
 /** One path-only completion candidate inside the target session cwd. */
@@ -20,9 +20,9 @@ interface FileReferenceCandidate {
 }
 ```
 
-## 输入与候选项
+## إدخال و مرشح بند
 
-`SessionReferenceInput` 是与宿主无关的选择。id 具有权威性；label 是随快照携带的显示元数据。
+`SessionReferenceInput` هو و مضيف غير متصل اختيار.id أداة لديه مرجعي صفة؛label هو مع لقطة يحمل عرض بيانات وصفية.
 
 ```ts type-equiv
 /** One source session selected by a host. */
@@ -34,7 +34,7 @@ interface SessionReferenceInput {
 }
 ```
 
-`SessionReferenceCandidate` 是面向宿主的发现输出。存在最新 Session 标题时，它的 `label` 使用该标题；可选显示文本则优先使用 subagent 的持久创建 label。筛选会同时搜索两者、Session id 与 cwd，绝不搜索 transcript（文本记录）。Remote 候选在 `displayTitle` 存在时用它标记规范 mention。
+`SessionReferenceCandidate` هو موجه إلى مضيف اكتشاف إخراج. وجود الأكثر جديد Session عنوان وقت، هو `label` استخدام هذا عنوان؛ اختياري عرض نص فإن أولوية استخدام subagent حمل دائم إنشاء label. غربلة اختيار سوف معا بحث اثنان من،Session id و cwd، أبدا بحث transcript(نص سجل).Remote مرشح في `displayTitle` وجود وقت استخدام هو علامة مواصفة mention.
 
 ```ts type-equiv
 /** One host-facing candidate from exact session metadata. */
@@ -58,7 +58,7 @@ interface SessionReferenceCandidate {
 }
 ```
 
-`sessionReferenceResolver/candidates` Remote 方法向浏览器消费方提供同一发现能力，并为每个候选附上规范提示词 mention。
+`sessionReferenceResolver/candidates` Remote طريقة نحو متصفح مستهلك توفير نفس اكتشاف قدرة، و لـ كل مرشح مرفق فوق مواصفة نص التوجيه mention.
 
 ```ts type-equiv
 /** One discovery candidate carrying its canonical prompt mention. */
@@ -68,9 +68,9 @@ interface SessionReferenceMentionCandidate extends SessionReferenceCandidate {
 }
 ```
 
-## 准备后的消息
+## دقيق تجهيز بعد رسالة
 
-准备过程保留可读的当前消息内容，并最多返回一个聚合上下文。其持久 source 记录会把 `capturedThroughSeq` 保留为被引用 Session 原始 generation 中的坐标，绝不会把它重新解释为所在 Session 的 seq。`capturedFormatVersion` 记录该 generation；缺失表示已发布格式 v0。
+دقيق تجهيز مرور مسار إبقاء يمكن قراءة حالي رسالة محتوى، و الأكثر كثير إرجاع واحد تجمع دمج سياق. ذلك حمل دائم source سجل سوف يأخذ `capturedThroughSeq` إبقاء لـ يتم مرجع Session أصلي generation في جلوس علامة، أبدا سوف يأخذ هو إعادة حل تفسير لـ الذي في Session seq.`capturedFormatVersion` سجل هذا generation؛ ناقص يمثل قد إصدار صيغة v0.
 
 ```ts type-equiv
 /** Durable source session, cited event seqs, and snapshot facts for prepared cross-session context. */
@@ -106,9 +106,9 @@ interface PreparedReferencedMessage {
 }
 ```
 
-## 错误
+## خطأ
 
-`SessionReferenceError.code` 区分无效配置或输入、自引用、数量限制、源读取失败、预算失败和取消。宿主协议会把这些 code 映射到各自的错误封装，无需检查提示词字节。
+`SessionReferenceError.code` منطقة قسم بلا فاعلية إعداد أو إدخال، ذاتي مرجع، عدد كمية حد، مصدر قراءة فشل، ميزانية فشل و إلغاء. مضيف بروتوكول سوف يأخذ هذه code خريطة إلى كل منها خطأ غلاف تركيب، بلا حاجة فحص نص التوجيه بايت.
 
 ```ts type-equiv
 /** Stable failure codes exposed to host adapters. */

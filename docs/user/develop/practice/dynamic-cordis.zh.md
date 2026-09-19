@@ -1,15 +1,15 @@
-# 通过提示词配置持久化插件
+# عبر نص التوجيه إعداد حفظ دائم إضافة
 
-[English](dynamic-cordis.md) | 中文
+[English](dynamic-cordis.md) | العربية
 
-创造模式提供 [Plugin Manager](../../../../packages/boot/plugin-manager/README.zh.md) 和只读[运行时检查](../../../../packages/extensions/tool-cordis/README.zh.md)。插件配置属于当前 profile，影响其会话，并在进程重启后保留。
+إنشاء صنع نمط توفير [Plugin Manager](../../../../packages/boot/plugin-manager/README.zh.md) و فقط قراءة[وقت التشغيل فحص](../../../../packages/extensions/tool-cordis/README.zh.md). إضافة إعداد يخص حالي profile، أثر ذلك جلسة، و في عملية إعادة بدء بعد إبقاء.
 
-## 连接 MCP 服务器
+## اتصال MCP خادم
 
-启动 Web profile 并选择创造模式。准备一个可访问且提供 `ping` 的 Streamable HTTP MCP 服务器，将其实际端点填入以下提示词：
+بدء Web profile و اختيار إنشاء صنع نمط. دقيق تجهيز واحد يمكن وصول كما توفير `ping` Streamable HTTP MCP خادم، سوف ذلك فعلي طرف نقطة ملء دخول التالي نص التوجيه:
 
-> 将 `<endpoint>` 处的 MCP 服务器配置到当前 profile，命名为 `demo`。立即启用它的工具，然后调用它的 ping 工具并告诉我结果。
+> سوف `<endpoint>` موضع MCP خادم إعداد إلى حالي profile، تسمية لـ `demo`. قيام أي تفعيل هو أداة، لكن بعد استدعاء هو ping أداة و إبلاغ إبلاغ أنا نتيجة.
 
-agent 编写纯配置组合包，在 patch 中插入 `@deepseek-ai/dsh-mcp-client`，再通过 `plugin_manager install_bundle` 安装。启用 HMR 时，工具会出现在同一个运行中的会话里。同时检查管理结果（`application: applied`）和成功的 `mcp__demo__ping` 调用。返回 `restart-required` 的已保存条目尚未激活；失败条目需要修复配置。
+agent تحرير كتابة صاف إعداد تركيب حزمة، في patch في إدراج دخول `@deepseek-ai/dsh-mcp-client`، مجددا عبر `plugin_manager install_bundle` تثبيت. تفعيل HMR وقت، أداة سوف ظهور في نفس عدد تشغيل في جلسة داخل. معا فحص إدارة نتيجة (`application: applied`) و نجاح `mcp__demo__ping` استدعاء. إرجاع `restart-required` قد حفظ بند بعد لم تنشيط؛ فشل بند حاجة إصلاح إعداد.
 
-修改配置前先读取组合包 patch。使用 Plugin Manager 停用条目或移除组合包。可接受的配置及连接失败行为见 [MCP client 参考](../../../../packages/mcp/mcp-client/README.zh.md)。
+تعديل إعداد قبل أولا قراءة تركيب حزمة patch. استخدام Plugin Manager توقف استخدام بند أو إزالة تركيب حزمة. يمكن قبول إعداد و اتصال فشل سلوك رؤية [MCP client مشاركة اعتبار](../../../../packages/mcp/mcp-client/README.zh.md).

@@ -1,23 +1,23 @@
-# Agent Note: Windows 自托管 ReFS store 与块克隆安装
+# Agent Note: Windows ذاتي حمل إدارة ReFS store و كتلة تغلب ضخم تثبيت
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-30-windows-refs-store-block-clone-install.md) | 中文
+[English](2026-08-30-windows-refs-store-block-clone-install.md) | العربية
 
 ## Problem
 
-自托管 Windows 虚拟机的工作区从 NTFS 的 `E:` 卷迁到了 ReFS 的 `F:` 卷。在 NTFS 卷上，`git clean -ffdx` 删除约 7 万个文件的 node_modules 树需要几十分钟，并迫使每次运行全量重装，把磁盘写入推到该卷持续带宽以上。ReFS 的元数据操作快几个数量级，因此工作区迁移恢复了快速 checkout，但暴露了第二个失败。
+ذاتي حمل إدارة Windows وهمي محاكاة آلة مساحة العمل من NTFS `E:` لفة نقل إلى ReFS `F:` لفة. في NTFS لفة فوق،`git clean -ffdx` حذف نحو 7 ألف عدد ملف node_modules شجرة حاجة بضعة عشرة قسم ساعة، و إجبار جعل كل مرة تشغيل كل كمية إعادة تركيب، يأخذ مغناطيس قرص كتابة دفع إلى هذا لفة حمل متابعة حمل عرض بـ فوق.ReFS بيانات وصفية عملية سريع بضعة عدد عدد كمية درجة، لذلك مساحة العمل ترحيل استعادة سريع سرعة checkout، لكن كشف ثاني عدد فشل.
 
-pnpm store 也在 `F:` 上（`F:\.pnpm-store`），因此 pnpm 用硬链接把 node_modules 文件链接到 store（同卷布局下的默认 `package-import-method=auto`）。TypeScript 用原生 realpath（`fs.realpathSync.native`）解析模块文件，在 Windows 上会把硬链接解析到 store 的内容寻址路径（`F:/.pnpm-store/v11/files/<xx>/<sha256>`）。编译器随后从那个 store 路径解析裸导入，而那里没有 `node_modules`，于是在 `tsc -b` 和 vite 的模块解析期间以 TS6231（`Could not resolve the path 'F:/.pnpm-store/...'`）失败。JS 的 `realpathSync` 不泄漏 store 路径；只有原生变体会泄漏，所以这只出现在编译器工具链里。
+pnpm store أيضا في `F:` فوق (`F:\.pnpm-store`) ، لذلك pnpm استخدام صلب رابط يأخذ node_modules ملف رابط إلى store(نفس لفة تخطيط تحت افتراضي `package-import-method=auto`).TypeScript استخدام أصلي realpath(`fs.realpathSync.native`) تحليل وحدة ملف، في Windows فوق سوف يأخذ صلب رابط تحليل إلى store محتوى بحث عنوان مسار (`F:/.pnpm-store/v11/files/<xx>/<sha256>`). تحرير ترجمة جهاز مع بعد من ذلك عدد store مسار تحليل عار استيراد، بينما ذلك داخل لا يوجد `node_modules`، في هو في `tsc -b` و vite وحدة تحليل خلال بـ TS6231(`Could not resolve the path 'F:/.pnpm-store/...'`) فشل.JS `realpathSync` لا تسرب تسرب store مسار؛ فقط لديه أصلي تغيير جسم سوف تسرب تسرب، الذي بـ هذا فقط ظهور في تحرير ترجمة جهاز أداة سلسلة داخل.
 
-当 `package-import-method=clone` 运行在不支持 copy-on-write 的卷上时，会出现相关的安装失败：pnpm 在 NTFS 卷（托管 runner）上报告 `ERR_PNPM_LINKING_FAILED ... Source volume does not support copy-on-write`。
+عند `package-import-method=clone` تشغيل في لا دعم حمل copy-on-write لفة فوق وقت، سوف ظهور متبادل صلة تثبيت فشل:pnpm في NTFS لفة (حمل إدارة runner) فوق تقرير إبلاغ `ERR_PNPM_LINKING_FAILED ... Source volume does not support copy-on-write`.
 
-`pnpm/action-setup` 装到其 `dest` 的 pnpm 构建缺少 clone 模式所需的 `@reflink/reflink` 原生模块，所以即使在 ReFS 上，clone 也会以 `Cannot find module './reflink.win32-x64-msvc-*.node'` 失败。系统 corepack pnpm 带有完整的 `@reflink` 平台集合，包括 `reflink.win32-x64-msvc.node`。
+`pnpm/action-setup` تركيب إلى ذلك `dest` pnpm بناء نقص قليل clone نمط الذي يحتاج `@reflink/reflink` أصلي وحدة، الذي بـ أي جعل في ReFS فوق،clone أيضا سوف بـ `Cannot find module './reflink.win32-x64-msvc-*.node'` فشل. نظام corepack pnpm حمل لديه كامل `@reflink` منصة تجميع دمج، يشمل `reflink.win32-x64-msvc.node`.
 
 ## Decision
 
-[ci.yml](../../../../.github/workflows/ci.yml)（四个 pull-request 原生作业）和 [ci-master.yml](../../../../.github/workflows/ci-master.yml)（`serial-windows`）中的 Windows 安装步骤按工作区文件系统分支，仅在 ReFS 上使用 clone：
+[ci.yml](../../../../.github/workflows/ci.yml)(أربعة عدد pull-request أصلي عمل عمل) و [ci-master.yml](../../../../.github/workflows/ci-master.yml)(`serial-windows`) في Windows تثبيت خطوة حسب مساحة العمل نظام الملفات فرع، فقط في ReFS فوق استخدام clone:
 
 ```pwsh
 $drive = (Split-Path -Qualifier $env:GITHUB_WORKSPACE).TrimEnd(':')
@@ -29,20 +29,20 @@ if ($fs -eq 'ReFS') {
 }
 ```
 
-- ReFS 上的 `--package-import-method=clone` 使用块克隆：每个 node_modules 文件获得独立路径（因此原生 realpath 无法把它解析回 store 路径，消除了 TS6231），同时与 store 共享物理块（无复制代价）。ReFS 支持块克隆和硬链接（已用 `fsutil fsinfo volumeinfo` 和硬链接列表验证）。
-- 仅当工作区卷是 ReFS 时才传该 flag。托管 runner（NTFS，每个 job 全新 VM）保留默认导入方式，因为 NTFS 拒绝块克隆。
-- 使用 `corepack pnpm` 是因为 clone 模式需要 `@reflink/reflink` 原生模块，系统 corepack pnpm 带有它，而 `pnpm/action-setup` 的 dest 构建缺少。
-- `.npmrc` 与 `npm_config_*` 环境变量在 Windows 的 pnpm 11.7.0 上不驱动 `package-import-method`；只有 CLI flag 生效，因此命令中显式传 flag。
+- ReFS فوق `--package-import-method=clone` استخدام كتلة تغلب ضخم: كل node_modules ملف نيل نيل مستقل مسار (لذلك أصلي realpath لا يمكن يأخذ هو تحليل عودة store مسار، إزالة حذف TS6231) ، معا و store مشترك شيء إدارة كتلة (بلا نسخ بديل قيمة).ReFS دعم حمل كتلة تغلب ضخم و صلب رابط (قد استخدام `fsutil fsinfo volumeinfo` و صلب رابط قائمة تحقق).
+- فقط عند مساحة العمل لفة هو ReFS وقت عندئذ نقل هذا flag. حمل إدارة runner(NTFS، كل job كل جديد VM) إبقاء افتراضي استيراد طريقة، لأن NTFS رفض كتلة تغلب ضخم.
+- استخدام `corepack pnpm` هو لأن clone نمط حاجة `@reflink/reflink` أصلي وحدة، نظام corepack pnpm حمل لديه هو، بينما `pnpm/action-setup` dest بناء نقص قليل.
+- `.npmrc` و `npm_config_*` بيئة متغير في Windows pnpm 11.7.0 فوق لا قيادة `package-import-method`؛ فقط لديه CLI flag توليد فاعلية، لذلك أمر في صريح نقل flag.
 
-自托管虚拟机的 store 位于 `F:\.pnpm-store`（ReFS，机器级 `PNPM_CONFIG_STORE_DIR`），工作区位于 `F:\ci\_work-NN`。重建后 F: 卷为 200 GB ReFS。`DSH_CI_FAILOVER_WINDOWS=selfhosted` 把四个 pull-request 原生作业路由到自托管池。
+ذاتي حمل إدارة وهمي محاكاة آلة store يقع في `F:\.pnpm-store`(ReFS، آلة جهاز درجة `PNPM_CONFIG_STORE_DIR`) ، مساحة العمل يقع في `F:\ci\_work-NN`. إعادة بناء بعد F: لفة لـ 200 GB ReFS.`DSH_CI_FAILOVER_WINDOWS=selfhosted` يأخذ أربعة عدد pull-request أصلي عمل عمل توجيه إلى ذاتي حمل إدارة حوض.
 
 ## Alternatives considered
 
-- **把工作区留在 NTFS 的 `E:`** - 不采纳，因为 NTFS 上 `git clean -ffdx` 删除 node_modules 树需要几十分钟，即最初的写风暴根因；ReFS 把它降到约 23 秒。
-- **`--package-import-method=copy`** - 避免 store 路径泄漏（文件是独立副本）且不需要原生模块，但每次安装都从 store 复制每个文件，恢复了工作区迁移移除的大部分写代价。
-- **修复 action-setup 的 pnpm 的 reflink** - 不采纳，因为 `pnpm/action-setup` 把全新 pnpm 装进每 job 的 `dest` 目录；在那里补原生模块脆弱且按 job 生效。
-- **`.npmrc` 的 `package-import-method=clone`** - 不采纳，因为 Windows 的 pnpm 11.7.0 忽略它（已验证：文件保持 `nlink=2` 的硬链接，原生 realpath 仍泄漏 store 路径）。
+- **يأخذ مساحة العمل إبقاء في NTFS `E:`** - لا قبول، لأن NTFS فوق `git clean -ffdx` حذف node_modules شجرة حاجة بضعة عشرة قسم ساعة، أي الأكثر أول كتابة ريح كشف أصل بسبب؛ReFS يأخذ هو خفض إلى نحو 23 ثانية.
+- **`--package-import-method=copy`** - تجنب تجنب store مسار تسرب تسرب (ملف هو مستقل فرعي هذا) كما لا حاجة أصلي وحدة، لكن كل مرة تثبيت كل من store نسخ كل ملف، استعادة مساحة العمل ترحيل إزالة كبير جزء كتابة بديل قيمة.
+- **إصلاح action-setup pnpm reflink** - لا قبول، لأن `pnpm/action-setup` يأخذ كل جديد pnpm تركيب دخول كل job `dest` دليل؛ في ذلك داخل تكملة أصلي وحدة هش ضعيف كما حسب job توليد فاعلية.
+- **`.npmrc` `package-import-method=clone`** - لا قبول، لأن Windows pnpm 11.7.0 تجاهل اختصار هو (قد تحقق: ملف إبقاء `nlink=2` صلب رابط، أصلي realpath ما زال تسرب تسرب store مسار).
 
 ## Consequences
 
-自托管 Windows 安装使用块克隆，既得到独立文件路径（无 TS6231），又共享物理块（无复制）。托管 runner 保留默认导入方式。`serial-windows` standby drill 与自托管池上的 pull-request 原生作业依赖 ReFS 卷布局；若按 [failover runbook](2026-07-26-ci-failover-runbook.zh.md) 重建 runner 而没有 ReFS store 与工作区布局，Windows 构建门禁会以 TS6231 失败（或安装阶段以 reflink 错误失败）。
+ذاتي حمل إدارة Windows تثبيت استخدام كتلة تغلب ضخم، حيث نيل إلى مستقل ملف مسار (بلا TS6231) ، أيضا مشترك شيء إدارة كتلة (بلا نسخ). حمل إدارة runner إبقاء افتراضي استيراد طريقة.`serial-windows` standby drill و ذاتي حمل إدارة حوض فوق pull-request أصلي عمل عمل اعتماد ReFS لفة تخطيط؛ إذا حسب [failover runbook](2026-07-26-ci-failover-runbook.zh.md) إعادة بناء runner بينما لا يوجد ReFS store و مساحة العمل تخطيط،Windows بناء بوابة سوف بـ TS6231 فشل (أو تثبيت مرحلة مقطع بـ reflink خطأ فشل).

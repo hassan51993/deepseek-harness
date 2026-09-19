@@ -1,33 +1,33 @@
 ---
-description: "面向用户与维护者的 agent（智能体）平面呈现选择器说明，用于选择、配置或调试 agent preset 的模型看到其工具的哪种形态。"
+description: "موجه إلى مستخدم و صيانة من agent(ذكي جسم) مستو وجه عرض اختيار جهاز شرح، لأجل اختيار، إعداد أو ضبط تجربة agent preset نموذج يرى ذلك أداة أي نوع شكل."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-agent-tool-presentation
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-在 [agent preset](../../preset/agent-presets/README.zh.md) 中使用 `dsh-agent-tool-presentation`，可固定模型看到全部原生工具 schema、只有带生成 SDK 的 `run_code`，还是同时看到两种形态。每个 preset 可独立选择，因此 native 与 PTC agent 可以共享同一进程，而不共享工具目录。选择 `ptc` 或 `both` 需要兼容的 PTC 运行时；没有该运行时的部署会在挂载时拒绝 preset，不会等到收到第一条提示词。使用本包时 `mode` 字段为必填；省略本包则沿用部署默认值。
+في [agent preset](../../preset/agent-presets/README.zh.md) في استخدام `dsh-agent-tool-presentation`، يمكن ثابت نموذج يرى الكل أصلي أداة schema، فقط لديه حمل توليد SDK `run_code`، أيضا هو معا يرى اثنان نوع شكل. كل preset يمكن مستقل اختيار، لذلك native و PTC agent يمكن مشترك نفس عملية، بينما لا مشترك أداة دليل. اختيار `ptc` أو `both` حاجة توافق PTC وقت التشغيل؛ لا يوجد هذا وقت التشغيل نشر سوف في تركيب وقت رفض preset، لن انتظار إلى استلام إلى رقم واحد بند نص التوجيه. استخدام هذه الحزمة وقت `mode` حقل لـ لا بد ملء؛ حذف هذه الحزمة فإن امتداد استخدام نشر قيمة افتراضية.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-把这一行加入 agent preset，以固定每个加入该 preset 的 agent 看到其工具的方式。`native` 以函数定义的形式呈现每个可见工具 schema；`ptc` 只呈现 `run_code` 传输、一份生成的 SDK 以及「只有 `run_code` 可被直接调用」这条规则；`both` 同时呈现两种形态。未作声明的 agent 会拿到 [`dsh-tools`](../tools/README.zh.md) 那一行上的部署级 `mode`。
+يأخذ هذا واحد سطر إضافة دخول agent preset، بـ ثابت كل إضافة دخول هذا preset agent يرى ذلك أداة طريقة.`native` بـ دالة تعريف شكل صيغة عرض كل مرئي أداة schema؛`ptc` فقط عرض `run_code` نقل، واحد نسخة توليد SDK و «فقط لديه `run_code` يمكن يتم مباشر استدعاء» هذا بند قاعدة؛`both` معا عرض اثنان نوع شكل. لم عمل إعلان agent سوف أخذ إلى [`dsh-tools`](../tools/README.zh.md) ذلك واحد سطر فوق نشر درجة `mode`.
 
-### 把这一行加入 preset
+### يأخذ هذا واحد سطر إضافة دخول preset
 
 ```yaml
 - name: '@deepseek-ai/dsh-agent-tool-presentation'
@@ -35,86 +35,86 @@ kind: "package-reference"
     mode: ptc
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `mode` | 必填 | `native`——每个 schema；`ptc`——`run_code` 加生成 SDK；`both`——两种形态 |
+| `mode` | لا بد ملء | `native`——كل schema؛`ptc`——`run_code` إضافة توليد SDK؛`both`——اثنان نوع شكل |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-agent-tool-presentation)是每个受支持字段的穷尽式真源。`mode` 是必填而非有默认值，因为不带这一行的 preset 会继承部署默认值。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-agent-tool-presentation) هو كل تلقي دعم حمل حقل نفاد كل صيغة حق مصدر.`mode` هو لا بد ملء بينما غير لديه قيمة افتراضية، لأن لا حمل هذا واحد سطر preset سوف وراثة نشر قيمة افتراضية.
 
-### PTC 模式需要什么
+### PTC نمط حاجة ماذا
 
-选择 `ptc` 或 `both` 需要已组合的 PTC 运行时（`ctx.ptcRuntime`），且其语言有已注册的 SDK 渲染器——TypeScript 运行时经 [`dsh-ptc-runtime-node`](../../ptc-runtime/ptc-runtime-node/README.zh.md) 交付，TypeScript 与 Python 的 SDK 渲染器都内置在 `dsh-tools` 中。针对未组装此类运行时的部署选择 PTC 模式的 preset 会拒绝挂载并点名这一行，使失败落在操作者可以行动的地方，而不是落在会话的第一次请求上。
+اختيار `ptc` أو `both` حاجة قد تركيب PTC وقت التشغيل (`ctx.ptcRuntime`) ، كما ذلك لغة لديه قد تسجيل SDK مصير——TypeScript وقت التشغيل مرور [`dsh-ptc-runtime-node`](../../ptc-runtime/ptc-runtime-node/README.zh.md) تسليم،TypeScript و Python SDK مصير كل داخل وضع في `dsh-tools` في. إبرة مقابل لم تجميع هذا صنف وقت التشغيل نشر اختيار PTC نمط preset سوف رفض تركيب و نقطة اسم هذا واحد سطر، جعل فشل سقوط في عملية من يمكن سطر حركة أرض جهة، بينما لا هو سقوط في جلسة رقم مرة طلب فوق.
 
-### 每个 agent 只声明一次呈现方式
+### كل agent فقط إعلان مرة عرض طريقة
 
-一个 agent 只声明一次呈现方式。同一份组装里的第二次声明会被拒绝而不是合并：对「模型看到哪种形态」给出两个答案是矛盾，不是覆盖。
+واحد agent فقط إعلان مرة عرض طريقة. نفس نسخة تجميع داخل ثاني مرة إعلان سوف يتم رفض بينما لا هو دمج: مقابل «نموذج يرى أي نوع شكل» إعطاء خروج اثنان عدد جواب سجل هو تناقض درع، لا هو تغطية.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释该包如何实现上述行为；可观察约定已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير هذا حزمة مثل أي تنفيذ فوق وصف سلوك؛ يمكن مراقبة اتفاق قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-工具注册表搬不进 preset：它的消费方全在宿主平面——agent loop（智能体循环）读它的调度器，API proxy 读它的展示转换器，每个工具插件都往里注册——而一个服务只有在所有消费方一起下沉时才能下沉。preset 能拥有的是这份注册表的呈现方式。`ctx.tools.presentAs()` 为挂载作用域声明它，而挂载作用域就是 preset 的常驻挂载，因此该声明覆盖每个加入该 preset 的 agent，一个 PTC mode preset 可以与多个 native preset 同进程并存。每个组合一行，而不是每个会话一行。
+أداة سجل التسجيل نقل لا دخول preset: هو مستهلك كل في مضيف مستو وجه——agent loop(ذكي جسم حلقة) قراءة هو مجدول،API proxy قراءة هو عرض تحويل جهاز، كل أداة إضافة كل نحو داخل تسجيل——بينما واحد خدمة فقط لديه في كل مستهلك واحد بدء تحت غرق وقت عندئذ قدرة تحت غرق.preset قدرة يملك هو هذا نسخة سجل التسجيل عرض طريقة.`ctx.tools.presentAs()` لـ تركيب أثر مجال إعلان هو، بينما تركيب أثر مجال حينئذ هو preset معتاد إقامة تركيب، لذلك هذا إعلان تغطية كل إضافة دخول هذا preset agent، واحد PTC mode preset يمكن و كثير عدد native preset نفس عملية و تخزين. كل تركيب واحد سطر، بينما لا هو كل جلسة واحد سطر.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`mode` 配置、把 `ctx.tools.presentAs` 接到挂载作用域的 `apply` |
-| — | 不发布运行时不变式伴生入口；本包只对 `ctx.tools` 发起一次 scoped 调用，不持有自己的事件或快照；它建立的是「某个 agent 的组装采用哪种呈现方式」这一关系，该关系由工具注册表持有，`dsh-tools` 会在工具注册表中观察该关系。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`mode` إعداد، يأخذ `ctx.tools.presentAs` وصل إلى تركيب أثر مجال `apply` |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ هذه الحزمة فقط مقابل `ctx.tools` إرسال بدء مرة scoped استدعاء، لا يحتفظ ذاتي ذات حدث أو لقطة؛ هو بناء قيام هو «بعض عدد agent تجميع اعتماد أي نوع عرض طريقة» هذا واحد علاقة، هذا علاقة من أداة سجل التسجيل يحتفظ،`dsh-tools` سوف في أداة سجل التسجيل في مراقبة هذا علاقة. |
 
-### 行为说明
+### سلوك شرح
 
-`native` 立即生效。PTC 模式则等待 `ctx.ptcRuntime`——这是一个宿主平面服务：针对未组装运行时的部署选择 PTC mode 的 preset 会让这一行停在 pending，`dsh-agent-presets` 会指名此 id 拒绝挂载。`presentAs` 本身就是 effect，因此该声明随这一行撤销，无需第二个包装层拥有它。
+`native` قيام أي توليد فاعلية.PTC نمط فإن انتظار `ctx.ptcRuntime`——هذا هو واحد مضيف مستو وجه خدمة: إبرة مقابل لم تجميع وقت التشغيل نشر اختيار PTC mode preset سوف يجعل هذا واحد سطر توقف في pending،`dsh-agent-presets` سوف إشارة اسم هذا id رفض تركيب.`presentAs` ذاته حينئذ هو effect، لذلك هذا إعلان مع هذا واحد سطر سحب إلغاء، بلا حاجة ثاني عدد حزمة تركيب طبقة يملك هو.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-包级约定对大多数消费方已经足够；需要周边领域时再阅读以下页面。
+حزمة درجة اتفاق مقابل كبير كثير عدد مستهلك قد كاف كاف؛ حاجة دورة حافة مجال وقت مجددا قراءة قراءة التالي صفحة.
 
-- [tools 包](../tools/README.zh.md)——工具呈现模式与 `presentAs` API。
-- [agent-presets 包](../../preset/agent-presets/README.zh.md)——preset 如何组合 agent 及其常驻挂载。
-- [Node ptc-runtime 包](../../ptc-runtime/ptc-runtime-node/README.zh.md)——PTC 模式所需的 TypeScript 运行时。
-- [PTC mode 执行器塌缩 note](../../../.agents/notes/implemented/bug-fix/2026-08-07-ptc-executor-collapse.zh.md)——通告面与可调用面为何保持一致。
-- [core 分组地图](../README.zh.md)——core 各包如何组合。
+- [tools حزمة](../tools/README.zh.md)——أداة عرض نمط و `presentAs` API.
+- [agent-presets حزمة](../../preset/agent-presets/README.zh.md)——preset مثل أي تركيب agent و ذلك معتاد إقامة تركيب.
+- [Node ptc-runtime حزمة](../../ptc-runtime/ptc-runtime-node/README.zh.md)——PTC نمط الذي يحتاج TypeScript وقت التشغيل.
+- [PTC mode منفذ انهيار تقليص note](../../../.agents/notes/implemented/bug-fix/2026-08-07-ptc-executor-collapse.zh.md)——عبر إبلاغ وجه و يمكن استدعاء وجه لـ أي إبقاء متسق.
+- [core قسم مجموعة أرض رسم](../README.zh.md)——core كل حزمة مثل أي تركيب.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过在 `dsh-tools` 中选择的工具呈现方式间接影响——这一行只在 `dsh-tools` 拥有的两种投影之间选择，本身不注册任何提示词、schema 或结果。
+عبر في `dsh-tools` في اختيار أداة عرض طريقة بين وصل أثر——هذا واحد سطر فقط في `dsh-tools` يملك اثنان نوع إسقاط بين اختيار، ذاته لا تسجيل أي نص التوجيه،schema أو نتيجة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-没有直接的失效影响；呈现方式在 agent 组装时即固定，因此其请求前缀在该会话的整个生命周期内保持稳定。
+لا يوجد مباشر بطلان أثر؛ عرض طريقة في agent تجميع وقت أي ثابت، لذلك ذلك طلب بادئة في هذا جلسة كامل دورة الحياة داخل إبقاء مستقر.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明这一行何时需要特别留意。它们是当前包约束，不是任务积压。
+هذه حد شرح هذا واحد سطر أي وقت حاجة خاص آخر إبقاء معنى. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **运行时仍在宿主平面**——preset 可以选择 PTC mode，却无法自带它所需的 TypeScript 运行时；未组装运行时的部署也就无法组装任何 PTC 模式的 preset。
+- **وقت التشغيل ما زال في مضيف مستو وجه**——preset يمكن اختيار PTC mode، لكن لا يمكن ذاتي حمل هو الذي يحتاج TypeScript وقت التشغيل؛ لم تجميع وقت التشغيل نشر أيضا حينئذ لا يمكن تجميع أي PTC نمط preset.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

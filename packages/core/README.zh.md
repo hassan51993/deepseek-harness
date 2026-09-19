@@ -1,62 +1,62 @@
 ---
-description: "core 分组地图：构成产品 API 主干的会话日志、系统提示词组装、工具注册表、agent（智能体）词汇与默认循环。"
+description: "core قسم مجموعة أرض رسم: بنية صار منتج API رئيسي جاف جلسة سجل، توجيه النظام تجميع، أداة سجل التسجيل،agent(ذكي جسم) مفردات و افتراضي حلقة."
 kind: "package-group"
 ---
 
 # packages/core
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-使用 core 包可以构建或扩展能够记录持久会话历史、组装系统提示词、提供工具、选择默认模型并运行模型轮次的 agent。这些包定义每个组合都会使用的共享 API，而可执行的产品组合位于 [`packages/bundle`](../bundle/README.zh.md)。开发 agent 行为或替换其中一项能力时请选择本分组；需要默认可运行组合时，请从 [`dsh-base`](../bundle/base/README.zh.md) 开始。
+استخدام core حزمة يمكن بناء أو توسيع قدرة كاف سجل حمل دائم جلسة تاريخ، تجميع توجيه النظام، توفير أداة، اختيار افتراضي نموذج و تشغيل نموذج جولة agent. هذه حزمة تعريف كل تركيب كل سوف استخدام مشترك API، بينما يمكن تنفيذ منتج تركيب يقع في [`packages/bundle`](../bundle/README.zh.md). تطوير agent سلوك أو استبدال منها واحد بند قدرة وقت طلب اختيار هذا قسم مجموعة؛ حاجة افتراضي يمكن تشغيل تركيب وقت، طلب من [`dsh-base`](../bundle/base/README.zh.md) بدء.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx key |
+| حزمة | مسؤولية | ctx key |
 |---|---|---|
-| [`scope/`](scope/README.zh.md) | 隔离单个 agent 贡献的作用域注册与事件路由 | 库，不使用 ctx key |
-| [`session/`](session/README.zh.md) | 每个 agent 的历史均派生自该仅追加会话事件日志 | `ctx.sessions` |
-| [`system-prompt/`](system-prompt/README.zh.md) | 由有序段、工具 schema 与变量进行的系统提示词组装 | `ctx.systemPrompt` |
-| [`tools/`](tools/README.zh.md) | 供循环分发使用的工具注册表与带防护机制的执行流水线 | `ctx.tools` |
-| [`agent-tool-presentation/`](agent-tool-presentation/README.zh.md) | 为 preset 提供按 agent 的工具呈现方式选择器 | 无 ctx key |
-| [`agent/`](agent/README.zh.md) | 供插件编程使用的 `Agent` 句柄，以及其实时注册表与事件 | `ctx.agents` |
-| [`agent-default-model/`](agent-default-model/README.zh.md) | 入口对全新 agent 应用的部署默认模型选择 | `ctx.agentDefaultModel` |
-| [`agent-loop/`](agent-loop/README.zh.md) | 默认 agent 驱动器：创建 agent 并运行轮次与步骤生命周期 | `ctx.agentLoop` |
+| [`scope/`](scope/README.zh.md) | عزل مفرد عدد agent مساهمة أثر مجال تسجيل و حدث توجيه | مكتبة، لا استخدام ctx key |
+| [`session/`](session/README.zh.md) | كل agent تاريخ متساو إرسال توليد ذاتي هذا فقط إلحاق جلسة حدث سجل | `ctx.sessions` |
+| [`system-prompt/`](system-prompt/README.zh.md) | من لديه ترتيب مقطع، أداة schema و متغير إجراء توجيه النظام تجميع | `ctx.systemPrompt` |
+| [`tools/`](tools/README.zh.md) | توفير حلقة توزيع استخدام أداة سجل التسجيل و حمل منع حماية آلية تنفيذ خط الإنتاج | `ctx.tools` |
+| [`agent-tool-presentation/`](agent-tool-presentation/README.zh.md) | لـ preset توفير حسب agent أداة عرض طريقة اختيار جهاز | بلا ctx key |
+| [`agent/`](agent/README.zh.md) | توفير إضافة تحرير مسار استخدام `Agent` جملة مقبض، و ذلك فوري سجل التسجيل و حدث | `ctx.agents` |
+| [`agent-default-model/`](agent-default-model/README.zh.md) | مدخل مقابل كل جديد agent تطبيق نشر افتراضي نموذج اختيار | `ctx.agentDefaultModel` |
+| [`agent-loop/`](agent-loop/README.zh.md) | افتراضي agent مشغل: إنشاء agent و تشغيل جولة و خطوة دورة الحياة | `ctx.agentLoop` |
 
-`scope` 提供共享作用域原语；`agent` 负责公开的 `Agent` 约定，而 `agent-loop` 是其默认实现，因此扩展插件依赖 `agent`，驱动器保持可替换。`agent-default-model` 负责入口在会话自身没有选择时应用的部署选择。可运行组合位于 [`packages/bundle`](../bundle/README.zh.md)；本分组只负责可替换的主干组件。
+`scope` توفير مشترك أثر مجال أصل لغة؛`agent` مسؤول عام `Agent` اتفاق، بينما `agent-loop` هو ذلك افتراضي تنفيذ، لذلك توسيع إضافة اعتماد `agent`، مشغل إبقاء يمكن استبدال.`agent-default-model` مسؤول مدخل في جلسة ذاته لا يوجد اختيار وقت تطبيق نشر اختيار. يمكن تشغيل تركيب يقع في [`packages/bundle`](../bundle/README.zh.md) ؛ هذا قسم مجموعة فقط مسؤول يمكن استبدال رئيسي جاف مكون.
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [Core 子系统](../../docs/subsystems/core.zh.md)——逐包循环图与 `Agent` 句柄约定。
-- [会话子系统](../../docs/subsystems/session.zh.md)——会话事件词汇与派生历史。
-- [系统提示词子系统](../../docs/subsystems/system-prompt.zh.md)——提示词段、动态上下文与工具 schema 类型。
-- [工具子系统](../../docs/subsystems/tools.zh.md)——工具执行流水线与呈现词汇。
-- [作用域注册子系统](../../docs/subsystems/scope.zh.md)——这些注册表所依赖的作用域层原语。
-- [架构](../../docs/architecture.zh.md)——轮次流与新行为归属。
-- [基础组合包](../bundle/base/README.zh.md)——默认产品组合。
-- [SDK 最小组合包](../bundle/sdk-minimal/README.zh.md)——完整、独立且功能集经过刻意精简的组合。
+- [Core فرعي نظام](../../docs/subsystems/core.zh.md)——تدريجي حزمة حلقة رسم و `Agent` جملة مقبض اتفاق.
+- [جلسة فرعي نظام](../../docs/subsystems/session.zh.md)——جلسة حدث مفردات و إرسال توليد تاريخ.
+- [توجيه النظام فرعي نظام](../../docs/subsystems/system-prompt.zh.md)——نص التوجيه مقطع، حركة حالة سياق و أداة schema نوع.
+- [أداة فرعي نظام](../../docs/subsystems/tools.zh.md)——أداة تنفيذ خط الإنتاج و عرض مفردات.
+- [أثر مجال تسجيل فرعي نظام](../../docs/subsystems/scope.zh.md)——هذه سجل التسجيل الذي اعتماد أثر مجال طبقة أصل لغة.
+- [هيكل بنية](../../docs/architecture.zh.md)——جولة تدفق و جديد سلوك ملكية.
+- [أساس أساس تركيب حزمة](../bundle/base/README.zh.md)——افتراضي منتج تركيب.
+- [SDK الأكثر صغير تركيب حزمة](../bundle/sdk-minimal/README.zh.md)——كامل، مستقل كما وظيفة تجميع مرور مرور لحظة معنى دقيق بسيط تركيب.
 
 -----
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -1,25 +1,25 @@
 ---
-description: "记录持久化类型更改及其兼容性确认。"
+description: "سجل حفظ دائم نوع أكثر تعديل و ذلك توافق صفة تأكيد."
 kind: persistence-change
 ---
 
 # 2026-09-14-workspace-changes-event
 
-[English](2026-09-14-workspace-changes-event.md) | 中文
+[English](2026-09-14-workspace-changes-event.md) | العربية
 
-## 概述
+## عام وصف
 
-新增仅写日志的 workspace/changes 事件，记录顶层轮次改动的文件。
+إضافة جديدة فقط كتابة سجل workspace/changes حدث، سجل قمة طبقة جولة تعديل ملف.
 
-## 目录
+## دليل
 
-- [声明](#declaration)
-- [兼容性](#compatibility)
-- [验证](#verification)
-- [开发备注](#dev-note)
+- [إعلان](#declaration)
+- [توافق صفة](#compatibility)
+- [تحقق](#verification)
+- [ملاحظة تطوير](#dev-note)
 
 <a id="declaration"></a>
-## 声明
+## إعلان
 
 ```yaml persistence-change
 schemaVersion: 1
@@ -33,16 +33,16 @@ changes:
 ```
 
 <a id="compatibility"></a>
-## 兼容性
+## توافق صفة
 
-同一 Session 格式版本内的新根类型。已有日志没有该事件，保持有效；早于它的读取方遇到它会拒绝该日志，与所有读取时必需的事件一致。该事件只由 Web bundle 的 workspace-changes 插件追加，模型永远看不到；Web 的改动文件卡片是唯一消费者，读取每轮最新的一条。
+نفس Session صيغة إصدار داخل جديد أصل نوع. قد لديه سجل لا يوجد هذا حدث، إبقاء صالح؛ مبكر في هو قراءة جهة لقاء إلى هو سوف رفض هذا سجل، و كل قراءة وقت مطلوب حدث متسق. هذا حدث فقط من Web bundle workspace-changes إضافة إلحاق، نموذج دائم بعيد نظر لا إلى؛Web تعديل ملف بطاقة هو وحيد إزالة استهلاك من، قراءة كل جولة الأكثر جديد واحد بند.
 
 <a id="verification"></a>
-## 验证
+## تحقق
 
-pnpm exec vitest run packages/deliverables/workspace-changes packages/client/ui-deliverables：165 个测试通过；snapshots/web/changed-files-turn 通过 Web profile 回放了记录的事件。
+pnpm exec vitest run packages/deliverables/workspace-changes packages/client/ui-deliverables:165 عدد اختبار عبر؛snapshots/web/changed-files-turn عبر Web profile إعادة تشغيل سجل حدث.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.

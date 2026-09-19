@@ -1,47 +1,47 @@
 ---
-description: "面向部署方与维护者的沙箱 PowerShell 执行器说明，用于选择、配置或排查受限 PowerShell 命令执行及其拒绝事实。"
+description: "موجه إلى نشر جهة و صيانة من صندوق رملي PowerShell منفذ شرح، لأجل اختيار، إعداد أو ترتيب فحص تلقي حد PowerShell أمر تنفيذ و ذلك رفض واقع."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-pwsh-sandbox
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-pwsh-sandbox` 是沙箱消费型 PowerShell 执行器：每条命令都以全新的 `pwsh -Command` 进程运行，经 `ctx.sandbox` 能力隔离，并在每个已结算的结果上标记所选模式、强制执行完整度与拒绝事实。在 Windows 上，沙箱 seam 解析到 ACL 受限令牌 runner 链；在 Linux 与 macOS 上则使用 bwrap、Landlock 或 Seatbelt。当没有 runner 能强制执行受限模式时，调用按失败关闭原则抛结构化 `SANDBOX_UNAVAILABLE` 错误，绝不无隔离地运行。它是 `dsh-bash-sandbox` 的 pwsh 孪生，逐调用镜像。
+`dsh-pwsh-sandbox` هو صندوق رملي إزالة استهلاك نوع PowerShell منفذ: كل بند أمر كل بـ كل جديد `pwsh -Command` عملية تشغيل، مرور `ctx.sandbox` قدرة عزل، و في كل قد تسوية نتيجة فوق علامة الذي اختيار نمط، قوي صنع تنفيذ كامل درجة و رفض واقع. في Windows فوق، صندوق رملي seam تحليل إلى ACL تلقي حد أمر لوحة runner سلسلة؛ في Linux و macOS فوق فإن استخدام bwrap،Landlock أو Seatbelt. عند لا يوجد runner قدرة قوي صنع تنفيذ تلقي حد نمط وقت، استدعاء حسب فشل إغلاق أصل فإن رمي بنية تحويل `SANDBOX_UNAVAILABLE` خطأ، أبدا بلا عزل أرض تشغيل. هو هو `dsh-bash-sandbox` pwsh توأم توليد، تدريجي استدعاء مرآة مثل.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-当 PowerShell 命令不得以 harness 进程的完整文件权限运行时，用本执行器替代 `dsh-pwsh-local`。它注册为 `ctx.shell`，继承 `dsh-pwsh-local` 的进程机制，并要求一个 `ctx.sandbox` 提供方加上 `ctx.sandboxPolicy`。
+عند PowerShell أمر لا نيل بـ harness عملية كامل ملف إذن وقت التشغيل، استخدام هذا منفذ بديل `dsh-pwsh-local`. هو تسجيل لـ `ctx.shell`، وراثة `dsh-pwsh-local` عملية آلية، و اشتراط واحد `ctx.sandbox` مزود إضافة فوق `ctx.sandboxPolicy`.
 
-### 何时选择
+### أي وقت اختيار
 
-当部署需要为 PowerShell 命令提供文件级隔离时选择它，通常是在 Windows 上。隔离实体本身是平台无关的：沙箱 seam 选择平台的 runner——Windows 上是 ACL 受限令牌链，其他平台是 bwrap/Landlock/Seatbelt——而本执行器只负责 pwsh 侧。沙箱策略（模式加工作区根目录）不是本包的配置：它随每次调用从 `ctx.sandboxPolicy` 而来，工具调用传调用会话解析后的策略，直接调用回退到部署策略。
+عند نشر حاجة لـ PowerShell أمر توفير ملف درجة عزل وقت اختيار هو، عبر معتاد هو في Windows فوق. عزل فعلي جسم ذاته هو منصة غير متصل: صندوق رملي seam اختيار منصة runner——Windows فوق هو ACL تلقي حد أمر لوحة سلسلة، أخرى منصة هو bwrap/Landlock/Seatbelt——بينما هذا منفذ فقط مسؤول pwsh جانب. صندوق رملي سياسة (نمط إضافة مساحة العمل أصل دليل) لا هو هذه الحزمة إعداد: هو مع كل مرة استدعاء من `ctx.sandboxPolicy` بينما قدوم، أداة استدعاء نقل استدعاء جلسة تحليل بعد سياسة، مباشر استدعاء رجوع إلى نشر سياسة.
 
-### 模式与文件影响
+### نمط و ملف أثر
 
-| 模式 | 文件影响 |
+| نمط | ملف أثر |
 |---|---|
-| `read-only`（默认） | 写入被拒绝；由于受限令牌必须保留 Everyone，边界仍是不完整的 |
-| `workspace-write` | 只能写入策略的工作区根目录加一个私有临时目录；spawn 前 `TMP`/`TEMP` 会被重写到该目录 |
-| `danger-full-access` | 不作限制；绝不咨询提供方，结果携带 `sandbox: { mode, denied: false }` |
+| `read-only`(افتراضي) | كتابة يتم رفض؛ من في تلقي حد أمر لوحة يجب إبقاء Everyone، حد ما زال هو لا كامل |
+| `workspace-write` | فقط قدرة كتابة سياسة مساحة العمل أصل دليل إضافة واحد خاص مؤقت دليل؛spawn قبل `TMP`/`TEMP` سوف يتم إعادة كتابة إلى هذا دليل |
+| `danger-full-access` | لا عمل حد؛ أبدا استشارة استفسار مزود، نتيجة يحمل `sandbox: { mode, denied: false }` |
 
-### 最小配置
+### الأكثر صغير إعداد
 
-在 Windows 上挂载 ACL 受限令牌提供方；在 Linux 与 macOS 上则改挂本地 runner 提供方。执行器自身的配置与本地 pwsh 执行器的配置项完全相同；生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-pwsh-sandbox)是完整真源。
+في Windows فوق تركيب ACL تلقي حد أمر لوحة مزود؛ في Linux و macOS فوق فإن تعديل تعليق محلي runner مزود. منفذ ذاته إعداد و محلي pwsh منفذ بند إعداد تماما نفسه؛ توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-pwsh-sandbox) هو كامل حق مصدر.
 
 ```yaml
 - id: sandbox
@@ -55,99 +55,99 @@ kind: "package-reference"
   name: '@deepseek-ai/dsh-pwsh-sandbox'
 ```
 
-### 拒绝与升权
+### رفض و رفع حق
 
-被拒绝的命令作为事实被报告：结果携带 `sandbox: { mode, denied: true }`，工具层把它转成标准的权限拒绝面——与 bash 工具使用同一个。当升权可用时，模型可以使用范围最小的更宽松模式并附上一句理由，对同一条命令重试一次；批准提示会询问用户，获得批准前不会执行任何命令。本执行器自身绝不协商权限。
+يتم رفض أمر بصفة واقع يتم تقرير إبلاغ: نتيجة يحمل `sandbox: { mode, denied: true }`، أداة طبقة يأخذ هو تحويل صار معيار إذن رفض وجه——و bash أداة استخدام نفس عدد. عند رفع حق متاح وقت، نموذج يمكن استخدام نطاق الأكثر صغير أكثر عرض رخو نمط و مرفق فوق واحد جملة إدارة من، مقابل نفس بند أمر إعادة محاولة مرة؛ دفعة دقيق تلميح سوف استفسار سؤال مستخدم، نيل نيل دفعة دقيق قبل لن تنفيذ أي أمر. هذا منفذ ذاته أبدا تنسيق تجارة إذن.
 
-### 失败与恢复
+### فشل و استعادة
 
-如果没有 runner 能强制执行受限模式，前台调用以 `SANDBOX_UNAVAILABLE` 失败，后台进程则记录 runner 失败事实——绝不会静默无隔离运行。只有当提供方拒绝中的 `ENOENT`/`EACCES` 路径或 syscall 独立指向 `argv[0]` 时，才将其归因于隔离 runner；否则仍沿用本地执行器不区分阶段的提供方失败语义。
+إذا لا يوجد runner قدرة قوي صنع تنفيذ تلقي حد نمط، قبل منصة استدعاء بـ `SANDBOX_UNAVAILABLE` فشل، خلفية عملية فإن سجل runner فشل واقع——أبدا سوف ساكن صامت بلا عزل تشغيل. فقط لديه عند مزود رفض في `ENOENT`/`EACCES` مسار أو syscall مستقل إشارة نحو `argv[0]` وقت، عندئذ سوف ذلك عودة بسبب في عزل runner؛ لا فإن ما زال امتداد استخدام محلي منفذ لا منطقة قسم مرحلة مقطع مزود فشل دلالة.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释执行器的设计并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير منفذ تصميم و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计概念
+### تصميم عام فكرة
 
-本执行器是 `dsh-bash-sandbox` 的 pwsh 孪生：它继承 `dsh-pwsh-local` 的进程机制，消费其 argv 级 seam（`argv()`/`runArgv()`/`startArgv()`/`onProcessDone()`），并在 spawn 前通过 `ctx.sandbox.confine()` 等待精确的 pwsh 调用完成限制准备。前台准备使用本地执行器与命令共享的 deadline；在 spawn 前超时不会声明 enforcement 事实。后台准备只跟随调用方信号。两条路径都在 spawn 前重新检查取消状态。隔离实体本身是平台无关的——沙箱 seam 解析到平台的 runner——而本包只负责 pwsh 侧：所选模式、强制执行完整度，以及结果上的拒绝分类。
+هذا منفذ هو `dsh-bash-sandbox` pwsh توأم توليد: هو وراثة `dsh-pwsh-local` عملية آلية، إزالة استهلاك ذلك argv درجة seam(`argv()`/`runArgv()`/`startArgv()`/`onProcessDone()`) ، و في spawn قبل عبر `ctx.sandbox.confine()` انتظار دقيق pwsh استدعاء إتمام حد دقيق تجهيز. قبل منصة دقيق تجهيز استخدام محلي منفذ و أمر مشترك deadline؛ في spawn قبل مهلة لن إعلان enforcement واقع. خلفية دقيق تجهيز فقط تتبع مع استدعاء جهة إشارة. اثنان بند مسار كل في spawn قبل إعادة فحص إلغاء حالة. عزل فعلي جسم ذاته هو منصة غير متصل——صندوق رملي seam تحليل إلى منصة runner——بينما هذه الحزمة فقط مسؤول pwsh جانب: الذي اختيار نمط، قوي صنع تنفيذ كامل درجة، و نتيجة فوق رفض تصنيف.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`SandboxPwshExecutor`、按进程保留事实、run/start 包装 |
-| [`src/helpers.ts`](src/helpers.ts) | 拒绝、runner 失败与 runner spawn 失败分类 |
-| — | 不发布运行时不变式伴生入口；除所属 seam 所执行的约定外，本包不暴露独立事件序列或可变数据关系；分类可在结果中观察。 |
-| `tests/` | 跨 ACL 与平台 runner 演练的行为 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`SandboxPwshExecutor`، حسب عملية إبقاء واقع،run/start حزمة تركيب |
+| [`src/helpers.ts`](src/helpers.ts) | رفض،runner فشل و runner spawn فشل تصنيف |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ حذف الذي تابع seam الذي تنفيذ اتفاق خارج، هذه الحزمة لا كشف مستقل حدث تسلسل أو متغير بيانات علاقة؛ تصنيف يمكن في نتيجة في مراقبة. |
+| `tests/` | عبر ACL و منصة runner عرض تدريب سلوك |
 
-### 主要流程
+### رئيسي يلزم مسار
 
-对受限模式，`resolve()` 标记每次调用的策略；`run` 与 `start` 把 pwsh argv 经提供方包装，再把受限 argv 交给继承的子进程路径。结算时执行器对结果分类：runner 失败优先于拒绝（命令从未运行），stderr 携带 runner 拒绝方言的失败运行报告 `denied: true`，每次受限运行都携带模式与强制执行事实。`danger-full-access` 完全绕过提供方，并标记 `denied: false`。
+مقابل تلقي حد نمط،`resolve()` علامة كل مرة استدعاء سياسة؛`run` و `start` يأخذ pwsh argv مرور مزود حزمة تركيب، مجددا يأخذ تلقي حد argv تسليم إعطاء وراثة عملية فرعية مسار. تسوية وقت منفذ مقابل نتيجة تصنيف:runner فشل أولوية في رفض (أمر من لم تشغيل) ،stderr يحمل runner رفض جهة قول فشل تشغيل تقرير إبلاغ `denied: true`، كل مرة تلقي حد تشغيل كل يحمل نمط و قوي صنع تنفيذ واقع.`danger-full-access` تماما التفاف مرور مزود، و علامة `denied: false`.
 
-### 不变式
+### ثابت صيغة
 
-- **失败关闭**——受限模式没有可用 runner 时以 `SANDBOX_UNAVAILABLE` 拒绝；受限策略绝不会出现无隔离直通。
-- **seam 只报告拒绝**——本执行器从不授予权限；批准流程位于工具层。
-- **按进程保留事实**——隔离事实在结算前按句柄保留，因为提供方在不同的重叠调用中可能采用不同的强制执行方式。
+- **فشل إغلاق**——تلقي حد نمط لا يوجد متاح runner وقت بـ `SANDBOX_UNAVAILABLE` رفض؛ تلقي حد سياسة أبدا سوف ظهور بلا عزل مباشر عبر.
+- **seam فقط تقرير إبلاغ رفض**——هذا منفذ من لا منح إعطاء إذن؛ دفعة دقيق مسار يقع في أداة طبقة.
+- **حسب عملية إبقاء واقع**——عزل واقع في تسوية قبل حسب جملة مقبض إبقاء، لأن مزود في مختلف إعادة تراكم استدعاء في ممكن اعتماد مختلف قوي صنع تنفيذ طريقة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当执行器约定不够用时阅读以下页面。它们从 seam 进入隔离后端与 pwsh 工具。
+عند منفذ اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من seam دخول عزل خلفية و pwsh أداة.
 
-- [shell seam](../shell/README.zh.md) —— 本提供方实现的执行器约定，包括请求/spec 拆分。
-- [bash-sandbox](../bash-sandbox/README.zh.md) —— 本执行器的 bash 孪生，共享拒绝与升权面。
-- [pwsh-local](../pwsh-local/README.zh.md) —— 本执行器继承的进程机制。
-- [sandbox-windows-acl](../../sandbox/sandbox-windows-acl/README.zh.md) —— Windows 受限令牌 runner 链。
-- [Bash 执行器子系统](../../../docs/subsystems/shell.zh.md) —— 请求/spec 词汇、结果与完整的服务约定。
-- [pwsh 执行器与工具笔记](../../../.agents/notes/archived/feature/2026-08-01-pwsh-tool-and-executor.md) —— pwsh 执行器与工具这一对背后的决策。
+- [shell seam](../shell/README.zh.md) —— هذا مزود تنفيذ منفذ اتفاق، يشمل طلب/spec تفكيك قسم.
+- [bash-sandbox](../bash-sandbox/README.zh.md) —— هذا منفذ bash توأم توليد، مشترك رفض و رفع حق وجه.
+- [pwsh-local](../pwsh-local/README.zh.md) —— هذا منفذ وراثة عملية آلية.
+- [sandbox-windows-acl](../../sandbox/sandbox-windows-acl/README.zh.md) —— Windows تلقي حد أمر لوحة runner سلسلة.
+- [Bash منفذ فرعي نظام](../../../docs/subsystems/shell.zh.md) —— طلب/spec مفردات، نتيجة و كامل خدمة اتفاق.
+- [pwsh منفذ و أداة قلم تسجيل](../../../.agents/notes/archived/feature/2026-08-01-pwsh-tool-and-executor.md) —— pwsh منفذ و أداة هذا واحد مقابل خلف بعد قرار.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 隔离生效，拒绝以命令失败呈现
+### عزل توليد فاعلية، رفض بـ أمر فشل عرض
 
-#### 模型看到的内容
+#### نموذج يرى محتوى
 
-受限命令自身的 stderr——例如 Windows ACL runner 下的 `Access to the path '...' is denied.`；工具层把分类后的拒绝转成标准权限拒绝面，与 bash 工具完全一致。
+تلقي حد أمر ذاته stderr——مثال مثل Windows ACL runner تحت `Access to the path '...' is denied.`؛ أداة طبقة يأخذ تصنيف بعد رفض تحويل صار معيار إذن رفض وجه، و bash أداة تماما متسق.
 
-#### Token 影响
+#### Token أثر
 
-除命令 stderr 与工具层标准拒绝面外，无额外模型可见文本。
+حذف أمر stderr و أداة طبقة معيار رفض وجه خارج، بلا مقدار خارج نموذج مرئي نص.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无直接影响；拒绝呈现面属于工具层。
+بلا مباشر أثر؛ رفض عرض وجه يخص أداة طبقة.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明本执行器在 Windows 上只是不完整的边界。它们是当前包约束，不是路线图。
+هذه حد شرح هذا منفذ في Windows فوق فقط هو لا كامل حد. هو جمع هو حالي حزمة قيد، لا هو مسار خط رسم.
 
-- **Windows 上读不受限**——ACL runner 只限写；读边界文档在 `@deepseek-ai/dsh-sandbox-windows-acl`。
-- **Windows workspace-write 的临时权限按每个活跃的会话/工作区对私有**——无 agent（智能体）的调用每次都获得一个新的私有目录；环境临时根目录绝不会被授权，runner 会在 spawn 前将 `TMP`/`TEMP` 重写为该私有目录。
-- **Windows read-only 不授予任何显式可写根目录，但仍为部分强制执行**——受限令牌必须保留 Everyone；DACL 向 Everyone 授予写访问的对象——包括以兼容方式打开的 NUL 设备——仍构成环境权限来源，而 PowerShell 的 `> $null` 重定向仍可工作，且不会打开 NUL。
+- **Windows فوق قراءة لا تلقي حد**——ACL runner فقط حد كتابة؛ قراءة حد وثيقة في `@deepseek-ai/dsh-sandbox-windows-acl`.
+- **Windows workspace-write مؤقت إذن حسب كل نشط وثب جلسة/مساحة العمل مقابل خاص**——بلا agent(ذكي جسم) استدعاء كل مرة كل نيل نيل واحد جديد خاص دليل؛ بيئة مؤقت أصل دليل أبدا سوف يتم تخويل،runner سوف في spawn قبل سوف `TMP`/`TEMP` إعادة كتابة لـ هذا خاص دليل.
+- **Windows read-only لا منح إعطاء أي صريح يمكن كتابة أصل دليل، لكن ما زال لـ جزء قوي صنع تنفيذ**——تلقي حد أمر لوحة يجب إبقاء Everyone؛DACL نحو Everyone منح إعطاء كتابة وصول كائن——يشمل بـ توافق طريقة فتح NUL ضبط تجهيز——ما زال بنية صار بيئة إذن مصدر، بينما PowerShell `> $null` إعادة تحديد نحو ما زال يمكن عمل، كما لن فتح NUL.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -2,21 +2,21 @@
 
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
-  'error.incomplete': '请先完成这道问题。',
-  'error.unanswered': '请选择一个选项或填写自定义答案。',
-  'nav.prev': '上一题',
-  'nav.next': '下一题',
-  'nav.minimize': '收起问题卡片',
-  'nav.maximize': '展开问题卡片',
-  'nav.cancel': '放弃整组问题',
-  'option.recommended': '推荐',
-  'custom.placeholder': '输入你的答案',
-  'action.skip': '跳过',
-  'action.next': '下一题',
-  'plan.header': '计划待审',
-  'plan.approve': '同意执行',
-  'plan.decline': '拒绝',
-  'plan.discuss': '要求修改',
+  'error.incomplete': 'طلب أولا إتمام هذا طريق مشكلة.',
+  'error.unanswered': 'طلب اختيار واحد خيار أو ملء كتابة ذاتي تعريف جواب سجل.',
+  'nav.prev': 'فوق واحد عنوان',
+  'nav.next': 'تحت واحد عنوان',
+  'nav.minimize': 'استلام بدء مشكلة بطاقة',
+  'nav.maximize': 'توسيع مشكلة بطاقة',
+  'nav.cancel': 'وضع ترك كامل مجموعة مشكلة',
+  'option.recommended': 'دفع ترشيح',
+  'custom.placeholder': 'إدخال أنت جواب سجل',
+  'action.skip': 'قفز مرور',
+  'action.next': 'تحت واحد عنوان',
+  'plan.header': 'حساب تخطيط انتظار مراجعة',
+  'plan.approve': 'نفس معنى تنفيذ',
+  'plan.decline': 'رفض',
+  'plan.discuss': 'اشتراط تعديل',
 } satisfies Record<string, string>
 
 /** The question namespace key union. */

@@ -1,32 +1,32 @@
-# Agent Note: 删除 knip.json 中失效与重复的 workspace 条目
+# Agent Note: حذف knip.json في بطلان و تكرار workspace بند
 
 Status: implemented
 Archived: 2026-08-22
 
-[English](2026-08-19-knip-config-cleanup.md) | 中文
+[English](2026-08-19-knip-config-cleanup.md) | العربية
 
-## 问题
+## مشكلة
 
-`knip.json` 携带了大量不产生任何作用的 workspace 条目。其中一些指向已经不复存在的包，另一些与 `packages/*/*` 通配默认完全重复。这两类都让文件变大——790 行——并显现出配置已经超出了它所描述的包：读者无法分辨哪些条目在保护真实行为、哪些是惰性的。
+`knip.json` يحمل كبير كمية لا إنتاج أي أثر workspace بند. منها واحد بعض إشارة نحو قد لا تكرار وجود حزمة، آخر بعض و `packages/*/*` عبر إعداد افتراضي تماما تكرار. هذا اثنان صنف كل يجعل ملف تغيير كبير——790 سطر——و إظهار الآن خروج إعداد قد تجاوز خروج هو الذي وصف حزمة: قراءة من لا يمكن قسم تمييز أي بعض بند في حفظ حماية حقيقي سلوك، أي بعض هو كسول صفة.
 
-## 决策
+## قرار
 
-删除了 15 个 `workspaces` 条目：2 个指向工作树与 `HEAD` 中都不存在的包的失效键，以及 13 个 `entry`/`project` 与 `packages/*/*` 通配默认逐字节相同的条目。
+حذف 15 عدد `workspaces` بند:2 عدد إشارة نحو عمل شجرة و `HEAD` في كل لا وجود حزمة بطلان مفتاح، و 13 عدد `entry`/`project` و `packages/*/*` عبر إعداد افتراضي تدريجي بايت نفسه بند.
 
-- 失效键：`packages/util/home`（在 `4a09d9b34d`，harness home 解析器的合并改动中删除）和 `packages/client/web-ui`（无对应目录、无 git 历史，是孤儿键）。knip 6.16 不会标记失效的 workspace 键——这项稳定性检查在 knip 6.18 才引入——所以这些是本应在包消失时一并删除、却残留的惰性配置。
-- 通配重复条目：`packages/host/webserver`、`packages/client/runtime`、`packages/core/tools`、`packages/context/tmux-context`、`packages/util/timeout`、`packages/util/output-retention`、`packages/goal/goal-round-driver`、`packages/goal/tool-goal`、`packages/util/home-paths`、`packages/fs/tool-fs-search`、`packages/client/ui-settings`、`packages/client/modules`、`packages/client/hmr`。每个都恰好声明了 `entry: ["tests/**/*.spec.ts"]` 和 `project: ["src/**/*.ts", "tests/**/*.ts"]`，与 `packages/*/*` 通配相等，且这些包仍然存在，因此通配现在以完全相同的方式覆盖它们。
+- بطلان مفتاح:`packages/util/home`(في `4a09d9b34d`،harness home محلل دمج تعديل في حذف) و `packages/client/web-ui`(بلا مقابل دليل، بلا git تاريخ، هو منعزل طفل مفتاح).knip 6.16 لن علامة بطلان workspace مفتاح——هذا بند مستقر صفة فحص في knip 6.18 عندئذ جذب دخول——الذي بـ هذه هو هذا ينبغي في حزمة إزالة فقد وقت واحد و حذف، لكن ناقص إبقاء كسول صفة إعداد.
+- عبر إعداد تكرار بند:`packages/host/webserver`،`packages/client/runtime`،`packages/core/tools`،`packages/context/tmux-context`،`packages/util/timeout`،`packages/util/output-retention`،`packages/goal/goal-round-driver`،`packages/goal/tool-goal`،`packages/util/home-paths`،`packages/fs/tool-fs-search`،`packages/client/ui-settings`،`packages/client/modules`،`packages/client/hmr`. كل كل تماما جيد إعلان `entry: ["tests/**/*.spec.ts"]` و `project: ["src/**/*.ts", "tests/**/*.ts"]`، و `packages/*/*` عبر إعداد متبادل انتظار، كما هذه حزمة ما زال وجود، لذلك عبر إعداد الآن بـ تماما نفسه طريقة تغطية هو جمع.
 
-本改动只做删除：`knip.json` 从 790 行降到 655 行，行为不变。`pnpm run knip` 在改动前后都干净通过（零问题、退出码 0），因为 knip 为每个已匹配的键选取一条 workspace 配置（`getConfigKeyForWorkspace` 按特定优先、不做数组合并），所以被删条目要么丢掉了无法解析的目标，要么回退到一个完全相同的通配配置。
+هذا تعديل فقط فعل حذف:`knip.json` من 790 سطر خفض إلى 655 سطر، سلوك ثابت.`pnpm run knip` في تعديل قبل بعد كل جاف صاف عبر (صفر مشكلة، خروج رمز 0) ، لأن knip لـ كل قد مطابقة مفتاح اختيار أخذ واحد بند workspace إعداد (`getConfigKeyForWorkspace` حسب خاص تحديد أولوية، لا فعل عدد تركيب و) ، الذي بـ يتم حذف بند يلزم ما فقد إسقاط لا يمكن تحليل هدف، يلزم ما رجوع إلى واحد تماما نفسه عبر إعداد إعداد.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-- 把 `zod` 及其它 workspace 级 `ignoreDependencies` 上提到根级。否决：根级 `ignoreDependencies` 是全仓库兜底，而这些豁免是刻意限定在 workspace 的（`cordis-host-runner` 的 README 记录了为什么 `src` 无法 import 被标记的依赖、而生成的 `lib` 里的 TypeRT 契约面需要它）。扩大作用域会掩盖未来任何包里真正放错位置的依赖。
-- 升级 knip 到 6.18+ 以获得自动的失效 workspace 检查。延后：撰写时的最新版 6.32.2 会把大量 `@deepseek-ai/...` 测试依赖重新标记为未使用——也就是改变了分析语义，而不仅是新增提示。那是独立的依赖升级决定，带自己的 CI 影响面，不属于本次清理。
-- 保留这些条目作为意图的文档。否决：与它挂在下面的通配完全相同的条目，除了通配本身外不记录任何东西；而指向不存在包的键确实会误导人。
+- يأخذ `zod` و ذلك هو workspace درجة `ignoreDependencies` فوق رفع إلى أصل درجة. مرفوض: أصل درجة `ignoreDependencies` هو كل مستودع التقاط قاع، بينما هذه إعفاء تجنب هو لحظة معنى حد تحديد في workspace (`cordis-host-runner` README سجل لـ ماذا `src` لا يمكن import يتم علامة اعتماد، بينما توليد `lib` داخل TypeRT عقد نحو وجه حاجة هو). توسيع كبير أثر مجال سوف إخفاء غطاء لم قدوم أي حزمة داخل حق صحيح وضع خطأ موضع اعتماد.
+- ترقية knip إلى 6.18+ بـ نيل نيل تلقائي بطلان workspace فحص. تأخير بعد: تأليف كتابة وقت الأكثر جديد إصدار 6.32.2 سوف يأخذ كبير كمية `@deepseek-ai/...` اختبار اعتماد إعادة علامة لـ لم استخدام——أيضا حينئذ هو تغيير قسم تحليل دلالة، بينما لا فقط هو إضافة جديدة تلميح. ذلك هو مستقل اعتماد ترقية قرار، حمل ذاتي ذات CI أثر وجه، لا يخص هذا مرة تنظيف.
+- إبقاء هذه بند بصفة معنى رسم وثيقة. مرفوض: و هو تعليق في تحت وجه عبر إعداد تماما نفسه بند، حذف عبر إعداد ذاته خارج لا سجل أي شرق غرب؛ بينما إشارة نحو لا وجود حزمة مفتاح تأكيد فعلي سوف خطأ توجيه شخص.
 
-## 结果
+## نتيجة
 
-- `knip.json` 缩短了 135 行，并且只列出确实存在、且配置与通配默认有差异的包。
-- 仍然显式的条目（54 个）都带有真实的特例理由——`e2e`/fixture/tsx 的 `entry`、超出默认的 `project`、或 workspace 级的 `ignoreDependencies`。
-- knip 6.16 自身无法检测下一个失效键，因此删除包时仍须记得清理它的 `knip.json` 键；升级到 6.18+（在分析语义的改动被单独评估之后）会恢复这道守卫。
-- 本改动落实了包清单提案中「绝不复述默认 stanza」的标准（[议题](../../proposed/process/2026-06-20-discover-package-inventory.zh.md)）；其剩余项——e2e 入口折叠与生成的清单——仍在提案中保持开放。
+- `knip.json` تقليص قصير 135 سطر، و كما فقط صف خروج تأكيد فعلي وجود، كما إعداد و عبر إعداد افتراضي لديه فرق مختلف حزمة.
+- ما زال صريح بند (54 عدد) كل حمل لديه حقيقي خاص مثال إدارة من——`e2e`/fixture/tsx `entry`، تجاوز خروج افتراضي `project`، أو workspace درجة `ignoreDependencies`.
+- knip 6.16 ذاته لا يمكن فحص قياس تحت واحد بطلان مفتاح، لذلك حذف حزمة وقت ما زال يجب تسجيل نيل تنظيف هو `knip.json` مفتاح؛ ترقية إلى 6.18+(في قسم تحليل دلالة تعديل يتم مفرد وحيد تقييم تقدير بعد) سوف استعادة هذا طريق حراسة حماية.
+- هذا تعديل سقوط فعلي حزمة بيان رفع سجل في «أبدا تكرار وصف افتراضي stanza» معيار ([اقتراح عنوان](../../proposed/process/2026-06-20-discover-package-inventory.zh.md)) ؛ ذلك باق بقية بند——e2e مدخل طي و توليد بيان——ما زال في رفع سجل في إبقاء فتح وضع.

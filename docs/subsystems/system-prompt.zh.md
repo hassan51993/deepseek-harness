@@ -1,14 +1,14 @@
-# 系统提示词组装
+# توجيه النظام تجميع
 
-[English](system-prompt.md) | 中文
+[English](system-prompt.md) | العربية
 
-[system-prompt 包](../../packages/core/system-prompt)负责管理提示词贡献者与一次组装调用之间交换的数据。该包的 [README](../../packages/core/system-prompt/README.zh.md) 记录注册、排序、作用域与渲染行为；本页记录各插件实现或传递的确切跨包类型。
+[system-prompt حزمة](../../packages/core/system-prompt) مسؤول إدارة نص التوجيه مساهمة من و مرة تجميع استدعاء بين تسليم تبديل بيانات. هذا حزمة [README](../../packages/core/system-prompt/README.zh.md) سجل تسجيل، ترتيب ترتيب، أثر مجال و تصيير سلوك؛ هذا صفحة سجل كل إضافة تنفيذ أو نقل تمرير تأكيد قطع عبر حزمة نوع.
 
-源码：[`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts)。
+شفرة المصدر:[`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts).
 
-## 组装上下文
+## تجميع سياق
 
-`AssembleContext` 标识一次组装所解析的作用域层，并可携带该请求的显式控制信号。它可合并扩展：`dsh-agent` 添加可选字段 `agent`，用于携带当前的 agent（智能体）实例；`assembleContextFor(agent, signal)` 则一起设置这些显式字段。裸组装既没有作用域，也没有信号。
+`AssembleContext` معرف مرة تجميع الذي تحليل أثر مجال طبقة، و يمكن يحمل هذا طلب صريح تحكم إشارة. هو يمكن دمج توسيع:`dsh-agent` إضافة اختياري حقل `agent`، لأجل يحمل حالي agent(ذكي جسم) نسخة؛`assembleContextFor(agent, signal)` فإن واحد بدء ضبط هذه صريح حقل. عار تجميع حيث لا يوجد أثر مجال، أيضا لا يوجد إشارة.
 
 ```ts type-equiv
 /** Merge-extensible context for one prompt assembly. */
@@ -23,9 +23,9 @@ interface AssembleContext {
 }
 ```
 
-## 工具提供方结果
+## أداة مزود نتيجة
 
-`ToolProviderResult.schemas` 是当前组装中对模型可见的工具 schema 集合。`knownNames` 是提供方在限制前的名称全集，用于区分「配置名拼写错误」与「已知工具在此作用域中被有意隐藏」。
+`ToolProviderResult.schemas` هو حالي تجميع في مقابل نموذج مرئي أداة schema تجميع دمج.`knownNames` هو مزود في حد قبل اسم كل تجميع، لأجل منطقة قسم «إعداد اسم تجميع كتابة خطأ» و «معروف أداة في هذا أثر مجال في يتم متعمد إخفاء».
 
 ```ts type-equiv
 /** Tool schemas visible in one assembly and their pre-restriction name set. */
@@ -37,11 +37,11 @@ interface ToolProviderResult {
 }
 ```
 
-## 提示词段落
+## نص التوجيه مقطع سقوط
 
-导出的 `PERSONA_PREFIX_SECTION`（`deployment:persona-prefix`）与 `PERSONA_SUFFIX_SECTION`（`deployment:persona-suffix`）为全局配置和带作用域贡献所共享的段落命名。它们对应的 `PromptSectionOrderName` 项为 `DEPLOYMENT_PERSONA_PREFIX` 与 `DEPLOYMENT_PERSONA_SUFFIX`；[包 README](../../packages/core/system-prompt/README.zh.md#configure-the-prompt)规定其位置与模板配置。
+توجيه خروج `PERSONA_PREFIX_SECTION`(`deployment:persona-prefix`) و `PERSONA_SUFFIX_SECTION`(`deployment:persona-suffix`) لـ عام إعداد و حمل أثر مجال مساهمة الذي مشترك مقطع سقوط تسمية. هو جمع مقابل `PromptSectionOrderName` بند لـ `DEPLOYMENT_PERSONA_PREFIX` و `DEPLOYMENT_PERSONA_SUFFIX`؛[حزمة README](../../packages/core/system-prompt/README.zh.md#configure-the-prompt) قاعدة تحديد ذلك موضع و نموذج لوح إعداد.
 
-`PromptSection` 是一份只读的同进程注册约定。其文本可以是静态的，也可以从当前组装上下文动态解析。各段先按 order 升序排列，再按名称的代码单元顺序排列；仓库贡献方通过 `getSectionOrder()` 解析服务持有的具名分配。Runtime-context 贡献方通过 `getContextOrder()` 解析独立分配。协作式组装完成后，一个有效的 `complete` 段会成为唯一的提示词段落。agent loop（智能体循环）用 `renderPrompt` 渲染组装后的各段，并把文本作为 `system/message` surface 节点提交——首个步骤作为 surface 第 0 号节点追加，之后在渲染文本变化时原地替换，或者当已准备调用声明 `systemPromptUpdate: 'in-history'` 时，在序列延续期间把非空更新追加到已缓存历史之后——因此提示词作为派生历史中的消息而不是请求字段到达模型（[决策](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md)；[决策规则](../../packages/core/agent-loop/README.zh.md#understand-the-implementation)）。
+`PromptSection` هو واحد نسخة فقط قراءة نفس عملية تسجيل اتفاق. ذلك نص يمكن هو ساكن حالة، أيضا يمكن من حالي تجميع سياق حركة حالة تحليل. كل مقطع أولا حسب order رفع ترتيب ترتيب صف، مجددا حسب اسم شفرة وحدة ترتيب ترتيب صف؛ مستودع مساهمة جهة عبر `getSectionOrder()` تحليل خدمة يحتفظ أداة اسم قسم إعداد.Runtime-context مساهمة جهة عبر `getContextOrder()` تحليل مستقل قسم إعداد. تنسيق عمل صيغة تجميع إتمام بعد، واحد صالح `complete` مقطع سوف يصبح وحيد نص التوجيه مقطع سقوط.agent loop(ذكي جسم حلقة) استخدام `renderPrompt` تصيير تجميع بعد كل مقطع، و يأخذ نص بصفة `system/message` surface عقدة إيداع——أول عدد خطوة بصفة surface رقم 0 رقم عقدة إلحاق، بعد في تصيير نص تغير وقت أصل أرض استبدال، أو من عند قد دقيق تجهيز استدعاء إعلان `systemPromptUpdate: 'in-history'` وقت، في تسلسل تأخير متابعة خلال يأخذ غير فارغ تحديث إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد——لذلك نص التوجيه بصفة إرسال توليد تاريخ في رسالة بينما لا هو طلب حقل وصول نموذج ([قرار](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md) ؛[قرار قاعدة](../../packages/core/agent-loop/README.zh.md#understand-the-implementation)).
 
 ```ts type-equiv
 /** One contributed section of the system prompt (registry input). */
@@ -71,9 +71,9 @@ interface PromptSection {
 }
 ```
 
-## 动态提示词上下文
+## حركة حالة نص التوجيه سياق
 
-`PromptContext` 是与 `PromptSection` 对应的缓存安全结构。组装会解析这些贡献并排序；agent loop（智能体循环）仅在完整当前快照发生变化或被压缩（compaction）移除时，才会将其记录在保留的模型历史之后。
+`PromptContext` هو و `PromptSection` مقابل ذاكرة مؤقتة أمان بنية. تجميع سوف تحليل هذه مساهمة و ترتيب ترتيب؛agent loop(ذكي جسم حلقة) فقط في كامل حالي لقطة حدوث تغير أو يتم ضغط (compaction) إزالة وقت، عندئذ سوف سوف ذلك سجل في إبقاء نموذج تاريخ بعد.
 
 ```ts type-equiv
 /** Dynamic model context materialized as a durable user-role snapshot. */

@@ -34,7 +34,7 @@ function jsonResult(source: string): { ok: boolean; files: readonly string[] } {
 
 const AUTHORED_PROSE = {
   en: { summary: 'Adds optional metadata.', compatibility: 'Readers may omit the metadata.', verification: 'The focused tests passed.' },
-  zh: { summary: '添加可选元数据。', compatibility: '读取方可省略元数据。', verification: '定向测试通过。' },
+  zh: { summary: 'إضافة اختياري بيانات وصفية.', compatibility: 'قراءة جهة يمكن حذف بيانات وصفية.', verification: 'تحديد نحو اختبار عبر.' },
 }
 
 function proseFile(root: string): string {

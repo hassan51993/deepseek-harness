@@ -1,57 +1,57 @@
 - banner:
-  - navigation "会话层级":
-    - button "只回复 MESSAGES_WEB_READY，不调用" [disabled]
+  - navigation "جلسة طبقة درجة":
+    - button "فقط عودة تكرار MESSAGES_WEB_READY، لا استدعاء" [disabled]
   - img
-  - text: 标准模式
-  - button "更多操作":
+  - text: معيار نمط
+  - button "أكثر كثير عملية":
     - img
-  - button "打开右侧边栏":
+  - button "فتح يمين جانب حافة شريط":
     - img
   - tablist:
-    - tab "对话" [selected]
-    - tab "轨迹"
-- button "系统提示词":
+    - tab "محادثة" [selected]
+    - tab "مسار أثر"
+- button "توجيه النظام":
   - img
   - img
-  - text: 系统提示词
-- text: 只回复 MESSAGES_WEB_READY，不调用工具。 {{clock}}
-- button "复制":
+  - text: توجيه النظام
+- text: فقط عودة تكرار MESSAGES_WEB_READY، لا استدعاء أداة. {{clock}}
+- button "نسخ":
   - img
-- button "已思考":
-  - text: 已思考
+- button "قد تفكير اعتبار":
+  - text: قد تفكير اعتبار
   - img
-- button "思考":
+- button "تفكير اعتبار":
   - img
   - img
-  - text: 思考
+  - text: تفكير اعتبار
 - paragraph: MESSAGES_WEB_READY
-- button "复制":
+- button "نسخ":
   - img
-- button "好的回答":
+- button "جيد عودة جواب":
   - img
-- button "有问题的回答":
+- button "لديه مشكلة عودة جواب":
   - img
-- button "在新对话中分支":
+- button "في جديد محادثة في فرع":
   - img
-- button "用量 8.2K tok":
+- button "استخدام كمية 8.2K tok":
   - img
-  - text: 用量 8.2K tok
-- button "用时 {{duration}}":
+  - text: استخدام كمية 8.2K tok
+- button "استخدام وقت {{duration}}":
   - img
-  - text: 用时 {{duration}}
+  - text: استخدام وقت {{duration}}
 - text: {{clock}}
-- textbox "发消息或创建任务, / 调用指令, @ 文件或对话"
-- button "添加文件或调用指令":
+- textbox "إرسال رسالة أو إنشاء مهمة, / استدعاء إشارة أمر, @ ملف أو محادثة"
+- button "إضافة ملف أو استدعاء إشارة أمر":
   - img
-- button "访问模式，当前：工作区内修改": 工作区内修改
-- button "选择模型，当前 DeepSeek-V4-Flash，推理等级 high":
+- button "وصول نمط، حالي: مساحة العمل داخل تعديل": مساحة العمل داخل تعديل
+- button "اختيار نموذج، حالي DeepSeek-V4-Flash، دفع إدارة انتظار درجة high":
   - text: DeepSeek-V4-Flash high
   - img
-- button "发送消息" [disabled]
-- button "1 轮 1 步 · {{throughput}} tok/s":
+- button "إرسال رسالة" [disabled]
+- button "1 جولة 1 خطوة · {{throughput}} tok/s":
   - img
-  - text: 1 轮 1 步{{throughput}} tok/s
-- button "8.2K tok · 缓存命中 16%":
+  - text: 1 جولة 1 خطوة{{throughput}} tok/s
+- button "8.2K tok · ذاكرة مؤقتة أمر في 16%":
   - img
-  - text: 8.2K tok缓存命中 16%
-- button "上下文已用 1%": 1%
+  - text: 8.2K tokذاكرة مؤقتة أمر في 16%
+- button "سياق قد استخدام 1%": 1%

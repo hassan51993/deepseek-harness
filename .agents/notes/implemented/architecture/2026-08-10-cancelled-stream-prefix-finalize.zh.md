@@ -1,39 +1,39 @@
-# Agent Note: 被取消的流定稿其已送达前缀
+# Agent Note: يتم إلغاء تدفق تحديد مسودة ذلك قد إرسال بلوغ بادئة
 
 Status: implemented
 
-[English](2026-08-10-cancelled-stream-prefix-finalize.md) | 中文
+[English](2026-08-10-cancelled-stream-prefix-finalize.md) | العربية
 
 ## Problem
 
-被取消的流可能留下 Client 已经渲染的瞬态 chunk，但如果没有 `assistant/message` 记录已送达前缀，`deriveMessages()` 就会排除这部分内容。后续的「第二点展开讲讲」之类追问会缺少用户已读到的文本，在该轮次上创建的分支也会继承这个缺口。
+يتم إلغاء تدفق ممكن إبقاء تحت Client قد تصيير لحظة حالة chunk، لكن إذا لا يوجد `assistant/message` سجل قد إرسال بلوغ بادئة،`deriveMessages()` حينئذ سوف ترتيب حذف هذا جزء محتوى. لاحق «ثاني نقطة توسيع شرح شرح» لـ صنف تتبع سؤال سوف نقص قليل مستخدم قد قراءة إلى نص، في هذا جولة فوق إنشاء فرع أيضا سوف وراثة هذا عدد نقص فتحة.
 
-模型历史必须包含取消后仍对用户可见的 assistant 内容。
+نموذج تاريخ يجب يتضمن إلغاء بعد ما زال مقابل مستخدم مرئي assistant محتوى.
 
 ## Decision
 
-`ReactLoopAgent.step()` 在消费模型 stream 期间捕捉取消，此时 `BlockAssembler`、紧凑 stream accumulator 与 provider route 可以确定已送达前缀。loop 把该前缀追加为 step 的 `assistant/message`，并设置 `interrupted: true`、`surfaceOp: 'append'` 与精确嵌入式带时间 stream。该追加先于 committed `agent/assistant-stream` end frame、`step/end` 和记录 aborted 的 `turn/end`。
+`ReactLoopAgent.step()` في إزالة استهلاك نموذج stream خلال التقاط إمساك إلغاء، هذا وقت `BlockAssembler`، ضيق تجميع stream accumulator و provider route يمكن تحديد قد إرسال بلوغ بادئة.loop يأخذ هذا بادئة إلحاق لـ step `assistant/message`، و ضبط `interrupted: true`،`surfaceOp: 'append'` و دقيق تضمين دخول صيغة حمل وقت stream. هذا إلحاق أولا في committed `agent/assistant-stream` end frame،`step/end` و سجل aborted `turn/end`.
 
-`BlockAssembler.interruptedBlocks()` 按 stream 顺序返回内容非空白的已闭合和未闭合 `text` 与 `reasoning` block。打断先于分派，没有真实工具结果，因此它会省略工具调用，也会省略空 block 和未闭合的未知 block 类型。返回结果为空时追加 `assistant/attempt`，而不是 surface message。Provider `error` 与 `aborted` finish 也会在 `agent/request-error` 前提交 `assistant/attempt`，因此其 stream 保持持久，但失败请求内容不会进入模型历史。
+`BlockAssembler.interruptedBlocks()` حسب stream ترتيب إرجاع محتوى غير فارغ أبيض قد إغلاق دمج و لم إغلاق دمج `text` و `reasoning` block. ضرب قطع أولا في قسم إرسال، لا يوجد حقيقي أداة نتيجة، لذلك هو سوف حذف أداة استدعاء، أيضا سوف حذف فارغ block و لم إغلاق دمج لم معرفة block نوع. إرجاع نتيجة لـ فارغ وقت إلحاق `assistant/attempt`، بينما لا هو surface message.Provider `error` و `aborted` finish أيضا سوف في `agent/request-error` قبل إيداع `assistant/attempt`، لذلك ذلك stream إبقاء حمل دائم، لكن فشل طلب محتوى لن دخول نموذج تاريخ.
 
-Chat 和 Trajectory Conversation Definition 从持久 message 读取 `interrupted`。Chat 渲染 Stopped marker，Trajectory 则在 `step/end` 后把 provider request 保持在 error 生命周期，并保留持久 result seq 与 provider 信息。工具执行期间的取消遵循工具调度器约定，因为 assistant message 已提交：已启动的调用生成真实结果，未分派的调用获得 `ABORTED_BEFORE_DISPATCH` 结果。
+Chat و Trajectory Conversation Definition من حمل دائم message قراءة `interrupted`.Chat تصيير Stopped marker،Trajectory فإن في `step/end` بعد يأخذ provider request إبقاء في error دورة الحياة، و إبقاء حمل دائم result seq و provider معلومة. أداة تنفيذ خلال إلغاء التزام دوران أداة مجدول اتفاق، لأن assistant message قد إيداع: قد بدء استدعاء توليد حقيقي نتيجة، لم قسم إرسال استدعاء نيل نيل `ABORTED_BEFORE_DISPATCH` نتيجة.
 
 ## Alternatives considered
 
-**始终丢弃前缀。** 这能避免新增持久标记，但每次取消后的追问和分支都会缺少仍对用户可见的 assistant 内容。
+**بداية نهاية إسقاط بادئة.** هذا قدرة تجنب تجنب إضافة جديدة حمل دائم علامة، لكن كل مرة إلغاء بعد تتبع سؤال و فرع كل سوف نقص قليل ما زال مقابل مستخدم مرئي assistant محتوى.
 
-**在投影时从嵌入式 attempt 组装前缀。** `deriveMessages()` 与 Client Conversation Definition 都需要实现打断组装规则，日志中也没有该前缀的权威 surface message。这还会让模型历史超出三类 `SurfaceEventType` 事件。
+**في إسقاط وقت من تضمين دخول صيغة attempt تجميع بادئة.** `deriveMessages()` و Client Conversation Definition كل حاجة تنفيذ ضرب قطع تجميع قاعدة، سجل في أيضا لا يوجد هذا بادئة مرجعي surface message. هذا أيضا سوف يجعل نموذج تاريخ تجاوز خروج ثلاثة صنف `SurfaceEventType` حدث.
 
-**保留完整工具调用并合成 aborted 结果。** 这些调用从未分派，合成结果会声称一个并未发生的执行结果，还会增加用户未收到的工具结果内容。
+**إبقاء كامل أداة استدعاء و دمج صار aborted نتيجة.** هذه استدعاء من لم قسم إرسال، دمج صار نتيجة سوف صوت تسمية واحد و لم حدوث تنفيذ نتيجة، أيضا سوف زيادة مستخدم لم استلام إلى أداة نتيجة محتوى.
 
-**追加 `[interrupted by user]` 之类模型可见的打断消息。** 这可以告诉模型前缀并不完整，但需要独立的来源类型、投影规则、UI 处理和本地化文案。持久的 aborted `turn/end` 保留了该后续决策所需的事实。
+**إلحاق `[interrupted by user]` لـ صنف نموذج مرئي ضرب قطع رسالة.** هذا يمكن إبلاغ إبلاغ نموذج بادئة و لا كامل، لكن حاجة مستقل مصدر نوع، إسقاط قاعدة،UI معالجة و محلي تحويل نص سجل. حمل دائم aborted `turn/end` إبقاء هذا لاحق قرار الذي يحتاج واقع.
 
 ## Consequences
 
-取消后的追问和分支会包含已送达前缀。ACP 桥会在结算 prompt 前排空按序传送的 assistant 输出，因此最后一条 `agent_message_chunk` 更新先于 cancelled stop reason。
+إلغاء بعد تتبع سؤال و فرع سوف يتضمن قد إرسال بلوغ بادئة.ACP جسر سوف في تسوية prompt قبل ترتيب فارغ حسب ترتيب نقل إرسال assistant إخراج، لذلك الأكثر بعد واحد بند `agent_message_chunk` تحديث أولا في cancelled stop reason.
 
-终局 provider error 会在 `assistant/attempt` 中保留其 stream，但不让内容进入模型历史。只有用户的取消决策会把可见的已送达文本变成 interrupted surface message。
+نهاية نطاق provider error سوف في `assistant/attempt` في إبقاء ذلك stream، لكن لا يجعل محتوى دخول نموذج تاريخ. فقط لديه مستخدم إلغاء قرار سوف يأخذ مرئي قد إرسال بلوغ نص تغيير صار interrupted surface message.
 
 ## Testing
 
-`packages/core/agent-loop/tests/cancel.spec.ts` 覆盖 content、嵌入式 stream、事件顺序、下一请求的一致性、仅 reasoning 的输出、工具调用省略、恢复期间的取消和空前缀 attempt。`packages/llm/llm/tests/assembler.spec.ts` 覆盖 `interruptedBlocks()`。`packages/client/ui-chat/tests/conversation-node-definitions.client.spec.ts` 与 `packages/client/ui-trajectory/tests/conversation-definitions.client.spec.ts` 覆盖两种 Client 投影。keyless `cancel` ACP snapshot 与 `goal-round-driver` goal snapshot 覆盖组装应用。
+`packages/core/agent-loop/tests/cancel.spec.ts` تغطية content، تضمين دخول صيغة stream، حدث ترتيب، تحت واحد طلب متسق صفة، فقط reasoning إخراج، أداة استدعاء حذف، استعادة خلال إلغاء و فارغ بادئة attempt.`packages/llm/llm/tests/assembler.spec.ts` تغطية `interruptedBlocks()`.`packages/client/ui-chat/tests/conversation-node-definitions.client.spec.ts` و `packages/client/ui-trajectory/tests/conversation-definitions.client.spec.ts` تغطية اثنان نوع Client إسقاط.keyless `cancel` ACP snapshot و `goal-round-driver` goal snapshot تغطية تجميع تطبيق.

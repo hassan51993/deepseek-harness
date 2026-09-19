@@ -1,22 +1,22 @@
-# Agent Note: Client Session、Conversation 与 UI 所有权分层
+# Agent Note: Client Session،Conversation و UI كل حق قسم طبقة
 
 Status: implemented
 
-[English](2026-08-20-client-session-conversation-ownership.md) | 中文
+[English](2026-08-20-client-session-conversation-ownership.md) | العربية
 
-## 问题
+## مشكلة
 
-Web Client 曾由一个通用 Runtime 同时承载 Session 与 Workspace 对象、事件窗口、Conversation 组装、React hooks、Slot 注册表和 Store 引擎。协议状态、业务投影、React 绑定和页面呈现共享同一个依赖汇点，任何一层的变化都可能扩大到完整前端。
+Web Client سبق من واحد عام Runtime معا تحمل تحميل Session و Workspace كائن، حدث نافذة،Conversation تجميع،React hooks،Slot سجل التسجيل و Store جذب محرك. بروتوكول حالة، عمل خدمة إسقاط،React ربط و صفحة عرض مشترك نفس عدد اعتماد تجميع نقطة، أي واحد طبقة تغير كل ممكن توسيع كبير إلى كامل قبل طرف.
 
-Session 快照也容易混入事件数组、Conversation View、Chat Node 和待处理交互等并非 Session 自身拥有的数据。普通消费者由此需要理解事件重放与具体视图，新增一个 Conversation target 也可能要求修改 Session、Runtime 和 renderer。
+Session لقطة أيضا سعة سهل خلط دخول حدث عدد مجموعة،Conversation View،Chat Node و انتظار معالجة تفاعل انتظار و غير Session ذاته يملك بيانات. عادي إزالة استهلاك من من هذا حاجة إدارة حل حدث إعادة وضع و أداة جسم عرض، إضافة جديدة واحد Conversation target أيضا ممكن اشتراط تعديل Session،Runtime و renderer.
 
-React 生命周期与 Session 生命周期之间缺少明确接口时，binding 释放、Hook source 替换和 Slot store 清理会演变为互相回调的专用协议。Approval 与 Question 同时影响侧边栏状态和 composer takeover；若两处各自维护状态，它们还可能选择不同的待处理请求。
+React دورة الحياة و Session دورة الحياة بين نقص قليل واضح واجهة وقت،binding تحرير،Hook source استبدال و Slot store تنظيف سوف عرض تغيير لـ متبادل متبادل عودة ضبط مخصص استخدام بروتوكول.Approval و Question معا أثر جانب حافة شريط حالة و composer takeover؛ إذا اثنان موضع كل منها صيانة حالة، هو جمع أيضا ممكن اختيار مختلف انتظار معالجة طلب.
 
-需要把数据 owner、React adapter、通用渲染机制和具体视图拆成单向依赖，同时保持既有应用行为。
+حاجة يأخذ بيانات owner،React adapter، عام تصيير آلية و أداة جسم عرض تفكيك صار مفرد نحو اعتماد، معا إبقاء قائم تطبيق سلوك.
 
-## 决定
+## قرار
 
-Client 采用“Controller 与领域对象 → UI adapter → renderer → Slot component”的分层。Controller 和领域对象发布不依赖 React 的 observable source；所属 `ui-*` package 声明标准 props 并注册 source；`ui-renderer` 在 Slot binding 点生成 selector hook；组件只从 Slot props 读取数据与操作。
+Client اعتماد “Controller و مجال كائن → UI adapter → renderer → Slot component” قسم طبقة.Controller و مجال كائن إصدار لا اعتماد React observable source؛ الذي تابع `ui-*` package إعلان معيار props و تسجيل source؛`ui-renderer` في Slot binding نقطة توليد selector hook؛ مكون فقط من Slot props قراءة بيانات و عملية.
 
 ```text
 [Remote / Controller / domain object]
@@ -34,65 +34,65 @@ Client 采用“Controller 与领域对象 → UI adapter → renderer → Slot 
             [Slot component]
 ```
 
-Session 与 Workspace 的 Client 对象分别归 `api/session-controller/client` 和 `api/workspace-controller/client`。Conversation 的 target-neutral 数据结构和组装归 `client/ui-conversation`，Chat 与 Trajectory 分别归 `client/ui-chat` 和 `client/ui-trajectory`。
+Session و Workspace Client كائن قسم آخر عودة `api/session-controller/client` و `api/workspace-controller/client`.Conversation target-neutral بيانات بنية و تجميع عودة `client/ui-conversation`،Chat و Trajectory قسم آخر عودة `client/ui-chat` و `client/ui-trajectory`.
 
-Session 与 Workspace 的 React 适配分别归 `client/ui-session` 和 `client/ui-workspace`。Store engine 归 `client/store`，Slot registry、scope materialization 和 observable-to-hook 绑定归 `client/ui-renderer`。
+Session و Workspace React ملائم إعداد قسم آخر عودة `client/ui-session` و `client/ui-workspace`.Store engine عودة `client/store`،Slot registry،scope materialization و observable-to-hook ربط عودة `client/ui-renderer`.
 
-系统没有聚合式 `client/runtime` 包，也没有替代的中央 facade。[Session 历史与事件传输](2026-08-18-session-history-and-event-transport.zh.md)定义历史连续性。[Client 会话引用](2026-09-15-client-session-references.zh.md)拥有引用获取、精确代际生命周期、主区域所有权和统一 UI 状态；本篇拥有分层与数据源注册规则。
+نظام لا يوجد تجمع دمج صيغة `client/runtime` حزمة، أيضا لا يوجد بديل في وسط facade.[Session تاريخ و حدث نقل](2026-08-18-session-history-and-event-transport.zh.md) تعريف تاريخ وصل متابعة صفة.[Client جلسة مرجع](2026-09-15-client-session-references.zh.md) يملك مرجع نيل أخذ، دقيق بديل حد دورة الحياة، رئيسي منطقة مجال كل حق و موحد واحد UI حالة؛ هذا مقالة يملك قسم طبقة و بيانات مصدر تسجيل قاعدة.
 
-## 分层原则
+## قسم طبقة أصل فإن
 
-### Controller 是无 React 的逻辑 owner
+### Controller هو بلا React منطق owner
 
-Controller 可以作为 Cordis service 安装，但不拥有 React Context、React hook、Slot props 或组件。Controller snapshot 只包含自身拥有的事实，命令只改变 Host 或领域对象状态。
+Controller يمكن بصفة Cordis service تثبيت، لكن لا يملك React Context،React hook،Slot props أو مكون.Controller snapshot فقط يتضمن ذاته يملك واقع، أمر فقط تغيير Host أو مجال كائن حالة.
 
-UI 层可以同时读取多个 Controller 做一次导航决定，但不得把组合结果写回任一 Controller snapshot。UI adapter 也不复制 Controller 命令的业务实现。
+UI طبقة يمكن معا قراءة كثير عدد Controller فعل مرة تنقل قرار، لكن لا نيل يأخذ تركيب نتيجة كتابة عودة مهمة واحد Controller snapshot.UI adapter أيضا لا نسخ Controller أمر عمل خدمة تنفيذ.
 
-### UI adapter 拥有 React 接入
+### UI adapter يملك React وصل دخول
 
-每个标准 hook 归最接近其数据语义的 `ui-*` package。
+كل معيار hook عودة الأكثر وصل قريب ذلك بيانات دلالة `ui-*` package.
 
 | Hook | Owner | Source |
 | --- | --- | --- |
-| `useSessions` | `client/ui-session` | Session Controller 全局列表 |
-| `useSession` | `client/ui-session` | 已绑定会话快照 |
-| `useProjection` | `client/ui-session` | 已绑定会话的键控投影 |
-| `useSessionStatus` | `client/ui-session` | 运行状态、有效待处理请求和未读完成提醒 |
-| `useSessionRetainInfo` | `client/ui-session` | 控制器的只读引用来源计数 |
-| `useWorkspaces` | `client/ui-workspace` | Workspace Controller 列表 |
+| `useSessions` | `client/ui-session` | Session Controller عام قائمة |
+| `useSession` | `client/ui-session` | قد ربط جلسة لقطة |
+| `useProjection` | `client/ui-session` | قد ربط جلسة مفتاح تحكم إسقاط |
+| `useSessionStatus` | `client/ui-session` | تشغيل حالة، صالح انتظار معالجة طلب و لم قراءة إتمام رفع تنبيه |
+| `useSessionRetainInfo` | `client/ui-session` | تحكم جهاز فقط قراءة مرجع مصدر حساب عدد |
+| `useWorkspaces` | `client/ui-workspace` | Workspace Controller قائمة |
 | `useConversation` | `client/ui-conversation` | Conversation binding snapshot |
 | `useChat` | `client/ui-chat` | `chat` target source |
 | `useTrajectory` | `client/ui-trajectory` | `trajectory` target source |
 
-`ui-renderer` 只实现通用绑定，不 import Session、Workspace、Conversation、Chat 或 Trajectory 的业务类型和值。
+`ui-renderer` فقط تنفيذ عام ربط، لا import Session،Workspace،Conversation،Chat أو Trajectory عمل خدمة نوع و قيمة.
 
-### Slot scope 与标准 props 分离
+### Slot scope و معيار props قسم مغادرة
 
-`ui-slots` 声明 root、session 和 session-maybe scope，以及可通过 declaration merge 扩展的标准 props 类型；它不决定每个 scope 安装哪些 hook。
+`ui-slots` إعلان root،session و session-maybe scope، و يمكن عبر declaration merge توسيع معيار props نوع؛ هو لا قرار كل scope تثبيت أي بعض hook.
 
-`ui-renderer` 实现通用 scope adapter 与 source materialization。`ui-session` 安装 Session scope 并提供内建 source，其他领域 package 只注册自己的 source 和消费它的 Slot entry。
+`ui-renderer` تنفيذ عام scope adapter و source materialization.`ui-session` تثبيت Session scope و توفير داخل بناء source، أخرى مجال package فقط تسجيل ذاتي ذات source و إزالة استهلاك هو Slot entry.
 
-新增 target 不要求 renderer 或 Session Controller 增加分支。数据 owner 负责状态身份、更新、错误和释放；UI adapter 负责 hook；显示 owner 负责 target-specific projection 与交互状态。
+إضافة جديدة target لا اشتراط renderer أو Session Controller زيادة فرع. بيانات owner مسؤول حالة هوية، تحديث، خطأ و تحرير؛UI adapter مسؤول hook؛ عرض owner مسؤول target-specific projection و تفاعل حالة.
 
-## Package 所有权
+## Package كل حق
 
-| Package | 拥有内容 | 明确不拥有 |
+| Package | يملك محتوى | واضح لا يملك |
 | --- | --- | --- |
-| `api/session-controller/client` | 会话对象、目录、引用、来源计数、命令、投影、事件窗口与 Agent Context | 导航、完成提醒、Conversation target、React、Slot、Workspace |
-| `api/workspace-controller/client` | Workspace 对象、顺序、归档、命令和 snapshot | React、Session 导航策略、目录 UI |
-| `client/ui-session` | 显式会话作用域、标准数据源、`SessionProvider` 与统一 UI 状态 | 会话传输、引用所有权、Conversation 组装、Approval/Question 结果 |
-| `client/ui-workspace` | Workspace 钩子、浏览器 UI、主区域引用与跨控制器导航策略 | Workspace 传输、会话数据副本 |
-| `client/ui-conversation` | Conversation core、registry、binding、shell、input、composer、queue 和 View 导航 | Session transport、Chat/Trajectory snapshot |
-| `client/ui-chat` | Chat target、Node definitions、renderer、selection、details 和 locale | Session 生命周期、通用 View 导航、Trajectory、历史图片 cache |
-| `client/ui-trajectory` | Trajectory target、事件记录投影和检查视图 | Session snapshot、Chat snapshot |
-| `client/ui-approval` | Pending Approval、Remote listener、composer 和审批 UI | Session control、通用 composer election |
-| `client/ui-user-questions` | Pending Question、Remote listener、composer 和问题 UI | Session control、通用 composer election |
-| `client/store` | React-free store contract 与实现 | 领域对象、React hook、Slot 生命周期 |
-| `client/ui-renderer` | SlotRegistry、scope binding、selector hook、outlet 和 React root | Session、Workspace 与 Conversation 业务逻辑 |
+| `api/session-controller/client` | جلسة كائن، دليل، مرجع، مصدر حساب عدد، أمر، إسقاط، حدث نافذة و Agent Context | تنقل، إتمام رفع تنبيه،Conversation target،React،Slot،Workspace |
+| `api/workspace-controller/client` | Workspace كائن، ترتيب، عودة ملف، أمر و snapshot | React،Session تنقل سياسة، دليل UI |
+| `client/ui-session` | صريح جلسة أثر مجال، معيار بيانات مصدر،`SessionProvider` و موحد واحد UI حالة | جلسة نقل، مرجع كل حق،Conversation تجميع،Approval/Question نتيجة |
+| `client/ui-workspace` | Workspace خطاف، متصفح UI، رئيسي منطقة مجال مرجع و عبر تحكم جهاز تنقل سياسة | Workspace نقل، جلسة بيانات فرعي هذا |
+| `client/ui-conversation` | Conversation core،registry،binding،shell،input،composer،queue و View تنقل | Session transport،Chat/Trajectory snapshot |
+| `client/ui-chat` | Chat target،Node definitions،renderer،selection،details و locale | Session دورة الحياة، عام View تنقل،Trajectory، تاريخ صورة cache |
+| `client/ui-trajectory` | Trajectory target، حدث سجل إسقاط و فحص عرض | Session snapshot،Chat snapshot |
+| `client/ui-approval` | Pending Approval،Remote listener،composer و مراجعة دفعة UI | Session control، عام composer election |
+| `client/ui-user-questions` | Pending Question،Remote listener،composer و مشكلة UI | Session control، عام composer election |
+| `client/store` | React-free store contract و تنفيذ | مجال كائن،React hook،Slot دورة الحياة |
+| `client/ui-renderer` | SlotRegistry،scope binding،selector hook،outlet و React root | Session،Workspace و Conversation عمل خدمة منطق |
 
-## 总体数据流
+## مجموع جسم بيانات تدفق
 
-Session 数据按以下路径进入 UI：
+Session بيانات حسب التالي مسار دخول UI:
 
 ```text
 [ctx.remote.session]
@@ -118,345 +118,345 @@ Session 数据按以下路径进入 UI：
        useChat            useTrajectory
 ```
 
-Workspace 数据由 `ctx.remote.workspace` 进入 Workspace 控制器，再由 `ui-workspace` 通过 `useWorkspaces` 提供。`ui-workspace` 为跨领域导航读取显式目标并持有主区域引用，不把它变为默认业务 Context。
+Workspace بيانات من `ctx.remote.workspace` دخول Workspace تحكم جهاز، مجددا من `ui-workspace` عبر `useWorkspaces` توفير.`ui-workspace` لـ عبر مجال تنقل قراءة صريح هدف و يحتفظ رئيسي منطقة مجال مرجع، لا يأخذ هو تغيير لـ افتراضي عمل خدمة Context.
 
-Approval 与 Question 通过 `ctx.remote.$on` 从 Host waterfall 到达各自的 UI owner。各 owner 发布 Pending 对象；`ui-session.sessionStatus` 向 Workspace 标识和 Conversation composer 选择提供同一个有效对象。
+Approval و Question عبر `ctx.remote.$on` من Host waterfall وصول كل منها UI owner. كل owner إصدار Pending كائن؛`ui-session.sessionStatus` نحو Workspace معرف و Conversation composer اختيار توفير نفس عدد صالح كائن.
 
 ## Session Controller Client
 
-### SessionSnapshot 的范围
+### SessionSnapshot نطاق
 
-`SessionSnapshot` 表示 Session 自身的控制与生命周期事实。它可以包含 identity、running、removed、blank、subagent address、open phase、history phase、prompt error、agent error 和 queue 状态。
+`SessionSnapshot` يمثل Session ذاته تحكم و دورة الحياة واقع. هو يمكن يتضمن identity،running،removed،blank،subagent address،open phase،history phase،prompt error،agent error و queue حالة.
 
-它不包含以下数据：
+هو لا يتضمن التالي بيانات:
 
-- raw event array；
-- Conversation View；
-- Chat Node；
-- Trajectory row；
-- Approval 或 Question 的待处理对象；
-- 要求调用者遍历 event 才能解释的呈现状态。
+- raw event array؛
+- Conversation View؛
+- Chat Node؛
+- Trajectory row؛
+- Approval أو Question انتظار معالجة كائن؛
+- اشتراط استدعاء من مرة تاريخ event عندئذ قدرة حل تفسير عرض حالة.
 
-字段由 event、control frame 或本地命令推导，并不自动决定其 owner；消费语义决定 owner。`composerPhase` 同时依赖 Session lifecycle 与 Conversation target activity，因此由 `ui-conversation` 合成，不进入 `SessionSnapshot`。
+حقل من event،control frame أو محلي أمر دفع توجيه، و لا تلقائي قرار ذلك owner؛ إزالة استهلاك دلالة قرار owner.`composerPhase` معا اعتماد Session lifecycle و Conversation target activity، لذلك من `ui-conversation` دمج صار، لا دخول `SessionSnapshot`.
 
-### 三个读取面
+### ثلاثة عدد قراءة وجه
 
-Session Controller 对外提供三个互不替代的读取面：
+Session Controller مقابل خارج توفير ثلاثة عدد متبادل لا بديل قراءة وجه:
 
-1. 会话目录与本地所有权数据源，由 `useSessions` 和只读引用元数据消费方使用。
-2. 每个 Session 的逻辑 binding，包含 `sessionId`、`SessionSnapshot` source、commands 与 projection sources。
-3. Conversation-facing `SessionEventSource`，只供 Conversation assemble core 使用。
+1. جلسة دليل و محلي كل حق بيانات مصدر، من `useSessions` و فقط قراءة مرجع بيانات وصفية مستهلك استخدام.
+2. كل Session منطق binding، يتضمن `sessionId`،`SessionSnapshot` source،commands و projection sources.
+3. Conversation-facing `SessionEventSource`، فقط توفير Conversation assemble core استخدام.
 
-普通 UI component 不直接读取 `SessionEventSource`。`ui-session` 不读取私有 event window，`ui-conversation` core 也不接收 React binding 或 Slot API。
+عادي UI component لا مباشر قراءة `SessionEventSource`.`ui-session` لا قراءة خاص event window،`ui-conversation` core أيضا لا استقبال React binding أو Slot API.
 
 ### SessionEventSource
 
-`SessionEventSource` 暴露已经物化的事件窗口，而不是 transport。
+`SessionEventSource` كشف قد شيء تحويل حدث نافذة، بينما لا هو transport.
 
-窗口携带有序 `entries`、`hasMore`、单调 `revision`，以及 `replace | prepend | append` 变更描述。Append 以常数时间连接不可变片段；需要完整 `entries` 数组的消费者才为该 snapshot 物化并缓存数组。
+نافذة يحمل لديه ترتيب `entries`،`hasMore`، مفرد ضبط `revision`، و `replace | prepend | append` تغيير وصف.Append بـ معتاد عدد وقت اتصال غير ممكن تغيير قطعة مقطع؛ حاجة كامل `entries` عدد مجموعة إزالة استهلاك من عندئذ لـ هذا snapshot شيء تحويل و ذاكرة مؤقتة عدد مجموعة.
 
-首次打开、重连、gap repair 和无法证明连续性的更新发布 `replace`；历史分页发布 `prepend`；连续 live event 发布 `append`。Conversation core 依据 revision 与 change 选择增量更新或完整 rebuild。
+أول مرة فتح، إعادة وصل،gap repair و لا يمكن إثبات وصل متابعة صفة تحديث إصدار `replace`؛ تاريخ قسم صفحة إصدار `prepend`؛ وصل متابعة live event إصدار `append`.Conversation core اعتماد حسب revision و change اختيار زيادة كمية تحديث أو كامل rebuild.
 
-`MutableSessionEventSource` 是 Session Controller 内部写端，消费者只依赖只读的 `SessionEventSource`。
+`MutableSessionEventSource` هو Session Controller داخلي كتابة طرف، إزالة استهلاك من فقط اعتماد فقط قراءة `SessionEventSource`.
 
-### Session binding 生命周期
+### Session binding دورة الحياة
 
-每个活跃会话 generation 持有 Cordis Context 与 Fiber。控制器在获取引用时创建绑定，并在最后一份引用释放或根销毁时结束该绑定。
+كل نشط وثب جلسة generation يحتفظ Cordis Context و Fiber. تحكم جهاز في نيل أخذ مرجع وقت إنشاء ربط، و في الأكثر بعد واحد نسخة مرجع تحرير أو أصل إلغاء تدمير وقت انتهاء هذا ربط.
 
-依赖会话的对象通过 `binding.ctx.effect()` 注册清理。generation 结束会清理 Conversation 绑定、UI 物化结果和作用域 Slot 存储，无需单独的 `onBindingRelease` 或 `onRelease` 回调协议。
+اعتماد جلسة كائن عبر `binding.ctx.effect()` تسجيل تنظيف.generation انتهاء سوف تنظيف Conversation ربط،UI شيء تحويل نتيجة و أثر مجال Slot تخزين، بلا حاجة مفرد وحيد `onBindingRelease` أو `onRelease` عودة ضبط بروتوكول.
 
-这种清理方式不要求 Session Controller 了解上层消费者名册。
+هذا نوع تنظيف طريقة لا اشتراط Session Controller حل فوق طبقة إزالة استهلاك من اسم سجل.
 
 ## UI Session
 
-### 服务职责
+### خدمة مسؤولية
 
-`client/ui-session` 是 Session Controller 与 React/Slot 系统之间唯一的 Session adapter。它提供 `ctx.uiSession`，并负责：
+`client/ui-session` هو Session Controller و React/Slot نظام بين وحيد Session adapter. هو توفير `ctx.uiSession`، و مسؤول:
 
-- 观察会话目录、本地引用元数据和显式提供的绑定；
-- 安装 session 与 session-maybe scope adapter；
-- 提供 `SessionProvider` 的呈现语义；
-- 内建 session snapshot、projection 和 sessionId source；
-- 接收其他领域 package 的 Session-scoped source contribution；
-- 在 `sessionStatus` 中组合领域持有的待处理交互、运行事实和完成提醒。
+- مراقبة جلسة دليل، محلي مرجع بيانات وصفية و صريح توفير ربط؛
+- تثبيت session و session-maybe scope adapter؛
+- توفير `SessionProvider` عرض دلالة؛
+- داخل بناء session snapshot،projection و sessionId source؛
+- استقبال أخرى مجال package Session-scoped source contribution؛
+- في `sessionStatus` في تركيب مجال يحتفظ انتظار معالجة تفاعل، تشغيل واقع و إتمام رفع تنبيه.
 
-它不拥有 Session transport、event folding、Conversation target 或具体业务结果。
+هو لا يملك Session transport،event folding،Conversation target أو أداة جسم عمل خدمة نتيجة.
 
-### 标准 source 注册
+### معيار source تسجيل
 
-领域 package 调用 `ctx.uiSession.provide()` 注册 bare source。Descriptor 静态声明 hooks、keyedHooks 和 props 名册，`resolve(binding)` 为一个 Session binding 返回完全对应的值；例如 `ui-conversation` 把每个 binding 的 snapshot 注册为 `conversation` hook source。
+مجال package استدعاء `ctx.uiSession.provide()` تسجيل bare source.Descriptor ساكن حالة إعلان hooks،keyedHooks و props اسم سجل،`resolve(binding)` لـ واحد Session binding إرجاع تماما مقابل قيمة؛ مثال مثل `ui-conversation` يأخذ كل binding snapshot تسجيل لـ `conversation` hook source.
 
-普通 source 被 renderer 转换成 `use<Name>`，Projection 等开放 key 空间通过 keyed hook resolver 暴露，稳定值通过 props 暴露。
+عادي source يتم renderer تحويل صار `use<Name>`،Projection انتظار فتح وضع key فضاء عبر keyed hook resolver كشف، مستقر قيمة عبر props كشف.
 
-运行时拒绝未声明、缺失或重复的标准 prop。`ui-session` 自身也走相同 materialization，renderer 不为 Session 名字写特殊分支。
+وقت التشغيل رفض لم إعلان، ناقص أو تكرار معيار prop.`ui-session` ذاته أيضا مشي نفسه materialization،renderer لا لـ Session اسم حرف كتابة خاص خاص فرع.
 
 ### Scope binding
 
-session 与 session-maybe 使用同一个 adapter，但绑定语义不同：
+session و session-maybe استخدام نفس عدد adapter، لكن ربط دلالة مختلف:
 
-- 严格会话作用域在没有显式提供的绑定时拒绝渲染；
-- session-maybe 使用稳定 absent binding，保持 hook 调用顺序；
-- 精确 Context generation 改变时重新挂载已绑定子树，同一 id 的替代 generation 也如此；
-- 未绑定的 session-maybe 条目无需重新挂载即可接纳首个绑定；root 条目没有会话绑定。
+- صارم إطار جلسة أثر مجال في لا يوجد صريح توفير ربط وقت رفض تصيير؛
+- session-maybe استخدام مستقر absent binding، إبقاء hook استدعاء ترتيب؛
+- دقيق Context generation تغيير وقت إعادة تركيب قد ربط فرعي شجرة، نفس id بديل generation أيضا مثل هذا؛
+- لم ربط session-maybe بند بلا حاجة إعادة تركيب يكفي وصل قبول أول عدد ربط؛root بند لا يوجد جلسة ربط.
 
-每个 UI 物化结果借用控制器绑定的 Context。`ui-session` 通过 `binding.ctx.effect()` 移除该 generation 的缓存项并发布空值，不会 retain 会话。
+كل UI شيء تحويل نتيجة استعارة استخدام تحكم جهاز ربط Context.`ui-session` عبر `binding.ctx.effect()` إزالة هذا generation ذاكرة مؤقتة بند تزامن نشر فارغ قيمة، لن retain جلسة.
 
-Contribution roster 变化会重建已 materialize 的 binding 并发布新的 source 集合。同一 binding 生命周期内，source identity 保持稳定，以满足 `useSyncExternalStore` 的缓存要求。
+Contribution roster تغير سوف إعادة بناء قد materialize binding تزامن نشر جديد source تجميع دمج. نفس binding دورة الحياة داخل،source identity إبقاء مستقر، بـ ممتلئ كاف `useSyncExternalStore` ذاكرة مؤقتة اشتراط.
 
 ### SessionProvider
 
-`SessionProvider` 是 `PropsRenderSlots` 根据 session-scoped child 声明派生的标准席，不是业务 component 直接 import 的 React Context。
+`SessionProvider` هو `PropsRenderSlots` أصل حسب session-scoped child إعلان إرسال توليد معيار مقعد، لا هو عمل خدمة component مباشر import React Context.
 
-它接收普通 `ReactNode` children 和必填的 `session={reference | undefined}`。Provider 借用调用方持有的引用，不获取或释放它；调用方直接包住 `renderSlot('details', {})`。
+هو استقبال عادي `ReactNode` children و لا بد ملء `session={reference | undefined}`.Provider استعارة استخدام استدعاء جهة يحتفظ مرجع، لا نيل أخذ أو تحرير هو؛ استدعاء جهة مباشر حزمة إقامة `renderSlot('details', {})`.
 
-会话身份通过显式作用域绑定和标准 `sessionId` prop 到达组件。空 Provider 保持未绑定，嵌套 Provider 和 root 条目都不会回退到主区域会话。
+جلسة هوية عبر صريح أثر مجال ربط و معيار `sessionId` prop وصول مكون. فارغ Provider إبقاء لم ربط، تضمين طقم Provider و root بند كل لن رجوع إلى رئيسي منطقة مجال جلسة.
 
 ### Pending interaction
 
-`SessionPendingInteractionMap` 由业务 package declaration merge 扩展。每个 pending object 至少携带稳定 `key`、领域 `kind` 和 `sessionId`；`ui-session` 不 import Approval 或 Question 的具体类型。
+`SessionPendingInteractionMap` من عمل خدمة package declaration merge توسيع. كل pending object حتى قليل يحمل مستقر `key`، مجال `kind` و `sessionId`؛`ui-session` لا import Approval أو Question أداة جسم نوع.
 
-业务 plugin 在 `apply()` 中调用 `registerPendingInteraction(precedence)`，为自己的 pending domain 建立稳定注册。该调用返回逐请求 publication function；publication function 同时发布精确对象及其 waterfall 委托回调，并返回移除该对象的幂等 disposer。Plugin teardown 会先移除所有已发布对象，再调用并等待其委托回调，避免 Client 回答者卸载后 Host 请求继续悬挂。
+عمل خدمة plugin في `apply()` في استدعاء `registerPendingInteraction(precedence)`، لـ ذاتي ذات pending domain بناء قيام مستقر تسجيل. هذا استدعاء إرجاع تدريجي طلب publication function؛publication function معا إصدار دقيق كائن و ذلك waterfall تفويض حمل عودة ضبط، و إرجاع إزالة هذا كائن قوة انتظار disposer.Plugin teardown سوف أولا إزالة كل قد إصدار كائن، مجددا استدعاء و انتظار ذلك تفويض حمل عودة ضبط، تجنب تجنب Client عودة جواب من إزالة بعد Host طلب متابعة معلق تعليق.
 
-相同 key 的并发对象被拒绝，替换请求必须使用新 key。同一 Session 可以同时存在多个领域或多个请求。
+نفسه key تزامن كائن يتم رفض، استبدال طلب يجب استخدام جديد key. نفس Session يمكن معا وجود كثير عدد مجال أو كثير عدد طلب.
 
-`ui-session` 使用各 domain 的 precedence 选出每个 Session 当前生效的对象。较高 precedence 胜出，相同 precedence 下后遍历到的有效对象胜出。
+`ui-session` استخدام كل domain precedence اختيار خروج كل Session حالي توليد فاعلية كائن. مقارنة عال precedence فوز خروج، نفسه precedence تحت بعد مرة تاريخ إلى صالح كائن فوز خروج.
 
-待处理聚合是 `ui-session` 的私有实现；其有效请求原样出现在 `sessionStatus.getSnapshot().get(id)?.pendingInteraction` 中。`useSessionStatus` 是公开 UI 读取接口。
+انتظار معالجة تجمع دمج هو `ui-session` خاص تنفيذ؛ ذلك صالح طلب أصل مثال ظهور في `sessionStatus.getSnapshot().get(id)?.pendingInteraction` في.`useSessionStatus` هو عام UI قراءة واجهة.
 
-Session 导航状态和 composer takeover 必须读取同一个 effective object，不得分别维护 status map 或 takeover roster。
+Session تنقل حالة و composer takeover يجب قراءة نفس عدد effective object، لا نيل قسم آخر صيانة status map أو takeover roster.
 
-## Workspace Controller 与 UI Workspace
+## Workspace Controller و UI Workspace
 
-### WorkspaceSnapshot 的范围
+### WorkspaceSnapshot نطاق
 
-`WorkspaceSnapshot` 只包含 Workspace Controller 拥有的 Host-authoritative 数据，包括 Workspace rows、顺序、archive set、follow phase 和错误。Workspace row 的 `sessionIds` 是关联字段，不等于把 Session 对象复制进 Workspace snapshot。
+`WorkspaceSnapshot` فقط يتضمن Workspace Controller يملك Host-authoritative بيانات، يشمل Workspace rows، ترتيب،archive set،follow phase و خطأ.Workspace row `sessionIds` هو صلة ربط حقل، لا انتظار في يأخذ Session كائن نسخ دخول Workspace snapshot.
 
-以下组合事实不进入 `WorkspaceSnapshot`：
+التالي تركيب واقع لا دخول `WorkspaceSnapshot`:
 
-- Workspace 与 Session 两条 baseline 是否同时 ready；
-- 根据 Session 更新时间推导的最近 Workspace；
-- 当前 Session 是否因归档而清除；
-- New Session 应复用哪个 blank Session；
-- 首次启动应选择哪个 Session。
+- Workspace و Session اثنان بند baseline هل معا ready؛
+- أصل حسب Session تحديث وقت دفع توجيه الأكثر قريب Workspace؛
+- حالي Session هل بسبب عودة ملف بينما صاف حذف؛
+- New Session ينبغي إعادة استخدام أي عدد blank Session؛
+- أول مرة بدء ينبغي اختيار أي عدد Session.
 
-### UI Workspace 的组合职责
+### UI Workspace تركيب مسؤولية
 
-`client/ui-workspace` 把 Workspace list source 注册为 root 标准 source `workspaces`，renderer 由此提供 `useWorkspaces`。
+`client/ui-workspace` يأخذ Workspace list source تسجيل لـ root معيار source `workspaces`،renderer من هذا توفير `useWorkspaces`.
 
-启动恢复、空白会话复用、新会话导航、并发创建合并与归档后的导航属于 UI 策略。`ui-workspace` 可以读取两个控制器，但把主目标和引用保存在自己的导航 owner 中，不向控制器快照写入 UI 选择。
+بدء استعادة، فارغ أبيض جلسة إعادة استخدام، جديد جلسة تنقل، تزامن إنشاء دمج و عودة ملف بعد تنقل يخص UI سياسة.`ui-workspace` يمكن قراءة اثنان عدد تحكم جهاز، لكن يأخذ رئيسي هدف و مرجع حفظ في ذاتي ذات تنقل owner في، لا نحو تحكم جهاز لقطة كتابة UI اختيار.
 
-目录 picker、目录浏览和 `openPath` 属于独立目录能力，不进入 Workspace Controller。
+دليل picker، دليل تصفح تصفح و `openPath` يخص مستقل دليل قدرة، لا دخول Workspace Controller.
 
 ## UI Conversation
 
 ### Assemble core
 
-`client/ui-conversation` 同时包含不依赖 React 的 Conversation assemble core 和同领域的 React adapter。
+`client/ui-conversation` معا يتضمن لا اعتماد React Conversation assemble core و نفس مجال React adapter.
 
-Core 拥有 `ConversationSnapshot`、Definition registry、View registry、event assembler、location index、每 Session binding、target source 和 target activity。
+Core يملك `ConversationSnapshot`،Definition registry،View registry،event assembler،location index، كل Session binding،target source و target activity.
 
-Core 从 Session binding 取得 `SessionEventSource`。连续 revision 的 append 与 prepend 使用增量组装；replace 或 revision 断档从完整窗口 rebuild。
+Core من Session binding أخذ نيل `SessionEventSource`. وصل متابعة revision append و prepend استخدام زيادة كمية تجميع؛replace أو revision قطع ملف من كامل نافذة rebuild.
 
-Definition 或 View roster 变化只重建 Conversation binding，不重建 Session 或重开 Remote stream。Core 不 import React，可独立测试事件折叠、增量更新和 registry lifecycle。
+Definition أو View roster تغير فقط إعادة بناء Conversation binding، لا إعادة بناء Session أو إعادة فتح Remote stream.Core لا import React، يمكن مستقل اختبار حدث طي، زيادة كمية تحديث و registry lifecycle.
 
-`ConversationSnapshot` 不复制 `SessionSnapshot`，也不暴露 raw events；它只发布 target-neutral 的 View 名册、target activity 和 target source lookup。
+`ConversationSnapshot` لا نسخ `SessionSnapshot`، أيضا لا كشف raw events؛ هو فقط إصدار target-neutral View اسم سجل،target activity و target source lookup.
 
-`useSession` 与 `useConversation` 来自两个 source，不承诺在同一个 React commit 原子发布。同时读取两者的组件按当前 snapshot 纯计算，不把通知顺序解释为业务因果。
+`useSession` و `useConversation` قدوم ذاتي اثنان عدد source، لا تحمل وعد في نفس عدد React commit أصل فرعي إصدار. معا قراءة اثنان من مكون حسب حالي snapshot صاف حساب حساب، لا يأخذ إشعار ترتيب حل تفسير لـ عمل خدمة بسبب نتيجة.
 
-### Definition 与 View registry
+### Definition و View registry
 
-`UiConversation.events` 是 event Definition 的唯一 registry，`UiConversation.views` 是 target snapshot builder 的唯一 registry。
+`UiConversation.events` هو event Definition وحيد registry،`UiConversation.views` هو target snapshot builder وحيد registry.
 
-Registry 拒绝重复 key，保持注册顺序并返回幂等 disposer。Roster 变化时，现有 Conversation binding 使用当前 event window 重建；同一同步注册轮次中的变化会合并为一次 microtask 重建。
+Registry رفض تكرار key، إبقاء تسجيل ترتيب و إرجاع قوة انتظار disposer.Roster تغير وقت، قائم Conversation binding استخدام حالي event window إعادة بناء؛ نفس تزامن تسجيل جولة في تغير سوف دمج لـ مرة microtask إعادة بناء.
 
-Target package 通过 declaration merge 扩展 snapshot 与 location data map，再向 registry 注册自己的 Definition、builder 和 View。注册随 Cordis effect 释放。
+Target package عبر declaration merge توسيع snapshot و location data map، مجددا نحو registry تسجيل ذاتي ذات Definition،builder و View. تسجيل مع Cordis effect تحرير.
 
-`ui-conversation` 不 import 具体 target package。
+`ui-conversation` لا import أداة جسم target package.
 
 ### Conversation React adapter
 
-React adapter 把每个 Conversation binding 的 snapshot 注册为 Session 标准 source `conversation`，renderer 由此提供 `useConversation`。
+React adapter يأخذ كل Conversation binding snapshot تسجيل لـ Session معيار source `conversation`،renderer من هذا توفير `useConversation`.
 
-同包还拥有 shell、input、composer chain、queue UI、draft、View navigation 和 phase 合成；Core 不读取 React Context、Slot props 或 component state。
+نفس حزمة أيضا يملك shell،input،composer chain،queue UI،draft،View navigation و phase دمج صار؛Core لا قراءة React Context،Slot props أو component state.
 
-View 选择顺序固定为：有效的持久化 selection、已注册的 `chat`、无 View。无效 selection 不覆盖持久化值，系统不 fallback 到第一个已注册 View。
+View اختيار ترتيب ثابت لـ: صالح حفظ دائم selection، قد تسجيل `chat`، بلا View. بلا فاعلية selection لا تغطية حفظ دائم قيمة، نظام لا fallback إلى رقم واحد قد تسجيل View.
 
-没有 `ui-chat` 时 shell 仍能激活和 mount，但不会隐式选择 Trajectory 或其他 target。
+لا يوجد `ui-chat` وقت shell ما زال قدرة تنشيط و mount، لكن لن خفي صيغة اختيار Trajectory أو أخرى target.
 
-Shell phase 由 Session lifecycle 与 Conversation target activity 纯合成。Session 已 active 或任一 target 报告可见内容时显示 active；首条 prompt 失败仍保持 engaging。
+Shell phase من Session lifecycle و Conversation target activity صاف دمج صار.Session قد active أو مهمة واحد target تقرير إبلاغ مرئي محتوى وقت عرض active؛ أول بند prompt فشل ما زال إبقاء engaging.
 
-### Input 与 composer
+### Input و composer
 
-composer chain 属于 `ui-conversation`，具体接管属于业务包。`ConversationRoot` 通过 `useSessionStatus` 读取已绑定会话的有效请求，并作为 `ComposerChainProps.pendingInteraction` 提供给 chain selector。
+composer chain يخص `ui-conversation`، أداة جسم وصل إدارة يخص عمل خدمة حزمة.`ConversationRoot` عبر `useSessionStatus` قراءة قد ربط جلسة صالح طلب، و بصفة `ComposerChainProps.pendingInteraction` توفير إعطاء chain selector.
 
-Selector 是 owner currency 的纯函数，非 null 结果作为 `matched` 传给获选 component。Stable composer entry 与默认 composer 可以同时常驻，chain 只选择一个有效呈现。
+Selector هو owner currency صاف دالة، غير null نتيجة بصفة `matched` نقل إعطاء نيل اختيار component.Stable composer entry و افتراضي composer يمكن معا معتاد إقامة،chain فقط اختيار واحد صالح عرض.
 
-Draft 与输入状态属于 Conversation UI，不进入 Session snapshot。Queue command 通过 Session-scoped service 寻址，不把 queue UI 写入 Conversation core。
+Draft و إدخال حالة يخص Conversation UI، لا دخول Session snapshot.Queue command عبر Session-scoped service بحث عنوان، لا يأخذ queue UI كتابة Conversation core.
 
-## Chat 与 Trajectory target
+## Chat و Trajectory target
 
 ### Chat owner
 
-`client/ui-chat` 注册 target id `chat`，并拥有 Chat snapshot builder、Conversation Node definitions、keyed node renderers、selection、details、stats、locale 和 tool inspection 协作。
+`client/ui-chat` تسجيل target id `chat`، و يملك Chat snapshot builder،Conversation Node definitions،keyed node renderers،selection،details،stats،locale و tool inspection تنسيق عمل.
 
-它通过 `ctx.uiSession.provide()` 注册 `chat` target source。`ChatView` 使用 `useChat` 读取聚合 order、navigation 与 timeline；每个 `ChatNodeSeat` 从该 snapshot 接收身份稳定的 Node 与 Turn-process source，不订阅聚合 source。
+هو عبر `ctx.uiSession.provide()` تسجيل `chat` target source.`ChatView` استخدام `useChat` قراءة تجمع دمج order،navigation و timeline؛ كل `ChatNodeSeat` من هذا snapshot استقبال هوية مستقر Node و Turn-process source، لا حجز قراءة تجمع دمج source.
 
-Chat activity 只由可见且非 command 的 Chat Node 激活。普通 command-only history 保持 Hero，`/goal` 的 `command-input` Node 激活 fresh Conversation。
+Chat activity فقط من مرئي كما غير command Chat Node تنشيط. عادي command-only history إبقاء Hero،`/goal` `command-input` Node تنشيط fresh Conversation.
 
-历史图片 cache 已移入 `ui-conversation`（`ctx.uiConversation.imageUrl`），Chat 与 Trajectory 对同一会话附件共享一次授权读取和一个浏览器 URL（[Trajectory 持久化图片附件](../../archived/feature/2026-08-24-trajectory-image-attachments.md)）；Draft 图片仍属于 Conversation input。
+تاريخ صورة cache قد نقل دخول `ui-conversation`(`ctx.uiConversation.imageUrl`) ،Chat و Trajectory مقابل نفس جلسة مرفق عنصر مشترك مرة تخويل قراءة و واحد متصفح URL([Trajectory حفظ دائم صورة مرفق عنصر](../../archived/feature/2026-08-24-trajectory-image-attachments.md)) ؛Draft صورة ما زال يخص Conversation input.
 
 ### Trajectory owner
 
-`client/ui-trajectory` 通过相同 target 协议注册 `trajectory`。它拥有事件记录、时间线、虚拟行、selection 和 inspection view，并通过标准 source 提供 `useTrajectory`。
+`client/ui-trajectory` عبر نفسه target بروتوكول تسجيل `trajectory`. هو يملك حدث سجل، وقت خط، وهمي محاكاة سطر،selection و inspection view، و عبر معيار source توفير `useTrajectory`.
 
-Session 生命周期读取 `useSession`，Trajectory 数据读取 `useTrajectory`。Trajectory 不通过 Session snapshot 或 Chat snapshot 取得自己的数据。
+Session دورة الحياة قراءة `useSession`،Trajectory بيانات قراءة `useTrajectory`.Trajectory لا عبر Session snapshot أو Chat snapshot أخذ نيل ذاتي ذات بيانات.
 
-其他 target 使用同一注册流程，不修改 renderer、Session Controller 或 ui-session。
+أخرى target استخدام نفس تسجيل مسار، لا تعديل renderer،Session Controller أو ui-session.
 
-## Approval 与 Question
+## Approval و Question
 
-### 稳定注册
+### مستقر تسجيل
 
-Approval 和 Question 的 plugin 安装分为稳定注册与单次请求处理。`apply()` 注册 locale、调用 `registerPendingInteraction()` 注册本领域 pending domain，并向 `conversation.composer` 注册唯一稳定 entry。
+Approval و Question plugin تثبيت قسم لـ مستقر تسجيل و مفرد مرة طلب معالجة.`apply()` تسجيل locale، استدعاء `registerPendingInteraction()` تسجيل هذا مجال pending domain، و نحو `conversation.composer` تسجيل وحيد مستقر entry.
 
-Approval 的 detail child Slot 也由稳定 entry 声明。并发请求和 Session 数量不会增加 composer entry 或重复声明 Slot，所有注册随 plugin fiber 释放。
+Approval detail child Slot أيضا من مستقر entry إعلان. تزامن طلب و Session عدد كمية لن زيادة composer entry أو تكرار إعلان Slot، كل تسجيل مع plugin fiber تحرير.
 
-### 单次 waterfall 请求
+### مفرد مرة waterfall طلب
 
-Remote Event listener 从自身 Agent Context 解析 Session。没有 Session scope 时调用 `next()` 继续 waterfall；存在 Session scope 时创建 `PendingApproval` 或 `PendingQuestion`。
+Remote Event listener من ذاته Agent Context تحليل Session. لا يوجد Session scope وقت استدعاء `next()` متابعة waterfall؛ وجود Session scope وقت إنشاء `PendingApproval` أو `PendingQuestion`.
 
-Listener 通过已注册 domain 的 publication function 发布对象，等待用户完成、取消或请求 signal 中止，并在 `finally` 中精确移除对象。
+Listener عبر قد تسجيل domain publication function إصدار كائن، انتظار مستخدم إتمام، إلغاء أو طلب signal في توقف، و في `finally` في دقيق إزالة كائن.
 
-单次请求不注册 Slot，不创建第二套 lifecycle effect，也不修改 Session snapshot。
+مفرد مرة طلب لا تسجيل Slot، لا إنشاء ثاني طقم lifecycle effect، أيضا لا تعديل Session snapshot.
 
-Approval 暴露 allow 与 reject，Question 暴露 answer 与 cancel。用户主动取消 Question 返回 `ASK_CANCELLED`；等待中的请求被 `AbortSignal` 中止时返回 `UserQuestionError(ASK_ABORTED)`，不泄漏载体的 `AbortError` 或普通 `Error`。
+Approval كشف allow و reject،Question كشف answer و cancel. مستخدم رئيسي حركة إلغاء Question إرجاع `ASK_CANCELLED`؛ انتظار في طلب يتم `AbortSignal` في توقف وقت إرجاع `UserQuestionError(ASK_ABORTED)`، لا تسرب تسرب تحميل جسم `AbortError` أو عادي `Error`.
 
-Gateway 只要求 Remote Event 参数和结果是合法 JSON 传输值，不复制 Question 选项的领域校验。
+Gateway فقط اشتراط Remote Event معامل و نتيجة هو دمج قاعدة JSON نقل قيمة، لا نسخ Question خيار مجال تحقق.
 
-### 单一 pending 投影
+### مفرد واحد pending إسقاط
 
-Sidebar 与 composer 消费 `sessionStatus` 中同一个有效待处理请求。导航根据其 `kind` 显示审批、计划审阅或问题状态；每个 composer 条目按对象身份选择自己的面板。
+Sidebar و composer إزالة استهلاك `sessionStatus` في نفس عدد صالح انتظار معالجة طلب. تنقل أصل حسب ذلك `kind` عرض مراجعة دفعة، حساب تخطيط مراجعة قراءة أو مشكلة حالة؛ كل composer بند حسب كائن هوية اختيار ذاتي ذات وجه لوح.
 
-同一请求 identity 同时驱动两处 UI。新请求替换同类型旧请求时使用新 key，因此 selector 与订阅者都观察到身份变化。
+نفس طلب identity معا قيادة اثنان موضع UI. جديد طلب استبدال نفس نوع قديم طلب وقت استخدام جديد key، لذلك selector و حجز قراءة من كل مراقبة إلى هوية تغير.
 
-`ui-session` 只实现跨领域 precedence，不解释 Approval 或 Question 的字段。
+`ui-session` فقط تنفيذ عبر مجال precedence، لا حل تفسير Approval أو Question حقل.
 
-## UI Renderer 与 Store
+## UI Renderer و Store
 
 ### UI Renderer
 
-`client/ui-renderer` 拥有 `SlotRegistry` service 和 React renderer。它负责：
+`client/ui-renderer` يملك `SlotRegistry` service و React renderer. هو مسؤول:
 
-- `ctx.slots.register()`、`inject()`、`renderSlot()` 与声明生命周期；
-- root、session 和 session-maybe scope adapter；
-- 标准 observable source 到 selector hook 的绑定；
-- Slot outlet、错误隔离、root mount 与 hydration；
-- 按 scope key 管理 Slot store instance 生命周期。
+- `ctx.slots.register()`،`inject()`،`renderSlot()` و إعلان دورة الحياة؛
+- root،session و session-maybe scope adapter؛
+- معيار observable source إلى selector hook ربط؛
+- Slot outlet، خطأ عزل،root mount و hydration؛
+- حسب scope key إدارة Slot store instance دورة الحياة.
 
-Renderer 可以认识通用 scope 名称和 binding 协议，但不读取领域 service。渲染 Session scope 而没有安装 adapter 是装配错误，并立即失败。
+Renderer يمكن إقرار تعرف عام scope اسم و binding بروتوكول، لكن لا قراءة مجال service. تصيير Session scope بينما لا يوجد تثبيت adapter هو تركيب إعداد خطأ، و قيام أي فشل.
 
 ### Store
 
-`client/store` 是 React-free 普通库，拥有 `ObservableSnapshot`、`SnapshotStore`、`defineStore`、`createSnapshotStore` 和 `shallowEqual`。
+`client/store` هو React-free عادي مكتبة، يملك `ObservableSnapshot`،`SnapshotStore`،`defineStore`،`createSnapshotStore` و `shallowEqual`.
 
-`ui-slots` 引用 store contract，`ui-renderer` 管理 store instance 并提供 `useStore`。
+`ui-slots` مرجع store contract،`ui-renderer` إدارة store instance و توفير `useStore`.
 
-Store 只承载 draft、View selection、Chat selection、inspection request 和面板尺寸等观看或交互状态。Session、Workspace、Conversation、Remote stream 和 connection generation 不进入 Store。
+Store فقط تحمل تحميل draft،View selection،Chat selection،inspection request و وجه لوح مقياس قياس انتظار مراقبة نظر أو تفاعل حالة.Session،Workspace،Conversation،Remote stream و connection generation لا دخول Store.
 
-### 注册与释放顺序
+### تسجيل و تحرير ترتيب
 
-一个 plugin 同时提供 source 与 Slot entry 时，先注册 source，再注册 entry。Cordis 反向 disposal 先移除 entry，再移除 source，仍挂载的 entry 因而不会短暂失去必需 hook。
+واحد plugin معا توفير source و Slot entry وقت، أولا تسجيل source، مجددا تسجيل entry.Cordis عكس نحو disposal أولا إزالة entry، مجددا إزالة source، ما زال تركيب entry بسبب بينما لن قصير مؤقت فقد ذهاب مطلوب hook.
 
-最后一份会话引用释放后，通过 `binding.ctx.effect()` 清理 UI 物化结果和作用域存储。插件 fiber 释放通过注册 disposer 清理数据源、监听器和 Slot 条目。
+الأكثر بعد واحد نسخة جلسة مرجع تحرير بعد، عبر `binding.ctx.effect()` تنظيف UI شيء تحويل نتيجة و أثر مجال تخزين. إضافة fiber تحرير عبر تسجيل disposer تنظيف بيانات مصدر، مستمع و Slot بند.
 
-所有 disposer 都可重复调用，不依赖 Cordis 生命周期以外的隐式回调。
+كل disposer كل يمكن تكرار استدعاء، لا اعتماد Cordis دورة الحياة بـ خارج خفي صيغة عودة ضبط.
 
-## 组合与依赖方向
+## تركيب و اعتماد جهة نحو
 
-应用 bundle 显式安装所需 Controller、adapter、target 和 renderer plugin。每个 owner 的 `apply()` 只安装自己的 service、listener 和 contribution。
+تطبيق bundle صريح تثبيت الذي يحتاج Controller،adapter،target و renderer plugin. كل owner `apply()` فقط تثبيت ذاتي ذات service،listener و contribution.
 
-运行时消费方向是 `session-controller → ui-session → ui-conversation → target UI`、`workspace-controller → ui-workspace` 和 `store → ui-slots → ui-renderer`；Approval 与 Question 只依赖 `ui-session` 提供的 pending 注册点。
+وقت التشغيل مستهلك نحو هو `session-controller → ui-session → ui-conversation → target UI`،`workspace-controller → ui-workspace` و `store → ui-slots → ui-renderer`؛Approval و Question فقط اعتماد `ui-session` توفير pending تسجيل نقطة.
 
-图中的箭头表示运行时消费关系，不覆盖 type-only declaration merge 边。Controller 不反向依赖 UI adapter，renderer 不反向依赖领域 package，Conversation core 不依赖具体 target。
+رسم في سهم رأس يمثل وقت التشغيل إزالة استهلاك علاقة، لا تغطية type-only declaration merge حافة.Controller لا عكس نحو اعتماد UI adapter،renderer لا عكس نحو اعتماد مجال package،Conversation core لا اعتماد أداة جسم target.
 
-UI component 不接收 `ctx`。跨 package 协作使用 Cordis service、standard source 或 Slot registration，不新增聚合 facade。
+UI component لا استقبال `ctx`. عبر package تنسيق عمل استخدام Cordis service،standard source أو Slot registration، لا إضافة جديدة تجمع دمج facade.
 
-## 开发者遵循方式
+## تطوير من التزام دوران طريقة
 
-### 先确定数据 owner
+### أولا تحديد بيانات owner
 
-新增状态前先按消费语义确定唯一 owner：Host 通信、命令和实体生命周期归 API Controller；由 Session events 形成且与 target 无关的数据归 Conversation core；只服务一种 View 的投影归对应 target package；草稿、选择和面板状态归拥有该交互的 UI package。
+إضافة جديدة حالة قبل أولا حسب إزالة استهلاك دلالة تحديد وحيد owner:Host عبر معلومة، أمر و فعلي جسم دورة الحياة عودة API Controller؛ من Session events شكل صار كما و target غير متصل بيانات عودة Conversation core؛ فقط خدمة واحد نوع View إسقاط عودة مقابل target package؛ مسودة مسودة، اختيار و وجه لوح حالة عودة يملك هذا تفاعل UI package.
 
-同一个事实不能同时保存在控制器快照、Conversation 快照和存储中。跨领域导航在决策时读取数据源。UI 持有的状态数据源可以组合独立的运行、待处理请求和完成提醒事实，但必须保留领域归属与对象身份，不能复制这些领域的状态。
+نفس عدد واقع لا يستطيع معا حفظ في تحكم جهاز لقطة،Conversation لقطة و تخزين في. عبر مجال تنقل في قرار وقت قراءة بيانات مصدر.UI يحتفظ حالة بيانات مصدر يمكن تركيب مستقل تشغيل، انتظار معالجة طلب و إتمام رفع تنبيه واقع، لكن يجب إبقاء مجال ملكية و كائن هوية، لا يستطيع نسخ هذه مجال حالة.
 
-以下信号表示 owner 选择错误：Controller 开始 import React；renderer 出现业务类型分支；组件遍历 Session events；Store 保存 Session 或 Workspace 实体；一个 target 的变化要求修改 Session Controller。
+التالي إشارة يمثل owner اختيار خطأ:Controller بدء import React؛renderer ظهور عمل خدمة نوع فرع؛ مكون مرة تاريخ Session events؛Store حفظ Session أو Workspace فعلي جسم؛ واحد target تغير اشتراط تعديل Session Controller.
 
-### 新增 Session-scoped 数据
+### إضافة جديدة Session-scoped بيانات
 
-1. 在领域 owner 中提供 React-free observable source。
-2. 在所属 UI adapter 中 declaration-merge 标准 prop 类型。
-3. 通过 `ctx.uiSession.provide()` 声明固定 roster，并从 Session binding 解析 source。
-4. 让 Slot component 从 `PropsRuntime` 获得生成的 hook，不向组件传 `ctx`。
-5. 把每个 binding 的资源清理挂到 `binding.ctx.effect()`，把 registration 清理留给 plugin fiber。
-6. 测试缺失值、重复名字、roster 替换、Session 切换和 binding disposal。
+1. في مجال owner في توفير React-free observable source.
+2. في الذي تابع UI adapter في declaration-merge معيار prop نوع.
+3. عبر `ctx.uiSession.provide()` إعلان ثابت roster، و من Session binding تحليل source.
+4. يجعل Slot component من `PropsRuntime` نيل نيل توليد hook، لا نحو مكون نقل `ctx`.
+5. يأخذ كل binding مورد تنظيف تعليق إلى `binding.ctx.effect()`، يأخذ registration تنظيف إبقاء إعطاء plugin fiber.
+6. اختبار ناقص قيمة، تكرار اسم حرف،roster استبدال،Session تبديل و binding disposal.
 
-只有开放 key 空间使用 keyed hook；有限且稳定的 source 使用普通 hook；不会变化的标识使用 prop。不得为了减少一次注册而把业务名称硬编码进 renderer。
+فقط لديه فتح وضع key فضاء استخدام keyed hook؛ لديه حد كما مستقر source استخدام عادي hook؛ لن تغير معرف استخدام prop. لا نيل لـ نقص قليل مرة تسجيل بينما يأخذ عمل خدمة اسم صلب تحرير رمز دخول renderer.
 
-### 新增 Conversation target
+### إضافة جديدة Conversation target
 
-1. 在 target package 中扩展 Conversation snapshot 或 location data map。
-2. 向 `UiConversation.events` 注册所需 event Definition。
-3. 向 `UiConversation.views` 注册 snapshot builder、target id、View 与 activity 规则。
-4. 通过 `ctx.uiSession.provide()` 暴露该 target 的标准 selector hook。
-5. 在同一 package 中注册 renderer、locale 和 target-specific Slot entry。
-6. 验证 target 卸载只重建 Conversation binding，不改变 Session、其他 target 或 Remote stream。
+1. في target package في توسيع Conversation snapshot أو location data map.
+2. نحو `UiConversation.events` تسجيل الذي يحتاج event Definition.
+3. نحو `UiConversation.views` تسجيل snapshot builder،target id،View و activity قاعدة.
+4. عبر `ctx.uiSession.provide()` كشف هذا target معيار selector hook.
+5. في نفس package في تسجيل renderer،locale و target-specific Slot entry.
+6. تحقق target إزالة فقط إعادة بناء Conversation binding، لا تغيير Session، أخرى target أو Remote stream.
 
-Target 不得读取另一个 target 的 snapshot 作为自己的数据源。可选协作通过窄 port 或 Slot 完成；缺失 target 时，shell 必须保持可启动且不得猜测 fallback。
+Target لا نيل قراءة آخر عدد target snapshot بصفة ذاتي ذات بيانات مصدر. اختياري تنسيق عمل عبر ضيق port أو Slot إتمام؛ ناقص target وقت،shell يجب إبقاء يمكن بدء كما لا نيل تخمين قياس fallback.
 
-### 新增 pending-interaction 业务
+### إضافة جديدة pending-interaction عمل خدمة
 
-1. 业务 package 定义 Pending 对象及其完成、取消和中止语义。
-2. 通过 declaration merge 把对象加入 `SessionPendingInteractionMap`。
-3. 在 `apply()` 中调用 `registerPendingInteraction()` 一次，并注册唯一稳定的 composer entry。
-4. Remote waterfall listener 从 Agent Context 解析 Session；无法处理时调用 `next()`。
-5. 可处理时创建 Pending 对象，使用 publication function 发布，等待结果，并在 `finally` 中移除。
-6. 测试并发 key、precedence、用户取消、transport abort、plugin disposal 和无 Session delegation。
+1. عمل خدمة package تعريف Pending كائن و ذلك إتمام، إلغاء و في توقف دلالة.
+2. عبر declaration merge يأخذ كائن إضافة دخول `SessionPendingInteractionMap`.
+3. في `apply()` في استدعاء `registerPendingInteraction()` مرة، و تسجيل وحيد مستقر composer entry.
+4. Remote waterfall listener من Agent Context تحليل Session؛ لا يمكن معالجة وقت استدعاء `next()`.
+5. يمكن معالجة وقت إنشاء Pending كائن، استخدام publication function إصدار، انتظار نتيجة، و في `finally` في إزالة.
+6. اختبار تزامن key،precedence، مستخدم إلغاء،transport abort،plugin disposal و بلا Session delegation.
 
-请求不注册 Slot、不声明子 Slot、不修改会话快照，也不创建独立状态索引。Sidebar 与 composer 从 `useSessionStatus` 读取同一个有效对象。
+طلب لا تسجيل Slot، لا إعلان فرعي Slot، لا تعديل جلسة لقطة، أيضا لا إنشاء مستقل حالة بحث جذب.Sidebar و composer من `useSessionStatus` قراءة نفس عدد صالح كائن.
 
-### Review 检查点
+### Review فحص نقطة
 
-- 每个新 source、registry contribution、listener 和 cache 都有明确 Cordis fiber 或 Session binding owner。
-- 每个公共 hook 能追溯到唯一 React-free source；不存在只为传参而层层转发的 selector。
-- 每个 component 的数据与 action 都来自标准 props 或所属 Slot inject face。
-- 每个 target 在缺席、动态注册和卸载时都有定义明确的结果。
-- 每个跨层 import 都沿 Controller、adapter、renderer、component 的单向关系前进。
-- 每个错误由最早能解释其语义的 owner 归类；载体错误不直接泄漏成业务错误。
+- كل جديد source،registry contribution،listener و cache كل لديه واضح Cordis fiber أو Session binding owner.
+- كل عام مشترك hook قدرة تتبع تتبع إلى وحيد React-free source؛ لا وجود فقط لـ نقل مشاركة بينما طبقة طبقة تحويل إرسال selector.
+- كل component بيانات و action كل قدوم ذاتي معيار props أو الذي تابع Slot inject face.
+- كل target في نقص مقعد، حركة حالة تسجيل و إزالة وقت كل لديه تعريف واضح نتيجة.
+- كل عبر طبقة import كل امتداد Controller،adapter،renderer،component مفرد نحو علاقة قبل دخول.
+- كل خطأ من الأكثر مبكر قدرة حل تفسير ذلك دلالة owner عودة صنف؛ تحميل جسم خطأ لا مباشر تسرب تسرب صار عمل خدمة خطأ.
 
-## 验证
+## تحقق
 
-各 owner 的测试分别固定 Controller binding 与 event source、UI scope 与 pending precedence、Conversation 增量组装与 View fallback、target projection、waterfall 结果以及 renderer 的 scope/store 生命周期。应用组装测试同时覆盖完整 roster 和缺少具体 target 的启动；组件测试不替代对象层、重放和生命周期测试。
+كل owner اختبار قسم آخر ثابت Controller binding و event source،UI scope و pending precedence،Conversation زيادة كمية تجميع و View fallback،target projection،waterfall نتيجة و renderer scope/store دورة الحياة. تطبيق تجميع اختبار معا تغطية كامل roster و نقص قليل أداة جسم target بدء؛ مكون اختبار لا بديل كائن طبقة، إعادة وضع و دورة الحياة اختبار.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-- **保留 Runtime facade。** 它维持单一入口，却继续形成依赖汇点并允许新代码绕过领域 owner；系统因此不保留 facade 或兼容出口。
-- **把所有 Client 状态放进 API Controller。** 这会让协议对象承担 React、View 和 presentation policy；Controller 因而只保留无 React 的领域状态。
-- **让 Controller 直接提供 React hooks。** 这会阻止非 React 消费者复用同一对象，也使 transport 与 renderer 生命周期相互依赖。
-- **把 Conversation 放进 SessionSnapshot。** 这会扩大 Session API，并迫使普通 Session 消费者理解 event folding 与 target roster。
-- **让 Chat 和 Trajectory 各自重放 Session events。** 这会重复维护顺序、location 和 registry rebuild；共享 assemble core 因而留在 `ui-conversation`。
-- **把 Conversation core 拆成额外的非 UI package。** Core 与 adapter 当前共同演化且没有其他非 UI package 消费者；同包目录隔离足以保持 React-free core。
-- **把 Workspace 与 Session 合成联合 snapshot。** 这会制造新的跨域 owner；跨域逻辑保留为 `ui-workspace` 的即时决策。
-- **让 renderer 内建所有标准 hook。** 这会要求通用基础设施认识每个领域；standard source registration 保持 renderer 与业务类型解耦。
-- **让每个 pending 请求动态注册 composer entry。** 这会重复声明 child Slot，并让并发请求竞争注册顺序；稳定 entry 与请求期对象发布保持分离。
-- **把 pending interaction 写回 Session projection。** 待回答 waterfall 不是已提交的持久 Session 事实，刷新恢复由 Remote Event replay 负责，因此它留在业务 UI source。
-- **为 binding 增加专用 release callback。** 这会重复 Cordis 生命周期；`binding.ctx.effect()` 已能把消费者清理挂到同一 owner。
-- **让 SessionProvider 通过 render function 传 Session id。** 这会产生另一条数据注入路径；普通 children 与标准 `sessionId` prop 保持 scope 数据只有一个入口。
-- **把 Store 留在 renderer。** Store contract 不依赖 React，并被对象与测试基础设施复用；独立 `client/store` 保持 engine 与渲染生命周期分离。
+- **إبقاء Runtime facade.** هو صيانة حمل مفرد واحد مدخل، لكن متابعة شكل صار اعتماد تجميع نقطة و سماح جديد شفرة التفاف مرور مجال owner؛ نظام لذلك لا إبقاء facade أو توافق خروج فتحة.
+- **يأخذ كل Client حالة وضع دخول API Controller.** هذا سوف يجعل بروتوكول كائن تحمل تحمل React،View و presentation policy؛Controller بسبب بينما فقط إبقاء بلا React مجال حالة.
+- **يجعل Controller مباشر توفير React hooks.** هذا سوف منع توقف غير React إزالة استهلاك من إعادة استخدام نفس كائن، أيضا جعل transport و renderer دورة الحياة متبادل متبادل اعتماد.
+- **يأخذ Conversation وضع دخول SessionSnapshot.** هذا سوف توسيع كبير Session API، و إجبار جعل عادي Session إزالة استهلاك من إدارة حل event folding و target roster.
+- **يجعل Chat و Trajectory كل منها إعادة وضع Session events.** هذا سوف تكرار صيانة ترتيب،location و registry rebuild؛ مشترك assemble core بسبب بينما إبقاء في `ui-conversation`.
+- **يأخذ Conversation core تفكيك صار مقدار خارج غير UI package.** Core و adapter حالي مشترك نفس عرض تحويل كما لا يوجد أخرى غير UI package إزالة استهلاك من؛ نفس حزمة دليل عزل كاف بـ إبقاء React-free core.
+- **يأخذ Workspace و Session دمج صار ربط دمج snapshot.** هذا سوف صنع صنع جديد عبر مجال owner؛ عبر مجال منطق إبقاء لـ `ui-workspace` أي وقت قرار.
+- **يجعل renderer داخل بناء كل معيار hook.** هذا سوف اشتراط عام أساس أساس ضبط تطبيق إقرار تعرف كل مجال؛standard source registration إبقاء renderer و عمل خدمة نوع حل اقتران.
+- **يجعل كل pending طلب حركة حالة تسجيل composer entry.** هذا سوف تكرار إعلان child Slot، و يجعل تزامن طلب تنافس تنازع تسجيل ترتيب؛ مستقر entry و طلب مدة كائن إصدار إبقاء قسم مغادرة.
+- **يأخذ pending interaction كتابة عودة Session projection.** انتظار عودة جواب waterfall لا هو قد إيداع حمل دائم Session واقع، تحديث جديد استعادة من Remote Event replay مسؤول، لذلك هو إبقاء في عمل خدمة UI source.
+- **لـ binding زيادة مخصص استخدام release callback.** هذا سوف تكرار Cordis دورة الحياة؛`binding.ctx.effect()` قد قدرة يأخذ إزالة استهلاك من تنظيف تعليق إلى نفس owner.
+- **يجعل SessionProvider عبر render function نقل Session id.** هذا سوف إنتاج آخر بند بيانات حقن مسار؛ عادي children و معيار `sessionId` prop إبقاء scope بيانات فقط لديه واحد مدخل.
+- **يأخذ Store إبقاء في renderer.** Store contract لا اعتماد React، و يتم كائن و اختبار أساس أساس ضبط تطبيق إعادة استخدام؛ مستقل `client/store` إبقاء engine و تصيير دورة الحياة قسم مغادرة.
 
-## 后果
+## عاقبة
 
-Session、Workspace、Conversation 与具体 target 各自拥有一份权威状态，非 React consumer 可以直接复用 Controller 和 assemble core。新增 Conversation target 只需注册 Definition、builder、View、标准 source 和 Slot entry；新增 pending-interaction 业务只需声明类型、注册 domain 并提供稳定 composer entry。
+Session،Workspace،Conversation و أداة جسم target كل منها يملك واحد نسخة مرجعي حالة، غير React consumer يمكن مباشر إعادة استخدام Controller و assemble core. إضافة جديدة Conversation target فقط يحتاج تسجيل Definition،builder،View، معيار source و Slot entry؛ إضافة جديدة pending-interaction عمل خدمة فقط يحتاج إعلان نوع، تسجيل domain و توفير مستقر composer entry.
 
-Renderer 和 Session Controller 不因新增业务领域而增加分支，Session binding 与 plugin fiber 则提供两条明确且可组合的释放路径。UI 可以观察到 Session 与 Conversation source 的独立发布，消费者不得依赖二者的通知顺序。
+Renderer و Session Controller لا بسبب إضافة جديدة عمل خدمة مجال بينما زيادة فرع،Session binding و plugin fiber فإن توفير اثنان بند واضح كما يمكن تركيب تحرير مسار.UI يمكن مراقبة إلى Session و Conversation source مستقل إصدار، إزالة استهلاك من لا نيل اعتماد اثنان من إشعار ترتيب.
 
-组合包必须显式装载所需 adapter 与 target plugin。缺失具体 target 时 shell 仍可运行，但不会生成或猜测该 target 的 View。更多 package 和显式注册增加了装配工作，但依赖方向、测试范围与故障 owner 均可局部确定。
+تركيب حزمة يجب صريح تركيب تحميل الذي يحتاج adapter و target plugin. ناقص أداة جسم target وقت shell ما زال يمكن تشغيل، لكن لن توليد أو تخمين قياس هذا target View. أكثر كثير package و صريح تسجيل زيادة تركيب إعداد عمل، لكن اعتماد جهة نحو، اختبار نطاق و لذا عائق owner متساو يمكن نطاق جزء تحديد.

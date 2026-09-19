@@ -1,4 +1,4 @@
-- menu "模型与推理等级":
+- menu "نموذج و دفع إدارة انتظار درجة":
   - group "DeepSeek":
     - text: DeepSeek
     - menuitemradio "Messages Flash" [checked]:

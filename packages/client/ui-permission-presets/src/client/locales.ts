@@ -5,18 +5,18 @@ export const PERMISSION_ACCESS_NS = 'permission.access'
 
 /** Simplified Chinese dictionary (the key-set source of truth). */
 export const zh = {
-  'title': '权限',
-  'description': '选择新会话的默认权限模式',
-  'loading': '加载中',
-  'unavailable': '不可用',
-  'preset.readOnly': '仅可查看',
-  'preset.workspaceWrite': '工作区内修改',
-  'preset.fullAccess': '完全权限',
-  'confirm.title': '确认启用完全权限？',
-  'confirm.description': '启用完全权限后，新会话将减少确认步骤，并且可以直接执行更多操作，包括敏感操作、文件修改或外部命令。仅建议在你信任后续任务时使用。',
-  'confirm.acknowledge': '我已了解风险，并愿意继续',
-  'confirm.cancel': '取消',
-  'confirm.enable': '启用完全权限',
+  'title': 'إذن',
+  'description': 'اختيار جديد جلسة افتراضي إذن نمط',
+  'loading': 'تحميل في',
+  'unavailable': 'غير ممكن استخدام',
+  'preset.readOnly': 'فقط يمكن فحص نظر',
+  'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
+  'preset.fullAccess': 'تماما إذن',
+  'confirm.title': 'تأكيد تفعيل تماما إذن؟',
+  'confirm.description': 'تفعيل تماما إذن بعد، جديد جلسة سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة لاحق مهمة وقت استخدام.',
+  'confirm.acknowledge': 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
+  'confirm.cancel': 'إلغاء',
+  'confirm.enable': 'تفعيل تماما إذن',
 } satisfies Record<string, string>
 
 /** The settings.permission namespace key union. */
@@ -40,23 +40,23 @@ export const en = {
 
 /** Simplified Chinese dictionary for the current-session popup gate. */
 export const accessZh = {
-  'mode': '访问模式，当前：{name}',
-  'close': '关闭',
-  'preset.readOnly': '仅可查看',
-  'preset.workspaceWrite': '工作区内修改',
-  'preset.fullAccess': '完全权限',
-  'confirm.title': '确认启用完全权限？',
-  'confirm.description': '启用完全权限后，智能体将减少确认步骤，并且可以直接执行更多操作，包括敏感操作、文件修改或外部命令。仅建议在你信任当前任务时使用。',
-  'confirm.acknowledge': '我已了解风险，并愿意继续',
-  'confirm.cancel': '取消',
-  'confirm.enable': '启用完全权限',
+  'mode': 'وصول نمط، حالي:{name}',
+  'close': 'إغلاق',
+  'preset.readOnly': 'فقط يمكن فحص نظر',
+  'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
+  'preset.fullAccess': 'تماما إذن',
+  'confirm.title': 'تأكيد تفعيل تماما إذن؟',
+  'confirm.description': 'تفعيل تماما إذن بعد، ذكي جسم سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة حالي مهمة وقت استخدام.',
+  'confirm.acknowledge': 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
+  'confirm.cancel': 'إلغاء',
+  'confirm.enable': 'تفعيل تماما إذن',
   'auto.label': 'Auto review',
   'auto.badge': 'EXP',
-  'auto.description': '无沙箱运行；每次原生工具调用和 PTC 内层调用前由同一模型进行实验性审查。',
-  'auto.confirm.title': '确认启用 Auto review（实验）？',
-  'auto.confirm.description': 'Auto review 不使用沙箱。每次原生工具调用和 PTC 内层调用前，都会由与当前 agent 相同的模型进行审查。此功能仍属实验性，可能误放行或误拒绝，并会消耗额外 token。',
-  'auto.confirm.acknowledge': '我已了解这些风险，并愿意继续',
-  'auto.confirm.enable': '启用 Auto review',
+  'auto.description': 'بلا صندوق رملي تشغيل؛ كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.',
+  'auto.confirm.title': 'تأكيد تفعيل Auto review(فعلي تحقق) ؟',
+  'auto.confirm.description': 'Auto review لا استخدام صندوق رملي. كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل، كل سوف من و حالي agent نفسه نموذج إجراء مراجعة فحص. هذا وظيفة ما زال تابع فعلي تحقق صفة، ممكن خطأ وضع سطر أو خطأ رفض، و سوف إزالة استهلاك مقدار خارج token.',
+  'auto.confirm.acknowledge': 'أنا قد حل هذه ريح خطر، و رغبة معنى متابعة',
+  'auto.confirm.enable': 'تفعيل Auto review',
 } satisfies Record<string, string>
 
 /** Current-session popup-gate key union. */

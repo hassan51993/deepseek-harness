@@ -1,12 +1,12 @@
-# 4. 事件
+# 4. حدث
 
-[English](04-events.md) | 中文
+[English](04-events.md) | العربية
 
-服务支持直接调用；**事件**让插件无需知道有哪些插件正在监听，就能发出通知。harness 使用事件处理工具结果、模型请求和审批决定等交互。
+خدمة دعم حمل مباشر استدعاء؛**حدث**يجعل إضافة بلا حاجة معرفة طريق لديه أي بعض إضافة صحيح في استماع، حينئذ قدرة إرسال خروج إشعار.harness استخدام حدث معالجة أداة نتيجة، نموذج طلب و مراجعة دفعة قرار انتظار تفاعل.
 
-## 声明、发出与监听
+## إعلان، إرسال خروج و استماع
 
-创建 `stats.ts`，将它放在 `tmp/cordis-tutorial` 中。它是一项负责计数并在每次变化时发出通知的服务：
+إنشاء `stats.ts`، سوف هو وضع في `tmp/cordis-tutorial` في. هو هو واحد بند مسؤول حساب عدد و في كل مرة تغير وقت إرسال خروج إشعار خدمة:
 
 ```ts
 import { Service, type Context } from '@deepseek-ai/cordis'
@@ -41,9 +41,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-`interface Events` 合并与第 3 章的 `interface Context` 合并在事件系统中相互对应：它声明事件名称及其监听器签名，因此 `ctx.emit` 和 `ctx.on` 都具有完整类型。`namespace/action` 命名约定让扁平的事件命名空间保持易读。
+`interface Events` دمج و رقم 3 فصل `interface Context` دمج في حدث نظام في متبادل متبادل مقابل: هو إعلان حدث اسم و ذلك مستمع توقيع، لذلك `ctx.emit` و `ctx.on` كل أداة لديه كامل نوع.`namespace/action` تسمية اتفاق يجعل مسطح مستو حدث نطاق الأسماء إبقاء سهل قراءة.
 
-创建 `reporter.ts`：
+إنشاء `reporter.ts`:
 
 ```ts ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -62,7 +62,7 @@ export function apply(ctx: Context) {
 }
 ```
 
-`import type {} from './stats.ts'` 行不会在运行时导入任何内容；它的作用是让 TypeScript 看到声明合并。组合并运行：
+`import type {} from './stats.ts'` سطر لن في وقت التشغيل استيراد أي محتوى؛ هو أثر هو يجعل TypeScript يرى إعلان دمج. تركيب و تشغيل:
 
 ```yaml
 - name: './stats.ts'
@@ -75,25 +75,25 @@ export function apply(ctx: Context) {
 [stats] prompt -> 1
 ```
 
-因为 `ctx.on()` 属于 effect，监听器会随插件一同消失，绝不需要手动维护 `removeListener`。
+لأن `ctx.on()` يخص effect، مستمع سوف مع إضافة واحد نفس إزالة فقد، أبدا حاجة يد حركة صيانة `removeListener`.
 
-## 分发模式
+## توزيع نمط
 
-`emit` 是 5 种分发模式之一。事件采用哪种模式是其约定的一部分，决定了监听器能否返回值、能否并发运行，以及能否彼此短路：
+`emit` هو 5 نوع توزيع نمط لـ واحد. حدث اعتماد أي نوع نمط هو ذلك اتفاق واحد جزء، قرار مستمع قدرة لا قيمة راجعة، قدرة لا تزامن تشغيل، و قدرة لا ذاك هذا قصير مسار:
 
-| 模式 | 调用 | 语义 |
+| نمط | استدعاء | دلالة |
 |---|---|---|
-| emit | `ctx.emit(name, ...args)` | 同步广播；不会等待或收集返回的 promise 与值。 |
-| parallel | `await ctx.parallel(name, ...args)` | 所有监听器并发运行，并一同等待。 |
-| serial | `await ctx.serial(name, ...args)` | 监听器按顺序运行并等待；第一个非 `null`/`false`/`undefined` 返回值胜出，并停止后续监听器。 |
-| bail | `ctx.bail(name, ...args)` | serial 的同步版本。 |
-| waterfall（瀑布式事件） | `ctx.waterfall(name, ...args, next)` | 环绕中间件，见下文。 |
+| emit | `ctx.emit(name, ...args)` | تزامن واسع بث؛ لن انتظار أو استلام تجميع إرجاع promise و قيمة. |
+| parallel | `await ctx.parallel(name, ...args)` | كل مستمع تزامن تشغيل، و واحد نفس انتظار. |
+| serial | `await ctx.serial(name, ...args)` | مستمع حسب ترتيب تشغيل و انتظار؛ رقم واحد غير `null`/`false`/`undefined` قيمة راجعة فوز خروج، و إيقاف لاحق مستمع. |
+| bail | `ctx.bail(name, ...args)` | serial تزامن إصدار. |
+| waterfall(شلال نشر صيغة حدث) | `ctx.waterfall(name, ...args, next)` | حلقة التفاف في بين عنصر، رؤية تحت نص. |
 
-每个 harness 事件都会在其所属[子系统页面](../subsystems/core.zh.md)自动生成的参考文档中记录其模式。
+كل harness حدث كل سوف في ذلك الذي تابع[فرعي نظام صفحة](../subsystems/core.zh.md) تلقائي توليد مشاركة اعتبار وثيقة في سجل ذلك نمط.
 
-## waterfall：转换或短路
+## waterfall: تحويل أو قصير مسار
 
-waterfall 是实现拦截的模式。每个监听器都会收到参数和一个 `next()` continuation；它可以转换 `next()` 的返回值，也可以不调用 `next()` 就直接返回，从而短路链条的其余部分。Cordis 文档把后一种行为称为否决。创建 `waterfall-demo.ts`：
+waterfall هو تنفيذ اعتراض قطع نمط. كل مستمع كل سوف استلام إلى معامل و واحد `next()` continuation؛ هو يمكن تحويل `next()` قيمة راجعة، أيضا يمكن لا استدعاء `next()` حينئذ مباشر إرجاع، من بينما قصير مسار سلسلة بند ذلك بقية جزء.Cordis وثيقة يأخذ بعد واحد نوع سلوك تسمية لـ مرفوض. إنشاء `waterfall-demo.ts`:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -126,19 +126,19 @@ export function apply(ctx: Context) {
 }
 ```
 
-让 `cordis.yml` 只指向该文件并运行：
+يجعل `cordis.yml` فقط إشارة نحو هذا ملف و تشغيل:
 
 ```
 HELLO
 ** BLOCKED **
 ```
 
-按顺序看第二行如何产生：监听器 1 先运行并调用 `next()`，从而调用监听器 2；监听器 2 看到 `blocked` 后直接返回而不调用 `next()`，因此最内层默认逻辑（传给 `ctx.waterfall` 的函数）从未运行；返回途中，监听器 1 再把替换消息转换为大写。
+حسب ترتيب نظر ثاني سطر مثل أي إنتاج: مستمع 1 أولا تشغيل و استدعاء `next()`، من بينما استدعاء مستمع 2؛ مستمع 2 يرى `blocked` بعد مباشر إرجاع بينما لا استدعاء `next()`، لذلك الأكثر داخل طبقة افتراضي منطق (نقل إعطاء `ctx.waterfall` دالة) من لم تشغيل؛ إرجاع طريق في، مستمع 1 مجددا يأخذ استبدال رسالة تحويل لـ كبير كتابة.
 
-由此得到一项纪律：**只负责观察或标注的 waterfall 监听器必须调用 `next()`**；不调用就直接返回代表有意短路。如果日志监听器忘记调用 `next()`，会悄无声息地吞掉所有下游的默认行为。这是本仓库的常设规则（[waterfall 语义](../cordis-primer.zh.md#cordis-waterfall-semantics)）。
+من هذا نيل إلى واحد بند سجل قاعدة:**فقط مسؤول مراقبة أو علامة ملاحظة waterfall مستمع يجب استدعاء `next()`**؛ لا استدعاء حينئذ مباشر إرجاع بديل جدول متعمد قصير مسار. إذا سجل مستمع نسيان تسجيل استدعاء `next()`، سوف صامت بلا صوت خبر أرض ابتلاع إسقاط كل تحت تنقل افتراضي سلوك. هذا هو هذا مستودع معتاد ضبط قاعدة ([waterfall دلالة](../cordis-primer.zh.md#cordis-waterfall-semantics)).
 
-harness 使用 waterfall 处理协作插件可以包装或回答的决策：[`agent/request`](../subsystems/core.zh.md#agentrequest--waterfall) 允许插件替换模型调用配置，[`approval/request`](../subsystems/approval.zh.md#approvalrequest--waterfall) 允许策略代替用户作答。
+harness استخدام waterfall معالجة تنسيق عمل إضافة يمكن حزمة تركيب أو عودة جواب قرار:[`agent/request`](../subsystems/core.zh.md#agentrequest--waterfall) سماح إضافة استبدال نموذج استدعاء إعداد،[`approval/request`](../subsystems/approval.zh.md#approvalrequest--waterfall) سماح سياسة بديل بديل مستخدم عمل جواب.
 
-下一章：[配置](05-config.zh.md)：来自 `cordis.yml` 的插件选项。
+تحت واحد فصل:[إعداد](05-config.zh.md): قدوم ذاتي `cordis.yml` إضافة خيار.
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

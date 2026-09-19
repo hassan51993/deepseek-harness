@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [中文](2026-09-08-desktop-uninstall-preserve-dsh-home.zh.md)
+English | [العربية](2026-09-08-desktop-uninstall-preserve-dsh-home.zh.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-18-model-selected-subagent-routes.zh.md)
+English | [العربية](2026-08-18-model-selected-subagent-routes.zh.md)
 
 ## Problem
 

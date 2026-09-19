@@ -1,45 +1,45 @@
-# Agent Note: headless 是直接使用核心服务的入口
+# Agent Note: headless هو مباشر استخدام نواة قلب خدمة مدخل
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-09-headless-direct-core-entry-point.md) | 中文
+[English](2026-08-09-headless-direct-core-entry-point.md) | العربية
 
-## 问题
+## مشكلة
 
-`headless` 的产品约定是一个本地任务：最终 assistant 文本写入 stdout，退出状态反映成功与否，不打开监听端口，并由 [headless 推理进度](../feature/2026-08-21-headless-reasoning-progress.zh.md)负责 stderr 推理投影。包含 Workspace Host 服务、浏览器 RPC、HTTP、Web 运行时或浏览器插件的组合违背这一约定，也使本地完成状态依赖无关的传输树。
+`headless` منتج اتفاق هو واحد محلي مهمة: نهائي assistant نص كتابة stdout، خروج حالة عكس عكس نجاح و لا، لا فتح استماع طرف فتحة، و من [headless دفع إدارة دخول درجة](../feature/2026-08-21-headless-reasoning-progress.zh.md) مسؤول stderr دفع إدارة إسقاط. يتضمن Workspace Host خدمة، متصفح RPC،HTTP،Web وقت التشغيل أو متصفح إضافة تركيب مخالفة خلف هذا واحد اتفاق، أيضا جعل محلي إتمام حالة اعتماد غير متصل نقل شجرة.
 
-直接入口仍需要与 Web 所创建 Agent 相同的部署模型状态。独立的提供方／模型默认值会让同一部署产生两种答案，而在 Agent 与会话持久化完全停稳之前推导完成状态，会让 stdout 与退出状态观察到不完整状态。
+مباشر مدخل ما زال حاجة و Web الذي إنشاء Agent نفسه نشر نموذج حالة. مستقل مزود/نموذج قيمة افتراضية سوف يجعل نفس نشر إنتاج اثنان نوع جواب سجل، بينما في Agent و جلسة حفظ دائم تماما توقف مستقر قبل دفع توجيه إتمام حالة، سوف يجعل stdout و خروج حالة مراقبة إلى لا كامل حالة.
 
-## 决策
+## قرار
 
-随附的 `headless` profile 包含 `dsh-base` 与 `dsh-headless`。base 提供默认禁用模块 HMR（热模块替换）的策略；headless 组合包提供自身的 persona 与工具模式、显式挂载 PTC mode worker，并在不覆盖该策略的情况下插入 `headless-runner`。其插件树不包含浏览器 Connection、HTTP server、Web 运行时或浏览器客户端。PTC mode 与会话持久化均为独立于 Web 呈现的一次性 Agent 能力。
+مع مرفق `headless` profile يتضمن `dsh-base` و `dsh-headless`.base توفير افتراضي منع استخدام وحدة HMR(حار وحدة استبدال) سياسة؛headless تركيب حزمة توفير ذاته persona و أداة نمط، صريح تركيب PTC mode worker، و في لا تغطية هذا سياسة حال حال تحت إدراج دخول `headless-runner`. ذلك إضافة شجرة لا يتضمن متصفح Connection،HTTP server،Web وقت التشغيل أو متصفح عميل.PTC mode و جلسة حفظ دائم متساو لـ مستقل في Web عرض مرة صفة Agent قدرة.
 
-`headless-runner` 是直接使用核心服务的入口。Loader 完全加载后，它读取 `ctx.agentDefaultModel.currentSelection()`，通过 `ctx.agents.create` 创建一个新的持久化 Agent，在 Agent 作用域中安装该 `ModelSelection`，等待启动工作完全停稳，锚定会话事件序号，提交一条普通用户消息，再次等待完全停稳。随后，它等待 `ctx.sessions.flush`，折叠自身持有的持久事件区间，以取得最后一条非空 assistant 文本和最终 `turn/end` 结束原因，将文本连同一个换行写入 stdout，并且仅在结束原因为 `completed` 时请求启动器以退出状态 0 有界关闭。[Headless 推理进度](../feature/2026-08-21-headless-reasoning-progress.zh.md)负责实时 stderr 投影；结束原因为 `error` 时，其持久化错误码与消息写入 stderr，驱动器的意外失败也写入 stderr 并以 1 退出。
+`headless-runner` هو مباشر استخدام نواة قلب خدمة مدخل.Loader تماما تحميل بعد، هو قراءة `ctx.agentDefaultModel.currentSelection()`، عبر `ctx.agents.create` إنشاء واحد جديد حفظ دائم Agent، في Agent أثر مجال في تثبيت هذا `ModelSelection`، انتظار بدء عمل تماما توقف مستقر، مرساة تحديد جلسة حدث ترتيب رقم، إيداع واحد بند عادي مستخدم رسالة، مجددا مرة انتظار تماما توقف مستقر. مع بعد، هو انتظار `ctx.sessions.flush`، طي ذاته يحتفظ حمل دائم حدث منطقة بين، بـ أخذ نيل الأكثر بعد واحد بند غير فارغ assistant نص و نهائي `turn/end` انتهاء سبب، سوف نص وصل نفس عدد تبديل سطر كتابة stdout، و كما فقط في انتهاء سبب لـ `completed` وقت طلب بدء جهاز بـ خروج حالة 0 محدود إغلاق.[Headless دفع إدارة دخول درجة](../feature/2026-08-21-headless-reasoning-progress.zh.md) مسؤول فوري stderr إسقاط؛ انتهاء سبب لـ `error` وقت، ذلك حفظ دائم رمز خطأ و رسالة كتابة stderr، مشغل معنى خارج فشل أيضا كتابة stderr و بـ 1 خروج.
 
-`@deepseek-ai/dsh-agent-default-model` 拥有与传输无关的默认值，供没有会话级选择的 Agent 使用。`AgentDefaultModelConfig` 提供 `ctx.agentDefaultModel` 并注册 `agent-default-model` Settings 分节。组合配置提供 `{provider, model}`，用户设置还可以提供 `reasoningEffort`。`currentSelection()` 返回当前的完整选择，`saveSelection()` 则写入完整分节，因此不含强度的选择会清除已存强度。`dsh-base` 提供组合条目。直接创建与 Session Controller Remote 调用均消费该服务；Session Controller 负责会话级优先级、模型校验与已接受 Web 选择的持久化。
+`@deepseek-ai/dsh-agent-default-model` يملك و نقل غير متصل قيمة افتراضية، توفير لا يوجد جلسة درجة اختيار Agent استخدام.`AgentDefaultModelConfig` توفير `ctx.agentDefaultModel` و تسجيل `agent-default-model` Settings قسم عقدة. تركيب إعداد توفير `{provider, model}`، مستخدم ضبط أيضا يمكن توفير `reasoningEffort`.`currentSelection()` إرجاع حالي كامل اختيار،`saveSelection()` فإن كتابة كامل قسم عقدة، لذلك لا يحتوي قوي درجة اختيار سوف صاف حذف قد تخزين قوي درجة.`dsh-base` توفير تركيب بند. مباشر إنشاء و Session Controller Remote استدعاء متساو إزالة استهلاك هذا خدمة؛Session Controller مسؤول جلسة درجة أولوية درجة، نموذج تحقق و قد قبول Web اختيار حفظ دائم.
 
-`loadProfile` 识别安装过程拥有的精确 headless 元组（`dsh-base`、`dsh-web-app`、`dsh-headless`），将其规范化为随附的 headless 模板，并保留 manifest（元数据清单）的其他所有字段。带额外项、缺少项或顺序不同的组合包列表归用户所有，保持不变。
+`loadProfile` تعرف آخر تثبيت مرور مسار يملك دقيق headless عنصر مجموعة (`dsh-base`،`dsh-web-app`،`dsh-headless`) ، سوف ذلك مواصفة تحويل لـ مع مرفق headless نموذج لوح، و إبقاء manifest(بيانات وصفية بيان) أخرى كل حقل. حمل مقدار خارج بند، نقص قليل بند أو ترتيب مختلف تركيب حزمة قائمة عودة مستخدم كل، إبقاء ثابت.
 
-本 Agent Note 负责 headless 的传输与完成约定；[headless 推理进度](../feature/2026-08-21-headless-reasoning-progress.zh.md)负责成功运行时的 stderr 输出。[应用持有自己的命令行](2026-08-06-app-owned-command-line.zh.md)负责当前的 `dsh --profile headless` 语法；原 [`dsh run` 决策](../../archived/feature/2026-08-08-dsh-run-headless-command.md)记录已被取代的启动器持有语法，[Web 配置树启动与传输分层](2026-07-24-web-config-tree-boot-and-transport-layering.zh.md)负责 Web 插件树，[默认模型跟随选择器](../feature/2026-08-07-default-model-follows-the-picker.zh.md)负责共享 Agent 默认值的持久化。
+هذا Agent Note مسؤول headless نقل و إتمام اتفاق؛[headless دفع إدارة دخول درجة](../feature/2026-08-21-headless-reasoning-progress.zh.md) مسؤول نجاح وقت التشغيل stderr إخراج.[تطبيق يحتفظ ذاتي ذات أمر سطر](2026-08-06-app-owned-command-line.zh.md) مسؤول حالي `dsh --profile headless` لغة قاعدة؛ أصل [`dsh run` قرار](../../archived/feature/2026-08-08-dsh-run-headless-command.md) سجل قد يتم يحل محل بدء جهاز يحتفظ لغة قاعدة،[Web إعداد شجرة بدء و نقل قسم طبقة](2026-07-24-web-config-tree-boot-and-transport-layering.zh.md) مسؤول Web إضافة شجرة،[افتراضي نموذج تتبع مع اختيار جهاز](../feature/2026-08-07-default-model-follows-the-picker.zh.md) مسؤول مشترك Agent قيمة افتراضية حفظ دائم.
 
-## 验证
+## تحقق
 
-包测试围绕脚本化 Agent 工厂使用真实的会话存储与 Agent 注册表，固定空闲态到空闲态的聚合、延迟异步完成、终止态模型诊断、其他未完成退出、直接失败、Loader 加载期间的 dispose（资源释放），以及退出前 flush 的顺序。组装后的无密钥快照通过回放的工具往返驱动 `dsh --profile headless`，记录一条带 `source.kind: 'user'` 的 `user/message`，并在 stderr 暴露推理进度与终止态模型失败。构建后二进制验收通过已发布入口访问 mock DeepSeek 端点，并要求推理流出现在 stderr、最终文本出现在 stdout 且退出状态为 0。配置转储验收排除随附 headless 树中的所有 Host、Web 与 Client 包；PTY 关闭覆盖要求不出现观察行，并在有界时间内完成 dispose。
+حزمة اختبار محيط التفاف نص برمجي تحويل Agent عمل مصنع استخدام حقيقي جلسة تخزين و Agent سجل التسجيل، ثابت فارغ خامل حالة إلى فارغ خامل حالة تجمع دمج، تأخير متأخر مختلف خطوة إتمام، إنهاء حالة نموذج تشخيص، أخرى لم إتمام خروج، مباشر فشل،Loader تحميل خلال dispose(مورد تحرير) ، و خروج قبل flush ترتيب. تجميع بعد بلا مفتاح لقطة عبر إعادة تشغيل أداة نحو إرجاع قيادة `dsh --profile headless`، سجل واحد بند حمل `source.kind: 'user'` `user/message`، و في stderr كشف دفع إدارة دخول درجة و إنهاء حالة نموذج فشل. بناء بعد اثنان دخول صنع تحقق استلام عبر قد إصدار مدخل وصول mock DeepSeek طرف نقطة، و اشتراط دفع إدارة تدفق ظهور في stderr، نهائي نص ظهور في stdout كما خروج حالة لـ 0. إعداد تحويل تخزين تحقق استلام ترتيب حذف مع مرفق headless شجرة في كل Host،Web و Client حزمة؛PTY إغلاق تغطية اشتراط لا ظهور مراقبة سطر، و في محدود وقت داخل إتمام dispose.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-| 替代方案 | 约定不匹配之处 |
+| بديل خطة | اتفاق لا مطابقة لـ موضع |
 |---|---|
-| 保留 `dsh-web-app`，但隐藏观察行 | 进程仍会打开端口并携带 Host、Web 与浏览器插件树。 |
-| 围绕浏览器 RPC 构建纯 Host 一次性组合包 | 本地一次性入口没有客户端边界。 |
-| 使用进程内 Connection carrier 实现产品级协议覆盖 | 产品执行会仅为测试无关协议而依赖该协议。 |
-| 为 headless 单独提供提供方／模型配置 | 直接创建与 Web 创建会拥有彼此独立的默认值和持久化。 |
-| 省略 PTC mode 与会话持久化 | 两项能力都属于一次性 Agent 执行，而不是 Web 呈现。 |
-| 规范化所有包含 Web 与 headless 组合包的元组 | 组合包列表是扩展面；只有精确的安装过程所属元组可以安全分类。 |
+| إبقاء `dsh-web-app`، لكن إخفاء مراقبة سطر | عملية ما زال سوف فتح طرف فتحة و يحمل Host،Web و متصفح إضافة شجرة. |
+| محيط التفاف متصفح RPC بناء صاف Host مرة صفة تركيب حزمة | محلي مرة صفة مدخل لا يوجد عميل حد. |
+| استخدام عملية داخل Connection carrier تنفيذ منتج درجة بروتوكول تغطية | منتج تنفيذ سوف فقط لـ اختبار غير متصل بروتوكول بينما اعتماد هذا بروتوكول. |
+| لـ headless مفرد وحيد توفير مزود/نموذج إعداد | مباشر إنشاء و Web إنشاء سوف يملك ذاك هذا مستقل قيمة افتراضية و حفظ دائم. |
+| حذف PTC mode و جلسة حفظ دائم | اثنان بند قدرة كل يخص مرة صفة Agent تنفيذ، بينما لا هو Web عرض. |
+| مواصفة تحويل كل يتضمن Web و headless تركيب حزمة عنصر مجموعة | تركيب حزمة قائمة هو توسيع وجه؛ فقط لديه دقيق تثبيت مرور مسار الذي تابع عنصر مجموعة يمكن أمان تصنيف. |
 
-## 后果
+## عاقبة
 
-`dsh --profile headless` 提供本地 Agent 任务，而不是浏览器观察、Host API 或 HTTP。需要这些能力的用户选择 `dsh web`。没有推理内容的成功运行会保持 stderr 为空，有推理内容的运行则在那里流式输出提供方报告的内容；完成结果在持久化 flush 后推导，持久化会话仍可供后续工具使用。初始用户消息记录 `source.kind: 'user'`，因此不携带浏览器 request id。
+`dsh --profile headless` توفير محلي Agent مهمة، بينما لا هو متصفح مراقبة،Host API أو HTTP. حاجة هذه قدرة مستخدم اختيار `dsh web`. لا يوجد دفع إدارة محتوى نجاح تشغيل سوف إبقاء stderr لـ فارغ، لديه دفع إدارة محتوى تشغيل فإن في ذلك داخل تدفق صيغة إخراج مزود تقرير إبلاغ محتوى؛ إتمام نتيجة في حفظ دائم flush بعد دفع توجيه، حفظ دائم جلسة ما زال يمكن توفير لاحق أداة استخدام. ابتدائي مستخدم رسالة سجل `source.kind: 'user'`، لذلك لا يحمل متصفح request id.
 
-Connection carrier 覆盖保留在 Connection 包中。自定义一次性 profile 可以显式包含 Host 或 Web 组合包；随附 profile 与可识别的安装过程所属元组均不含 Web。
+Connection carrier تغطية إبقاء في Connection حزمة في. ذاتي تعريف مرة صفة profile يمكن صريح يتضمن Host أو Web تركيب حزمة؛ مع مرفق profile و يمكن تعرف آخر تثبيت مرور مسار الذي تابع عنصر مجموعة متساو لا يحتوي Web.

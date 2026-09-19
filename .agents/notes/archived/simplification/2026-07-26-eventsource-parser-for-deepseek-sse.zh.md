@@ -1,29 +1,29 @@
-# Agent Note: 用 eventsource-parser 替换 llm-deepseek 中手写的 SSE 解析器
+# Agent Note: استخدام eventsource-parser استبدال llm-deepseek في يد كتابة SSE محلل
 
 Status: implemented
 Archived: 2026-08-07
 
-[English](2026-07-26-eventsource-parser-for-deepseek-sse.md) | 中文
+[English](2026-07-26-eventsource-parser-for-deepseek-sse.md) | العربية
 
-## 问题
+## مشكلة
 
-`packages/llm/llm-deepseek/src/sse.ts` 曾手写实现 SSE（Server-Sent Events）解析：一个流式 `TextDecoder`、按 `\r?\n\r?\n` 切分事件块、提取并拼接 `data:` 载荷、跳过注释与其他字段、`[DONE]` 哨兵、在未见哨兵即 EOF 时抛出 `STREAM_CLOSED` 错误，以及对最后一个未终结事件块的 flush。该文件约 67 行，另有约 108 行专属测试（`tests/sse.spec.ts`）重复验证 SSE 规范行为——UTF-8 字符被切分到多个分片、CRLF 处理、多条 `data:` 拼接、冒号后无空格——而这些行为，持续维护的解析器早已有保证。它唯一的消费方是 `adapter.ts`（`yield* translate(parseSse(response.body))`）。
+`packages/llm/llm-deepseek/src/sse.ts` سبق يد كتابة تنفيذ SSE(Server-Sent Events) تحليل: واحد تدفق صيغة `TextDecoder`، حسب `\r?\n\r?\n` قطع قسم حدث كتلة، رفع أخذ و تجميع وصل `data:` تحميل حمل، قفز مرور ملاحظة تفسير و أخرى حقل،`[DONE]` مراقبة جندي، في لم رؤية مراقبة جندي أي EOF وقت رمي خروج `STREAM_CLOSED` خطأ، و مقابل الأكثر بعد واحد لم نهاية ربط حدث كتلة flush. هذا ملف نحو 67 سطر، آخر لديه نحو 108 سطر مخصص تابع اختبار (`tests/sse.spec.ts`) تكرار تحقق SSE مواصفة سلوك——UTF-8 محرف يتم قطع قسم إلى كثير عدد قسم قطعة،CRLF معالجة، كثير بند `data:` تجميع وصل، خطر رقم بعد بلا فارغ إطار——بينما هذه سلوك، حمل متابعة صيانة محلل مبكر قد لديه حفظ إثبات. هو وحيد مستهلك هو `adapter.ts`(`yield* translate(parseSse(response.body))`).
 
-这恰好是 `eventsource-parser` 负责的接口面：事实标准的 SSE 解析器（Vercel AI SDK 和 MCP SDK 都构建在它之上），零依赖，持续维护，并且已通过 `@modelcontextprotocol/sdk` 作为传递依赖出现在本仓库的 lockfile 中——因此直接采用它实际上不增加新的供应链接触面。
+هذا تماما جيد هو `eventsource-parser` مسؤول واجهة وجه: واقع معيار SSE محلل (Vercel AI SDK و MCP SDK كل بناء في هو لـ فوق) ، صفر اعتماد، حمل متابعة صيانة، و كما قد عبر `@modelcontextprotocol/sdk` بصفة نقل تمرير اعتماد ظهور في هذا مستودع lockfile في——لذلك مباشر اعتماد هو فعلي فوق لا زيادة جديد توفير ينبغي رابط لمس وجه.
 
-## 决策
+## قرار
 
-`sse.ts` 将 SSE 分帧委托给 `eventsource-parser/stream` 的 `EventSourceParserStream`：`parseSse` 把响应 body 依次管道接入 `new TextDecoderStream()` 和 `new EventSourceParserStream()`，只保留 DeepSeek 协议垫层——逐个产出事件的 `data`，遇到 `[DONE]` 终止，流在未见哨兵时结束则抛出 `LlmError('STREAM_CLOSED')`。所需的全部内置能力（`TextDecoderStream`、`pipeThrough`、可异步迭代的 `ReadableStream`）在 Node ^22.19 引擎下限即已存在。规范符合性测试已删除；`tests/sse.spec.ts` 只固定 `[DONE]`/`STREAM_CLOSED`/EOF 契约。`eventsource-parser` 是 `llm-deepseek` 继 schemastery 之后的第二个运行时依赖。曾把该适配器标为「手写 fetch + SSE 解析」的[孪生适配器 Agent Note](../architecture/2026-06-13-twin-llm-adapters.md)与 `dsh-llm` JSDoc，现在将其描述为直接 fetch 加库分帧的 SSE。
+`sse.ts` سوف SSE قسم لقطة تفويض حمل إعطاء `eventsource-parser/stream` `EventSourceParserStream`:`parseSse` يأخذ استجابة body اعتماد مرة إدارة طريق وصل دخول `new TextDecoderStream()` و `new EventSourceParserStream()`، فقط إبقاء DeepSeek بروتوكول وسادة طبقة——تدريجي عدد إنتاج خروج حدث `data`، لقاء إلى `[DONE]` إنهاء، تدفق في لم رؤية مراقبة جندي وقت انتهاء فإن رمي خروج `LlmError('STREAM_CLOSED')`. الذي يحتاج الكل داخل وضع قدرة (`TextDecoderStream`،`pipeThrough`، يمكن مختلف خطوة تكرار بديل `ReadableStream`) في Node ^22.19 جذب محرك تحت حد أي قد وجود. مواصفة رمز دمج صفة اختبار قد حذف؛`tests/sse.spec.ts` فقط ثابت `[DONE]`/`STREAM_CLOSED`/EOF عقد نحو.`eventsource-parser` هو `llm-deepseek` استمرار schemastery بعد ثاني عدد وقت التشغيل اعتماد. سبق يأخذ هذا مهايئ علامة لـ «يد كتابة fetch + SSE تحليل»[توأم توليد مهايئ Agent Note](../architecture/2026-06-13-twin-llm-adapters.md) و `dsh-llm` JSDoc، الآن سوف ذلك وصف لـ مباشر fetch إضافة مكتبة قسم لقطة SSE.
 
-该库还会剥离开头的 BOM（手写解析器在 BOM 之后会无法匹配 `data:`），并提供手写解析器缺少的 `maxBufferSize` 加固能力。
+هذا مكتبة أيضا سوف تقشير مغادرة فتح رأس BOM(يد كتابة محلل في BOM بعد سوف لا يمكن مطابقة `data:`) ، و توفير يد كتابة محلل نقص قليل `maxBufferSize` إضافة ثابت قدرة.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **保留手写解析器。** 依据[孪生适配器决策](../architecture/2026-06-13-twin-llm-adapters.md)，这一选择有辩护余地：该适配器有意作为 pi-ai 适配器的手写设计验证孪生体。但那份 Agent Note 起支撑作用的区分在于「自行持有 fetch/translate 内部实现」与「委托给完整的提供方 SDK」；一个约 700 字节的 SSE 微型解析器属于传输层管道，不是被验证的设计本身。孪生适配器 Agent Note 现已明确写出这一解读。
-- **改用 `createParser({onEvent})` 回调 API 而非流。** 配合手动的 `TextDecoder` 循环可以工作，但 `pipeThrough` 组合方式能删除更多手写代码。
+- **إبقاء يد كتابة محلل.** اعتماد حسب[توأم توليد مهايئ قرار](../architecture/2026-06-13-twin-llm-adapters.md) ، هذا واحد اختيار لديه جدل حماية بقية أرض: هذا مهايئ متعمد بصفة pi-ai مهايئ يد كتابة تصميم تحقق توأم توليد جسم. لكن ذلك نسخة Agent Note بدء دعم دعم أثر منطقة قسم في في «ذاتي سطر يحتفظ fetch/translate داخلي تنفيذ» و «تفويض حمل إعطاء كامل مزود SDK» ؛ واحد نحو 700 بايت SSE دقيق نوع محلل يخص نقل طبقة إدارة طريق، لا هو يتم تحقق تصميم ذاته. توأم توليد مهايئ Agent Note الآن قد واضح كتابة خروج هذا واحد حل قراءة.
+- **تعديل استخدام `createParser({onEvent})` عودة ضبط API بينما غير تدفق.** إعداد دمج يد حركة `TextDecoder` حلقة يمكن عمل، لكن `pipeThrough` تركيب طريقة قدرة حذف أكثر كثير يد كتابة شفرة.
 
-## 后果
+## عاقبة
 
-- 剩下的垫层只编码 DeepSeek 的 `[DONE]`/`STREAM_CLOSED` 协议；SSE 分帧边界情形属于 eventsource-parser 的契约，不再在这里重复验证。
-- 放弃了一处有意为之的健壮性偏离：手写解析器会 flush 缺少终结空行的最后一个事件块，因此末尾的 `data: [DONE]` 即使没有 `\n\n` 也仍产出 DONE。eventsource-parser 严格遵循规范，只在空行处分发事件，所以这种形态现在是 `STREAM_CLOSED`。真实提供方和 `dsh-llm-mock-server` 总是正确终结事件——该 flush 只是健壮性上的锦上添花，并非实际观测到的提供方形态——`tests/sse.spec.ts` 固定了对该尾部的新截断判定。
-- 孪生适配器有文档记录的「手写」身份收窄到 fetch/translate 内部实现；孪生适配器 Agent Note 在同一次变更中更新，而不是让声明陈旧下去。
+- باق تحت وسادة طبقة فقط تحرير رمز DeepSeek `[DONE]`/`STREAM_CLOSED` بروتوكول؛SSE قسم لقطة حد حال شكل يخص eventsource-parser عقد نحو، لم يعد في هذا داخل تكرار تحقق.
+- وضع ترك واحد موضع متعمد لـ لـ سليم قوي صفة انحراف مغادرة: يد كتابة محلل سوف flush نقص قليل نهاية ربط فارغ سطر الأكثر بعد واحد حدث كتلة، لذلك نهاية ذيل `data: [DONE]` أي جعل لا يوجد `\n\n` أيضا ما زال إنتاج خروج DONE.eventsource-parser صارم إطار التزام دوران مواصفة، فقط في فارغ سطر موضع توزيع حدث، الذي بـ هذا نوع شكل الآن هو `STREAM_CLOSED`. حقيقي مزود و `dsh-llm-mock-server` مجموع هو صحيح تأكيد نهاية ربط حدث——هذا flush فقط هو سليم قوي صفة فوق حرير فوق إضافة زهرة، و غير فعلي مراقبة قياس إلى مزود شكل——`tests/sse.spec.ts` ثابت مقابل هذا ذيل جزء جديد قطع قطع حكم تحديد.
+- توأم توليد مهايئ لديه وثيقة سجل «يد كتابة» هوية استلام ضيق إلى fetch/translate داخلي تنفيذ؛ توأم توليد مهايئ Agent Note في نفس مرة تغيير في تحديث، بينما لا هو يجعل إعلان قديم قديم تحت ذهاب.

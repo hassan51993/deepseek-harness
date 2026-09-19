@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-04-session-open-performance-gate.zh.md)
+English | [العربية](2026-09-04-session-open-performance-gate.zh.md)
 
 ## Problem
 

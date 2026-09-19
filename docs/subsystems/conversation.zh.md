@@ -1,52 +1,52 @@
-# Conversation 组装
+# Conversation تجميع
 
-[English](conversation.md) | 中文
+[English](conversation.md) | العربية
 
-Conversation 是 Client `SessionEventLikeEntry` window 与浏览器 view 之间的 target-neutral assembly 层。[`ui-conversation`](../../packages/client/ui-conversation/README.zh.md)拥有 event 与 view registry、每个 `SessionBinding` 对应的 identity-stable binding、Turn/Step Location、增量 Context assembly、target source、共享 shell 与输入编排。[`ui-chat`](../../packages/client/ui-chat/README.zh.md)和 [`ui-trajectory`](../../packages/client/ui-trajectory/README.zh.md)等 target 包拥有各自的 Definition、最终 snapshot 与渲染。
+Conversation هو Client `SessionEventLikeEntry` window و متصفح view بين target-neutral assembly طبقة.[`ui-conversation`](../../packages/client/ui-conversation/README.zh.md) يملك event و view registry، كل `SessionBinding` مقابل identity-stable binding،Turn/Step Location، زيادة كمية Context assembly،target source، مشترك shell و إدخال تحرير ترتيب.[`ui-chat`](../../packages/client/ui-chat/README.zh.md) و [`ui-trajectory`](../../packages/client/ui-trajectory/README.zh.md) انتظار target حزمة يملك كل منها Definition، نهائي snapshot و تصيير.
 
-本文定义数据模型与业务自有 Conversation node 的扩展路径。[Web Client 架构](web-client.zh.md)说明该子系统在 Client model 与 Slots 之间的位置；[Conversation Node 组装决策](../../.agents/notes/implemented/architecture/2026-08-09-client-conversation-node-assembly.zh.md)记录其设计理由。
+هذا نص تعريف بيانات نموذج و عمل خدمة ذاتي لديه Conversation node توسيع مسار.[Web Client هيكل بنية](web-client.zh.md) شرح هذا فرعي نظام في Client model و Slots بين موضع؛[Conversation Node تجميع قرار](../../.agents/notes/implemented/architecture/2026-08-09-client-conversation-node-assembly.zh.md) سجل ذلك تصميم إدارة من.
 
-## 数据模型与所有权
+## بيانات نموذج و كل حق
 
-Session Controller 拥有连续的已加载逻辑 event window。每个 `SessionEventLikeEntry` 要么是表示一个持久事件的 `{ type: 'event', event: SessionEvent }`，要么是表示一个 Client-only `assistant/live-chunk` 呈现的 `{ type: 'transient', event: AssistantLiveChunkEvent }`；两种内部 event 都公开 `type`、`seq`、`time` 与 `data`。`ui-conversation` 把这些 entry 直接交给 assembler，不另开 history stream。每个 Session 对应一个 `ConversationNodeAssembler`，它应用所有已注册 Definition，并为每个已注册 view target 发布独立 source。
+Session Controller يملك وصل متابعة قد تحميل منطق event window. كل `SessionEventLikeEntry` يلزم ما هو يمثل واحد حمل دائم حدث `{ type: 'event', event: SessionEvent }`، يلزم ما هو يمثل واحد Client-only `assistant/live-chunk` عرض `{ type: 'transient', event: AssistantLiveChunkEvent }`؛ اثنان نوع داخلي event كل عام `type`،`seq`،`time` و `data`.`ui-conversation` يأخذ هذه entry مباشر تسليم إعطاء assembler، لا آخر فتح history stream. كل Session مقابل واحد `ConversationNodeAssembler`، هو تطبيق كل قد تسجيل Definition، و لـ كل قد تسجيل view target إصدار مستقل source.
 
-| 概念 | Owner 与用途 |
+| عام فكرة | Owner و استخدام طريق |
 |---|---|
-| Event Definition | 业务包一次匹配一个持久 event 或 Client-only 瞬态 event，以稳定 `(kind, id)` 关联输入、折叠确定性 State，并可选择 materialize 一个 target node。 |
-| Context | Engine 为一个 `(kind, id)` 拥有的有序 Match 与当前 State。一个瞬态 event 只占一个 update Match；只有 update 的证据可以保持 pending，直到分页补齐其唯一持久 start。 |
-| Location | Engine 根据持久 boundary event 推导的 Session、Turn 或 Step 坐标。Definition 可以向一个 Turn 或 Step 发布类型化数据。 |
-| View Definition | Target 包为每个 Session 创建一个增量 builder，并拥有该 target 的最终 snapshot 类型。 |
-| View | Chat 或 Trajectory 等 Slot entry 只读取自身 target snapshot，并渲染 target 自有 node。 |
+| Event Definition | عمل خدمة حزمة مرة مطابقة واحد حمل دائم event أو Client-only لحظة حالة event، بـ مستقر `(kind, id)` صلة ربط إدخال، طي تحديد صفة State، و اختياري اختيار materialize واحد target node. |
+| Context | Engine لـ واحد `(kind, id)` يملك لديه ترتيب Match و حالي State. واحد لحظة حالة event فقط احتلال واحد update Match؛ فقط لديه update دليل يمكن إبقاء pending، مباشر إلى قسم صفحة تكملة متساو ذلك وحيد حمل دائم start. |
+| Location | Engine أصل حسب حمل دائم boundary event دفع توجيه Session،Turn أو Step جلوس علامة.Definition يمكن نحو واحد Turn أو Step إصدار نوع تحويل بيانات. |
+| View Definition | Target حزمة لـ كل Session إنشاء واحد زيادة كمية builder، و يملك هذا target نهائي snapshot نوع. |
+| View | Chat أو Trajectory انتظار Slot entry فقط قراءة ذاته target snapshot، و تصيير target ذاتي لديه node. |
 
-Chat 与 Trajectory 可以识别同一个持久 event family，但各自保留自己的 Definition State 与最终 node payload。共享的 target-neutral 机制只包括 identity routing、有序 replay、Location data、predecessor dependency 与 publication cadence。
+Chat و Trajectory يمكن تعرف آخر نفس عدد حمل دائم event family، لكن كل منها إبقاء ذاتي ذات Definition State و نهائي node payload. مشترك target-neutral آلية فقط يشمل identity routing، لديه ترتيب replay،Location data،predecessor dependency و publication cadence.
 
-## Target 激活
+## Target تنشيط
 
-每个 Session 都保留单调增长的 active target 集合。创建或读取 target source 不会激活它。shell 会显式激活持久化选择或新选择的 View，其他消费者则通过 target source 的首个订阅激活 target。首次激活会创建该 target 的 builder，并从当前按 target 索引的 Context 调用一次 `replace()`。后续 flush 对每个 active target 调用 `apply()`，取消订阅不会移除 target。
+كل Session كل إبقاء مفرد ضبط زيادة طويل active target تجميع دمج. إنشاء أو قراءة target source لن تنشيط هو.shell سوف صريح تنشيط حفظ دائم اختيار أو جديد اختيار View، أخرى إزالة استهلاك من فإن عبر target source أول عدد حجز قراءة تنشيط target. أول مرة تنشيط سوف إنشاء هذا target builder، و من حالي حسب target بحث جذب Context استدعاء مرة `replace()`. لاحق flush مقابل كل active target استدعاء `apply()`، إلغاء حجز قراءة لن إزالة target.
 
-shell 拥有 View 选择，并在 binding 创建、被选为 current 或 View roster 变化时，于渲染前解析已注册的偏好 View 或 Chat fallback。assembler 只接收解析后的 target id，不自行选择 Chat 或其他默认 target。第三方 View 使用相同的选择与激活操作。
+shell يملك View اختيار، و في binding إنشاء، يتم اختيار لـ current أو View roster تغير وقت، في تصيير قبل تحليل قد تسجيل انحراف جيد View أو Chat fallback.assembler فقط استقبال تحليل بعد target id، لا ذاتي سطر اختيار Chat أو أخرى افتراضي target. رقم ثلاثة جهة View استخدام نفسه اختيار و تنشيط عملية.
 
-## 可回放 event family
+## يمكن إعادة تشغيل event family
 
-编写 Definition 前先选定稳定的业务 id。构成同一个 Node 的每条事件都必须携带该 id，或只凭自身 payload 独立推导出该 id；Client 绝不能把 update 猜测为属于“最近一个未完成”的 Context。
+تحرير كتابة Definition قبل أولا اختيار تحديد مستقر عمل خدمة id. بنية صار نفس عدد Node كل بند حدث كل يجب يحمل هذا id، أو فقط سند ذاته payload مستقل دفع توجيه خروج هذا id؛Client أبدا قدرة يأخذ update تخمين قياس لـ يخص “الأكثر قريب واحد لم إتمام” Context.
 
-以一个 review job 为例，事件约定可以是：
+بـ واحد review job لـ مثال، حدث اتفاق يمكن هو:
 
-| 事件 | 角色 | 必须持久化的事实 |
+| حدث | زاوية لون | يجب حفظ دائم واقع |
 |---|---|---|
-| `review/start` | 唯一 start | `reviewId`、Turn/Step 坐标、标题 |
-| `review/progress` | update | 相同的 `reviewId`、坐标、可回放进度 |
-| `review/end` | update | 相同的 `reviewId`、坐标、最终摘要 |
+| `review/start` | وحيد start | `reviewId`،Turn/Step جلوس علامة، عنوان |
+| `review/progress` | update | نفسه `reviewId`، جلوس علامة، يمكن إعادة تشغيل دخول درجة |
+| `review/end` | update | نفسه `reviewId`، جلوس علامة، نهائي ملخص |
 
-跨进程边界使用生产方拥有的 branded id 类型。把 `SessionEventMap` 合并和 payload 类型放在生产方的纯类型导出中，再由 Client 包通过仅类型副作用导入该导出。每个 `(kind, id)` 最多只能有一条 start 事件。单事件业务可以把事件自身的稳定身份（例如 `event.seq`）作为 Definition 内部 id。
+عبر عملية حد استخدام إنتاج جهة يملك branded id نوع. يأخذ `SessionEventMap` دمج و payload نوع وضع في إنتاج جهة صاف نوع توجيه خروج في، مجددا من Client حزمة عبر فقط نوع فرعي أثر استيراد هذا توجيه خروج. كل `(kind, id)` الأكثر كثير فقط قدرة لديه واحد بند start حدث. مفرد حدث عمل خدمة يمكن يأخذ حدث ذاته مستقر هوية (مثال مثل `event.seq`) بصفة Definition داخلي id.
 
-系统支持增量事件。如果生产方能以较低成本发出 whole-value checkpoint，应优先采用，因为 start 位于已加载窗口之外时它仍可直接使用。每条 delta 都必须携带稳定 id，并且按照日志 `seq` 升序回放时能够确定性地产生 State；它不能依赖只存在于实时内存中的状态。如果当前历史窗口只有 update，Assembler 会保留一个 pending Context，并在更早分页补齐 start 前不构造 State。如果产品必须在 start 尚未加载时渲染，terminal 或 checkpoint 事件就必须携带足够的完整 fallback 状态，让 Definition 能直接构造结果；不要通过扫描无关事件恢复它。
+نظام دعم حمل زيادة كمية حدث. إذا إنتاج جهة قدرة بـ مقارنة منخفض صار هذا إرسال خروج whole-value checkpoint، ينبغي أولوية اعتماد، لأن start يقع في قد تحميل نافذة خارج وقت هو ما زال يمكن مباشر استخدام. كل بند delta كل يجب يحمل مستقر id، و كما حسب وفق سجل `seq` رفع ترتيب إعادة تشغيل وقت قدرة كاف تحديد صفة أرض إنتاج State؛ هو لا يستطيع اعتماد فقط وجود في فوري داخل تخزين في حالة. إذا حالي تاريخ نافذة فقط لديه update،Assembler سوف إبقاء واحد pending Context، و في أكثر مبكر قسم صفحة تكملة متساو start قبل لا بنية صنع State. إذا منتج يجب في start بعد لم تحميل وقت تصيير،terminal أو checkpoint حدث حينئذ يجب يحمل كاف كاف كامل fallback حالة، يجعل Definition قدرة مباشر بنية صنع نتيجة؛ لا يلزم عبر مسح غير متصل حدث استعادة هو.
 
-实时 Assistant delta 作为 Client-only `assistant/live-chunk` update 到达。重连 baseline 会把活跃的进程内紧凑 stream 展开为相同的瞬态 event，持久 `assistant/message` 与 `assistant/attempt` event 则嵌入完整紧凑 stream 供历史回放。瞬态 event 只能充当 update；`start()` 只接收标准 `SessionEvent`。消费 Assistant 输出的 Definition 在同一组 `match()` 与 `update()` 方法里处理 live chunk 与持久 settlement，其他 Definition 直接返回 `null`，无需展开 stream。
+فوري Assistant delta بصفة Client-only `assistant/live-chunk` update وصول. إعادة وصل baseline سوف يأخذ نشط وثب عملية داخل ضيق تجميع stream توسيع لـ نفسه لحظة حالة event، حمل دائم `assistant/message` و `assistant/attempt` event فإن تضمين دخول كامل ضيق تجميع stream توفير تاريخ إعادة تشغيل. لحظة حالة event فقط قدرة ملء عند update؛`start()` فقط استقبال معيار `SessionEvent`. إزالة استهلاك Assistant إخراج Definition في نفس مجموعة `match()` و `update()` طريقة داخل معالجة live chunk و حمل دائم settlement، أخرى Definition مباشر إرجاع `null`، بلا حاجة توسيع stream.
 
-## Definition 与类型化 Chat payload
+## Definition و نوع تحويل Chat payload
 
-为了完整展示关联关系，下面把生产方声明和 Client 贡献写在同一个代码块里。实际的包族中，branded id 与 `SessionEventMap` 声明留在事件生产方，Definition、Chat data 合并与 renderer 留在 Client 插件。
+لـ كامل عرض صلة ربط علاقة، تحت وجه يأخذ إنتاج جهة إعلان و Client مساهمة كتابة في نفس عدد شفرة كتلة داخل. فعلي حزمة عائلة في،branded id و `SessionEventMap` إعلان إبقاء في حدث إنتاج جهة،Definition،Chat data دمج و renderer إبقاء في Client إضافة.
 
 ```ts ignore-check
 import { createElement } from 'react'
@@ -216,43 +216,43 @@ export function apply(ctx: ClientContext): void {
 }
 ```
 
-`match(event)` 是身份提取器，不是 fold：它只能收到当前 `SessionEventLike`，并返回 Definition 内部 id 与生命周期角色。命中后，Assembler 通过 `(kind, id)` 定位 Context；标准 event 可触发一次 `start`，标准或 packed event 可把当前 State 交给 `update`。两个函数都必须返回引擎随后采用的 State；推荐返回新的 immutable value，但函数原地修改后返回同一对象时，采用语义也相同。
+`match(event)` هو هوية رفع أخذ جهاز، لا هو fold: هو فقط قدرة استلام إلى حالي `SessionEventLike`، و إرجاع Definition داخلي id و دورة الحياة زاوية لون. أمر في بعد،Assembler عبر `(kind, id)` تحديد موضع Context؛ معيار event يمكن إطلاق مرة `start`، معيار أو packed event يمكن يأخذ حالي State تسليم إعطاء `update`. اثنان عدد دالة كل يجب إرجاع جذب محرك مع بعد اعتماد State؛ دفع ترشيح إرجاع جديد immutable value، لكن دالة أصل أرض تعديل بعد إرجاع نفس كائن وقت، اعتماد دلالة أيضا نفسه.
 
-`buildLocationData(context, scope)` 可以把 Definition 拥有的数据发布到引擎拥有的 Turn 或 Step 上。通过 declaration merging 为每个 key 指定精确 value 类型。同一 Location 内的另一个 Node 可以使用受限 slot hook（例如 `useTurnData(key)`）读取该值，无须取得 Session，也无须扫描 `snapshot.chat.nodes`。
+`buildLocationData(context, scope)` يمكن يأخذ Definition يملك بيانات إصدار إلى جذب محرك يملك Turn أو Step فوق. عبر declaration merging لـ كل key إشارة تحديد دقيق value نوع. نفس Location داخل آخر عدد Node يمكن استخدام تلقي حد slot hook(مثال مثل `useTurnData(key)`) قراءة هذا قيمة، بلا يجب أخذ نيل Session، أيضا بلا يجب مسح `snapshot.chat.nodes`.
 
-`target` 与 `buildViewNode(context)` 必须同时声明一项由 target 拥有的渲染贡献。把 `context.key` 保留为 React 侧身份，根据持久排序证据选择 `anchorSeq`，并且只返回 renderer 可以直接使用的数据。某个 target Node 一旦发布，就要继续返回同一个 key；需要暂时离开可见流时使用 `visibility: 'hidden'`，不要改为返回 `null` 撤回它。
+`target` و `buildViewNode(context)` يجب معا إعلان واحد بند من target يملك تصيير مساهمة. يأخذ `context.key` إبقاء لـ React جانب هوية، أصل حسب حمل دائم ترتيب ترتيب دليل اختيار `anchorSeq`، و كما فقط إرجاع renderer يمكن مباشر استخدام بيانات. بعض عدد target Node واحد حالما إصدار، حينئذ يلزم متابعة إرجاع نفس عدد key؛ حاجة مؤقت وقت مغادرة فتح مرئي تدفق وقت استخدام `visibility: 'hidden'`، لا يلزم تعديل لـ إرجاع `null` سحب عودة هو.
 
 ## Predecessor read
 
-有些 Definition 需要另一个业务 kind 在当前位置之前的最新 State。`start` 会收到 `ConversationContextReader`；应在这里调用 `reader.previous<State>(kind)`，不要接收 Context 集合或扫描事件。Reader 返回当前 start `seq` 之前最近一个已启动 Context 的只读数据。
+لديه بعض Definition حاجة آخر عدد عمل خدمة kind في حالي موضع قبل الأكثر جديد State.`start` سوف استلام إلى `ConversationContextReader`؛ ينبغي في هذا داخل استدعاء `reader.previous<State>(kind)`، لا يلزم استقبال Context تجميع دمج أو مسح حدث.Reader إرجاع حالي start `seq` قبل الأكثر قريب واحد قد بدء Context فقط قراءة بيانات.
 
-Assembler 会记录这项依赖。如果后续 older prepend 带来了更近的前序 Context、补齐了原先未知的窗口缺口，或者前序 State 被修订，引擎会从 `start` 重新运行依赖方 Context，并按 `seq` 升序回放其 update。被查询的 Definition 仍负责把有用信息写入自身 State；Reader 不提供业务专用查询方法，也不授予修改其他 Context 的权限。
+Assembler سوف سجل هذا بند اعتماد. إذا لاحق older prepend حمل قدوم أكثر قريب قبل ترتيب Context، تكملة متساو أصل أولا لم معرفة نافذة نقص فتحة، أو من قبل ترتيب State يتم إصلاح حجز، جذب محرك سوف من `start` إعادة تشغيل اعتماد جهة Context، و حسب `seq` رفع ترتيب إعادة تشغيل ذلك update. يتم استعلام Definition ما زال مسؤول يأخذ لديه استخدام معلومة كتابة ذاته State؛Reader لا توفير عمل خدمة مخصص استخدام استعلام طريقة، أيضا لا منح إعطاء تعديل أخرى Context إذن.
 
-## Window 更新路径
+## Window تحديث مسار
 
-历史可能从尾部开始一页一页向前请求。Session journal 先校验互不重叠的逻辑 seq range，Assembler 再按每个已接受 input 的首 `seq` 排序并进入 State 回放。
+تاريخ ممكن من ذيل جزء بدء واحد صفحة واحد صفحة نحو قبل طلب.Session journal أولا تحقق متبادل لا إعادة تراكم منطق seq range،Assembler مجددا حسب كل قد قبول input أول `seq` ترتيب ترتيب و دخول State إعادة تشغيل.
 
-| 路径 | 引擎工作 | Definition 可观察到的行为 |
+| مسار | جذب محرك عمل | Definition يمكن مراقبة إلى سلوك |
 |---|---|---|
-| open、resync 或 gap repair 时 replace | 重建已加载窗口，每条标准 event 或 packed run 对每个 Definition 匹配一次，再回放每个已有 start 的 Context | 先执行 `start`，再按逻辑 `seq` 升序执行其 update；只有 update 的 pending Context 仍没有 State |
-| prepend 一页更早历史 | 只匹配新增的更早 input，按 `(kind, id)` 合并进 Context，保留现有 keyed node，并只重放受影响的 Context 与依赖 | 新发现的 scalar start 会激活已收集的 scalar 与 packed update；Location 或前序依赖变化也可能重跑 Context |
-| append 一条实时事件 | 每个 Definition 各调用一次 `match`，按 key 查找命中的 Context，只更新该 Context | 对 start 之后的匹配事件执行一次 scalar `update` 并请求一次发布；不扫描已有 Context |
+| open،resync أو gap repair وقت replace | إعادة بناء قد تحميل نافذة، كل بند معيار event أو packed run مقابل كل Definition مطابقة مرة، مجددا إعادة تشغيل كل قد لديه start Context | أولا تنفيذ `start`، مجددا حسب منطق `seq` رفع ترتيب تنفيذ ذلك update؛ فقط لديه update pending Context ما زال لا يوجد State |
+| prepend واحد صفحة أكثر مبكر تاريخ | فقط مطابقة إضافة جديدة أكثر مبكر input، حسب `(kind, id)` دمج دخول Context، إبقاء قائم keyed node، و فقط إعادة وضع تلقي أثر Context و اعتماد | جديد اكتشاف scalar start سوف تنشيط قد استلام تجميع scalar و packed update؛Location أو قبل ترتيب اعتماد تغير أيضا ممكن إعادة ركض Context |
+| append واحد بند فوري حدث | كل Definition كل استدعاء مرة `match`، حسب key فحص بحث أمر في Context، فقط تحديث هذا Context | مقابل start بعد مطابقة حدث تنفيذ مرة scalar `update` و طلب مرة إصدار؛ لا مسح قد لديه Context |
 
-注册 `D` 个 Definition 时，一条新 scalar event 或 packed run 会进行 `D` 次仅当前 input 匹配；命中后的 Context key 查询是常数时间。Definition 代码必须维持这个性质：正常 append 热路径不得遍历完整事件窗口、所有 Context、`context.matches` 或已渲染 Node 集合。累计事实放进 State，同 Turn/Step 共享信息放进 Location data，有索引的前序依赖使用 `reader.previous()`。
+تسجيل `D` عدد Definition وقت، واحد بند جديد scalar event أو packed run سوف إجراء `D` مرة فقط حالي input مطابقة؛ أمر في بعد Context key استعلام هو معتاد عدد وقت.Definition شفرة يجب صيانة حمل هذا عدد صفة جودة: صحيح معتاد append حار مسار لا نيل مرة تاريخ كامل حدث نافذة، كل Context،`context.matches` أو قد تصيير Node تجميع دمج. تراكم حساب واقع وضع دخول State، نفس Turn/Step مشترك معلومة وضع دخول Location data، لديه بحث جذب قبل ترتيب اعتماد استخدام `reader.previous()`.
 
-`publication` 控制发生 State 变更后何时物化。结构或 terminal 变化使用 `immediate`，高频可见 delta 使用 `animation-frame`，只为后续发布积累 State 时使用 `none`。引擎按日志顺序应用每条 scalar update，并用一次 batch update 应用一个 packed run；该选项只合并视图发布频率。
+`publication` تحكم حدوث State تغيير بعد أي وقت شيء تحويل. بنية أو terminal تغير استخدام `immediate`، عال تردد مرئي delta استخدام `animation-frame`، فقط لـ لاحق إصدار تراكم تراكم State وقت استخدام `none`. جذب محرك حسب سجل ترتيب تطبيق كل بند scalar update، و استخدام مرة batch update تطبيق واحد packed run؛ هذا خيار فقط دمج عرض إصدار تردد معدل.
 
-## 验证要求
+## تحقق اشتراط
 
-添加聚焦测试，证明以下结果：
+إضافة تجمع تركيز اختبار، إثبات التالي نتيجة:
 
-1. 完整窗口通过 replace 后产生预期的最终 State、Location data、Node payload 与 `anchorSeq`。
-2. 只有 update 的尾部窗口保持 pending；prepend 唯一 start 后，结果与完整 replace 相同。
-3. 初始历史后继续实时 append，与回放合并后的完整窗口得到相同结果。
-4. prepend 更早分页只增加更早的行；数据未变化的既有 keyed Node value 不被替换。
-5. 重复的可见 delta 保持 `context.key`，并在请求 `animation-frame` 时每帧最多发布一次。
-6. keyed renderer 只消费 `node.data` 与受限 Location hook，不扫描 Session 事件窗口、Context 或 Chat Node。
-7. scalar 与 packed Assistant 历史产生相同的最终 State、timing boundary 和 target snapshot；一个 packed run 在 replace、prepend、Location replay 与 registry rebuild 中始终只保留一个 Match。
-8. 创建 target source 不执行 builder 工作；显式选择或首次订阅执行一次完整 replace，后续更新送达所有 active target，重复激活不会再次 replace。
+1. كامل نافذة عبر replace بعد إنتاج مسبق مدة نهائي State،Location data،Node payload و `anchorSeq`.
+2. فقط لديه update ذيل جزء نافذة إبقاء pending؛prepend وحيد start بعد، نتيجة و كامل replace نفسه.
+3. ابتدائي تاريخ بعد متابعة فوري append، و إعادة تشغيل دمج بعد كامل نافذة نيل إلى نفسه نتيجة.
+4. prepend أكثر مبكر قسم صفحة فقط زيادة أكثر مبكر سطر؛ بيانات لم تغير قائم keyed Node value لا يتم استبدال.
+5. تكرار مرئي delta إبقاء `context.key`، و في طلب `animation-frame` وقت كل لقطة الأكثر كثير إصدار مرة.
+6. keyed renderer فقط إزالة استهلاك `node.data` و تلقي حد Location hook، لا مسح Session حدث نافذة،Context أو Chat Node.
+7. scalar و packed Assistant تاريخ إنتاج نفسه نهائي State،timing boundary و target snapshot؛ واحد packed run في replace،prepend،Location replay و registry rebuild في بداية نهاية فقط إبقاء واحد Match.
+8. إنشاء target source لا تنفيذ builder عمل؛ صريح اختيار أو أول مرة حجز قراءة تنفيذ مرة كامل replace، لاحق تحديث إرسال بلوغ كل active target، تكرار تنشيط لن مجددا مرة replace.
 
-流式与中断处理可参考 [`packages/client/ui-chat/src/client/conversation-nodes/assistant.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/assistant.ts)，前序查询可参考 [`inbox.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/inbox.ts) 与 [`message.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/message.ts)，只发布 Turn data 而不创建自有 Node 的例子见 [`packages/client/ui-deliverables`](../../packages/client/ui-deliverables)。
+تدفق صيغة و في قطع معالجة يمكن مشاركة اعتبار [`packages/client/ui-chat/src/client/conversation-nodes/assistant.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/assistant.ts) ، قبل ترتيب استعلام يمكن مشاركة اعتبار [`inbox.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/inbox.ts) و [`message.ts`](../../packages/client/ui-chat/src/client/conversation-nodes/message.ts) ، فقط إصدار Turn data بينما لا إنشاء ذاتي لديه Node مثال فرعي رؤية [`packages/client/ui-deliverables`](../../packages/client/ui-deliverables).

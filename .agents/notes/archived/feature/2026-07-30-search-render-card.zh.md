@@ -1,62 +1,62 @@
-# Agent Note: 搜索渲染意图——grep 与 glob 产出结构化搜索卡片
+# Agent Note: بحث تصيير معنى رسم——grep و glob إنتاج خروج بنية تحويل بحث بطاقة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-07-30-search-render-card.md) | 中文
+[English](2026-07-30-search-render-card.md) | العربية
 
-## 问题
+## مشكلة
 
-`grep` 与 `glob` 返回结构化的 canonical 值——`grep` 是扁平的 `{ matches: [{ path, lineNumber, line }] }`，`glob` 是 `{ paths: string[] }`——但每个 UI 只见过它们面向模型的渲染文本：`grep` 把匹配按文件头分组、每行 `Line N:`，`glob` 打印换行连接的路径列表，两者在内联上限（`grepMaxMatches`，默认 250；`globMaxResults`，默认 100）把后续结果落到 spill 文件时都追加一个 spill 脚注。想把搜索结果渲染成可展开的按文件匹配组、或可选择的路径列表的 Web 前端，只能去重新解析那段文本。两个工具都已声明调用时的[渲染意图](../architecture/2026-07-02-tool-render-intent-union.zh.md)（`GenericCallView`，`kind: 'search'`），但没有结果阶段视图，所以已完成的调用回退到渲染原始文本的 generic 卡片。
+`grep` و `glob` إرجاع بنية تحويل canonical قيمة——`grep` هو مسطح مستو `{ matches: [{ path, lineNumber, line }] }`،`glob` هو `{ paths: string[] }`——لكن كل UI فقط رؤية مرور هو جمع موجه إلى نموذج تصيير نص:`grep` يأخذ مطابقة حسب ملف رأس قسم مجموعة، كل سطر `Line N:`،`glob` ضرب طبع تبديل سطر اتصال مسار قائمة، اثنان من في داخل ربط حد أعلى (`grepMaxMatches`، افتراضي 250؛`globMaxResults`، افتراضي 100) يأخذ لاحق نتيجة سقوط إلى spill ملف وقت كل إلحاق واحد spill قدم ملاحظة. تفكير يأخذ بحث نتيجة تصيير صار يمكن توسيع حسب ملف مطابقة مجموعة، أو اختياري اختيار مسار قائمة Web قبل طرف، فقط قدرة ذهاب إعادة تحليل ذلك مقطع نص. اثنان عدد أداة كل قد إعلان استدعاء وقت[تصيير معنى رسم](../architecture/2026-07-02-tool-render-intent-union.zh.md)(`GenericCallView`،`kind: 'search'`) ، لكن لا يوجد نتيجة مرحلة مقطع عرض، الذي بـ قد إتمام استدعاء رجوع إلى تصيير أصلي نص generic بطاقة.
 
-结构化 canonical 值不通过协议传输：只有面向模型的渲染文本、以及当工具声明了 `output.presentationMeta` 时的一份 JSON 元数据，会经 `tool/result` 事件到达客户端（[canonical-output 约定](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)）。因此携带结构化数据的结果时视图必须把数据投影进 `presentationMeta`，再在 `presentResult` 里读回——与 `write`/`edit` 的 diff 卡片走同一条路。
+بنية تحويل canonical قيمة لا عبر بروتوكول نقل: فقط لديه موجه إلى نموذج تصيير نص، و عند أداة إعلان `output.presentationMeta` وقت واحد نسخة JSON بيانات وصفية، سوف مرور `tool/result` حدث وصول عميل ([canonical-output اتفاق](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)). لذلك يحمل بنية تحويل بيانات نتيجة وقت عرض يجب يأخذ بيانات إسقاط دخول `presentationMeta`، مجددا في `presentResult` داخل قراءة عودة——و `write`/`edit` diff بطاقة مشي نفس بند مسار.
 
-## 决定
+## قرار
 
-`packages/core/tools/src/presentation.ts` 把 `card: 'search'` 作为 `SearchResultView` 加入 `ToolResultView` 联合，这是一个以 `shape` 判别的视图，表达两个工具的形状：`SearchMatchesResultView`（`shape: 'matches'`）以 `files: { path, matches: { lineNumber, line }[] }[]` 承载 `grep` 按文件分组的匹配，`SearchPathsResultView`（`shape: 'paths'`）承载 `glob` 的扁平 `paths: string[]`。两者都带 `truncated: boolean` 与 `total: number`。
+`packages/core/tools/src/presentation.ts` يأخذ `card: 'search'` بصفة `SearchResultView` إضافة دخول `ToolResultView` ربط دمج، هذا هو واحد بـ `shape` حكم آخر عرض، جدول بلوغ اثنان عدد أداة شكل حالة:`SearchMatchesResultView`(`shape: 'matches'`) بـ `files: { path, matches: { lineNumber, line }[] }[]` تحمل تحميل `grep` حسب ملف قسم مجموعة مطابقة،`SearchPathsResultView`(`shape: 'paths'`) تحمل تحميل `glob` مسطح مستو `paths: string[]`. اثنان من كل حمل `truncated: boolean` و `total: number`.
 
-判别子是 `shape` 而非 `kind`，是刻意为之：同一个 presentation 模块已经给 `GenericCallView` 一个 `kind: ToolCallKind` 字段，其取值恰好包含 `'search'`（图标类别）。持有 `ToolCallView | ToolResultView` 的桥接层会看到两个含义不同的 `kind` 字段；结果变体用 `shape` 把两者分开。
+حكم آخر فرعي هو `shape` بينما غير `kind`، هو لحظة معنى لـ لـ: نفس عدد presentation وحدة قد إعطاء `GenericCallView` واحد `kind: ToolCallKind` حقل، ذلك أخذ قيمة تماما جيد يتضمن `'search'`(رسم علامة صنف آخر). يحتفظ `ToolCallView | ToolResultView` جسر وصل طبقة سوف يرى اثنان عدد يحتوي معنى مختلف `kind` حقل؛ نتيجة تغيير جسم استخدام `shape` يأخذ اثنان من قسم فتح.
 
-用一个带两种形状的视图而非两张卡片，因为两个工具是同一个视觉对象——一个搜索结果——Web 消费方先在一个 `card` 值上分支，再在 `shape` 上分支决定行布局。判别式 `shape` 让每个变体的字段保持非可选（matches 视图总有 `files`，paths 视图总有 `paths`），而不是一个所有形状相关字段都可选的单一接口。
+استخدام واحد حمل اثنان نوع شكل حالة عرض بينما غير اثنان ورقة بطاقة، لأن اثنان عدد أداة هو نفس عدد نظر شعور كائن——واحد بحث نتيجة——Web مستهلك أولا في واحد `card` قيمة فوق فرع، مجددا في `shape` فوق فرع قرار سطر تخطيط. حكم آخر صيغة `shape` يجعل كل تغيير جسم حقل إبقاء غير اختياري (matches عرض مجموع لديه `files`،paths عرض مجموع لديه `paths`) ، بينما لا هو واحد كل شكل حالة متبادل صلة حقل كل اختياري مفرد واحد واجهة.
 
-该视图**不**携带结果文本。把面向模型的 `result.content` 附到视图上不会产生效果——消费方的回退路径本就读取原始 `tool/result` 内容——却会把整段搜索文本又序列化进持久化视图一遍。视图只承载结构化形状；无 search 卡片的 UI 回退到原始结果内容。
+هذا عرض**لا**يحمل نتيجة نص. يأخذ موجه إلى نموذج `result.content` مرفق إلى عرض فوق لن إنتاج فاعلية نتيجة——مستهلك رجوع مسار هذا حينئذ قراءة أصلي `tool/result` محتوى——لكن سوف يأخذ كامل مقطع بحث نص أيضا تسلسل تحويل دخول حفظ دائم عرض واحد مرة. عرض فقط تحمل تحميل بنية تحويل شكل حالة؛ بلا search بطاقة UI رجوع إلى أصلي نتيجة محتوى.
 
-卡片标签只在结果时存在。搜索调用保持为 `GenericCallView`（`kind: 'search'`）：pending 状态没有匹配或路径可展示，所以 `SearchCallView` 能携带的东西不会比 generic 标题更多。这是与 terminal 卡片的不对称之处——terminal 的调用视图携带执行前就存在的命令、cwd、description；搜索的结构化内容只在 `execute` 之后才存在。
+بطاقة وسم فقط في نتيجة وقت وجود. بحث استدعاء إبقاء لـ `GenericCallView`(`kind: 'search'`):pending حالة لا يوجد مطابقة أو مسار يمكن عرض، الذي بـ `SearchCallView` قدرة يحمل شرق غرب لن مقارنة generic عنوان أكثر كثير. هذا هو و terminal بطاقة لا مقابل تسمية لـ موضع——terminal استدعاء عرض يحمل تنفيذ قبل حينئذ وجود أمر،cwd،description؛ بحث بنية تحويل محتوى فقط في `execute` بعد عندئذ وجود.
 
-`packages/fs/tool-fs-search/src/presentation.ts` 拥有投影与收窄。`grepSearchMeta`/`globSearchMeta` 把 canonical 值投影为每个工具声明为 `output.presentationMeta` 的 `SearchMeta` 载荷；`presentGrepResult`/`presentGlobResult` 经 `searchViewFromMeta` 把 `result.meta` 读回。它们消费与面向模型渲染相同的已保留结果——`search-core.ts` 里的 `retainGrepMatches`/`retainGlobPaths` 只跑一次内联上限与每行预览预算，渲染与投影都取这份产出——所以文本与卡片对哪些结果幸存永不分歧，也没有第二次保留计算。`total` 是搜索找到的全部结果（截断前）；`truncated` 在上限丢弃了结果时置位。这是截断诚实点：模型看到的是被截断的内联结果加一个 spill 脚注，所以卡片不能把保留页当作完整结果——UI 读 `truncated`/`total` 显示截断指示，而非宣称模型从未有过的完整性。
+`packages/fs/tool-fs-search/src/presentation.ts` يملك إسقاط و استلام ضيق.`grepSearchMeta`/`globSearchMeta` يأخذ canonical قيمة إسقاط لـ كل أداة إعلان لـ `output.presentationMeta` `SearchMeta` تحميل حمل؛`presentGrepResult`/`presentGlobResult` مرور `searchViewFromMeta` يأخذ `result.meta` قراءة عودة. هو جمع إزالة استهلاك و موجه إلى نموذج تصيير نفسه قد إبقاء نتيجة——`search-core.ts` داخل `retainGrepMatches`/`retainGlobPaths` فقط ركض مرة داخل ربط حد أعلى و كل سطر معاينة ميزانية، تصيير و إسقاط كل أخذ هذا نسخة إنتاج خروج——الذي بـ نص و بطاقة مقابل أي بعض نتيجة حظ تخزين دائم لا قسم اختلاف، أيضا لا يوجد ثاني مرة إبقاء حساب حساب.`total` هو بحث بحث إلى الكل نتيجة (قطع قطع قبل) ؛`truncated` في حد أعلى إسقاط نتيجة وقت وضع موضع. هذا هو قطع قطع صدق فعلي نقطة: نموذج يرى هو يتم قطع قطع داخل ربط نتيجة إضافة واحد spill قدم ملاحظة، الذي بـ بطاقة لا يستطيع يأخذ إبقاء صفحة عند عمل كامل نتيجة——UI قراءة `truncated`/`total` عرض قطع قطع إشارة عرض، بينما غير إعلان تسمية نموذج من لم لديه مرور كامل صفة.
 
-**meta 有自己的字节预算。** 内联上限约束的是条目数，但一次宽泛搜索保留下来的匹配（数百条长行）仍可序列化到数百 KB，而 `meta` 会随会话日志持久化并在每次请求时重发。部署的最终输出预算（`dsh-spill-policy` 的 `maxInlineBytes`）只缩减结果的 `content`——`PostToolDecision` 没有 `meta` 通道——所以投影自己负责把 `meta` 约束住。`capMetaBytes` 丢弃末尾的文件组／路径，直到序列化 meta 装进 `searchMetaMaxBytes`（配置，默认 64 KiB），并把结果标记 `truncated`。单个大到自身都装不下的条目会被保留：不变量是可丢弃处一律有界，绝不产出隐藏了真实结果的空卡片。
+**meta لديه ذاتي ذات بايت ميزانية.** داخل ربط حد أعلى قيد هو بند عدد، لكن مرة عرض عام بحث إبقاء تحت قدوم مطابقة (عدد مئة بند طويل سطر) ما زال يمكن تسلسل تحويل إلى عدد مئة KB، بينما `meta` سوف مع جلسة سجل حفظ دائم و في كل مرة طلب وقت إعادة إرسال. نشر نهائي إخراج ميزانية (`dsh-spill-policy` `maxInlineBytes`) فقط تقليص نقص نتيجة `content`——`PostToolDecision` لا يوجد `meta` عبر طريق——الذي بـ إسقاط ذاتي ذات مسؤول يأخذ `meta` قيد إقامة.`capMetaBytes` إسقاط نهاية ذيل ملف مجموعة/مسار، مباشر إلى تسلسل تحويل meta تركيب دخول `searchMetaMaxBytes`(إعداد، افتراضي 64 KiB) ، و يأخذ نتيجة علامة `truncated`. مفرد عدد كبير إلى ذاته كل تركيب لا تحت بند سوف يتم إبقاء: ثابت كمية هو يمكن إسقاط موضع واحد قاعدة محدود، أبدا إنتاج خروج إخفاء حقيقي نتيجة فارغ بطاقة.
 
-`searchViewFromMeta` 防御性地收窄不透明的 `meta`，对任何畸形或缺失载荷返回 `undefined`，使在较旧或手工编辑的回放日志上运行的 presenter 回退到 generic 卡片而非抛错。它确实接受零结果载荷（`files: []` / `paths: []`）为合法的空卡片——这是对作为参照的 `diffsFromMeta` 的刻意偏离（后者拒绝空 `diffs`），因为零匹配的 grep 是 UI 展示为「no matches」的合法结果，而非缺失的投影。`presentResult` 对失败结果、对缺失 meta（嵌套 `run_code` 分发不计算 `presentationMeta`）、以及对另一工具的 meta 形状（每个 presenter 收窄到自己的 `shape`）返回 `undefined`。
+`searchViewFromMeta` منع صد صفة أرض استلام ضيق لا نفاذ واضح `meta`، مقابل أي شاذ شكل أو ناقص تحميل حمل إرجاع `undefined`، جعل في مقارنة قديم أو يد عمل تحرير إعادة تشغيل سجل فوق تشغيل presenter رجوع إلى generic بطاقة بينما غير رمي خطأ. هو تأكيد فعلي قبول صفر نتيجة تحميل حمل (`files: []` / `paths: []`) لـ دمج قاعدة فارغ بطاقة——هذا هو مقابل بصفة مشاركة وفق `diffsFromMeta` لحظة معنى انحراف مغادرة (بعد من رفض فارغ `diffs`) ، لأن صفر مطابقة grep هو UI عرض لـ «no matches» دمج قاعدة نتيجة، بينما غير ناقص إسقاط.`presentResult` مقابل فشل نتيجة، مقابل ناقص meta(تضمين طقم `run_code` توزيع لا حساب حساب `presentationMeta`) ، و مقابل آخر أداة meta شكل حالة (كل presenter استلام ضيق إلى ذاتي ذات `shape`) إرجاع `undefined`.
 
-`SearchMeta` 的成员形状是对象字面量 `type` 别名，而非视图暴露的 `SearchFileMatches`/`SearchLineMatch` 接口，因为只有 type 别名可赋给 `presentationMeta` 返回的 `JsonValue` 索引签名；两者结构等价，所以投影值仍读回为 `SearchResultView`。
+`SearchMeta` عضو شكل حالة هو كائن حرف وجه كمية `type` آخر اسم، بينما غير عرض كشف `SearchFileMatches`/`SearchLineMatch` واجهة، لأن فقط لديه type آخر اسم يمكن منح إعطاء `presentationMeta` إرجاع `JsonValue` بحث جذب توقيع؛ اثنان من بنية انتظار قيمة، الذي بـ إسقاط قيمة ما زال قراءة عودة لـ `SearchResultView`.
 
-没有专用 `search` 分支的消费方会回退到同一个 generic body，并从原始结果中读取面向模型的文本。因为搜索视图不带自己的 `content`，而 grep/glob 此前返回的是 generic 卡片，所以该回退与引入 search 卡片之前的路径逐字节一致。渲染结构化 `files`/`paths` 形状的前端独立于这个后端约定及其两个生产者。
+لا يوجد مخصص استخدام `search` فرع مستهلك سوف رجوع إلى نفس عدد generic body، و من أصلي نتيجة في قراءة موجه إلى نموذج نص. لأن بحث عرض لا حمل ذاتي ذات `content`، بينما grep/glob هذا قبل إرجاع هو generic بطاقة، الذي بـ هذا رجوع و جذب دخول search بطاقة قبل مسار تدريجي بايت متسق. تصيير بنية تحويل `files`/`paths` شكل حالة قبل طرف مستقل في هذا عدد خلفية اتفاق و ذلك اثنان عدد إنتاج من.
 
-## 考虑过的备选
+## اعتبار مرور تجهيز اختيار
 
-**一个扁平的 `SearchResultView` 接口，带可选 `files?` 与 `paths?`。** 否决：它让两个形状相关字段在每个值上都可选，并允许畸形视图同时带两者或都不带。`shape` 判别式让每个变体的字段保持必需，并让消费方穷尽分支。
+**واحد مسطح مستو `SearchResultView` واجهة، حمل اختياري `files?` و `paths?`.** مرفوض: هو يجعل اثنان عدد شكل حالة متبادل صلة حقل في كل قيمة فوق كل اختياري، و سماح شاذ شكل عرض معا حمل اثنان من أو كل لا حمل.`shape` حكم آخر صيغة يجعل كل تغيير جسم حقل إبقاء مطلوب، و يجعل مستهلك نفاد كل فرع.
 
-**复用 `kind` 作形状判别子。** 否决：同一模块里调用视图上的 `kind` 已经表示 `ToolCallKind`（图标类别，取值含 `'search'`）。结果视图上再有一个含义不同的 `kind`，对任何同时持有两者的桥接层都会冲突。
+**إعادة استخدام `kind` عمل شكل حالة حكم آخر فرعي.** مرفوض: نفس وحدة داخل استدعاء عرض فوق `kind` قد يمثل `ToolCallKind`(رسم علامة صنف آخر، أخذ قيمة يحتوي `'search'`). نتيجة عرض فوق مجددا لديه واحد يحتوي معنى مختلف `kind`، مقابل أي معا يحتفظ اثنان من جسر وصل طبقة كل سوف اندفاع مفاجئ.
 
-**把面向模型的文本作为视图的 `content` 附上。** 否决：对每个当前消费方是 no-op，且把整段搜索文本第二次序列化进持久化视图。视图是结构化形状；文本回退读原始结果内容。
+**يأخذ موجه إلى نموذج نص بصفة عرض `content` مرفق فوق.** مرفوض: مقابل كل حالي مستهلك هو no-op، كما يأخذ كامل مقطع بحث نص ثاني مرة تسلسل تحويل دخول حفظ دائم عرض. عرض هو بنية تحويل شكل حالة؛ نص رجوع قراءة أصلي نتيجة محتوى.
 
-**在 `PostToolDecision` 上加 meta 通道，让 `dsh-spill-policy` 像约束 `content` 那样约束 `meta`。** 此处否决：它为一个工具的载荷改动核心工具决策约定与 spill-policy 插件。投影按配置的字节上限约束自己的 `meta` 是自包含的，且保持 seam 不变。
+**في `PostToolDecision` فوق إضافة meta عبر طريق، يجعل `dsh-spill-policy` مثل قيد `content` ذلك مثال قيد `meta`.** هذا موضع مرفوض: هو لـ واحد أداة تحميل حمل تعديل نواة قلب أداة قرار اتفاق و spill-policy إضافة. إسقاط حسب إعداد بايت حد أعلى قيد ذاتي ذات `meta` هو ذاتي يتضمن، كما إبقاء seam ثابت.
 
-**镜像 terminal 卡片双侧对称的调用时 `SearchCallView`。** 否决：搜索调用在 `execute` 前没有匹配或路径，视图只会携带 `GenericCallView` 已有的标题。
+**مرآة مثل terminal بطاقة مزدوج جانب مقابل تسمية استدعاء وقت `SearchCallView`.** مرفوض: بحث استدعاء في `execute` قبل لا يوجد مطابقة أو مسار، عرض فقط سوف يحمل `GenericCallView` قد لديه عنوان.
 
-## 后果
+## عاقبة
 
-`grep` 与 `glob` 现在在每次非嵌套的成功调用上计算 `presentationMeta`，这是对已保留匹配或路径的一次有界投影——与 render 消费的是同一份保留产出，所以没有第二次保留计算，传输中也没有双份搜索文本。序列化 meta 受 `searchMetaMaxBytes` 约束，所以宽泛搜索不再把无界的结构化副本持久化进会话日志。
+`grep` و `glob` الآن في كل مرة غير تضمين طقم نجاح استدعاء فوق حساب حساب `presentationMeta`، هذا هو مقابل قد إبقاء مطابقة أو مسار مرة محدود إسقاط——و render إزالة استهلاك هو نفس نسخة إبقاء إنتاج خروج، الذي بـ لا يوجد ثاني مرة إبقاء حساب حساب، نقل في أيضا لا يوجد مزدوج نسخة بحث نص. تسلسل تحويل meta تلقي `searchMetaMaxBytes` قيد، الذي بـ عرض عام بحث لم يعد يأخذ بلا حد بنية تحويل فرعي هذا حفظ دائم دخول جلسة سجل.
 
-无 search 卡片的 UI 渲染原始 `tool/result` 内容，所以不会导致任何消费方出现回归。渲染结构化形状的消费方读 `truncated`/`total` 与按文件分组；因为视图只携带保留的、字节有界的页，想要完整结果的 UI 跟随面向模型文本里的 spill 定位符，与模型的做法完全一致。
+بلا search بطاقة UI تصيير أصلي `tool/result` محتوى، الذي بـ لن توجيه يؤدي أي مستهلك ظهور ارتداد. تصيير بنية تحويل شكل حالة مستهلك قراءة `truncated`/`total` و حسب ملف قسم مجموعة؛ لأن عرض فقط يحمل إبقاء، بايت محدود صفحة، تفكير يلزم كامل نتيجة UI تتبع مع موجه إلى نموذج نص داخل spill تحديد موضع رمز، و نموذج فعل قاعدة تماما متسق.
 
-## 测试
+## اختبار
 
-`packages/fs/tool-fs-search/tests/presentation.spec.ts` 钉住纯层：`groupMatchesByFile` 的首见文件顺序；`grepSearchMeta`/`globSearchMeta` 在共享保留产出上的投影，`total` 报告截断前计数、`truncated` 被带过；保留过程施加的每行预览预算；序列化 meta 字节上限丢弃末尾组／路径同时保留单个超大条目；以及 `searchViewFromMeta` 对两种良好形状、零结果空卡片、以及每种畸形情形（非对象／数组 meta、缺失或误型的 `truncated`/`total`、未知 `shape`、畸形 `files` 条目、非字符串 `paths`）的收窄。`packages/fs/tool-fs-search/tests/tools.spec.ts` 钉住经真实工具注册表的接线：被截断的 `grep`/`glob` execute 在 `result.meta` 上产出 `SearchMeta`，`presentResult` 构建搜索视图（无 `content`），嵌套 `run_code` 分发不计算 meta 故 `presentResult` 回退，失败或跨形状或畸形结果回退到 generic 卡片。搜索包 `src` 上保持 per-file 100% 覆盖。
+`packages/fs/tool-fs-search/tests/presentation.spec.ts` تثبيت إقامة صاف طبقة:`groupMatchesByFile` أول رؤية ملف ترتيب؛`grepSearchMeta`/`globSearchMeta` في مشترك إبقاء إنتاج خروج فوق إسقاط،`total` تقرير إبلاغ قطع قطع قبل حساب عدد،`truncated` يتم حمل مرور؛ إبقاء مرور مسار تطبيق إضافة كل سطر معاينة ميزانية؛ تسلسل تحويل meta بايت حد أعلى إسقاط نهاية ذيل مجموعة/مسار معا إبقاء مفرد عدد تجاوز كبير بند؛ و `searchViewFromMeta` مقابل اثنان نوع جيد جيد شكل حالة، صفر نتيجة فارغ بطاقة، و كل نوع شاذ شكل حال شكل (غير كائن/عدد مجموعة meta، ناقص أو خطأ نوع `truncated`/`total`، لم معرفة `shape`، شاذ شكل `files` بند، غير نص `paths`) استلام ضيق.`packages/fs/tool-fs-search/tests/tools.spec.ts` تثبيت إقامة مرور حقيقي أداة سجل التسجيل وصل خط: يتم قطع قطع `grep`/`glob` execute في `result.meta` فوق إنتاج خروج `SearchMeta`،`presentResult` بناء بحث عرض (بلا `content`) ، تضمين طقم `run_code` توزيع لا حساب حساب meta لذا `presentResult` رجوع، فشل أو عبر شكل حالة أو شاذ شكل نتيجة رجوع إلى generic بطاقة. بحث حزمة `src` فوق إبقاء per-file 100% تغطية.
 
-## 相关
+## متبادل صلة
 
-- [工具调用呈现的带标签渲染意图联合](../architecture/2026-07-02-tool-render-intent-union.zh.md)——本变更用 `search` 结果标签扩展的 `card` 标签词汇。
-- [Canonical 工具输出约定](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)——本投影所依托的 value/render/`presentationMeta` 划分；结构化值留在执行本地，卡片通过 `meta` 传递。
-- [Web terminal 卡片](2026-07-28-web-terminal-card.zh.md)——本变更在后端所仿照的先例：工具把结果投影进 `presentationMeta` 与一个 `presentResult` 视图；搜索卡片的 Web 消费方是与之类比的后续。
+- [أداة استدعاء عرض حمل وسم تصيير معنى رسم ربط دمج](../architecture/2026-07-02-tool-render-intent-union.zh.md)——هذا تغيير استخدام `search` نتيجة وسم توسيع `card` وسم مفردات.
+- [Canonical أداة إخراج اتفاق](../architecture/2026-07-20-canonical-tool-output-contract.zh.md)——هذا إسقاط الذي اعتماد حمل value/render/`presentationMeta` تخطيط قسم؛ بنية تحويل قيمة إبقاء في تنفيذ محلي، بطاقة عبر `meta` نقل تمرير.
+- [Web terminal بطاقة](2026-07-28-web-terminal-card.zh.md)——هذا تغيير في خلفية الذي محاكاة وفق أولا مثال: أداة يأخذ نتيجة إسقاط دخول `presentationMeta` و واحد `presentResult` عرض؛ بحث بطاقة Web مستهلك هو و لـ صنف مقارنة لاحق.

@@ -1,39 +1,39 @@
 ---
-description: "面向模型的 pwsh 工具，供选择、配置或排查 Windows 上一次性 PowerShell 执行、后台任务与沙箱升权的使用者与维护者阅读。"
+description: "موجه إلى نموذج pwsh أداة، توفير اختيار، إعداد أو ترتيب فحص Windows فوق مرة صفة PowerShell تنفيذ، خلفية مهمة و صندوق رملي رفع حق استخدام من و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-tool-pwsh
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-tool-pwsh` 为 agent（智能体）提供 `pwsh` 工具，通过已挂载的 shell 执行器运行 PowerShell 命令——它是 `dsh-tool-bash` 的 Windows 对应物，逐调用镜像。每次调用都运行在全新 pwsh 进程中，因此状态不会保留；`run_in_background` 把长时间运行的命令变成后台任务。命令是 PowerShell 方言：原生 `C:\...` 路径与 `$env:NAME` 变量，不做方言翻译。每次调用都运行在受管 `DSH_*` 环境中；在沙箱执行器下，工具会向模型说明并强制执行 Windows 特有的语言模式与命名管道约定。请与 `dsh-pwsh-local` 等 PowerShell 执行器以及 `dsh-shell-env` 插件一起挂载。
+`dsh-tool-pwsh` لـ agent(ذكي جسم) توفير `pwsh` أداة، عبر قد تركيب shell منفذ تشغيل PowerShell أمر——هو هو `dsh-tool-bash` Windows مقابل شيء، تدريجي استدعاء مرآة مثل. كل مرة استدعاء كل تشغيل في كل جديد pwsh عملية في، لذلك حالة لن إبقاء؛`run_in_background` يأخذ طويل وقت تشغيل أمر تغيير صار خلفية مهمة. أمر هو PowerShell جهة قول: أصلي `C:\...` مسار و `$env:NAME` متغير، لا فعل جهة قول قلب ترجمة. كل مرة استدعاء كل تشغيل في تلقي إدارة `DSH_*` بيئة في؛ في صندوق رملي منفذ تحت، أداة سوف نحو نموذج شرح و قوي صنع تنفيذ Windows خاص لديه لغة نمط و تسمية إدارة طريق اتفاق. طلب و `dsh-pwsh-local` انتظار PowerShell منفذ و `dsh-shell-env` إضافة واحد بدء تركيب.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在 agent 需要运行 PowerShell 命令的任何组合中加载本插件——通常是 `ctx.shell` 由 PowerShell 执行器支撑的 Windows 组合。一旦挂载执行器提供方与 `dsh-shell-env` 注册表，它就注册 `pwsh` 工具。
+في agent حاجة تشغيل PowerShell أمر أي تركيب في تحميل هذا إضافة——عبر معتاد هو `ctx.shell` من PowerShell منفذ دعم دعم Windows تركيب. واحد حالما تركيب منفذ مزود و `dsh-shell-env` سجل التسجيل، هو حينئذ تسجيل `pwsh` أداة.
 
-### 何时选择
+### أي وقت اختيار
 
-当命令必须用 PowerShell 编写——原生路径与 `$env:` 变量——或部署是 Windows 原生时，选择 pwsh 工具。当命令集是 bash 方言时选择 `dsh-tool-bash`；两者之间没有翻译。当工作依赖跨调用状态（cwd、变量）时，持久对应物 [`dsh-tool-pwsh-persistent`](../tool-pwsh-persistent/README.zh.md) 会保持一个按所有者隔离的 shell 存活。
+عند أمر يجب استخدام PowerShell تحرير كتابة——أصلي مسار و `$env:` متغير——أو نشر هو Windows أصلي وقت، اختيار pwsh أداة. عند أمر تجميع هو bash جهة قول وقت اختيار `dsh-tool-bash`؛ اثنان من بين لا يوجد قلب ترجمة. عند عمل اعتماد عبر استدعاء حالة (cwd، متغير) وقت، حمل دائم مقابل شيء [`dsh-tool-pwsh-persistent`](../tool-pwsh-persistent/README.zh.md) سوف إبقاء واحد حسب كل من عزل shell تخزين نشط.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-常用路径是 PowerShell 执行器提供方、环境注册表与本工具。
+معتاد استخدام مسار هو PowerShell منفذ مزود، بيئة سجل التسجيل و هذا أداة.
 
 ```yaml
 - name: '@deepseek-ai/dsh-pwsh-local'
@@ -41,173 +41,173 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-tool-pwsh'
 ```
 
-唯一的配置字段用于开关后台支持。
+وحيد إعداد حقل لأجل فتح صلة خلفية دعم حمل.
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `enableRunInBackground` | `true` | 暴露 `run_in_background`；为 `false` 时拒绝强制后台调用 |
+| `enableRunInBackground` | `true` | كشف `run_in_background`؛ لـ `false` وقت رفض قوي صنع خلفية استدعاء |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh)是每个受支持字段及其 JSDoc 的穷尽式真源；生成的[工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh)携带完整参数 schema。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر؛ توليد[أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh) يحمل كامل معامل schema.
 
-### 运行命令
+### تشغيل أمر
 
-工具执行 `pwsh -Command <command>` 并返回合并后的输出。命令每次调用都运行在全新 pwsh 进程中，因此状态从不保留——请传 `workdir` 而不是 `cd`。路径使用原生 Windows 形式，环境变量用 `$env:NAME` 读取。非零退出以 `[exit code: N]` 报告；在 Windows 上，强制终止的命令以 `[exit code: 1]` 结算且没有信号标记，因此 agent 把中断后的裸 exit 1 当作终止而非命令失败。后台运行、输出截断以及 `description`／`timeoutMs`／`workdir` 参数的行为与 [`dsh-tool-bash`](../tool-bash/README.zh.md#running-long-commands-in-the-background) 完全一致，包括异步 shell 准备过程中由任务负责的取消。
+أداة تنفيذ `pwsh -Command <command>` و إرجاع دمج بعد إخراج. أمر كل مرة استدعاء كل تشغيل في كل جديد pwsh عملية في، لذلك حالة من لا إبقاء——طلب نقل `workdir` بينما لا هو `cd`. مسار استخدام أصلي Windows شكل صيغة، بيئة متغير استخدام `$env:NAME` قراءة. غير صفر خروج بـ `[exit code: N]` تقرير إبلاغ؛ في Windows فوق، قوي صنع إنهاء أمر بـ `[exit code: 1]` تسوية كما لا يوجد إشارة علامة، لذلك agent يأخذ في قطع بعد عار exit 1 عند عمل إنهاء بينما غير أمر فشل. خلفية تشغيل، إخراج قطع قطع و `description`/`timeoutMs`/`workdir` معامل سلوك و [`dsh-tool-bash`](../tool-bash/README.zh.md#running-long-commands-in-the-background) تماما متسق، يشمل مختلف خطوة shell دقيق تجهيز مرور مسار في من مهمة مسؤول إلغاء.
 
-### Windows 特有的沙箱行为
+### Windows خاص لديه صندوق رملي سلوك
 
-在沙箱执行器下，被拒绝的命令会报告 `[sandbox: file access denied under <mode> mode]`，并适用相同的单次升权路径：用 `sandbox_permissions` 加一句 `justification`，经用户审批后重试完全相同的命令一次。工具还会在其描述中教授两条 Windows 受限令牌约定：只读 pwsh 运行在 ConstrainedLanguage 中（`.NET` 静态调用、`Add-Type`、COM 与反射会以 "only core types" 错误失败）；两种受限模式下程序都无法打开命名管道，因此通过管道 stdio 捕获另一程序输出的命令会以 EPERM 失败——请升权该确切命令一次，或重构命令以避免捕获输出。
+في صندوق رملي منفذ تحت، يتم رفض أمر سوف تقرير إبلاغ `[sandbox: file access denied under <mode> mode]`، و ملائم استخدام نفسه مفرد مرة رفع حق مسار: استخدام `sandbox_permissions` إضافة واحد جملة `justification`، مرور مستخدم مراجعة دفعة بعد إعادة محاولة تماما نفسه أمر مرة. أداة أيضا سوف في ذلك وصف في تعليم منح اثنان بند Windows تلقي حد أمر لوحة اتفاق: فقط قراءة pwsh تشغيل في ConstrainedLanguage في (`.NET` ساكن حالة استدعاء،`Add-Type`،COM و عكس إطلاق سوف بـ "only core types" خطأ فشل) ؛ اثنان نوع تلقي حد نمط تحت برنامج كل لا يمكن فتح تسمية إدارة طريق، لذلك عبر إدارة طريق stdio التقاط آخر برنامج إخراج أمر سوف بـ EPERM فشل——طلب رفع حق هذا تأكيد قطع أمر مرة، أو إعادة بنية أمر بـ تجنب تجنب التقاط إخراج.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-没有 PowerShell 执行器的组合永远不会激活该工具，且注入的服务（`tools`、`shell`、`systemPrompt`、`shellEnv`）必须全部存在。没有任务运行时的后台调用会以 `background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs` 失败；没有沙箱执行器时的 `sandbox_permissions` 会以 `sandbox_permissions is not available in this composition (no sandboxing executor to escalate)` 失败。
+لا يوجد PowerShell منفذ تركيب دائم بعيد لن تنشيط هذا أداة، كما حقن خدمة (`tools`،`shell`،`systemPrompt`،`shellEnv`) يجب الكل وجود. لا يوجد مهمة وقت التشغيل خلفية استدعاء سوف بـ `background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs` فشل؛ لا يوجد صندوق رملي منفذ وقت `sandbox_permissions` سوف بـ `sandbox_permissions is not available in this composition (no sandboxing executor to escalate)` فشل.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释工具背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير أداة خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **`dsh-tool-bash` 的刻意孪生。** 前台与后台执行、受管环境、沙箱升权面以及标记／截断渲染都逐调用镜像 bash 工具，因此其中之一的消费方也能接受另一个的协议形状（[pwsh 工具与 bash 对齐 Agent Note](../../../.agents/notes/implemented/feature/2026-08-02-pwsh-tool-bash-parity.zh.md)）。
-- **PowerShell 方言约定。** 工具约定是 PowerShell：原生路径与 `$env:` 变量，经由 `pwsh -Command` 执行，没有中间 shell。
-- **Windows 沙箱事实写进描述。** ConstrainedLanguage 与命名管道约定是 Windows 受限令牌行为；教授它们的条件是「已挂载任意约束执行器」，之所以安全，是因为每个已发布的配对都是 win32-only。
-- **非零退出只报告、不失败。** 只有基础设施故障（spawn 错误、中止）才会作为工具错误暴露，与 bash 的故事一致。
+- **`dsh-tool-bash` لحظة معنى توأم توليد.** قبل منصة و خلفية تنفيذ، تلقي إدارة بيئة، صندوق رملي رفع حق وجه و علامة/قطع قطع تصيير كل تدريجي استدعاء مرآة مثل bash أداة، لذلك منها لـ واحد مستهلك أيضا قدرة قبول آخر عدد بروتوكول شكل حالة ([pwsh أداة و bash مقابل متساو Agent Note](../../../.agents/notes/implemented/feature/2026-08-02-pwsh-tool-bash-parity.zh.md)).
+- **PowerShell جهة قول اتفاق.** أداة اتفاق هو PowerShell: أصلي مسار و `$env:` متغير، مرور من `pwsh -Command` تنفيذ، لا يوجد في بين shell.
+- **Windows صندوق رملي واقع كتابة دخول وصف.** ConstrainedLanguage و تسمية إدارة طريق اتفاق هو Windows تلقي حد أمر لوحة سلوك؛ تعليم منح هو جمع شرط هو «قد تركيب مهمة معنى قيد منفذ» ، لـ الذي بـ أمان، هو لأن كل قد إصدار إعداد مقابل كل هو win32-only.
+- **غير صفر خروج فقط تقرير إبلاغ، لا فشل.** فقط لديه أساس أساس ضبط تطبيق لذا عائق (spawn خطأ، في توقف) عندئذ سوف بصفة أداة خطأ كشف، و bash لذا أمر متسق.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：工具注册、提示词区段、参数校验、升权、请求组装 |
-| [`src/background.ts`](src/background.ts) | 把已结算的后台进程映射为通用任务结果词汇 |
-| [`src/render.ts`](src/render.ts) | 模型侧结果文本：流、标记、截断通知（bash 孪生） |
-| — | 不发布运行时不变式伴生入口；除所属 seam 强制执行的约定外，本包不公开独立的事件序列或可变数据关系。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل: أداة تسجيل، نص التوجيه منطقة مقطع، معامل تحقق، رفع حق، طلب تجميع |
+| [`src/background.ts`](src/background.ts) | يأخذ قد تسوية خلفية عملية خريطة لـ عام مهمة نتيجة مفردات |
+| [`src/render.ts`](src/render.ts) | نموذج جانب نتيجة نص: تدفق، علامة، قطع قطع إشعار (bash توأم توليد) |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ حذف الذي تابع seam قوي صنع تنفيذ اتفاق خارج، هذه الحزمة لا عام مستقل حدث تسلسل أو متغير بيانات علاقة. |
 
-### 渲染与退出标记
+### تصيير و خروج علامة
 
-渲染器共享 bash 工具的结构与来自 `dsh-shell` 的 `parseExitStatus` 标记约定：干净退出（0、无信号）不产生标记；UI 卡片把退出标记消费为退出状态 pill。Windows 强制终止以 exit 1 结算且没有信号，因此 `[killed by signal: …]` 仅适用于 POSIX。`tool:pwsh` 提示词区段（first-party 顺序 1010）教授退出标记约定与「中断后 exit 1」的 Windows 解读。
+مصير مشترك bash أداة بنية و قدوم ذاتي `dsh-shell` `parseExitStatus` علامة اتفاق: جاف صاف خروج (0، بلا إشارة) لا إنتاج علامة؛UI بطاقة يأخذ خروج علامة إزالة استهلاك لـ خروج حالة pill.Windows قوي صنع إنهاء بـ exit 1 تسوية كما لا يوجد إشارة، لذلك `[killed by signal: …]` فقط ملائم لأجل POSIX.`tool:pwsh` نص التوجيه منطقة مقطع (first-party ترتيب 1010) تعليم منح خروج علامة اتفاق و «في قطع بعد exit 1» Windows حل قراءة.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从 shell 家族逐步进入执行器 seam，以及 Windows 行为背后的设计笔记。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من shell بيت عائلة تدريجي خطوة دخول منفذ seam، و Windows سلوك خلف بعد تصميم قلم تسجيل.
 
-- [shell 包映射](../README.zh.md)——bash 能力家族及其角色。
-- [Bash 执行器子系统](../../../docs/subsystems/shell.zh.md)——请求／spec 词汇、结果与后台进程。
-- [shell-env](../shell-env/README.zh.md)——每次调用都会收到的受管 `DSH_*` 环境。
-- [tool-jobs](../../jobs/tool-jobs/README.zh.md)——后台运行的 `job_output`、`job_list` 与 `job_kill` 控制。
-- [pwsh 工具与 bash 对齐 Agent Note](../../../.agents/notes/implemented/feature/2026-08-02-pwsh-tool-bash-parity.zh.md)——为什么工具镜像 bash 工具。
-- [Windows ACL 受限令牌沙箱 Agent Note](../../../.agents/notes/implemented/feature/2026-08-08-windows-acl-restricted-token-sandbox.zh.md)——语言模式与命名管道约定。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh)——`pwsh` 参数 schema 的确切内容。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh)——每个受支持配置字段及其源声明。
+- [shell حزمة خريطة](../README.zh.md)——bash قدرة بيت عائلة و ذلك زاوية لون.
+- [Bash منفذ فرعي نظام](../../../docs/subsystems/shell.zh.md)——طلب/spec مفردات، نتيجة و خلفية عملية.
+- [shell-env](../shell-env/README.zh.md)——كل مرة استدعاء كل سوف استلام إلى تلقي إدارة `DSH_*` بيئة.
+- [tool-jobs](../../jobs/tool-jobs/README.zh.md)——خلفية تشغيل `job_output`،`job_list` و `job_kill` تحكم.
+- [pwsh أداة و bash مقابل متساو Agent Note](../../../.agents/notes/implemented/feature/2026-08-02-pwsh-tool-bash-parity.zh.md)——لـ ماذا أداة مرآة مثل bash أداة.
+- [Windows ACL تلقي حد أمر لوحة صندوق رملي Agent Note](../../../.agents/notes/implemented/feature/2026-08-08-windows-acl-restricted-token-sandbox.zh.md)——لغة نمط و تسمية إدارة طريق اتفاق.
+- [توليد أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh)——`pwsh` معامل schema تأكيد قطع محتوى.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 系统提示词
+### توجيه النظام
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-该插件注册作用域内的每次请求都在 first-party 顺序 1010 处包含以下 pwsh 指引。按作用域实施的工具限制可以隐藏 schema，却不会移除这个独立注册的区段。
+هذا إضافة تسجيل أثر مجال داخل كل مرة طلب كل في first-party ترتيب 1010 موضع يتضمن التالي pwsh إشارة جذب. حسب أثر مجال فعلي تطبيق أداة حد يمكن إخفاء schema، لكن لن إزالة هذا عدد مستقل تسجيل منطقة مقطع.
 
-##### Pwsh 指引
+##### Pwsh إشارة جذب
 
 ```markdown
 Non-zero exits are reported as `[exit code: N]` markers; investigate failures before moving on. On Windows a killed process settles as `[exit code: 1]` without a signal marker; treat a bare exit 1 after an interruption as a termination, not a command failure.
 ```
 
-#### Token 影响
+#### Token أثر
 
-插件激活期间，每次请求都会产生少量固定的输入 token 开销。
+إضافة تنشيط خلال، كل مرة طلب كل سوف إنتاج قليل كمية ثابت إدخال token فتح إلغاء.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要注册作用域与提示词文本不变，前缀就保持稳定。插件激活或释放可能使从该提示词区段起的复用失效。
+فقط يلزم تسجيل أثر مجال و نص التوجيه نص ثابت، بادئة حينئذ إبقاء مستقر. إضافة تنشيط أو تحرير ممكن جعل من هذا نص التوجيه منطقة مقطع بدء إعادة استخدام بطلان.
 
-### 工具 schema
+### أداة schema
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-模型会看到生成的 [`pwsh` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh)。按 agent 作用域实施的工具限制可以移除该 agent 的定义。
+نموذج سوف يرى توليد [`pwsh` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh). حسب agent أثر مجال فعلي تطبيق أداة حد يمكن إزالة هذا agent تعريف.
 
-#### Token 影响
+#### Token أثر
 
-工具可见的每个请求都会产生固定 schema 开销。
+أداة مرئي كل طلب كل سوف إنتاج ثابت schema فتح إلغاء.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要可见性与工具定义不变，前缀就保持稳定。限制或配置变化可能从首个变化的 token 开始使复用失效。
+فقط يلزم مرئي صفة و أداة تعريف ثابت، بادئة حينئذ إبقاء مستقر. حد أو إعداد تغير ممكن من أول عدد تغير token بدء جعل إعادة استخدام بطلان.
 
-### 前台结果
+### قبل منصة نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-渲染器输出依数据而定的 stdout 尾部，再输出可选的 `[stderr]` 和 stderr 尾部。条件行精确为 `[output truncated; full output: <path-or-(unavailable)>]`、`[sandbox: file access denied under <mode> mode]` 加升权提示 `[sandbox: escalation available — …]`（仅在组合声明升权时）、`[timed out after <timeoutMs>ms]`、`[killed by signal: <signal>]` 与 `[exit code: <exitCode>]`（仅非零退出）；空正文渲染为 `(no output)`。
+مصير إخراج اعتماد بيانات بينما تحديد stdout ذيل جزء، مجددا إخراج اختياري `[stderr]` و stderr ذيل جزء. شرط سطر دقيق لـ `[output truncated; full output: <path-or-(unavailable)>]`،`[sandbox: file access denied under <mode> mode]` إضافة رفع حق تلميح `[sandbox: escalation available — …]`(فقط في تركيب إعلان رفع حق وقت) ،`[timed out after <timeoutMs>ms]`،`[killed by signal: <signal>]` و `[exit code: <exitCode>]`(فقط غير صفر خروج) ؛ فارغ متن تصيير لـ `(no output)`.
 
-#### Token 影响
+#### Token أثر
 
-调用前的结果 token 为零。输出按流设界，而每行已发出的内容在压缩（compaction）前保留于历史。
+استدعاء قبل نتيجة token لـ صفر. إخراج حسب تدفق ضبط حد، بينما كل سطر قد إرسال خروج محتوى في ضغط (compaction) قبل إبقاء في تاريخ.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-### 后台结果
+### خلفية نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-后台启动精确渲染为 `started background job <id>`；随后的读取与状态经由通用 `job_output`／`job_kill` 工具流转，包括内存截断丢弃未读字节时的有损读取 spill 通知。
+خلفية بدء دقيق تصيير لـ `started background job <id>`؛ مع بعد قراءة و حالة مرور من عام `job_output`/`job_kill` أداة تدفق تحويل، يشمل داخل تخزين قطع قطع إسقاط لم قراءة بايت وقت لديه ضرر قراءة spill إشعار.
 
-#### Token 影响
+#### Token أثر
 
-确认是一行固定的短文本；任务输出按每次读取设界。
+تأكيد هو واحد سطر ثابت قصير نص؛ مهمة إخراج حسب كل مرة قراءة ضبط حد.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-### 工具错误
+### أداة خطأ
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-验证与基础设施失败统一为 `Error: <message>`。本包的稳定消息包括 `invalid command: expected a non-empty string`、`invalid description: expected a non-empty string`、`invalid timeoutMs: expected a positive number, got <value>`、升权配对失败、`sandbox_permissions is not available in this composition (no sandboxing executor to escalate)`、共享升权失败（未严格加宽／无审批服务／无 agent 可路由／无审批通道／用户拒绝／已取消）、`run_in_background is disabled for this deployment (enableRunInBackground: false)`、`background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs`，以及 `tool call aborted`。
+تحقق و أساس أساس ضبط تطبيق فشل موحد واحد لـ `Error: <message>`. هذه الحزمة مستقر رسالة يشمل `invalid command: expected a non-empty string`،`invalid description: expected a non-empty string`،`invalid timeoutMs: expected a positive number, got <value>`، رفع حق إعداد مقابل فشل،`sandbox_permissions is not available in this composition (no sandboxing executor to escalate)`، مشترك رفع حق فشل (لم صارم إطار إضافة عرض/بلا مراجعة دفعة خدمة/بلا agent يمكن توجيه/بلا مراجعة دفعة عبر طريق/مستخدم رفض/قد إلغاء) ،`run_in_background is disabled for this deployment (enableRunInBackground: false)`،`background jobs unavailable: load @deepseek-ai/dsh-jobs and @deepseek-ai/dsh-tool-jobs`، و `tool call aborted`.
 
-#### Token 影响
+#### Token أثر
 
-只有失败调用会增加这些保留 token；被中止的调用不会添加命令输出。
+فقط لديه فشل استدعاء سوف زيادة هذه إبقاء token؛ يتم في توقف استدعاء لن إضافة أمر إخراج.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加；新可见内容位于可复用请求前缀之后，不会使现有 KV-cache 条目失效。
+فقط إلحاق؛ جديد مرئي محتوى يقع في يمكن إعادة استخدام طلب بادئة بعد، لن جعل قائم KV-cache بند بطلان.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明工具何时不合适或需要特别小心。它们是当前包约束，不是任务积压。
+هذه حد شرح أداة أي وقت لا دمج ملائم أو حاجة خاص آخر صغير قلب. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **Windows 沙箱下的语言模式与命名管道捕获**——在 [Windows ACL 沙箱](../../sandbox/sandbox-windows-acl/README.zh.md)下，只读 pwsh 以 ConstrainedLanguage 启动，因为其临时目录写入被拒绝，导致 PowerShell 的 AppLocker 探测失败并按拒绝处理：`Add-Type`、非核心 .NET 静态调用（`[System.IO.*]::`、`[math]::`）、COM 对象与反射会以 "only core types" 错误失败，且该模式无法从内部解除。workspace-write 的私有临时目录让探测完成，因此除非宿主策略另有规定，它保持 FullLanguage。两种受限模式都拒绝命名管道打开，因此受限命令内部的管道 stdio spawn 会以 EPERM 失败。工具描述把两条约定都教给模型；完整限制以后端 README 为准。
-- **没有持久 shell**——每次调用都启动全新的 `pwsh -Command`；持久 shell 对应物是 [`@deepseek-ai/dsh-tool-pwsh-persistent`](../tool-pwsh-persistent/README.zh.md)，它跨调用保持一个按所有者隔离的 pwsh 存活。
-- **PowerShell 方言约定**——模型必须编写 PowerShell（原生路径、`$env:` 变量），而不是 bash；没有方言翻译。
-- **会话 cwd 身份未规范化**——workdir 基准就是会话头部 cwd 原样，不像 bash 工具那样以沙箱根规范化身份为准。在约束执行器下，策略的 workspace root 确实被规范化（由共享策略服务完成），因此当原始会话 cwd 与其规范形式不同时，workdir 与约束根可能分叉——这是推迟到共享 shell 工具基座抽取的对齐差距。
+- **Windows صندوق رملي تحت لغة نمط و تسمية إدارة طريق التقاط**——في [Windows ACL صندوق رملي](../../sandbox/sandbox-windows-acl/README.zh.md) تحت، فقط قراءة pwsh بـ ConstrainedLanguage بدء، لأن ذلك مؤقت دليل كتابة يتم رفض، توجيه يؤدي PowerShell AppLocker استكشاف قياس فشل و حسب رفض معالجة:`Add-Type`، غير نواة قلب .NET ساكن حالة استدعاء (`[System.IO.*]::`،`[math]::`) ،COM كائن و عكس إطلاق سوف بـ "only core types" خطأ فشل، كما هذا نمط لا يمكن من داخلي حل حذف.workspace-write خاص مؤقت دليل يجعل استكشاف قياس إتمام، لذلك حذف غير مضيف سياسة آخر لديه قاعدة تحديد، هو إبقاء FullLanguage. اثنان نوع تلقي حد نمط كل رفض تسمية إدارة طريق فتح، لذلك تلقي حد أمر داخلي إدارة طريق stdio spawn سوف بـ EPERM فشل. أداة وصف يأخذ اثنان بند اتفاق كل تعليم إعطاء نموذج؛ كامل حد بـ خلفية README لـ دقيق.
+- **لا يوجد حمل دائم shell**——كل مرة استدعاء كل بدء كل جديد `pwsh -Command`؛ حمل دائم shell مقابل شيء هو [`@deepseek-ai/dsh-tool-pwsh-persistent`](../tool-pwsh-persistent/README.zh.md) ، هو عبر استدعاء إبقاء واحد حسب كل من عزل pwsh تخزين نشط.
+- **PowerShell جهة قول اتفاق**——نموذج يجب تحرير كتابة PowerShell(أصلي مسار،`$env:` متغير) ، بينما لا هو bash؛ لا يوجد جهة قول قلب ترجمة.
+- **جلسة cwd هوية لم مواصفة تحويل**——workdir أساس دقيق حينئذ هو جلسة رأس جزء cwd أصل مثال، لا مثل bash أداة ذلك مثال بـ صندوق رملي أصل مواصفة تحويل هوية لـ دقيق. في قيد منفذ تحت، سياسة workspace root تأكيد فعلي يتم مواصفة تحويل (من مشترك سياسة خدمة إتمام) ، لذلك عند أصلي جلسة cwd و ذلك مواصفة شكل صيغة مختلف وقت،workdir و قيد أصل ممكن قسم تقاطع——هذا هو دفع متأخر إلى مشترك shell أداة أساس مقعد سحب أخذ مقابل متساو فرق مسافة.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-20-web-streaming-fence-highlight.zh.md)
+English | [العربية](2026-08-20-web-streaming-fence-highlight.zh.md)
 
 ## Problem
 
@@ -28,7 +28,7 @@ Package tests bound the grammar input accumulated across 800 open-fence lines, c
 
 **Pass `lang` through and re-tokenize the whole fence per chunk.** One-line fix, but it reverses the recorded plain-arm rationale without addressing it: a long streaming fence pays quadratic tokenization over the stream, janking exactly on the replies where highlighting matters most.
 
-**Highlight only frozen (closed, settled-position) fences during streaming.** Bounded cost, but an unclosed fence pins the incremental parser's tail, so the actively growing fence — the one on screen — would stay plain until the reply finishes, failing the issue's "识别语言后即可增量高亮".
+**Highlight only frozen (closed, settled-position) fences during streaming.** Bounded cost, but an unclosed fence pins the incremental parser's tail, so the actively growing fence — the one on screen — would stay plain until the reply finishes, failing the issue's "تعرف آخر لغة بعد يكفي زيادة كمية عال مضيء".
 
 **Keep only a fixed window of highlighted lines and turn the older prefix into plain text.** This bounds live token DOM and can reduce layout further, but changes already rendered content, complicates selection across the window boundary, and makes a tunable presentation policy part of `CodeBlock`. Retained parser, tokenizer, and React frontiers remove the avoidable repeated work without discarding colors; the complete token DOM remains an explicit limitation rather than a hidden semantic change.
 

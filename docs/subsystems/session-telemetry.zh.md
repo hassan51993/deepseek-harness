@@ -1,12 +1,12 @@
-# 遥测（telemetry）
+# بعيد قياس (telemetry)
 
-[English](session-telemetry.md) | 中文
+[English](session-telemetry.md) | العربية
 
-对外的会话上报拆分为一项[能力 seam](../capability-seams.zh.md)：Service Definition 与捕获协调器（[dsh-session-telemetry](../../packages/session/session-telemetry)，`ctx.sessionTelemetry`）拥有完整的权威事件捕获、`session-telemetry/record` 脱敏 waterfall（瀑布式事件）、handoff 游标与最小后端约定；部署方加载的 Service Provider（[dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)）则是原样配置的 OpenTelemetry JS SDK 日志流水线。它是一项可选能力，不属于 agent loop（智能体循环）主干，这里也没有任何内容会进入模型请求。边界公理（harness 的职责止于 `emit()`；批处理、重试、排队与丢失策略都属于上报 SDK）连同被否决的替代方案，均已在[复活 Agent Note](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.zh.md)中定案；捕获与游标约定见 [Service Definition README](../../packages/session/session-telemetry/README.zh.md)。
+مقابل خارج جلسة فوق تقرير تفكيك قسم لـ واحد بند[قدرة seam](../capability-seams.zh.md):Service Definition و التقاط تنسيق ضبط جهاز ([dsh-session-telemetry](../../packages/session/session-telemetry) ،`ctx.sessionTelemetry`) يملك كامل مرجعي حدث التقاط،`session-telemetry/record` انفصال حساس waterfall(شلال نشر صيغة حدث) ،handoff تنقل علامة و الأكثر صغير خلفية اتفاق؛ نشر جهة تحميل Service Provider([dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)) فإن هو أصل مثال إعداد OpenTelemetry JS SDK سجل خط الإنتاج. هو هو واحد بند اختياري قدرة، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، هذا داخل أيضا لا يوجد أي محتوى سوف دخول نموذج طلب. حد عام إدارة (harness مسؤولية توقف في `emit()`؛ دفعة معالجة، إعادة محاولة، ترتيب طابور و فقد فقد سياسة كل يخص فوق تقرير SDK) وصل نفس يتم مرفوض بديل خطة، متساو قد في[تكرار نشط Agent Note](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.zh.md) في تحديد سجل؛ التقاط و تنقل علامة اتفاق رؤية [Service Definition README](../../packages/session/session-telemetry/README.zh.md).
 
-源码：[`packages/session/session-telemetry/src/index.ts`](../../packages/session/session-telemetry/src/index.ts)
+شفرة المصدر:[`packages/session/session-telemetry/src/index.ts`](../../packages/session/session-telemetry/src/index.ts)
 
-## 逻辑记录
+## منطق سجل
 
 ```ts type-equiv
 /**
@@ -55,11 +55,11 @@ interface SessionTelemetryRecord {
 }
 ```
 
-每条权威[会话事件](session.zh.md)都会完整透传为一条有序 ledger 记录，包括每个携带完整紧凑 stream 的 `assistant/message` 或 `assistant/attempt`，以及该 seam 从未听说过、由插件合并进来的类型。进程本地 `agent/assistant-stream` frame 不进入该持久 feed。新 Session 对象从其生命周期边界开始，除非后端选择 `includeHistory`；重新收养同一对象时会从 handoff 游标之后继续。投递是尽力而为的：游标标记的是「已交接」而非「已送达」，记录可能丢失（崩溃、重载窗口）也可能重复（新对象回放、SDK 重试），因此接收端对 ledger 记录基于 `(session.id, session.format_version, event.seq)` 去重；ops 记录刻意省略这类标识——它们是用于告警的信号，而非用于累加的条目，重复被容忍而非被去重。
+كل بند مرجعي[جلسة حدث](session.zh.md) كل سوف كامل نفاذ نقل لـ واحد بند لديه ترتيب ledger سجل، يشمل كل يحمل كامل ضيق تجميع stream `assistant/message` أو `assistant/attempt`، و هذا seam من لم استماع قول مرور، من إضافة دمج دخول قدوم نوع. عملية محلي `agent/assistant-stream` frame لا دخول هذا حمل دائم feed. جديد Session كائن من ذلك دورة الحياة حد بدء، حذف غير خلفية اختيار `includeHistory`؛ إعادة استلام رعاية نفس كائن وقت سوف من handoff تنقل علامة بعد متابعة. إلقاء تمرير هو كل قوة بينما لـ: تنقل علامة علامة هو «قد تسليم وصل» بينما غير «قد إرسال بلوغ» ، سجل ممكن فقد فقد (انهيار انهيار، إعادة تحميل نافذة) أيضا ممكن تكرار (جديد كائن إعادة تشغيل،SDK إعادة محاولة) ، لذلك استقبال طرف مقابل ledger سجل أساس في `(session.id, session.format_version, event.seq)` ذهاب إعادة؛ops سجل لحظة معنى حذف هذا صنف معرف——هو جمع هو لأجل إبلاغ تحذير إشارة، بينما غير لأجل تراكم إضافة بند، تكرار يتم سعة تحمل بينما غير يتم ذهاب إعادة.
 
-## 共享披露
+## مشترك كشف كشف
 
-每个后端都通过 `ctx.sessionTelemetry` 上必需的抽象 `sharing` 成员暴露其部署级模式（[Service Definition README](../../packages/session/session-telemetry/README.zh.md#the-sharing-disclosure)）。它既不是逐 Session 的接纳决定，也不是投递回执。`/feedback` 确认文本不查询它。
+كل خلفية كل عبر `ctx.sessionTelemetry` فوق مطلوب سحب كائن `sharing` عضو كشف ذلك نشر درجة نمط ([Service Definition README](../../packages/session/session-telemetry/README.zh.md#the-sharing-disclosure)). هو حيث لا هو تدريجي Session وصل قبول قرار، أيضا لا هو إلقاء تمرير عودة تنفيذ.`/feedback` تأكيد نص لا استعلام هو.
 
 ```ts type-equiv
 /**
@@ -68,7 +68,7 @@ interface SessionTelemetryRecord {
 type SessionTelemetrySharingStatus = 'full' | 'feedback-only' | 'disabled'
 ```
 
-## 捕获策略
+## التقاط سياسة
 
 ```ts type-equiv
 /** Whether capture follows live events or reads the canonical log only when requested. */
@@ -85,9 +85,9 @@ interface SessionTelemetryCaptureOptions {
 }
 ```
 
-`includeHistory` 允许捕获存储与继承的记录，但本身不授权捕获。[OTel 后端](../../packages/session/session-telemetry-otel/README.zh.md)使用按需捕获，并要求新的自身显式反馈；它只释放截至该反馈的完整前缀，适用于所有提供方。
+`includeHistory` سماح التقاط تخزين و وراثة سجل، لكن ذاته لا تخويل التقاط.[OTel خلفية](../../packages/session/session-telemetry-otel/README.zh.md) استخدام حسب يحتاج التقاط، و اشتراط جديد ذاته صريح عكس تغذية؛ هو فقط تحرير قطع حتى هذا عكس تغذية كامل بادئة، ملائم لأجل كل مزود.
 
-## 后端约定
+## خلفية اتفاق
 
 ```ts type-equiv
 /**
@@ -135,11 +135,11 @@ interface SessionTelemetrySink {
 }
 ```
 
-`SessionTelemetryBackend`（`ctx.sessionTelemetry`，[签名](#ctxsessiontelemetry--sessiontelemetrybackend-abstract-seam)）是该约定的可加载形态：每个上下文只允许一个实现，重复加载会抛出异常；后端在其构造函数中组合 seam 的 `SessionTelemetryCoordinator`，以此装配捕获侧。
+`SessionTelemetryBackend`(`ctx.sessionTelemetry`،[توقيع](#ctxsessiontelemetry--sessiontelemetrybackend-abstract-seam)) هو هذا اتفاق يمكن تحميل شكل: كل سياق فقط سماح واحد تنفيذ، تكرار تحميل سوف رمي خروج استثناء؛ خلفية في ذلك بنية صنع دالة في تركيب seam `SessionTelemetryCoordinator`، بـ هذا تركيب إعداد التقاط جانب.
 
-## 脱敏 waterfall：`session-telemetry/record`
+## انفصال حساس waterfall:`session-telemetry/record`
 
-每条记录在权威事件副本与 `emit()` 之间都要经过 `session-telemetry/record` [waterfall](../cordis-primer.zh.md#cordis-waterfall-semantics)（[事件条目](#session-telemetryrecord--waterfall)）。seam 自身不带任何规则：未挂载监听器时，记录以捕获时的原样到达后端；导出数据能干净到什么程度，恰恰取决于部署方挂载了什么规则。监听器通过变换 `next()` 的返回值来堆叠；不调用 `next()` 就返回，即替换其下方的全部逻辑；抛出异常的监听器会在协调器的隔离范围内以 fail-closed 方式扣下这一条记录。脱敏只作用于导出副本；权威会话日志永不改写。
+كل بند سجل في مرجعي حدث فرعي هذا و `emit()` بين كل يلزم مرور مرور `session-telemetry/record` [waterfall](../cordis-primer.zh.md#cordis-waterfall-semantics)([حدث بند](#session-telemetryrecord--waterfall)).seam ذاته لا حمل أي قاعدة: لم تركيب مستمع وقت، سجل بـ التقاط وقت أصل مثال وصول خلفية؛ توجيه خروج بيانات قدرة جاف صاف إلى ماذا مسار درجة، تماما تماما أخذ قرار في نشر جهة تركيب ماذا قاعدة. مستمع عبر تغيير تبديل `next()` قيمة راجعة قدوم كومة تراكم؛ لا استدعاء `next()` حينئذ إرجاع، أي استبدال ذلك تحت جهة الكل منطق؛ رمي خروج استثناء مستمع سوف في تنسيق ضبط جهاز عزل نطاق داخل بـ fail-closed طريقة خصم تحت هذا واحد بند سجل. انفصال حساس فقط أثر في توجيه خروج فرعي هذا؛ مرجعي جلسة سجل دائم لا تعديل كتابة.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

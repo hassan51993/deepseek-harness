@@ -1,39 +1,39 @@
 ---
-description: "面向模型的持久 pwsh 工具，供选择、配置或排查跨调用保留的按所有者隔离 PowerShell 状态的使用者与维护者阅读。"
+description: "موجه إلى نموذج حمل دائم pwsh أداة، توفير اختيار، إعداد أو ترتيب فحص عبر استدعاء إبقاء حسب كل من عزل PowerShell حالة استخدام من و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-tool-pwsh-persistent
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-tool-pwsh-persistent` 为每个 agent（智能体）提供 `pwsh` 工具，跨调用保留其当前目录、环境变量、函数与后台任务。同一 agent 的命令串行运行，不同 agent 维护相互隔离的 shell 状态。多步 PowerShell 工作应选择本包；若每条命令都应从干净状态开始，请使用 `dsh-tool-pwsh`，需要交互 stdin 时则使用 terminal 工具。请配置支持 pwsh 的后端和单条命令超时；超时或显式 `exit` 会丢弃 shell，因此下次调用从全新状态开始。
+`dsh-tool-pwsh-persistent` لـ كل agent(ذكي جسم) توفير `pwsh` أداة، عبر استدعاء إبقاء ذلك حالي دليل، بيئة متغير، دالة و خلفية مهمة. نفس agent أمر سلسلة سطر تشغيل، مختلف agent صيانة متبادل متبادل عزل shell حالة. كثير خطوة PowerShell عمل ينبغي اختيار هذه الحزمة؛ إذا كل بند أمر كل ينبغي من جاف صاف حالة بدء، طلب استخدام `dsh-tool-pwsh`، حاجة تفاعل stdin وقت فإن استخدام terminal أداة. طلب إعداد دعم حمل pwsh خلفية و مفرد بند أمر مهلة؛ مهلة أو صريح `exit` سوف إسقاط shell، لذلك تحت مرة استدعاء من كل جديد حالة بدء.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在 agent 需要在命令之间保持 PowerShell 状态的任何组合中加载本插件——它是 `dsh-tool-pwsh` 的持久对应物，用于依赖跨调用状态的工作。它注册 `pwsh` 工具，需要 `ctx.tools` 与 `ctx.terminals` 服务，并在执行时需要拥有者 agent 会话。
+في agent حاجة في أمر بين إبقاء PowerShell حالة أي تركيب في تحميل هذا إضافة——هو هو `dsh-tool-pwsh` حمل دائم مقابل شيء، لأجل اعتماد عبر استدعاء حالة عمل. هو تسجيل `pwsh` أداة، حاجة `ctx.tools` و `ctx.terminals` خدمة، و في تنفيذ وقت حاجة يملك من agent جلسة.
 
-### 何时选择
+### أي وقت اختيار
 
-当工作依赖跨调用 PowerShell 状态时选择持久工具；当每条命令都应从已知、干净的环境开始时选择 `dsh-tool-pwsh`。这里不支持需要交互 stdin 的命令——读取输入的前台子进程会一直阻塞到命令超时，随后重置 shell——因此交互工作属于 terminal 工具。
+عند عمل اعتماد عبر استدعاء PowerShell حالة وقت اختيار حمل دائم أداة؛ عند كل بند أمر كل ينبغي من معروف، جاف صاف بيئة بدء وقت اختيار `dsh-tool-pwsh`. هذا داخل لا دعم حمل حاجة تفاعل stdin أمر——قراءة إدخال قبل منصة عملية فرعية سوف واحد مباشر منع سد إلى أمر مهلة، مع بعد إعادة وضع shell——لذلك تفاعل عمل يخص terminal أداة.
 
-### 最小配置
+### الأكثر صغير إعداد
 
-默认的 `shell` 后端通过配置了 `shellDialect: pwsh` 的 `dsh-terminal-bash` 实例启动 PowerShell shell；部署方可以注册其他 pwsh 方言 PTY 后端并按名称选择。
+افتراضي `shell` خلفية عبر إعداد `shellDialect: pwsh` `dsh-terminal-bash` نسخة بدء PowerShell shell؛ نشر جهة يمكن تسجيل أخرى pwsh جهة قول PTY خلفية و حسب اسم اختيار.
 
 ```yaml
 - name: '@deepseek-ai/dsh-terminal'
@@ -43,123 +43,123 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-tool-pwsh-persistent'
 ```
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `backendType` | `shell` | 用于每个 agent shell 的已注册 PTY 后端 |
-| `timeoutMs` | `300,000` | 单条命令的墙钟上限；超时关闭 shell |
-| `maxOutputChars` | `16,000` | 保留的命令输出字符上限；固定诊断信息在其后追加 |
-| `description` | `Run commands in a persistent PowerShell shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | 面向模型的环境约定；部署方可描述自己的环境 |
+| `backendType` | `shell` | لأجل كل agent shell قد تسجيل PTY خلفية |
+| `timeoutMs` | `300,000` | مفرد بند أمر جدار ساعة حد أعلى؛ مهلة إغلاق shell |
+| `maxOutputChars` | `16,000` | إبقاء أمر إخراج محرف حد أعلى؛ ثابت تشخيص معلومة في ذلك بعد إلحاق |
+| `description` | `Run commands in a persistent PowerShell shell. State, including the current directory and exported environment variables, persists across calls for this agent.` | موجه إلى نموذج بيئة اتفاق؛ نشر جهة يمكن وصف ذاتي ذات بيئة |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
-### agent 可以依赖什么
+### agent يمكن اعتماد ماذا
 
-命令共享每个 agent 一个 shell，因此 cwd、`$env:` 变量、函数与后台任务都会跨调用保留。结果排除私有完成标记、shell 提示符与回显的输入行。非零的包装命令追加 `[exit code: N]`——命令运行原生程序时给出确切原生退出码，PowerShell 终止错误则为 `1`。在报告该状态前就退出的 shell 改为追加 `[shell exited: code N]`、`[shell killed by signal: SIG]` 或 `[shell exited]`（Windows 强制终止报告 exit 1 且没有信号），然后重置并告诉 agent 下一次调用从全新状态开始。长输出保留最早的已保留前缀并附裁剪通知；若 terminal 已经丢弃该前缀，结果会明确说明。
+أمر مشترك كل agent واحد shell، لذلك cwd،`$env:` متغير، دالة و خلفية مهمة كل سوف عبر استدعاء إبقاء. نتيجة ترتيب حذف خاص إتمام علامة،shell تلميح رمز و عودة إظهار إدخال سطر. غير صفر حزمة تركيب أمر إلحاق `[exit code: N]`——أمر تشغيل أصلي برنامج وقت إعطاء خروج تأكيد قطع أصلي خروج رمز،PowerShell إنهاء خطأ فإن لـ `1`. في تقرير إبلاغ هذا حالة قبل حينئذ خروج shell تعديل لـ إلحاق `[shell exited: code N]`،`[shell killed by signal: SIG]` أو `[shell exited]`(Windows قوي صنع إنهاء تقرير إبلاغ exit 1 كما لا يوجد إشارة) ، لكن بعد إعادة وضع و إبلاغ إبلاغ agent تحت مرة استدعاء من كل جديد حالة بدء. طويل إخراج إبقاء الأكثر مبكر قد إبقاء بادئة و مرفق قطع قص إشعار؛ إذا terminal قد إسقاط هذا بادئة، نتيجة سوف واضح شرح.
 
-### 可能出什么问题
+### ممكن خروج ماذا مشكلة
 
-没有拥有者 agent 会话的调用会以 `pwsh requires an owning agent session` 失败，没有 pwsh 方言 PTY 后端的组合会激活该工具，但首次调用以 `no PTY backend registered for "shell"` 失败。模型重定义 `prompt` 函数会移除就绪标记，shell 随后在静默层级而非标记快路径上结算。命令内的原始 ESC 字符会在执行前被 PSReadLine 消费，不受支持。超时或取消会关闭不确定的 shell、丢弃结果并报告重置。
+لا يوجد يملك من agent جلسة استدعاء سوف بـ `pwsh requires an owning agent session` فشل، لا يوجد pwsh جهة قول PTY خلفية تركيب سوف تنشيط هذا أداة، لكن أول مرة استدعاء بـ `no PTY backend registered for "shell"` فشل. نموذج إعادة تعريف `prompt` دالة سوف إزالة حينئذ خيط علامة،shell مع بعد في ساكن صامت طبقة درجة بينما غير علامة سريع مسار فوق تسوية. أمر داخل أصلي ESC محرف سوف في تنفيذ قبل يتم PSReadLine إزالة استهلاك، لا تلقي دعم حمل. مهلة أو إلغاء سوف إغلاق لا تحديد shell، إسقاط نتيجة و تقرير إبلاغ إعادة وضع.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释工具背后的设计决策，并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير أداة خلف بعد تصميم قرار، و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-- **`dsh-tool-bash-persistent` 的刻意孪生。** 会话注册表、轮询循环与重置约定按设计镜像持久 bash 工具（[pwsh 持久 PTY Agent Note](../../../.agents/notes/archived/architecture/2026-08-11-pwsh-persistent-pty.md)）。
-- **prompt 函数就绪。** 工具安装自己的 `prompt` 函数，打印 BEL 结尾的 OSC 标记加可打印提示符；OSC 标记携带最后的退出码，可打印提示符让每条命令都能结算，因此模型重定义 `prompt` 会把就绪降级到静默层级。
-- **PSReadLine 回显靠锚定剥离。** PowerShell 会把提交的输入渲染回流中；标记锚定提取与包装源码剥离移除回显，而跨终端宽度换行的包装可能在部分输出结果中留下部分回显。
-- **重置，而非修复。** 任何不确定状态——显式 `exit`、超时、发送失败、中止——都会关闭 shell 并让下一次调用从全新状态开始。
+- **`dsh-tool-bash-persistent` لحظة معنى توأم توليد.** جلسة سجل التسجيل، جولة استفسار حلقة و إعادة وضع اتفاق حسب تصميم مرآة مثل حمل دائم bash أداة ([pwsh حمل دائم PTY Agent Note](../../../.agents/notes/archived/architecture/2026-08-11-pwsh-persistent-pty.md)).
+- **prompt دالة حينئذ خيط.** أداة تثبيت ذاتي ذات `prompt` دالة، ضرب طبع BEL ربط ذيل OSC علامة إضافة يمكن ضرب طبع تلميح رمز؛OSC علامة يحمل الأكثر بعد خروج رمز، يمكن ضرب طبع تلميح رمز يجعل كل بند أمر كل قدرة تسوية، لذلك نموذج إعادة تعريف `prompt` سوف يأخذ حينئذ خيط تخفيض إلى ساكن صامت طبقة درجة.
+- **PSReadLine عودة إظهار اعتماد مرساة تحديد تقشير مغادرة.** PowerShell سوف يأخذ إيداع إدخال تصيير عودة تدفق في؛ علامة مرساة تحديد رفع أخذ و حزمة تركيب شفرة المصدر تقشير مغادرة إزالة عودة إظهار، بينما عبر طرفية عرض درجة تبديل سطر حزمة تركيب ممكن في جزء إخراج نتيجة في إبقاء تحت جزء عودة إظهار.
+- **إعادة وضع، بينما غير إصلاح.** أي لا تحديد حالة——صريح `exit`، مهلة، إرسال فشل، في توقف——كل سوف إغلاق shell و يجعل تحت مرة استدعاء من كل جديد حالة بدء.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：shell 注册表、prompt 设置、命令包装、scrollback 轮询、提取与渲染 |
-| — | 不发布运行时不变式伴生入口；适配器私有的 owner-to-shell 缓存不存在可观察的事件或数据关系。生命周期测试无需仅为不变式增加公共 API 即可验证其清理。 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:shell سجل التسجيل،prompt ضبط، أمر حزمة تركيب،scrollback جولة استفسار، رفع أخذ و تصيير |
+| — | لا إصدار وقت التشغيل ثابت صيغة مرافق توليد مدخل؛ مهايئ خاص owner-to-shell ذاكرة مؤقتة لا وجود يمكن مراقبة حدث أو بيانات علاقة. دورة الحياة اختبار بلا حاجة فقط لـ ثابت صيغة زيادة عام مشترك API يكفي تحقق ذلك تنظيف. |
 
-### 命令流程
+### أمر مسار
 
-首条命令通过 `ctx.terminals.spawn` 生成 shell，安装 `prompt` 覆盖，并等待就绪。随后每条命令都包装成一行物理文本——`Write-Output` 起始标记、用反引号转义进双引号字符串的命令体、`Write-Output` 结束标记加退出状态——因此 PSReadLine 对换行包装的回显无法伪造完成。工具以 1,000 行一页轮询 scrollback，直到出现结束标记或完成的提示符，提取区间、剥离回显的包装与提示符，并连同任何状态标记一起渲染。超时会中止截止时间、捕获部分输出并重置 shell。
+أول بند أمر عبر `ctx.terminals.spawn` توليد shell، تثبيت `prompt` تغطية، و انتظار حينئذ خيط. مع بعد كل بند أمر كل حزمة تركيب صار واحد سطر شيء إدارة نص——`Write-Output` بدء بداية علامة، استخدام عكس جذب رقم تحويل معنى دخول مزدوج جذب رقم نص أمر جسم،`Write-Output` انتهاء علامة إضافة خروج حالة——لذلك PSReadLine مقابل تبديل سطر حزمة تركيب عودة إظهار لا يمكن زائف صنع إتمام. أداة بـ 1,000 سطر واحد صفحة جولة استفسار scrollback، مباشر إلى ظهور انتهاء علامة أو إتمام تلميح رمز، رفع أخذ منطقة بين، تقشير مغادرة عودة إظهار حزمة تركيب و تلميح رمز، و وصل نفس أي حالة علامة واحد بدء تصيير. مهلة سوف في توقف قطع توقف وقت، التقاط جزء إخراج و إعادة وضع shell.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从 terminal 家族逐步进入 seam、后端，以及持久 shell 设计背后的设计笔记。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من terminal بيت عائلة تدريجي خطوة دخول seam، خلفية، و حمل دائم shell تصميم خلف بعد تصميم قلم تسجيل.
 
-- [terminal 包映射](../../terminal/README.zh.md)——持久 PTY 能力家族。
-- [terminal seam](../../terminal/terminal/README.zh.md)——工具背后的 `ctx.terminals` 服务。
-- [terminal-bash 后端](../../terminal/terminal-bash/README.zh.md)——默认后端，配置 `shellDialect: pwsh`。
-- [pwsh 持久 PTY Agent Note](../../../.agents/notes/archived/architecture/2026-08-11-pwsh-persistent-pty.md)——pwsh 侧会话设计及其理由。
-- [持久 PTY 会话 Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——按所有者会话的设计及其理由。
-- [生成的工具目录](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——`pwsh` 参数 schema 的确切内容。
-- [生成的配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——每个受支持配置字段及其源声明。
+- [terminal حزمة خريطة](../../terminal/README.zh.md)——حمل دائم PTY قدرة بيت عائلة.
+- [terminal seam](../../terminal/terminal/README.zh.md)——أداة خلف بعد `ctx.terminals` خدمة.
+- [terminal-bash خلفية](../../terminal/terminal-bash/README.zh.md)——افتراضي خلفية، إعداد `shellDialect: pwsh`.
+- [pwsh حمل دائم PTY Agent Note](../../../.agents/notes/archived/architecture/2026-08-11-pwsh-persistent-pty.md)——pwsh جانب جلسة تصميم و ذلك إدارة من.
+- [حمل دائم PTY جلسة Agent Note](../../../.agents/notes/implemented/feature/2026-07-16-persistent-pty-sessions.zh.md)——حسب كل من جلسة تصميم و ذلك إدارة من.
+- [توليد أداة دليل](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——`pwsh` معامل schema تأكيد قطع محتوى.
+- [توليد إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)——كل تلقي دعم حمل إعداد حقل و ذلك مصدر إعلان.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-### 工具 schema
+### أداة schema
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-生成的 [`pwsh` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent)，包括配置的 `description`。本插件不贡献独立的系统提示词区段；人设与环境指引由部署方负责。
+توليد [`pwsh` schema](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-pwsh-persistent) ، يشمل إعداد `description`. هذا إضافة لا مساهمة مستقل توجيه النظام منطقة مقطع؛ شخص ضبط و بيئة إشارة جذب من نشر جهة مسؤول.
 
-#### Token 影响
+#### Token أثر
 
-`pwsh` 可见期间产生固定 schema 开销。
+`pwsh` مرئي خلال إنتاج ثابت schema فتح إلغاء.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-只要配置的描述与 schema 不变，前缀就保持稳定。
+فقط يلزم إعداد وصف و schema ثابت، بادئة حينئذ إبقاء مستقر.
 
-### 工具结果
+### أداة نتيجة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-命令共享每个 agent 一个 shell，因此 cwd、`$env:` 变量、函数与后台任务都会跨调用保留。结果排除私有完成标记、shell 提示词与回显的输入行（PSReadLine 会把提交的输入渲染回流中；标记锚定提取与包装源码剥离会移除它）。非零的包装命令追加 `[exit code: N]`——命令运行原生程序时给出确切原生退出码，PowerShell 终止错误则为 `1`。在报告该状态前就退出的 shell 改为追加 `[shell exited: code N]`、`[shell killed by signal: SIG]`，或后端两者都未提供时的 `[shell exited]`（Windows 强制终止报告 exit 1 且没有信号），然后重置并告诉模型下一次调用从全新状态开始。长输出保留最早的已保留前缀并附裁剪通知；若 terminal 已经丢弃该前缀，结果会明确说明。超时返回有界部分输出、关闭不确定的 shell 并报告重置。
+أمر مشترك كل agent واحد shell، لذلك cwd،`$env:` متغير، دالة و خلفية مهمة كل سوف عبر استدعاء إبقاء. نتيجة ترتيب حذف خاص إتمام علامة،shell نص التوجيه و عودة إظهار إدخال سطر (PSReadLine سوف يأخذ إيداع إدخال تصيير عودة تدفق في؛ علامة مرساة تحديد رفع أخذ و حزمة تركيب شفرة المصدر تقشير مغادرة سوف إزالة هو). غير صفر حزمة تركيب أمر إلحاق `[exit code: N]`——أمر تشغيل أصلي برنامج وقت إعطاء خروج تأكيد قطع أصلي خروج رمز،PowerShell إنهاء خطأ فإن لـ `1`. في تقرير إبلاغ هذا حالة قبل حينئذ خروج shell تعديل لـ إلحاق `[shell exited: code N]`،`[shell killed by signal: SIG]`، أو خلفية اثنان من كل لم توفير وقت `[shell exited]`(Windows قوي صنع إنهاء تقرير إبلاغ exit 1 كما لا يوجد إشارة) ، لكن بعد إعادة وضع و إبلاغ إبلاغ نموذج تحت مرة استدعاء من كل جديد حالة بدء. طويل إخراج إبقاء الأكثر مبكر قد إبقاء بادئة و مرفق قطع قص إشعار؛ إذا terminal قد إسقاط هذا بادئة، نتيجة سوف واضح شرح. مهلة إرجاع محدود جزء إخراج، إغلاق لا تحديد shell و تقرير إبلاغ إعادة وضع.
 
-#### Token 影响
+#### Token أثر
 
-依数据而定。`maxOutputChars` 限制保留的命令输出；固定的裁剪、丢失前缀、状态、超时与重置诊断可能延长结果。
+اعتماد بيانات بينما تحديد.`maxOutputChars` حد إبقاء أمر إخراج؛ ثابت قطع قص، فقد فقد بادئة، حالة، مهلة و إعادة وضع تشخيص ممكن تأخير طويل نتيجة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-仅追加的工具结果位于可复用请求前缀之后。
+فقط إلحاق أداة نتيجة يقع في يمكن إعادة استخدام طلب بادئة بعد.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明工具何时不合适或需要特别小心。它们是当前包约束，不是任务积压。
+هذه حد شرح أداة أي وقت لا دمج ملائم أو حاجة خاص آخر صغير قلب. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
-- **工具需要拥有者 agent 与带 pwsh 方言的真实 terminal 后端**——Windows ConPTY 或 POSIX pwsh。
-- **输入回显不可避免**——PowerShell 的 PSReadLine 会把提交的输入渲染回终端流，而且没有 `stty -echo` 等价物。标记锚定提取在完整结果中排除回显；包装源码剥离覆盖回退路径，但跨终端宽度换行的包装可能在部分输出结果中留下部分回显，受 `maxOutputChars` 设界。
-- **模型命令内的原始 ESC 字符不受支持**——PSReadLine 会在执行前消费它们。包装器会转义它需要的控制字节（`[char]27` 构造的 OSC 标记、正文的反引号转义）。
-- **模型重定义 `prompt` 函数会移除就绪标记**——shell 随后在静默层级而非标记快路径上结算。
-- **命令期间没有交互 stdin**——读取输入的前台命令会一直阻塞到命令超时，随后重置 shell。
-- **Windows 上 SIGTSTP/SIGHUP 不可用**（后端拒绝）；SIGINT 以控制台级 Ctrl-C 输入写入投递，在提示词处会取消待处理行而不是向进程发信号。
-- **在 Windows ACL 沙箱的只读模式下，pwsh 以 ConstrainedLanguage 启动**，可能拒绝引导的 `[Console]::` 编码固定与 prompt 标记。命令仍可通过可打印提示词与静默层级结算，但非 ASCII 输出可能跟随宿主代码页。
-- **BEL 结尾的 OSC 标记目前只是就绪信号**——通向模型的 BEL 事件通道仍被推迟，与当前实现保持一致。
+- **أداة حاجة يملك من agent و حمل pwsh جهة قول حقيقي terminal خلفية**——Windows ConPTY أو POSIX pwsh.
+- **إدخال عودة إظهار غير ممكن تجنب تجنب**——PowerShell PSReadLine سوف يأخذ إيداع إدخال تصيير عودة طرفية تدفق، بينما كما لا يوجد `stty -echo` انتظار قيمة شيء. علامة مرساة تحديد رفع أخذ في كامل نتيجة في ترتيب حذف عودة إظهار؛ حزمة تركيب شفرة المصدر تقشير مغادرة تغطية رجوع مسار، لكن عبر طرفية عرض درجة تبديل سطر حزمة تركيب ممكن في جزء إخراج نتيجة في إبقاء تحت جزء عودة إظهار، تلقي `maxOutputChars` ضبط حد.
+- **نموذج أمر داخل أصلي ESC محرف لا تلقي دعم حمل**——PSReadLine سوف في تنفيذ قبل إزالة استهلاك هو جمع. حزمة تركيب جهاز سوف تحويل معنى هو حاجة تحكم بايت (`[char]27` بنية صنع OSC علامة، متن عكس جذب رقم تحويل معنى).
+- **نموذج إعادة تعريف `prompt` دالة سوف إزالة حينئذ خيط علامة**——shell مع بعد في ساكن صامت طبقة درجة بينما غير علامة سريع مسار فوق تسوية.
+- **أمر خلال لا يوجد تفاعل stdin**——قراءة إدخال قبل منصة أمر سوف واحد مباشر منع سد إلى أمر مهلة، مع بعد إعادة وضع shell.
+- **Windows فوق SIGTSTP/SIGHUP غير ممكن استخدام**(خلفية رفض) ؛SIGINT بـ تحكم منصة درجة Ctrl-C إدخال كتابة إلقاء تمرير، في نص التوجيه موضع سوف إلغاء انتظار معالجة سطر بينما لا هو نحو عملية إرسال إشارة.
+- **في Windows ACL صندوق رملي فقط قراءة نمط تحت،pwsh بـ ConstrainedLanguage بدء**، ممكن رفض جذب توجيه `[Console]::` تحرير رمز ثابت و prompt علامة. أمر ما زال يمكن عبر يمكن ضرب طبع نص التوجيه و ساكن صامت طبقة درجة تسوية، لكن غير ASCII إخراج ممكن تتبع مع مضيف شفرة صفحة.
+- **BEL ربط ذيل OSC علامة هدف قبل فقط هو حينئذ خيط إشارة**——عبر نحو نموذج BEL حدث عبر طريق ما زال يتم دفع متأخر، و حالي تنفيذ إبقاء متسق.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>

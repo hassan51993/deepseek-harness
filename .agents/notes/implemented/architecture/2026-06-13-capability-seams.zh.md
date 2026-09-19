@@ -1,38 +1,38 @@
-# Agent Note: 能力 seam——Service Definition / Service Provider / Consumer 角色
+# Agent Note: قدرة seam——Service Definition / Service Provider / Consumer زاوية لون
 
 Status: implemented
 
-[English](2026-06-13-capability-seams.md) | 中文
+[English](2026-06-13-capability-seams.md) | العربية
 
-## 问题
+## مشكلة
 
-harness 具有可替换的能力，包括 shell 执行和模型提供方。一项能力涉及三个关注点，它们以不同速率、因不同原因变化：*约定*（这项能力是什么）、*实现*（它如何运行）、*消费方 API*（模型和其他插件面向什么编程）。将三者捆绑在一个包中会耦合这些变化速率——把本地执行器换成沙箱化执行器时，模型看到的工具 schema 也会被搅动，尽管面向模型的约定从未改变。
+harness أداة لديه يمكن استبدال قدرة، يشمل shell تنفيذ و نموذج مزود. واحد بند قدرة تعلق و ثلاثة عدد صلة ملاحظة نقطة، هو جمع بـ مختلف سرعة معدل، بسبب مختلف سبب تغير:*اتفاق*(هذا بند قدرة هو ماذا) ،*تنفيذ*(هو مثل أي تشغيل) ،*مستهلك API*(نموذج و أخرى إضافة موجه إلى ماذا تحرير مسار). سوف ثلاثة من ربط ربط في واحد حزمة في سوف اقتران دمج هذه تغير سرعة معدل——يأخذ محلي منفذ تبديل صار صندوق رملي تحويل منفذ وقت، نموذج يرى أداة schema أيضا سوف يتم خلط حركة، كل إدارة موجه إلى نموذج اتفاق من لم تغيير.
 
-这与「谁在运行时提供、谁需要一项能力」是不同的问题，后者 Cordis 已通过服务 + `inject` 解决（提供方注册 `ctx.shell`；消费方声明 `inject: ['shell']`，其 fiber 挂起直到服务存在）。该机制是必要的，但不决定包的边界；本 Agent Note 决定的是包的边界。
+هذا و «من في وقت التشغيل توفير، من حاجة واحد بند قدرة» هو مختلف مشكلة، بعد من Cordis قد عبر خدمة + `inject` حل قرار (مزود تسجيل `ctx.shell`؛ مستهلك إعلان `inject: ['shell']`، ذلك fiber تعليق بدء مباشر إلى خدمة وجود). هذا آلية هو لا بد يلزم، لكن لا قرار حزمة حد؛ هذا Agent Note قرار هو حزمة حد.
 
-## 决策
+## قرار
 
-一项可替换的能力包含**三个角色**：
+واحد بند يمكن استبدال قدرة يتضمن**ثلاثة عدد زاوية لون**:
 
-1. **Service Definition**——拥有 `ctx.<key>` 的 Cordis `Service` 和词汇类型，仅依赖约定所需的词汇（例如 `dsh-shell`：`ShellExecutor`、`ShellRunResult`、`ShellProcess`）。Service Definition 可以是抽象类，也可以是具体的注册表服务；绝不是 TypeScript `interface`。
-2. **Service Provider**——提供或注册实现的插件（例如 `dsh-bash-local`：子进程、由提供方管理的范围终止、spill 文件截断）。[原生 containment 决策](2026-08-28-subprocess-native-containment.zh.md)负责本地提供方的 OS 特有范围机制。沙箱化和远程 Service Provider 是依据同一 Service Definition 实现或注册的兄弟包。
-3. **Consumer**——模型和插件编程所面向的内容（例如 `dsh-tool-bash`：`bash` schema，后台句柄注册到通用任务运行时）。Consumer 注入服务键，从不导入 Service Provider 特有的类型。
+1. **Service Definition**——يملك `ctx.<key>` Cordis `Service` و مفردات نوع، فقط اعتماد اتفاق الذي يحتاج مفردات (مثال مثل `dsh-shell`:`ShellExecutor`،`ShellRunResult`،`ShellProcess`).Service Definition يمكن هو سحب كائن صنف، أيضا يمكن هو أداة جسم سجل التسجيل خدمة؛ أبدا هو TypeScript `interface`.
+2. **Service Provider**——توفير أو تسجيل تنفيذ إضافة (مثال مثل `dsh-bash-local`: عملية فرعية، من مزود إدارة نطاق إنهاء،spill ملف قطع قطع).[أصلي containment قرار](2026-08-28-subprocess-native-containment.zh.md) مسؤول محلي مزود OS خاص لديه نطاق آلية. صندوق رملي تحويل و بعيد مسار Service Provider هو اعتماد حسب نفس Service Definition تنفيذ أو تسجيل أخ أخ حزمة.
+3. **Consumer**——نموذج و إضافة تحرير مسار الذي موجه إلى محتوى (مثال مثل `dsh-tool-bash`:`bash` schema، خلفية جملة مقبض تسجيل إلى عام مهمة وقت التشغيل).Consumer حقن خدمة مفتاح، من لا استيراد Service Provider خاص لديه نوع.
 
-角色名使用标题式大小写：**Service Definition**、**Service Provider** 和 **Consumer**。泛指的 `provider` 和 `consumer` 仍使用小写。
+زاوية لون اسم استخدام عنوان صيغة كبير صغير كتابة:**Service Definition**،**Service Provider** و **Consumer**. عام إشارة `provider` و `consumer` ما زال استخدام صغير كتابة.
 
-Service Provider 与 Consumer 由此独立演进：沙箱化执行器替换 `dsh-bash-local` 时无需触碰任何工具 schema。
+Service Provider و Consumer من هذا مستقل عرض دخول: صندوق رملي تحويل منفذ استبدال `dsh-bash-local` وقت بلا حاجة لمس اصطدام أي أداة schema.
 
-当角色独立演进时，通常使用不同的包；但当各角色确实属于同一个关注点时，并非必须拆分：LLM（大语言模型） seam 将 Service Definition 和 Consumer 合并为 `dsh-llm`（Consumer 是 agent loop（智能体循环）本身，而非可替换的 schema 接口），适配器作为 Service Provider 包。不要预防性地拆分——如果一项能力只有一种可设想的 Service Provider 和一个 Consumer，就保持为一个包，直到出现第二个。
+عند زاوية لون مستقل عرض دخول وقت، عبر معتاد استخدام مختلف حزمة؛ لكن عند كل زاوية لون تأكيد فعلي يخص نفس عدد صلة ملاحظة نقطة وقت، و غير يجب تفكيك قسم:LLM(كبير لغة نموذج) seam سوف Service Definition و Consumer دمج لـ `dsh-llm`(Consumer هو agent loop(ذكي جسم حلقة) ذاته، بينما غير يمكن استبدال schema واجهة) ، مهايئ بصفة Service Provider حزمة. لا يلزم مسبق منع صفة أرض تفكيك قسم——إذا واحد بند قدرة فقط لديه واحد نوع يمكن ضبط تفكير Service Provider و واحد Consumer، حينئذ إبقاء لـ واحد حزمة، مباشر إلى ظهور ثاني عدد.
 
-## 术语：seam 指三者组合，而非接口
+## فن لغة:seam إشارة ثلاثة من تركيب، بينما غير واجهة
 
-一个 **seam** 是完整的能力——三个角色合在一起：**Service Definition**（拥有 `ctx.<key>` 和词汇的 Cordis `Service`）、一个或多个 **Service Provider**，以及一个或多个 **Consumer**。`packages/shell` 是规范范例——`dsh-shell` / `dsh-bash-local`+`dsh-bash-sandbox` / `dsh-tool-bash`。一个包可以承担多个角色，但单个角色本身不是 seam。「seam」一词严格保留给这种完整能力；命名其中一个组成部分时，应使用其角色、类、服务、约定或扩展点。[术语表](../../../../docs/glossary.zh.md#capability-seam)是规范条目。
+واحد **seam** هو كامل قدرة——ثلاثة عدد زاوية لون دمج في واحد بدء:**Service Definition**(يملك `ctx.<key>` و مفردات Cordis `Service`) ، واحد أو كثير عدد **Service Provider**، و واحد أو كثير عدد **Consumer**.`packages/shell` هو مواصفة نطاق مثال——`dsh-shell` / `dsh-bash-local`+`dsh-bash-sandbox` / `dsh-tool-bash`. واحد حزمة يمكن تحمل تحمل كثير عدد زاوية لون، لكن مفرد عدد زاوية لون ذاته لا هو seam.«seam» واحد كلمة صارم إطار إبقاء إعطاء هذا نوع كامل قدرة؛ تسمية منها واحد مجموعة صار جزء وقت، ينبغي استخدام ذلك زاوية لون، صنف، خدمة، اتفاق أو نقطة توسيع.[فن لغة جدول](../../../../docs/glossary.zh.md#capability-seam) هو مواصفة بند.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-- **始终合并各角色**：否决。因为它会重新耦合独立变化的 Service Definition、Service Provider 和 Consumer。
-- **`@cordisjs/plugin-capability`**：这是完全不同的维度。它是一个权限／能力*安全*服务（具名权限加继承，通过 `ctx.capability.test` 针对会话检测这些权限），是延后的权限／沙箱工作（`tools/pre-execute` deny/ask 门）的候选方案，不是替换实现的机制。混淆这两个「能力」概念正是本 Agent Note 所指出的陷阱。
+- **بداية نهاية دمج كل زاوية لون**: مرفوض. لأن هو سوف إعادة اقتران دمج مستقل تغير Service Definition،Service Provider و Consumer.
+- **`@cordisjs/plugin-capability`**: هذا هو تماما مختلف صيانة درجة. هو هو واحد إذن/قدرة*أمان*خدمة (أداة اسم إذن إضافة وراثة، عبر `ctx.capability.test` إبرة مقابل جلسة فحص قياس هذه إذن) ، هو تأخير بعد إذن/صندوق رملي عمل (`tools/pre-execute` deny/ask باب) مرشح خطة، لا هو استبدال تنفيذ آلية. خلط خلط هذا اثنان عدد «قدرة» عام فكرة صحيح هو هذا Agent Note الذي إشارة خروج وقوع فخ.
 
-## 后果
+## عاقبة
 
-分离角色会增加包和样板代码（`package.json`、`tsconfig`、README 和注入接线）。换来的是：Service Provider 与 Consumer 独立发布和版本管理，新后端永远不会波及面向模型的约定。[AGENTS.md](../../../../AGENTS.md) 和 [architecture.md](../../../../docs/architecture.zh.md) 载有这项规则；bash 三件套是参考模板。本 Agent Note 记录为什么独立变化的角色通常需要拆分，而确实共享的关注点可以保持合并。
+قسم مغادرة زاوية لون سوف زيادة حزمة و مثال لوح شفرة (`package.json`،`tsconfig`،README و حقن وصل خط). تبديل قدوم هو:Service Provider و Consumer مستقل إصدار و إصدار إدارة، جديد خلفية دائم بعيد لن موجة و موجه إلى نموذج اتفاق.[AGENTS.md](../../../../AGENTS.md) و [architecture.md](../../../../docs/architecture.zh.md) تحميل لديه هذا بند قاعدة؛bash ثلاثة عنصر طقم هو مشاركة اعتبار نموذج لوح. هذا Agent Note سجل لـ ماذا مستقل تغير زاوية لون عبر معتاد حاجة تفكيك قسم، بينما تأكيد فعلي مشترك صلة ملاحظة نقطة يمكن إبقاء دمج.

@@ -1,14 +1,14 @@
-# 会话查询
+# جلسة استعلام
 
-[English](session-query.md) | 中文
+[English](session-query.md) | العربية
 
-本文定义逻辑会话语料库的查询词汇；当 live 数据存在时，该语料库优先使用 live 数据。[Service Definition 包](../../packages/session-query/session-query)负责精确读取、来源优先级、关系追踪、语义提取，以及与提供方无关的过滤器；[SQLite 提供方](../../packages/session-query/session-query-sqlite)负责具体全文索引的生命周期。
+هذا نص تعريف منطق جلسة لغة مادة مكتبة استعلام مفردات؛ عند live بيانات وجود وقت، هذا لغة مادة مكتبة أولوية استخدام live بيانات.[Service Definition حزمة](../../packages/session-query/session-query) مسؤول دقيق قراءة، مصدر أولوية درجة، علاقة تتبع أثر، دلالة رفع أخذ، و و مزود غير متصل مرور ترشيح جهاز؛[SQLite مزود](../../packages/session-query/session-query-sqlite) مسؤول أداة جسم كل نص بحث جذب دورة الحياة.
 
-源码：[`packages/session-query/session-query/src/types.ts`](../../packages/session-query/session-query/src/types.ts)
+شفرة المصدر:[`packages/session-query/session-query/src/types.ts`](../../packages/session-query/session-query/src/types.ts)
 
-## 逻辑记录
+## منطق سجل
 
-`SessionRecord` 由全语料库列表返回。它除了克隆的、优先取自 live 源的 header 外，还单独公开各源的可用性。`SessionEventRecord` 是轻量的原始日志投影；分类使用与模型历史推导相同的 `foldSurface()` 状态转换。
+`SessionRecord` من كل لغة مادة مكتبة قائمة إرجاع. هو حذف تغلب ضخم، أولوية أخذ ذاتي live مصدر header خارج، أيضا مفرد وحيد عام كل مصدر متاح صفة.`SessionEventRecord` هو خفيف كمية أصلي سجل إسقاط؛ تصنيف استخدام و نموذج تاريخ دفع توجيه نفسه `foldSurface()` حالة تحويل.
 
 ```ts type-equiv
 /** Whether an event is current model context, replaced context, or raw-log-only. */
@@ -27,7 +27,7 @@ interface SessionRecord {
 }
 ```
 
-`SessionLogSnapshot` 是供恢复预检使用的完整原始日志：它脱离运行时，并经过回放验证。`SessionSurfaceSnapshot` 表示一次精确读取的 surface 观测结果，而不是持续保留的订阅。
+`SessionLogSnapshot` هو توفير استعادة مسبق فحص استخدام كامل أصلي سجل: هو انفصال مغادرة وقت التشغيل، و مرور مرور إعادة تشغيل تحقق.`SessionSurfaceSnapshot` يمثل مرة دقيق قراءة surface مراقبة قياس نتيجة، بينما لا هو حمل متابعة إبقاء حجز قراءة.
 
 ```ts type-equiv
 /** One validated detached observation of a logical session's complete raw log. */
@@ -55,7 +55,7 @@ interface SessionSurfaceSnapshot {
 }
 ```
 
-`SessionTitleObservation` 将同样的原子观测规则应用于标题折叠，使执行授权检查的消费方能够验证提供标题的源 header。批量读取会按顺序为每个唯一请求 id 返回一个 `SessionTitleObservationResult`：操作失败只影响对应 id，而取消会拒绝整个操作。
+`SessionTitleObservation` سوف نفس مثال أصل فرعي مراقبة قياس قاعدة تطبيق في عنوان طي، جعل تنفيذ تخويل فحص مستهلك قدرة كاف تحقق توفير عنوان مصدر header. دفعة كمية قراءة سوف حسب ترتيب لـ كل وحيد طلب id إرجاع واحد `SessionTitleObservationResult`: عملية فشل فقط أثر مقابل id، بينما إلغاء سوف رفض كامل عملية.
 
 ```ts type-equiv
 /** Latest folded title bound to the same session-header observation. */
@@ -104,9 +104,9 @@ interface SessionEventRecord {
 }
 ```
 
-## 与提供方无关的过滤器和文档
+## و مزود غير متصل مرور ترشيح جهاز و وثيقة
 
-会话和事件过滤器数组内的各项按逻辑与（AND）组合；单个列表子句中的各值按逻辑或（OR）组合。范围包含两端。事件的 `text` 子句会对提取出的语义文本执行正则表达式扫描：搜索文本按字面量处理，按 Unicode 规则执行不区分大小写的匹配，并允许灵活匹配空白字符；该过程与全文搜索提供方无关。
+جلسة و حدث مرور ترشيح جهاز عدد مجموعة داخل كل بند حسب منطق و (AND) تركيب؛ مفرد عدد قائمة فرعي جملة في كل قيمة حسب منطق أو (OR) تركيب. نطاق يتضمن اثنان طرف. حدث `text` فرعي جملة سوف مقابل رفع أخذ خروج دلالة نص تنفيذ صحيح فإن جدول بلوغ صيغة مسح: بحث نص حسب حرف وجه كمية معالجة، حسب Unicode قاعدة تنفيذ لا منطقة قسم كبير صغير كتابة مطابقة، و سماح مرن نشط مطابقة فارغ أبيض محرف؛ هذا مرور مسار و كل نص بحث مزود غير متصل.
 
 ```ts type-equiv
 /**
@@ -142,11 +142,11 @@ interface SessionEventSearchDocument extends SessionEventRecord {
 }
 ```
 
-`ctx.sessionQuery.filterSessions(filters)` 会对完整的逻辑会话语料库应用 `SessionResultFilter`；`ctx.sessionQuery.filterEvents(sessionId, filters)` 按 seq 升序返回匹配的文档。消息、工具调用和工具结果、待办事项，以及失败和状态详情会纳入语义文本；推理（reasoning）块、被阻止的提示词、结构事件和流分片则不会。
+`ctx.sessionQuery.filterSessions(filters)` سوف مقابل كامل منطق جلسة لغة مادة مكتبة تطبيق `SessionResultFilter`؛`ctx.sessionQuery.filterEvents(sessionId, filters)` حسب seq رفع ترتيب إرجاع مطابقة وثيقة. رسالة، أداة استدعاء و أداة نتيجة، انتظار إنجاز أمر بند، و فشل و حالة تفصيل حال سوف قبول دخول دلالة نص؛ دفع إدارة (reasoning) كتلة، يتم منع توقف نص التوجيه، بنية حدث و تدفق قسم قطعة فإن لن.
 
-## 全文搜索结果页
+## كل نص بحث نتيجة صفحة
 
-整合后的 `ctx.sessionQuery` seam 提供两个全文搜索范围。`searchSessions()` 按匹配度最强的事件对语料库分组；`searchEvents()` 搜索单个会话。请求将不透明游标与规范化后的查询、元数据过滤器和结果数量上限绑定。提供方的元数据过滤器有意不包含事件文本扫描。
+كامل دمج بعد `ctx.sessionQuery` seam توفير اثنان عدد كل نص بحث نطاق.`searchSessions()` حسب مطابقة درجة الأكثر قوي حدث مقابل لغة مادة مكتبة قسم مجموعة؛`searchEvents()` بحث مفرد عدد جلسة. طلب سوف لا نفاذ واضح تنقل علامة و مواصفة تحويل بعد استعلام، بيانات وصفية مرور ترشيح جهاز و نتيجة عدد كمية حد أعلى ربط. مزود بيانات وصفية مرور ترشيح جهاز متعمد لا يتضمن حدث نص مسح.
 
 ```ts type-equiv
 /** Provider-owned opaque continuation token returned by session search. */
@@ -195,7 +195,7 @@ interface SessionSearchPage<T> {
 }
 ```
 
-与跨会话分组 hit 不同，会话内搜索结果即使没有命中项，也必须公开搜索时观测到的目标 header。
+و عبر جلسة قسم مجموعة hit مختلف، جلسة داخل بحث نتيجة أي جعل لا يوجد أمر في بند، أيضا يجب عام بحث وقت مراقبة قياس إلى هدف header.
 
 ```ts type-equiv
 /** Event-search results bound to the indexed target-session observation. */
@@ -221,9 +221,9 @@ interface SessionSearchHit extends SessionRecord {
 }
 ```
 
-## 会话谱系
+## جلسة جدول نظام
 
-`SessionLineageTrace` 按由近及远的顺序携带已知 parent，以及由直接 descendant 递归嵌套而成的森林。完整性判别字段使已知 root 与缺失 parent 互斥。
+`SessionLineageTrace` حسب من قريب و بعيد ترتيب يحمل معروف parent، و من مباشر descendant تمرير عودة تضمين طقم بينما صار غابة حرج. كامل صفة حكم آخر حقل جعل معروف root و ناقص parent متبادل رفض.
 
 ```ts type-equiv
 /** Recursive descendant node in a session-lineage trace. */
@@ -260,9 +260,9 @@ type SessionLineageTrace = {
 )
 ```
 
-## 有界事件读取
+## محدود حدث قراءة
 
-请求指定一个原始 seq 及可选的邻近数量。结果携带 `SessionHeader` 而非可用性标志，使已知的 live 目标可以独立于持久化健康状态。
+طلب إشارة تحديد واحد أصلي seq و اختياري مجاور قريب عدد كمية. نتيجة يحمل `SessionHeader` بينما غير متاح صفة علامة سجل، جعل معروف live هدف يمكن مستقل في حفظ دائم سليم سليم حالة.
 
 ```ts type-equiv
 /** Request for one event plus raw neighboring log context. */
@@ -296,9 +296,9 @@ interface SessionEventWindow {
 }
 ```
 
-## 事件关系
+## حدث علاقة
 
-事件追踪会区分位置替换与被引用为来源的事件。除 `replacementChain` 外，每个 seq 列表都只包含直接链接；该链从目标沿直接 replacer 追踪到最终的位置替换。
+حدث تتبع أثر سوف منطقة قسم موضع استبدال و يتم مرجع لـ مصدر حدث. حذف `replacementChain` خارج، كل seq قائمة كل فقط يتضمن مباشر رابط؛ هذا سلسلة من هدف امتداد مباشر replacer تتبع أثر إلى نهائي موضع استبدال.
 
 ```ts type-equiv
 /** Request for direct surface replacements and relationships to cited source events around one event. */
@@ -336,9 +336,9 @@ interface SessionEventTraceObservation extends SessionEventTrace {
 }
 ```
 
-## 错误
+## خطأ
 
-封闭的 code 联合类型区分请求校验、目标缺失、surface 日志格式错误、可选后端故障、部署关闭搜索与矛盾的源元数据。
+غلاف إغلاق code ربط دمج نوع منطقة قسم طلب تحقق، هدف ناقص،surface سجل صيغة خطأ، اختياري خلفية لذا عائق، نشر إغلاق بحث و تناقض درع مصدر بيانات وصفية.
 
 ```ts type-equiv
 /** Stable machine-routable failure taxonomy for session reads, traces, and search. */

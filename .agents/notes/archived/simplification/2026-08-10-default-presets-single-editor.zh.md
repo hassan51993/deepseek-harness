@@ -1,26 +1,26 @@
-# Agent Note: 通用 preset 只提供一套编辑工具
+# Agent Note: عام preset فقط توفير واحد طقم تحرير أداة
 
 Status: implemented
 Archived: 2026-09-04
 
-[English](2026-08-10-default-presets-single-editor.md) | 中文
+[English](2026-08-10-default-presets-single-editor.md) | العربية
 
-## 问题
+## مشكلة
 
-`standard`、`code` 和 `cordis` preset 同时提供 `read`/`write`/`edit` 文件系统工具与 `str_replace_editor`。两套接口在常规文件查看和编辑上重叠，导致每次请求都携带额外的工具 schema，却没有增加独立的默认能力。`minimal` preset 具有不同的组合约定：它固定的双工具清单有意在持久 `bash` 之外提供 `str_replace_editor`。
+`standard`،`code` و `cordis` preset معا توفير `read`/`write`/`edit` نظام الملفات أداة و `str_replace_editor`. اثنان طقم واجهة في معتاد قاعدة ملف فحص نظر و تحرير فوق إعادة تراكم، توجيه يؤدي كل مرة طلب كل يحمل مقدار خارج أداة schema، لكن لا يوجد زيادة مستقل افتراضي قدرة.`minimal` preset أداة لديه مختلف تركيب اتفاق: هو ثابت مزدوج أداة بيان متعمد في حمل دائم `bash` خارج توفير `str_replace_editor`.
 
-## 决策
+## قرار
 
-`standard`、`code` 和 `cordis` preset 配置挂载 `dsh-tool-fs` 与 `dsh-tool-fs-search`，但不挂载 `dsh-tool-str-replace-editor`。因此 PTC mode 的注册表和生成的 SDK 均不包含 `str_replace_editor`。`minimal` preset 继续挂载 `dsh-tool-str-replace-editor`，部署配置或用户自定义 preset 仍可显式挂载该插件。
+`standard`،`code` و `cordis` preset إعداد تركيب `dsh-tool-fs` و `dsh-tool-fs-search`، لكن لا تركيب `dsh-tool-str-replace-editor`. لذلك PTC mode سجل التسجيل و توليد SDK متساو لا يتضمن `str_replace_editor`.`minimal` preset متابعة تركيب `dsh-tool-str-replace-editor`، نشر إعداد أو مستخدم ذاتي تعريف preset ما زال يمكن صريح تركيب هذا إضافة.
 
-此决策收窄 preset 工具清单，不移除工具包及其 Python 运行时支持。较早的[共享清单决策](../feature/2026-07-31-even-out-shipped-tool-rosters.zh.md)继续说明与 surface 无关的工具为何归 preset 组合所有；本记录说明编辑器例外。
+هذا قرار استلام ضيق preset أداة بيان، لا إزالة أداة حزمة و ذلك Python وقت التشغيل دعم حمل. مقارنة مبكر[مشترك بيان قرار](../feature/2026-07-31-even-out-shipped-tool-rosters.zh.md) متابعة شرح و surface غير متصل أداة لـ أي عودة preset تركيب كل؛ هذا سجل شرح تحرير جهاز مثال خارج.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**在通用 preset 中保留两套编辑接口。** 不予采用，因为重叠的模型可见 schema 增加了工具选择，却没有提供不同的默认操作。
+**في عام preset في إبقاء اثنان طقم تحرير واجهة.** لا إعطاء اعتماد، لأن إعادة تراكم نموذج مرئي schema زيادة أداة اختيار، لكن لا يوجد توفير مختلف افتراضي عملية.
 
-**从所有交付组合中移除 `str_replace_editor`。** 不予采用，因为 `minimal` preset 有意将该 schema 作为两个工具之一，显式部署仍是该独立插件的有效消费方。
+**من كل تسليم تركيب في إزالة `str_replace_editor`.** لا إعطاء اعتماد، لأن `minimal` preset متعمد سوف هذا schema بصفة اثنان عدد أداة لـ واحد، صريح نشر ما زال هو هذا مستقل إضافة صالح مستهلك.
 
-## 后果
+## عاقبة
 
-通用 agent 使用 `read`、`write` 和 `edit` 完成文件系统修改，minimal agent 保留 `str_replace_editor`。preset 组合测试固定其不会出现在 standard 清单、Cordis 清单及 PTC mode SDK 中，同时 minimal 断言继续固定其存在。
+عام agent استخدام `read`،`write` و `edit` إتمام نظام الملفات تعديل،minimal agent إبقاء `str_replace_editor`.preset تركيب اختبار ثابت ذلك لن ظهور في standard بيان،Cordis بيان و PTC mode SDK في، معا minimal تأكيد متابعة ثابت ذلك وجود.

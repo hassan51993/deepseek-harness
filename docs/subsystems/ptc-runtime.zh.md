@@ -1,14 +1,14 @@
-# PTC 运行时
+# PTC وقت التشغيل
 
-[English](ptc-runtime.md) | 中文
+[English](ptc-runtime.md) | العربية
 
-PTC 执行[能力 seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md)通过 [dsh-ptc-runtime](../../packages/ptc-runtime/ptc-runtime) 提供 `ctx.ptcRuntime`。它针对 Host 绑定运行一个程序，报告输出、失败与适用的沙箱事实。PTC 执行是可选能力，不属于[智能体循环主干](core.zh.md)。[PTC 基础](../../.agents/notes/implemented/feature/2026-06-15-ptc.zh.md)负责注册表呈现，[类型化返回约定](../../.agents/notes/implemented/feature/2026-07-20-ptc-typed-tool-returns.zh.md)负责绑定值，[沙箱 Node 决策](../../.agents/notes/implemented/architecture/2026-09-11-sandboxed-node-ptc-runtime.zh.md)负责已发布的执行提供方。
+PTC تنفيذ[قدرة seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.zh.md) عبر [dsh-ptc-runtime](../../packages/ptc-runtime/ptc-runtime) توفير `ctx.ptcRuntime`. هو إبرة مقابل Host ربط تشغيل واحد برنامج، تقرير إبلاغ إخراج، فشل و ملائم استخدام صندوق رملي واقع.PTC تنفيذ هو اختياري قدرة، لا يخص[ذكي جسم حلقة رئيسي جاف](core.zh.md).[PTC أساس أساس](../../.agents/notes/implemented/feature/2026-06-15-ptc.zh.md) مسؤول سجل التسجيل عرض،[نوع تحويل إرجاع اتفاق](../../.agents/notes/implemented/feature/2026-07-20-ptc-typed-tool-returns.zh.md) مسؤول ربط قيمة،[صندوق رملي Node قرار](../../.agents/notes/implemented/architecture/2026-09-11-sandboxed-node-ptc-runtime.zh.md) مسؤول قد إصدار تنفيذ مزود.
 
-源码：[`packages/ptc-runtime/ptc-runtime/src/types.ts`](../../packages/ptc-runtime/ptc-runtime/src/types.ts)
+شفرة المصدر:[`packages/ptc-runtime/ptc-runtime/src/types.ts`](../../packages/ptc-runtime/ptc-runtime/src/types.ts)
 
-## 运行：请求进，结果出
+## تشغيل: طلب دخول، نتيجة خروج
 
-`PtcRunRequest` 包含程序、绑定、取消和可选执行选择。提供方的 `resolve` 验证支持的选择并应用部署默认值；`run` 接收目录与截止选择明确的 `PtcRunSpec`。省略 timeout 使用提供方默认值，数值请求封顶的经过时间预算，`null` 请求不设经过时间截止。提供方在执行前拒绝不支持的选择：
+`PtcRunRequest` يتضمن برنامج، ربط، إلغاء و اختياري تنفيذ اختيار. مزود `resolve` تحقق دعم حمل اختيار و تطبيق نشر قيمة افتراضية؛`run` استقبال دليل و قطع توقف اختيار واضح `PtcRunSpec`. حذف timeout استخدام مزود قيمة افتراضية، عدد قيمة طلب غلاف قمة مرور مرور وقت ميزانية،`null` طلب لا ضبط مرور مرور وقت قطع توقف. مزود في تنفيذ قبل رفض لا دعم حمل اختيار:
 
 ```ts type-equiv
 /**
@@ -65,7 +65,7 @@ interface PtcRunSandbox {
 }
 ```
 
-程序失败通过 `PtcRunResult.error` 返回；无效调用输入可能在执行前拒绝。沙箱模式、观察到的拒绝与强制完整性是独立事实，因此程序成功本身不能证明每项请求限制均已强制执行：
+برنامج فشل عبر `PtcRunResult.error` إرجاع؛ بلا فاعلية استدعاء إدخال ممكن في تنفيذ قبل رفض. صندوق رملي نمط، مراقبة إلى رفض و قوي صنع كامل صفة هو مستقل واقع، لذلك برنامج نجاح ذاته لا يستطيع إثبات كل بند طلب حد متساو قد قوي صنع تنفيذ:
 
 ```ts type-equiv
 /**
@@ -94,9 +94,9 @@ interface PtcRunResult {
 }
 ```
 
-## 绑定：宿主函数作为程序全局变量
+## ربط: مضيف دالة بصفة برنامج عام متغير
 
-每个 `PtcBindingNamespace` 成为一个异步可调用函数的全局对象；PTC 传入 `tools`。参数与返回值必须是无损 JSON。提供方强制各自的传输上限；seam 不设统一的绑定字节上限。可选错误类描述符创建程序可见的类型化拒绝，无需在运行时内点名消费方。绑定名是自有属性，因此 `__proto__` 不能遍历原型：
+كل `PtcBindingNamespace` يصبح واحد مختلف خطوة يمكن استدعاء دالة عام كائن؛PTC نقل دخول `tools`. معامل و قيمة راجعة يجب هو بلا ضرر JSON. مزود قوي صنع كل منها نقل حد أعلى؛seam لا ضبط موحد واحد ربط بايت حد أعلى. اختياري خطأ صنف وصف رمز إنشاء برنامج مرئي نوع تحويل رفض، بلا حاجة في وقت التشغيل داخل نقطة اسم مستهلك. ربط اسم هو ذاتي لديه خاصية، لذلك `__proto__` لا يستطيع مرة تاريخ أصل نوع:
 
 ```ts type-equiv
 /**
@@ -164,11 +164,11 @@ type PtcJsonValue = null | boolean | number | string | PtcJsonValue[] | { [key: 
 type PtcBindingFunction = (args: unknown) => Promise<PtcJsonValue>
 ```
 
-## 捕获的输出与失败分类体系
+## التقاط إخراج و فشل تصنيف جسم نظام
 
-日志是纯字符串。每个来源通道保留自身的发出顺序；由于通道元数据不属于 seam，相互独立的通道如何交错由后端决定。运行时捕获程序的 console 与流输出，Consumer 只渲染文本。实现会对序列化后的外层日志数组，以及完成值或失败消息的组合载荷设置上限；固定的结果封装语法与 Consumer 展示空白不计入这份可变载荷计量。超限会显式失败，而不会在值中插入替代内容。
+سجل هو صاف نص. كل مصدر عبر طريق إبقاء ذاته إرسال خروج ترتيب؛ من في عبر طريق بيانات وصفية لا يخص seam، متبادل متبادل مستقل عبر طريق مثل أي تسليم خطأ من خلفية قرار. وقت التشغيل التقاط برنامج console و تدفق إخراج،Consumer فقط تصيير نص. تنفيذ سوف مقابل تسلسل تحويل بعد خارج طبقة سجل عدد مجموعة، و إتمام قيمة أو فشل رسالة تركيب تحميل حمل ضبط حد أعلى؛ ثابت نتيجة غلاف تركيب لغة قاعدة و Consumer عرض فارغ أبيض لا حساب دخول هذا نسخة متغير تحميل حمل حساب كمية. تجاوز حد سوف صريح فشل، بينما لن في قيمة في إدراج دخول بديل محتوى.
 
-失败类型是**正交的结果，独立报告**（见 [defensive-patterns](../defensive-patterns.zh.md)）：预算耗尽不是异常，中止不是超时，基底崩溃（如 OOM）也不是二者中的任何一个：
+فشل نوع هو**صحيح تسليم نتيجة، مستقل تقرير إبلاغ**(رؤية [defensive-patterns](../defensive-patterns.zh.md)): ميزانية استهلاك كل لا هو استثناء، في توقف لا هو مهلة، أساس قاع انهيار انهيار (مثل OOM) أيضا لا هو اثنان من في أي واحد:
 
 ```ts type-equiv
 /**
@@ -193,9 +193,9 @@ interface PtcRunFailure {
 }
 ```
 
-## 服务
+## خدمة
 
-`PtcRuntime` 定义于 [`src/index.ts`](../../packages/ptc-runtime/ptc-runtime/src/index.ts)。`resolve(request)` 返回完整执行输入，`run(spec)` 执行它们。`executionInstructions` 提供由运行时拥有的使用说明，供消费方呈现。支持逐次覆盖时，`timeout` 报告配置的经过时间默认值和上限；每次请求仍由 `resolve` 验证并截断。`language` 选择支持的程序呈现；`isolation` 描述执行基底，不作安全声明。`sandboxMode` 声明文件策略支持，不提供约束的提供方返回 `undefined`。每个实现将各次运行的程序状态分离，并在资源释放期间终止且等待活跃执行。
+`PtcRuntime` تعريف في [`src/index.ts`](../../packages/ptc-runtime/ptc-runtime/src/index.ts).`resolve(request)` إرجاع كامل تنفيذ إدخال،`run(spec)` تنفيذ هو جمع.`executionInstructions` توفير من وقت التشغيل يملك استخدام شرح، توفير مستهلك عرض. دعم حمل تدريجي مرة تغطية وقت،`timeout` تقرير إبلاغ إعداد مرور مرور وقت قيمة افتراضية و حد أعلى؛ كل مرة طلب ما زال من `resolve` تحقق و قطع قطع.`language` اختيار دعم حمل برنامج عرض؛`isolation` وصف تنفيذ أساس قاع، لا عمل أمان إعلان.`sandboxMode` إعلان ملف سياسة دعم حمل، لا توفير قيد مزود إرجاع `undefined`. كل تنفيذ سوف كل مرة تشغيل برنامج حالة قسم مغادرة، و في مورد تحرير خلال إنهاء كما انتظار نشط وثب تنفيذ.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-02-typert-remote-method-calls.zh.md)
+English | [العربية](2026-08-02-typert-remote-method-calls.zh.md)
 
 ## Problem
 
@@ -194,13 +194,13 @@ The Host and Client still use only two independent TypeScript Programs, but Type
 ```text
 Host Program
 ├─ typert.host.js / typert.host.d.ts
-│  Host 自身的 Service、Event、Object、schema 和 inbound Gateway 信息
+│ Host ذاته Service،Event،Object،schema و inbound Gateway معلومة
 └─ typert.remote-client.js / typert.remote-client.d.ts / typert.remote-client.d.ts.map
-   Host Remote 对任意消费环境的 wire 投影
+   Host Remote مقابل مهمة معنى إزالة استهلاك بيئة wire إسقاط
 
 Client Program
 └─ typert.client.js / typert.client.d.ts
-   Client 自身的 Service、Event、Object 和 schema 信息
+   Client ذاته Service،Event،Object و schema معلومة
 ```
 
 `remote-client` is the Host Program's second emitter, not a third Program or the Client's local face. It contains no Host Cordis merge, Service class, Context class, or implementation code, and it does not enter the Host-local reflection registry.
@@ -209,10 +209,10 @@ The Host lib build performs strict Host analysis and emits both the Host-local a
 
 ```text
 Host lib build
-→ 生成 typert.host.{js,d.ts}
-→ 生成各业务包 lib/typert.remote-client.{js,d.ts,d.ts.map}
-→ 完成 Client lib 和 typert.client 产物
-→ Vite 构建 Web
+→ توليد typert.host.{js,d.ts}
+→ توليد كل عمل خدمة حزمة lib/typert.remote-client.{js,d.ts,d.ts.map}
+→ إتمام Client lib و typert.client ناتج
+→ Vite بناء Web
 ```
 
 The existing top-level `build` still runs `build:lib` before `build:web`, but `build:lib` must complete the Host and Remote artifacts before starting Client TypeScript compilation. A clean build must not depend on stale `.d.ts` files from an earlier build.
@@ -297,8 +297,8 @@ Every generated method resolves to `Promise<RemoteResult<T>>`: a call reports it
 Typert in a consumer environment maintains both local information and Remote information imported from other environments, but stores them in separate registries:
 
 ```text
-Typert.local    当前环境自己的反射模型
-Typert.remotes  已导入的 Remote contribution
+Typert.local حالي بيئة ذاتي ذات عكس إطلاق نموذج
+Typert.remotes قد استيراد Remote contribution
 ```
 
 `@deepseek-ai/dsh-api-remotes/client` centrally loads the required Remote contributions:
@@ -325,9 +325,9 @@ root ctx.remote.goals.create(agentId, request)
   → ctx.connection.rpc.call('/api', 'goals/create', { args })
 
 agentCtx.remote.goals.create(request)
-  → remote.goals accessor 捕获 agent Context
-  → agent binder 从 caller Context 取得 agentId
-  → 用 agentId 补入同一 direct descriptor 的 lookup 参数
+  → remote.goals accessor التقاط agent Context
+  → agent binder من caller Context أخذ نيل agentId
+  → استخدام agentId تكملة دخول نفس direct descriptor lookup معامل
   → ctx.connection.rpc.call('/api', 'goals/create', { args })
 ```
 
@@ -373,12 +373,12 @@ A `@RemoteScope('agent')` call first asks the Agent Context provider to resolve 
 
 ```text
 ctx.typertGateway.invoke({ namespace, method, args, signal })
-→ 查找本地 InvocationDescriptor 与 live receiver
-→ 按参数 descriptor 读取具名 wire 字段
-→ codec 解码普通值或 lookup ID
-→ lookup provider 把 ID 解析为活对象
-→ direct 使用原 Service；context 先解析 scoped Context 和 Service
-→ cancellation descriptor 存在时把 signal 追加到业务参数末尾
+→ فحص بحث محلي InvocationDescriptor و live receiver
+→ حسب معامل descriptor قراءة أداة اسم wire حقل
+→ codec حل رمز عادي قيمة أو lookup ID
+→ lookup provider يأخذ ID تحليل لـ نشط كائن
+→ direct استخدام أصل Service؛context أولا تحليل scoped Context و Service
+→ cancellation descriptor وجود وقت يأخذ signal إلحاق إلى عمل خدمة معامل نهاية ذيل
 → Reflect.apply(receiver[implementation ?? method], receiver, orderedArgs)
 ```
 
@@ -425,17 +425,17 @@ The complete path is:
 
 ```text
 ctx.remote.goals.create(sessionId, request, signal?)
-→ Client InvocationDescriptor 组装 { args: { agentId, request } }
-→ Client 合并 caller signal 与 contribution mount lifetime
+→ Client InvocationDescriptor تجميع { args: { agentId, request } }
+→ Client دمج caller signal و contribution mount lifetime
 → ctx.connection.rpc.call('/api', 'goals/create', { args }, signal)
-→ Connection 创建 rpcId 和既有 client-request envelope
-→ 当前 carrier 发送 POST /api/goals/create
-→ Connection Host half 执行共享 trust，再由 bridge 创建标准 Request
-→ 复合 FetchHandler 判断 endpoint ownership 并选择目标 FetchHandler
-→ Typert interceptor 调用 ctx.typertGateway.invoke(..., request.signal)
-→ Host InvocationDescriptor 解码、lookup、receiver 解析并把 signal 注入 Reflect.apply
-→ Connection 写入既有 RPC result 并回送相同 rpcId
-→ Client 直接返回 CreateGoalResult
+→ Connection إنشاء rpcId و قائم client-request envelope
+→ حالي carrier إرسال POST /api/goals/create
+→ Connection Host half تنفيذ مشترك trust، مجددا من bridge إنشاء معيار Request
+→ تكرار دمج FetchHandler حكم قطع endpoint ownership و اختيار هدف FetchHandler
+→ Typert interceptor استدعاء ctx.typertGateway.invoke(..., request.signal)
+→ Host InvocationDescriptor حل رمز،lookup،receiver تحليل و يأخذ signal حقن Reflect.apply
+→ Connection كتابة قائم RPC result و عودة إرسال نفسه rpcId
+→ Client مباشر إرجاع CreateGoalResult
 ```
 
 Remote does not define a second-layer `{ ok, value/error }` response on the wire. Successful values and failures use the existing RPC response's `result` directly, and the failure branch carries the shared `{ code, message, details }` data. Owners, resolvers, and the Gateway all raise one class, `RemoteError`, whose code comes from the merged `RemoteErrorDetailsMap`: the Host encodes a structurally identified `RemoteError` onto the wire unchanged — including the Gateway's own `gateway/*` assembly codes and a resolver's `session/not-found` or `session/agent-busy` — and folds only an unclassified throw into `gateway/internal`, keeping its diagnostic in the message. The Client face rebuilds an instance for the `RemoteResult` error branch, so `throw result.error` keeps throw semantics. [The failure-vocabulary Agent Note](2026-08-28-ctx-remote-failure-vocabulary.md) owns the code table, its ownership rules, and why discrimination reads `code` instead of `instanceof`.

@@ -1,44 +1,44 @@
-# Agent Note: dsh web 的 config-tree boot 与 web 传输分层
+# Agent Note: dsh web config-tree boot و web نقل قسم طبقة
 
 Status: implemented
 
-[English](2026-07-24-web-config-tree-boot-and-transport-layering.md) | 中文
+[English](2026-07-24-web-config-tree-boot-and-transport-layering.md) | العربية
 
-> 范围：`dsh web` 如何组合（cordis.yml + cordis 之前的 boot 类 + 配置源），以及 web 传输如何跨包分层（网关 / 载体 / 绑定 / 图 / 开发期重载）。浏览器侧装载链归 [client 插件装载 note](2026-07-23-client-plugin-loading-model.zh.md) 所有，本组合只是它的供给方。
+> نطاق:`dsh web` مثل أي تركيب (cordis.yml + cordis قبل boot صنف + إعداد مصدر) ، و web نقل مثل أي عبر حزمة قسم طبقة (شبكة صلة / تحميل جسم / ربط / رسم / تطوير مدة إعادة تحميل). متصفح جانب تركيب تحميل سلسلة عودة [client إضافة تركيب تحميل note](2026-07-23-client-plugin-loading-model.zh.md) كل، هذا تركيب فقط هو هو توفير إعطاء جهة.
 
-## 问题
+## مشكلة
 
-`dsh web` 曾是仅剩的手工装配面：`bootHost` 逐个挂 32 个插件、config 钉死在代码里（违反 no-hardcoded-tunables），client roster 是 `web.ts` 常量，而 TUI/headless 早已是 yml 组合。传输层的职责错位与之配套：webserver 自称哑载体却认识 `__DSH_BOOT__` 图、拥有 SSE（Server-Sent Events）通道、硬编码 `/api/*` 前缀；dev 的 bundle watch 寄居在 prod 注册表里靠 `watch?` 参数开关、生命周期无主；图注册表对每次 `internal/plugin` 全量重扫；单请求失败与致命 server 错误共用一个一律退出进程的 sink。还有一个用户可见缺陷：web 路径从不加载 `$DSH_HOME/.env`，`DSH_HOME=… dsh web` 读不到自定义 home 下的 API key。
+`dsh web` سبق هو فقط باق يد عمل تركيب إعداد وجه:`bootHost` تدريجي عدد تعليق 32 عدد إضافة،config تثبيت ميت في شفرة داخل (مخالفة عكس no-hardcoded-tunables) ،client roster هو `web.ts` معتاد كمية، بينما TUI/headless مبكر قد هو yml تركيب. نقل طبقة مسؤولية خطأ موضع و لـ إعداد طقم:webserver ذاتي تسمية صامت تحميل جسم لكن إقرار تعرف `__DSH_BOOT__` رسم، يملك SSE(Server-Sent Events) عبر طريق، صلب تحرير رمز `/api/*` بادئة؛dev bundle watch إرسال إقامة في prod سجل التسجيل داخل اعتماد `watch?` معامل فتح صلة، دورة الحياة بلا رئيسي؛ رسم سجل التسجيل مقابل كل مرة `internal/plugin` كل كمية إعادة مسح؛ مفرد طلب فشل و يؤدي أمر server خطأ مشترك استخدام واحد واحد قاعدة خروج عملية sink. أيضا لديه واحد مستخدم مرئي نقص وقوع:web مسار من لا تحميل `$DSH_HOME/.env`،`DSH_HOME=… dsh web` قراءة لا إلى ذاتي تعريف home تحت API key.
 
-## 决策
+## قرار
 
-**组合结果是一棵平铺配置树。** `apps/cli/config/base.cordis.yml` 与 `apps/cli/config/web.cordis.yml` 共同持有全部行——host 运行时（32 行）、`api-gateway` 行、`webserver` 行、`dsh.client` 行（浏览器 roster；modules 行同时是 host 行）。不做主干 bundle：每插件一行、每个 config 字段 yml 可改。这一立场后来推广到全仓：两个 surface 共享的配置项被抽取进 `apps/cli/config/base.cordis.yml`，各 surface 则收敛为一份 overlay（[共享 base overlay](../../archived/simplification/2026-07-29-shared-base-config-overlays.md)）。`dsh-client-hmr` 行是普通的始终启用的 bundle 行（最初由 `--dev` 在代码中追加；该旗标已废除）。行序无装载语义；激活由服务可用性驱动。`auditStartupEntries` 报告 import 失败、读取失败 fiber 的原始激活错误，并列出让 fiber 停在 `PENDING` 的服务。[启动策略](2026-09-09-consumer-owned-startup-strictness.zh.md)将 optional failure 作为 warning，将 required failure 视为致命错误。已报告的 rejection 原因会保持标记至一个进程级检查点，使 `installFailLoud` 合并 Loader 的重复通知，而无关的未处理 rejection 仍然致命。Node app-boot 产物内嵌 `@cordisjs/plugin-include`，但将 `@cordisjs/plugin-loader` 保持为外部依赖，因此 include 的 `EntryTree` 与 host 会绑定到同一个 Loader peer，而不会让一棵配置树横跨两个 Loader 实现。
+**تركيب نتيجة هو واحد شجرة مستو فرش إعداد شجرة.** `apps/cli/config/base.cordis.yml` و `apps/cli/config/web.cordis.yml` مشترك نفس يحتفظ الكل سطر——host وقت التشغيل (32 سطر) ،`api-gateway` سطر،`webserver` سطر،`dsh.client` سطر (متصفح roster؛modules سطر معا هو host سطر). لا فعل رئيسي جاف bundle: كل إضافة واحد سطر، كل config حقل yml يمكن تعديل. هذا واحد قيام ساحة بعد قدوم دفع واسع إلى كل مستودع: اثنان عدد surface مشترك بند إعداد يتم سحب أخذ دخول `apps/cli/config/base.cordis.yml`، كل surface فإن استلام جمع لـ واحد نسخة overlay([مشترك base overlay](../../archived/simplification/2026-07-29-shared-base-config-overlays.md)).`dsh-client-hmr` سطر هو عادي بداية نهاية تفعيل bundle سطر (الأكثر أول من `--dev` في شفرة في إلحاق؛ هذا راية علامة قد ملغى حذف). سطر ترتيب بلا تركيب تحميل دلالة؛ تنشيط من خدمة متاح صفة قيادة.`auditStartupEntries` تقرير إبلاغ import فشل، قراءة فشل fiber أصلي تنشيط خطأ، و صف خروج يجعل fiber توقف في `PENDING` خدمة.[بدء سياسة](2026-09-09-consumer-owned-startup-strictness.zh.md) سوف optional failure بصفة warning، سوف required failure نظر لـ يؤدي أمر خطأ. قد تقرير إبلاغ rejection سبب سوف إبقاء علامة حتى واحد عملية درجة فحص نقطة، جعل `installFailLoud` دمج Loader تكرار إشعار، بينما غير متصل لم معالجة rejection ما زال يؤدي أمر.Node app-boot ناتج داخل تضمين `@cordisjs/plugin-include`، لكن سوف `@cordisjs/plugin-loader` إبقاء لـ خارجي اعتماد، لذلك include `EntryTree` و host سوف ربط إلى نفس عدد Loader peer، بينما لن يجعل واحد شجرة إعداد شجرة أفقي عبر اثنان عدد Loader تنفيذ.
 
-**boot 胶水由两个类组成。** `AppCLIEntry`（apps/cli）与 `AppWebEntry`（壳内核）只持有那些必须独立于 cordis、提前存在的东西：argv 事实、合成的 patch 集、解析出的 boot manifest（元数据清单）、模块系统实例、loading 页句柄——其余一律进插件。`AppCLIEntry.run()` 三段：分层 env（ambient > cwd `.env` > `$DSH_HOME/.env`，顺手关掉上述缺陷）→ patch 合成 → Loader include boot 加 activation audit。`AppWebEntry.run()` 在浏览器侧镜像它：把 `window.__DSH_BOOT__` 解析成 `BootManifest`（双视角：npm 包行给模块表、cordis 插件行给 entry 组合；畸形 wire 大声抛）、建模块系统、渲染 loading 页、immediately 层预取与 Context/Loader 准备并行、**create entry 之前等预取齐**（物化是 `tree.import` 的同步 require，不受 fiber inject 等待保护；i18n → runtime/client 这类跨包 require 边要求 immediately 层工厂全部注册完——否则有实测 10–25% 的 boot 竞态）、收编 modules entry、逐一创建图行、settle、sweep。
+**boot لاصق ماء من اثنان عدد صنف مجموعة صار.** `AppCLIEntry`(apps/cli) و `AppWebEntry`(قشرة داخل نواة) فقط يحتفظ ذلك بعض يجب مستقل في cordis، رفع قبل وجود شرق غرب:argv واقع، دمج صار patch تجميع، تحليل خروج boot manifest(بيانات وصفية بيان) ، وحدة نظام نسخة،loading صفحة جملة مقبض——ذلك بقية واحد قاعدة دخول إضافة.`AppCLIEntry.run()` ثلاثة مقطع: قسم طبقة env(ambient > cwd `.env` > `$DSH_HOME/.env`، ترتيب يد صلة إسقاط فوق وصف نقص وقوع)→ patch دمج صار → Loader include boot إضافة activation audit.`AppWebEntry.run()` في متصفح جانب مرآة مثل هو: يأخذ `window.__DSH_BOOT__` تحليل صار `BootManifest`(مزدوج نظر زاوية:npm حزمة سطر إعطاء وحدة جدول،cordis إضافة سطر إعطاء entry تركيب؛ شاذ شكل wire كبير صوت رمي) ، بناء وحدة نظام، تصيير loading صفحة،immediately طبقة مسبق أخذ و Context/Loader دقيق تجهيز و سطر،**create entry قبل انتظار مسبق أخذ متساو**(شيء تحويل هو `tree.import` تزامن require، لا تلقي fiber inject انتظار حفظ حماية؛i18n → runtime/client هذا صنف عبر حزمة require حافة اشتراط immediately طبقة عمل مصنع الكل تسجيل تمام——لا فإن لديه فعلي قياس 10–25% boot تنافس حالة) ، استلام تحرير modules entry، تدريجي واحد إنشاء رسم سطر،settle،sweep.
 
-**每个配置源有唯一声明位置。** 组合包 yml 值是工程默认，Settings 分节是可写的用户偏好，CLI（命令行界面）flags 面向其归属的启动器配置行，env 值则通过 yml `!!js` 表达式进入。patch 会整体替换一行的 config。解析后的前端 `distIndex` 通过同一条 patch 通道作为组装事实传递。与传输无关的提供方／模型默认值归 `ctx.agentDefaultModel` 所有；[直接 headless 入口](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md)与 Session Controller 消费同一份状态。
+**كل إعداد مصدر لديه وحيد إعلان موضع.** تركيب حزمة yml قيمة هو عمل مسار افتراضي،Settings قسم عقدة هو يمكن كتابة مستخدم انحراف جيد،CLI(أمر سطر واجهة)flags موجه إلى ذلك ملكية بدء جهاز إعداد سطر،env قيمة فإن عبر yml `!!js` جدول بلوغ صيغة دخول.patch سوف كامل جسم استبدال واحد سطر config. تحليل بعد قبل طرف `distIndex` عبر نفس بند patch عبر طريق بصفة تجميع واقع نقل تمرير. و نقل غير متصل مزود/نموذج قيمة افتراضية عودة `ctx.agentDefaultModel` كل؛[مباشر headless مدخل](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md) و Session Controller إزالة استهلاك نفس نسخة حالة.
 
-**传输职责各有明确 owner。** `dsh-client-connection` 持有 `/api` 路由、请求与响应 envelope、浏览器认证、Host/Origin 检查、精确 Fetch 路由注册以及共享 Typert interceptor 席位。`dsh-api-gateway` 持有类型化 Remote 分发和多路复用 WebSocket。`dsh-host-webserver` 是朴素的路由注册插件：`WebServer` provide `ctx.webServer`（`register(route) → disposer`、重复 pattern 即抛、`renderIndex` 渲染——先结构化 `webserver/index-inject` 行、后原始 `tapIndex` 按注册序应用——与 `port`），激活即 listen，单请求失败时答 400 并记日志，且不认识任何 harness 概念。其基于 socket 的 Node HTTP 入口可以通过受维护的中间件应用已配置的 gzip，无需新增响应写出服务方法或改变 route owner；Web Worker 隧道传递 identity 字节。modules node 半（`ClientModuleRegistry`，provide `ctx.clientModules`）持有单包增量扫描、bundle 路由、启动注入行与 `onRebuilt`/`onGraphChanged` 通知。HMR（热模块替换）node 半通过 `fs.watchFile` membership 与 `/plugins/events` SSE 路由持有开发期重载。
+**نقل مسؤولية كل لديه واضح owner.** `dsh-client-connection` يحتفظ `/api` توجيه، طلب و استجابة envelope، متصفح إقرار إثبات،Host/Origin فحص، دقيق Fetch توجيه تسجيل و مشترك Typert interceptor مقعد موضع.`dsh-api-gateway` يحتفظ نوع تحويل Remote توزيع و كثير مسار إعادة استخدام WebSocket.`dsh-host-webserver` هو بسيط عنصر توجيه تسجيل إضافة:`WebServer` provide `ctx.webServer`(`register(route) → disposer`، تكرار pattern أي رمي،`renderIndex` تصيير——أولا بنية تحويل `webserver/index-inject` سطر، بعد أصلي `tapIndex` حسب تسجيل ترتيب تطبيق——و `port`) ، تنشيط أي listen، مفرد طلب فشل وقت جواب 400 و تسجيل سجل، كما لا إقرار تعرف أي harness عام فكرة. ذلك أساس في socket Node HTTP مدخل يمكن عبر تلقي صيانة في بين عنصر تطبيق قد إعداد gzip، بلا حاجة إضافة جديدة استجابة كتابة خروج خدمة طريقة أو تغيير route owner؛Web Worker نفق طريق نقل تمرير identity بايت.modules node نصف (`ClientModuleRegistry`،provide `ctx.clientModules`) يحتفظ مفرد حزمة زيادة كمية مسح،bundle توجيه، بدء حقن سطر و `onRebuilt`/`onGraphChanged` إشعار.HMR(حار وحدة استبدال)node نصف عبر `fs.watchFile` membership و `/plugins/events` SSE توجيه يحتفظ تطوير مدة إعادة تحميل.
 
-**包出口纪律。** modules 包只暴露 `.`（node 半）与 `./client`（完整浏览器半：`ClientModuleSystem`、`parseBootManifest`、收编插件面）——不设专用子路径；wire 类型经根出口 re-export 给 host 侧消费方。收编握手：内核在 cordis 之前把建好的实例写入 `window.__DSH_MODULES__`；`./client` 的 apply 读取该槽位（缺少时显式抛错）并 provide `ctx.modules`。
+**حزمة خروج فتحة سجل قاعدة.** modules حزمة فقط كشف `.`(node نصف) و `./client`(كامل متصفح نصف:`ClientModuleSystem`،`parseBootManifest`، استلام تحرير إضافة وجه)——لا ضبط مخصص استخدام فرعي مسار؛wire نوع مرور أصل خروج فتحة re-export إعطاء host جانب مستهلك. استلام تحرير إمساك يد: داخل نواة في cordis قبل يأخذ بناء جيد نسخة كتابة `window.__DSH_MODULES__`؛`./client` apply قراءة هذا مجرى موضع (نقص قليل وقت صريح رمي خطأ) و provide `ctx.modules`.
 
-## 后果
+## عاقبة
 
-- 重组一个 web 部署 = 改 yml/patch；退役件（`mountWebPlugins`、`CLIENT_PACKAGES`、`createHostWebPluginRegistry`、`startWebServer`、webserver 的图/SSE/api 知识）全部删除。
-- [Headless 是直接 core 入口](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md)：其随附 profile 包含共享的 base Agent 能力，并省去 Host、HTTP、Web 与浏览器层。本笔记的传输划分是浏览器 surface 的约定。
-- 一个值得记住的 TypeScript 坑：`declare module 'cordis'` augmentation 所在文件若**没有任何 cordis import**，会被降级成独立模块声明，无声打散全程序的 `Context` merge（`ctx.on`/`ctx.effect` 全程序消失）。用 `import type {} from 'cordis'` 锚定。
+- إعادة مجموعة واحد web نشر = تعديل yml/patch؛ تراجع دور عنصر (`mountWebPlugins`،`CLIENT_PACKAGES`،`createHostWebPluginRegistry`،`startWebServer`،webserver رسم/SSE/api معرفة تعرف) الكل حذف.
+- [Headless هو مباشر core مدخل](../../archived/architecture/2026-08-09-headless-direct-core-entry-point.md): ذلك مع مرفق profile يتضمن مشترك base Agent قدرة، و حذف ذهاب Host،HTTP،Web و متصفح طبقة. هذا قلم تسجيل نقل تخطيط قسم هو متصفح surface اتفاق.
+- واحد قيمة نيل تسجيل إقامة TypeScript حفرة:`declare module 'cordis'` augmentation الذي في ملف إذا**لا يوجد أي cordis import**، سوف يتم تخفيض صار مستقل وحدة إعلان، بلا صوت ضرب تفرق كل برنامج `Context` merge(`ctx.on`/`ctx.effect` كل برنامج إزالة فقد). استخدام `import type {} from 'cordis'` مرساة تحديد.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-| 弃案 | 一行理由 |
+| ترك سجل | واحد سطر إدارة من |
 |---|---|
-| 专门的 `dsh-host-profile` 受体包 | 用户模型状态归 Settings 支撑的 `ctx.agentDefaultModel` 所有；额外的 Host 受体会重复归属，并排除直接入口 |
-| 运行时里的 `assembly` 垫层插件（provide `apiHandler`） | Connection 已在传输边缘把 Remote interception 与功能自有的精确 Fetch 路由组合成一个 handler |
-| 全量重扫与增量扫描并存 | 两条实现两份语义；单包路径足以覆盖激活初扫 |
-| modules 包特设 `./impl` 出口 | 出口不统一；标准 `./client` 承载完整浏览器半 |
-| dev overlay / `cordis.dev.yml` | 一套 yml；`!!js` 无法条件化行存在性，`--dev` 追加一行就是全部差异 |
-| env 进映射表 | 同一字段将出现 env/json 双源，需再发明优先级 |
-| create 不等预取（以 `arrive()` 去重为安全依据） | 被 10–25% boot 竞态证伪：在途去重只覆盖同包双拉，不覆盖跨包同步 require 边 |
-| json 直接当 loader patches 文件 | json 键名将耦合 yml 行结构，profile 编写者要懂 cordis |
-| 公开响应写出方法并让每条 route 选择接入 | 响应编码属于 Node HTTP 策略；经 `ctx.webServer` 暴露会让每个 route 所有者与测试替身依赖这项策略 |
-| 手写 gzip 协商与流生命周期 | 受维护的中间件已经处理协商、媒体类型筛选、响应头改写、背压与阈值行为 |
+| مخصص باب `dsh-host-profile` تلقي جسم حزمة | مستخدم نموذج حالة عودة Settings دعم دعم `ctx.agentDefaultModel` كل؛ مقدار خارج Host تلقي جسم سوف تكرار ملكية، و ترتيب حذف مباشر مدخل |
+| وقت التشغيل داخل `assembly` وسادة طبقة إضافة (provide `apiHandler`) | Connection قد في نقل حافة حافة يأخذ Remote interception و وظيفة ذاتي لديه دقيق Fetch توجيه تركيب صار واحد handler |
+| كل كمية إعادة مسح و زيادة كمية مسح و تخزين | اثنان بند تنفيذ اثنان نسخة دلالة؛ مفرد حزمة مسار كاف بـ تغطية تنشيط أول مسح |
+| modules حزمة خاص ضبط `./impl` خروج فتحة | خروج فتحة لا موحد واحد؛ معيار `./client` تحمل تحميل كامل متصفح نصف |
+| dev overlay / `cordis.dev.yml` | واحد طقم yml؛`!!js` لا يمكن شرط تحويل سطر وجود،`--dev` إلحاق واحد سطر حينئذ هو الكل فرق مختلف |
+| env دخول خريطة جدول | نفس حقل سوف ظهور env/json مزدوج مصدر، يحتاج مجددا إرسال واضح أولوية درجة |
+| create لا انتظار مسبق أخذ (بـ `arrive()` ذهاب إعادة لـ أمان اعتماد حسب) | يتم 10–25% boot تنافس حالة إثبات زائف: في طريق ذهاب إعادة فقط تغطية نفس حزمة مزدوج سحب، لا تغطية عبر حزمة تزامن require حافة |
+| json مباشر عند loader patches ملف | json مفتاح اسم سوف اقتران دمج yml سطر بنية،profile تحرير كتابة من يلزم فهم cordis |
+| عام استجابة كتابة خروج طريقة و يجعل كل بند route اختيار وصل دخول | استجابة تحرير رمز يخص Node HTTP سياسة؛ مرور `ctx.webServer` كشف سوف يجعل كل route كل من و اختبار بديل ذات اعتماد هذا بند سياسة |
+| يد كتابة gzip تنسيق تجارة و تدفق دورة الحياة | تلقي صيانة في بين عنصر قد معالجة تنسيق تجارة، وسيط جسم نوع غربلة اختيار، استجابة رأس تعديل كتابة، خلف ضغط و عتبة قيمة سلوك |

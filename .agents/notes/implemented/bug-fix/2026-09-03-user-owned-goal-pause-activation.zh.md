@@ -1,35 +1,35 @@
-# Agent Note: 用户独占的 goal 暂停并暴露实时激活态
+# Agent Note: مستخدم وحيد احتلال goal مؤقت توقف و كشف فوري تنشيط حالة
 
 Status: implemented
 
-[English](2026-09-03-user-owned-goal-pause-activation.md) | 中文
+[English](2026-09-03-user-owned-goal-pause-activation.md) | العربية
 
-## 问题
+## مشكلة
 
-[宿主发起的 goal 暂停中止当前轮次](../../archived/bug-fix/2026-09-01-host-goal-pause-aborts-turn.md) 修复了当前模型轮次不停止的问题，但之后的人类轮次仍可通过 `update_goal resume` 解除持久的 `paused` goal。Web 条带也只读取持久的 `goal` 投影，因此 active-but-disarmed 的 goal 与 armed 的 goal 渲染相同，并提供相同的暂停动作。
+[مضيف إرسال بدء goal مؤقت توقف في توقف حالي جولة](../../archived/bug-fix/2026-09-01-host-goal-pause-aborts-turn.md) إصلاح حالي نموذج جولة لا إيقاف مشكلة، لكن بعد شخص صنف جولة ما زال يمكن عبر `update_goal resume` حل حذف حمل دائم `paused` goal.Web بند حمل أيضا فقط قراءة حمل دائم `goal` إسقاط، لذلك active-but-disarmed goal و armed goal تصيير نفسه، و توفير نفسه مؤقت توقف حركة عمل.
 
-## 决策
+## قرار
 
-`ctx.goals.get` 现在是一个只读 Remote 方法。`GoalService` 在进程本地 activation 变化时发出 `goal/activation-changed`，载荷为 `{ sessionId, goal: { id, revision, activation } }`，clear 后则不携带 goal。API Remote 允许列表把这份 JSON 载荷转发给 Web 客户端。
+`ctx.goals.get` الآن هو واحد فقط قراءة Remote طريقة.`GoalService` في عملية محلي activation تغير وقت إرسال خروج `goal/activation-changed`، تحميل حمل لـ `{ sessionId, goal: { id, revision, activation } }`،clear بعد فإن لا يحمل goal.API Remote سماح قائمة يأخذ هذا نسخة JSON تحميل حمل تحويل إرسال إعطاء Web عميل.
 
-GoalBar 消费由 slot inject 创建的 registrant-private activation hook source。该 source 仅在框架 hook 观察期间启动，读取 `ctx.remote.goals.get`、订阅 `goal/activation-changed`，并在 running 状态或连接 reset 时刷新。activation 边界推进 epoch，使在途读取失效，因此较旧的 HTTP 响应不能覆盖更新的边界；running 刷新会保留最后一次 activation，直到读取完成。Active goal 仅在 armed 时渲染 `Ongoing Goal`；active-but-disarmed goal 渲染 `Inactive Goal`，暴露 resume 而不是 pause；持久 paused goal 继续暴露 resume。暂停权威仍属于 goal 领域和人类 `/goal resume` 命令，它们仍可恢复每个可恢复 phase。
+GoalBar إزالة استهلاك من slot inject إنشاء registrant-private activation hook source. هذا source فقط في إطار هيكل hook مراقبة خلال بدء، قراءة `ctx.remote.goals.get`، حجز قراءة `goal/activation-changed`، و في running حالة أو اتصال reset وقت تحديث جديد.activation حد دفع دخول epoch، جعل في طريق قراءة بطلان، لذلك مقارنة قديم HTTP استجابة لا يستطيع تغطية تحديث حد؛running تحديث جديد سوف إبقاء الأكثر بعد مرة activation، مباشر إلى قراءة إتمام.Active goal فقط في armed وقت تصيير `Ongoing Goal`؛active-but-disarmed goal تصيير `Inactive Goal`، كشف resume بينما لا هو pause؛ حمل دائم paused goal متابعة كشف resume. مؤقت توقف مرجعي ما زال يخص goal مجال و شخص صنف `/goal resume` أمر، هو جمع ما زال يمكن استعادة كل يمكن استعادة phase.
 
-`update_goal resume` 会在调用 goal 服务前用 `GOAL_TOOL_RESUME_PAUSED` 拒绝持久 paused goal。它仍会在会话恢复或 fork 后恢复 active-but-disarmed goal，并在人类要求继续时恢复 blocked goal。模型提示词和工具描述说明持久 paused 的恢复由用户独占。
+`update_goal resume` سوف في استدعاء goal خدمة قبل استخدام `GOAL_TOOL_RESUME_PAUSED` رفض حمل دائم paused goal. هو ما زال سوف في جلسة استعادة أو fork بعد استعادة active-but-disarmed goal، و في شخص صنف اشتراط متابعة وقت استعادة blocked goal. نموذج نص التوجيه و أداة وصف شرح حمل دائم paused استعادة من مستخدم وحيد احتلال.
 
-## 考虑过的替代方案
+## اعتبار مرور بديل خطة
 
-**把 activation 存入持久 `GoalSnapshot`。** 否决：按 goal 领域约定，activation 是进程本地的，绝不能跨恢复或 fork 存活。
+**يأخذ activation تخزين دخول حمل دائم `GoalSnapshot`.** مرفوض: حسب goal مجال اتفاق،activation هو عملية محلي، أبدا قدرة عبر استعادة أو fork تخزين نشط.
 
-**把 activation 加入持久 session projection。** 否决：投影状态会写入检查点；缓存的 `armed` 会在武装它的进程消失后继续错误存在。
+**يأخذ activation إضافة دخول حمل دائم session projection.** مرفوض: إسقاط حالة سوف كتابة فحص نقطة؛ ذاكرة مؤقتة `armed` سوف في قوة تركيب هو عملية إزالة فقد بعد متابعة خطأ وجود.
 
-**把完整的 scoped `goal/changed` 事件转发给客户端。** 否决：其 `Agent` 载荷不是 JSON wire 数据。专用 activation 事件只携带客户端需要的 session id、goal ref 与 activation。
+**يأخذ كامل scoped `goal/changed` حدث تحويل إرسال إعطاء عميل.** مرفوض: ذلك `Agent` تحميل حمل لا هو JSON wire بيانات. مخصص استخدام activation حدث فقط يحمل عميل حاجة session id،goal ref و activation.
 
-**允许模型从自然语言轮次恢复持久 paused goal。** 否决：人工暂停是用户控制，仅靠提示词约束仍会把同轮撤销能力留给模型。
+**سماح نموذج من ذاتي لكن لغة جولة استعادة حمل دائم paused goal.** مرفوض: شخص عمل مؤقت توقف هو مستخدم تحكم، فقط اعتماد نص التوجيه قيد ما زال سوف يأخذ نفس جولة سحب إلغاء قدرة إبقاء إعطاء نموذج.
 
-## 后果
+## عاقبة
 
-Web 无需持久化 activation 就能区分运行中、disarmed 与 paused goal。持久 paused goal 只能通过 Web 控件、`/goal resume` 或其他直接调用 goal 服务的调用方恢复；模型 `update_goal resume` 仅限 disarmed-active 与 blocked goal。API 表面新增一个读取和一个转发 live 事件；持久 goal change 载荷与投影 stateVersion 不变。组件不持有 Remote 订阅；activation source 遵循既有的 inject-hooks live-data 通道。
+Web بلا حاجة حفظ دائم activation حينئذ قدرة منطقة قسم تشغيل في،disarmed و paused goal. حمل دائم paused goal فقط قدرة عبر Web تحكم عنصر،`/goal resume` أو أخرى مباشر استدعاء goal خدمة استدعاء جهة استعادة؛ نموذج `update_goal resume` فقط حد disarmed-active و blocked goal.API جدول وجه إضافة جديدة واحد قراءة و واحد تحويل إرسال live حدث؛ حمل دائم goal change تحميل حمل و إسقاط stateVersion ثابت. مكون لا يحتفظ Remote حجز قراءة؛activation source التزام دوران قائم inject-hooks live-data عبر طريق.
 
-## 测试
+## اختبار
 
-Goal 单元测试固定 create、session start 与 resume 过程中 activation 事件的 id 与 revision。工具测试固定后续人类轮次中持久 paused goal 的拒绝，同时保留已恢复 disarmed-active goal 的恢复。API Remote 测试固定 JSON 转发。Activation-source 测试固定 stale read 拒绝与 running 刷新保留旧值。Web 单元测试固定 armed 显示 pause、disarmed 显示 resume；组装的 goal-bar 浏览器场景通过 fixture timing hook 同时固定 armed 与 active-disarmed golden。
+Goal اختبار وحدة ثابت create،session start و resume مرور مسار في activation حدث id و revision. أداة اختبار ثابت لاحق شخص صنف جولة في حمل دائم paused goal رفض، معا إبقاء قد استعادة disarmed-active goal استعادة.API Remote اختبار ثابت JSON تحويل إرسال.Activation-source اختبار ثابت stale read رفض و running تحديث جديد إبقاء قديم قيمة.Web اختبار وحدة ثابت armed عرض pause،disarmed عرض resume؛ تجميع goal-bar متصفح مشهد عبر fixture timing hook معا ثابت armed و active-disarmed golden.

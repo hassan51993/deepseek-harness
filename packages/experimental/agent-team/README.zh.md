@@ -1,41 +1,41 @@
 ---
-description: "在一个会话中运行一个小型具名 agent（智能体）团队：成员之间的持久消息与共享任务板，用于组合实验性 Team 插件的部署。"
+description: "في واحد جلسة في تشغيل واحد صغير نوع أداة اسم agent(ذكي جسم) مجموعة طابور: عضو بين حمل دائم رسالة و مشترك مهمة لوح، لأجل تركيب فعلي تحقق صفة Team إضافة نشر."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-experimental-agent-team
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-`dsh-experimental-agent-team` 把一个编码会话变成一个小型工作团队：会话中的 agent 成为 Lead，创建具名 teammate 处理委派的工作，与它们交换持久消息，并在公共任务板上跟踪共享任务。消息与任务状态能挺过崩溃、reload 与中断，因此离线的 teammate 会在恢复后收到排队的消息。它本身不提供任何工具——请挂载兄弟包 `dsh-experimental-tool-agent-team`，让模型能够创建 teammate、给它们发消息并使用任务板。它以实验性名称公开发布、不承诺稳定性，并且需要持久会话存储才能激活。
+`dsh-experimental-agent-team` يأخذ واحد تحرير رمز جلسة تغيير صار واحد صغير نوع عمل مجموعة طابور: جلسة في agent يصبح Lead، إنشاء أداة اسم teammate معالجة تفويض إرسال عمل، و هو جمع تسليم تبديل حمل دائم رسالة، و في عام مشترك مهمة لوح فوق تتبع أثر مشترك مهمة. رسالة و مهمة حالة قدرة جدا مرور انهيار انهيار،reload و في قطع، لذلك مغادرة خط teammate سوف في استعادة بعد استلام إلى ترتيب طابور رسالة. هو ذاته لا توفير أي أداة——طلب تركيب أخ أخ حزمة `dsh-experimental-tool-agent-team`، يجعل نموذج قدرة كاف إنشاء teammate، إعطاء هو جمع إرسال رسالة و استخدام مهمة لوح. هو بـ فعلي تحقق صفة اسم عام إصدار، لا تحمل وعد مستقر صفة، و كما حاجة حمل دائم جلسة تخزين عندئذ قدرة تنشيط.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-当一个 agent 应该在自己的工作目录中运行一支小型具名助手团队、且消息与任务状态需要挺过崩溃与重启时，把本包加入组合。它本身不带工具：请与 `@deepseek-ai/dsh-experimental-tool-agent-team` 一起挂载，让模型能够创建 teammate、给它们发消息并使用任务板。
+عند واحد agent ينبغي هذا في ذاتي ذات عمل دليل في تشغيل واحد دعم صغير نوع أداة اسم مساعدة يد مجموعة طابور، كما رسالة و مهمة حالة حاجة جدا مرور انهيار انهيار و إعادة بدء وقت، يأخذ هذه الحزمة إضافة دخول تركيب. هو ذاته لا حمل أداة: طلب و `@deepseek-ai/dsh-experimental-tool-agent-team` واحد بدء تركيب، يجعل نموذج قدرة كاف إنشاء teammate، إعطاء هو جمع إرسال رسالة و استخدام مهمة لوح.
 
-### 何时选择
+### أي وقت اختيار
 
-当多个 agent 必须在同一个共享工作区协作、且 roster、消息与任务状态需要挺过崩溃与重启时，选择它。当 teammate 需要独立工作目录、多个进程需要协调同一支团队、或任务 owner 需要自动释放时，请不要选择——这些都不受支持。团队功能需要持久会话存储才能激活。
+عند كثير عدد agent يجب في نفس عدد مشترك مساحة العمل تنسيق عمل، كما roster، رسالة و مهمة حالة حاجة جدا مرور انهيار انهيار و إعادة بدء وقت، اختيار هو. عند teammate حاجة مستقل عمل دليل، كثير عدد عملية حاجة تنسيق ضبط نفس دعم مجموعة طابور، أو مهمة owner حاجة تلقائي تحرير وقت، طلب لا يلزم اختيار——هذه كل لا تلقي دعم حمل. مجموعة طابور وظيفة حاجة حمل دائم جلسة تخزين عندئذ قدرة تنشيط.
 
-### 最小工作配置
+### الأكثر صغير عمل إعداد
 
 <a id="smallest-working-setup"></a>
 
-对现有组合的最小增量是持久会话存储加两个 Team 包：
+مقابل قائم تركيب الأكثر صغير زيادة كمية هو حمل دائم جلسة تخزين إضافة اثنان عدد Team حزمة:
 
 ```yaml
 # smallest team setup — durable storage plus both Team packages
@@ -44,177 +44,177 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-experimental-tool-agent-team'
 ```
 
-工具安装后，模型会按请求完成其余工作——例如先「创建一个名为 reviewer 的 teammate 检查 diff」，再「把变更摘要发给 reviewer」。所有限制都是可选的，并在启动时校验：
+أداة تثبيت بعد، نموذج سوف حسب طلب إتمام ذلك بقية عمل——مثال مثل أولا «إنشاء واحد اسم لـ reviewer teammate فحص diff» ، مجددا «يأخذ تغيير ملخص إرسال إعطاء reviewer». كل حد كل هو اختياري، و في بدء وقت تحقق:
 
-| 字段 | 默认值 | 含义 |
+| حقل | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
-| `maxMembers` | `16` | 一支团队最多可创建的 teammate 数，包括失败的 |
-| `maxTasks` | `256` | 任务板上最多的活动任务数 |
-| `maxPendingMessagesPerMember` | `64` | 单个成员最多可排队的消息数 |
-| `maxMessageBytes` | `65,536` | 单条发送消息的最大尺寸 |
-| `disposalTimeoutMs` | `5,000` | 关闭清理允许的时间 |
+| `maxMembers` | `16` | واحد دعم مجموعة طابور الأكثر كثير يمكن إنشاء teammate عدد، يشمل فشل |
+| `maxTasks` | `256` | مهمة لوح فوق الأكثر كثير نشط حركة مهمة عدد |
+| `maxPendingMessagesPerMember` | `64` | مفرد عدد عضو الأكثر كثير يمكن ترتيب طابور رسالة عدد |
+| `maxMessageBytes` | `65,536` | مفرد بند إرسال رسالة الأكثر كبير مقياس قياس |
+| `disposalTimeoutMs` | `5,000` | إغلاق تنظيف سماح وقت |
 
-生成的[配置目录](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-agent-team)是每个受支持字段及其 JSDoc 的穷尽式真源。
+توليد[إعداد دليل](../../../docs/config-catalog.zh.md#deepseek-aidsh-experimental-agent-team) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 
 ### Teammate
 
-请 Lead 创建 teammate：给它一个唯一的小写名字（例如 `reviewer`）并描述其职责。teammate 可以 fresh 启动（不携带 Lead 对话的任何记忆），也可以作为 fork 启动（继承 Lead 已完成的轮次）；创建请求决定用哪种。teammate 名字是永久的——即使创建失败的 teammate 也保留其名字，任何名字都不会被复用。
+طلب Lead إنشاء teammate: إعطاء هو واحد وحيد صغير كتابة اسم حرف (مثال مثل `reviewer`) و وصف ذلك مسؤولية.teammate يمكن fresh بدء (لا يحمل Lead محادثة أي تسجيل ذاكرة) ، أيضا يمكن بصفة fork بدء (وراثة Lead قد إتمام جولة) ؛ إنشاء طلب قرار استخدام أي نوع.teammate اسم حرف هو دائم دائم——أي جعل إنشاء فشل teammate أيضا إبقاء ذلك اسم حرف، أي اسم حرف كل لن يتم إعادة استخدام.
 
-roster 显示每个成员的职责（`lead` 或 `teammate`）与当前状态：`running`、`idle`、`inactive`（存在但未加载的成员）、`provisioning` 或 `failed`。未加载的成员会在唤醒后收到其消息。
+roster عرض كل عضو مسؤولية (`lead` أو `teammate`) و حالي حالة:`running`،`idle`،`inactive`(وجود لكن لم تحميل عضو) ،`provisioning` أو `failed`. لم تحميل عضو سوف في نداء تنبيه بعد استلام إلى ذلك رسالة.
 
-只有 Lead 可以创建 teammate 或中断它们。
+فقط لديه Lead يمكن إنشاء teammate أو في قطع هو جمع.
 
-### teammate 之间的消息
+### teammate بين رسالة
 
-任何成员都可以向任何其他成员或 Lead 发送消息。live 成员会立即收到；离线成员的消息会排队，并在其恢复后到达。消息不会丢失，也不会重复投递。
+أي عضو كل يمكن نحو أي أخرى عضو أو Lead إرسال رسالة.live عضو سوف قيام أي استلام إلى؛ مغادرة خط عضو رسالة سوف ترتيب طابور، و في ذلك استعادة بعد وصول. رسالة لن فقد فقد، أيضا لن تكرار إلقاء تمرير.
 
-每条消息都使用 Steer：running target 在最近的步骤边界收到消息，idle target 启动一个轮次，inactive teammate 则冷恢复。发送方始终能看到结果——target inbox 已接受，或在投递暂时不可用时保留为 queued。排队的消息已经安全存储，因此绝不能重发。
+كل بند رسالة كل استخدام Steer:running target في الأكثر قريب خطوة حد استلام إلى رسالة،idle target بدء واحد جولة،inactive teammate فإن بارد استعادة. إرسال جهة بداية نهاية قدرة يرى نتيجة——target inbox قد قبول، أو في إلقاء تمرير مؤقت وقت غير ممكن استخدام وقت إبقاء لـ queued. ترتيب طابور رسالة قد أمان تخزين، لذلك أبدا قدرة إعادة إرسال.
 
-### 共享任务板
+### مشترك مهمة لوح
 
-任何成员都可以添加任务，包含标题、详情、对其他任务的可选依赖，以及可选的文件触及提示。只有其全部依赖完成后，任务才可 claim。
+أي عضو كل يمكن إضافة مهمة، يتضمن عنوان، تفصيل حال، مقابل أخرى مهمة اختياري اعتماد، و اختياري ملف لمس و تلميح. فقط لديه ذلك الكل اعتماد إتمام بعد، مهمة عندئذ يمكن claim.
 
-任务有 owner：成员 claim 任务开始工作，完成后标记完成、释放回板或重新打开；Lead 可以把任务分配给任意成员。每次变更都是 compare-and-set：基于过期副本的更新会被拒绝，因此两个成员不会悄悄覆盖彼此的成果。
+مهمة لديه owner: عضو claim مهمة بدء عمل، إتمام بعد علامة إتمام، تحرير عودة لوح أو إعادة فتح؛Lead يمكن يأخذ مهمة قسم إعداد إعطاء مهمة معنى عضو. كل مرة تغيير كل هو compare-and-set: أساس في مرور مدة فرعي هذا تحديث سوف يتم رفض، لذلك اثنان عدد عضو لن صامت صامت تغطية ذاك هذا صار نتيجة.
 
-当两个 in-progress 任务计划触及重叠路径时，文件提示会产生警告——它们绝不阻止任何操作。已删除任务保留在历史中，但从活动列表中消失。
+عند اثنان عدد in-progress مهمة حساب تخطيط لمس و إعادة تراكم مسار وقت، ملف تلميح سوف إنتاج تحذير إبلاغ——هو جمع أبدا منع توقف أي عملية. قد حذف مهمة إبقاء في تاريخ في، لكن من نشط حركة قائمة في إزالة فقد.
 
-### 等待与中断
+### انتظار و في قطع
 
-成员可以等待下一次团队变化——teammate 的状态、新消息或任务更新——而不必反复轮询；等待只报告是否超时，调用方随后重新读取当前状态。
+عضو يمكن انتظار تحت مرة مجموعة طابور تغير——teammate حالة، جديد رسالة أو مهمة تحديث——بينما لا لا بد عكس تكرار جولة استفسار؛ انتظار فقط تقرير إبلاغ هل مهلة، استدعاء جهة مع بعد إعادة قراءة حالي حالة.
 
-Lead 可以停止 teammate 的当前轮次，而不会删除其排队的消息；任务归属不变。
+Lead يمكن إيقاف teammate حالي جولة، بينما لن حذف ذلك ترتيب طابور رسالة؛ مهمة ملكية ثابت.
 
-### 成功与失败的表现
+### نجاح و فشل جدول الآن
 
-成功的表现是：teammate 出现在 roster 中、消息报告 `accepted` 或 `queued`、任务 revision 随每次变更递增。可能的失败会以具体错误报告，而不会悄悄破坏状态：发给不存在的成员名字、claim 尚未就绪的任务、用过期 revision 编辑、或超出成员上限创建 teammate。
+نجاح جدول الآن هو:teammate ظهور في roster في، رسالة تقرير إبلاغ `accepted` أو `queued`، مهمة revision مع كل مرة تغيير تمرير زيادة. ممكن فشل سوف بـ أداة جسم خطأ تقرير إبلاغ، بينما لن صامت صامت كسر تالف حالة: إرسال إعطاء لا وجود عضو اسم حرف،claim بعد لم حينئذ خيط مهمة، استخدام مرور مدة revision تحرير، أو تجاوز خروج عضو حد أعلى إنشاء teammate.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-本节解释服务背后的设计决策并指出实现它们的代码位置；可观察行为已在[使用本包](#use-this-package)中完整说明。
+هذا عقدة حل تفسير خدمة خلف بعد تصميم قرار و إشارة خروج تنفيذ هو جمع شفرة موضع؛ يمكن مراقبة سلوك قد في[استخدام هذه الحزمة](#use-this-package) في كامل شرح.
 
-### 设计理念
+### تصميم إدارة فكرة
 
-本服务建立在一个分离与三项承诺之上：
+هذا خدمة بناء قيام في واحد قسم مغادرة و ثلاثة بند تحمل وعد لـ فوق:
 
-- **持久日志，派生状态。** Lead 会话日志是唯一真源；roster、mailbox 与任务状态每次读取都从中回放。
-- **进程内归属。** 所有协作都位于单一进程；保证是重试加去重，绝不是跨进程共识。
-- **显式权限。** 每个服务方法都接收确切的实时调用方 `Agent`；只有 Lead 可以 spawn、reassign 或 interrupt。
-- **超出上限时明确失败。** 每个限制都是经过校验的部署值，耗尽时报告类型化错误，而不是复用 id 或名字。
+- **حمل دائم سجل، إرسال توليد حالة.** Lead جلسة سجل هو وحيد حق مصدر؛roster،mailbox و مهمة حالة كل مرة قراءة كل من في إعادة تشغيل.
+- **عملية داخل ملكية.** كل تنسيق عمل كل يقع في مفرد واحد عملية؛ حفظ إثبات هو إعادة محاولة إضافة ذهاب إعادة، أبدا هو عبر عملية مشترك تعرف.
+- **صريح إذن.** كل خدمة طريقة كل استقبال تأكيد قطع فوري استدعاء جهة `Agent`؛ فقط لديه Lead يمكن spawn،reassign أو interrupt.
+- **تجاوز خروج حد أعلى وقت واضح فشل.** كل حد كل هو مرور مرور تحقق نشر قيمة، استهلاك كل وقت تقرير إبلاغ نوع تحويل خطأ، بينما لا هو إعادة استخدام id أو اسم حرف.
 
-[Agent Teams Agent Note](../../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md)负责身份、mailbox、任务与共享 checkout 决策。
+[Agent Teams Agent Note](../../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md) مسؤول هوية،mailbox، مهمة و مشترك checkout قرار.
 
-### 源码地图
+### شفرة المصدر أرض رسم
 
-| 文件 | 职责 |
+| ملف | مسؤولية |
 |---|---|
-| [`src/index.ts`](src/index.ts) | 插件入口：`Config` schema、服务注册、恢复调度 |
-| [`src/roster.ts`](src/roster.ts) | Team 身份、成员关系解析、provisioning 与 roster 拆除 |
-| [`src/mailbox.ts`](src/mailbox.ts) | 持久队列、目标本地投递、确认与恢复 |
-| [`src/task-board.ts`](src/task-board.ts) | 任务 CAS 命令、DAG 校验与派生视图 |
-| [`src/journal.ts`](src/journal.ts) | 串行化的 Lead 日志事务与提交通知 |
-| [`src/projection.ts`](src/projection.ts) | 解码并校验 Team 事件的严格回放投影 |
-| [`src/activity.ts`](src/activity.ts) | 一次性变更等待者与 dispose（资源释放）时的等待解除 |
-| [`src/lifecycle.ts`](src/lifecycle.ts) | 共享准入截止与有界结算 |
-| [`src/invariant.ts`](src/invariant.ts) | 在 append 前回放候选事件的不变式伴生插件 |
+| [`src/index.ts`](src/index.ts) | إضافة مدخل:`Config` schema، خدمة تسجيل، استعادة ضبط درجة |
+| [`src/roster.ts`](src/roster.ts) | Team هوية، عضو علاقة تحليل،provisioning و roster تفكيك حذف |
+| [`src/mailbox.ts`](src/mailbox.ts) | حمل دائم طابور صف، هدف محلي إلقاء تمرير، تأكيد و استعادة |
+| [`src/task-board.ts`](src/task-board.ts) | مهمة CAS أمر،DAG تحقق و إرسال توليد عرض |
+| [`src/journal.ts`](src/journal.ts) | سلسلة سطر تحويل Lead سجل أمر خدمة و إيداع إشعار |
+| [`src/projection.ts`](src/projection.ts) | حل رمز و تحقق Team حدث صارم إطار إعادة تشغيل إسقاط |
+| [`src/activity.ts`](src/activity.ts) | مرة صفة تغيير انتظار من و dispose(مورد تحرير) وقت انتظار حل حذف |
+| [`src/lifecycle.ts`](src/lifecycle.ts) | مشترك دقيق دخول قطع توقف و محدود تسوية |
+| [`src/invariant.ts`](src/invariant.ts) | في append قبل إعادة تشغيل مرشح حدث ثابت صيغة مرافق توليد إضافة |
 
-### Team 身份与 roster
+### Team هوية و roster
 
-每个普通运行时 root 都是一个隐式 Team 的 Lead，其 `TeamId` 等于 `SessionId`；不存在创建事件，持久状态从第一条成员、消息或任务记录开始。`spawnTeammate()` 先追加并 flush 一条 `provisioning` 成员记录，再要求配置的提供方创建预留 child；提供方失败会追加一条持久的 `failed` 成员。fresh child 不携带 Lead 历史；fork child 只捕获一次 Lead 的已完成 turn 前缀。恢复把未终结的 provisioning 记录对照 child 独立持久化的会话进行对账：直接 parent 与 continuable descriptor 匹配、且初始用户消息已记录则产生 `active`，其他任何情况都产生 `failed`。如果恢复在同进程竞争中先完成，creator 会接受终态，或报告 `TEAM_PROVISIONING_CONFLICT` 并 drain 该 child。名字由第一条 provisioning 记录保留，且永不复用。
+كل عادي وقت التشغيل root كل هو واحد خفي صيغة Team Lead، ذلك `TeamId` انتظار في `SessionId`؛ لا وجود إنشاء حدث، حمل دائم حالة من رقم واحد بند عضو، رسالة أو مهمة سجل بدء.`spawnTeammate()` أولا إلحاق و flush واحد بند `provisioning` عضو سجل، مجددا اشتراط إعداد مزود إنشاء مسبق إبقاء child؛ مزود فشل سوف إلحاق واحد بند حمل دائم `failed` عضو.fresh child لا يحمل Lead تاريخ؛fork child فقط التقاط مرة Lead قد إتمام turn بادئة. استعادة يأخذ لم نهاية ربط provisioning سجل مقابل وفق child مستقل حفظ دائم جلسة إجراء مقابل حساب: مباشر parent و continuable descriptor مطابقة، كما ابتدائي مستخدم رسالة قد سجل فإن إنتاج `active`، أخرى أي حال حال كل إنتاج `failed`. إذا استعادة في نفس عملية تنافس تنازع في أولا إتمام،creator سوف قبول نهاية حالة، أو تقرير إبلاغ `TEAM_PROVISIONING_CONFLICT` و drain هذا child. اسم حرف من رقم واحد بند provisioning سجل إبقاء، كما دائم لا إعادة استخدام.
 
-### 持久 mailbox
+### حمل دائم mailbox
 
-`sendMessage()` 校验 peer 成员关系，追加 `team/message/queued` 并在尝试投递前 flush。目标消息以 `Team message <id> from <name>:` 开头，并在 `TeamMessageSource` 中保留同一 id 与发送者。只有目标会话在 pending inbox 或已记录历史中持久持有消息身份后，才会以 `team/message/delivered` 确认投递。即时准入按目标与持久队列顺序串行化；恢复按同一顺序重新投递 queued-minus-delivered 记录。重试前会同时折叠 live 与持久目标 inbox／历史状态，因此 inbox 已接受但模型尚未 claim 时发生崩溃不会复制消息。该保证是进程内重试加 target 会话去重，而不是跨进程 exactly-once 投递。
+`sendMessage()` تحقق peer عضو علاقة، إلحاق `team/message/queued` و في محاولة تجربة إلقاء تمرير قبل flush. هدف رسالة بـ `Team message <id> from <name>:` فتح رأس، و في `TeamMessageSource` في إبقاء نفس id و إرسال من. فقط لديه هدف جلسة في pending inbox أو قد سجل تاريخ في حمل دائم يحتفظ رسالة هوية بعد، عندئذ سوف بـ `team/message/delivered` تأكيد إلقاء تمرير. أي وقت دقيق دخول حسب هدف و حمل دائم طابور صف ترتيب سلسلة سطر تحويل؛ استعادة حسب نفس ترتيب إعادة إلقاء تمرير queued-minus-delivered سجل. إعادة محاولة قبل سوف معا طي live و حمل دائم هدف inbox/تاريخ حالة، لذلك inbox قد قبول لكن نموذج بعد لم claim وقت حدوث انهيار انهيار لن نسخ رسالة. هذا حفظ إثبات هو عملية داخل إعادة محاولة إضافة target جلسة ذهاب إعادة، بينما لا هو عبر عملية exactly-once إلقاء تمرير.
 
-投递给 Lead 时直接调用 `Agent.steer()`。投递给 teammate 时使用 continuation owner 的 host-only Steer 路径；该路径会保留 Team 发送者 source，同时授权 Lead-to-child edge 并冷恢复 inactive target。sibling 消息绝不会通过公开的相邻 Agent 消息操作伪装成 Lead。
+إلقاء تمرير إعطاء Lead وقت مباشر استدعاء `Agent.steer()`. إلقاء تمرير إعطاء teammate وقت استخدام continuation owner host-only Steer مسار؛ هذا مسار سوف إبقاء Team إرسال من source، معا تخويل Lead-to-child edge و بارد استعادة inactive target.sibling رسالة أبدا سوف عبر عام متبادل مجاور Agent رسالة عملية زائف تركيب صار Lead.
 
-### 共享任务板
+### مشترك مهمة لوح
 
-任务是完整版本化快照；每次变更都携带 `expectedRevision`，陈旧调用方会收到 `TEAM_TASK_STALE_REVISION`，而不会覆盖更新的值。数字 `task-<n>` id 的后缀必须是安全整数，id 空间耗尽时报告 `TEAM_TASK_LIMIT`，而不是复用最后一个 id。已删除任务作为 tombstone 保留以供回放与维持 id 稳定，但不占用 `maxTasks`，也不出现在 `listTasks()` 中。`writeScopes` 是规范化后的 workspace 相对前缀；视图会对与 in-progress 任务的重叠发出警告，但绝不阻止 claim 或授予写权限。
+مهمة هو كامل إصدار تحويل لقطة؛ كل مرة تغيير كل يحمل `expectedRevision`، قديم قديم استدعاء جهة سوف استلام إلى `TEAM_TASK_STALE_REVISION`، بينما لن تغطية تحديث قيمة. عدد حرف `task-<n>` id بعد لاحقة يجب هو أمان كامل عدد،id فضاء استهلاك كل وقت تقرير إبلاغ `TEAM_TASK_LIMIT`، بينما لا هو إعادة استخدام الأكثر بعد واحد id. قد حذف مهمة بصفة tombstone إبقاء بـ توفير إعادة تشغيل و صيانة حمل id مستقر، لكن لا احتلال استخدام `maxTasks`، أيضا لا ظهور في `listTasks()` في.`writeScopes` هو مواصفة تحويل بعد workspace متبادل مقابل بادئة؛ عرض سوف مقابل و in-progress مهمة إعادة تراكم إرسال خروج تحذير إبلاغ، لكن أبدا منع توقف claim أو منح إعطاء كتابة إذن.
 
-### 等待与中断
+### انتظار و في قطع
 
-`waitForChange()` 等待注册之后发生的下一条 roster、task、mailbox 或实时状态边，时长从 10 秒到 1 小时，并且只报告是否超时；运行时 dispose 会释放当前等待。取消会保留 Error reason；非 Error reason 则通过 `TEAM_WAIT_ABORTED` 报告。`interrupt()` 仅限 Lead，委托 continuable-subagent 的 interrupt 路径，以 `keepInbox` 只取消 live teammate 的当前 turn；它既不释放任务 owner，也不删除持久 mail。
+`waitForChange()` انتظار تسجيل بعد حدوث تحت واحد بند roster،task،mailbox أو فوري حالة حافة، وقت طويل من 10 ثانية إلى 1 صغير وقت، و كما فقط تقرير إبلاغ هل مهلة؛ وقت التشغيل dispose سوف تحرير حالي انتظار. إلغاء سوف إبقاء Error reason؛ غير Error reason فإن عبر `TEAM_WAIT_ABORTED` تقرير إبلاغ.`interrupt()` فقط حد Lead، تفويض حمل continuable-subagent interrupt مسار، بـ `keepInbox` فقط إلغاء live teammate حالي turn؛ هو حيث لا تحرير مهمة owner، أيضا لا حذف حمل دائم mail.
 
-### 持久性模型
+### حمل دائم صفة نموذج
 
-Team 事件追加到精确的 live Lead 会话，并在操作报告成功或唤醒等待者之前 flush。`team/member`、`team/task`、`team/message/queued` 与 `team/message/delivered` 仅存在于日志：它们从不进入会话表面，因此派生模型历史不受协作记录影响。顺序与时间由会话事件的 `seq` 与 `time` 负责，快照不重复保存。`./invariant` 伴生插件把每条候选 Team 事件对照已提交前缀回放，并在 append 前拒绝非法转换。
+Team حدث إلحاق إلى دقيق live Lead جلسة، و في عملية تقرير إبلاغ نجاح أو نداء تنبيه انتظار من قبل flush.`team/member`،`team/task`،`team/message/queued` و `team/message/delivered` فقط وجود في سجل: هو جمع من لا دخول جلسة جدول وجه، لذلك إرسال توليد نموذج تاريخ لا تلقي تنسيق عمل سجل أثر. ترتيب و وقت من جلسة حدث `seq` و `time` مسؤول، لقطة لا تكرار حفظ.`./invariant` مرافق توليد إضافة يأخذ كل بند مرشح Team حدث مقابل وفق قد إيداع بادئة إعادة تشغيل، و في append قبل رفض غير قاعدة تحويل.
 
 ### Dispose
 
-dispose 会关闭准入、中止并等待已获准的创建与 mailbox dispatch 事务，再让 continuation owner 释放 roster 中确切的 live direct child 及其后代；Lead 的非 Team continuable child 不受影响。cleanup 失败会让 dispose 明确失败，并以 `disposalTimeoutMs` 为上限。
+dispose سوف إغلاق دقيق دخول، في توقف و انتظار قد نيل دقيق إنشاء و mailbox dispatch أمر خدمة، مجددا يجعل continuation owner تحرير roster في تأكيد قطع live direct child و ذلك بعد بديل؛Lead غير Team continuable child لا تلقي أثر.cleanup فشل سوف يجعل dispose واضح فشل، و بـ `disposalTimeoutMs` لـ حد أعلى.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当包级约定不够用时阅读以下页面。它们从共享子系统类型逐步进入工具表面与设计背后的决策。
+عند حزمة درجة اتفاق لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من مشترك فرعي نظام نوع تدريجي خطوة دخول أداة جدول وجه و تصميم خلف بعد قرار.
 
-- [Agent Teams 子系统](../../../docs/subsystems/agent-team.zh.md)——持久 Team 类型与 `ctx.agentTeams` 服务 API。
-- [tool-agent-team 包](../tool-agent-team/README.zh.md)——让模型创建 teammate、向其发送消息并进行协调的工具。
-- [Agent Teams Agent Note](../../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md)——身份、mailbox、任务与共享 checkout 决策。
-- [实验包决策](../../../.agents/notes/implemented/architecture/2026-08-18-experimental-agent-teams-packages.zh.md)——位置、公开发布与依赖隔离。
+- [Agent Teams فرعي نظام](../../../docs/subsystems/agent-team.zh.md)——حمل دائم Team نوع و `ctx.agentTeams` خدمة API.
+- [tool-agent-team حزمة](../tool-agent-team/README.zh.md)——يجعل نموذج إنشاء teammate، نحو ذلك إرسال رسالة و إجراء تنسيق ضبط أداة.
+- [Agent Teams Agent Note](../../../.agents/notes/implemented/feature/2026-08-05-agent-teams.zh.md)——هوية،mailbox، مهمة و مشترك checkout قرار.
+- [فعلي تحقق حزمة قرار](../../../.agents/notes/implemented/architecture/2026-08-18-experimental-agent-teams-packages.zh.md)——موضع، عام إصدار و اعتماد عزل.
 
 -----
 
 <a id="model-experience"></a>
 
-### 浏览器 Remote
+### متصفح Remote
 
-`TeamService` 除了 roster、mailbox、task 与 lifecycle operation，还拥有生成的 `agentTeams/view`、`agentTeams/createTask` 与 `agentTeams/updateTask` Remote method。`./remote` 导出由 Web UI 挂载的 Client contribution，`./client` 则重新导出可在浏览器 compilation face 中安全使用的 request、view 与 task mutation result type。Typert 在外层 `RemoteResult` 中保留 transport failure；create 与 update rejection 则作为 transport 成功响应中的显式 domain result，其中过期的 update revision 会区分为 task conflict。
+`TeamService` حذف roster،mailbox،task و lifecycle operation، أيضا يملك توليد `agentTeams/view`،`agentTeams/createTask` و `agentTeams/updateTask` Remote method.`./remote` توجيه خروج من Web UI تركيب Client contribution،`./client` فإن إعادة توجيه خروج يمكن في متصفح compilation face في أمان استخدام request،view و task mutation result type.Typert في خارج طبقة `RemoteResult` في إبقاء transport failure؛create و update rejection فإن بصفة transport نجاح استجابة في صريح domain result، منها مرور مدة update revision سوف منطقة قسم لـ task conflict.
 
-## 模型体验
+## تجربة النموذج
 
-### Peer 消息
+### Peer رسالة
 
-#### 模型看到什么
+#### نموذج يرى ماذا
 
-每条已投递 peer 消息都是用户角色消息。第一个短文本块包含稳定消息 id 与发送者，之后原样附加发送者的内容块。roster、task 与 mailbox 记录仅存在于日志，绝不进入派生模型历史。
+كل بند قد إلقاء تمرير peer رسالة كل هو مستخدم زاوية لون رسالة. رقم واحد قصير نص كتلة يتضمن مستقر رسالة id و إرسال من، بعد أصل مثال مرفق إضافة إرسال من محتوى كتلة.roster،task و mailbox سجل فقط وجود في سجل، أبدا دخول إرسال توليد نموذج تاريخ.
 
-#### Token 影响
+#### Token أثر
 
-每次 peer 投递都会把发送者前缀与消息内容加入 target 历史。任务与 roster 变更不增加模型 token；其面向模型的呈现属于 `@deepseek-ai/dsh-experimental-tool-agent-team` 结果。
+كل مرة peer إلقاء تمرير كل سوف يأخذ إرسال من بادئة و رسالة محتوى إضافة دخول target تاريخ. مهمة و roster تغيير لا زيادة نموذج token؛ ذلك موجه إلى نموذج عرض يخص `@deepseek-ai/dsh-experimental-tool-agent-team` نتيجة.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-Peer 消息追加在 target 可复用历史前缀之后。冷恢复会先复用持久对话，再追加尚未投递的消息。
+Peer رسالة إلحاق في target يمكن إعادة استخدام تاريخ بادئة بعد. بارد استعادة سوف أولا إعادة استخدام حمل دائم محادثة، مجددا إلحاق بعد لم إلقاء تمرير رسالة.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制说明一支团队目前不能做什么、或哪些方面需要特别的运维关注。它们是当前包约束，不是与其他协作机制的对比。
+هذه حد شرح واحد دعم مجموعة طابور هدف قبل لا يستطيع فعل ماذا، أو أي بعض جهة وجه حاجة خاص آخر تشغيل صيانة صلة ملاحظة. هو جمع هو حالي حزمة قيد، لا هو و أخرى تنسيق عمل آلية مقابل مقارنة.
 
-- **实验原型，无稳定性承诺**——本包公开发布，但孵化期间约定仍可自由变更。
-- **单进程、共享 checkout**——成员共享 cwd，修改立即可见；本包不提供 worktree、远端成员、merge 或文件锁。
-- **write scope 仅作提示**——Bash、formatter、代码生成器与直接外部写入可以绕过文件版本检查；Lead 必须协调 owner 并检查最终 diff。
-- **扁平且不可变的 roster**——只有 Lead 可以创建直接 teammate；不支持嵌套 Team、重命名、删除或名字复用。
-- **不会自动释放 owner**——idle、interrupt、进程退出与工作失败都不会释放任务 owner。
-- **mailbox 不保证跨进程 exactly-once**——不支持多个 harness 进程并发操作同一 Team。
+- **فعلي تحقق أصل نوع، بلا مستقر صفة تحمل وعد**——هذه الحزمة عام إصدار، لكن تفريخ تحويل خلال اتفاق ما زال يمكن ذاتي من تغيير.
+- **مفرد عملية، مشترك checkout**——عضو مشترك cwd، تعديل قيام يكفي رؤية؛ هذه الحزمة لا توفير worktree، بعيد طرف عضو،merge أو ملف قفل.
+- **write scope فقط عمل تلميح**——Bash،formatter، شفرة توليد جهاز و مباشر خارجي كتابة يمكن التفاف مرور ملف إصدار فحص؛Lead يجب تنسيق ضبط owner و فحص نهائي diff.
+- **مسطح مستو كما غير ممكن تغيير roster**——فقط لديه Lead يمكن إنشاء مباشر teammate؛ لا دعم حمل تضمين طقم Team، إعادة تسمية، حذف أو اسم حرف إعادة استخدام.
+- **لن تلقائي تحرير owner**——idle،interrupt، عملية خروج و عمل فشل كل لن تحرير مهمة owner.
+- **mailbox لا حفظ إثبات عبر عملية exactly-once**——لا دعم حمل كثير عدد harness عملية تزامن عملية نفس Team.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-本开发备注是维护者的工作上下文，明确不具权威性。
+هذا ملاحظة تطوير هو صيانة من عمل سياق، واضح لا أداة مرجعي صفة.
 
 #### Promotion
 
-promotion 到产品角色组需要按[实验子树规则](../AGENTS.md)审查公共约定、限制、测试证据、发布载荷、运行时依赖与具名稳定 owner。
+promotion إلى منتج زاوية لون مجموعة حاجة حسب[فعلي تحقق فرعي شجرة قاعدة](../AGENTS.md) مراجعة فحص عام مشترك اتفاق، حد، اختبار دليل، إصدار تحميل حمل، وقت التشغيل اعتماد و أداة اسم مستقر owner.
 
-#### 未来方向
+#### لم قدوم جهة نحو
 
-尚未决定的探索方向包括嵌套 Team、自动释放 owner 的策略、跨进程 mailbox 事务，以及通过 worktree 实现文件系统隔离；这些都没有承诺。
+بعد لم قرار استكشاف جهة نحو يشمل تضمين طقم Team، تلقائي تحرير owner سياسة، عبر عملية mailbox أمر خدمة، و عبر worktree تنفيذ نظام الملفات عزل؛ هذه كل لا يوجد تحمل وعد.
 
 </details>

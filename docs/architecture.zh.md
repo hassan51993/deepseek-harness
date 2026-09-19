@@ -1,93 +1,93 @@
-# DeepSeek Harness 架构
+# DeepSeek Harness هيكل بنية
 
-[English](architecture.md) | 中文
+[English](architecture.md) | العربية
 
-改动 `packages/` 下的任何内容之前，请先阅读本文。本文假定你已了解 Cordis；如果尚未了解，请先阅读[入门](cordis-primer.zh.md)或[教程](cordis-tutorial/index.zh.md)。
+تعديل `packages/` تحت أي محتوى قبل، طلب أولا قراءة قراءة هذا نص. هذا نص زائف تحديد أنت قد حل Cordis؛ إذا بعد لم حل، طلب أولا قراءة قراءة[دخول باب](cordis-primer.zh.md) أو[تعليم مسار](cordis-tutorial/index.zh.md).
 
-建议使用 agent（智能体）探索代码库并理解其架构。
+بناء اقتراح استخدام agent(ذكي جسم) استكشاف شفرة مكتبة و إدارة حل ذلك هيكل بنية.
 
 ## Cordis
 
-[Cordis](cordis-primer.zh.md) 是 dsh 底层的框架：插件向共享上下文贡献服务、类型化事件和可逆的副作用。产品的每一部分都是插件，包括模型适配器、工具注册表、会话日志，以及 agent loop（智能体循环）本身，因此每个都可以从配置替换。
+[Cordis](cordis-primer.zh.md) هو dsh قاع طبقة إطار هيكل: إضافة نحو مشترك سياق مساهمة خدمة، نوع تحويل حدث و يمكن عكس فرعي أثر. منتج كل واحد جزء كل هو إضافة، يشمل نموذج مهايئ، أداة سجل التسجيل، جلسة سجل، و agent loop(ذكي جسم حلقة) ذاته، لذلك كل كل يمكن من إعداد استبدال.
 
-不存在需要打补丁的特权内核：扩展 dsh 的方式是把插件挂载到其他插件旁边，而各项注册都是副作用，会在其插件卸载时撤销。
+لا وجود حاجة ضرب رقعة خاص حق داخل نواة: توسيع dsh طريقة هو يأخذ إضافة تركيب إلى أخرى إضافة جانب حافة، بينما كل بند تسجيل كل هو فرعي أثر، سوف في ذلك إضافة إزالة وقت سحب إلغاء.
 
-## Profile 与组合包
+## Profile و تركيب حزمة
 
-运行中的 `dsh` 是一棵插件树，由启动时按序叠加的各层组合而成。
+تشغيل في `dsh` هو واحد شجرة إضافة شجرة، من بدء وقت حسب ترتيب تراكم إضافة كل طبقة تركيب بينما صار.
 
-**profile** 是存放在 Harness home 中的具名组装。它列出自己叠放的组合包，存放自己安装的树外插件，并保存用户自己的 `cordis.patch.yml`。`web`、`headless`、`sdk`、`sdk-minimal` 和 `acp` 作为模板随发行版交付。
+**profile** هو تخزين وضع في Harness home في أداة اسم تجميع. هو صف خروج ذاتي ذات تراكم وضع تركيب حزمة، تخزين وضع ذاتي ذات تثبيت شجرة خارج إضافة، و حفظ مستخدم ذاتي ذات `cordis.patch.yml`.`web`،`headless`،`sdk`،`sdk-minimal` و `acp` بصفة نموذج لوح مع إرسال سطر إصدار تسليم.
 
-**组合包**是 Cordis 配置项及其挂载代码的分发格式，因此它插入的内容始终可被其上各层 patch。
+**تركيب حزمة**هو Cordis بند إعداد و ذلك تركيب شفرة توزيع صيغة، لذلك هو إدراج دخول محتوى بداية نهاية يمكن يتم ذلك فوق كل طبقة patch.
 
-两者都在各自的 `package.json` 中通过 `dsh` 字段声明自己：`dsh.profile` 列出一个 profile 的组合包，`dsh.bundle` 指向一个组合包的 patch 文件。
+اثنان من كل في كل منها `package.json` في عبر `dsh` حقل إعلان ذاتي ذات:`dsh.profile` صف خروج واحد profile تركيب حزمة،`dsh.bundle` إشارة نحو واحد تركيب حزمة patch ملف.
 
-[`dsh-base`](../packages/bundle/base/README.zh.md) 是 `web`、`headless`、`sdk` 与 `acp` profile 的共享第一层：模型适配器、工具、持久化、沙箱与审批策略、设置、凭据、遥测。[`dsh-web-app`](../packages/bundle/web-app/README.zh.md) 增加浏览器应用，[`dsh-headless`](../packages/bundle/headless/README.zh.md) 增加不带服务器的一次性运行器，[`dsh-sdk-app`](../packages/bundle/sdk-app/README.zh.md) 增加 SDK JSON-RPC 服务器，[`dsh-acp-app`](../packages/bundle/acp-app/README.zh.md) 增加仅用于自动化的 ACP 服务器。[`dsh-sdk-minimal`](../packages/bundle/sdk-minimal/README.zh.md) 是刻意保留的例外：一个组合包拥有完整的显式 SDK 配置树，不应用 `dsh-base`。
+[`dsh-base`](../packages/bundle/base/README.zh.md) هو `web`،`headless`،`sdk` و `acp` profile مشترك رقم واحد طبقة: نموذج مهايئ، أداة، حفظ دائم، صندوق رملي و مراجعة دفعة سياسة، ضبط، اعتماد، بعيد قياس.[`dsh-web-app`](../packages/bundle/web-app/README.zh.md) زيادة متصفح تطبيق،[`dsh-headless`](../packages/bundle/headless/README.zh.md) زيادة لا حمل خادم مرة صفة تشغيل جهاز،[`dsh-sdk-app`](../packages/bundle/sdk-app/README.zh.md) زيادة SDK JSON-RPC خادم،[`dsh-acp-app`](../packages/bundle/acp-app/README.zh.md) زيادة فقط لأجل تلقائي تحويل ACP خادم.[`dsh-sdk-minimal`](../packages/bundle/sdk-minimal/README.zh.md) هو لحظة معنى إبقاء مثال خارج: واحد تركيب حزمة يملك كامل صريح SDK إعداد شجرة، لا تطبيق `dsh-base`.
 
-各层按此顺序应用在空条目列表之上：先按 profile 列出的顺序应用每个组合包，然后是 profile 的 `cordis.patch.yml`，然后是 home 级的那份，最后是任意 `--patch` overlay。一条 patch 按 id 定位某个条目并替换其整个 config，或插入新条目。
+كل طبقة حسب هذا ترتيب تطبيق في فارغ بند قائمة لـ فوق: أولا حسب profile صف خروج ترتيب تطبيق كل تركيب حزمة، لكن بعد هو profile `cordis.patch.yml`، لكن بعد هو home درجة ذلك نسخة، الأكثر بعد هو مهمة معنى `--patch` overlay. واحد بند patch حسب id تحديد موضع بعض عدد بند و استبدال ذلك كامل config، أو إدراج دخول جديد بند.
 
-YAML 控制 HMR：base 启用仅监视配置的 `dsh-hmr`；Headless、SDK 和 ACP 禁用它；`sdk-minimal` 不包含它。Profile patch 覆盖这些默认值。HMR 协调监听和重载；启动器提供 profile 数据和就绪信号。
+YAML تحكم HMR:base تفعيل فقط مراقبة نظر إعداد `dsh-hmr`؛Headless،SDK و ACP منع استخدام هو؛`sdk-minimal` لا يتضمن هو.Profile patch تغطية هذه قيمة افتراضية.HMR تنسيق ضبط استماع و إعادة تحميل؛ بدء جهاز توفير profile بيانات و حينئذ خيط إشارة.
 
-base 提供用于 Web 和 Agent 的[插件管理器](../packages/boot/plugin-manager/README.zh.md)。
+base توفير لأجل Web و Agent [إضافة إدارة جهاز](../packages/boot/plugin-manager/README.zh.md).
 
-要查看你的机器启动的配置树：
+يلزم فحص نظر أنت آلة جهاز بدء إعداد شجرة:
 
 ```sh
 dsh --profile web --dump-config
 ```
 
-它打印出的任何条目，都可以由你自己的 patch 替换。
+هو ضرب طبع خروج أي بند، كل يمكن من أنت ذاتي ذات patch استبدال.
 
-组装机制见 [app-boot](../packages/boot/app-boot/README.zh.md#profiles)；配置字段见生成的[配置目录](config-catalog.zh.md)。
+تجميع آلية رؤية [app-boot](../packages/boot/app-boot/README.zh.md#profiles) ؛ إعداد حقل رؤية توليد[إعداد دليل](config-catalog.zh.md).
 
-## 应用启动
+## تطبيق بدء
 
-受支持的 Node 应用通过具名 `dsh` profile 启动。随附 profile 为 `web`、`headless`、`sdk`、`sdk-minimal` 和 `acp`，可通过 `dsh --profile <name>` 或 `dsh <name>` 选择。`plugin` 表示管理命令；同名 profile 必须用 `--profile plugin` 选择。TypeScript SDK 会解析其同版本 `dsh` 依赖并选择 `sdk`；自定义插件组合继续由 profile 与有序 patch 文件表达，而不是另一个可执行文件或内联应用树。`sdk-minimal` 是位于同一 launcher 后的仓库自有独立组合包，而不是由调用方提供的 Cordis 配置树。
+تلقي دعم حمل Node تطبيق عبر أداة اسم `dsh` profile بدء. مع مرفق profile لـ `web`،`headless`،`sdk`،`sdk-minimal` و `acp`، يمكن عبر `dsh --profile <name>` أو `dsh <name>` اختيار.`plugin` يمثل إدارة أمر؛ نفس اسم profile يجب استخدام `--profile plugin` اختيار.TypeScript SDK سوف تحليل ذلك نفس إصدار `dsh` اعتماد و اختيار `sdk`؛ ذاتي تعريف إضافة تركيب متابعة من profile و لديه ترتيب patch ملف جدول بلوغ، بينما لا هو آخر عدد يمكن تنفيذ ملف أو داخل ربط تطبيق شجرة.`sdk-minimal` هو يقع في نفس launcher بعد مستودع ذاتي لديه مستقل تركيب حزمة، بينما لا هو من استدعاء جهة توفير Cordis إعداد شجرة.
 
-Vendored CLI、仅用于构建和测试的可执行文件、进程内直接挂载插件以及私有浏览器 WebWorker 预览都不属于 Harness 应用启动器。[`verify-application-entrypoints`](../scripts/verify-application-entrypoints.ts)将每个包 bin、可执行源码与根 demo 归入显式类别，并拒绝任何绕过 `dsh` 的 Node 应用路径。
+Vendored CLI، فقط لأجل بناء و اختبار يمكن تنفيذ ملف، عملية داخل مباشر تركيب إضافة و خاص متصفح WebWorker معاينة كل لا يخص Harness تطبيق بدء جهاز.[`verify-application-entrypoints`](../scripts/verify-application-entrypoints.ts) سوف كل حزمة bin، يمكن تنفيذ شفرة المصدر و أصل demo عودة دخول صريح صنف آخر، و رفض أي التفاف مرور `dsh` Node تطبيق مسار.
 
-Python SDK 遵循相同的应用架构。其运行时 wheel 把普通 `dsh` CLI 打包为 `deepseek-harness-sdk-runtime-<platform>-<arch>`，客户端默认以显式 Harness home 启动 `dsh --profile sdk`。极简示例选择随附的 `sdk-minimal` profile。Python 暴露 profile 选择与有序 patch 文件，而不是完整 Cordis 树；持久外部插件通过 `dsh plugin` 安装。已删除的私有直读配置载体没有兼容 bin 或回退 parser。
+Python SDK التزام دوران نفسه تطبيق هيكل بنية. ذلك وقت التشغيل wheel يأخذ عادي `dsh` CLI تحزيم لـ `deepseek-harness-sdk-runtime-<platform>-<arch>`، عميل افتراضي بـ صريح Harness home بدء `dsh --profile sdk`. أقصى بسيط عرض مثال اختيار مع مرفق `sdk-minimal` profile.Python كشف profile اختيار و لديه ترتيب patch ملف، بينما لا هو كامل Cordis شجرة؛ حمل دائم خارجي إضافة عبر `dsh plugin` تثبيت. قد حذف خاص مباشر قراءة إعداد تحميل جسم لا يوجد توافق bin أو رجوع parser.
 
-## 桌面应用
+## طاولة وجه تطبيق
 
-[Electron 桌面应用](../apps/desktop/README.zh.md)在签名资源中携带精确匹配的 dsh 生产运行时，并拥有保留的 `$DSH_HOME/profiles/desktop`。共享 profile helper 初始化其文件、协调已安装 bundle，并解析安装与 bundle 的依赖而不替换 pnpm 拥有的包。CLI 与 Desktop 共享产品数据，可执行包、启用选择与锁文件保持独立。公开 CLI 不能管理 Desktop profile。
+[Electron طاولة وجه تطبيق](../apps/desktop/README.zh.md) في توقيع مورد في يحمل دقيق مطابقة dsh إنتاج وقت التشغيل، و يملك إبقاء `$DSH_HOME/profiles/desktop`. مشترك profile helper ابتدائي تحويل ذلك ملف، تنسيق ضبط قد تثبيت bundle، و تحليل تثبيت و bundle اعتماد بينما لا استبدال pnpm يملك حزمة.CLI و Desktop مشترك منتج بيانات، يمكن تنفيذ حزمة، تفعيل اختيار و قفل ملف إبقاء مستقل. عام CLI لا يستطيع إدارة Desktop profile.
 
-Electron 使用 Electron Node 模式启动私有 Desktop Host。Host 调用共享 CLI profile runner 与完整 Web 应用。窗口立即加载打包 Web 资源，等待启动注入后在同一文档中激活客户端插件。Web 负责 RPC 与流；桌面载体将本地页面连接到已认证的 Host。Node IPC 承载启动注入、就绪、致命错误与关闭。Desktop 默认端口为 `19387`，profile 配置可覆盖。壳拥有的 UI 通过内置 pnpm 执行插件事务，并遵循正常用户与 profile 配置。
+Electron استخدام Electron Node نمط بدء خاص Desktop Host.Host استدعاء مشترك CLI profile runner و كامل Web تطبيق. نافذة قيام أي تحميل تحزيم Web مورد، انتظار بدء حقن بعد في نفس وثيقة في تنشيط عميل إضافة.Web مسؤول RPC و تدفق؛ طاولة وجه تحميل جسم سوف محلي صفحة اتصال إلى قد إقرار إثبات Host.Node IPC تحمل تحميل بدء حقن، حينئذ خيط، يؤدي أمر خطأ و إغلاق.Desktop افتراضي طرف فتحة لـ `19387`،profile إعداد يمكن تغطية. قشرة يملك UI عبر داخل وضع pnpm تنفيذ إضافة أمر خدمة، و التزام دوران صحيح معتاد مستخدم و profile إعداد.
 
-## 核心包
+## نواة قلب حزمة
 
-以下是向 Cordis 树贡献内容的部分核心包。
+التالي هو نحو Cordis شجرة مساهمة محتوى جزء نواة قلب حزمة.
 
-| 包 | 职责 | `ctx` 键 |
+| حزمة | مسؤولية | `ctx` مفتاح |
 |---|---|---|
-| [`core/session`](subsystems/session.zh.md) | 仅追加的 `SessionEvent` 日志和内存存储 | `ctx.sessions` |
-| [`core/system-prompt`](subsystems/system-prompt.zh.md) | 提示词片段与工具 schema 的组装 | `ctx.systemPrompt` |
-| [`core/tools`](subsystems/tools.zh.md) | 作用域化的工具注册表和带把关的执行流水线 | `ctx.tools` |
-| [`core/agent`](subsystems/core.zh.md) | `Agent` 接口、活跃 agent 注册表和 `agent/*` 事件 | `ctx.agents` |
-| [`core/agent-loop`](subsystems/core.zh.md) | 实现该接口的默认驱动器 | `ctx.agentLoop` |
-| [`core/scope`](subsystems/scope.zh.md) | 按 agent 划分作用域的注册原语 | 库，无 ctx 键 |
-| [`llm/llm`](subsystems/llm-streaming.zh.md) | 消息与流式词汇表，以及适配器 seam | `ctx.llm` |
-| [`webhook/webhook`](subsystems/webhook.zh.md) | 已认证 delivery 的分派和 Workspace Session 创建 | `ctx.webhookRuntime` |
+| [`core/session`](subsystems/session.zh.md) | فقط إلحاق `SessionEvent` سجل و داخل تخزين تخزين | `ctx.sessions` |
+| [`core/system-prompt`](subsystems/system-prompt.zh.md) | نص التوجيه قطعة مقطع و أداة schema تجميع | `ctx.systemPrompt` |
+| [`core/tools`](subsystems/tools.zh.md) | أثر مجال تحويل أداة سجل التسجيل و حمل يأخذ صلة تنفيذ خط الإنتاج | `ctx.tools` |
+| [`core/agent`](subsystems/core.zh.md) | `Agent` واجهة، نشط وثب agent سجل التسجيل و `agent/*` حدث | `ctx.agents` |
+| [`core/agent-loop`](subsystems/core.zh.md) | تنفيذ هذا واجهة افتراضي مشغل | `ctx.agentLoop` |
+| [`core/scope`](subsystems/scope.zh.md) | حسب agent تخطيط قسم أثر مجال تسجيل أصل لغة | مكتبة، بلا ctx مفتاح |
+| [`llm/llm`](subsystems/llm-streaming.zh.md) | رسالة و تدفق صيغة مفردات جدول، و مهايئ seam | `ctx.llm` |
+| [`webhook/webhook`](subsystems/webhook.zh.md) | قد إقرار إثبات delivery قسم إرسال و Workspace Session إنشاء | `ctx.webhookRuntime` |
 
 <a id="events"></a>
 
-## 事件
+## حدث
 
-事件就是扩展点，而选对事件域是大多数改动的第一个决定。
+حدث حينئذ هو نقطة توسيع، بينما اختيار مقابل حدث مجال هو كبير كثير عدد تعديل رقم واحد قرار.
 
-- **会话事件**是追加到日志并通过 `session/event` 广播的持久事实。当某个事实必须在重新加载后仍然存在时，使用它。
-- **Agent 事件**（`agent/*`）携带活跃 `Agent`：inbox、步骤、状态、请求、验证、续跑。要观察或拦截进行中的工作时，使用它。
-- **能力事件**无需导入循环即可向某个 seam（`fs/*`、`tools/*`、`telemetry/*`）附加策略和适配器。
+- **جلسة حدث**هو إلحاق إلى سجل و عبر `session/event` واسع بث حمل دائم واقع. عند بعض عدد واقع يجب في إعادة تحميل بعد ما زال وجود وقت، استخدام هو.
+- **Agent حدث**(`agent/*`) يحمل نشط وثب `Agent`:inbox، خطوة، حالة، طلب، تحقق، متابعة ركض. يلزم مراقبة أو اعتراض قطع إجراء في عمل وقت، استخدام هو.
+- **قدرة حدث**بلا حاجة استيراد حلقة يكفي نحو بعض عدد seam(`fs/*`،`tools/*`،`telemetry/*`) مرفق إضافة سياسة و مهايئ.
 
-AgentLoop 在启动已排队工作前等待串行 `agent/created` 初始化。初始化失败会回滚创建；[agent-loop](../packages/core/agent-loop/README.zh.md#understand-the-implementation)定义 teardown 顺序。
+AgentLoop في بدء قد ترتيب طابور عمل قبل انتظار سلسلة سطر `agent/created` ابتدائي تحويل. ابتدائي تحويل فشل سوف تراجع إنشاء؛[agent-loop](../packages/core/agent-loop/README.zh.md#understand-the-implementation) تعريف teardown ترتيب.
 
-[事件映射](event-producer-consumer.zh.md)列出每个事件的生产方与消费方。
+[حدث خريطة](event-producer-consumer.zh.md) صف خروج كل حدث إنتاج جهة و مستهلك.
 
 <a id="turn-flow"></a>
 
-## 轮次流程
+## جولة مسار
 
-一个**步骤**是一次模型请求加上它调用的工具。一个**轮次**包含零个或多个步骤：它在领取首条输入之前打开，并在不再欠下任何工作时关闭。
+واحد**خطوة**هو مرة نموذج طلب إضافة فوق هو استدعاء أداة. واحد**جولة**يتضمن صفر عدد أو كثير عدد خطوة: هو في قيادة أخذ أول بند إدخال قبل فتح، و في لم يعد نقص تحت أي عمل وقت إغلاق.
 
 ```text
 turn/start
@@ -110,59 +110,59 @@ turn/start
 turn/end
 ```
 
-`turn/*`、`step/*`、`system/message`、`user/message`、`assistant/message`、`assistant/attempt` 和 `tool/*` 是持久会话事件；其余是分属三个事件域的实时扩展点。`agent/assistant-stream` 发布进程本地 start、瞬态 chunk 与 end frame。loop 会在 committed end frame 前把完整紧凑 stream 提交为一个 message 或仅日志 attempt；Web Session-follow adapter 是该 live event 唯一的远程消费方。`agent/pre-step`、`agent/request`、`llm/stream` 和三个 `tools/*` 事件是 waterfall（瀑布式事件），其监听器必须调用 `next()` 才能委托下去；`agent/turn-stopping` 是 serial 事件，没有 `next()`。
+`turn/*`،`step/*`،`system/message`،`user/message`،`assistant/message`،`assistant/attempt` و `tool/*` هو حمل دائم جلسة حدث؛ ذلك بقية هو قسم تابع ثلاثة عدد حدث مجال فوري نقطة توسيع.`agent/assistant-stream` إصدار عملية محلي start، لحظة حالة chunk و end frame.loop سوف في committed end frame قبل يأخذ كامل ضيق تجميع stream إيداع لـ واحد message أو فقط سجل attempt؛Web Session-follow adapter هو هذا live event وحيد بعيد مسار مستهلك.`agent/pre-step`،`agent/request`،`llm/stream` و ثلاثة عدد `tools/*` حدث هو waterfall(شلال نشر صيغة حدث) ، ذلك مستمع يجب استدعاء `next()` عندئذ قدرة تفويض حمل تحت ذهاب؛`agent/turn-stopping` هو serial حدث، لا يوجد `next()`.
 
-输入通过同一个 inbox 到达驱动器；注入的上下文等待一条唤醒消息。AgentLoop 的持久 `inbox` 投影使待处理输入在没有活跃 Agent 时仍可读取。
+إدخال عبر نفس عدد inbox وصول مشغل؛ حقن سياق انتظار واحد بند نداء تنبيه رسالة.AgentLoop حمل دائم `inbox` إسقاط جعل انتظار معالجة إدخال في لا يوجد نشط وثب Agent وقت ما زال يمكن قراءة.
 
-`agent/pre-step` 决定接纳的输入。监听器可以改写或拒绝已领取消息；首次领取被拒绝或为空时，关闭不含步骤的持久轮次。enter 决策可设置 `startsRequestSeries`：循环记录新的 `request/header`（原因为 `series`，或在封装同时变化时为携带 `startsSeries: true` 的 `change`）。包装监听器通过 `{ ...decision, messages }` 保留该声明。组装与 `step/start` 之后，`agent/request` 和 `prepareCall()` 先解析实际路由，再提交系统提示词与已接纳用户消息；在任一异步阶段取消都不会提交这两者。提示词准入依据已准备调用的能力，而非先前的 `request/context`。每次尝试同步协调同一份已渲染组装结果、仅在首次尝试追加用户消息、按需记录 header/context、派生并冻结请求，再通过绑定调用发起流式请求。重试不重复组装或 `agent/pre-step`。附接后的 surface 替换和图片省略决定开启新请求序列，包括恢复后的首次 pre-step 中发生的替换；未变化的恢复延续序列。首次接纳的步骤在用户消息之前预留系统头节点，即使提示词为空（不产生协议消息）。提示词仅通过 `system/message` 历史传递：空渲染文本清除所有生效的系统节点，模型不再看到旧提示词；具备能力的路由可在缓存前缀之后追加非空更新；不具备能力的路由与新请求序列将非空提示词文本归并到首个系统节点，并为非空的后续系统节点记录空内容替换（[决策](../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md)；[决策规则](../packages/core/agent-loop/README.zh.md#understand-the-implementation)）。
+`agent/pre-step` قرار وصل قبول إدخال. مستمع يمكن تعديل كتابة أو رفض قد قيادة إلغاء خبر؛ أول مرة قيادة أخذ يتم رفض أو لـ فارغ وقت، إغلاق لا يحتوي خطوة حمل دائم جولة.enter قرار يمكن ضبط `startsRequestSeries`: حلقة سجل جديد `request/header`(سبب لـ `series`، أو في غلاف تركيب معا تغير وقت لـ يحمل `startsSeries: true` `change`). حزمة تركيب مستمع عبر `{ ...decision, messages }` إبقاء هذا إعلان. تجميع و `step/start` بعد،`agent/request` و `prepareCall()` أولا تحليل فعلي توجيه، مجددا إيداع توجيه النظام و قد وصل قبول مستخدم رسالة؛ في مهمة واحد مختلف خطوة مرحلة مقطع إلغاء كل لن إيداع هذا اثنان من. نص التوجيه دقيق دخول اعتماد حسب قد دقيق تجهيز استدعاء قدرة، بينما غير أولا قبل `request/context`. كل مرة محاولة تجربة تزامن تنسيق ضبط نفس نسخة قد تصيير تجميع نتيجة، فقط في أول مرة محاولة تجربة إلحاق مستخدم رسالة، حسب يحتاج سجل header/context، إرسال توليد و تجميد ربط طلب، مجددا عبر ربط استدعاء إرسال بدء تدفق صيغة طلب. إعادة محاولة لا تكرار تجميع أو `agent/pre-step`. مرفق وصل بعد surface استبدال و صورة حذف قرار فتح بدء جديد طلب تسلسل، يشمل استعادة بعد أول مرة pre-step في حدوث استبدال؛ لم تغير استعادة تأخير متابعة تسلسل. أول مرة وصل قبول خطوة في مستخدم رسالة قبل مسبق إبقاء نظام رأس عقدة، أي جعل نص التوجيه لـ فارغ (لا إنتاج بروتوكول رسالة). نص التوجيه فقط عبر `system/message` تاريخ نقل تمرير: فارغ تصيير نص صاف حذف كل توليد فاعلية نظام عقدة، نموذج لم يعد يرى قديم نص التوجيه؛ أداة تجهيز قدرة توجيه يمكن في ذاكرة مؤقتة بادئة بعد إلحاق غير فارغ تحديث؛ لا أداة تجهيز قدرة توجيه و جديد طلب تسلسل سوف غير فارغ نص التوجيه نص عودة و إلى أول عدد نظام عقدة، و لـ غير فارغ لاحق نظام عقدة سجل فارغ محتوى استبدال ([قرار](../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.zh.md) ؛[قرار قاعدة](../packages/core/agent-loop/README.zh.md#understand-the-implementation)).
 
-循环发送不可变请求，同时保留实时取消能力。只有已由该循环完整冻结的消息对象身份才能复用冻结证明；[agent-loop](../packages/core/agent-loop/README.zh.md)拥有请求构造规则。
+حلقة إرسال غير ممكن تغيير طلب، معا إبقاء فوري إلغاء قدرة. فقط لديه قد من هذا حلقة كامل تجميد ربط رسالة كائن هوية عندئذ قدرة إعادة استخدام تجميد ربط إثبات؛[agent-loop](../packages/core/agent-loop/README.zh.md) يملك طلب بنية صنع قاعدة.
 
-详情见[时序图](agent-lifecycle.zh.md)、[工具流水线](tool-execution-pipeline.zh.md)和[取消与错误恢复](subsystems/core.zh.md#the-agent-handle)。
+تفصيل حال رؤية[وقت ترتيب رسم](agent-lifecycle.zh.md) ،[أداة خط الإنتاج](tool-execution-pipeline.zh.md) و[إلغاء و خطأ استعادة](subsystems/core.zh.md#the-agent-handle).
 
-## 会话日志
+## جلسة سجل
 
-会话日志是模型所见上下文的来源。`deriveMessages()` 从中投影出模型历史。每个 `assistant/message` 都嵌入产生其组装内容的精确紧凑带时间 stream；`assistant/attempt` 保留已到达 settlement 的失败、重试、取消与 stream error attempt，且不添加模型历史。fork、恢复、transcript（文本记录）、遥测与持久化都从这些持久 settlement 派生，实时 UI 增量则来自 `agent/assistant-stream`；如果进程在 settlement 前硬中断，则不会留下持久 attempt stream（见[决策](../.agents/notes/implemented/architecture/2026-09-01-v2-embedded-assistant-streams.zh.md)）。
+جلسة سجل هو نموذج الذي رؤية سياق مصدر.`deriveMessages()` من في إسقاط خروج نموذج تاريخ. كل `assistant/message` كل تضمين دخول إنتاج ذلك تجميع محتوى دقيق ضيق تجميع حمل وقت stream؛`assistant/attempt` إبقاء قد وصول settlement فشل، إعادة محاولة، إلغاء و stream error attempt، كما لا إضافة نموذج تاريخ.fork، استعادة،transcript(نص سجل) ، بعيد قياس و حفظ دائم كل من هذه حمل دائم settlement إرسال توليد، فوري UI زيادة كمية فإن قدوم ذاتي `agent/assistant-stream`؛ إذا عملية في settlement قبل صلب في قطع، فإن لن إبقاء تحت حمل دائم attempt stream(رؤية[قرار](../.agents/notes/implemented/architecture/2026-09-01-v2-embedded-assistant-streams.zh.md)).
 
-Session 消费方只了解当前逻辑格式。仅 header 的 `stat` 与 `list` 会重新扫描每个 Session 目录，选择数值最高的规范 generation，并在不加载事件或发布后继的情况下转换受支持的历史 header。已存储 Session 的 `open` 选择同一 generation，拒绝未来版本，或只 Decode 并组合一次构建时静态确定的相邻迁移链，再返回经过校验的当前逻辑事件。只读 open 直接使用这份内存结果，不发布后继；写 open 则先编码、校验并在未改变源的旁边排他发布最终版本命名的后继。未被后续事件封住的普通中断尾部仍由句柄消费方修复；只有在后续 `turn/start` 已经封住一种有限的已发布 restart 时，migration 才会插入缺失的 interrupted `turn/end`。JSONL v0 使用 `session.jsonl[.zstd]`，v1 及后续版本使用小写 `session.vN.jsonl[.zstd]`；已提交 generation 路径绝不重命名、替换或删除。JSONL provider 负责物理 framing、压缩、generation 选择与排他发布，每个相邻迁移包只负责一个 `vN -> vN+1` 步骤（[决策](../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md)）。
+Session مستهلك فقط حل حالي منطق صيغة. فقط header `stat` و `list` سوف إعادة مسح كل Session دليل، اختيار عدد قيمة الأكثر عال مواصفة generation، و في لا تحميل حدث أو إصدار بعد استمرار حال حال تحت تحويل تلقي دعم حمل تاريخ header. قد تخزين Session `open` اختيار نفس generation، رفض لم قدوم إصدار، أو فقط Decode و تركيب مرة بناء وقت ساكن حالة تحديد متبادل مجاور ترحيل سلسلة، مجددا إرجاع مرور مرور تحقق حالي منطق حدث. فقط قراءة open مباشر استخدام هذا نسخة داخل تخزين نتيجة، لا إصدار بعد استمرار؛ كتابة open فإن أولا تحرير رمز، تحقق و في لم تغيير مصدر جانب حافة ترتيب هو إصدار نهائي إصدار تسمية بعد استمرار. لم يتم لاحق حدث غلاف إقامة عادي في قطع ذيل جزء ما زال من جملة مقبض مستهلك إصلاح؛ فقط لديه في لاحق `turn/start` قد غلاف إقامة واحد نوع لديه حد قد إصدار restart وقت،migration عندئذ سوف إدراج دخول ناقص interrupted `turn/end`.JSONL v0 استخدام `session.jsonl[.zstd]`،v1 و لاحق إصدار استخدام صغير كتابة `session.vN.jsonl[.zstd]`؛ قد إيداع generation مسار أبدا إعادة تسمية، استبدال أو حذف.JSONL provider مسؤول شيء إدارة framing، ضغط،generation اختيار و ترتيب هو إصدار، كل متبادل مجاور ترحيل حزمة فقط مسؤول واحد `vN -> vN+1` خطوة ([قرار](../.agents/notes/implemented/architecture/2026-08-31-released-session-format-migrations.zh.md)).
 
-**模型可见即已记录。** 抵达模型请求的一切都必须能从日志重建，并由一项运行时不变量断言这一点。新增模型可见输入需要一个会话事件。修改现有消息内容的插件注册[纯消息投影](subsystems/session.zh.md#plugin-owned-message-projections)，独立读取器显式传入相同的处理器。
+**نموذج مرئي أي قد سجل.** مقاومة بلوغ نموذج طلب واحد قطع كل يجب قدرة من سجل إعادة بناء، و من واحد بند وقت التشغيل ثابت كمية تأكيد هذا واحد نقطة. إضافة جديدة نموذج مرئي إدخال حاجة واحد جلسة حدث. تعديل قائم رسالة محتوى إضافة تسجيل[صاف رسالة إسقاط](subsystems/session.zh.md#plugin-owned-message-projections) ، مستقل قراءة جهاز صريح نقل دخول نفسه معالج.
 
-**投影 seam。** `dsh-session-projection` 提供 `ctx.sessionProjections`：已注册单元增量折叠已提交事件，host 消费方通过 `stateOf()` 读取单个类型化状态，载体通过 `snapshot()` 批量取得裁剪后的客户端视图。host 读取方要么在激活时要求该服务，要么在注册表或必需 key 缺席时明确失败。贡献方可以保留 `ctx.inject(['sessionProjections'], ...)` 注册，但不能为缺失的 host 值静默提供默认值。agent loop 为读取方注册共享的 `turnBoundary` 状态（[决策](../.agents/notes/implemented/architecture/2026-08-19-session-projection-mandatory-seam.zh.md)）。
+**إسقاط seam.** `dsh-session-projection` توفير `ctx.sessionProjections`: قد تسجيل وحدة زيادة كمية طي قد إيداع حدث،host مستهلك عبر `stateOf()` قراءة مفرد عدد نوع تحويل حالة، تحميل جسم عبر `snapshot()` دفعة كمية أخذ نيل قطع قص بعد عميل عرض.host قراءة جهة يلزم ما في تنشيط وقت اشتراط هذا خدمة، يلزم ما في سجل التسجيل أو مطلوب key نقص مقعد وقت واضح فشل. مساهمة جهة يمكن إبقاء `ctx.inject(['sessionProjections'], ...)` تسجيل، لكن لا يستطيع لـ ناقص host قيمة ساكن صامت توفير قيمة افتراضية.agent loop لـ قراءة جهة تسجيل مشترك `turnBoundary` حالة ([قرار](../.agents/notes/implemented/architecture/2026-08-19-session-projection-mandatory-seam.zh.md)).
 
-## 能力 seam
+## قدرة seam
 
-一个 **seam** 是一项可替换能力，包含三种角色：声明接口的 **Service Definition**、实现它的 **Service Provider**，以及使用它的 **Consumer**（通常是面向模型的工具）。一个包可以合并承担多个角色，但单一角色本身不是 seam；添加一项能力意味着把三者一并设计（[能力图](capability-seams.zh.md)）。
+واحد **seam** هو واحد بند يمكن استبدال قدرة، يتضمن ثلاثة نوع زاوية لون: إعلان واجهة **Service Definition**، تنفيذ هو **Service Provider**، و استخدام هو **Consumer**(عبر معتاد هو موجه إلى نموذج أداة). واحد حزمة يمكن دمج تحمل تحمل كثير عدد زاوية لون، لكن مفرد واحد زاوية لون ذاته لا هو seam؛ إضافة واحد بند قدرة معنى طعم حال يأخذ ثلاثة من واحد و تصميم ([قدرة رسم](capability-seams.zh.md)).
 
-seam 正是替换一个提供方就能改变整个产品的原因。文件系统与进程提供方共享同一个执行世界，因此把它们指向远程沙箱，也就把 Bash、PTY 和 LSP 一并搬了过去，无需提供方专用 fork。[subagent 提供方](subsystems/subagent.zh.md)在同一个接口之后同样千差万别，从新建一个子 agent，到把一个轮次委派给另一个产品。
+seam صحيح هو استبدال واحد مزود حينئذ قدرة تغيير كامل منتج سبب. نظام الملفات و عملية مزود مشترك نفس عدد تنفيذ عالم حد، لذلك يأخذ هو جمع إشارة نحو بعيد مسار صندوق رملي، أيضا حينئذ يأخذ Bash،PTY و LSP واحد و نقل مرور ذهاب، بلا حاجة مزود مخصص استخدام fork.[subagent مزود](subsystems/subagent.zh.md) في نفس عدد واجهة بعد نفس مثال ألف فرق ألف آخر، من جديد بناء واحد فرعي agent، إلى يأخذ واحد جولة تفويض إرسال إعطاء آخر عدد منتج.
 
-[实验性 Agent Teams](subsystems/agent-team.zh.md) 是 `ctx.agentTeams` 上公开发布、显式启用的协作 seam，在可继续 subagent 之上提供持久 roster、任务板和 mailbox。
+[فعلي تحقق صفة Agent Teams](subsystems/agent-team.zh.md) هو `ctx.agentTeams` فوق عام إصدار، صريح تفعيل تنسيق عمل seam، في يمكن متابعة subagent لـ فوق توفير حمل دائم roster، مهمة لوح و mailbox.
 
-## 新行为的归属位置
+## جديد سلوك ملكية موضع
 
-新行为附加到已有文档记录的扩展点。改动循环本身时，本映射随之更新。
+جديد سلوك مرفق إضافة إلى قد لديه وثيقة سجل نقطة توسيع. تعديل حلقة ذاته وقت، هذا خريطة مع لـ تحديث.
 
-| 目标 | 机制 |
+| هدف | آلية |
 |---|---|
-| 添加模型提供方 | 在 `ctx.llm` 上注册其适配器 |
-| 添加面向模型的能力 | 在 `ctx.tools` 上注册；其 schema 加入提示词组装 |
-| 让某个会话拥有不同的能力集合 | 组装一个 agent preset；其中的服务行需要 `isolate` realm |
-| 添加 shell 执行 | 注册 `ctx.shell` 后端；本地后端通过 `ctx.subprocess` spawn 进程 |
-| 添加持久化终端执行 | 注册 `ctx.terminals` 后端和 `dsh-tool-terminal` |
-| 添加用户命令 | 在 `ctx.commands` 上注册；它无需模型轮次即可分派 |
-| 添加后台工作 | 在 `ctx.jobs` 上注册；`job_*` 工具负责收集或停止 |
-| 从外部 webhook 启动 Session | 在 `ctx.webhookRuntime` 上注册可信规则，并挂载提供方适配器 |
-| 添加文件系统访问或策略 | 注册 `ctx.fs` 提供方，或监听 `fs/*` 事件 |
-| 限制所启动的进程 | 使用 `ctx.sandbox` 后端；消费方在启动进程前包装 argv |
-| 拦截请求、工具或轮次 | 使用相应的 `agent/*` 或 `tools/*` 事件；`agent/turn-stopping` 会停止轮次 |
-| 添加模型可见上下文 | 调用 `agent.inject()`；它会落到下一次获准的请求中 |
-| 添加 UI 或编辑器集成 | 驱动 `ctx.agents` 并从 `session/event` 渲染 |
-| 添加 Web Client Chat 节点 | 注册 `ConversationNodeDefinition` + keyed renderer |
-| 添加持久会话状态 | 扩展 `SessionEventMap`；从日志渲染和回放 |
-| 生成会话标题 | 注册唯一的 `ctx.sessionTitle` 提供方 |
-| 管理同会话目标 | 使用 `ctx.goals`；通过 `agent/*` 续跑 |
-| 在轮次边界 fork 会话 | `ctx.agents.create({ sessionId, seed, meta: { parentSession, seedLength } })`——只有经 agent-loop 发布的会话才会持久化 |
-| 在新后端存储会话 | 基于共享的句柄脚手架实现 `SessionPersistence`（`create`/`open`/`stat`/`list`/`export`） |
-| 将注册项限定到单个 agent | 使用该 agent 的 `agent.ctx` |
+| إضافة نموذج مزود | في `ctx.llm` فوق تسجيل ذلك مهايئ |
+| إضافة موجه إلى نموذج قدرة | في `ctx.tools` فوق تسجيل؛ ذلك schema إضافة دخول نص التوجيه تجميع |
+| يجعل بعض عدد جلسة يملك مختلف قدرة تجميع دمج | تجميع واحد agent preset؛ منها خدمة سطر حاجة `isolate` realm |
+| إضافة shell تنفيذ | تسجيل `ctx.shell` خلفية؛ محلي خلفية عبر `ctx.subprocess` spawn عملية |
+| إضافة حفظ دائم طرفية تنفيذ | تسجيل `ctx.terminals` خلفية و `dsh-tool-terminal` |
+| إضافة مستخدم أمر | في `ctx.commands` فوق تسجيل؛ هو بلا حاجة نموذج جولة يكفي قسم إرسال |
+| إضافة خلفية عمل | في `ctx.jobs` فوق تسجيل؛`job_*` أداة مسؤول استلام تجميع أو إيقاف |
+| من خارجي webhook بدء Session | في `ctx.webhookRuntime` فوق تسجيل يمكن معلومة قاعدة، و تركيب مزود مهايئ |
+| إضافة نظام الملفات وصول أو سياسة | تسجيل `ctx.fs` مزود، أو استماع `fs/*` حدث |
+| حد الذي بدء عملية | استخدام `ctx.sandbox` خلفية؛ مستهلك في بدء عملية قبل حزمة تركيب argv |
+| اعتراض قطع طلب، أداة أو جولة | استخدام متبادل ينبغي `agent/*` أو `tools/*` حدث؛`agent/turn-stopping` سوف إيقاف جولة |
+| إضافة نموذج مرئي سياق | استدعاء `agent.inject()`؛ هو سوف سقوط إلى تحت مرة نيل دقيق طلب في |
+| إضافة UI أو تحرير جهاز تجميع صار | قيادة `ctx.agents` و من `session/event` تصيير |
+| إضافة Web Client Chat عقدة | تسجيل `ConversationNodeDefinition` + keyed renderer |
+| إضافة حمل دائم جلسة حالة | توسيع `SessionEventMap`؛ من سجل تصيير و إعادة تشغيل |
+| توليد جلسة عنوان | تسجيل وحيد `ctx.sessionTitle` مزود |
+| إدارة نفس جلسة هدف | استخدام `ctx.goals`؛ عبر `agent/*` متابعة ركض |
+| في جولة حد fork جلسة | `ctx.agents.create({ sessionId, seed, meta: { parentSession, seedLength } })`——فقط لديه مرور agent-loop إصدار جلسة عندئذ سوف حفظ دائم |
+| في جديد خلفية تخزين جلسة | أساس في مشترك جملة مقبض قدم يد هيكل تنفيذ `SessionPersistence`(`create`/`open`/`stat`/`list`/`export`) |
+| سوف تسجيل بند حد تحديد إلى مفرد عدد agent | استخدام هذا agent `agent.ctx` |
 
-[扩展实操手册](cookbook/extension-cookbook.zh.md)将功能映射到能力，并索引[包](cookbook/adding-a-package.zh.md)、[工具](cookbook/adding-a-tool.zh.md)、[LLM（大语言模型）适配器](cookbook/adding-an-llm-adapter.zh.md)和[设置卡片](cookbook/adding-a-settings-card.zh.md)的分步指南。[Conversation 子系统](subsystems/conversation.zh.md)负责 Chat node 组装。
+[توسيع فعلي تشغيل يد سجل](cookbook/extension-cookbook.zh.md) سوف وظيفة خريطة إلى قدرة، و بحث جذب[حزمة](cookbook/adding-a-package.zh.md) ،[أداة](cookbook/adding-a-tool.zh.md) ،[LLM(كبير لغة نموذج) مهايئ](cookbook/adding-an-llm-adapter.zh.md) و[ضبط بطاقة](cookbook/adding-a-settings-card.zh.md) قسم خطوة إشارة جنوب.[Conversation فرعي نظام](subsystems/conversation.zh.md) مسؤول Chat node تجميع.

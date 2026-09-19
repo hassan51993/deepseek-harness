@@ -1,92 +1,92 @@
 ---
-description: "面向侧栏的官方 DeepSeek Harness 品牌填充，仅在官方构建中生效；供选择或替换品牌呈现的用户与维护者阅读。"
+description: "موجه إلى جانب شريط رسمي جهة DeepSeek Harness صنف لوحة ملء ملء، فقط في رسمي جهة بناء في توليد فاعلية؛ توفير اختيار أو استبدال صنف لوحة عرض مستخدم و صيانة من قراءة قراءة."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-client-ui-brand-official
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-本包让以 `official` profile 构建的客户端在侧栏显示 DeepSeek Harness 标志与名称。其他构建 profile 保留外壳的鱼形标志与本地构建标签，会话首屏则始终使用动画鱼。品牌为 DeepSeek Harness 的部署应选择本包；使用其他品牌的部署应提供替代品牌包。本包不保留运行时状态，也不影响模型请求。
+هذه الحزمة يجعل بـ `official` profile بناء عميل في جانب شريط عرض DeepSeek Harness علامة سجل و اسم. أخرى بناء profile إبقاء خارج قشرة سمك شكل علامة سجل و محلي بناء وسم، جلسة أول شاشة فإن بداية نهاية استخدام حركة رسم سمك. صنف لوحة لـ DeepSeek Harness نشر ينبغي اختيار هذه الحزمة؛ استخدام أخرى صنف لوحة نشر ينبغي توفير بديل صنف لوحة حزمة. هذه الحزمة لا إبقاء وقت التشغيل حالة، أيضا لا أثر نموذج طلب.
 
-## 目录
+## دليل
 
-- [使用本包](#use-this-package)
-- [理解实现](#understand-the-implementation)
-- [进一步探索](#further-exploration)
-- [模型体验](#model-experience)
-- [已知限制与延期工作](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [استخدام هذه الحزمة](#use-this-package)
+- [فهم التنفيذ](#understand-the-implementation)
+- [بحث إضافي](#further-exploration)
+- [تجربة النموذج](#model-experience)
+- [حدود معروفة وعمل مؤجل](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="use-this-package"></a>
-## 使用本包
+## استخدام هذه الحزمة
 
-在采用 DeepSeek 自有品牌的部署中，将本插件挂载到浏览器插件名单，然后以 `official` profile 构建客户端，让填充得以注册。
+في اعتماد DeepSeek ذاتي لديه صنف لوحة نشر في، سوف هذا إضافة تركيب إلى متصفح إضافة اسم مفرد، لكن بعد بـ `official` profile بناء عميل، يجعل ملء ملء نيل بـ تسجيل.
 
-### 选择 profile
+### اختيار profile
 
-`DSH_CLIENT_BUILD_PROFILE` 决定渲染哪个品牌。`official` 构建在侧栏显示官方标志与名称；任何其他取值都让外壳回退——鱼形标志与本地构建标签——保持原样。会话首屏无论 profile 如何都显示来自 `dsh-client-ui-conversation` 的动画首屏鱼，因为这个回退本身就是官方标志。两种情况下插件都会照常加载并通过校验；只有注册受 profile 门控。
+`DSH_CLIENT_BUILD_PROFILE` قرار تصيير أي عدد صنف لوحة.`official` بناء في جانب شريط عرض رسمي جهة علامة سجل و اسم؛ أي أخرى أخذ قيمة كل يجعل خارج قشرة رجوع——سمك شكل علامة سجل و محلي بناء وسم——إبقاء أصل مثال. جلسة أول شاشة بلا نقاش profile مثل أي كل عرض قدوم ذاتي `dsh-client-ui-conversation` حركة رسم أول شاشة سمك، لأن هذا عدد رجوع ذاته حينئذ هو رسمي جهة علامة سجل. اثنان نوع حال حال تحت إضافة كل سوف وفق معتاد تحميل و عبر تحقق؛ فقط لديه تسجيل تلقي profile باب تحكم.
 
-### 替换品牌
+### استبدال صنف لوحة
 
-自有身份的部署不组合本包，而是组合另一个占据侧栏 slot——以及本包留给回退的首屏 slot——的包。占据 slot 是唯一的组合路径；这里不存在任何品牌配置面。
+ذاتي لديه هوية نشر لا تركيب هذه الحزمة، بينما هو تركيب آخر عدد احتلال حسب جانب شريط slot——و هذه الحزمة إبقاء إعطاء رجوع أول شاشة slot——حزمة. احتلال حسب slot هو وحيد تركيب مسار؛ هذا داخل لا وجود أي صنف لوحة إعداد وجه.
 
 -----
 
 <a id="understand-the-implementation"></a>
-## 理解实现
+## فهم التنفيذ
 
 <details>
-<summary>实现细节——点击展开</summary>
+<summary>تنفيذ دقيق عقدة——انقر للتوسيع</summary>
 
-两个填充作为一组声明感知的注册安装：嵌套的 `ctx.slots.inject()` 调用等待侧栏声明，因此无论本行在声明者之前还是之后激活，这组注册都能工作；声明消失时两个填充一并撤回，HMR 期间也不会留下残缺的品牌混合。浏览器半部是 [`src/client/index.ts`](src/client/index.ts)；node 半部是一个空 Loader 座位。浏览器标题是构建环境的事（`DSH_CLIENT_TITLE`），不在 slot 系统之内。
+اثنان عدد ملء ملء بصفة واحد مجموعة إعلان شعور معرفة تسجيل تثبيت: تضمين طقم `ctx.slots.inject()` استدعاء انتظار جانب شريط إعلان، لذلك بلا نقاش هذا سطر في إعلان من قبل أيضا هو بعد تنشيط، هذا مجموعة تسجيل كل قدرة عمل؛ إعلان إزالة فقد وقت اثنان عدد ملء ملء واحد و سحب عودة،HMR خلال أيضا لن إبقاء تحت ناقص نقص صنف لوحة خلط دمج. متصفح نصف جزء هو [`src/client/index.ts`](src/client/index.ts) ؛node نصف جزء هو واحد فارغ Loader مقعد موضع. متصفح عنوان هو بناء بيئة أمر (`DSH_CLIENT_TITLE`) ، لا في slot نظام لـ داخل.
 
 </details>
 
 -----
 
 <a id="further-exploration"></a>
-## 进一步探索
+## بحث إضافي
 
-当品牌面不够用时阅读以下页面。它们从本包占据的 slot 进入渲染这些 slot 的外壳。
+عند صنف لوحة وجه لا كاف استخدام وقت قراءة قراءة التالي صفحة. هو جمع من هذه الحزمة احتلال حسب slot دخول تصيير هذه slot خارج قشرة.
 
-- [ui-sidebar](../ui-sidebar/README.zh.md)——声明 `sidebar.brand.mark` 与 `sidebar.brand.name` 并渲染其回退。
-- [ui-conversation](../ui-conversation/README.zh.md)——在首屏声明 `conversation.hero.brand.mark`。
-- [Web 客户端架构](../../../.agents/notes/implemented/architecture/2026-07-19-gui-web-client-architecture.zh.md)——浏览器插件行如何加载并注册 slot。
+- [ui-sidebar](../ui-sidebar/README.zh.md)——إعلان `sidebar.brand.mark` و `sidebar.brand.name` و تصيير ذلك رجوع.
+- [ui-conversation](../ui-conversation/README.zh.md)——في أول شاشة إعلان `conversation.hero.brand.mark`.
+- [Web عميل هيكل بنية](../../../.agents/notes/implemented/architecture/2026-07-19-gui-web-client-architecture.zh.md)——متصفح إضافة سطر مثل أي تحميل و تسجيل slot.
 
 -----
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-无，因为本包只贡献浏览器呈现；这里没有任何内容进入模型请求。
+بلا، لأن هذه الحزمة فقط مساهمة متصفح عرض؛ هذا داخل لا يوجد أي محتوى دخول نموذج طلب.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；本包既不组装也不发送提供方请求。
+بلا؛ هذه الحزمة حيث لا تجميع أيضا لا إرسال مزود طلب.
 
-## 已知限制与延期工作
+## حدود معروفة وعمل مؤجل
 
 <a id="known-limitations-and-deferred-work"></a>
 
 
-这些限制界定了品牌呈现的供给方式。它们是当前包约束，不是品牌设计对比或任务积压。
+هذه حد حد تحديد صنف لوحة عرض توفير إعطاء طريقة. هو جمع هو حالي حزمة قيد، لا هو صنف لوحة تصميم مقابل مقارنة أو مهمة تراكم ضغط.
 
-- **只有一组填充**——替代呈现属于占据相同 slot 的另一个 Cordis 包。
-- **浏览器标题独立**——`DSH_CLIENT_TITLE` 在构建时选择标题文本，而非通过 UI slot。
+- **فقط لديه واحد مجموعة ملء ملء**——بديل عرض يخص احتلال حسب نفسه slot آخر عدد Cordis حزمة.
+- **متصفح عنوان مستقل**——`DSH_CLIENT_TITLE` في بناء وقت اختيار عنوان نص، بينما غير عبر UI slot.
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者的工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。本包不保留可变状态，三个 slot occupant 通过同一个事务性 effect 安装和释放。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. هذه الحزمة لا إبقاء متغير حالة، ثلاثة عدد slot occupant عبر نفس عدد أمر خدمة صفة effect تثبيت و تحرير.

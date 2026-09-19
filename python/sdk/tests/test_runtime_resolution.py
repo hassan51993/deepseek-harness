@@ -190,7 +190,7 @@ def test_python_dsh_command_executes_the_bundled_cli(
 @pytest.mark.parametrize("returncode", [0, 37, 513])
 def test_windows_console_waits_and_forwards_runtime_status(monkeypatch: pytest.MonkeyPatch, returncode: int) -> None:
     monkeypatch.setenv("DSH_HOME", "/explicit/home")
-    monkeypatch.setattr(runtime, "sys", SimpleNamespace(platform="win32", argv=["dsh", "plugin", "argument with spaces", "中文"]))
+    monkeypatch.setattr(runtime, "sys", SimpleNamespace(platform="win32", argv=["dsh", "plugin", "argument with spaces", "العربية"]))
     monkeypatch.setattr(runtime, "resolve_bundled_launch_args", lambda: ("runtime.exe",))
     called = []
 
@@ -206,7 +206,7 @@ def test_windows_console_waits_and_forwards_runtime_status(monkeypatch: pytest.M
     with pytest.raises(SystemExit) as result:
         main()
     assert result.value.code == returncode
-    assert called == [(("runtime.exe", "plugin", "argument with spaces", "中文"), {"env": os.environ})]
+    assert called == [(("runtime.exe", "plugin", "argument with spaces", "العربية"), {"env": os.environ})]
 
 
 @pytest.mark.parametrize("returncode", [0, 37, pytest.param(513, marks=pytest.mark.skipif(sys.platform != "win32", reason="POSIX truncates process exit codes to eight bits"))])
@@ -216,22 +216,22 @@ def test_windows_console_branch_preserves_real_child_io_and_completion(tmp_path:
     child.write_text(
         "import pathlib,sys\n"
         "assert sys.argv[1] == 'argument with spaces'\n"
-        "assert sys.argv[2] == '中文'\n"
-        "print('stdout-中文', flush=True)\n"
-        "print('stderr-中文', file=sys.stderr, flush=True)\n"
+        "assert sys.argv[2] == 'العربية'\n"
+        "print('stdout-العربية', flush=True)\n"
+        "print('stderr-العربية', file=sys.stderr, flush=True)\n"
         f"pathlib.Path({str(sentinel)!r}).write_text('done')\n"
         f"raise SystemExit({returncode})\n", encoding="utf-8",
     )
     driver = (
         "import deepseek_harness_runtime as runtime; from types import SimpleNamespace; "
-        f"runtime.sys = SimpleNamespace(platform='win32', argv=['dsh', 'argument with spaces', '中文']); "
+        f"runtime.sys = SimpleNamespace(platform='win32', argv=['dsh', 'argument with spaces', 'العربية']); "
         f"runtime.resolve_bundled_launch_args = lambda: ({sys.executable!r}, {str(child)!r}); runtime.main()"
     )
     result = subprocess.run([sys.executable, "-c", driver], capture_output=True, text=True, encoding="utf-8",
                             env={**os.environ, "DSH_HOME": str(tmp_path), "PYTHONIOENCODING": "utf-8"}, timeout=15)
     assert result.returncode == returncode, result.stderr
-    assert result.stdout == "stdout-中文\n"
-    assert result.stderr == "stderr-中文\n"
+    assert result.stdout == "stdout-العربية\n"
+    assert result.stderr == "stderr-العربية\n"
     assert sentinel.read_text() == "done"
 
 

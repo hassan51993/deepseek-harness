@@ -85,7 +85,7 @@ describe('locale apply', () => {
     // The lane has no jsdom `window`, so detection never runs and a fresh
     // service opens on FALLBACK_LOCALE (en); read the zh side explicitly.
     locale.setLocale('zh')
-    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('语言')
+    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('لغة')
     const entry = before.slots.entries(SLOT).find(e => e.component === LanguageRow)!
     expect(entry.options).toMatchObject({ id: 'language', order: 0 })
 
@@ -117,7 +117,7 @@ describe('locale apply', () => {
     face.setLocale('zh')
     expect(locale.getLocale().active).toBe('zh')
     expect(instance.getSnapshot().active).toBe('zh')
-    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('语言')
+    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('لغة')
     await vi.waitFor(() => { expect(b.mutate).toHaveBeenCalledTimes(2) })
   })
 
@@ -130,15 +130,15 @@ describe('locale apply', () => {
     const languagePack = b.ctx.plugin({
       inject: ['locale'],
       apply: packCtx => packCtx.effect(
-        () => packCtx.locale.addLanguage({ id: 'ja', label: '日本語', fallback: 'en' }),
+        () => packCtx.locale.addLanguage({ id: 'ja', label: 'يوم هذا لغة', fallback: 'en' }),
         'test language pack registration',
       ),
     })
     await languagePack.await()
     expect(instance.getSnapshot().options).toEqual([
-      { id: 'zh', label: '中文' },
+      { id: 'zh', label: 'العربية' },
       { id: 'en', label: 'English' },
-      { id: 'ja', label: '日本語' },
+      { id: 'ja', label: 'يوم هذا لغة' },
     ])
 
     await languagePack.dispose()

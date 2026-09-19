@@ -1,61 +1,61 @@
 ---
-description: "面向提供方插件的官方 DeepSeek 请求扩展注册表，用于贡献具有生命周期归属的顶层 API 字段。"
+description: "موجه إلى مزود إضافة رسمي جهة DeepSeek طلب توسيع سجل التسجيل، لأجل مساهمة أداة لديه دورة الحياة ملكية قمة طبقة API حقل."
 kind: "package-reference"
 ---
 
 # @deepseek-ai/dsh-deepseek-llm-api-extensions
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-用于向 DeepSeek 官方 LLM（大语言模型）API 请求添加顶层字段的提供方特定注册表。`DeepSeekLlmApiExtensionRegistry` 注册 `ctx.deepseekLlmApiExtensions`；贡献插件分别认领一个经声明合并的字段，`dsh-llm-deepseek` 则在序列化基础请求后准备当前贡献。当插件必须添加经过验证的提供方特定字段且不能修改基础适配器时，请使用它。
+لأجل نحو DeepSeek رسمي جهة LLM(كبير لغة نموذج)API طلب إضافة قمة طبقة حقل مزود خاص تحديد سجل التسجيل.`DeepSeekLlmApiExtensionRegistry` تسجيل `ctx.deepseekLlmApiExtensions`؛ مساهمة إضافة قسم آخر إقرار قيادة واحد مرور إعلان دمج حقل،`dsh-llm-deepseek` فإن في تسلسل تحويل أساس أساس طلب بعد دقيق تجهيز حالي مساهمة. عند إضافة يجب إضافة مرور مرور تحقق مزود خاص تحديد حقل كما لا يستطيع تعديل أساس أساس مهايئ وقت، طلب استخدام هو.
 
-## 目录
+## دليل
 
-- [服务](#service)
-- [模型体验](#model-experience)
-- [已知限制与暂缓事项](#known-limitations-and-deferred-work)
-- [开发备注](#dev-note)
+- [خدمة](#service)
+- [تجربة النموذج](#model-experience)
+- [معروف حد و مؤقت مؤقت أمر بند](#known-limitations-and-deferred-work)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="service"></a>
-## 服务
+## خدمة
 
-- `register(field, provider)` 为调用 fiber 保留一个字段。重复或格式错误的名称会同步失败；dispose（资源释放）该注册后，后续提供方可以再次认领。
-- `prepare(request)` 对已注册提供方取快照，并发准备贡献，克隆并冻结返回的 JSON 值，然后返回 `{ fields, accept }`。准备失败会在 HTTP 分发前拒绝请求；请求取消后，即使某个提供方忽略信号，注册表也会停止等待。
-- `accept()` 对每个捕获的 2xx 后回调只运行一次。并发调用会等待同一次结算，所有回调都在报告失败前完成，多个失败会合并为一个 `AggregateError`。
+- `register(field, provider)` لـ استدعاء fiber إبقاء واحد حقل. تكرار أو صيغة خطأ اسم سوف تزامن فشل؛dispose(مورد تحرير) هذا تسجيل بعد، لاحق مزود يمكن مجددا مرة إقرار قيادة.
+- `prepare(request)` مقابل قد تسجيل مزود أخذ لقطة، تزامن دقيق تجهيز مساهمة، تغلب ضخم و تجميد ربط إرجاع JSON قيمة، لكن بعد إرجاع `{ fields, accept }`. دقيق تجهيز فشل سوف في HTTP توزيع قبل رفض طلب؛ طلب إلغاء بعد، أي جعل بعض عدد مزود تجاهل اختصار إشارة، سجل التسجيل أيضا سوف إيقاف انتظار.
+- `accept()` مقابل كل التقاط 2xx بعد عودة ضبط فقط تشغيل مرة. تزامن استدعاء سوف انتظار نفس مرة تسوية، كل عودة ضبط كل في تقرير إبلاغ فشل قبل إتمام، كثير عدد فشل سوف دمج لـ واحد `AggregateError`.
 
-Chat Completions 和 Messages 都会准备这些字段。每个提供方都会看到所选协议中确切的已序列化基础请求体、请求 `AbortSignal`，以及可选的 `sessionId` 与辅助调用 `purpose`。提供方必须在取消后迅速停止自身工作；字段不适用于当前请求时返回 `undefined`。即使 HMR（热模块替换）在 HTTP 接受前移除了注册，已准备的操作仍会保留其捕获的提供方。
+Chat Completions و Messages كل سوف دقيق تجهيز هذه حقل. كل مزود كل سوف يرى الذي اختيار بروتوكول في تأكيد قطع قد تسلسل تحويل أساس أساس طلب جسم، طلب `AbortSignal`، و اختياري `sessionId` و مساعد مساعدة استدعاء `purpose`. مزود يجب في إلغاء بعد سريع سرعة إيقاف ذاته عمل؛ حقل لا ملائم لأجل حالي طلب وقت إرجاع `undefined`. أي جعل HMR(حار وحدة استبدال) في HTTP قبول قبل إزالة تسجيل، قد دقيق تجهيز عملية ما زال سوف إبقاء ذلك التقاط مزود.
 
-注册表拥有字段添加与生命周期，不拥有字段语义。`@deepseek-ai/dsh-session-log-deepseek` 拥有 `dsh_session_log`；`@deepseek-ai/dsh-plugin-package-inventory-deepseek` 拥有 `dsh_plugin_packages`。提供方无关的 LLM seam 与 `llm-pi-ai` 都不消费该注册表。
+سجل التسجيل يملك حقل إضافة و دورة الحياة، لا يملك حقل دلالة.`@deepseek-ai/dsh-session-log-deepseek` يملك `dsh_session_log`؛`@deepseek-ai/dsh-plugin-package-inventory-deepseek` يملك `dsh_plugin_packages`. مزود غير متصل LLM seam و `llm-pi-ai` كل لا إزالة استهلاك هذا سجل التسجيل.
 
 <a id="model-experience"></a>
-## 模型体验
+## تجربة النموذج
 
-通过 `@deepseek-ai/dsh-llm-deepseek` 间接生效；该包在模型的 `messages`、系统提示词与工具 schema 之外发送已注册字段。
+عبر `@deepseek-ai/dsh-llm-deepseek` بين وصل توليد فاعلية؛ هذا حزمة في نموذج `messages`، توجيه النظام و أداة schema خارج إرسال قد تسجيل حقل.
 
-#### KV Cache 影响
+#### KV Cache أثر
 
-无；注册表字段是模型不可见的提供方元数据，不改变已序列化的模型输入前缀。
+بلا؛ سجل التسجيل حقل هو نموذج غير ممكن رؤية مزود بيانات وصفية، لا تغيير قد تسلسل تحويل نموذج إدخال بادئة.
 
-## 已知限制与暂缓事项
+## معروف حد و مؤقت مؤقت أمر بند
 
 <a id="known-limitations-and-deferred-work"></a>
 
-- **仅限 DeepSeek 官方请求**——该注册表刻意不提供提供方无关的路由，也不集成 pi-ai 适配器。
-- **不约定字段顺序**——JSON 对象成员顺序取决于注册准备顺序，但接收方按名称寻址字段。
+- **فقط حد DeepSeek رسمي جهة طلب**——هذا سجل التسجيل لحظة معنى لا توفير مزود غير متصل توجيه، أيضا لا تجميع صار pi-ai مهايئ.
+- **لا اتفاق حقل ترتيب**——JSON كائن عضو ترتيب أخذ قرار في تسجيل دقيق تجهيز ترتيب، لكن استقبال جهة حسب اسم بحث عنوان حقل.
 
 
 <a id="dev-note"></a>
-### 开发备注
+### ملاحظة تطوير
 
 <details>
-<summary>维护者工作上下文——点击展开</summary>
+<summary>صيانة من عمل سياق——انقر للتوسيع</summary>
 
-无。
+بلا.
 
 </details>
 
-**运行时不变式：** 不发布伴生入口。重复所有权、detached output 与单次 acceptance settlement 都在拥有该决策的注册表操作中强制。
+**وقت التشغيل ثابت صيغة:** لا إصدار مرافق توليد مدخل. تكرار كل حق،detached output و مفرد مرة acceptance settlement كل في يملك هذا قرار سجل التسجيل عملية في قوي صنع.

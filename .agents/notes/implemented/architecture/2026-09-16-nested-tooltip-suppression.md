@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-16-nested-tooltip-suppression.zh.md)
+English | [العربية](2026-09-16-nested-tooltip-suppression.zh.md)
 
 ## Problem
 

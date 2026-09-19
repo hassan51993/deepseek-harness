@@ -1,80 +1,80 @@
-# Agent Note: 在 v2 attempt settlement 中嵌入 Assistant stream
+# Agent Note: في v2 attempt settlement في تضمين دخول Assistant stream
 
 Status: implemented
 
-[English](2026-09-01-v2-embedded-assistant-streams.md) | 中文
+[English](2026-09-01-v2-embedded-assistant-streams.md) | العربية
 
-## 问题
+## مشكلة
 
-Token 粒度的 `assistant/chunk` 事件会保留精确的 stream 顺序、时间、usage、terminal state、replay metadata 与失败时的部分输出，但让每个 chunk 成为顶层 Session event 会在持久化、遥测、历史传输、索引和 Client 组装中重复信封。物理 packed row 可以减少 JSONL 字节，却不会减少逻辑事件数，也不会减少接收规范 stream 的消费方工作量。
+Token حبة درجة `assistant/chunk` حدث سوف إبقاء دقيق stream ترتيب، وقت،usage،terminal state،replay metadata و فشل وقت جزء إخراج، لكن يجعل كل chunk يصبح قمة طبقة Session event سوف في حفظ دائم، بعيد قياس، تاريخ نقل، بحث جذب و Client تجميع في تكرار معلومة غلاف. شيء إدارة packed row يمكن نقص قليل JSONL بايت، لكن لن نقص قليل منطق حدث عدد، أيضا لن نقص قليل استقبال مواصفة stream مستهلك عمل كمية.
 
-只存储组装后的成功 message 可以消除这些开销，但会丢失失败与放弃的输出、token 边界、时间戳和确定性 provider replay。持久记录需要让每个模型 attempt 只占一个单位，同时不减少 replay、诊断、取消恢复、usage 记账、snapshot 与 UI 历史依赖的证据。
+فقط تخزين تجميع بعد نجاح message يمكن إزالة حذف هذه فتح إلغاء، لكن سوف فقد فقد فشل و وضع ترك إخراج،token حد، ختم الوقت و تحديد صفة provider replay. حمل دائم سجل حاجة يجعل كل نموذج attempt فقط احتلال واحد مفرد موضع، معا لا نقص قليل replay، تشخيص، إلغاء استعادة،usage تسجيل حساب،snapshot و UI تاريخ اعتماد دليل.
 
-改变事件基数也会改变 Session 序号。已发布迁移必须保留无关事件的相对顺序、改写每个已声明的同 Session 引用、保留精确 fork 切点，并拒绝任何无法保持语义的关系。
+تغيير حدث أساس عدد أيضا سوف تغيير Session ترتيب رقم. قد إصدار ترحيل يجب إبقاء غير متصل حدث متبادل مقابل ترتيب، تعديل كتابة كل قد إعلان نفس Session مرجع، إبقاء دقيق fork قطع نقطة، و رفض أي لا يمكن إبقاء دلالة علاقة.
 
-## 决策
+## قرار
 
-[V3 规范信封决策](2026-09-06-v3-canonical-session-envelopes.zh.md)负责当前替换键与请求头接纳规则。它保留本文的嵌入式 stream、尝试结算与冻结的 v1-to-v2 转换。
+[V3 مواصفة معلومة غلاف قرار](2026-09-06-v3-canonical-session-envelopes.zh.md) مسؤول حالي استبدال مفتاح و طلب رأس وصل قبول قاعدة. هو إبقاء هذا نص تضمين دخول صيغة stream، محاولة تجربة تسوية و تجميد ربط v1-to-v2 تحويل.
 
-Session format v2 没有顶层 `assistant/chunk` 事件。每个模型 attempt 提交一个包含 `stream: AssistantStreamRecord[]` 的持久 settlement：
+Session format v2 لا يوجد قمة طبقة `assistant/chunk` حدث. كل نموذج attempt إيداع واحد يتضمن `stream: AssistantStreamRecord[]` حمل دائم settlement:
 
-- `assistant/message` 是成功响应或具有可见组装内容的已取消响应所对应的 surface settlement。它在组装 message 旁嵌入精确的紧凑带时间 stream、可选 usage 与可选 `interrupted: true` marker。
-- `assistant/attempt` 只进入日志。它保留已到达 settlement、但没有 surface message 的失败、重试、取消或 stream error attempt，因此诊断与记账不会虚构模型可见历史。
+- `assistant/message` هو نجاح استجابة أو أداة لديه مرئي تجميع محتوى قد إلغاء استجابة الذي مقابل surface settlement. هو في تجميع message جانب تضمين دخول دقيق ضيق تجميع حمل وقت stream، اختياري usage و اختياري `interrupted: true` marker.
+- `assistant/attempt` فقط دخول سجل. هو إبقاء قد وصول settlement، لكن لا يوجد surface message فشل، إعادة محاولة، إلغاء أو stream error attempt، لذلك تشخيص و تسجيل حساب لن وهمي بنية نموذج مرئي تاريخ.
 
-`AssistantStreamAccumulator` 对每个 chunk 只快照一次。同一 block 的连续 text、reasoning 或 tool argument delta 会变成一个紧凑 run，包含首个时间戳、精确时间戳间隔和每个原始 delta 对应的一个数组成员。其他 chunk 保留为带时间戳的 raw record。`expandAssistantStream()` 会严格校验并重建精确的带时间序列；压缩绝不会合并 delta 边界。
+`AssistantStreamAccumulator` مقابل كل chunk فقط لقطة مرة. نفس block وصل متابعة text،reasoning أو tool argument delta سوف تغيير صار واحد ضيق تجميع run، يتضمن أول عدد ختم الوقت، دقيق ختم الوقت بين فصل و كل أصلي delta مقابل واحد عدد مجموعة عضو. أخرى chunk إبقاء لـ حمل ختم الوقت raw record.`expandAssistantStream()` سوف صارم إطار تحقق و إعادة بناء دقيق حمل وقت تسلسل؛ ضغط أبدا سوف دمج delta حد.
 
-Migration publication verifier 与冻结的 v2 fixture validator 要求嵌入式 stream 能复现非空 `assistant/message` 的 content、usage 与 replay state。对于没有源 chunk 的已迁移旧 message，空 stream 仍然有效。普通 Session restore 只校验 runtime 直接依赖的 settlement 字段，不展开全部历史 stream；需要展开 compact stream 的 consumer 会在读取时校验 record。`assistant/message` 不能携带已停用的 chunk `sourceEventSeqs`；普通 user 与 tool source-event reference 保持可用。
+Migration publication verifier و تجميد ربط v2 fixture validator اشتراط تضمين دخول صيغة stream قدرة تكرار الآن غير فارغ `assistant/message` content،usage و replay state. مقابل في لا يوجد مصدر chunk قد ترحيل قديم message، فارغ stream ما زال صالح. عادي Session restore فقط تحقق runtime مباشر اعتماد settlement حقل، لا توسيع الكل تاريخ stream؛ حاجة توسيع compact stream consumer سوف في قراءة وقت تحقق record.`assistant/message` لا يستطيع يحمل قد توقف استخدام chunk `sourceEventSeqs`؛ عادي user و tool source-event reference إبقاء متاح.
 
-### 实时呈现与持久回放
+### فوري عرض و حمل دائم إعادة تشغيل
 
-`agent/assistant-stream` 发布进程本地 start、瞬态 chunk 与 end frame。loop 会在 committed end frame 命名其类型和序号前追加完整的 `assistant/message` 或 `assistant/attempt`。abandoned end 没有 settlement。
+`agent/assistant-stream` إصدار عملية محلي start، لحظة حالة chunk و end frame.loop سوف في committed end frame تسمية ذلك نوع و ترتيب رقم قبل إلحاق كامل `assistant/message` أو `assistant/attempt`.abandoned end لا يوجد settlement.
 
-Web follow adapter 显式选择接收这些进程本地 frame，并为每个 start 补充当时观察到的最后一个持久序号。它把 chunk 呈现为持久 cursor 之间的 Client-only `assistant/live-chunk` update，只暂存 start 之后匹配的 settlement，并在 revision 缺口时重新打开 follow。committed end 会发布具名 settlement delta，删除该 attempt 的 transient match、加入持久 entry，并只重放受影响的 Conversation Context；abandoned end 会发布不含 entry 的同类 delta。重连 baseline 携带活跃 attempt 的持久起始 cursor 与紧凑前缀。
+Web follow adapter صريح اختيار استقبال هذه عملية محلي frame، و لـ كل start تكملة ملء عند وقت مراقبة إلى الأكثر بعد واحد حمل دائم ترتيب رقم. هو يأخذ chunk عرض لـ حمل دائم cursor بين Client-only `assistant/live-chunk` update، فقط مؤقت تخزين start بعد مطابقة settlement، و في revision نقص فتحة وقت إعادة فتح follow.committed end سوف إصدار أداة اسم settlement delta، حذف هذا attempt transient match، إضافة دخول حمل دائم entry، و فقط إعادة وضع تلقي أثر Conversation Context؛abandoned end سوف إصدار لا يحتوي entry نفس صنف delta. إعادة وصل baseline يحمل نشط وثب attempt حمل دائم بدء بداية cursor و ضيق تجميع بادئة.
 
-Client event source 原样传递持久 settlement。Chat 与 Trajectory 在 attempt 活跃时折叠 `assistant/live-chunk`，直接从 `assistant/message` 构造 settled output。结算移除临时 chunk 后，Chat 不会重建首 token 计时。Trajectory 从 `assistant/message` 与 `assistant/attempt` 中的[紧凑流记录](2026-09-06-embedded-stream-record-readers.zh.md)读取计时，包括打开历史时。两个目标都不会为展示将已结算流展开为逐 delta 对象；其他消费方需要精确证据时仍可展开持久 stream。
+Client event source أصل مثال نقل تمرير حمل دائم settlement.Chat و Trajectory في attempt نشط وثب وقت طي `assistant/live-chunk`، مباشر من `assistant/message` بنية صنع settled output. تسوية إزالة مؤقت chunk بعد،Chat لن إعادة بناء أول token حساب وقت.Trajectory من `assistant/message` و `assistant/attempt` في[ضيق تجميع تدفق سجل](2026-09-06-embedded-stream-record-readers.zh.md) قراءة حساب وقت، يشمل فتح تاريخ وقت. اثنان عدد هدف كل لن لـ عرض سوف قد تسوية تدفق توسيع لـ تدريجي delta كائن؛ أخرى مستهلك حاجة دقيق دليل وقت ما زال يمكن توسيع حمل دائم stream.
 
-### 已发布 v1 到 v2 迁移
+### قد إصدار v1 إلى v2 ترحيل
 
-相邻迁移会校验完整的冻结 v1 产物，按 turn、step、terminal boundary 与精确 message chunk reference 对 chunk 分组，再为每个 attempt 替换一个 settlement。成功分组的 chunk 移入其 message。未被认领的分组会在最后一个被消费 chunk 的位置变成 `assistant/attempt`。无关的交错事件保持相对顺序，存活事件获得密集 v2 序号。该迁移边通过 `dsh-llm` 运行时的 `AssistantStreamAccumulator` 压缩嵌入 stream，而不持有冻结副本，因为该包拥有 v2 stream 编码。隔离的 publication verifier 通过 `expandAssistantStream()` 与 `BlockAssembler` 展开并重组写入后的 stream，并在发布前检查每个迁移后的 `assistant/message` 是否与其一致。日后若某个格式改变 stream 编码，必须把这些 helper 的冻结副本纳入本迁移边。
+متبادل مجاور ترحيل سوف تحقق كامل تجميد ربط v1 ناتج، حسب turn،step،terminal boundary و دقيق message chunk reference مقابل chunk قسم مجموعة، مجددا لـ كل attempt استبدال واحد settlement. نجاح قسم مجموعة chunk نقل دخول ذلك message. لم يتم إقرار قيادة قسم مجموعة سوف في الأكثر بعد واحد يتم إزالة استهلاك chunk موضع تغيير صار `assistant/attempt`. غير متصل تسليم خطأ حدث إبقاء متبادل مقابل ترتيب، تخزين نشط حدث نيل نيل سري تجميع v2 ترتيب رقم. هذا ترحيل حافة عبر `dsh-llm` وقت التشغيل `AssistantStreamAccumulator` ضغط تضمين دخول stream، بينما لا يحتفظ تجميد ربط فرعي هذا، لأن هذا حزمة يملك v2 stream تحرير رمز. عزل publication verifier عبر `expandAssistantStream()` و `BlockAssembler` توسيع و إعادة مجموعة كتابة بعد stream، و في إصدار قبل فحص كل ترحيل بعد `assistant/message` هل و ذلك متسق. يوم بعد إذا بعض عدد صيغة تغيير stream تحرير رمز، يجب يأخذ هذه helper تجميد ربط فرعي هذا قبول دخول هذا ترحيل حافة.
 
-该迁移边会重映射有限的已声明引用清单：信封 source-event reference、surface replacement 端点、command source event、compaction range 与 shadowed list，以及 title message list。经过校验的 `session/title-llm-request` 模型可见文本会在源序号命名空间中保持逐字节不变，而它的 `messageSeqs` 字段会迁移到 v2 命名空间；因此目标校验不会根据重映射后的序号重建该文本。指向被消费 chunk 的引用会使迁移失败；它绝不会被重定向到含义不同的 settlement。该迁移边也会拒绝切开 attempt 的继承切点。
+هذا ترحيل حافة سوف إعادة خريطة لديه حد قد إعلان مرجع بيان: معلومة غلاف source-event reference،surface replacement طرف نقطة،command source event،compaction range و shadowed list، و title message list. مرور مرور تحقق `session/title-llm-request` نموذج مرئي نص سوف في مصدر ترتيب رقم نطاق الأسماء في إبقاء تدريجي بايت ثابت، بينما هو `messageSeqs` حقل سوف ترحيل إلى v2 نطاق الأسماء؛ لذلك هدف تحقق لن أصل حسب إعادة خريطة بعد ترتيب رقم إعادة بناء هذا نص. إشارة نحو يتم إزالة استهلاك chunk مرجع سوف جعل ترحيل فشل؛ هو أبدا سوف يتم إعادة تحديد نحو إلى يحتوي معنى مختلف settlement. هذا ترحيل حافة أيضا سوف رفض قطع فتح attempt وراثة قطع نقطة.
 
-v2 物理 header 要求 `isSeeded`，且不存储数值切点。带 seed 的产物用 `session/end-seed { inherited: true }` 标记其精确切点；解码从最后一个 tagged marker 推导切点。v2 编解码器为每个持久事件写一条物理行，只对 `sourceEventSeqs` 做范围编码，并在不冻结普通事件词汇或 payload 新增项的前提下校验物理 envelope。v1-to-v2 target validator 会另行冻结 released-v2 清单，current restoration 则使用 installed Session 词汇。冻结的 v0 与 v1 编解码器继续为不可变历史 generation 解码 packed row。
+v2 شيء إدارة header اشتراط `isSeeded`، كما لا تخزين عدد قيمة قطع نقطة. حمل seed ناتج استخدام `session/end-seed { inherited: true }` علامة ذلك دقيق قطع نقطة؛ حل رمز من الأكثر بعد واحد tagged marker دفع توجيه قطع نقطة.v2 تحرير حل رمز جهاز لـ كل حمل دائم حدث كتابة واحد بند شيء إدارة سطر، فقط مقابل `sourceEventSeqs` فعل نطاق تحرير رمز، و في لا تجميد ربط عادي حدث مفردات أو payload إضافة جديدة بند قبل رفع تحت تحقق شيء إدارة envelope.v1-to-v2 target validator سوف آخر سطر تجميد ربط released-v2 بيان،current restoration فإن استخدام installed Session مفردات. تجميد ربط v0 و v1 تحرير حل رمز جهاز متابعة لـ غير ممكن تغيير تاريخ generation حل رمز packed row.
 
-新建 subagent 子项的 constructor seed 与继承的父项前缀完全相同。`Session` 会追加 tagged cut marker，随后 subagent setup 再追加子项持有的 descriptor 与 delegated policy。原 descriptor-seed helper 会被删除，因此 descriptor 绝不会计入继承内容，cold resume 则重放已经持久化的子项 setup。曾把 untagged marker 放在 descriptor 后面的历史 snapshot fixture 会在源处修正；当前比较仍会暴露 marker 数量与序号引用。
+جديد بناء subagent فرعي بند constructor seed و وراثة أب بند بادئة تماما نفسه.`Session` سوف إلحاق tagged cut marker، مع بعد subagent setup مجددا إلحاق فرعي بند يحتفظ descriptor و delegated policy. أصل descriptor-seed helper سوف يتم حذف، لذلك descriptor أبدا سوف حساب دخول وراثة محتوى،cold resume فإن إعادة وضع قد حفظ دائم فرعي بند setup. سبق يأخذ untagged marker وضع في descriptor بعد وجه تاريخ snapshot fixture سوف في مصدر موضع إصلاح صحيح؛ حالي مقارنة مقارنة ما زال سوف كشف marker عدد كمية و ترتيب رقم مرجع.
 
-`dsh_session_log` request extension 的外层 schema 保持版本 1：它的 Session header 投影仍从逻辑 inherited cut 推导 `seedLength`，只有其中的 `sessionFormatVersion` 成员标识嵌入的逻辑 Session generation。projection unit 同样保持各自的 `stateVersion`；projection cache 把每个 checkpoint 绑定到 Session format generation，因此 generation 变化不需要提升 unit 版本。
+`dsh_session_log` request extension خارج طبقة schema إبقاء إصدار 1: هو Session header إسقاط ما زال من منطق inherited cut دفع توجيه `seedLength`، فقط لديه منها `sessionFormatVersion` عضو معرف تضمين دخول منطق Session generation.projection unit نفس مثال إبقاء كل منها `stateVersion`؛projection cache يأخذ كل checkpoint ربط إلى Session format generation، لذلك generation تغير لا حاجة رفع رفع unit إصدار.
 
-Generation 选择与发布遵循[已发布 Session 迁移决策](2026-08-31-released-session-format-migrations.zh.md)：源路径、字节与 inode 保持不变，只发布最终具名版本 successor；保留 predecessor 不提供 fallback 或 downgrade 支持。
+Generation اختيار و إصدار التزام دوران[قد إصدار Session ترحيل قرار](2026-08-31-released-session-format-migrations.zh.md): مصدر مسار، بايت و inode إبقاء ثابت، فقط إصدار نهائي أداة اسم إصدار successor؛ إبقاء predecessor لا توفير fallback أو downgrade دعم حمل.
 
-## 验证
+## تحقق
 
-紧凑 stream 测试固定 text、reasoning、tool argument、raw chunk、时间戳间隔、格式错误 record 与分离 snapshot 的精确累积和展开。v1 到 v2 测试覆盖成功与失败 attempt、交错、密集序号与引用重映射、源序号 title framing、seed 切点插入与切分拒绝、严格源与目标校验、每行一个事件的 v2 编码、与 backend 兼容的 source-event range、原始与 Zstandard 发布，以及无写入的当前读取。
+ضيق تجميع stream اختبار ثابت text،reasoning،tool argument،raw chunk، ختم الوقت بين فصل، صيغة خطأ record و قسم مغادرة snapshot دقيق تراكم تراكم و توسيع.v1 إلى v2 اختبار تغطية نجاح و فشل attempt، تسليم خطأ، سري تجميع ترتيب رقم و مرجع إعادة خريطة، مصدر ترتيب رقم title framing،seed قطع نقطة إدراج دخول و قطع قسم رفض، صارم إطار مصدر و هدف تحقق، كل سطر واحد حدث v2 تحرير رمز، و backend توافق source-event range، أصلي و Zstandard إصدار، و بلا كتابة حالي قراءة.
 
-合并前的 performance acceptance 在三轮、100 组 warmup pair 与 600 组 measured pair 下，针对同一批已经解析的物理 row，把静态 catalog routing 与直接 released-v2 restoration 比较；它不比较 v1 与 v2，也不计入 backend I/O。每个 pooled median 与 p95 regression 都保持在 5% 预算以内，最差 p95 regression 为 3.150%。
+دمج قبل performance acceptance في ثلاثة جولة،100 مجموعة warmup pair و 600 مجموعة measured pair تحت، إبرة مقابل نفس دفعة قد تحليل شيء إدارة row، يأخذ ساكن حالة catalog routing و مباشر released-v2 restoration مقارنة مقارنة؛ هو لا مقارنة مقارنة v1 و v2، أيضا لا حساب دخول backend I/O. كل pooled median و p95 regression كل إبقاء في 5% ميزانية بـ داخل، الأكثر فرق p95 regression لـ 3.150%.
 
-Agent-loop 测试固定先持久后 end 的顺序、中断的可见前缀、失败与重试 attempt、abandonment、usage 与 replay metadata。Session Controller 与 Conversation 测试固定实时瞬态显示、重连 baseline、committed settlement 发布与历史回放。Chat 与 Trajectory 测试固定实时 partial 展示和最终 message 的直接投影；TypeScript 与 Python SDK snapshot 固定外部事件表示。
+Agent-loop اختبار ثابت أولا حمل دائم بعد end ترتيب، في قطع مرئي بادئة، فشل و إعادة محاولة attempt،abandonment،usage و replay metadata.Session Controller و Conversation اختبار ثابت فوري لحظة حالة عرض، إعادة وصل baseline،committed settlement إصدار و تاريخ إعادة تشغيل.Chat و Trajectory اختبار ثابت فوري partial عرض و نهائي message مباشر إسقاط؛TypeScript و Python SDK snapshot ثابت خارجي حدث يمثل.
 
-## 备选方案
+## تجهيز اختيار خطة
 
-**只持久化组装后的成功 message。** 这会丢失部分失败输出、时间、token 边界、没有 message 的 attempt usage，以及精确确定性 replay。`assistant/attempt` 与嵌入式紧凑 stream 会保留这些事实，且不把它们加入模型历史。
+**فقط حفظ دائم تجميع بعد نجاح message.** هذا سوف فقد فقد جزء فشل إخراج، وقت،token حد، لا يوجد message attempt usage، و دقيق تحديد صفة replay.`assistant/attempt` و تضمين دخول صيغة ضيق تجميع stream سوف إبقاء هذه واقع، كما لا يأخذ هو جمع إضافة دخول نموذج تاريخ.
 
-**保留顶层 chunk，只打包物理行。** 这会保留 v1 逻辑表示，却让序号密度、遥测量、wire 信封、Client entry 与消费方 dispatch 继续与 token 数成正比。历史编解码器仍然解码该表示；它不是当前事件模型。
+**إبقاء قمة طبقة chunk، فقط تحزيم شيء إدارة سطر.** هذا سوف إبقاء v1 منطق يمثل، لكن يجعل ترتيب رقم سري درجة، بعيد قياس كمية،wire معلومة غلاف،Client entry و مستهلك dispatch متابعة و token عدد صار صحيح مقارنة. تاريخ تحرير حل رمز جهاز ما زال حل رمز هذا يمثل؛ هو لا هو حالي حدث نموذج.
 
-**通过历史 API 传递 packed chunk row。** 这会减少 v1 的 wire 与 Client 工作，却让 Client 拥有第二套事件词汇，并让传输继续与 token-row 基数耦合。当前 API 携带标量持久 settlement，并使用独立的实时瞬态 stream。
+**عبر تاريخ API نقل تمرير packed chunk row.** هذا سوف نقص قليل v1 wire و Client عمل، لكن يجعل Client يملك ثاني طقم حدث مفردات، و يجعل نقل متابعة و token-row أساس عدد اقتران دمج. حالي API يحمل علامة كمية حمل دائم settlement، و استخدام مستقل فوري لحظة حالة stream.
 
-**在 Session Controller 中删除嵌入式 stream。** 这会减少 Client 保留的内存，却会引入第二种持久事件类型，并让面向传输的 owner 决定展示消费方需要哪些证据。实测瓶颈来自重复展开，因此由各 UI 消费方决定是否检查原样传递的 settlement。
+**في Session Controller في حذف تضمين دخول صيغة stream.** هذا سوف نقص قليل Client إبقاء داخل تخزين، لكن سوف جذب دخول ثاني نوع حمل دائم حدث نوع، و يجعل موجه إلى نقل owner قرار عرض مستهلك حاجة أي بعض دليل. فعلي قياس زجاجة عنق قدوم ذاتي تكرار توسيع، لذلك من كل UI مستهلك قرار هل فحص أصل مثال نقل تمرير settlement.
 
-**把 stream 存在 sidecar 或 replay-only fixture 中。** 这会把一个 attempt 的 message 与证据拆给不同持久性 owner，也无法让普通恢复 Session 获得相同的失败输出与时间事实。settlement 是原子 owner。
+**يأخذ stream وجود sidecar أو replay-only fixture في.** هذا سوف يأخذ واحد attempt message و دليل تفكيك إعطاء مختلف حمل دائم صفة owner، أيضا لا يمكن يجعل عادي استعادة Session نيل نيل نفسه فشل إخراج و وقت واقع.settlement هو أصل فرعي owner.
 
-**把被消费 chunk 的引用重定向到其 settlement。** Chunk 与 attempt settlement 不是可互换事实。拒绝可以防止迁移悄然改变插件自有引用的含义。
+**يأخذ يتم إزالة استهلاك chunk مرجع إعادة تحديد نحو إلى ذلك settlement.** Chunk و attempt settlement لا هو يمكن متبادل تبديل واقع. رفض يمكن منع توقف ترحيل صامت لكن تغيير إضافة ذاتي لديه مرجع يحتوي معنى.
 
-## 后果
+## عاقبة
 
-当前日志、遥测与历史页按模型 attempt 而非 token chunk 扩展，同时在每个 settlement 内保留精确 stream 证据。Client event window 保留这份紧凑证据，但 Chat 与 Trajectory 的 Assistant node 不会把 settled stream 展开成逐 delta 对象。实时呈现保持增量，并且有意仅存在于进程内。
+حالي سجل، بعيد قياس و تاريخ صفحة حسب نموذج attempt بينما غير token chunk توسيع، معا في كل settlement داخل إبقاء دقيق stream دليل.Client event window إبقاء هذا نسخة ضيق تجميع دليل، لكن Chat و Trajectory Assistant node لن يأخذ settled stream توسيع صار تدريجي delta كائن. فوري عرض إبقاء زيادة كمية، و كما متعمد فقط وجود في عملية داخل.
 
-v1 的顶层 chunk 可能在 attempt 结束前由带缓冲的持久化 writer 刷盘；与之不同，v2 在 settlement 之前没有持久 attempt 证据。如果进程或主机在 settlement 前硬中断，完整的 in-flight stream 都会丢失；`agent/assistant-stream` 不是 write-ahead log。这项取舍避免为实时输出增加第二个持久性 owner。
+v1 قمة طبقة chunk ممكن في attempt انتهاء قبل من حمل مؤقت اندفاع حفظ دائم writer تحديث قرص؛ و لـ مختلف،v2 في settlement قبل لا يوجد حمل دائم attempt دليل. إذا عملية أو رئيسي آلة في settlement قبل صلب في قطع، كامل in-flight stream كل سوف فقد فقد؛`agent/assistant-stream` لا هو write-ahead log. هذا بند أخذ ترك تجنب تجنب لـ فوري إخراج زيادة ثاني عدد حمل دائم صفة owner.
 
-一个 settlement 可能很大，v1 到 v2 迁移会物化完整产物及其序号映射。封闭的 Alpha 清单会拒绝未知 v1 事件与未声明引用，而不会猜测。需要单独 chunk 的消费方调用 `expandAssistantStream()`，并且绝不能从 `agent/assistant-stream` 推断持久性。
+واحد settlement ممكن جدا كبير،v1 إلى v2 ترحيل سوف شيء تحويل كامل ناتج و ذلك ترتيب رقم خريطة. غلاف إغلاق Alpha بيان سوف رفض لم معرفة v1 حدث و لم إعلان مرجع، بينما لن تخمين قياس. حاجة مفرد وحيد chunk مستهلك استدعاء `expandAssistantStream()`، و كما أبدا قدرة من `agent/assistant-stream` دفع قطع حمل دائم صفة.
 
-迁移会改变被消费 v1 chunk 之后的序号，因此每个同 Session 引用都必须属于显式改写规则。该约束有意让未来的基数变化迁移保持昂贵，并防止格式链执行无声的语义重定向。
+ترحيل سوف تغيير يتم إزالة استهلاك v1 chunk بعد ترتيب رقم، لذلك كل نفس Session مرجع كل يجب يخص صريح تعديل كتابة قاعدة. هذا قيد متعمد يجعل لم قدوم أساس عدد تغير ترحيل إبقاء مرتفع ثمين، و منع توقف صيغة سلسلة تنفيذ بلا صوت دلالة إعادة تحديد نحو.

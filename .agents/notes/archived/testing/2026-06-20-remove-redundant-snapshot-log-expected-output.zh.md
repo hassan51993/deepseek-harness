@@ -1,38 +1,38 @@
-# Agent Note: 使用 `session.jsonl` 作为唯一的快照会话日志产物
+# Agent Note: استخدام `session.jsonl` بصفة وحيد لقطة جلسة سجل ناتج
 
 Status: implemented
 Archived: 2026-07-26
 
-[English](2026-06-20-remove-redundant-snapshot-log-expected-output.md) | 中文
+[English](2026-06-20-remove-redundant-snapshot-log-expected-output.md) | العربية
 
-## 问题
+## مشكلة
 
-驱动模型的 ACP（Agent Client Protocol）快照场景同时包含 `session.jsonl` 和 `session.expected.jsonl`。对于普通记录场景，`session.jsonl` 是从真实运行采集的重放 fixture（测试前置数据）；重放测试会规范化新持久化的日志，并将其与 `session.expected.jsonl` 比较。在当前 fixture 中，普通记录场景的两份规范化日志完全相同。
+قيادة نموذج ACP(Agent Client Protocol) لقطة مشهد معا يتضمن `session.jsonl` و `session.expected.jsonl`. مقابل في عادي سجل مشهد،`session.jsonl` هو من حقيقي تشغيل أخذ تجميع إعادة وضع fixture(اختبار قبل وضع بيانات) ؛ إعادة وضع اختبار سوف مواصفة تحويل جديد حفظ دائم سجل، و سوف ذلك و `session.expected.jsonl` مقارنة مقارنة. في حالي fixture في، عادي سجل مشهد اثنان نسخة مواصفة تحويل سجل تماما نفسه.
 
-手工编写的 override 场景（`error-finish`、`cancel`）目前使用 `replay.override.json` 驱动模型行为，并把 `session.jsonl` 保留为最小 dummy fixture，而 `session.expected.jsonl` 存放预期的持久化日志。override 文件是由 `ReplayEntry` 对象组成的 JSON 数组：`{ "kind": "chunks", "chunks": StreamChunk[] }`、`{ "kind": "throw", "chunks": StreamChunk[], "message": string, "code": string }` 或 `{ "kind": "hang" }`。这种拆分同样没有必要：override sidecar 存在时，`llm-replay` 会替换派生脚本，不需要从 `session.jsonl` 取得模型分片，因此 `session.jsonl` 仍可作为场景的预期会话日志产物。
+يد عمل تحرير كتابة override مشهد (`error-finish`،`cancel`) هدف قبل استخدام `replay.override.json` قيادة نموذج سلوك، و يأخذ `session.jsonl` إبقاء لـ الأكثر صغير dummy fixture، بينما `session.expected.jsonl` تخزين وضع مسبق مدة حفظ دائم سجل.override ملف هو من `ReplayEntry` كائن مجموعة صار JSON عدد مجموعة:`{ "kind": "chunks", "chunks": StreamChunk[] }`،`{ "kind": "throw", "chunks": StreamChunk[], "message": string, "code": string }` أو `{ "kind": "hang" }`. هذا نوع تفكيك قسم نفس مثال لا يوجد لا بد يلزم:override sidecar وجود وقت،`llm-replay` سوف استبدال إرسال توليد نص برمجي، لا حاجة من `session.jsonl` أخذ نيل نموذج قسم قطعة، لذلك `session.jsonl` ما زال يمكن بصفة مشهد مسبق مدة جلسة سجل ناتج.
 
-## 决策
+## قرار
 
-彻底移除 `session.expected.jsonl` 概念。每个场景最多只有一个已提交会话日志产物，即 `session.jsonl`：
+تام قاع إزالة `session.expected.jsonl` عام فكرة. كل مشهد الأكثر كثير فقط لديه واحد قد إيداع جلسة سجل ناتج، أي `session.jsonl`:
 
-- 对于录制场景，`session.jsonl` 仍是原始采集的日志。回放仍从中派生模型分片，快照测试将回放运行归一化后的持久化日志与归一化后的 `session.jsonl` 进行比较。
-- 对于手工编写的覆盖场景，`replay.override.json` 驱动模型行为，`session.jsonl` 存放预期产出的会话日志。当覆盖文件存在时，回放适配器不从 fixture 获取模型分片，因此同一个文件既可作为预期日志，又不影响回放行为。
-- 对于无模型场景，`session.jsonl` 可保留为引导 `llm-replay` 所需的最小 fixture；除非场景创建了持久化会话，否则无需进行会话日志比较。
+- مقابل في تسجيل صنع مشهد،`session.jsonl` ما زال هو أصلي أخذ تجميع سجل. إعادة تشغيل ما زال من في إرسال توليد نموذج قسم قطعة، لقطة اختبار سوف إعادة تشغيل تشغيل عودة واحد تحويل بعد حفظ دائم سجل و عودة واحد تحويل بعد `session.jsonl` إجراء مقارنة مقارنة.
+- مقابل في يد عمل تحرير كتابة تغطية مشهد،`replay.override.json` قيادة نموذج سلوك،`session.jsonl` تخزين وضع مسبق مدة إنتاج خروج جلسة سجل. عند تغطية ملف وجود وقت، إعادة تشغيل مهايئ لا من fixture نيل أخذ نموذج قسم قطعة، لذلك نفس عدد ملف حيث يمكن بصفة مسبق مدة سجل، أيضا لا أثر إعادة تشغيل سلوك.
+- مقابل في بلا نموذج مشهد،`session.jsonl` يمكن إبقاء لـ جذب توجيه `llm-replay` الذي يحتاج الأكثر صغير fixture؛ حذف غير مشهد إنشاء حفظ دائم جلسة، لا فإن بلا حاجة إجراء جلسة سجل مقارنة مقارنة.
 
-Stdout 预期输出保持不变；它们是面向编辑器的投影，与会话 fixture 并不重复。
+Stdout مسبق مدة إخراج إبقاء ثابت؛ هو جمع هو موجه إلى تحرير جهاز إسقاط، و جلسة fixture و لا تكرار.
 
-## 曾考虑的替代方案
+## سبق اعتبار بديل خطة
 
-**对两侧基于共享的（回放运行）上下文做归一化**：否决。`normalizeSessionLog` 通过精确字符串匹配擦除 cwd，因此 fixture 中录制的 cwd 不会被擦除，每次比较都会失败。两侧各自基于自身 header 派生的上下文做归一化——下方的实现说明描述了具体机制。
+**مقابل اثنان جانب أساس في مشترك (إعادة تشغيل تشغيل) سياق فعل عودة واحد تحويل**: مرفوض.`normalizeSessionLog` عبر دقيق نص مطابقة مسح حذف cwd، لذلك fixture في تسجيل صنع cwd لن يتم مسح حذف، كل مرة مقارنة مقارنة كل سوف فشل. اثنان جانب كل منها أساس في ذاته header إرسال توليد سياق فعل عودة واحد تحويل——تحت جهة تنفيذ شرح وصف أداة جسم آلية.
 
-## 验证
+## تحقق
 
-快照 harness、fixture、孤立项守卫和文档中都不再出现 `session.expected.jsonl`；对于每个模型场景，快照测试都从 `session.jsonl` 派生预期会话日志；手工编写 sidecar 的场景把预期生成日志提交为 `session.jsonl`，并以 `replay.override.json` 覆盖模型行为；孤立 fixture 守卫知道每种场景类型所需的文件。[ACP 快照测试 Agent Note（agent 决策记录）](2026-06-19-acp-snapshot-tests.md)描述了精简后的 fixture 集合。
+لقطة harness،fixture، منعزل قيام بند حراسة حماية و وثيقة في كل لم يعد ظهور `session.expected.jsonl`؛ مقابل في كل نموذج مشهد، لقطة اختبار كل من `session.jsonl` إرسال توليد مسبق مدة جلسة سجل؛ يد عمل تحرير كتابة sidecar مشهد يأخذ مسبق مدة توليد سجل إيداع لـ `session.jsonl`، و بـ `replay.override.json` تغطية نموذج سلوك؛ منعزل قيام fixture حراسة حماية معرفة طريق كل نوع مشهد نوع الذي يحتاج ملف.[ACP لقطة اختبار Agent Note(agent قرار سجل)](2026-06-19-acp-snapshot-tests.md) وصف دقيق بسيط بعد fixture تجميع دمج.
 
-## 后果
+## عاقبة
 
-评审者失去了一个能在视觉上区分预期持久化日志与重放 fixture 的产物名。stdout 预期输出仍然保护编辑器 transcript（文本记录），而将重放输出与 `session.jsonl` 比较，无需复制文件即可保留循环/持久化回归检查。
+مراجعة من فقد ذهاب واحد قدرة في نظر شعور فوق منطقة قسم مسبق مدة حفظ دائم سجل و إعادة وضع fixture ناتج اسم.stdout مسبق مدة إخراج ما زال حفظ حماية تحرير جهاز transcript(نص سجل) ، بينما سوف إعادة وضع إخراج و `session.jsonl` مقارنة مقارنة، بلا حاجة نسخ ملف يكفي إبقاء حلقة/حفظ دائم ارتداد فحص.
 
-## 实现说明
+## تنفيذ شرح
 
-两侧各自基于自身 header 值做归一化，因为录制与回放具有不同的 id、路径和时间戳。`fixtureContext()` 从 fixture 的 header 派生上下文，使已归一化的 fixture 具有幂等性。会话日志使用普通相等比较而非文件快照更新，因此比较过程不会改写 fixture。
+اثنان جانب كل منها أساس في ذاته header قيمة فعل عودة واحد تحويل، لأن تسجيل صنع و إعادة تشغيل أداة لديه مختلف id، مسار و ختم الوقت.`fixtureContext()` من fixture header إرسال توليد سياق، جعل قد عودة واحد تحويل fixture أداة لديه قوة انتظار صفة. جلسة سجل استخدام عادي متبادل انتظار مقارنة مقارنة بينما غير ملف لقطة تحديث، لذلك مقارنة مقارنة مرور مسار لن تعديل كتابة fixture.

@@ -1,51 +1,51 @@
 ---
-description: "面向部署方与维护者的 bash 能力家族说明，用于选择并组合 shell 执行器、沙箱化与面向模型的 bash 与 pwsh 工具。"
+description: "موجه إلى نشر جهة و صيانة من bash قدرة بيت عائلة شرح، لأجل اختيار و تركيب shell منفذ، صندوق رملي تحويل و موجه إلى نموذج bash و pwsh أداة."
 kind: "package-group"
 ---
 
-# shell/ — bash 能力家族
+# shell/ — bash قدرة بيت عائلة
 
-[English](README.md) | 中文
+[English](README.md) | العربية
 
-## 概述
+## عام وصف
 
-shell 组为 agent（智能体）提供命令执行能力：运行前台命令并读取其有界输出，或启动后台进程并轮询它——在 POSIX 上用 Bash，在 Windows 上用 PowerShell。每个组合恰好挂载一个执行器实现；沙箱执行器会通过沙箱能力限制每条命令，面向模型的 `bash` 与 `pwsh` 工具则位于所挂载执行器之上。POSIX 选择 Bash 执行器，Windows 选择 PowerShell 执行器；命令需要文件级隔离时选择沙箱变体。
+shell مجموعة لـ agent(ذكي جسم) توفير أمر تنفيذ قدرة: تشغيل قبل منصة أمر و قراءة ذلك محدود إخراج، أو بدء خلفية عملية و جولة استفسار هو——في POSIX فوق استخدام Bash، في Windows فوق استخدام PowerShell. كل تركيب تماما جيد تركيب واحد منفذ تنفيذ؛ صندوق رملي منفذ سوف عبر صندوق رملي قدرة حد كل بند أمر، موجه إلى نموذج `bash` و `pwsh` أداة فإن يقع في الذي تركيب منفذ لـ فوق.POSIX اختيار Bash منفذ،Windows اختيار PowerShell منفذ؛ أمر حاجة ملف درجة عزل وقت اختيار صندوق رملي تغيير جسم.
 
-## 目录
+## دليل
 
-- [包](#packages)
-- [相关文档](#related-documentation)
-- [开发备注](#dev-note)
+- [حزمة](#packages)
+- [متبادل صلة وثيقة](#related-documentation)
+- [ملاحظة تطوير](#dev-note)
 
 -----
 
 <a id="packages"></a>
-## 包
+## حزمة
 
-| 包 | 职责 | ctx key |
+| حزمة | مسؤولية | ctx key |
 |---|---|---|
-| [`shell`](shell/README.zh.md) | 定义执行器约定：前台运行、后台句柄与请求解析 | `ctx.shell` |
-| [`bash-local`](bash-local/README.zh.md) | 在 POSIX 上以全新 `bash -c` 进程运行 Bash 命令 | 注册 `ctx.shell` |
-| [`bash-sandbox`](bash-sandbox/README.zh.md) | 通过沙箱能力限制 Bash 命令运行，并把拒绝报告为事实 | 注册 `ctx.shell` |
-| [`pwsh-local`](pwsh-local/README.zh.md) | 在 Windows 上以全新 `pwsh -Command` 进程运行 PowerShell 命令 | 注册 `ctx.shell` |
-| [`pwsh-sandbox`](pwsh-sandbox/README.zh.md) | 通过沙箱能力限制 PowerShell 命令运行 | 注册 `ctx.shell` |
-| [`shell-env`](shell-env/README.zh.md) | 提供每条 shell 命令都会收到的受管 `DSH_*` 环境 | `ctx.shellEnv` |
-| [`tool-bash`](tool-bash/README.zh.md) | 以 `bash` 工具向模型公开 Bash 执行与后台任务 | 注册到 `ctx.tools` |
-| [`tool-bash-persistent`](tool-bash-persistent/README.zh.md) | 在单个限定所有者范围的持久 Bash 会话中运行模型的 shell 调用 | 注册到 `ctx.tools` |
-| [`tool-pwsh`](tool-pwsh/README.zh.md) | 以 `pwsh` 工具向模型公开 PowerShell 执行 | 注册到 `ctx.tools` |
-| [`tool-pwsh-persistent`](tool-pwsh-persistent/README.zh.md) | 在单个限定所有者范围的持久 PowerShell 会话中运行模型的 shell 调用 | 注册到 `ctx.tools` |
+| [`shell`](shell/README.zh.md) | تعريف منفذ اتفاق: قبل منصة تشغيل، خلفية جملة مقبض و طلب تحليل | `ctx.shell` |
+| [`bash-local`](bash-local/README.zh.md) | في POSIX فوق بـ كل جديد `bash -c` عملية تشغيل Bash أمر | تسجيل `ctx.shell` |
+| [`bash-sandbox`](bash-sandbox/README.zh.md) | عبر صندوق رملي قدرة حد Bash أمر تشغيل، و يأخذ رفض تقرير إبلاغ لـ واقع | تسجيل `ctx.shell` |
+| [`pwsh-local`](pwsh-local/README.zh.md) | في Windows فوق بـ كل جديد `pwsh -Command` عملية تشغيل PowerShell أمر | تسجيل `ctx.shell` |
+| [`pwsh-sandbox`](pwsh-sandbox/README.zh.md) | عبر صندوق رملي قدرة حد PowerShell أمر تشغيل | تسجيل `ctx.shell` |
+| [`shell-env`](shell-env/README.zh.md) | توفير كل بند shell أمر كل سوف استلام إلى تلقي إدارة `DSH_*` بيئة | `ctx.shellEnv` |
+| [`tool-bash`](tool-bash/README.zh.md) | بـ `bash` أداة نحو نموذج عام Bash تنفيذ و خلفية مهمة | تسجيل إلى `ctx.tools` |
+| [`tool-bash-persistent`](tool-bash-persistent/README.zh.md) | في مفرد عدد حد تحديد كل من نطاق حمل دائم Bash جلسة في تشغيل نموذج shell استدعاء | تسجيل إلى `ctx.tools` |
+| [`tool-pwsh`](tool-pwsh/README.zh.md) | بـ `pwsh` أداة نحو نموذج عام PowerShell تنفيذ | تسجيل إلى `ctx.tools` |
+| [`tool-pwsh-persistent`](tool-pwsh-persistent/README.zh.md) | في مفرد عدد حد تحديد كل من نطاق حمل دائم PowerShell جلسة في تشغيل نموذج shell استدعاء | تسجيل إلى `ctx.tools` |
 
-profile 层恰好选择一个执行器实现（win32 层会把 POSIX 行换成 pwsh 行；同时挂载两个会因服务重复注册而在加载期失败）以及所需的面向模型工具。沙箱化组合还会选择一个 `ctx.sandbox` 提供方与 `ctx.sandboxPolicy`；[base 组合包](../bundle/base/cordis.patch.yml)负责随产品交付的接线配置。
+profile طبقة تماما جيد اختيار واحد منفذ تنفيذ (win32 طبقة سوف يأخذ POSIX سطر تبديل صار pwsh سطر؛ معا تركيب اثنان عدد سوف بسبب خدمة تكرار تسجيل بينما في تحميل مدة فشل) و الذي يحتاج موجه إلى نموذج أداة. صندوق رملي تحويل تركيب أيضا سوف اختيار واحد `ctx.sandbox` مزود و `ctx.sandboxPolicy`؛[base تركيب حزمة](../bundle/base/cordis.patch.yml) مسؤول مع منتج تسليم وصل خط إعداد.
 
 -----
 
 <a id="related-documentation"></a>
-## 相关文档
+## متبادل صلة وثيقة
 
-- [Bash 执行器子系统](../../docs/subsystems/shell.zh.md) —— 共享的请求/spec 词汇、结果、后台进程与完整的服务约定。
-- [沙箱子系统](../../docs/subsystems/sandbox.zh.md) —— 沙箱执行器所消费的隔离能力。
+- [Bash منفذ فرعي نظام](../../docs/subsystems/shell.zh.md) —— مشترك طلب/spec مفردات، نتيجة، خلفية عملية و كامل خدمة اتفاق.
+- [صندوق رملي فرعي نظام](../../docs/subsystems/sandbox.zh.md) —— صندوق رملي منفذ الذي إزالة استهلاك عزل قدرة.
 
 <a id="dev-note"></a>
-## 开发备注
+## ملاحظة تطوير
 
-无。
+بلا.
