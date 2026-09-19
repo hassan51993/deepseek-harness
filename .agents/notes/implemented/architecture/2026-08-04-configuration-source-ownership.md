@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-04-configuration-source-ownership.zh.md)
+English | [العربية](2026-08-04-configuration-source-ownership.ar.md)
 
 ## Problem
 

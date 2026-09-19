@@ -4,7 +4,7 @@ description: "Separate test binary uploads from operator-authorized fixed-feed p
 
 # Test update upload and publication
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

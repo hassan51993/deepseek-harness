@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-25-feedback-gated-telemetry-default.zh.md)
+English | [العربية](2026-08-25-feedback-gated-telemetry-default.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-browser-use-provider-registration.zh.md)
+English | [العربية](2026-09-12-browser-use-provider-registration.ar.md)
 
 ## Problem
 

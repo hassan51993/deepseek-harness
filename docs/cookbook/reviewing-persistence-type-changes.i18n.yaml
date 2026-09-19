@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/reviewing-persistence-type-changes.md
 reviewing-persistence-type-changes.md: 881bc689af656f0c4976e909a49848e38d53c453
-reviewing-persistence-type-changes.zh.md: f1961013886cfab1abdbd7e2cd7e09bcfce2101d
+reviewing-persistence-type-changes.ar.md: f1961013886cfab1abdbd7e2cd7e09bcfce2101d

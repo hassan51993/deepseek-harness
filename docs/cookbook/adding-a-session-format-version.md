@@ -1,6 +1,6 @@
 # Cookbook: adding a Session log format version
 
-English | [العربية](adding-a-session-format-version.zh.md)
+English | [العربية](adding-a-session-format-version.ar.md)
 
 ## Summary
 

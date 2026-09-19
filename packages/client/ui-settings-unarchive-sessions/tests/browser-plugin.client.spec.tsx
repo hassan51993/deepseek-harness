@@ -12,7 +12,7 @@ import { ArchivedSessionsSection } from '../src/client/ArchivedSessionsSection.t
 import type { ArchivedSessionsSectionInjected } from '../src/client/ArchivedSessionsSection.tsx'
 import { apply as hostApply } from '../src/index.ts'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 afterEach(cleanup)
 
 async function bench() {
@@ -79,7 +79,7 @@ describe('ui-settings-unarchive-sessions browser plugin', () => {
 
     await fiber.dispose()
     expect(b.slots.entries('settings.section')).toHaveLength(0)
-    expect(() => b.locale.register('settings.archivedSessions', 'zh', {})).not.toThrow()
+    expect(() => b.locale.register('settings.archivedSessions', 'ar', {})).not.toThrow()
     await b.ctx.fiber.dispose()
   })
 })

@@ -3,8 +3,8 @@
 /** Namespace for Chat target, node, statistics, and details copy. */
 export const NS = 'chat'
 
-/** Simplified Chinese dictionary and key-set source of truth. */
-export const zh = {
+/** Arabic dictionary and key-set source of truth. */
+export const ar = {
   'view.chat': 'محادثة',
   'number.groupSeparator': ',',
   'duration.compactSeconds': '{seconds}ثانية',
@@ -112,9 +112,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Chat dictionary key union. */
-export type ChatKey = keyof typeof zh
+export type ChatKey = keyof typeof ar
 
-/** English dictionary, checked against the Chinese key set. */
+/** English dictionary, checked against the Arabic key set. */
 export const en = {
   'view.chat': 'Chat',
   'number.groupSeparator': ',',

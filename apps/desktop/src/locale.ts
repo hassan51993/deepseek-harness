@@ -1,4 +1,4 @@
-/** Typed English and Chinese copy owned by the Electron shell. */
+/** Typed English and Arabic copy owned by the Electron shell. */
 
 export const en = {
   application: 'Application',
@@ -91,7 +91,7 @@ export const en = {
 /** Every Desktop locale supplies the complete English key set. */
 export type DesktopMessages = { readonly [Key in keyof typeof en]: string }
 
-export const zh = {
+export const ar = {
   application: 'تطبيق',
   aboutMenu: 'صلة في DeepSeek Harness',
   edit: 'تحرير',
@@ -181,14 +181,14 @@ export const zh = {
 
 /** Locale payload exposed to the Desktop-owned renderer. */
 export interface DesktopLocale {
-  readonly id: 'en' | 'zh-CN'
+  readonly id: 'en' | 'ar-SA'
   readonly messages: DesktopMessages
 }
 
 /** Resolve Electron's locale to one shipped Desktop dictionary. */
 export function resolveDesktopLocale(locale: string): DesktopLocale {
-  return locale.toLowerCase().startsWith('zh')
-    ? { id: 'zh-CN', messages: zh }
+  return locale.toLowerCase().startsWith('ar')
+    ? { id: 'ar-SA', messages: ar }
     : { id: 'en', messages: en }
 }
 

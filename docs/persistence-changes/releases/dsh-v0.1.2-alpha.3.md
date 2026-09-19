@@ -5,7 +5,7 @@ kind: persistence-release
 
 # Persistence release: dsh-v0.1.2-alpha.3
 
-English | [العربية](dsh-v0.1.2-alpha.3.zh.md)
+English | [العربية](dsh-v0.1.2-alpha.3.ar.md)
 
 ## Summary
 

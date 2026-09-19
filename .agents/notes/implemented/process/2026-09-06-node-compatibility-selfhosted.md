@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-06-node-compatibility-selfhosted.zh.md)
+English | [العربية](2026-09-06-node-compatibility-selfhosted.ar.md)
 
 ## Problem
 

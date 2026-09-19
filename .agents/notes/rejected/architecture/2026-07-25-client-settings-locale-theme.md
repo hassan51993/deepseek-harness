@@ -2,7 +2,7 @@
 
 Status: rejected — closed as a proposal: the shipped ui-settings, locale, and ui-theme packages and their READMEs own the design
 
-English | [العربية](2026-07-25-client-settings-locale-theme.zh.md)
+English | [العربية](2026-07-25-client-settings-locale-theme.ar.md)
 
 ## Problem
 
@@ -80,12 +80,12 @@ export interface ThemeSnapshot {
 }
 
 export interface LocaleDefinition {
-  id: 'zh' | 'en'
+  id: 'ar' | 'en'
   label: string
 }
 
 export interface LocaleSnapshot {
-  active: 'zh' | 'en'
+  active: 'ar' | 'en'
   locales: readonly LocaleDefinition[]
   revision: number
 }

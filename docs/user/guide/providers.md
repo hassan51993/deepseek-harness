@@ -1,6 +1,6 @@
 # Configure models
 
-English | [العربية](providers.zh.md)
+English | [العربية](providers.ar.md)
 
 This guide assumes you started the Web UI through the [root README](../../../README.md#run). Model changes take effect on the next request without restarting the server.
 

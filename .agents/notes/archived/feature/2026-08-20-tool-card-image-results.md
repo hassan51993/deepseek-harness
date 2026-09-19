@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-20-tool-card-image-results.zh.md)
+English | [العربية](2026-08-20-tool-card-image-results.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-07-06-recallable-compaction.zh.md)
+English | [العربية](2026-07-06-recallable-compaction.ar.md)
 
 ## Problem
 

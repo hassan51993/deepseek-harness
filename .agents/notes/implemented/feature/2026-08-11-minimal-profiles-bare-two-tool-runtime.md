@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-11-minimal-profiles-bare-two-tool-runtime.zh.md)
+English | [العربية](2026-08-11-minimal-profiles-bare-two-tool-runtime.ar.md)
 
 ## Problem
 

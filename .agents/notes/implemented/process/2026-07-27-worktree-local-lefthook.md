@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-27-worktree-local-lefthook.zh.md)
+English | [العربية](2026-07-27-worktree-local-lefthook.ar.md)
 
 ## Problem
 

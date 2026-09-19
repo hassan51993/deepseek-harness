@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-06-17-filesystem-capability-seam.zh.md)
+English | [العربية](2026-06-17-filesystem-capability-seam.ar.md)
 
 ## Problem
 

@@ -6,7 +6,7 @@ import { renderPersistencePair, type PersistenceArtifact } from './persistence-a
 import type { PersistenceFormatEntry, PersistenceFormats } from './persistence-formats.ts'
 import { renderPersistenceSchemaDefinitions, renderPersistenceSchemaIndex } from './render-persistence-schema.ts'
 
-type Language = 'en' | 'zh'
+type Language = 'en' | 'ar'
 
 function replaceRegion(source: string, name: string, content: string, path: string): string {
   const start = `<!-- persistence-format-${name}:start -->`
@@ -40,7 +40,7 @@ function historicalSchema(entry: PersistenceFormatEntry, language: Language): st
 
 function formatIndex(formats: PersistenceFormats, language: Language): string {
   const path = (target: string): string => posix.relative('docs/persistence-changes/historical-formats',
-    language === 'zh' && target.endsWith('.md') ? target.replace(/\.md$/u, '.zh.md') : target)
+    language === 'ar' && target.endsWith('.md') ? target.replace(/\.md$/u, '.ar.md') : target)
   return [
     language === 'en' ? '| Format | Source | Reference | Machine schema | Roots / types |' : '| صيغة | مصدر | مشاركة اعتبار وثيقة | آلة جهاز schema | أصل نوع / نوع |',
     '|---|---|---|---|---|',
@@ -63,16 +63,16 @@ export function persistenceFormatFactArtifacts(root: string, formats: Persistenc
   const artifacts: PersistenceArtifact[] = []
   for (const entry of formats.entries.filter(entry => entry.version < formats.currentVersion)) {
     const render = (language: Language): string => {
-      const path = language === 'en' ? entry.document : entry.document.replace(/\.md$/u, '.zh.md')
+      const path = language === 'en' ? entry.document : entry.document.replace(/\.md$/u, '.ar.md')
       return replaceRegion(readFileSync(join(root, path), 'utf8'), 'schema', historicalSchema(entry, language), path)
     }
-    artifacts.push(...renderPersistencePair(root, entry.document, render('en'), render('zh')))
+    artifacts.push(...renderPersistencePair(root, entry.document, render('en'), render('ar')))
   }
   const index = 'docs/persistence-changes/historical-formats/README.md'
   const renderIndex = (language: Language): string => {
-    const path = language === 'en' ? index : index.replace(/\.md$/u, '.zh.md')
+    const path = language === 'en' ? index : index.replace(/\.md$/u, '.ar.md')
     return replaceRegion(readFileSync(join(root, path), 'utf8'), 'index', formatIndex(formats, language), path)
   }
-  artifacts.push(...renderPersistencePair(root, index, renderIndex('en'), renderIndex('zh')))
+  artifacts.push(...renderPersistencePair(root, index, renderIndex('en'), renderIndex('ar')))
   return artifacts
 }

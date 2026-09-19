@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-09-concrete-prose-names-actors-and-recorded-facts.zh.md)
+English | [العربية](2026-08-09-concrete-prose-names-actors-and-recorded-facts.ar.md)
 
 ## Problem
 

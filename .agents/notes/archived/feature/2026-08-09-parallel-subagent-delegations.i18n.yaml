@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-09-parallel-subagent-delegations.md
 2026-08-09-parallel-subagent-delegations.md: c252f9395014a889b66f5b70ee5ebbc9782827a6
-2026-08-09-parallel-subagent-delegations.zh.md: 575d5babb53d9524caed43cd1dbe3e91417e9f16
+2026-08-09-parallel-subagent-delegations.ar.md: 575d5babb53d9524caed43cd1dbe3e91417e9f16

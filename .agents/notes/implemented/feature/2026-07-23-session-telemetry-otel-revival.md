@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-23-session-telemetry-otel-revival.zh.md)
+English | [العربية](2026-07-23-session-telemetry-otel-revival.ar.md)
 
 ## Problem
 

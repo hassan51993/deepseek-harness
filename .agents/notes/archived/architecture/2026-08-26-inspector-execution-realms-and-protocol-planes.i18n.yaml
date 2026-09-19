@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-26-inspector-execution-realms-and-protocol-planes.md
 2026-08-26-inspector-execution-realms-and-protocol-planes.md: 8d63fe12a73aa8c622ac7e352c8088f690d6f9e9
-2026-08-26-inspector-execution-realms-and-protocol-planes.zh.md: b47ea470ecb997bf2167a9f3742ab4b815fd8355
+2026-08-26-inspector-execution-realms-and-protocol-planes.ar.md: b47ea470ecb997bf2167a9f3742ab4b815fd8355

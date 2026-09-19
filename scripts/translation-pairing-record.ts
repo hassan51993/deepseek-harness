@@ -6,8 +6,8 @@ import { basename } from 'node:path'
 export interface TranslationPairPaths {
   /** English document path. */
   source: string
-  /** Simplified Chinese document path. */
-  zh: string
+  /** Arabic document path. */
+  ar: string
   /** Generated consistency-record path. */
   meta: string
 }
@@ -16,8 +16,8 @@ export interface TranslationPairPaths {
 export interface TranslationPairingRecord {
   /** Git blob hash of the English document. */
   sourceHash: string
-  /** Git blob hash of the Simplified Chinese document. */
-  zhHash: string
+  /** Git blob hash of the Arabic document. */
+  arHash: string
 }
 
 const META_LINE = /^([^:#]+\.md): ([0-9a-f]{40})$/
@@ -29,12 +29,12 @@ const META_LINE = /^([^:#]+\.md): ([0-9a-f]{40})$/
  * @returns The complete three-path pair.
  */
 export function translationPairPaths(source: string): TranslationPairPaths {
-  if (!source.endsWith('.md') || source.endsWith('.zh.md')) {
+  if (!source.endsWith('.md') || source.endsWith('.ar.md')) {
     throw new Error(`expected an English Markdown path, received ${JSON.stringify(source)}`)
   }
   return {
     source,
-    zh: source.replace(/\.md$/, '.zh.md'),
+    ar: source.replace(/\.md$/, '.ar.md'),
     meta: source.replace(/\.md$/, '.i18n.yaml'),
   }
 }
@@ -71,9 +71,9 @@ export function parseTranslationPairingRecord(
     hashes.set(match[1], match[2])
   }
   const sourceHash = hashes.get(basename(paths.source))
-  const zhHash = hashes.get(basename(paths.zh))
-  if (hashes.size !== 2 || sourceHash === undefined || zhHash === undefined) return undefined
-  return { sourceHash, zhHash }
+  const arHash = hashes.get(basename(paths.ar))
+  if (hashes.size !== 2 || sourceHash === undefined || arHash === undefined) return undefined
+  return { sourceHash, arHash }
 }
 
 /**
@@ -93,7 +93,7 @@ export function renderTranslationPairingRecord(
     '# after editing either side, bring the other along and re-record with:',
     `#   pnpm run verify-translation-pairing --write ${paths.source}`,
     `${basename(paths.source)}: ${record.sourceHash}`,
-    `${basename(paths.zh)}: ${record.zhHash}`,
+    `${basename(paths.ar)}: ${record.arHash}`,
     '',
   ].join('\n')
 }

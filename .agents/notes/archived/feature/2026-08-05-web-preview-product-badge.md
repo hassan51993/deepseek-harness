@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-05-web-preview-product-badge.zh.md)
+English | [العربية](2026-08-05-web-preview-product-badge.ar.md)
 
 ## Problem
 

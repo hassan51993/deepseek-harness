@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-01-v2-embedded-assistant-streams.zh.md)
+English | [العربية](2026-09-01-v2-embedded-assistant-streams.ar.md)
 
 ## Problem
 

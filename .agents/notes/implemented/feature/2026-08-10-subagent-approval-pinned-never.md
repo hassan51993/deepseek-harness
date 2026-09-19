@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-10-subagent-approval-pinned-never.zh.md)
+English | [العربية](2026-08-10-subagent-approval-pinned-never.ar.md)
 
 ## Problem
 

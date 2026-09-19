@@ -5,7 +5,7 @@ kind: "package-group"
 
 # document/ — Office conversion
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

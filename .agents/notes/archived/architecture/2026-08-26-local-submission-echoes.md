@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-26-local-submission-echoes.zh.md)
+English | [العربية](2026-08-26-local-submission-echoes.ar.md)
 
 ## Problem
 

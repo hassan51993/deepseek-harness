@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-08-03-tui-long-session-render-costs.zh.md)
+English | [العربية](2026-08-03-tui-long-session-render-costs.ar.md)
 
 ## Problem
 

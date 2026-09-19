@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-31-fail-loud-releases-the-terminal.zh.md)
+English | [العربية](2026-07-31-fail-loud-releases-the-terminal.ar.md)
 
 ## Problem
 

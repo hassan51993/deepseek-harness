@@ -36,7 +36,7 @@ describe('web e2e: plugin configuration pages', () => {
       profile: { packages: [{ dir: join(FIXTURE_PLUGINS, 'fixture-live-client') }] },
     })
     browser = await chromium.launch()
-    // Chinese browser: the pages assert the localized copy the client derives
+    // Arabic browser: the pages assert the localized copy the client derives
     // from it, as the rest of the settings surface does.
     page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
     tripwire = watchConsole(page)

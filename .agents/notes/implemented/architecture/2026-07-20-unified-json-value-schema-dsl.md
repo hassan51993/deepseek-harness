@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-20-unified-json-value-schema-dsl.zh.md)
+English | [العربية](2026-07-20-unified-json-value-schema-dsl.ar.md)
 
 ## Problem
 

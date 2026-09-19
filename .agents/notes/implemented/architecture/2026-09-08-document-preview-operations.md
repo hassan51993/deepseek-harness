@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-document-preview-operations.zh.md)
+English | [العربية](2026-09-08-document-preview-operations.ar.md)
 
 ## Problem
 

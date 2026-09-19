@@ -1,5 +1,5 @@
 /** Markdown implementation labels and primitive chrome. */
-export const zh = {
+export const ar = {
   'viewer.label': 'Markdown',
   'code.copy': 'نسخ',
   'code.copied': 'قد نسخ',
@@ -7,9 +7,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Markdown namespace keys. */
-export type MarkdownPreviewKey = keyof typeof zh
+export type MarkdownPreviewKey = keyof typeof ar
 
-/** English labels, paired with the Chinese key set. */
+/** English labels, paired with the Arabic key set. */
 export const en = {
   'viewer.label': 'Markdown',
   'code.copy': 'Copy',

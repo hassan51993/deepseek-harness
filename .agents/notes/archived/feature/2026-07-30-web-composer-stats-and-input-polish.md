@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-07
 
-English | [العربية](2026-07-30-web-composer-stats-and-input-polish.zh.md)
+English | [العربية](2026-07-30-web-composer-stats-and-input-polish.ar.md)
 
 ## Problem
 

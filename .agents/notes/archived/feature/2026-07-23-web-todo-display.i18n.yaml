@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-23-web-todo-display.md
 2026-07-23-web-todo-display.md: 19b1a766cf4803f2537442a1aca3a23236692c84
-2026-07-23-web-todo-display.zh.md: 50722c7b2756fbab82221b8a7ac555019ef86d38
+2026-07-23-web-todo-display.ar.md: 50722c7b2756fbab82221b8a7ac555019ef86d38

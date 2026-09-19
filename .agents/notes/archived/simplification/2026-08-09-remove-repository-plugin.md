@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-09-remove-repository-plugin.zh.md)
+English | [العربية](2026-08-09-remove-repository-plugin.ar.md)
 
 ## Problem
 

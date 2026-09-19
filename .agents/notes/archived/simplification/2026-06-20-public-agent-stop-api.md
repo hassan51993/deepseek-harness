@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-06-20-public-agent-stop-api.zh.md)
+English | [العربية](2026-06-20-public-agent-stop-api.ar.md)
 
 ## Problem
 

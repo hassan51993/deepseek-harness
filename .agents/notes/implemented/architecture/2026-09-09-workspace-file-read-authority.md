@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-workspace-file-read-authority.zh.md)
+English | [العربية](2026-09-09-workspace-file-read-authority.ar.md)
 
 ## Problem
 

@@ -4,7 +4,7 @@ kind: "package-reference"
 ---
 # @deepseek-ai/dsh-client-ui-session
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

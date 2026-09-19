@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-18-in-job-partitioned-coverage.zh.md)
+English | [العربية](2026-08-18-in-job-partitioned-coverage.ar.md)
 
 ## Problem
 

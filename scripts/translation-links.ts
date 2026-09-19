@@ -40,7 +40,7 @@ export interface TranslationLinkRewriteResult {
 
 interface TranslationPairTarget {
   source: string
-  zh: string
+  ar: string
 }
 
 interface ResolvedTranslationLink {
@@ -49,7 +49,7 @@ interface ResolvedTranslationLink {
   suffix: string
   expectedPath: string
   expectedUrl: string
-  locale: 'en' | 'zh'
+  locale: 'en' | 'ar'
 }
 
 interface Replacement {
@@ -135,12 +135,12 @@ function resolveRepositoryTarget(
 }
 
 function translationPairTarget(targetPath: string, context: TranslationLinkContext): TranslationPairTarget | undefined {
-  const source = targetPath.endsWith('.zh.md')
-    ? targetPath.replace(/\.zh\.md$/, '.md')
+  const source = targetPath.endsWith('.ar.md')
+    ? targetPath.replace(/\.ar\.md$/, '.md')
     : targetPath.endsWith('.md') ? targetPath : undefined
   if (source === undefined || !context.isTranslationPairSource(source)) return undefined
-  const zh = source.replace(/\.md$/, '.zh.md')
-  return { source, zh }
+  const ar = source.replace(/\.md$/, '.ar.md')
+  return { source, ar }
 }
 
 function encodePathSegment(segment: string): string {
@@ -161,14 +161,14 @@ function relativeExpectedPath(
 
 function expectedLocalePath(
   rawPath: string,
-  locale: 'en' | 'zh',
+  locale: 'en' | 'ar',
   context: TranslationLinkContext,
   expectedPath: string,
 ): string {
-  if (locale === 'zh' && rawPath.endsWith('.md') && !rawPath.endsWith('.zh.md')) {
-    return rawPath.replace(/\.md$/, '.zh.md')
+  if (locale === 'ar' && rawPath.endsWith('.md') && !rawPath.endsWith('.ar.md')) {
+    return rawPath.replace(/\.md$/, '.ar.md')
   }
-  if (locale === 'en' && rawPath.endsWith('.zh.md')) return rawPath.replace(/\.zh\.md$/, '.md')
+  if (locale === 'en' && rawPath.endsWith('.ar.md')) return rawPath.replace(/\.ar\.md$/, '.md')
   return relativeExpectedPath(context, expectedPath, rawPath)
 }
 
@@ -185,8 +185,8 @@ function resolveTranslationLink(
   if (targetPath === undefined) return undefined
   const pair = translationPairTarget(targetPath, context)
   if (pair === undefined) return undefined
-  const locale = context.sourcePath.endsWith('.zh.md') ? 'zh' : 'en'
-  const expectedPath = locale === 'zh' ? pair.zh : pair.source
+  const locale = context.sourcePath.endsWith('.ar.md') ? 'ar' : 'en'
+  const expectedPath = locale === 'ar' ? pair.ar : pair.source
   return {
     pair,
     targetPath,

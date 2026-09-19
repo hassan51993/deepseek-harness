@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](agent-note.zh.md)
+English | [العربية](agent-note.ar.md)
 
 ## Problem
 

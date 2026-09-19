@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-10-pre-plugin-theme-bootstrap.zh.md)
+English | [العربية](2026-08-10-pre-plugin-theme-bootstrap.ar.md)
 
 ## Problem
 

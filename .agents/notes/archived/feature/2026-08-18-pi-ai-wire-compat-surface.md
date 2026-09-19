@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-18-pi-ai-wire-compat-surface.zh.md)
+English | [العربية](2026-08-18-pi-ai-wire-compat-surface.ar.md)
 
 ## Problem
 

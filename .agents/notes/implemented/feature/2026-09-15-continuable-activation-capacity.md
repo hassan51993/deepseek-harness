@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-continuable-activation-capacity.zh.md)
+English | [العربية](2026-09-15-continuable-activation-capacity.ar.md)
 
 ## Problem
 

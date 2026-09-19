@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-13-feedback-note-editor-popover.zh.md)
+English | [العربية](2026-08-13-feedback-note-editor-popover.ar.md)
 
 ## Problem
 

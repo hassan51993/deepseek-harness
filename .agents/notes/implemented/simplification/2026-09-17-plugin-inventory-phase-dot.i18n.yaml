@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-17-plugin-inventory-phase-dot.md
 2026-09-17-plugin-inventory-phase-dot.md: e90d49b6a3d2d8e03f662b3de531ef180d350cad
-2026-09-17-plugin-inventory-phase-dot.zh.md: d344ede75c7e0dd77a0d57720e0c1366f22e75b8
+2026-09-17-plugin-inventory-phase-dot.ar.md: d344ede75c7e0dd77a0d57720e0c1366f22e75b8

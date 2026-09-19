@@ -4,12 +4,12 @@ import type {} from '@deepseek-ai/dsh-client-ui-slots'
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
     /** Code document implementation name and copy controls. */
-    sidebarCodePreview: keyof typeof zh
+    sidebarCodePreview: keyof typeof ar
   }
 }
 
-/** Simplified Chinese dictionary and key source. */
-export const zh = {
+/** Arabic dictionary and key source. */
+export const ar = {
   title: 'شفرة',
   copy: 'نسخ',
   copied: 'قد نسخ',
@@ -20,4 +20,4 @@ export const en = {
   title: 'Code',
   copy: 'Copy',
   copied: 'Copied',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof ar, string>

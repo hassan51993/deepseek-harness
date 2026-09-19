@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-publish-all-experimental-packages.zh.md)
+English | [العربية](2026-09-12-publish-all-experimental-packages.ar.md)
 
 ## Problem
 

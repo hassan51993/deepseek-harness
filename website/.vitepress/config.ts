@@ -47,7 +47,7 @@ interface GuideModuleLink {
  */
 interface GuideModules {
   /** Guide sidebar collection for the locale. */
-  guide: 'zh-guide' | 'en-guide'
+  guide: 'ar-guide' | 'en-guide'
   /** Development module link. */
   develop: GuideModuleLink
   /** Reference module link. */
@@ -285,7 +285,7 @@ export default withMermaid({
   locales: {
     root: {
       label: 'بسيط جسم العربية',
-      lang: 'zh-CN',
+      lang: 'ar-SA',
       themeConfig: {
         siteTitle: siteTitle('تقنية فن معاينة'),
         nav: [
@@ -294,8 +294,8 @@ export default withMermaid({
         ],
         sidebar: {
           '/guide/': guideSidebar('root'),
-          '/develop/': sidebar('root', 'zh-develop'),
-          '/reference/': sidebar('root', 'zh-reference'),
+          '/develop/': sidebar('root', 'ar-develop'),
+          '/reference/': sidebar('root', 'ar-reference'),
         },
         outline: { label: 'هذا صفحة دليل' },
         docFooter: { prev: 'فوق واحد مقالة', next: 'تحت واحد مقالة' },

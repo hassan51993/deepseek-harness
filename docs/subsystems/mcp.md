@@ -1,6 +1,6 @@
 # MCP
 
-English | [العربية](mcp.zh.md)
+English | [العربية](mcp.ar.md)
 
 ## Summary
 

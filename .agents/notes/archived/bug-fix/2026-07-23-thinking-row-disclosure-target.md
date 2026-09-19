@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-23-thinking-row-disclosure-target.zh.md)
+English | [العربية](2026-07-23-thinking-row-disclosure-target.ar.md)
 
 ## Problem
 

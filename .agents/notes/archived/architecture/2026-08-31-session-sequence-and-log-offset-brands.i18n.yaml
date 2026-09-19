@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-31-session-sequence-and-log-offset-brands.md
 2026-08-31-session-sequence-and-log-offset-brands.md: 144146f62a74b662fd46366cc141da57aa35a50b
-2026-08-31-session-sequence-and-log-offset-brands.zh.md: ab354fd3e866b9b5b450afc48b1bb7cf04b3c5d0
+2026-08-31-session-sequence-and-log-offset-brands.ar.md: ab354fd3e866b9b5b450afc48b1bb7cf04b3c5d0

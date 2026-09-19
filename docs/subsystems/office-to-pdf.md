@@ -1,6 +1,6 @@
 # Office to PDF
 
-English | [العربية](office-to-pdf.zh.md)
+English | [العربية](office-to-pdf.ar.md)
 
 The [document package family](../../packages/document/README.md) converts Office files to PDFs on the Node Host. Consumers authorize source reads and own presentation; the shared provider owns conversion, bounded admission, and transient PDF reuse. This subsystem creates no model-facing tool or Session event.
 

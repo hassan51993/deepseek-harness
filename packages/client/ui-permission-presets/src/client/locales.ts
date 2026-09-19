@@ -3,8 +3,8 @@
 /** Locale namespace shared by both current-session permission pickers. */
 export const PERMISSION_ACCESS_NS = 'permission.access'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'title': 'إذن',
   'description': 'اختيار جديد جلسة افتراضي إذن نمط',
   'loading': 'تحميل في',
@@ -20,9 +20,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The settings.permission namespace key union. */
-export type PermissionSettingsKey = keyof typeof zh
+export type PermissionSettingsKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'title': 'Permission',
   'description': 'Choose the default permission mode for new sessions',
@@ -38,8 +38,8 @@ export const en = {
   'confirm.enable': 'Enable Full access',
 } satisfies Record<PermissionSettingsKey, string>
 
-/** Simplified Chinese dictionary for the current-session popup gate. */
-export const accessZh = {
+/** Arabic dictionary for the current-session popup gate. */
+export const accessAr = {
   'mode': 'وصول نمط، حالي:{name}',
   'close': 'إغلاق',
   'preset.readOnly': 'فقط يمكن فحص نظر',
@@ -60,7 +60,7 @@ export const accessZh = {
 } satisfies Record<string, string>
 
 /** Current-session popup-gate key union. */
-export type PermissionAccessKey = keyof typeof accessZh
+export type PermissionAccessKey = keyof typeof accessAr
 
 /** English dictionary for the current-session popup gate. */
 export const accessEn = {

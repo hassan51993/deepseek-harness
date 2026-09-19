@@ -531,9 +531,9 @@ describe('a long card description', () => {
     clamp(true)
     vi.useFakeTimers()
     try {
-      renderSection({ rows: [{ id: 'zh', trust: 'user', isDefault: false, name: 'العربية مساعدة يد', description: LONG }] })
+      renderSection({ rows: [{ id: 'ar', trust: 'user', isDefault: false, name: 'العربية مساعدة يد', description: LONG }] })
 
-      fireEvent.mouseEnter(within(rowFor('zh')).getByText(LONG))
+      fireEvent.mouseEnter(within(rowFor('ar')).getByText(LONG))
       act(() => { vi.advanceTimersByTime(400) })
 
       expect(screen.getByRole('tooltip').textContent).toBe(LONG)
@@ -546,9 +546,9 @@ describe('a long card description', () => {
     clamp(false)
     vi.useFakeTimers()
     try {
-      renderSection({ rows: [{ id: 'zh', trust: 'user', isDefault: false, name: 'العربية مساعدة يد', description: 'قصير وصف.' }] })
+      renderSection({ rows: [{ id: 'ar', trust: 'user', isDefault: false, name: 'العربية مساعدة يد', description: 'قصير وصف.' }] })
 
-      fireEvent.mouseEnter(within(rowFor('zh')).getByText('قصير وصف.'))
+      fireEvent.mouseEnter(within(rowFor('ar')).getByText('قصير وصف.'))
       act(() => { vi.advanceTimersByTime(400) })
 
       // A bubble repeating what is already fully on the card is noise.
@@ -563,9 +563,9 @@ describe('a long card description', () => {
     clamp(true)
 
     expect(() => {
-      renderSection({ rows: [{ id: 'zh', trust: 'user', isDefault: false, description: LONG }] })
+      renderSection({ rows: [{ id: 'ar', trust: 'user', isDefault: false, description: LONG }] })
     }).not.toThrow()
     // The first measurement does not depend on the observer.
-    expect(within(rowFor('zh')).getByText(LONG).getAttribute('title')).toBe('')
+    expect(within(rowFor('ar')).getByText(LONG).getAttribute('title')).toBe('')
   })
 })

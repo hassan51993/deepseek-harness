@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-26-stable-turn-process-order.md
 2026-08-26-stable-turn-process-order.md: e7de4aac5244fd7b4d76e89d8a02d19579b077bb
-2026-08-26-stable-turn-process-order.zh.md: 28e16bc2840d96febe2fa9bf786748d25b43fb23
+2026-08-26-stable-turn-process-order.ar.md: 28e16bc2840d96febe2fa9bf786748d25b43fb23

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-gui-web-client-architecture.zh.md)
+English | [العربية](2026-07-19-gui-web-client-architecture.ar.md)
 
 > Division of labor: the historical channel-independent layering model and RPC protocol are recorded in the [archived layering and RPC protocol note](../../archived/architecture/2026-07-19-gui-layering-and-rpc-protocol.md); this document = the browser side: how the client cordis tree loads, how UI plugins compose through slots and services, and how the React-free object layer feeds React through immutable snapshots.
 

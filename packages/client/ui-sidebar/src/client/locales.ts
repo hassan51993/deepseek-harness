@@ -1,7 +1,7 @@
 /** `sidebar` namespace dictionaries for shell controls and global panels. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'session.new': 'جديد جلسة',
   'session.new.label': 'جديد بناء جلسة',
   'toggle.open': 'فتح جانب حافة شريط',
@@ -10,9 +10,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The sidebar namespace key union. */
-export type SidebarKey = keyof typeof zh
+export type SidebarKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'session.new': 'New Session',
   'session.new.label': 'New session',

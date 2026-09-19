@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-connection-and-compaction-fixture-preconditions.zh.md)
+English | [العربية](2026-09-12-connection-and-compaction-fixture-preconditions.ar.md)
 
 ## Problem
 

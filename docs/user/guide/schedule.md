@@ -1,6 +1,6 @@
 # Schedule session-local reminders
 
-English | [العربية](schedule.zh.md)
+English | [العربية](schedule.ar.md)
 
 This overlay opts one `dsh web` process into Schedule reminders without changing the shipped default Web composition:
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-27-web-session-fork-actions.zh.md)
+English | [العربية](2026-07-27-web-session-fork-actions.ar.md)
 
 ## Problem
 

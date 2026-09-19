@@ -50,7 +50,7 @@ function localeView(preference: string, revision = 0): SettingsNamespaceView {
 
 async function client(mock: RemoteMock, start: () => Promise<TestClient>, hasDocument = false) {
   const settings = mock.remote.settings
-  settings.describe.mockResolvedValue(ok({ writable: true, hasDocument, namespaces: [localeView('zh')] }))
+  settings.describe.mockResolvedValue(ok({ writable: true, hasDocument, namespaces: [localeView('ar')] }))
   const c = await start()
   // The locale adopts the Host preference once the describe mirror holds the document.
   await c.ctx.settingsScope.describe().ensure()
@@ -93,7 +93,7 @@ describe('ui-settings-general apply', () => {
 
   it('fills the five seats of the shell it declares, with the locale-following General label', async ({ mock, start }) => {
     const { c } = await client(mock, start)
-    expect(c.ctx.locale.getSnapshot().active).toBe('zh')
+    expect(c.ctx.locale.getSnapshot().active).toBe('ar')
     expectSeated(c)
     const entry = generalEntry(c)
     expect(entry.options).toMatchObject({ id: 'general', order: 0 })
@@ -112,7 +112,7 @@ describe('ui-settings-general apply', () => {
     }
   }, COLD_BOOT_TIMEOUT_MS)
 
-  it('registers the zh/en settings dictionaries and frees the seats when its row unloads', async ({ mock, start }) => {
+  it('registers the ar/en settings dictionaries and frees the seats when its row unloads', async ({ mock, start }) => {
     const { c, settings } = await client(mock, start)
     const english = localeView('en', 1)
     settings.mutate.mockResolvedValueOnce(ok(english))
@@ -134,33 +134,33 @@ describe('ui-settings-general apply', () => {
     await c.unload(SELF)
     await c.flush()
     // The (ns, locale) seats are free again — the dictionary disposer ran.
-    expect(() => { c.ctx.locale.register(NS, 'zh', {})() }).not.toThrow()
+    expect(() => { c.ctx.locale.register(NS, 'ar', {})() }).not.toThrow()
     expect(() => { c.ctx.locale.register(NS, 'en', {})() }).not.toThrow()
   })
 
   it('the nav label thunk follows the active locale without re-registration', async ({ mock, start }) => {
     const { c, settings } = await client(mock, start)
     const english = localeView('en', 1)
-    const chinese = localeView('zh', 2)
+    const chinese = localeView('ar', 2)
     settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(chinese))
-    const zhVersions = SEATS.map(([name]) => c.ctx.slots.getVersion(name))
+    const arVersions = SEATS.map(([name]) => c.ctx.slots.getVersion(name))
     c.ctx.locale.setLocale('en')
     // No ledger churn: freshness rides the thunk (and the renderer's locale
     // subscription), not re-registration.
     SEATS.forEach(([name], i) => {
-      expect(c.ctx.slots.getVersion(name)).toBe(zhVersions[i]!)
+      expect(c.ctx.slots.getVersion(name)).toBe(arVersions[i]!)
       expect(ownEntries(c, name)).toHaveLength(1)
     })
     expect(generalLabel(c)).toBe('General')
     await vi.waitFor(() => {
       expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([english])
     })
-    c.ctx.locale.setLocale('zh')
+    c.ctx.locale.setLocale('ar')
     expect(generalLabel(c)).toBe('عام ضبط')
     await vi.waitFor(() => {
       expect(settings.mutate.mock.calls).toEqual([
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],
-        [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'zh' }], 1],
+        [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'ar' }], 1],
       ])
       expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([chinese])
     })
@@ -208,16 +208,16 @@ describe('ui-settings-general apply', () => {
     expect(c.ctx.slots.entries('settings.general.item').filter(row => row.locale === NS)).toEqual([])
     // The recovered registrations still ride the locale path.
     const english = localeView('en', 1)
-    const chinese = localeView('zh', 2)
+    const chinese = localeView('ar', 2)
     settings.mutate.mockResolvedValueOnce(ok(english)).mockResolvedValueOnce(ok(chinese))
     c.ctx.locale.setLocale('en')
     expect(generalLabel(c)).toBe('General')
-    c.ctx.locale.setLocale('zh')
+    c.ctx.locale.setLocale('ar')
     expect(generalLabel(c)).toBe('عام ضبط')
     await vi.waitFor(() => {
       expect(settings.mutate.mock.calls).toEqual([
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],
-        [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'zh' }], 1],
+        [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'ar' }], 1],
       ])
       expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([chinese])
     })

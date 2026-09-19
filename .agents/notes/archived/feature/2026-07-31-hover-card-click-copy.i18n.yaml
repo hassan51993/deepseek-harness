@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-31-hover-card-click-copy.md
 2026-07-31-hover-card-click-copy.md: 906f64129ee9ba767859260a3288faada21ea4de
-2026-07-31-hover-card-click-copy.zh.md: 0359b2edacde9e048db900d315b6a7befd361075
+2026-07-31-hover-card-click-copy.ar.md: 0359b2edacde9e048db900d315b6a7befd361075

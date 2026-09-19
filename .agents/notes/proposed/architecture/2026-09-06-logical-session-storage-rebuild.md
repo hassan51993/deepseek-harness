@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-09-06-logical-session-storage-rebuild.zh.md)
+English | [العربية](2026-09-06-logical-session-storage-rebuild.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-workspace-files-dual-face-package.zh.md)
+English | [العربية](2026-09-07-workspace-files-dual-face-package.ar.md)
 
 ## Problem
 

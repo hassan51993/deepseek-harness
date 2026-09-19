@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-10-readme-known-limitations-gate.zh.md)
+English | [العربية](2026-07-10-readme-known-limitations-gate.ar.md)
 
 ## Problem
 

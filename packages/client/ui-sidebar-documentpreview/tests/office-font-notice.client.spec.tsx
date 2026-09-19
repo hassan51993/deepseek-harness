@@ -3,7 +3,7 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { FontNotice, type FontNoticeProps } from '../src/client/office/FontNotice.tsx'
-import { en, zh } from '../src/client/office/locales.ts'
+import { en, ar } from '../src/client/office/locales.ts'
 
 beforeEach(() => {
   vi.stubGlobal('ResizeObserver', class {
@@ -75,9 +75,9 @@ it('hides the entire notice until another source version is loaded', () => {
 })
 
 it('has localized copy and does not reserve a notice for fonts that are available', () => {
-  const view = render(<FontNotice {...props({ t: makeTranslate(zh) })} />)
-  fireEvent.click(screen.getByRole('button', { name: zh.showMore }))
-  expect(screen.getByRole('dialog', { name: zh.missingFontsTitle })).toBeDefined()
+  const view = render(<FontNotice {...props({ t: makeTranslate(ar) })} />)
+  fireEvent.click(screen.getByRole('button', { name: ar.showMore }))
+  expect(screen.getByRole('dialog', { name: ar.missingFontsTitle })).toBeDefined()
   view.rerender(<FontNotice {...props({ fonts: [] })} />)
   expect(view.container.childElementCount).toBe(0)
   expect(screen.queryByRole('dialog')).toBeNull()

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-21-semantic-session-checkpoints.zh.md)
+English | [العربية](2026-07-21-semantic-session-checkpoints.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-04-web-clickable-link-styles.zh.md)
+English | [العربية](2026-09-04-web-clickable-link-styles.ar.md)
 
 ## Problem
 

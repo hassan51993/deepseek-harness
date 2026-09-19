@@ -1,6 +1,6 @@
 # Template: persistence-format
 
-Use this kind for `docs/persistence-changes/historical-formats/vN.md` and its Chinese sibling. Each record describes one explicitly selected historical Session format checkpoint with complete declared types. It is a format reference, not a release record or compatibility acknowledgement. The checkout writer uses the existing current catalog.
+Use this kind for `docs/persistence-changes/historical-formats/vN.md` and its Arabic sibling. Each record describes one explicitly selected historical Session format checkpoint with complete declared types. It is a format reference, not a release record or compatibility acknowledgement. The checkout writer uses the existing current catalog.
 
 ## Frontmatter
 

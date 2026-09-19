@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-07-29-tui-hidden-mode-assistant-fold.zh.md)
+English | [العربية](2026-07-29-tui-hidden-mode-assistant-fold.ar.md)
 
 ## Problem
 

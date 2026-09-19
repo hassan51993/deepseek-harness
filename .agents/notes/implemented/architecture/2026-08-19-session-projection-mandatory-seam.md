@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-19-session-projection-mandatory-seam.zh.md)
+English | [العربية](2026-08-19-session-projection-mandatory-seam.ar.md)
 
 ## Problem
 

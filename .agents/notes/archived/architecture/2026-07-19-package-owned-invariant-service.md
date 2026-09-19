@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-19-package-owned-invariant-service.zh.md)
+English | [العربية](2026-07-19-package-owned-invariant-service.ar.md)
 
 ## Problem
 

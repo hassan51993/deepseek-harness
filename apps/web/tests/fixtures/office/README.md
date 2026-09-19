@@ -1,6 +1,6 @@
 # Binary Office fixtures
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 `preview.doc`, `preview.xls`, and `preview.ppt` contain `Office preview العربية وثيقة`. They are the `one-page.doc`, `one-sheet.xls`, and `one-slide.ppt` fixtures from [LibreOffice Kit](https://github.com/deepseek-harness/libreoffice-kit/tree/main/test/fixtures), exported from Harness-authored OOXML with LibreOffice 26.8.0.3 using the Word, Excel, and PowerPoint 97 filters. The source documents retain the Harness MIT license.
 

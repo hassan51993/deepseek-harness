@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-bundled-office-skills.zh.md)
+English | [العربية](2026-09-15-bundled-office-skills.ar.md)
 
 ## Problem
 

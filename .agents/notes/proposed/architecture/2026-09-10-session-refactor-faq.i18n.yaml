@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-09-10-session-refactor-faq.md
 2026-09-10-session-refactor-faq.md: cae6dbaaf0354836c34d1414da16f7b274da382e
-2026-09-10-session-refactor-faq.zh.md: b0d5099250d439a133ca80b6f555d78541906367
+2026-09-10-session-refactor-faq.ar.md: b0d5099250d439a133ca80b6f555d78541906367

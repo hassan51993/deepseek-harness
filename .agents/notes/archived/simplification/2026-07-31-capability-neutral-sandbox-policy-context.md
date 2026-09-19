@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-31-capability-neutral-sandbox-policy-context.zh.md)
+English | [العربية](2026-07-31-capability-neutral-sandbox-policy-context.ar.md)
 
 ## Problem
 

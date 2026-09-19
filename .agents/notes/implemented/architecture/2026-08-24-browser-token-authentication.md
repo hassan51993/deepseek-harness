@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-24-browser-token-authentication.zh.md)
+English | [العربية](2026-08-24-browser-token-authentication.ar.md)
 
 ## Problem
 

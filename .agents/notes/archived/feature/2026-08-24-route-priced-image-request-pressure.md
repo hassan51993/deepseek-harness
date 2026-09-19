@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-24-route-priced-image-request-pressure.zh.md)
+English | [العربية](2026-08-24-route-priced-image-request-pressure.ar.md)
 
 ## Problem
 

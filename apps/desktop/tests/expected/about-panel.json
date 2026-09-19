@@ -12,7 +12,7 @@
       "iconPath": "<app icon>"
     }
   },
-  "zh-CN": {
+  "ar-SA": {
     "menu": [
       { "label": "صلة في DeepSeek Harness", "role": "about" },
       { "type": "separator" }

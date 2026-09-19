@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-30-retain-ignorable-external-session-events.md
 2026-08-30-retain-ignorable-external-session-events.md: e085e429a6ad49cf742694cec7dda05770a5b8a1
-2026-08-30-retain-ignorable-external-session-events.zh.md: 1fe4f81441503287961b993eae444fa4385f4803
+2026-08-30-retain-ignorable-external-session-events.ar.md: 1fe4f81441503287961b993eae444fa4385f4803

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-11-event-sourced-sessions.zh.md)
+English | [العربية](2026-06-11-event-sourced-sessions.ar.md)
 
 ## Problem
 

@@ -1,7 +1,7 @@
 /** `plan` namespace dictionaries (the composer plan chip's copy). */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'chip.label': 'Plan',
   'preview.title': 'حساب تخطيط',
   'preview.document': 'حساب تخطيط · Markdown',
@@ -24,9 +24,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The plan namespace key union. */
-export type PlanKey = keyof typeof zh
+export type PlanKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'chip.label': 'Plan',
   'preview.title': 'Plan',

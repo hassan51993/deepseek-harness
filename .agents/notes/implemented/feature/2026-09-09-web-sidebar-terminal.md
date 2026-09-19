@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-web-sidebar-terminal.zh.md)
+English | [العربية](2026-09-09-web-sidebar-terminal.ar.md)
 
 ## Problem
 

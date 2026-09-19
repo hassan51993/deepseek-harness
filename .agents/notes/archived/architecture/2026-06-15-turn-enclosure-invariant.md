@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-28
 
-English | [العربية](2026-06-15-turn-enclosure-invariant.zh.md)
+English | [العربية](2026-06-15-turn-enclosure-invariant.ar.md)
 
 ## Problem
 

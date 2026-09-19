@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-sidebar-tab-types-and-navigation.zh.md)
+English | [العربية](2026-09-05-sidebar-tab-types-and-navigation.ar.md)
 
 ## Problem
 

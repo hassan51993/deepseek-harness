@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-deepseek-messages-adapter.zh.md)
+English | [العربية](2026-09-07-deepseek-messages-adapter.ar.md)
 
 ## Problem
 
@@ -12,7 +12,7 @@ Deployments expose DeepSeek through Anthropic Messages gateways as well as chat-
 
 The [DeepSeek adapter](../../../../packages/llm/llm-deepseek/README.md) serves multiple protocols under one `deepseek-official` route and `llm-deepseek` settings namespace. `common/` shares configuration, the model catalog, capability resolution, and Files lifecycle; `protocols/chat-completions/` and `protocols/messages/` own serialization, stream conversion, and transport. Cordis YAML selects the implementation through `protocol`, defaulting to `messages`; shipped first-party compositions inherit that default. The existing `PreparedAdapterCall` freezes protocol, endpoint, credential reference, and model capabilities; retries retain that generation while subsequent calls read new configuration.
 
-The adapter follows the [DeepSeek compatibility documentation](https://api-docs.deepseek.com/zh-cn/guides/anthropic_api) and [Anthropic streaming protocol](https://platform.claude.com/docs/en/build-with-claude/streaming). The pi-ai Anthropic implementation informed the handling of adjacent user messages, cumulative usage, fragmented tool arguments, and optional thinking signatures. DeepSeek effort uses `output_config.effort`; an Anthropic thinking token budget does not control DeepSeek effort. Both protocols forward explicit `temperature` values; DeepSeek accepts that parameter with thinking enabled and ignores its value, so callers retain their existing thinking configuration.
+The adapter follows the [DeepSeek compatibility documentation](https://api-docs.deepseek.com/ar-sa/guides/anthropic_api) and [Anthropic streaming protocol](https://platform.claude.com/docs/en/build-with-claude/streaming). The pi-ai Anthropic implementation informed the handling of adjacent user messages, cumulative usage, fragmented tool arguments, and optional thinking signatures. DeepSeek effort uses `output_config.effort`; an Anthropic thinking token budget does not control DeepSeek effort. Both protocols forward explicit `temperature` values; DeepSeek accepts that parameter with thinking enabled and ignores its value, so callers retain their existing thinking configuration.
 
 Assistant blocks remain the durable model-visible content. A versioned `ReplayEnvelope` stores only the protocol format, model identity, aligned block kinds, and signatures absent from those blocks. Same-model Messages continuation restores signatures verbatim, including empty signatures; foreign history carries no invented signature. Unusable metadata follows the existing [replay degradation rule](../architecture/2026-07-14-provider-routed-llm-adapters.md): the request omits signatures with a warning while preserving durable content; historical tool arguments use the [empty-input fallback](../bug-fix/2026-09-16-messages-historical-tool-input.md) when Messages cannot represent them. This keeps provider replay data opaque to the loop while preserving it through Session persistence and block pruning.
 

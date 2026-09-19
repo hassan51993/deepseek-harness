@@ -26,7 +26,7 @@ const retainedExamples = [
   ['### Slang/jargon → Professional phrasing', 'The committed agent workflow lives in .agents/skills/dsh-translate-docs', 'مستودع داخل وضع agent سير العمل رؤية .agents/skills/dsh-translate-docs'],
   ['### "For humans" — translate the intent, not the word', 'For humans, start with the development guide', 'موجه إلى تطوير من: طلب أولا قراءة قراءة تطوير إشارة جنوب'],
   ['### Code block comments — NEVER translate', '# full-screen TUI coding agent (needs DEEPSEEK_API_KEY)', 'keep exactly as-is, byte-for-byte'],
-  ['### Language switcher — flip direction', 'English | [العربية](README.zh.md)', '[English](README.md) | العربية'],
+  ['### Language switcher — flip direction', 'English | [العربية](README.ar.md)', '[English](README.md) | العربية'],
 ]
 
 describe('translation prompt rendering', () => {
@@ -40,8 +40,8 @@ describe('translation prompt rendering', () => {
     expect(en).toContain('does a Chinese target use an established Chinese rendering')
     expect(en).toContain('does an English target use the established English technical term')
     expect(en).toContain('The parser removes exactly one framing escape')
-    const zh = renderTranslationPrompt(document, { sourceLanguage: 'Chinese', sourceFilename: 'guide.zh.md', terminology })
-    expect(zh).toContain('from Chinese to English')
+    const ar = renderTranslationPrompt(document, { sourceLanguage: 'Chinese', sourceFilename: 'guide.ar.md', terminology })
+    expect(ar).toContain('from Arabic to English')
   })
 
   it('contains every embedded example', () => {
@@ -58,7 +58,7 @@ describe('translation prompt rendering', () => {
     expect(rendered).toContain('Markdown emphasis markers do not create a word boundary')
     expect(rendered).toContain('Never invent responsibility merely to avoid a passive construction')
     expect(rendered).toContain('Never vary a terminology-table form, defined concept, or contract verb merely for stylistic variety')
-    expect(rendered).toContain('Chinese output uses its `.zh.md` path')
+    expect(rendered).toContain('Arabic output uses its `.ar.md` path')
     expect(rendered).toContain('belongs to the active bilingual corpus')
     expect(rendered).toContain('a missing counterpart in that corpus is an error')
     expect(rendered).toContain('exact query/fragment suffix')
@@ -91,7 +91,7 @@ describe('translation prompt rendering', () => {
       terminology,
       examples: [{ english: '# Example\n\nEnglish.', chinese: '# عرض مثال\n\nالعربية.' }],
     })
-    expect(request.targetFilename).toBe('guide.zh.md')
+    expect(request.targetFilename).toBe('guide.ar.md')
     expect(request.messages.map(message => message.role)).toEqual(['system', 'user', 'assistant', 'user'])
     expect(request.messages.slice(1).map(message => message.content)).toEqual([
       '# Example\n\nEnglish.',
@@ -101,7 +101,7 @@ describe('translation prompt rendering', () => {
 
     const reverse = renderTranslationRequest(document, {
       sourceLanguage: 'Chinese',
-      sourceFilename: 'guide.zh.md',
+      sourceFilename: 'guide.ar.md',
       sourceDocument: '# إشارة جنوب\n\nجديد مصدر نص.',
       terminology,
       examples: [{ english: '# Example\n\nEnglish.', chinese: '# عرض مثال\n\nالعربية.' }],
@@ -160,7 +160,7 @@ describe('translation response sections', () => {
     const response = renderTranslationResponse({
       translation: '# إشارة جنوب\n\nأول مسودة.',
       review: '- بلا إصلاح صحيح',
-      final: '# إشارة جنوب\n\nEnglish | [العربية](guide.zh.md)\n\nتحديد مسودة.',
+      final: '# إشارة جنوب\n\nEnglish | [العربية](guide.ar.md)\n\nتحديد مسودة.',
     })
     expect(consumeTranslationResponse(response, { sourceLanguage: 'English', sourceFilename: 'guide.md' }).final).toBe([
       '# إشارة جنوب',
@@ -228,7 +228,7 @@ describe('translation response sections', () => {
     })
     expect(consumeTranslationResponse(response, {
       sourceLanguage: 'Chinese',
-      sourceFilename: 'guide.zh.md',
-    }).final).toContain('\n\nEnglish | [العربية](guide.zh.md)\n\n')
+      sourceFilename: 'guide.ar.md',
+    }).final).toContain('\n\nEnglish | [العربية](guide.ar.md)\n\n')
   })
 })

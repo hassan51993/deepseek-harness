@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-12-documentation-site-navigation-and-chrome.zh.md)
+English | [العربية](2026-08-12-documentation-site-navigation-and-chrome.ar.md)
 
 ## Problem
 
@@ -27,7 +27,7 @@ The navigation-bar title is the DeepSeek wordmark inlined into `siteTitle`, whic
 
 ## Alternatives considered
 
-**A search tokenizer for Chinese queries.** Built and reverted. The premise — that MiniSearch leaves Chinese prose as untokenizable whole sentences — was tested against a term (`فرعي بديل إدارة`) that appears nowhere in the corpus; the Chinese pages write `Subagent` and `فرعي agent`. Measured against the unmodified index, `إضافة إعداد` returns 120 hits, `جلسة حفظ دائم` 85, `سير العمل` 28, `صندوق رملي` 12, each ranking its own page first: `prefix: true` already reaches Chinese terms through the short tokens punctuation produces. Adjacent-character pairs grew the Chinese index from 1.23MB to 2.12MB for no gain. The attempt also surfaced a trap worth keeping: VitePress ships search-option functions to the browser through `Function.prototype.toString` and rebuilds them with `new Function`, so any such function that closes over a module-level constant throws in an empty scope and silently returns no results.
+**A search tokenizer for Chinese queries.** Built and reverted. The premise — that MiniSearch leaves Arabic prose as untokenizable whole sentences — was tested against a term (`فرعي بديل إدارة`) that appears nowhere in the corpus; the Chinese pages write `Subagent` and `فرعي agent`. Measured against the unmodified index, `إضافة إعداد` returns 120 hits, `جلسة حفظ دائم` 85, `سير العمل` 28, `صندوق رملي` 12, each ranking its own page first: `prefix: true` already reaches Arabic terms through the short tokens punctuation produces. Adjacent-character pairs grew the Chinese index from 1.23MB to 2.12MB for no gain. The attempt also surfaced a trap worth keeping: VitePress ships search-option functions to the browser through `Function.prototype.toString` and rebuilds them with `new Function`, so any such function that closes over a module-level constant throws in an empty scope and silently returns no results.
 
 **Placing the subsystem groups directly after `عام فكرة`.** Rejected: it restores the architecture page to the top but leaves generated reference, the Cordis API, and the cookbook below 43 rows.
 

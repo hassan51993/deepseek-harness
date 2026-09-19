@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-08-pi-ai-per-model-reasoning-declarations.md
 2026-08-08-pi-ai-per-model-reasoning-declarations.md: 8cd6b91832dc71cb7eda10f3faa9791f3d301730
-2026-08-08-pi-ai-per-model-reasoning-declarations.zh.md: fd8ff9965e382f7e2728caf0ae1eb2978a25aaf5
+2026-08-08-pi-ai-per-model-reasoning-declarations.ar.md: fd8ff9965e382f7e2728caf0ae1eb2978a25aaf5

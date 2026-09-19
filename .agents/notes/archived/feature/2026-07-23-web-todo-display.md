@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-23-web-todo-display.zh.md)
+English | [العربية](2026-07-23-web-todo-display.ar.md)
 
 ## Problem
 

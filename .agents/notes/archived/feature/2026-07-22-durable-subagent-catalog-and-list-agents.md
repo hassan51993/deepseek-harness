@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-22-durable-subagent-catalog-and-list-agents.zh.md)
+English | [العربية](2026-07-22-durable-subagent-catalog-and-list-agents.ar.md)
 
 ## Problem
 

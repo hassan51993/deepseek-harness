@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'skill'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'row.title': 'Skill',
   'row.running': 'صحيح في تحميل skill',
   'row.failed': 'skill تحميل فشل',
@@ -15,9 +15,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The skill namespace key union. */
-export type SkillKey = keyof typeof zh
+export type SkillKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'row.title': 'Skill',
   'row.running': 'Loading skill',

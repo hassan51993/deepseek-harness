@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-08-per-preset-standing-mounts.zh.md)
+English | [العربية](2026-08-08-per-preset-standing-mounts.ar.md)
 
 ## Problem
 

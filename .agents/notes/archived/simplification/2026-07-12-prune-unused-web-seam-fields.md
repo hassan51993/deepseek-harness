@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-12-prune-unused-web-seam-fields.zh.md)
+English | [العربية](2026-07-12-prune-unused-web-seam-fields.ar.md)
 
 ## Problem
 

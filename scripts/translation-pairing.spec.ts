@@ -37,7 +37,7 @@ const fixturePairSource = (): boolean => true
 function signature(markdown: string) {
   return translationStructureSignature(
     parseTranslationMarkdown(markdown),
-    'counterpart.zh.md',
+    'counterpart.ar.md',
     {
       repoRoot: process.cwd(), sourcePath: 'counterpart.md',
       isTranslationPairSource: fixturePairSource, repositoryFileExists: () => true, markdown,
@@ -142,12 +142,12 @@ describe('translation pairing snapshots', () => {
       })
       mkdirSync(join(root, 'docs'), { recursive: true })
       writeFileSync(join(root, 'docs/reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'docs/reference.zh.md'), '# مشاركة اعتبار\n')
+      writeFileSync(join(root, 'docs/reference.ar.md'), '# مشاركة اعتبار\n')
       execFileSync('git', ['-C', root, 'add', 'docs'])
 
       expect(gitIndexPaths(root)).toEqual(new Set([
         'docs/reference.md',
-        'docs/reference.zh.md',
+        'docs/reference.ar.md',
       ]))
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -208,10 +208,10 @@ describe('translation pairing switchers', () => {
   })
 
   it('accepts only the canonical public URL for an absolute switcher', () => {
-    const targets = languageSwitcherTargets('python/sdk/README.zh.md')
-    const canonicalMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk/README.zh.md)\n'
+    const targets = languageSwitcherTargets('python/sdk/README.ar.md')
+    const canonicalMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/python/sdk/README.ar.md)\n'
     const canonical = parseTranslationMarkdown(canonicalMarkdown)
-    const wrongMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.zh.md)\n'
+    const wrongMarkdown = '# README\n\nEnglish | [العربية](https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.ar.md)\n'
     const wrongPath = parseTranslationMarkdown(wrongMarkdown)
 
     expect(translationStructureSignature(canonical, targets, {
@@ -226,7 +226,7 @@ describe('translation pairing switchers', () => {
       isTranslationPairSource: fixturePairSource,
       markdown: wrongMarkdown,
     }).links).toEqual([
-      'https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.zh.md',
+      'https://github.com/deepseek-ai/deepseek-harness/blob/master/other/README.ar.md',
     ])
   })
 
@@ -234,13 +234,13 @@ describe('translation pairing switchers', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-switcher-'))
     try {
       writeFileSync(join(root, 'guide.md'), '# Guide\n')
-      writeFileSync(join(root, 'guide.zh.md'), '# إشارة جنوب\n')
+      writeFileSync(join(root, 'guide.ar.md'), '# إشارة جنوب\n')
       const markdown = '# إشارة جنوب\n\n[English](guide.md) | العربية\n\n[متن](guide.md)\n'
       expect(translationStructureSignature(
         parseTranslationMarkdown(markdown),
         languageSwitcherTargets('guide.md'),
         {
-          repoRoot: root, sourcePath: 'guide.zh.md',
+          repoRoot: root, sourcePath: 'guide.ar.md',
           isTranslationPairSource: fixturePairSource, markdown,
         },
       ).links).toEqual(['dsh-translation-target:guide.md'])
@@ -251,24 +251,24 @@ describe('translation pairing switchers', () => {
 })
 
 describe('translation pairing link language parity', () => {
-  it('compares a .zh.md target and its .md sibling as the same document', () => {
+  it('compares a .ar.md target and its .md sibling as the same document', () => {
     const en = 'See [docs](persistence.md) and [notes](note.md#anchor).'
-    const zh = 'مشاركة رؤية[وثيقة](persistence.zh.md) و[قلم تسجيل](note.zh.md#anchor).'
+    const ar = 'مشاركة رؤية[وثيقة](persistence.ar.md) و[قلم تسجيل](note.ar.md#anchor).'
     expect(
       translationStructureDiff(
         signature(en),
-        signature(zh),
+        signature(ar),
       ),
     ).toEqual([])
   })
 
   it('still rejects a genuinely different target', () => {
     const en = 'See [docs](persistence.md).'
-    const zh = 'مشاركة رؤية[وثيقة](other.md).'
+    const ar = 'مشاركة رؤية[وثيقة](other.md).'
     expect(
       translationStructureDiff(
         signature(en),
-        signature(zh),
+        signature(ar),
       ),
     ).not.toEqual([])
   })
@@ -278,7 +278,7 @@ describe('translation pairing records', () => {
   const paths = translationPairPaths('docs/foo.md')
   const record = {
     sourceHash: '1'.repeat(40),
-    zhHash: '2'.repeat(40),
+    arHash: '2'.repeat(40),
   }
 
   it('round-trips the canonical two-hash record', () => {
@@ -289,12 +289,12 @@ describe('translation pairing records', () => {
     expect(parseTranslationPairingRecord([
       `foo.md: ${'1'.repeat(40)}`,
       `foo.md: ${'3'.repeat(40)}`,
-      `foo.zh.md: ${'2'.repeat(40)}`,
+      `foo.ar.md: ${'2'.repeat(40)}`,
       '',
     ].join('\n'), paths)).toBeUndefined()
     expect(parseTranslationPairingRecord([
       `foo.md: ${'1'.repeat(40)}`,
-      `bar.zh.md: ${'2'.repeat(40)}`,
+      `bar.ar.md: ${'2'.repeat(40)}`,
       '',
     ].join('\n'), paths)).toBeUndefined()
   })
@@ -304,17 +304,17 @@ describe('translation scope discovery', () => {
   it.each([
     'README.md',
     'CONTRIBUTING.md',
-    'CONTRIBUTING.zh.md',
+    'CONTRIBUTING.ar.md',
     'CONTRIBUTING.i18n.yaml',
     'BRAND_GUIDELINES.md',
-    'BRAND_GUIDELINES.zh.md',
+    'BRAND_GUIDELINES.ar.md',
     'BRAND_GUIDELINES.i18n.yaml',
     'SAFETY.md',
-    'SAFETY.zh.md',
+    'SAFETY.ar.md',
     'SAFETY.i18n.yaml',
     'apps/cli/README.md',
     'future/subtree/readme.md',
-    'packages/example/README.zh.md',
+    'packages/example/README.ar.md',
     'native/example/README.i18n.yaml',
     '.agents/notes/proposed/feature.md',
     'docs/guide.md',
@@ -360,11 +360,11 @@ describe('translation structural signature', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-structure-'))
     try {
       writeFileSync(join(root, 'reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'reference.zh.md'), '# مشاركة اعتبار\n')
+      writeFileSync(join(root, 'reference.ar.md'), '# مشاركة اعتبار\n')
       const sourceMarkdown = '[Reference](reference.md?view=full#section)\n'
-      const counterpartMarkdown = '[مشاركة اعتبار](reference.zh.md?view=full#section)\n'
-      const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.zh.md')
-      const counterpart = fixtureSignature(root, 'guide.zh.md', counterpartMarkdown, 'guide.md')
+      const counterpartMarkdown = '[مشاركة اعتبار](reference.ar.md?view=full#section)\n'
+      const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.ar.md')
+      const counterpart = fixtureSignature(root, 'guide.ar.md', counterpartMarkdown, 'guide.md')
       expect(translationStructureDiff(source, counterpart)).toEqual([])
     } finally {
       rmSync(root, { recursive: true, force: true })
@@ -375,19 +375,19 @@ describe('translation structural signature', () => {
     const root = mkdtempSync(join(tmpdir(), 'dsh-translation-structure-'))
     try {
       writeFileSync(join(root, 'reference.md'), '# Reference\n')
-      writeFileSync(join(root, 'reference.zh.md'), '# مشاركة اعتبار\n')
+      writeFileSync(join(root, 'reference.ar.md'), '# مشاركة اعتبار\n')
       const markdown = [
         '[Reference][doc]',
         '',
         '![Preview][asset]',
         '',
         '[doc]: reference.md',
-        '[asset]: reference.zh.md',
+        '[asset]: reference.ar.md',
         '',
       ].join('\n')
       expect(translationStructureSignature(
         parseTranslationMarkdown(markdown),
-        'guide.zh.md',
+        'guide.ar.md',
         {
           repoRoot: root, sourcePath: 'guide.md',
           isTranslationPairSource: fixturePairSource, markdown,
@@ -403,12 +403,12 @@ describe('translation structural signature', () => {
     try {
       for (const name of ['reference', 'different', 'other']) {
         writeFileSync(join(root, `${name}.md`), `# ${name}\n`)
-        writeFileSync(join(root, `${name}.zh.md`), `# ${name} zh\n`)
+        writeFileSync(join(root, `${name}.ar.md`), `# ${name} ar\n`)
       }
       const sourceMarkdown = '[Reference][ref]\n\n[ref]: reference.md\n[ref]: other.md\n'
-      const counterpartMarkdown = '[مشاركة اعتبار][ref]\n\n[ref]: different.zh.md\n[ref]: other.zh.md\n'
-      const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.zh.md')
-      const counterpart = fixtureSignature(root, 'guide.zh.md', counterpartMarkdown, 'guide.md')
+      const counterpartMarkdown = '[مشاركة اعتبار][ref]\n\n[ref]: different.ar.md\n[ref]: other.ar.md\n'
+      const source = fixtureSignature(root, 'guide.md', sourceMarkdown, 'guide.ar.md')
+      const counterpart = fixtureSignature(root, 'guide.ar.md', counterpartMarkdown, 'guide.md')
       expect(translationStructureDiff(source, counterpart)).toEqual([
         'link target #1 diverges between the pair: "dsh-translation-target:reference.md" vs "dsh-translation-target:different.md"',
       ])
@@ -451,14 +451,14 @@ describe('translation structural signature', () => {
 describe('pair CLI arguments', () => {
   it('normalizes any pair file or bare stem to the English anchor', () => {
     expect(pairAnchorOfArgument('docs/foo.md')).toBe('docs/foo.md')
-    expect(pairAnchorOfArgument('docs/foo.zh.md')).toBe('docs/foo.md')
+    expect(pairAnchorOfArgument('docs/foo.ar.md')).toBe('docs/foo.md')
     expect(pairAnchorOfArgument('docs/foo.i18n.yaml')).toBe('docs/foo.md')
     expect(pairAnchorOfArgument('docs/foo')).toBe('docs/foo.md')
-    expect(pairAnchorOfArgument('.\\docs\\foo.zh.md')).toBe('docs/foo.md')
+    expect(pairAnchorOfArgument('.\\docs\\foo.ar.md')).toBe('docs/foo.md')
   })
 
   it('scopes a check to named pairs and dedupes the three spellings', () => {
-    expect(parseTranslationPairingCliArgs(['docs/foo.zh.md', 'docs/foo.i18n.yaml', 'docs/bar.md'])).toEqual({
+    expect(parseTranslationPairingCliArgs(['docs/foo.ar.md', 'docs/foo.i18n.yaml', 'docs/bar.md'])).toEqual({
       input: 'worktree',
       mode: 'check',
       scope: 'pairs',

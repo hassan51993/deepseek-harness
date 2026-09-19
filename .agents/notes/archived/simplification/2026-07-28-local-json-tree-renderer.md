@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-28-local-json-tree-renderer.zh.md)
+English | [العربية](2026-07-28-local-json-tree-renderer.ar.md)
 
 ## Problem
 

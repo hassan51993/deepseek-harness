@@ -14,11 +14,11 @@ export interface MarkdownDerivativePartition<T> {
 
 /** Return the unsuffixed sibling of a Chinese Markdown path. */
 function unsuffixedSibling(doc: string): string | null {
-  return doc.endsWith('.zh.md') ? `${doc.slice(0, -'.zh.md'.length)}.md` : null
+  return doc.endsWith('.ar.md') ? `${doc.slice(0, -'.ar.md'.length)}.md` : null
 }
 
 /**
- * Partition complete byte-identical `.zh.md` block sequences from primary
+ * Partition complete byte-identical `.ar.md` block sequences from primary
  * blocks. A partial or reordered match stays primary so the caller fails
  * closed; the translation-pairing gate reports the cross-language mismatch.
  *

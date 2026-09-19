@@ -2,7 +2,7 @@
 
 Status: rejected — every swap below fails the net-simplification bar on evidence; recorded so the survey is not re-run from scratch
 
-English | [العربية](2026-07-26-dependency-swaps-rejected-by-nih-audit.zh.md)
+English | [العربية](2026-07-26-dependency-swaps-rejected-by-nih-audit.ar.md)
 
 ## Problem
 

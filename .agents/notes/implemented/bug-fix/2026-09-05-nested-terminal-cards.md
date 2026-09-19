@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-nested-terminal-cards.zh.md)
+English | [العربية](2026-09-05-nested-terminal-cards.ar.md)
 
 ## Problem
 

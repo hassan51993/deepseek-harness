@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-06-agent-event-payload-objects.md
 2026-08-06-agent-event-payload-objects.md: b171f2d67e3c065063775e7830b9085af7767c8f
-2026-08-06-agent-event-payload-objects.zh.md: 65ce0d608c6201d88a607943984349d9b997f8f3
+2026-08-06-agent-event-payload-objects.ar.md: 65ce0d608c6201d88a607943984349d9b997f8f3

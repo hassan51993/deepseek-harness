@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-07-30-adapter-owned-max-token-defaults.md
 2026-07-30-adapter-owned-max-token-defaults.md: 30b1840a9ff80092609698e63d061a7d82503e5d
-2026-07-30-adapter-owned-max-token-defaults.zh.md: 770c61ce1514fa8e16d4cbabed4dd97b5b7b40fb
+2026-07-30-adapter-owned-max-token-defaults.ar.md: 770c61ce1514fa8e16d4cbabed4dd97b5b7b40fb

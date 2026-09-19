@@ -8,7 +8,7 @@ import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/c
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { SettingsRootComponentProps } from '../src/client/shell-contract.ts'
 import { SettingsRoot } from '../src/client/SettingsRoot.tsx'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 import type { DesktopUpdateView } from '../src/client/desktop-update-bridge.ts'
 
 // Every fixture carries the resource hook the resources plugin merges into GlobalStandardProps.
@@ -54,7 +54,7 @@ function mount({
   ],
 }: {
   wide?: boolean
-  dictionary?: typeof en | typeof zh
+  dictionary?: typeof en | typeof ar
   connectionState?: ConnectionSnapshot
   desktopUpdate?: DesktopUpdateView
   onboardingActive?: boolean
@@ -152,7 +152,7 @@ function openPanel() {
 describe('SettingsRoot trigger', () => {
   it('shows installation instead of expected backend reconnection and restores connection feedback after failure', () => {
     const presentation = { phase: 'installing' as const, version: '1.0.1' }
-    const f = mount({ dictionary: zh, connectionState: 'connecting',
+    const f = mount({ dictionary: ar, connectionState: 'connecting',
       desktopUpdate: { failed: false, opening: false, presentation } })
     expect(screen.getByRole('button', { name: 'صحيح في دقيق تجهيز إعادة بدء…' })).toBeTruthy()
     expect(screen.queryByText('إعادة اتصال في')).toBeNull()
@@ -164,8 +164,8 @@ describe('SettingsRoot trigger', () => {
   it.each([
     { column: 'expanded English', wide: true, dictionary: en, name: 'Settings' },
     { column: 'collapsed English', wide: false, dictionary: en, name: 'Settings' },
-    { column: 'expanded Chinese', wide: true, dictionary: zh, name: 'ضبط' },
-    { column: 'collapsed Chinese', wide: false, dictionary: zh, name: 'ضبط' },
+    { column: 'expanded Chinese', wide: true, dictionary: ar, name: 'ضبط' },
+    { column: 'collapsed Chinese', wide: false, dictionary: ar, name: 'ضبط' },
   ])('uses the locale name and accepts keyboard-style activation for the $column trigger', ({
     wide, dictionary, name,
   }) => {
@@ -214,7 +214,7 @@ describe('SettingsRoot trigger', () => {
 
   it('keeps the attempt label steady through the hold and confirms for the full window', () => {
     vi.useFakeTimers()
-    const mounted = mount({ dictionary: zh })
+    const mounted = mount({ dictionary: ar })
     mounted.setConnectionState('connecting')
     const attempt = screen.getByRole('button', { name: 'اتصال في قطع، صحيح في إعادة محاولة، نقر قيام أي إعادة وصل' })
     expect(attempt.textContent).toContain('إعادة اتصال في')

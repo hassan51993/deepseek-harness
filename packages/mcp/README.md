@@ -5,7 +5,7 @@ kind: "package-group"
 
 # MCP — Model Context Protocol
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

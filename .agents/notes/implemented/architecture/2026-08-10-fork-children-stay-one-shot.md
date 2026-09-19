@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-10-fork-children-stay-one-shot.zh.md)
+English | [العربية](2026-08-10-fork-children-stay-one-shot.ar.md)
 
 ## Problem
 

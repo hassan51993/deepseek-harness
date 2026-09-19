@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-base-default-file-editor.zh.md)
+English | [العربية](2026-09-05-base-default-file-editor.ar.md)
 
 ## Problem
 

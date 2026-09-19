@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-27-handle-based-session-persistence.zh.md)
+English | [العربية](2026-08-27-handle-based-session-persistence.ar.md)
 
 ## Problem
 

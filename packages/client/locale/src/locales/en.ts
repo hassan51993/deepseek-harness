@@ -1,6 +1,6 @@
-import type { CommonKey } from './zh.ts'
+import type { CommonKey } from './ar.ts'
 
-/** en base dictionary for the common namespace, checked complete against the zh key set. */
+/** en base dictionary for the common namespace, checked complete against the ar key set. */
 export const en = {
   'ok': 'OK',
   'cancel': 'Cancel',

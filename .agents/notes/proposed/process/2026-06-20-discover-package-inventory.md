@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-06-20-discover-package-inventory.zh.md)
+English | [العربية](2026-06-20-discover-package-inventory.ar.md)
 
 ## Problem
 

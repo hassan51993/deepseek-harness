@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-win32-picker-foreground-alt-key.zh.md)
+English | [العربية](2026-09-07-win32-picker-foreground-alt-key.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-public-package-manifest.zh.md)
+English | [العربية](2026-09-10-public-package-manifest.ar.md)
 
 ## Problem
 

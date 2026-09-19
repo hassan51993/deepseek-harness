@@ -10,7 +10,7 @@ import {
   PermissionSelect, type PermissionSelectProps,
 } from '../src/client/PermissionSelect.tsx'
 import type { PermissionCatalogState } from '../src/client/catalog.ts'
-import { accessZh } from '../src/client/locales.ts'
+import { accessAr } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -27,7 +27,7 @@ const CATALOG: PermissionCatalog = {
   ],
 }
 
-const t: PermissionSelectProps['t'] = makeTranslate(accessZh)
+const t: PermissionSelectProps['t'] = makeTranslate(accessAr)
 
 function setup(options: {
   selection?: PermissionSelection | undefined

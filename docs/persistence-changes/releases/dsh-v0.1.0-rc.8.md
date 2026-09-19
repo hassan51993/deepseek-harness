@@ -5,7 +5,7 @@ kind: persistence-release
 
 # Persistence release: dsh-v0.1.0-rc.8
 
-English | [العربية](dsh-v0.1.0-rc.8.zh.md)
+English | [العربية](dsh-v0.1.0-rc.8.ar.md)
 
 ## Summary
 

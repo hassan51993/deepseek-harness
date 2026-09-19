@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-linux-scope-direct-kill-settlement.zh.md)
+English | [العربية](2026-09-12-linux-scope-direct-kill-settlement.ar.md)
 
 ## Problem
 

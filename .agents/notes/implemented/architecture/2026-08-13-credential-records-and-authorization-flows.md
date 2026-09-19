@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-13-credential-records-and-authorization-flows.zh.md)
+English | [العربية](2026-08-13-credential-records-and-authorization-flows.ar.md)
 
 ## Problem
 

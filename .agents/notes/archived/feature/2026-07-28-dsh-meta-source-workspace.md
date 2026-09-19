@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-03
 
-English | [العربية](2026-07-28-dsh-meta-source-workspace.zh.md)
+English | [العربية](2026-07-28-dsh-meta-source-workspace.ar.md)
 
 ## Problem
 

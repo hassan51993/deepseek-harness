@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-11-microkernel-event-taxonomy.zh.md)
+English | [العربية](2026-06-11-microkernel-event-taxonomy.ar.md)
 
 ## Problem
 

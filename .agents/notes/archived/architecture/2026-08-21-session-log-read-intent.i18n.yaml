@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-21-session-log-read-intent.md
 2026-08-21-session-log-read-intent.md: dc87a53ff3ccb7f64545014fa4c82469a2faf4b6
-2026-08-21-session-log-read-intent.zh.md: 6c0e601e3a1a92d2db5c164c9355c583a032021c
+2026-08-21-session-log-read-intent.ar.md: 6c0e601e3a1a92d2db5c164c9355c583a032021c

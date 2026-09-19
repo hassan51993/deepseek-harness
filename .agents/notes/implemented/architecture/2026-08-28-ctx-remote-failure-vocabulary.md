@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-28-ctx-remote-failure-vocabulary.zh.md)
+English | [العربية](2026-08-28-ctx-remote-failure-vocabulary.ar.md)
 
 ## Problem
 

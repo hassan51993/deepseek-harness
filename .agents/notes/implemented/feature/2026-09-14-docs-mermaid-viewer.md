@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-docs-mermaid-viewer.zh.md)
+English | [العربية](2026-09-14-docs-mermaid-viewer.ar.md)
 
 ## Problem
 

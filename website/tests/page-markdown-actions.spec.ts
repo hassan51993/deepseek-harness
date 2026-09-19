@@ -93,7 +93,7 @@ afterEach(async () => {
 })
 
 describe('page Markdown actions', () => {
-  it.each(['en-US', 'zh-CN'])('preserves the accessible controls and status in %s', async (lang) => {
+  it.each(['en-US', 'ar-SA'])('preserves the accessible controls and status in %s', async (lang) => {
     data.lang.value = lang
     data.frontmatter.value = { rawMarkdownPath: `${lang === 'en-US' ? 'en/' : ''}guide/quickstart.md` }
     await mount()
@@ -103,7 +103,7 @@ describe('page Markdown actions', () => {
     await expect(`${host.innerHTML}\n`).toMatchFileSnapshot(`./expected/page-markdown-menu.${lang}.html`)
   })
 
-  it.each(['en-US', 'zh-CN'])('offers a working raw link before hydration in %s', async (lang) => {
+  it.each(['en-US', 'ar-SA'])('offers a working raw link before hydration in %s', async (lang) => {
     data.lang.value = lang
     data.site.value = { base: '/deepseek-harness/' }
     const path = `${lang === 'en-US' ? 'en/' : ''}guide/quickstart.md`
@@ -393,7 +393,7 @@ describe('page Markdown actions', () => {
     if (change === 'unmount') { app?.unmount(); app = undefined }
     else {
       route.path = change === 'route' ? '/en/reference/' : '/guide/quickstart'
-      data.lang.value = change === 'route' ? 'en-US' : 'zh-CN'
+      data.lang.value = change === 'route' ? 'en-US' : 'ar-SA'
       data.frontmatter.value = { rawMarkdownPath: change === 'route' ? 'en/reference/index.md' : 'guide/quickstart.md' }
     }
     await nextTick()

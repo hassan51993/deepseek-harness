@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-ci-completion-observations.zh.md)
+English | [العربية](2026-09-08-ci-completion-observations.ar.md)
 
 ## Problem
 

@@ -15,7 +15,7 @@ const root = resolve(import.meta.dirname, '..')
 const SOURCE = 'docs/module-graph.md'
 const PATHS = translationPairPaths(SOURCE)
 type Pkg = PackageGraphNode
-type Locale = 'en' | 'zh'
+type Locale = 'en' | 'ar'
 
 const GROUP_ORDER = [
   'util',
@@ -83,7 +83,7 @@ export function renderModuleGraph(pkgs: readonly Pkg[], locale: Locale): string 
       : '—'
     return `| ${packageLink(pkg)} | \`${pkg.group}\` | ${dependencies} |`
   })
-  const chinese = locale === 'zh'
+  const chinese = locale === 'ar'
   return [
     chinese
       ? '<!-- من scripts/gen-module-graph.ts توليد——طلب لا يد عمل تحرير.\n تشغيل `pnpm run gen-module-graph` إعادة توليد. -->'
@@ -118,7 +118,7 @@ export function computeModuleGraphOutputs(scanRoot: string = root): ReadonlyMap<
   const packages = collectPackageGraph(scanRoot, GROUP_ORDER, 'gen-module-graph')
   return new Map([
     [PATHS.source, renderModuleGraph(packages, 'en')],
-    [PATHS.zh, renderModuleGraph(packages, 'zh')],
+    [PATHS.ar, renderModuleGraph(packages, 'ar')],
   ])
 }
 
@@ -137,10 +137,10 @@ export function writeModuleGraph(scanRoot: string = root): string[] {
     changed.push(path)
   }
   const source = Buffer.from(outputs.get(PATHS.source) ?? '')
-  const zh = Buffer.from(outputs.get(PATHS.zh) ?? '')
+  const ar = Buffer.from(outputs.get(PATHS.ar) ?? '')
   const record = renderTranslationPairingRecord(PATHS, {
     sourceHash: storeGitBlob(scanRoot, source),
-    zhHash: storeGitBlob(scanRoot, zh),
+    arHash: storeGitBlob(scanRoot, ar),
   })
   const recordPath = resolve(scanRoot, PATHS.meta)
   if (!existsSync(recordPath) || readFileSync(recordPath, 'utf8') !== record) {
@@ -155,7 +155,7 @@ export function main(): void {
   const outputs = computeModuleGraphOutputs(root)
   const record = renderTranslationPairingRecord(PATHS, {
     sourceHash: gitBlobHash(Buffer.from(outputs.get(PATHS.source) ?? '')),
-    zhHash: gitBlobHash(Buffer.from(outputs.get(PATHS.zh) ?? '')),
+    arHash: gitBlobHash(Buffer.from(outputs.get(PATHS.ar) ?? '')),
   })
   const expected = new Map([...outputs, [PATHS.meta, record]])
   if (process.argv.includes('--check')) {

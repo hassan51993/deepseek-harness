@@ -35,7 +35,7 @@ export function requireBuilt(name: string): unknown {
  * surface: with no stored preference the client derives its initial locale
  * from the browser, and Playwright's default browser asks for English.
  */
-export const ZH_BROWSER_LOCALE = 'zh-CN'
+export const ZH_BROWSER_LOCALE = 'ar-SA'
 
 /**
  * Open the standard browser-test page advertising English before client boot.
@@ -140,13 +140,13 @@ export async function connectFreshWorkspace(page: Page, root: string, name = 'wo
 /**
  * {@link connectFreshWorkspace} over a page that advertises
  * {@link ZH_BROWSER_LOCALE}: the English helper's anchors assume the locale
- * most other scenarios boot, so a scenario that deliberately keeps zh needs
+ * most other scenarios boot, so a scenario that deliberately keeps ar needs
  * the localized picker copy.
  * @param page - the browser page under test.
  * @param root - workspace parent directory.
  * @param name - directory created under `root` and connected.
  */
-export async function connectFreshWorkspaceZh(page: Page, root: string, name = 'workspace'): Promise<void> {
+export async function connectFreshWorkspaceAr(page: Page, root: string, name = 'workspace'): Promise<void> {
   mkdirSync(join(root, name), { recursive: true })
   await page.getByRole('textbox', { name: 'اختيار مساحة العمل' }).click()
   const dialog = page.getByRole('dialog', { name: 'اختيار مساحة العمل دليل' })

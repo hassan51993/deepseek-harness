@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-plugin-management-in-the-web-sidebar.zh.md)
+English | [العربية](2026-09-09-plugin-management-in-the-web-sidebar.ar.md)
 
 ## Problem
 

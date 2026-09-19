@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-06-30-subagent-observe-enrich.zh.md)
+English | [العربية](2026-06-30-subagent-observe-enrich.ar.md)
 
 ## Problem
 

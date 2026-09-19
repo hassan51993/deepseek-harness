@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-04-fold-stdio-ui-helper.md: 72211108820bd59235d6171c6008d2d63ad79c40
-2026-07-04-fold-stdio-ui-helper.zh.md: e9329ac3a038a37ee2bd51c65f976cbf7bb143c0
+2026-07-04-fold-stdio-ui-helper.ar.md: e9329ac3a038a37ee2bd51c65f976cbf7bb143c0

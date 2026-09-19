@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-07-18-tui-terminal-state-snapshots.zh.md)
+English | [العربية](2026-07-18-tui-terminal-state-snapshots.ar.md)
 
 ## Problem
 

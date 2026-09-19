@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-29-code-runtime-python-load-and-dispatch-hardening.zh.md)
+English | [العربية](2026-08-29-code-runtime-python-load-and-dispatch-hardening.ar.md)
 
 ## Problem
 

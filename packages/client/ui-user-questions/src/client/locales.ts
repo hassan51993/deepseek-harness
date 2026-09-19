@@ -1,7 +1,7 @@
 /** `question` namespace dictionaries. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'error.incomplete': 'طلب أولا إتمام هذا طريق مشكلة.',
   'error.unanswered': 'طلب اختيار واحد خيار أو ملء كتابة ذاتي تعريف جواب سجل.',
   'nav.prev': 'فوق واحد عنوان',
@@ -20,9 +20,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The question namespace key union. */
-export type QuestionKey = keyof typeof zh
+export type QuestionKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'error.incomplete': 'Please complete this question first.',
   'error.unanswered': 'Please select an option or enter a custom answer.',

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-06-standard-hosted-benchmark-runner.zh.md)
+English | [العربية](2026-09-06-standard-hosted-benchmark-runner.ar.md)
 
 ## Problem
 

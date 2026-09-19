@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-12-resolve-store-pwsh-aliases.zh.md)
+English | [العربية](2026-08-12-resolve-store-pwsh-aliases.ar.md)
 
 ## Problem
 

@@ -18,8 +18,8 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   }
 }
 
-/** Simplified Chinese dictionary and key-set source of truth. */
-export const zh = {
+/** Arabic dictionary and key-set source of truth. */
+export const ar = {
   'type.label': 'ملف',
   'guide.title': 'مساحة العمل ملف',
   'guide.description': 'تصفح تصفح جلسة مساحة العمل ملف',
@@ -36,9 +36,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Files dictionary key union. */
-export type SidebarFilesKey = keyof typeof zh
+export type SidebarFilesKey = keyof typeof ar
 
-/** English dictionary, checked against the Chinese key set. */
+/** English dictionary, checked against the Arabic key set. */
 export const en = {
   'type.label': 'Files',
   'guide.title': 'Workspace files',

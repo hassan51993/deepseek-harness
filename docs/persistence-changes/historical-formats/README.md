@@ -4,7 +4,7 @@ description: "Find the complete declared persistence types for every Session for
 
 # Session persistence formats
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 
@@ -38,7 +38,7 @@ The index is generated from validated snapshots and the current writer constant.
 <a id="scope"></a>
 ## Scope and evidence
 
-Each `vN.md` / `vN.zh.md` pair has `kind: persistence-format`, an identical `yaml persistence-format` declaration binding every root key to its captured digest, a pairing sidecar, and a complete `vN.schema.json`. The [template](../../../.agents/skills/dsh-doc/templates/persistence-format.md) defines these records. Roots cover the logical Session header, physical JSONL header, event envelope, and all first-party events at the selected checkpoint; each root includes every reachable declared type. Packed physical body records have separate codec owners linked from each page.
+Each `vN.md` / `vN.ar.md` pair has `kind: persistence-format`, an identical `yaml persistence-format` declaration binding every root key to its captured digest, a pairing sidecar, and a complete `vN.schema.json`. The [template](../../../.agents/skills/dsh-doc/templates/persistence-format.md) defines these records. Roots cover the logical Session header, physical JSONL header, event envelope, and all first-party events at the selected checkpoint; each root includes every reachable declared type. Packed physical body records have separate codec owners linked from each page.
 
 V0 and V2 use the latest matching tags in the [captured prerelease archive](../releases/README.md). V1 uses an intermediate source tree identified in its reference because the captured tags contain no V1 writer. Historical sources retain file paths without line numbers. Snapshots preserve historical optional fields and opaque values; they do not substitute current types into older formats. Historical identifiers remain intact only in schema JSON and the verified generated schema regions; authored prose follows current terminology rules.
 

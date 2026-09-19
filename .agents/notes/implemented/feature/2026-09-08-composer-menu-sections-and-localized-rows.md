@@ -2,11 +2,11 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-composer-menu-sections-and-localized-rows.zh.md)
+English | [العربية](2026-09-08-composer-menu-sections-and-localized-rows.ar.md)
 
 ## Problem
 
-The composer's `+` button and a typed `/` listed every command in Host registration order as `name description`, all lowercase, with no glyphs and no grouping, beside a separate paperclip button for files. Under Chinese the rows stayed English because Host descriptors carry English text only, and a user who knew a command by its Chinese title could neither find it by that title nor see what to type. Issue #3567 and the design doc for it ask for two sections in usage order, a glyph and a left-aligned title per row with the description right-aligned, capitalized English titles, Chinese titles and descriptions that stay searchable in both languages and show the English command name, a Chinese fill for the Plan and Goal claims, and a File entry inside the menu.
+The composer's `+` button and a typed `/` listed every command in Host registration order as `name description`, all lowercase, with no glyphs and no grouping, beside a separate paperclip button for files. Under Arabic the rows stayed English because Host descriptors carry English text only, and a user who knew a command by its Chinese title could neither find it by that title nor see what to type. Issue #3567 and the design doc for it ask for two sections in usage order, a glyph and a left-aligned title per row with the description right-aligned, capitalized English titles, Chinese titles and descriptions that stay searchable in both languages and show the English command name, a Chinese fill for the Plan and Goal claims, and a File entry inside the menu.
 
 ## Decision
 
@@ -14,7 +14,7 @@ The composer's `+` button and a typed `/` listed every command in Host registrat
 
 The six built-in Host commands get their localized title, description, glyph, and claim token from the client. Stable identity selection and input resolution follow the [command identity decision](../architecture/2026-09-10-command-identities-and-composer-file-action.md). Contributions carry `label()`, `description()`, and `icon`, read on every candidate pass, so the `/model` row localizes without re-registration.
 
-A menu pick fills the locale's claim token: under Chinese, picking Plan fills `/حساب تخطيط ` and the submission executes `/plan `. A typed token keeps its typed spelling as the claim, because the composer reads the arguments after the token it holds. The effective Session catalog resolves Chinese and English aliases through the same input path in every locale.
+A menu pick fills the locale's claim token: under Chinese, picking Plan fills `/حساب تخطيط ` and the submission executes `/plan `. A typed token keeps its typed spelling as the claim, because the composer reads the arguments after the token it holds. The effective Session catalog resolves Arabic and English aliases through the same input path in every locale.
 
 The File row is an `action` contribution: a bare invocation consumes the trigger token and runs a client callback without submitting a message. Conversation owns that registration, its live availability, and the hidden file input. The menu replaces the separate paperclip button; the `+` button's accessible name and tooltip read "Add files or run commands".
 

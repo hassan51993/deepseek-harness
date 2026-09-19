@@ -59,7 +59,7 @@ describe('renderModuleGraph', () => {
     ]
 
     const english = renderModuleGraph(packages, 'en')
-    const chinese = renderModuleGraph(packages, 'zh')
+    const chinese = renderModuleGraph(packages, 'ar')
 
     expect(english).toContain('# Shared-instance dependency graph')
     expect(chinese).toContain('# مشترك نسخة اعتماد علاقة رسم')

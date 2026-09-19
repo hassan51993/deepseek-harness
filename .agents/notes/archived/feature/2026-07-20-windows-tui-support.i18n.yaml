@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-20-windows-tui-support.md
 2026-07-20-windows-tui-support.md: 9308df7fb43378610cb2d480324c55bff07ea108
-2026-07-20-windows-tui-support.zh.md: 8b4a1eb4cef3056b47b911a07ed62202b52d1f73
+2026-07-20-windows-tui-support.ar.md: 8b4a1eb4cef3056b47b911a07ed62202b52d1f73

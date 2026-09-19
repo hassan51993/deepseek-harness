@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-12-trim-agent-teams-read-and-lifecycle-surface.md
 2026-08-12-trim-agent-teams-read-and-lifecycle-surface.md: f4be797c47b804592818895db8daad0bb5b9e26d
-2026-08-12-trim-agent-teams-read-and-lifecycle-surface.zh.md: 196c3b241eb2552b98c186e78d6a161b8b5cd5b5
+2026-08-12-trim-agent-teams-read-and-lifecycle-surface.ar.md: 196c3b241eb2552b98c186e78d6a161b8b5cd5b5

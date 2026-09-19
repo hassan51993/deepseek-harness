@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [العربية](2026-07-20-generated-cordis-core-api.zh.md)
+English | [العربية](2026-07-20-generated-cordis-core-api.ar.md)
 
 ## Problem
 
@@ -29,4 +29,4 @@ The generator validates that documented classes and methods retain descriptive J
 
 The five Cordis API pages follow vendor updates through one deterministic generator and share the repository's documentation freshness gate. The website gains a dedicated Cordis API section without copied site content, while root and English navigation remain structurally identical.
 
-The page manifest is curated, so a newly public Cordis core type needs an explicit generator entry. Generated prose is English-only, and source JSDoc quality directly limits reference quality; Chinese output requires generator-level translation rather than hand-editing the generated files.
+The page manifest is curated, so a newly public Cordis core type needs an explicit generator entry. Generated prose is English-only, and source JSDoc quality directly limits reference quality; Arabic output requires generator-level translation rather than hand-editing the generated files.

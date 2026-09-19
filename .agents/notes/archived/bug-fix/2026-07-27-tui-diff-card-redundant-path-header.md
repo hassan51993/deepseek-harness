@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-31
 
-English | [العربية](2026-07-27-tui-diff-card-redundant-path-header.zh.md)
+English | [العربية](2026-07-27-tui-diff-card-redundant-path-header.ar.md)
 
 ## Problem
 

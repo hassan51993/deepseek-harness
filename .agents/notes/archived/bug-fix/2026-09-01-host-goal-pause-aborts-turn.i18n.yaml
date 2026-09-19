@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-09-01-host-goal-pause-aborts-turn.md
 2026-09-01-host-goal-pause-aborts-turn.md: 3a0246f4cc119097498d840682b29c1c5eb3bb56
-2026-09-01-host-goal-pause-aborts-turn.zh.md: 0c88bb736d85979618040f4fedf8febd44e1fdf5
+2026-09-01-host-goal-pause-aborts-turn.ar.md: 0c88bb736d85979618040f4fedf8febd44e1fdf5

@@ -1,6 +1,6 @@
 import { expect, it } from 'vitest'
 import { desktopUpdateErrorSummary, presentDesktopUpdate } from '../src/update-presentation.ts'
-import { en, zh } from '../src/locale.ts'
+import { en, ar } from '../src/locale.ts'
 import type { DesktopUpdateState, DshDesktopProductApi } from '../src/ipc.ts'
 import type { DesktopUpdateBridge } from '../../../packages/client/ui-settings-general/src/client/desktop-update-bridge.ts'
 
@@ -12,11 +12,11 @@ it('keeps the Electron preload assignable to the product consumer', () => {
 it('records visible ordinary-update states without authorizing downloads or installation', async () => {
   const phases: DesktopUpdateState['phase'][] = ['idle', 'available', 'downloading', 'verifying', 'ready', 'installing', 'error']
   const states = phases.map(phase => presentDesktopUpdate({ phase, version: '0.1.5-rc.2', percent: 58 }))
-  await expect(JSON.stringify(states, null, 2) + '\n').toMatchFileSnapshot('./expected/update-status-zh.json')
+  await expect(JSON.stringify(states, null, 2) + '\n').toMatchFileSnapshot('./expected/update-status-ar.json')
 })
 
 it('keeps raw diagnostics out of error tooltips in both locales', () => {
-  for (const messages of [en, zh]) {
+  for (const messages of [en, ar]) {
     for (const failedOperation of ['check', 'download', 'install'] as const) {
       const state: DesktopUpdateState = { phase: 'error', failedOperation,
         message: 'net::ERR_CONNECTION_CLOSED\nHeaders: private\n' + 'at internal/path\n'.repeat(1000) }

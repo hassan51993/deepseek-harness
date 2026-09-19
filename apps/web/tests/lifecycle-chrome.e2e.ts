@@ -31,7 +31,7 @@ const FIXTURE = join(SNAPSHOT_DIR, 'session.v3.jsonl')
 const REPLAY_OVERRIDE = join(SNAPSHOT_DIR, 'replay.override.json')
 const HERO_EXPECTED = join(SNAPSHOT_DIR, 'hero.expected.md')
 const COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu.expected.md')
-const COMMAND_MENU_ZH_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-zh.expected.md')
+const COMMAND_MENU_ZH_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-ar.expected.md')
 const FUZZY_COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-fuzzy.expected.md')
 const PLAN_ACTIVE_EXPECTED = join(SNAPSHOT_DIR, 'plan-active.expected.md')
 const CONNECTION_ERROR_EXPECTED = join(SNAPSHOT_DIR, 'connection-error.expected.md')
@@ -113,23 +113,23 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
   })
 
   it.skipIf(MODE === 'record')('localizes slash-command descriptions from the browser language', async () => {
-    const zhPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
-    const zhTripwire = watchConsole(zhPage)
-    onTestFailed(() => saveFailureShot(zhPage, 'web-e2e-command-menu-zh'))
+    const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const arTripwire = watchConsole(arPage)
+    onTestFailed(() => saveFailureShot(arPage, 'web-e2e-command-menu-ar'))
     try {
-      await zhPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
-      await zhPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
-      const launcher = zhPage.getByRole('button', { name: 'إضافة ملف أو استدعاء إشارة أمر' })
+      await arPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+      await arPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+      const launcher = arPage.getByRole('button', { name: 'إضافة ملف أو استدعاء إشارة أمر' })
       await launcher.click()
-      const menu = zhPage.getByRole('listbox', { name: 'إطلاق مرشح بناء اقتراح' })
+      const menu = arPage.getByRole('listbox', { name: 'إطلاق مرشح بناء اقتراح' })
       await menu.getByRole('option').first().waitFor({ timeout: 10_000 })
       await menu.getByRole('status').waitFor({ state: 'hidden', timeout: 10_000 })
-      const snapshot = await captureStableAria(zhPage, '[role="listbox"]', scaffold.workspaceCwd)
+      const snapshot = await captureStableAria(arPage, '[role="listbox"]', scaffold.workspaceCwd)
       await compareOrRefreshGolden(COMMAND_MENU_ZH_EXPECTED, snapshot, MODE)
-      expect(zhTripwire.pageErrors).toEqual([])
-      expect(zhTripwire.warnings).toEqual([])
+      expect(arTripwire.pageErrors).toEqual([])
+      expect(arTripwire.warnings).toEqual([])
     } finally {
-      await zhPage.close()
+      await arPage.close()
     }
   })
 
@@ -166,7 +166,7 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
       const cdp = await inputPage.context().newCDPSession(inputPage)
       await cdp.send('Input.imeSetComposition', { text: 'z', selectionStart: 1, selectionEnd: 1 })
       await expect.poll(shownHint).toBe('none')
-      await cdp.send('Input.imeSetComposition', { text: 'zh', selectionStart: 2, selectionEnd: 2 })
+      await cdp.send('Input.imeSetComposition', { text: 'ar', selectionStart: 2, selectionEnd: 2 })
       await expect.poll(shownHint).toBe('none')
       await cdp.send('Input.insertText', { text: 'هذا' })
       await expect.poll(() => input.textContent()).toBe(`${token} هذا`)
@@ -563,7 +563,7 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
     expect(tripwire.warnings).toEqual([])
     await assertFixtureInventory(SNAPSHOT_DIR, [
       'session.v3.jsonl', 'replay.override.json', 'command-menu.expected.md',
-      'command-menu-fuzzy.expected.md', 'command-menu-zh.expected.md', 'connection-error.expected.md',
+      'command-menu-fuzzy.expected.md', 'command-menu-ar.expected.md', 'connection-error.expected.md',
       'hero.expected.md', 'plan-active.expected.md',
       'reloaded.expected.md', 'reloaded-expanded.expected.md',
     ])

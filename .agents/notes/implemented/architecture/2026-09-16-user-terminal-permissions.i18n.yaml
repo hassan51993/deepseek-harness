@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-16-user-terminal-permissions.md
 2026-09-16-user-terminal-permissions.md: f45b96419c34f8ebddc30431b42c9859c46de6b9
-2026-09-16-user-terminal-permissions.zh.md: 62bb152a1b899d026c8d7bddb350317ba12f14cf
+2026-09-16-user-terminal-permissions.ar.md: 62bb152a1b899d026c8d7bddb350317ba12f14cf

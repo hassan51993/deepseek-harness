@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-package-manifest-types.zh.md)
+English | [العربية](2026-09-05-package-manifest-types.ar.md)
 
 ## Problem
 

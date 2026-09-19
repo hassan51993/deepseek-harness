@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-unattended-browser-terminal-reclamation.zh.md)
+English | [العربية](2026-09-14-unattended-browser-terminal-reclamation.ar.md)
 
 ## Problem
 

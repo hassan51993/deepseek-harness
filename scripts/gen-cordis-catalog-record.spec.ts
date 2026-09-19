@@ -20,7 +20,7 @@ import {
 import { blobHash, renderPairMeta } from './translation-pairing.ts'
 
 const PAGE = 'docs/subsystems/fix.md'
-const ZH = 'docs/subsystems/fix.zh.md'
+const ZH = 'docs/subsystems/fix.ar.md'
 const META = 'docs/subsystems/fix.i18n.yaml'
 
 function page(prose: string, region: string): string {
@@ -35,42 +35,42 @@ afterEach(() => {
 /** Lay out a pair on disk and return { root, before } for a regeneration that already wrote `current`. */
 function setup(options: {
   beforeEn: string
-  beforeZh: string
+  beforeAr: string
   currentEn: string
-  currentZh: string
+  currentAr: string
   meta?: string | null
-  omitZhSnapshot?: boolean
+  omitArSnapshot?: boolean
 }): { root: string; before: Map<string, Buffer> } {
   const root = mkdtempSync(join(tmpdir(), 'record-guard-'))
   roots.push(root)
   mkdirSync(join(root, 'docs/subsystems'), { recursive: true })
   writeFileSync(join(root, PAGE), options.currentEn)
-  writeFileSync(join(root, ZH), options.currentZh)
+  writeFileSync(join(root, ZH), options.currentAr)
   const meta = options.meta === undefined
-    ? renderPairMeta(PAGE, blobHash(Buffer.from(options.beforeEn)), ZH, blobHash(Buffer.from(options.beforeZh)))
+    ? renderPairMeta(PAGE, blobHash(Buffer.from(options.beforeEn)), ZH, blobHash(Buffer.from(options.beforeAr)))
     : options.meta
   if (meta !== null) writeFileSync(join(root, META), meta)
   const before = new Map<string, Buffer>([[PAGE, Buffer.from(options.beforeEn)]])
-  if (!options.omitZhSnapshot) before.set(ZH, Buffer.from(options.beforeZh))
+  if (!options.omitArSnapshot) before.set(ZH, Buffer.from(options.beforeAr))
   return { root, before }
 }
 
 describe('maybeRecordPair', () => {
   const beforeEn = page('prose.', 'old region')
-  const beforeZh = page('تفرق نص.', 'old region')
+  const beforeAr = page('تفرق نص.', 'old region')
   const currentEn = page('prose.', 'new region')
-  const currentZh = page('تفرق نص.', 'new region')
+  const currentAr = page('تفرق نص.', 'new region')
 
   it('re-records a region-confined write over a consistent record', () => {
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr })
     expect(maybeRecordPair(PAGE, before, root)).toBe(true)
     expect(readFileSync(join(root, META), 'utf8'))
-      .toBe(renderPairMeta(PAGE, blobHash(Buffer.from(currentEn)), ZH, blobHash(Buffer.from(currentZh))))
+      .toBe(renderPairMeta(PAGE, blobHash(Buffer.from(currentEn)), ZH, blobHash(Buffer.from(currentAr))))
   })
 
   it('refuses when the pair was already out of sync before the run', () => {
-    const stale = renderPairMeta(PAGE, blobHash(Buffer.from('drifted long ago\n')), ZH, blobHash(Buffer.from(beforeZh)))
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, meta: stale })
+    const stale = renderPairMeta(PAGE, blobHash(Buffer.from('drifted long ago\n')), ZH, blobHash(Buffer.from(beforeAr)))
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, meta: stale })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
     expect(readFileSync(join(root, META), 'utf8')).toBe(stale)
   })
@@ -81,18 +81,18 @@ describe('maybeRecordPair', () => {
     const renamedKeys = [
       '# comment',
       `fixXmd: ${blobHash(Buffer.from(beforeEn))}`,
-      `fix.zh.md: ${blobHash(Buffer.from(beforeZh))}`,
+      `fix.ar.md: ${blobHash(Buffer.from(beforeAr))}`,
       '',
     ].join('\n')
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, meta: renamedKeys })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, meta: renamedKeys })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
     expect(readFileSync(join(root, META), 'utf8')).toBe(renamedKeys)
   })
 
   it('refuses a record with extra entries', () => {
-    const extra = renderPairMeta(PAGE, blobHash(Buffer.from(beforeEn)), ZH, blobHash(Buffer.from(beforeZh)))
+    const extra = renderPairMeta(PAGE, blobHash(Buffer.from(beforeEn)), ZH, blobHash(Buffer.from(beforeAr)))
       + `other.md: ${blobHash(Buffer.from(beforeEn))}\n`
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, meta: extra })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, meta: extra })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
   })
 
@@ -102,27 +102,27 @@ describe('maybeRecordPair', () => {
     const duplicated = [
       `fix.md: ${blobHash(Buffer.from(beforeEn))}`,
       `fix.md: ${blobHash(Buffer.from(beforeEn))}`,
-      `fix.zh.md: ${blobHash(Buffer.from(beforeZh))}`,
+      `fix.ar.md: ${blobHash(Buffer.from(beforeAr))}`,
       '',
     ].join('\n')
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, meta: duplicated })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, meta: duplicated })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
     expect(readFileSync(join(root, META), 'utf8')).toBe(duplicated)
   })
 
   it('refuses when prose drifted alongside the region write', () => {
     const proseDrift = page('prose, edited by a human.', 'new region')
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn: proseDrift, currentZh })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn: proseDrift, currentAr })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
   })
 
   it('refuses a brand-new pair with no record', () => {
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, meta: null })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, meta: null })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
   })
 
   it('refuses when a side has no pre-write snapshot', () => {
-    const { root, before } = setup({ beforeEn, beforeZh, currentEn, currentZh, omitZhSnapshot: true })
+    const { root, before } = setup({ beforeEn, beforeAr, currentEn, currentAr, omitArSnapshot: true })
     expect(maybeRecordPair(PAGE, before, root)).toBe(false)
   })
 })
@@ -157,19 +157,19 @@ describe('localizePageRegion', () => {
     mkdirSync(join(root, 'packages'), { recursive: true })
     mkdirSync(join(root, 'scripts'), { recursive: true })
     writeFileSync(join(root, 'docs/subsystems/target.md'), '# Target\n')
-    writeFileSync(join(root, 'docs/subsystems/target.zh.md'), '# هدف\n')
+    writeFileSync(join(root, 'docs/subsystems/target.ar.md'), '# هدف\n')
     writeFileSync(join(root, 'docs/subsystems/excluded.md'), '# Excluded\n')
-    writeFileSync(join(root, 'docs/subsystems/excluded.zh.md'), '# ترتيب حذف\n')
+    writeFileSync(join(root, 'docs/subsystems/excluded.ar.md'), '# ترتيب حذف\n')
     writeFileSync(join(root, 'packages/outside.md'), '# Outside\n')
-    writeFileSync(join(root, 'packages/outside.zh.md'), '# نطاق خارج\n')
+    writeFileSync(join(root, 'packages/outside.ar.md'), '# نطاق خارج\n')
     writeFileSync(join(root, 'scripts/translation-pairing.manifest.json'), JSON.stringify({
       excluded: ['docs/subsystems/excluded.md'],
     }))
     const region = `${REGION_BEGIN}\n[Target](target.md#api) [Excluded](excluded.md) [Outside](../../packages/outside.md)\n${REGION_END}`
 
     expect(localizePageRegion(region, 'docs/subsystems/page.md', root)).toBe(region)
-    expect(localizePageRegion(region, 'docs/subsystems/page.zh.md', root)).toBe(
-      `${REGION_BEGIN}\n[Target](target.zh.md#api) [Excluded](excluded.md) [Outside](../../packages/outside.md)\n${REGION_END}`,
+    expect(localizePageRegion(region, 'docs/subsystems/page.ar.md', root)).toBe(
+      `${REGION_BEGIN}\n[Target](target.ar.md#api) [Excluded](excluded.md) [Outside](../../packages/outside.md)\n${REGION_END}`,
     )
   })
 })

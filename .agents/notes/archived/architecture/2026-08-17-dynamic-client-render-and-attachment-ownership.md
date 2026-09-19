@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-17-dynamic-client-render-and-attachment-ownership.zh.md)
+English | [العربية](2026-08-17-dynamic-client-render-and-attachment-ownership.ar.md)
 
 ## Problem
 

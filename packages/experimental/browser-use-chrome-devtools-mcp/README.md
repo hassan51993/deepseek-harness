@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-experimental-browser-use-chrome-devtools-mcp
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

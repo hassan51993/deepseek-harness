@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-28-auto-review.zh.md)
+English | [العربية](2026-08-28-auto-review.ar.md)
 
 ## Problem
 

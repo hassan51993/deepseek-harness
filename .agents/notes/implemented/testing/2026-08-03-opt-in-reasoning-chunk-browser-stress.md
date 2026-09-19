@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-03-opt-in-reasoning-chunk-browser-stress.zh.md)
+English | [العربية](2026-08-03-opt-in-reasoning-chunk-browser-stress.ar.md)
 
 ## Problem
 

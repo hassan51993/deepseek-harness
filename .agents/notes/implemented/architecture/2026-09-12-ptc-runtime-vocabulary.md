@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-ptc-runtime-vocabulary.zh.md)
+English | [العربية](2026-09-12-ptc-runtime-vocabulary.ar.md)
 
 ## Problem
 

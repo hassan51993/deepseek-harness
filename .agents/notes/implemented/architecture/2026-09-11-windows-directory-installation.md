@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-windows-directory-installation.zh.md)
+English | [العربية](2026-09-11-windows-directory-installation.ar.md)
 
 ## Problem
 

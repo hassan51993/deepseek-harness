@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-21-inline-user-text-projection.zh.md)
+English | [العربية](2026-08-21-inline-user-text-projection.ar.md)
 
 ## Problem
 

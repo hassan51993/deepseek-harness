@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-01-pwsh-tool-and-executor.md
 2026-08-01-pwsh-tool-and-executor.md: c5f92830c1e2ed336cb9ed1a0d5dfb2c2e8bf2ae
-2026-08-01-pwsh-tool-and-executor.zh.md: d0af36ac2c2ff4dfe07d83a65016135db87f944f
+2026-08-01-pwsh-tool-and-executor.ar.md: d0af36ac2c2ff4dfe07d83a65016135db87f944f

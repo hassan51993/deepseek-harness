@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-09-08-desktop-update-policy-and-installation.zh.md)
+English | [العربية](2026-09-08-desktop-update-policy-and-installation.ar.md)
 
 ## Problem
 

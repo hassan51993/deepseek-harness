@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-04-share-app-bin-boot-glue.zh.md)
+English | [العربية](2026-07-04-share-app-bin-boot-glue.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-client-session-references.zh.md)
+English | [العربية](2026-09-15-client-session-references.ar.md)
 
 ## Problem
 

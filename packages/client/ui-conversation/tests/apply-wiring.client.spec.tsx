@@ -8,7 +8,7 @@ import type { ObservableSnapshot } from '@deepseek-ai/dsh-client-store'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { apply, inject, type ViewTab } from '@deepseek-ai/dsh-client-ui-conversation/client'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 
 const SID = 'session-1' as SessionId
 
@@ -106,7 +106,7 @@ describe('target-neutral Conversation apply wiring', () => {
       label: () => b.runtime.ctx.locale.getSnapshot().active,
     }, (() => null) as never)
     await vi.waitFor(() => {
-      expect(source?.getSnapshot()).toEqual([{ id: 'probe', label: 'zh' }])
+      expect(source?.getSnapshot()).toEqual([{ id: 'probe', label: 'ar' }])
     })
     const chinese = source?.getSnapshot()
 

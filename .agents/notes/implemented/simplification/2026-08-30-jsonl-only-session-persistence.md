@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-30-jsonl-only-session-persistence.zh.md)
+English | [العربية](2026-08-30-jsonl-only-session-persistence.ar.md)
 
 ## Problem
 

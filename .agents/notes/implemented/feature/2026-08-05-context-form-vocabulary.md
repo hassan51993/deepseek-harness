@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-05-context-form-vocabulary.zh.md)
+English | [العربية](2026-08-05-context-form-vocabulary.ar.md)
 
 ## Problem
 

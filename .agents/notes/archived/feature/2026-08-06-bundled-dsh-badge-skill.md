@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-06-bundled-dsh-badge-skill.zh.md)
+English | [العربية](2026-08-06-bundled-dsh-badge-skill.ar.md)
 
 ## Problem
 

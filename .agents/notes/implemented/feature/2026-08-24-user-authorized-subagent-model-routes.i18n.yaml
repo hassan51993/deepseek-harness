@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-24-user-authorized-subagent-model-routes.md
 2026-08-24-user-authorized-subagent-model-routes.md: ef6f90d2cc1ec79e1381d75fd8cc25c568af3067
-2026-08-24-user-authorized-subagent-model-routes.zh.md: 23519bfc6619718e1cbf98dbad65eccd90353c0a
+2026-08-24-user-authorized-subagent-model-routes.ar.md: 23519bfc6619718e1cbf98dbad65eccd90353c0a

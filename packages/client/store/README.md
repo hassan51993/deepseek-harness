@@ -4,7 +4,7 @@ kind: "package-library"
 ---
 # @deepseek-ai/dsh-client-store
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

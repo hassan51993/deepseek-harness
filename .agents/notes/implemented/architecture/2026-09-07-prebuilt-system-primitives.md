@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-prebuilt-system-primitives.zh.md)
+English | [العربية](2026-09-07-prebuilt-system-primitives.ar.md)
 
 ## Problem
 

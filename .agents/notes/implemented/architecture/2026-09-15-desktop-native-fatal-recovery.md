@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-desktop-native-fatal-recovery.zh.md)
+English | [العربية](2026-09-15-desktop-native-fatal-recovery.ar.md)
 
 ## Problem
 

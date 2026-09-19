@@ -37,8 +37,8 @@ const PRODUCT_NAMES = {
   'app.konsole': 'Konsole',
 } as const
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'open.title': 'في {app} في فتح عمل دليل',
   'open.tooltip': 'في محلي فتح',
   'open.error': 'فتح فشل',
@@ -51,7 +51,7 @@ export const zh = {
   'app.terminal': 'طرفية',
 } as const
 
-/** English dictionary, key-identical to the Chinese source of truth. */
+/** English dictionary, key-identical to the Arabic source of truth. */
 export const en: Record<OpenInAppKey, string> = {
   'open.title': 'Open workspace in {app}',
   'open.tooltip': 'Open locally',
@@ -65,5 +65,5 @@ export const en: Record<OpenInAppKey, string> = {
   'app.terminal': 'Terminal',
 }
 
-/** Key domain of the `open-in-app` namespace (zh is the source of truth). */
-export type OpenInAppKey = keyof typeof zh
+/** Key domain of the `open-in-app` namespace (ar is the source of truth). */
+export type OpenInAppKey = keyof typeof ar

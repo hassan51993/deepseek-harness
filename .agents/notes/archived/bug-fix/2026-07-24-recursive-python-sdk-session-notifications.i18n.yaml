@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-24-recursive-python-sdk-session-notifications.md
 2026-07-24-recursive-python-sdk-session-notifications.md: a60e2ff5d0db97e1073e4bbfb61f7bfdccfd016c
-2026-07-24-recursive-python-sdk-session-notifications.zh.md: 81ffb4dfe3140b51b267687f1922f14f8000eecb
+2026-07-24-recursive-python-sdk-session-notifications.ar.md: 81ffb4dfe3140b51b267687f1922f14f8000eecb

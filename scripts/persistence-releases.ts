@@ -188,10 +188,10 @@ export function loadPersistenceReleases(root: string): PersistenceReleases {
   const directory = join(root, ARCHIVE_DIRECTORY)
   const manifest = parseManifest(JSON.parse(readFileSync(join(directory, 'manifest.json'), 'utf8')))
   const files = new Set(readdirSync(directory))
-  const expected = new Set(['manifest.json', 'README.md', 'README.zh.md', 'README.i18n.yaml'])
+  const expected = new Set(['manifest.json', 'README.md', 'README.ar.md', 'README.i18n.yaml'])
   for (const filename of expected) if (!files.has(filename)) throw new Error(`missing release artifact ${filename}`)
   for (const release of manifest.releases) {
-    for (const suffix of ['.md', '.zh.md', '.i18n.yaml', '.schema.json']) {
+    for (const suffix of ['.md', '.ar.md', '.i18n.yaml', '.schema.json']) {
       const filename = release.tag + suffix
       expected.add(filename)
       if (!files.has(filename)) throw new Error(`${release.tag}: missing release artifact ${filename}`)
@@ -203,7 +203,7 @@ export function loadPersistenceReleases(root: string): PersistenceReleases {
   for (const release of manifest.releases) {
     const read = (suffix: string): string => readFileSync(join(directory, release.tag + suffix), 'utf8').replaceAll('\r\n', '\n')
     const english = machineBlock(read('.md'), `${release.tag}.md`)
-    const chinese = machineBlock(read('.zh.md'), `${release.tag}.zh.md`)
+    const chinese = machineBlock(read('.ar.md'), `${release.tag}.ar.md`)
     if (english !== chinese) throw new Error(`${release.tag}: bilingual machine records differ`)
     const record = parseRecord(english, release, entries.at(-1)?.release.tag ?? null)
     const snapshot = parseHistoricalPersistenceSnapshot(JSON.parse(read('.schema.json')))

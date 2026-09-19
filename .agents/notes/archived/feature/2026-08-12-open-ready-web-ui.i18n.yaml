@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-12-open-ready-web-ui.md
 2026-08-12-open-ready-web-ui.md: 869b0deb44dcc31a9fdcfd4a6026b3b34cea9a43
-2026-08-12-open-ready-web-ui.zh.md: 64997cd0f9cf93ea607ff3524e89a55cfc909a09
+2026-08-12-open-ready-web-ui.ar.md: 64997cd0f9cf93ea607ff3524e89a55cfc909a09

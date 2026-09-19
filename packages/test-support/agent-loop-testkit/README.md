@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-agent-loop-testkit
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

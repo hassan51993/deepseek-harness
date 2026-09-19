@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-26-web-trigger-menu-presentation-polish.zh.md)
+English | [العربية](2026-08-26-web-trigger-menu-presentation-polish.ar.md)
 
 ## Problem
 
@@ -19,7 +19,7 @@ The drill affordance on the highlighted folder row is the library `IconChevronRi
 
 A token still carrying its trigger character is editable text, not a settled chip: the text-ref decoration colors it and nothing more, and the domain icon belongs exclusively to the settled `ReferenceChipNode`. The former appearance channel (scan `appearance` field, `TextRefNode.__appearance`, `data-ref-appearance` DOM attribute, CSS `::before` icon) is deleted end to end.
 
-Composer placeholders advertise both triggers (`وصف أنت تفكير يلزم بناء محتوى… / استدعاء إشارة أمر @ ملف أو محادثة` / `Describe what you want to build... / commands, @ files or sessions`), and the zh copy for commands is unified from أمر to إشارة أمر across `ui-chat`, `ui-conversation`, `ui-goal`, and `ui-input-trigger`.
+Composer placeholders advertise both triggers (`وصف أنت تفكير يلزم بناء محتوى… / استدعاء إشارة أمر @ ملف أو محادثة` / `Describe what you want to build... / commands, @ files or sessions`), and the ar copy for commands is unified from أمر to إشارة أمر across `ui-chat`, `ui-conversation`, `ui-goal`, and `ui-input-trigger`.
 
 ## Alternatives considered
 

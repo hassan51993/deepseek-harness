@@ -8,8 +8,8 @@
  * model".
  */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'command.label': 'نموذج',
   'command.description': 'اختيار هذا جلسة استخدام نموذج',
   'option.loadError': 'دليل تحميل فشل:{message}',
@@ -35,9 +35,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The model namespace key union. */
-export type ModelKey = keyof typeof zh
+export type ModelKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'command.label': 'Model',
   'command.description': 'Select the model for this conversation',

@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'trajectory'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'view.trajectory': 'مسار أثر',
   'toolbar.aria': 'مسار أثر أداة شريط',
   'toolbar.duration': 'وقت طويل',
@@ -192,7 +192,7 @@ export const zh = {
 } as const
 
 /** The trajectory dictionary key union. */
-export type TrajectoryKey = keyof typeof zh
+export type TrajectoryKey = keyof typeof ar
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
@@ -205,7 +205,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 export type TrajectoryTranslate =
   import('@deepseek-ai/dsh-client-ui-slots').TranslateNS<typeof NS>
 
-/** English dictionary, checked complete against the Chinese source of truth. */
+/** English dictionary, checked complete against the Arabic source of truth. */
 export const en: Record<TrajectoryKey, string> = {
   'view.trajectory': 'Trajectory',
   'toolbar.aria': 'Trajectory toolbar',

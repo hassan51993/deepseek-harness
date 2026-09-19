@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'workflowRun'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'run.title': '{name}',
   'run.members.one': '{count} عدد عضو',
   'run.members.other': '{count} عدد عضو',
@@ -48,4 +48,4 @@ export const en: Record<WorkflowRunKey, string> = {
 }
 
 /** Union of this namespace's dictionary keys. */
-export type WorkflowRunKey = keyof typeof zh
+export type WorkflowRunKey = keyof typeof ar

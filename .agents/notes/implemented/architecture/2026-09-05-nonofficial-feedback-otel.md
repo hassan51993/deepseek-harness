@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-nonofficial-feedback-otel.zh.md)
+English | [العربية](2026-09-05-nonofficial-feedback-otel.ar.md)
 
 ## Problem
 

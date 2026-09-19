@@ -18,7 +18,7 @@ interface CarrierFixture {
 type FixtureWindow = Window & typeof globalThis & { updateFixture: CarrierFixture }
 
 describe('web e2e: Desktop update workspace chrome', () => {
-  it.each(['zh-CN', 'en-US'])('renders update states and routes explicit actions in %s', async (locale) => {
+  it.each(['ar-SA', 'en-US'])('renders update states and routes explicit actions in %s', async (locale) => {
     const scaffold = await launchWebScaffold({})
     try {
       const browser = await chromium.launch()
@@ -48,10 +48,10 @@ describe('web e2e: Desktop update workspace chrome', () => {
           await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
           await page.waitForSelector('[class*="frame"]')
           await expect.poll(() => page.evaluate(() => (window as FixtureWindow).updateFixture.listeners.size)).toBe(1)
-          const availableLabel = locale === 'zh-CN' ? 'جديد إصدار' : 'Update'
-          const retryLabel = locale === 'zh-CN' ? 'إعادة محاولة تحديث' : 'Retry update'
-          const errorDetail = locale === 'zh-CN' ? 'تحت تحميل تحديث فشل، طلب إعادة محاولة.' : 'Could not download the update. Please try again.'
-          const readyLabel = locale === 'zh-CN' ? 'تثبيت و إعادة بدء' : 'Install and Restart'
+          const availableLabel = locale === 'ar-SA' ? 'جديد إصدار' : 'Update'
+          const retryLabel = locale === 'ar-SA' ? 'إعادة محاولة تحديث' : 'Retry update'
+          const errorDetail = locale === 'ar-SA' ? 'تحت تحميل تحديث فشل، طلب إعادة محاولة.' : 'Could not download the update. Please try again.'
+          const readyLabel = locale === 'ar-SA' ? 'تثبيت و إعادة بدء' : 'Install and Restart'
           const version = '0.1.5-nightly.20260911'
           // The carrier classification deliberately uses English shell copy; Web copy follows its own locale.
           const available = presentDesktopUpdate({ phase: 'available', version }, en)
@@ -82,8 +82,8 @@ describe('web e2e: Desktop update workspace chrome', () => {
           expect(await opens()).toBe(1)
           await page.screenshot({ path: join(evidence, 'downloading.png') })
 
-          const collapse = locale === 'zh-CN' ? 'استلام بدء جانب حافة شريط' : 'Collapse sidebar'
-          const expand = locale === 'zh-CN' ? 'فتح جانب حافة شريط' : 'Open sidebar'
+          const collapse = locale === 'ar-SA' ? 'استلام بدء جانب حافة شريط' : 'Collapse sidebar'
+          const expand = locale === 'ar-SA' ? 'فتح جانب حافة شريط' : 'Open sidebar'
           await page.getByRole('button', { name: collapse, exact: true }).click()
           const toggle = page.getByRole('button', { name: expand, exact: true })
           const badge = toggle.getByRole('img', { name: '58%…', exact: true })

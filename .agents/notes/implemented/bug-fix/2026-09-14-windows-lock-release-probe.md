@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-windows-lock-release-probe.zh.md)
+English | [العربية](2026-09-14-windows-lock-release-probe.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-05-windows-jsonl-durable-publish.zh.md)
+English | [العربية](2026-07-05-windows-jsonl-durable-publish.ar.md)
 
 ## Problem
 

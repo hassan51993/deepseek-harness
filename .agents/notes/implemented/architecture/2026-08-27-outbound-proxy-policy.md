@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-27-outbound-proxy-policy.zh.md)
+English | [العربية](2026-08-27-outbound-proxy-policy.ar.md)
 
 ## Problem
 

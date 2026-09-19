@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-18-settings-font-size-control.zh.md)
+English | [العربية](2026-08-18-settings-font-size-control.ar.md)
 
 ## Problem
 

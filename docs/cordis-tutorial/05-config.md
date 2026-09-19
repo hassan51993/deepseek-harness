@@ -1,6 +1,6 @@
 # 5. Configuration
 
-English | [العربية](05-config.zh.md)
+English | [العربية](05-config.ar.md)
 
 Each `cordis.yml` entry can carry a `config` block, and the plugin declares a schema that validates it before `apply` runs. Bad config fails the load with a precise error — the plugin never starts half-configured.
 

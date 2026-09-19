@@ -91,8 +91,8 @@ export const en: Record<AgentPresetSettingsKey, string> = {
   enablePickerToCreate: 'Turn on Agent mode selection to start Creator mode',
 }
 
-/** Simplified Chinese copy. */
-export const zh: Record<AgentPresetSettingsKey, string> = {
+/** Arabic copy. */
+export const ar: Record<AgentPresetSettingsKey, string> = {
   error: 'لا يمكن تحميل Agent مسبق ضبط.',
   userTrust: 'ذاتي تعريف',
   seatHint: 'أي سوف بدء هذا عدد جلسة الذي استخدام Agent مسبق ضبط',

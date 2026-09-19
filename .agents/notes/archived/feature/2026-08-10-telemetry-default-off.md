@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-10-telemetry-default-off.zh.md)
+English | [العربية](2026-08-10-telemetry-default-off.ar.md)
 
 ## Problem
 

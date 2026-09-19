@@ -1,5 +1,5 @@
 /** Office preview copy and Host render configuration guidance. */
-export const zh = {
+export const ar = {
   title: 'Office وثيقة',
   loading: 'صحيح في قراءة…',
   retry: 'إعادة محاولة',
@@ -20,9 +20,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Office preview locale keys. */
-export type OfficePreviewKey = keyof typeof zh
+export type OfficePreviewKey = keyof typeof ar
 
-/** English translations checked against the Chinese key set. */
+/** English translations checked against the Arabic key set. */
 export const en = {
   title: 'Office document',
   loading: 'Reading…',

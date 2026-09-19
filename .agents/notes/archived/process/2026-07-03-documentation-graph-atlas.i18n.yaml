@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-03-documentation-graph-atlas.md: 6f2949e3673c43018f961cc954c9925945875f55
-2026-07-03-documentation-graph-atlas.zh.md: 731ae8a97a8437216c706adf86574d1982d7c484
+2026-07-03-documentation-graph-atlas.ar.md: 731ae8a97a8437216c706adf86574d1982d7c484

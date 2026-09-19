@@ -1079,20 +1079,20 @@ describe('web e2e: shipped right Sidebar', () => {
     // screenshot it takes is what the copy draft gets reviewed from. It lives in
     // this block because a settled session is its precondition too — a case that
     // depends on a sibling block's setup passes only in the right order.
-    it('renders the shipped Chinese copy on a Chinese page', async () => {
-      const zhPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
-      const zhTripwire = watchConsole(zhPage)
-      onTestFailed(() => saveFailureShot(zhPage, 'web-e2e-sidebar-right-zh'))
+    it('renders the shipped Arabic copy on a Chinese page', async () => {
+      const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+      const arTripwire = watchConsole(arPage)
+      onTestFailed(() => saveFailureShot(arPage, 'web-e2e-sidebar-right-ar'))
       try {
-        await zhPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
-        await zhPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+        await arPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+        await arPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
         // A fresh page opens the workspace on a blank session's hero, which has
         // no session header and so no expand button. The settled session is the
         // second row of the tree; pick it the way a user would.
-        await zhPage.getByRole('treeitem', { name: /Show the right sidebar\./u }).first().click()
-        const column = zhPage.locator('[data-rightbar-col]')
-        await expandOf(zhPage).waitFor({ timeout: 20_000 })
-        await expandOf(zhPage).click()
+        await arPage.getByRole('treeitem', { name: /Show the right sidebar\./u }).first().click()
+        const column = arPage.locator('[data-rightbar-col]')
+        await expandOf(arPage).waitFor({ timeout: 20_000 })
+        await expandOf(arPage).click()
         await expect.poll(async () => await tabTitles(column)).toEqual(['بدء'])
         await column.locator('[data-sidebar-right-guide-entry="files"]').click()
         await expect.poll(async () => await tabTitles(column)).toEqual(['ملف'])
@@ -1107,12 +1107,12 @@ describe('web e2e: shipped right Sidebar', () => {
         await expect.poll(async () => await tabTitles(column)).toEqual(['ملف', 'بدء'])
         await expect.poll(async () => await guide.locator('[data-sidebar-right-guide-entry="files"]').innerText())
           .toBe('مساحة العمل ملف\nتصفح تصفح جلسة مساحة العمل ملف')
-        await shot(zhPage, '05-guide-copy-zh')
+        await shot(arPage, '05-guide-copy-ar')
 
-        expect(zhTripwire.pageErrors).toEqual([])
-        expect(zhTripwire.warnings).toEqual([])
+        expect(arTripwire.pageErrors).toEqual([])
+        expect(arTripwire.warnings).toEqual([])
       } finally {
-        await zhPage.close()
+        await arPage.close()
       }
     }, 120_000)
   })

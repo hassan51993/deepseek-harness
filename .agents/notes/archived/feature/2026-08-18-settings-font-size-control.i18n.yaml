@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-18-settings-font-size-control.md
 2026-08-18-settings-font-size-control.md: d0b2ae847aeea8ed249ad452342b5d3e3c5a6766
-2026-08-18-settings-font-size-control.zh.md: 11624f5317053c333491d4808ba5f497cf6a579a
+2026-08-18-settings-font-size-control.ar.md: 11624f5317053c333491d4808ba5f497cf6a579a

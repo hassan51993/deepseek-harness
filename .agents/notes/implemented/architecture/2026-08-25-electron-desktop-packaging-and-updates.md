@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-25-electron-desktop-packaging-and-updates.zh.md)
+English | [العربية](2026-08-25-electron-desktop-packaging-and-updates.ar.md)
 
 Plugin management and native recovery follow the [shared Web wrapper decision](2026-09-10-desktop-web-wrapper.md).
 
@@ -38,7 +38,7 @@ The Desktop Host exposes the shared Web plugin manager for its reserved profile 
 | Shared `.dsh` owners | Sessions, settings, credentials, workspaces, and storage, guarded by their existing locks and format versions |
 | npm-installed dsh | Its own executable installation and user-managed profiles; no access to the reserved desktop profile or package state |
 
-The renderer uses `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true`. Preload provides boot readiness and failure reporting, native directory selection, theme synchronization, and Windows menu and appearance adapters. It exposes no raw `ipcRenderer`, filesystem access, shell commands, or pnpm arguments. Electron menus and native dialogs use typed English or Chinese copy with English fallback; Windows follows the main document’s language. The shared Web plugin manager owns its client copy.
+The renderer uses `nodeIntegration: false`, `contextIsolation: true`, and `sandbox: true`. Preload provides boot readiness and failure reporting, native directory selection, theme synchronization, and Windows menu and appearance adapters. It exposes no raw `ipcRenderer`, filesystem access, shell commands, or pnpm arguments. Electron menus and native dialogs use typed English or Arabic copy with English fallback; Windows follows the main document’s language. The shared Web plugin manager owns its client copy.
 
 ## Filesystem layout
 

@@ -1,7 +1,7 @@
 /** Shell chrome and General-nav dictionaries; feature rows own their copy. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'trigger': 'ضبط',
   'desktop.update.available': 'جديد إصدار',
   'desktop.update.checking': 'صحيح في فحص تحديث…',
@@ -34,9 +34,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The settings namespace key union. */
-export type SettingsKey = keyof typeof zh
+export type SettingsKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'trigger': 'Settings',
   'desktop.update.available': 'Update',

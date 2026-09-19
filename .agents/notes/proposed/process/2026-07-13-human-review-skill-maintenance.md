@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-07-13-human-review-skill-maintenance.zh.md)
+English | [العربية](2026-07-13-human-review-skill-maintenance.ar.md)
 
 ## Problem
 

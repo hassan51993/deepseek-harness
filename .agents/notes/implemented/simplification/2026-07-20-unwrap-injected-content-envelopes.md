@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-20-unwrap-injected-content-envelopes.zh.md)
+English | [العربية](2026-07-20-unwrap-injected-content-envelopes.ar.md)
 
 ## Problem
 

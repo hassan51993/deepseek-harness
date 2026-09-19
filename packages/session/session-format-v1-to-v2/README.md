@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-session-format-v1-to-v2
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

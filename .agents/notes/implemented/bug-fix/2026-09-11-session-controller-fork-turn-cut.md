@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-session-controller-fork-turn-cut.zh.md)
+English | [العربية](2026-09-11-session-controller-fork-turn-cut.ar.md)
 
 ## Problem
 

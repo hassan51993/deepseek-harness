@@ -1,6 +1,6 @@
 # Computer use
 
-English | [العربية](computer-use.zh.md)
+English | [العربية](computer-use.ar.md)
 
 Computer use lets a model observe and operate the local desktop through a configured provider. The shared DSH capability is called **computer use**; **Cua Driver** names the upstream implementation.
 

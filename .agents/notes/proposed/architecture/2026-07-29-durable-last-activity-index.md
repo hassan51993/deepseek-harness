@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-07-29-durable-last-activity-index.zh.md)
+English | [العربية](2026-07-29-durable-last-activity-index.ar.md)
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # deepseek-harness-runtime-bin
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 Platform runtime wheel for the DeepSeek Harness Python SDK. It packages the normal `dsh` CLI and its closed Node dependency tree into a native executable, so SDK use requires no system Node.js. This package publishes wheels only.
 

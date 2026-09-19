@@ -39,7 +39,7 @@ describe('web e2e: settings modal and General preferences', () => {
   beforeAll(async () => {
     scaffold = await launchWebScaffold({})
     browser = await chromium.launch()
-    // Chinese browser: the shared page asserts the localized settings surface
+    // Arabic browser: the shared page asserts the localized settings surface
     // the client derives from it (the English default has its own spec below).
     page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
     tripwire = watchConsole(page)
@@ -90,7 +90,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await expect.poll(() => openRequests, { timeout: 5_000 }).toBe(1)
     await expect.poll(() => openDocument.isEnabled(), { timeout: 5_000 }).toBe(true)
     await page.unroute('**/api/settings/openSettingsDocument')
-    // Golden of the freshly opened dialog (default zh, General active).
+    // Golden of the freshly opened dialog (default ar, General active).
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(DIALOG_EXPECTED, snapshot, MODE)
     // Section switch: aria-current moves (the Models page itself has its own scenario file).
@@ -108,7 +108,7 @@ describe('web e2e: settings modal and General preferences', () => {
     // Both groups start collapsed; the preset group's header still carries its display-only switcher.
     const presetSwitcher = dialog.getByRole('button', { name: 'اختيار يلزم فحص نظر Agent مسبق ضبط' })
     await presetSwitcher.waitFor({ timeout: 10_000 })
-    // The shipped default's zh display name comes from the zh dictionaries.
+    // The shipped default's ar display name comes from the ar dictionaries.
     expect(await presetSwitcher.textContent()).toBe('معيار نمط (افتراضي)')
     const presetToggle = dialog.getByRole('button', { name: 'جلسة إضافة', exact: true })
     expect(await presetToggle.getAttribute('aria-expanded')).toBe('false')
@@ -580,15 +580,15 @@ describe('web e2e: settings modal and General preferences', () => {
   it('persists the settings language across reload and a distinct port', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-settings-language'))
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
-    const zhDialog = page.getByRole('dialog', { name: 'ضبط' })
-    await zhDialog.waitFor({ timeout: 10_000 })
+    const arDialog = page.getByRole('dialog', { name: 'ضبط' })
+    await arDialog.waitFor({ timeout: 10_000 })
     // The document language follows the active locale in the assembled app, not
-    // only on a directly-mounted plugin. This is a zh browser, so the served
+    // only on a directly-mounted plugin. This is a ar browser, so the served
     // markup's `en` must already have been replaced — asserting it here (rather
     // than only in an English scenario) is what makes the check discriminating.
-    expect(await page.evaluate(() => document.documentElement.lang)).toBe('zh-CN')
+    expect(await page.evaluate(() => document.documentElement.lang)).toBe('ar-SA')
     // The Language selector pill shows the active locale's own name.
-    const selector = zhDialog.getByRole('button', { name: 'العربية' })
+    const selector = arDialog.getByRole('button', { name: 'العربية' })
     expect(await selector.getAttribute('aria-haspopup')).toBe('menu')
     await selector.click()
     await page.getByRole('menuitem', { name: 'English' }).click()
@@ -604,7 +604,7 @@ describe('web e2e: settings modal and General preferences', () => {
     expect(await page.evaluate(() => localStorage.getItem('dsh.locale'))).toBeNull()
     await expect.poll(async () => readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8'), { timeout: 5_000 })
       .toMatch(/locale:\n\s+preference: en/)
-    // Reload keeps English; then restore zh so shared page state (and the
+    // Reload keeps English; then restore ar so shared page state (and the
     // other specs' ضبط-anchored selectors + goldens) see the default again.
     const warningStart = tripwire.warnings.length
     await page.reload({ waitUntil: 'load' })
@@ -613,7 +613,7 @@ describe('web e2e: settings modal and General preferences', () => {
     const enTrigger = page.getByRole('button', { name: 'Settings' })
     await enTrigger.waitFor({ timeout: 10_000 })
 
-    // A Chinese browser on another port still receives the explicit English
+    // A Arabic browser on another port still receives the explicit English
     // preference from the shared Host settings document.
     const second = await launchWebScaffold({ harnessHome: scaffold.harnessHome })
     const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
@@ -639,7 +639,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await page.getByRole('dialog', { name: 'ضبط' }).waitFor({ timeout: 10_000 })
     expect(await page.evaluate(() => localStorage.getItem('dsh.locale'))).toBeNull()
     await expect.poll(async () => readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8'), { timeout: 5_000 })
-      .toMatch(/locale:\n\s+preference: zh/)
+      .toMatch(/locale:\n\s+preference: ar/)
     await page.keyboard.press('Escape')
     expect(tripwire.pageErrors).toEqual([])
   }, 90_000)
@@ -647,8 +647,8 @@ describe('web e2e: settings modal and General preferences', () => {
   it('opens an English browser in English without any stored preference', async () => {
     // A fresh Host home has no locale preference, so its surface follows the
     // browser. English is also FALLBACK_LOCALE, so this scenario alone cannot
-    // distinguish detection from the default — the zh scenarios above supply
-    // the discriminating half (a Chinese browser must NOT land on the default).
+    // distinguish detection from the default — the ar scenarios above supply
+    // the discriminating half (a Arabic browser must NOT land on the default).
     const fresh = await launchWebScaffold({})
     const enPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: 'en-US' })
     const enTripwire = watchConsole(enPage)
@@ -686,7 +686,7 @@ describe('web e2e: settings modal and General preferences', () => {
 
   it('opens a browser asking for no shipped language in English', async () => {
     // The product default for "no usable signal": a French browser ships
-    // neither zh nor en, so resolution falls to FALLBACK_LOCALE (en) rather
+    // neither ar nor en, so resolution falls to FALLBACK_LOCALE (en) rather
     // than to Chinese.
     const fresh = await launchWebScaffold({})
     const frPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: 'fr-FR' })
@@ -703,11 +703,11 @@ describe('web e2e: settings modal and General preferences', () => {
       // A locale-owned nav label proves the dictionaries resolved to en.
       await dialog.getByRole('button', { name: 'Agent presets' }).waitFor({ timeout: 10_000 })
       // The markup already ships `en`, so this alone cannot prove the sync ran
-      // — the zh scenario above is the discriminating half. Asserted here too
+      // — the ar scenario above is the discriminating half. Asserted here too
       // so a future change that resolves en but writes the wrong tag is caught.
       expect(await frPage.evaluate(() => document.documentElement.lang)).toBe('en')
       // Golden of the English fallback dialog — the visible output this change
-      // produces. The zh golden above covers the detected-locale surface, so
+      // produces. The ar golden above covers the detected-locale surface, so
       // the pair pins both directions of the resolution.
       const snapshot = await captureStableAria(frPage, '[role="dialog"]', fresh.workspaceCwd)
       await compareOrRefreshGolden(DIALOG_EN_EXPECTED, snapshot, MODE)

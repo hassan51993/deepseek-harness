@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-10-creator-guidance-introduce-cue.zh.md)
+English | [العربية](2026-08-10-creator-guidance-introduce-cue.ar.md)
 
 ## Problem
 
@@ -21,7 +21,7 @@ The cue is pure presentation: it is client-side seat-store state, never a sessio
 
 **A toast or callout on the new-session screen.** It explains more, but it points at nothing — the chip is the artifact the user must find again later, and a dismissable box teaches the box, not the control. The cue puts the motion on the control itself.
 
-**A fixed per-character tick.** The first implementation used 60ms per character unconditionally; an English preset name took over three times as long as its four-character Chinese counterpart, reading as lag rather than emphasis. The shared reveal window makes duration a property of the cue, not of the locale.
+**A fixed per-character tick.** The first implementation used 60ms per character unconditionally; an English preset name took over three times as long as its four-character Arabic counterpart, reading as lag rather than emphasis. The shared reveal window makes duration a property of the cue, not of the locale.
 
 **Animating the pick inside the settings dialog before leaving.** The dialog closes as part of the gesture — leaving settings is how the flow says the work happens in the session — so anything played there would be cut off or would delay the navigation it exists to explain.
 

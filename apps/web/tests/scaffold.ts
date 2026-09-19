@@ -112,7 +112,7 @@ export const WELCOME_NOTICE_SETTINGS_NAMESPACE = 'ui-onboarding'
 export const WELCOME_NOTICE_ACK_FIELD = 'welcomeNoticeVersion'
 export const WELCOME_NOTICE_VERSION = '2026-08-13.1'
 export const WELCOME_NOTICE_COPY = {
-  zh: {
+  ar: {
     title: 'داخل قياس إعلان',
     body: 'DeepSeek Harness هدف قبل 0.1 إصدار ما زال موضع في موجه إلى Harness تطوير من إجراء اختبار مرحلة مقطع، أيضا لديه سماح كثير أرض جهة حاجة حمل متابعة تعديل دخول و ضرب طحن، أمل نظر استماع أخذ واسع كبير تطوير من عكس تغذية بناء اقتراح. مسبق حساب DeepSeek Harness نواة قلب إضافة و أساس أساس API كل سوف في وصل تحت قدوم واحد مقطع وقت داخل سريع سرعة تكرار بديل، حمل متابعة عرض تحويل.\n\nأنا جمع مدة انتظار و كل كرة تطوير من واحد بدء، في فتح مصدر، فتح وضع، يمكن إعادة استخدام، يمكن تركيب أساس أساس ضبط تطبيق لـ فوق، مشترك نفس استكشاف ذكي حد أعلى. فرح استقبال كل كرة Harness تطوير من إضافة دخول DSH إضافة توليد حالة.',
     continueLabel: 'متابعة',

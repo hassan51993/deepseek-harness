@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-15-product-subagent-noninteractive-permissions.zh.md)
+English | [العربية](2026-08-15-product-subagent-noninteractive-permissions.ar.md)
 
 ## Problem
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-11-posix-ssh-runtime.md
 2026-09-11-posix-ssh-runtime.md: d54600faa68524b569f219627537ce250158d9b1
-2026-09-11-posix-ssh-runtime.zh.md: a6b3a84c37b0d7b4438e8c766ef4e010443fe744
+2026-09-11-posix-ssh-runtime.ar.md: a6b3a84c37b0d7b4438e8c766ef4e010443fe744

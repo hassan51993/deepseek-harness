@@ -16,7 +16,7 @@
 
 > This document covers **behavior**; type definitions live in [subsystems/](../subsystems/core.md), the per-event/service reference lives in the generated regions of [subsystems/](../subsystems/core.md), and package contracts in the package READMEs state each package's required configuration and behavior ([map](../../packages/README.md)).
 
-هذا وثيقة وصف كامل جسم سلوك منطق؛ نوع تعريف تخزين وضع في [subsystems/](../subsystems/core.zh.md) ؛ كل صنف حدث، خدمة تفصيل دقيق مشاركة اعتبار رؤية [subsystems/](../subsystems/core.zh.md) في توليد منطقة كتلة؛ متبادل ينبغي README شرح كل حزمة (package) اشتراط إعداد و سلوك ([بحث جذب](../../packages/README.zh.md)).
+هذا وثيقة وصف كامل جسم سلوك منطق؛ نوع تعريف تخزين وضع في [subsystems/](../subsystems/core.ar.md) ؛ كل صنف حدث، خدمة تفصيل دقيق مشاركة اعتبار رؤية [subsystems/](../subsystems/core.ar.md) في توليد منطقة كتلة؛ متبادل ينبغي README شرح كل حزمة (package) اشتراط إعداد و سلوك ([بحث جذب](../../packages/README.ar.md)).
 
 ## ② منع صد نمط قاعدة
 

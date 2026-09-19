@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-12-production-dsh-excludes-product-subagent-providers.zh.md)
+English | [العربية](2026-08-12-production-dsh-excludes-product-subagent-providers.ar.md)
 
 ## Problem
 

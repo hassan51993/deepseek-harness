@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-28-api-browser-trust-boundary.zh.md)
+English | [العربية](2026-07-28-api-browser-trust-boundary.ar.md)
 
 ## Problem
 

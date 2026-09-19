@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-09-01-shared-base-web-fetch-default.md
 2026-09-01-shared-base-web-fetch-default.md: b07121fb864969da0547793be3fda30a6ee45d78
-2026-09-01-shared-base-web-fetch-default.zh.md: 6a5b94744d0ca59047c411f6a34d2e98d7bf7593
+2026-09-01-shared-base-web-fetch-default.ar.md: 6a5b94744d0ca59047c411f6a34d2e98d7bf7593

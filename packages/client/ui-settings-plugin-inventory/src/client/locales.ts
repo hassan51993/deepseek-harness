@@ -1,7 +1,7 @@
 /** Copy dictionaries for the plugin inventory Settings section. */
 
-/** Simplified Chinese dictionary and key source of truth. */
-export const zh = {
+/** Arabic dictionary and key source of truth. */
+export const ar = {
   tab: 'إضافة قائمة',
   loading: 'صحيح في قراءة إضافة…',
   clientSyncing: 'صحيح في تزامن هذا صفحة إضافة…',
@@ -44,9 +44,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Plugin inventory locale key union. */
-export type PluginInventoryLocaleKey = keyof typeof zh
+export type PluginInventoryLocaleKey = keyof typeof ar
 
-/** English dictionary checked against the Chinese key set. */
+/** English dictionary checked against the Arabic key set. */
 export const en = {
   tab: 'Plugin list',
   loading: 'Reading plugins…',

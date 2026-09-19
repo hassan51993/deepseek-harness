@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-28-cross-workspace-resume.md
 2026-07-28-cross-workspace-resume.md: 4bc5b3df2ea5d08d8465842a74a5d350fd5786e0
-2026-07-28-cross-workspace-resume.zh.md: 7059b800a36fa87da3f7c6a91d767eecde838393
+2026-07-28-cross-workspace-resume.ar.md: 7059b800a36fa87da3f7c6a91d767eecde838393

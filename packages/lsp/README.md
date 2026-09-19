@@ -5,7 +5,7 @@ kind: "package-group"
 
 # lsp/ — Language-server code navigation
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

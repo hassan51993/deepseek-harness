@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-17-durable-web-queue-recovery.zh.md)
+English | [العربية](2026-08-17-durable-web-queue-recovery.ar.md)
 
 ## Problem
 

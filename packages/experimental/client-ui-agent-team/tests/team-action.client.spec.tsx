@@ -7,12 +7,12 @@ import type {
   TeamTaskId, TeamTaskView as TeamTask, TeamView,
 } from '@deepseek-ai/dsh-experimental-agent-team/client'
 import { makeTranslate, RemoteError } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import {
   TeamAction, type TeamActionInjected, type TeamActionProps, type TeamActionResult,
   type TeamTaskActionResult,
 } from '../src/client/TeamAction.tsx'
-import { zh } from '../src/client/locales.ts'
+import { ar } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -72,7 +72,7 @@ function props(actions: TeamActionInjected, sessionId: SessionId = SESSION): Tea
   return {
     sessionId,
     ...actions,
-    t: makeTranslate(zh, commonZh),
+    t: makeTranslate(ar, commonAr),
   } as unknown as TeamActionProps
 }
 
@@ -143,7 +143,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
 
-    const refresh = screen.getByRole('button', { name: zh.refresh })
+    const refresh = screen.getByRole('button', { name: ar.refresh })
     fireEvent.click(refresh)
     fireEvent.click(refresh)
     newer.resolve({ ok: true, value: newestView })
@@ -169,7 +169,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
 
-    fireEvent.click(screen.getByRole('button', { name: zh.refresh }))
+    fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /إتمام/u }))
     expect(await screen.findByRole('button', { name: /إعادة فتح/u })).toBeTruthy()
 
@@ -193,7 +193,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
 
-    fireEvent.click(screen.getByRole('button', { name: zh.refresh }))
+    fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /جديد بناء مهمة/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'New task' } })
     fireEvent.change(screen.getByPlaceholderText('مهمة وصف'), { target: { value: 'Details' } })
@@ -216,7 +216,7 @@ describe('TeamAction', () => {
     }))} />)
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
-    fireEvent.click(screen.getByRole('button', { name: zh.refresh }))
+    fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /إتمام/u }))
     expect(await screen.findByText('task rejected (team-rejected)')).toBeTruthy()
     staleTask.resolve({ ok: true, value: view })
@@ -234,7 +234,7 @@ describe('TeamAction', () => {
     }))} />)
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
-    fireEvent.click(screen.getByRole('button', { name: zh.refresh }))
+    fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     fireEvent.click(screen.getByRole('button', { name: /جديد بناء مهمة/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Rejected task' } })
     fireEvent.change(screen.getByPlaceholderText('مهمة وصف'), { target: { value: 'Rejected details' } })
@@ -427,7 +427,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إتمام/u }))
-    expect(await screen.findByText(zh.conflict)).toBeTruthy()
+    expect(await screen.findByText(ar.conflict)).toBeTruthy()
     expect(load).toHaveBeenCalledTimes(2)
     expect(updateTask).toHaveBeenCalledTimes(1)
   })
@@ -444,7 +444,7 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /إتمام/u }))
     expect(await screen.findByText('task reload failed (gateway/internal)')).toBeTruthy()
-    expect(screen.queryByText(zh.conflict)).toBeNull()
+    expect(screen.queryByText(ar.conflict)).toBeNull()
     first.unmount()
 
     const dependencyLoad = vi.fn()
@@ -459,10 +459,10 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Edited' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     expect(await screen.findByText('dependency reload failed (gateway/internal)')).toBeTruthy()
-    expect(screen.queryByText(zh.conflict)).toBeNull()
+    expect(screen.queryByText(ar.conflict)).toBeNull()
   })
 
   it('renders roster/task state variants and contains navigation, refresh, and close actions', async () => {
@@ -498,20 +498,20 @@ describe('TeamAction', () => {
     render(<TeamAction {...props(actions({ load, openTeammate }))} />)
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     expect(await screen.findByText('provider failed')).toBeTruthy()
-    expect(screen.getByText(zh.ready)).toBeTruthy()
-    expect(screen.getByText(zh.blocked)).toBeTruthy()
+    expect(screen.getByText(ar.ready)).toBeTruthy()
+    expect(screen.getByText(ar.blocked)).toBeTruthy()
     expect(screen.getByRole<HTMLButtonElement>('button', { name: /failed-worker/u }).disabled).toBe(true)
     expect(screen.getByRole<HTMLButtonElement>('button', { name: /provisioning-worker/u }).disabled).toBe(true)
 
     fireEvent.click(screen.getByRole('button', { name: /^workerتشغيل في/u }))
     expect(await screen.findByText('Error: navigation failed')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: zh.refresh }))
+    fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     await waitFor(() => { expect(load).toHaveBeenCalledTimes(2) })
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     expect(screen.queryByRole('dialog')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: /Agent Team/u }))
     await screen.findByRole('dialog')
-    fireEvent.click(screen.getByRole('button', { name: zh.close }))
+    fireEvent.click(screen.getByRole('button', { name: ar.close }))
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 
@@ -588,7 +588,7 @@ describe('TeamAction', () => {
     reload.resolve({ ok: true, value: view })
     await Promise.resolve()
     await Promise.resolve()
-    expect(screen.queryByText(zh.conflict)).toBeNull()
+    expect(screen.queryByText(ar.conflict)).toBeNull()
   })
 
   it('does not settle a successful task after its reload switches sessions', async () => {
@@ -635,7 +635,7 @@ describe('TeamAction', () => {
     expect(await screen.findByText('edit failed (gateway/internal)')).toBeTruthy()
 
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Saved edit' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     expect(await screen.findByText('dependency failed (team-rejected)')).toBeTruthy()
     expect(updateTask.mock.calls[2]?.[1]).toMatchObject({
@@ -663,7 +663,7 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Edited' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
 
     expect(await screen.findByText('dependency transport failed (gateway/internal)')).toBeTruthy()
@@ -702,9 +702,9 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Conflict edit' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
-    expect(await screen.findByText(zh.conflict)).toBeTruthy()
+    expect(await screen.findByText(ar.conflict)).toBeTruthy()
     expect(load).toHaveBeenCalledTimes(3)
     first.unmount()
 
@@ -721,14 +721,14 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Late edit' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     await waitFor(() => { expect(dependencyLoad).toHaveBeenCalledTimes(3) })
     second.rerender(<TeamAction {...props(actions(), 'next-session' as SessionId)} />)
     dependencyReload.resolve({ ok: true, value: { ...view, tasks: [{ ...task, revision: 3 }] } })
     await Promise.resolve()
     await Promise.resolve()
-    expect(screen.queryByText(zh.conflict)).toBeNull()
+    expect(screen.queryByText(ar.conflict)).toBeNull()
     second.unmount()
 
     const dependency = Promise.withResolvers<TeamTaskActionResult>()
@@ -740,7 +740,7 @@ describe('TeamAction', () => {
     await screen.findByText('Implement runtime')
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('مهمة عنوان'), { target: { value: 'Late edit' } })
-    fireEvent.change(screen.getByPlaceholderText(zh.blockers), { target: { value: 'task-2' } })
+    fireEvent.change(screen.getByPlaceholderText(ar.blockers), { target: { value: 'task-2' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     await waitFor(() => { expect(lateUpdate).toHaveBeenCalledTimes(2) })
     expect(screen.getByRole<HTMLButtonElement>('button', { name: 'حفظ' }).disabled).toBe(true)

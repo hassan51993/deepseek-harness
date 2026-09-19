@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-23-python-sdk-windows-x64-runtime.md
 2026-08-23-python-sdk-windows-x64-runtime.md: 5da09c133cf2fac8ff09f54ac1ebb84a1293ec67
-2026-08-23-python-sdk-windows-x64-runtime.zh.md: a8874e358a2b10e984caa3cd8ef7cf937de7a534
+2026-08-23-python-sdk-windows-x64-runtime.ar.md: a8874e358a2b10e984caa3cd8ef7cf937de7a534

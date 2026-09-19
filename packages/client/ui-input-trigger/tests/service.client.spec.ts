@@ -258,8 +258,8 @@ describe('sessionOf', () => {
       groups: [{ source: 'command', status: 'ready', items: [{ name: 'compact', description: 'en' }] }],
     })
 
-    locale = 'zh'
-    root.emit('locale/change', { active: 'zh', locales: [], revision: 1 } as LocaleSnapshot)
+    locale = 'ar'
+    root.emit('locale/change', { active: 'ar', locales: [], revision: 1 } as LocaleSnapshot)
     expect(first.menu.getSnapshot().open).toBe(true)
     expect(second.menu.getSnapshot().open).toBe(true)
     await tick()
@@ -267,9 +267,9 @@ describe('sessionOf', () => {
     expect(first.menu.getSnapshot()).toMatchObject({
       open: true,
       hit: { query: 'c' },
-      groups: [{ source: 'command', status: 'ready', items: [{ name: 'compact', description: 'zh' }] }],
+      groups: [{ source: 'command', status: 'ready', items: [{ name: 'compact', description: 'ar' }] }],
     })
-    expect(second.menu.getSnapshot().groups[0]!.items).toEqual([{ name: 'compact', description: 'zh' }])
+    expect(second.menu.getSnapshot().groups[0]!.items).toEqual([{ name: 'compact', description: 'ar' }])
     expect(closed.menu.getSnapshot().open).toBe(false)
   })
 })

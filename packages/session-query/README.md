@@ -5,7 +5,7 @@ kind: "package-group"
 
 # session-query/ — session retrieval capability family
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

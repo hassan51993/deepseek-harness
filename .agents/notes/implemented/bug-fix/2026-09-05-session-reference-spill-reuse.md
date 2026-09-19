@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-session-reference-spill-reuse.zh.md)
+English | [العربية](2026-09-05-session-reference-spill-reuse.ar.md)
 
 ## Problem
 

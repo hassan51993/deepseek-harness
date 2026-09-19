@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-23-win32-utf16-nul-truncation.zh.md)
+English | [العربية](2026-08-23-win32-utf16-nul-truncation.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [العربية](2026-06-11-tool-schemas-in-prompt-assembly.zh.md)
+English | [العربية](2026-06-11-tool-schemas-in-prompt-assembly.ar.md)
 
 ## Problem
 

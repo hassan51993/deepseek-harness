@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-20-web-streaming-fence-highlight.zh.md)
+English | [العربية](2026-08-20-web-streaming-fence-highlight.ar.md)
 
 ## Problem
 

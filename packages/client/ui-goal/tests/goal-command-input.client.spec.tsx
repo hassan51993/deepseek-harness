@@ -10,7 +10,7 @@ import type {
   ChatConversationViewNode, ChatSnapshot,
 } from '@deepseek-ai/dsh-client-ui-chat/client'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import type { SessionEvent } from '@deepseek-ai/dsh-session/types'
 import { commandDefinition } from '@deepseek-ai/dsh-client-ui-chat/src/client/conversation-nodes/command.ts'
 import { chatViewDefinition } from '@deepseek-ai/dsh-client-ui-chat/src/client/conversation-nodes/chat-snapshot-builder.ts'
@@ -18,7 +18,7 @@ import { GoalCommandInputView } from '../src/client/GoalCommandInputView.tsx'
 import {
   goalCommandInputDefinition, goalCommandText,
 } from '../src/client/goal-command-input.ts'
-import { zh } from '../src/client/locales.ts'
+import { ar } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -120,7 +120,7 @@ describe('goal command input projection', () => {
   })
 
   it('renders the user-style command bubble without ordinary message actions', () => {
-    const t = makeTranslate(zh, commonZh)
+    const t = makeTranslate(ar, commonAr)
     const props = {
       node: {
         key: 'goal-command-input:one',
@@ -139,7 +139,7 @@ describe('goal command input projection', () => {
   })
 
   it('renders a bare /goal as one command chip and nothing else', () => {
-    const t = makeTranslate(zh, commonZh)
+    const t = makeTranslate(ar, commonAr)
     const props = {
       node: {
         key: 'goal-command-input:bare',
@@ -154,7 +154,7 @@ describe('goal command input projection', () => {
   })
 
   it('decorates only the leading command token: a /goal inside the objective stays plain', () => {
-    const t = makeTranslate(zh, commonZh)
+    const t = makeTranslate(ar, commonAr)
     const props = {
       node: {
         key: 'goal-command-input:two',

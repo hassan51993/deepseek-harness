@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'deliverables'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'presented.nativeUnavailable': 'هذا ملف لا يوجد متاح رئيسي آلة مسار، طلب في جانب حافة شريط معاينة',
   'presented.revealError': 'لا يمكن في ملف إدارة جهاز في عرض، طلب إعادة محاولة',
   'presented.directoryError': 'لا يمكن فتح الذي في ملف مشبك، طلب إعادة محاولة',
@@ -146,4 +146,4 @@ export const en: Record<DeliverablesKey, string> = {
 }
 
 /** Union of this namespace's dictionary keys. */
-export type DeliverablesKey = keyof typeof zh
+export type DeliverablesKey = keyof typeof ar

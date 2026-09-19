@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-06-plan-narrow-viewport-regression.zh.md)
+English | [العربية](2026-08-06-plan-narrow-viewport-regression.ar.md)
 
 ## Problem
 

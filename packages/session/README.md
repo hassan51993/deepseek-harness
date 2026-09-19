@@ -5,7 +5,7 @@ kind: "package-group"
 
 # session/ — durable session data plane
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

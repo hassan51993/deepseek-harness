@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-06-approval-seam.zh.md)
+English | [العربية](2026-07-06-approval-seam.ar.md)
 
 ## Problem
 

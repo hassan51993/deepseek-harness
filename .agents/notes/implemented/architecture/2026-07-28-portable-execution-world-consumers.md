@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-28-portable-execution-world-consumers.zh.md)
+English | [العربية](2026-07-28-portable-execution-world-consumers.ar.md)
 
 ## Problem
 

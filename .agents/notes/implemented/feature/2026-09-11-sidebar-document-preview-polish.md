@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-sidebar-document-preview-polish.zh.md)
+English | [العربية](2026-09-11-sidebar-document-preview-polish.ar.md)
 
 ## Problem
 

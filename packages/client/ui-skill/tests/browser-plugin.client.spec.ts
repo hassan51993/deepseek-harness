@@ -53,7 +53,7 @@ function providePresentation(ctx: Context): PresentationCapture {
       capture.dictionaries.push({ namespace, dictionaries })
       return () => { capture.localeDisposed = true }
     },
-    // Minimal bound-translate fake: zh dictionary lookup, key passthrough on miss.
+    // Minimal bound-translate fake: ar dictionary lookup, key passthrough on miss.
     bind: () => (key: string) => key === 'menu.userOnly' ? 'فقط مستخدم' : key,
   })
   return capture
@@ -124,7 +124,7 @@ describe('apply', () => {
     expect(entry?.component).toBe(SkillToolRow)
     expect(presentation.dictionaries).toEqual([{
       namespace: 'skill', dictionaries: {
-        zh: {
+        ar: {
           'row.title': 'Skill',
           'row.running': 'صحيح في تحميل skill',
           'row.failed': 'skill تحميل فشل',

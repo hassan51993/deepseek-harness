@@ -5,7 +5,7 @@ kind: "package-group"
 
 # packages/sandbox
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

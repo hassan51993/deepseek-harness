@@ -1,6 +1,6 @@
 # Responding to review across a stacked PR chain
 
-English | [العربية](responding-to-pr-review-on-a-stack.zh.md)
+English | [العربية](responding-to-pr-review-on-a-stack.ar.md)
 
 Review comments may target several PRs in a dependent stack (`A ← B ← C …`). Keep that chain linked through GitHub's official stacked-PR feature. This guide owns review-fix placement and propagation; the [dsh-merging-stacked-prs](../../.agents/skills/dsh-merging-stacked-prs/SKILL.md) skill owns linkage checks and landing.
 

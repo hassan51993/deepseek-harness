@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-18-tool-row-file-open-failure.md
 2026-08-18-tool-row-file-open-failure.md: 985a6110f9e7f1fefeeec66468922c906a1db8ee
-2026-08-18-tool-row-file-open-failure.zh.md: aed970e021db0739e43daac2331ff32cd64d50d7
+2026-08-18-tool-row-file-open-failure.ar.md: aed970e021db0739e43daac2331ff32cd64d50d7

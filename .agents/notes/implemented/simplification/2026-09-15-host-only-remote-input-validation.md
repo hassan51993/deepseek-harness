@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-host-only-remote-input-validation.zh.md)
+English | [العربية](2026-09-15-host-only-remote-input-validation.ar.md)
 
 ## Problem
 

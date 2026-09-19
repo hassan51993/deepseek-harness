@@ -5,7 +5,7 @@ kind: "package-group"
 
 # feedback/ — recorded human feedback
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

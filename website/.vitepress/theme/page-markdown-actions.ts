@@ -17,7 +17,7 @@ const messages = {
     requestFailed: 'Could not load Markdown. Open the page actions menu and choose View as Markdown to copy it manually.',
     clipboardFailed: 'Could not copy. Open the page actions menu and choose View as Markdown to copy it manually.',
   },
-  zh: {
+  ar: {
     copy: 'نسخ صفحة',
     copyDescription: 'سوف صفحة بـ Markdown صيغة نسخ إعطاء LLMs',
     view: 'بـ Markdown صيغة فحص نظر',
@@ -30,7 +30,7 @@ const messages = {
     requestFailed: 'لا يمكن تحميل Markdown، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
     clipboardFailed: 'نسخ فشل، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
   },
-} satisfies Record<'en' | 'zh', Record<Exclude<CopyState, 'idle'> | 'copy' | 'copyDescription' | 'view' | 'viewDescription' | 'newTab' | 'menu' | 'more', string>>
+} satisfies Record<'en' | 'ar', Record<Exclude<CopyState, 'idle'> | 'copy' | 'copyDescription' | 'view' | 'viewDescription' | 'newTab' | 'menu' | 'more', string>>
 
 const icons = {
   copy: 'M9 8h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2ZM16 4V3a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v11',
@@ -151,7 +151,7 @@ export const PageMarkdownActions = defineComponent({
     }
 
     return () => {
-      const text = messages[props.lang.startsWith('zh') ? 'zh' : 'en']
+      const text = messages[props.lang.startsWith('ar') ? 'ar' : 'en']
       if (!interactive.value) {
         return h('div', { class: 'page-markdown-actions' }, [
           h('a', { class: 'page-markdown-static', href: props.path, target: '_blank', rel: 'noopener', 'aria-label': text.newTab },

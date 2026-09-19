@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-03
 
-English | [العربية](2026-09-03-session-search-result-reveal.zh.md)
+English | [العربية](2026-09-03-session-search-result-reveal.ar.md)
 
 ## Problem
 

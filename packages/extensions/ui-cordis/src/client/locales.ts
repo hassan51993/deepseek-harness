@@ -2,8 +2,8 @@
 
 export const NS = 'cordis'
 
-/** Simplified Chinese Cordis UI messages. */
-export const zh = {
+/** Arabic Cordis UI messages. */
+export const ar = {
   'row.defineTitle': 'تسجيل Cordis إضافة',
   'row.runTitle': 'تشغيل Cordis إضافة',
   'row.updateTitle': 'تحديث Cordis إضافة',
@@ -57,7 +57,7 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Translation keys owned by the Cordis UI namespace. */
-export type CordisKey = keyof typeof zh
+export type CordisKey = keyof typeof ar
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {

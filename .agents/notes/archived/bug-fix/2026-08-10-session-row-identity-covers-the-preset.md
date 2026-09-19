@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-10-session-row-identity-covers-the-preset.zh.md)
+English | [العربية](2026-08-10-session-row-identity-covers-the-preset.ar.md)
 
 ## Problem
 

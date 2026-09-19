@@ -9,7 +9,7 @@ import type { RenderMessageImages } from '@deepseek-ai/dsh-client-ui-conversatio
 import { TrajectoryTable as LocalizedTrajectoryTable } from '../src/client/TrajectoryTable.tsx'
 import { deriveTrajectoryLayout, type TrajectoryTurnModel } from '../src/client/layout.ts'
 import { trajectoryRecordId } from '../src/client/trajectory-record.ts'
-import { t, tZh } from './locale.client.ts'
+import { t, tAr } from './locale.client.ts'
 
 const renderImagesStub: RenderMessageImages = ({ images }) => (
   <div data-testid="record-images" data-count={images.length}>
@@ -165,7 +165,7 @@ describe('TrajectoryTable', () => {
     const assistant = TURNS[0]!.groups[0]!.cells[0]!
     render(
       <LocalizedTrajectoryTable
-        t={tZh}
+        t={tAr}
         renderImages={renderImagesStub}
         turns={TURNS}
         collapsedTurns={new Set<number>()}
@@ -1040,7 +1040,7 @@ describe('TrajectoryTable', () => {
   })
 
   it.each([['English', t, 'Attachments', 'Image 1', 'Summary', 'Preview', 'Raw'],
-    ['Chinese', tZh, 'مرفق عنصر', 'صورة 1', 'عام وصف', 'معاينة', 'أصلي محتوى']] as const)(
+    ['Chinese', tAr, 'مرفق عنصر', 'صورة 1', 'عام وصف', 'معاينة', 'أصلي محتوى']] as const)(
     'keeps mixed attachments ordered and raw fields complete in %s',
     (_locale, translate, listLabel, imageLabel, summaryTab, previewTab, rawTab) => {
       const attachment = {

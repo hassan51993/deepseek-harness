@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-07-workspace-picker-composer-entry.zh.md)
+English | [العربية](2026-08-07-workspace-picker-composer-entry.ar.md)
 
 ## Problem
 

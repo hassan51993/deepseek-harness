@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-07-file-content-scan.md
 2026-09-07-file-content-scan.md: bf4f03ee5a7134b11c7cbec322b0a37a3f2a6304
-2026-09-07-file-content-scan.zh.md: 5efb1589b036f80b46752a80103c080952c82396
+2026-09-07-file-content-scan.ar.md: 5efb1589b036f80b46752a80103c080952c82396

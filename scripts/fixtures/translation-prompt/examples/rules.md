@@ -1,8 +1,8 @@
 # Pairing rules
 
-English | [العربية](rules.zh.md)
+English | [العربية](rules.ar.md)
 
-These rules govern the Chinese counterpart of every documentation pair.
+These rules govern the Arabic counterpart of every documentation pair.
 
 ## Priority levels
 

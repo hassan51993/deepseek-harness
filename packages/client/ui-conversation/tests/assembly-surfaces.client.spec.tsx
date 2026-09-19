@@ -21,7 +21,7 @@ Range.prototype.getBoundingClientRect = () => ({
 })
 
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 
 const SID = 's1' as SessionId
 

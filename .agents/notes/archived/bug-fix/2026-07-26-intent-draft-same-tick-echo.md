@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-26-intent-draft-same-tick-echo.zh.md)
+English | [العربية](2026-07-26-intent-draft-same-tick-echo.ar.md)
 
 ## Problem
 

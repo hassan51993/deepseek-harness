@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-13-oauth-only-providers-withheld.zh.md)
+English | [العربية](2026-08-13-oauth-only-providers-withheld.ar.md)
 
 ## Problem
 

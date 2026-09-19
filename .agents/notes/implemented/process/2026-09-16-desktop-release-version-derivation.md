@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-desktop-release-version-derivation.zh.md)
+English | [العربية](2026-09-16-desktop-release-version-derivation.ar.md)
 
 ## Problem
 

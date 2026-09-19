@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-win32-process
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

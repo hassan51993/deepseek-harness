@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-02-message-fork-actions-require-completed-turn-tail.md
 2026-08-02-message-fork-actions-require-completed-turn-tail.md: 43462e85a96c5ab8b21c697acca354352bfb260b
-2026-08-02-message-fork-actions-require-completed-turn-tail.zh.md: c16c4ad0832ce4ade3c2e359cfd3ac0e2cd350e5
+2026-08-02-message-fork-actions-require-completed-turn-tail.ar.md: c16c4ad0832ce4ade3c2e359cfd3ac0e2cd350e5

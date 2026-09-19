@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-06-19-drop-mutable-session-summary.zh.md)
+English | [العربية](2026-06-19-drop-mutable-session-summary.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-desktop-electron-node-runtime.zh.md)
+English | [العربية](2026-09-11-desktop-electron-node-runtime.ar.md)
 
 ## Problem
 

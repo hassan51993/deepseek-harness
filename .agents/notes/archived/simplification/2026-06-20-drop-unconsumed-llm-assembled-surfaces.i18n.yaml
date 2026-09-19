@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-06-20-drop-unconsumed-llm-assembled-surfaces.md: fd3d48e0918f8395b6c94e407b889ec3a6de7fbe
-2026-06-20-drop-unconsumed-llm-assembled-surfaces.zh.md: 83d631329ccddb0f8880f223884ae4dc75a14d09
+2026-06-20-drop-unconsumed-llm-assembled-surfaces.ar.md: 83d631329ccddb0f8880f223884ae4dc75a14d09

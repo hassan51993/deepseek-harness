@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import { attachmentErrorText, imageSizeText } from '../src/client/image-labels.ts'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 
-const t = makeTranslate(zh, commonZh)
-const enT = makeTranslate(en, commonZh)
+const t = makeTranslate(ar, commonAr)
+const enT = makeTranslate(en, commonAr)
 
 describe('attachment rejection copy', () => {
   const limits = {

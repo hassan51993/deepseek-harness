@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-shared-client-control-primitives.zh.md)
+English | [العربية](2026-09-05-shared-client-control-primitives.ar.md)
 
 ## Problem
 

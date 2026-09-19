@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-13-mcp-resources-in-profiles.zh.md)
+English | [العربية](2026-09-13-mcp-resources-in-profiles.ar.md)
 
 ## Problem
 

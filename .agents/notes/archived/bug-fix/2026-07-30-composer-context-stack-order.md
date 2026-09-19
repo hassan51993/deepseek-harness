@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-30-composer-context-stack-order.zh.md)
+English | [العربية](2026-07-30-composer-context-stack-order.ar.md)
 
 ## Problem
 

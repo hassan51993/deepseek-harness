@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-06-buffer-free-feedback-telemetry.md
 2026-08-06-buffer-free-feedback-telemetry.md: 7b35b5fff5c0d56f33a1888bb75853cfbe67cd74
-2026-08-06-buffer-free-feedback-telemetry.zh.md: be29674eba532c0020cb016915bd87a430bab7e8
+2026-08-06-buffer-free-feedback-telemetry.ar.md: be29674eba532c0020cb016915bd87a430bab7e8

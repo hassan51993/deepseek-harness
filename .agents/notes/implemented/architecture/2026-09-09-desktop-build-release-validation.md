@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-desktop-build-release-validation.zh.md)
+English | [العربية](2026-09-09-desktop-build-release-validation.ar.md)
 
 ## Problem
 

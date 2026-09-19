@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [العربية](2026-07-10-session-query-service.zh.md)
+English | [العربية](2026-07-10-session-query-service.ar.md)
 
 ## Problem
 

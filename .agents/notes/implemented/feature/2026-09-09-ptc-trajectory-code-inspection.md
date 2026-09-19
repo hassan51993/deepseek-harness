@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-ptc-trajectory-code-inspection.zh.md)
+English | [العربية](2026-09-09-ptc-trajectory-code-inspection.ar.md)
 
 ## Problem
 

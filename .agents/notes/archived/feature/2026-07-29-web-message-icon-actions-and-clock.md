@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-07
 
-English | [العربية](2026-07-29-web-message-icon-actions-and-clock.zh.md)
+English | [العربية](2026-07-29-web-message-icon-actions-and-clock.ar.md)
 
 ## Problem
 

@@ -14,7 +14,7 @@ import {
   ScheduleCatalogAction,
   type ScheduleCatalogActionProps,
 } from '../src/client/ScheduleCatalogAction.tsx'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 
 const SESSION = 'schedule-session' as SessionId
 const START = Date.parse('2026-08-25T12:00:00.000Z')
@@ -70,7 +70,7 @@ function sessionSnapshot(openState: SessionSnapshot['openState']): SessionSnapsh
 function props(
   records: readonly ScheduleRecord[] | undefined,
   openState: SessionSnapshot['openState'] = 'open',
-  dictionary: typeof zh | typeof en = en,
+  dictionary: typeof ar | typeof en = en,
 ): ScheduleCatalogActionProps {
   const snapshot = sessionSnapshot(openState)
   const useSession = <T,>(select: (value: SessionSnapshot) => T): T => select(snapshot)
@@ -183,7 +183,7 @@ describe('ScheduleCatalogAction rows', () => {
 
   it('renders exact recurring units without rounding and localizes both dictionaries', () => {
     const tEn = makeTranslate(en)
-    const tZh = makeTranslate(zh)
+    const tAr = makeTranslate(ar)
     const samples = [
       [86_400, 'Every 1 day', '1يوم مرة'],
       [172_800, 'Every 2 days', '2يوم مرة'],
@@ -195,11 +195,11 @@ describe('ScheduleCatalogAction rows', () => {
     for (const [seconds, english, chinese] of samples) {
       const item = record(String(seconds), 'every', START + 1_000, { everySeconds: seconds })
       expect(formatScheduleFrequency(item, tEn)).toBe(english)
-      expect(formatScheduleFrequency(item, tZh)).toBe(chinese)
+      expect(formatScheduleFrequency(item, tAr)).toBe(chinese)
     }
-    expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tZh)).toBe('مفرد مرة')
-    expect(tZh('status.scheduled')).toBe('انتظار في')
-    expect(tZh('status.overdue')).toBe('قد تجاوز مدة')
+    expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tAr)).toBe('مفرد مرة')
+    expect(tAr('status.scheduled')).toBe('انتظار في')
+    expect(tAr('status.overdue')).toBe('قد تجاوز مدة')
   })
 
   it('formats absolute time with the active document locale instead of the runtime default', () => {

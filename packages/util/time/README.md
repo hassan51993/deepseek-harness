@@ -5,7 +5,7 @@ kind: "package-library"
 
 # dsh-util-time
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

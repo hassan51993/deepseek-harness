@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-31-english-compaction-checkpoints.md
 2026-07-31-english-compaction-checkpoints.md: 62db12bb97bcbd691a33280a9c1a7884e88856d0
-2026-07-31-english-compaction-checkpoints.zh.md: bea53cbf6075143782d12aa58a99f7a3e253d6cb
+2026-07-31-english-compaction-checkpoints.ar.md: bea53cbf6075143782d12aa58a99f7a3e253d6cb

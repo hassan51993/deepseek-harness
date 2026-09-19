@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-file-display-through-filesystem.zh.md)
+English | [العربية](2026-09-08-file-display-through-filesystem.ar.md)
 
 ## Problem
 

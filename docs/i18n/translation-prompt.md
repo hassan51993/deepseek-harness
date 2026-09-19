@@ -8,7 +8,7 @@
 
 | احتلال موضع رمز | ملء دخول محتوى | مصدر |
 |---|---|---|
-| `{{source_lang}}` | مصدر لغة اسم (`English` / `Chinese`) | من تعديل جانب ملف دفع قطع:`.zh.md` يتم تعديل فإن لـ `Chinese` |
+| `{{source_lang}}` | مصدر لغة اسم (`English` / `Chinese`) | من تعديل جانب ملف دفع قطع:`.ar.md` يتم تعديل فإن لـ `Chinese` |
 | `{{target_lang}}` | هدف لغة اسم (`Chinese` / `English`) | و `{{source_lang}}` متبادل مقابل |
 | `{{terminology}}` | [terminology.md](terminology.md) كامل جدول إطار (Markdown أصل نص) | تصيير وقت قراءة مستودع حالي إصدار، لا ذاكرة مؤقتة |
 
@@ -20,11 +20,11 @@
 
 خط الإنتاج استخدام**كامل مقالة وثيقة**في إنجليزي مقابل وفق بصفة few-shot، لا هو نموذج لوح داخل تضمين جملة فرعي درجة صحيح خطأ مثال. التالي 5 مجموعة إعداد مقابل وثيقة متساو مرور مرور شخص عمل مراجعة، بـ مستودع حالي إصدار لـ دقيق، مع مستودع تحديث:
 
-- `README.md` ↔ `README.zh.md`
-- `docs/development.md` ↔ `docs/development.zh.md`
-- `docs/i18n/README.md` ↔ `docs/i18n/README.zh.md`
-- `docs/i18n/translation-rules.md` ↔ `docs/i18n/translation-rules.zh.md`
-- `.agents/notes/implemented/process/2026-07-02-bilingual-docs-and-pairing-gate.md` ↔ مقابل `.zh.md`
+- `README.md` ↔ `README.ar.md`
+- `docs/development.md` ↔ `docs/development.ar.md`
+- `docs/i18n/README.md` ↔ `docs/i18n/README.ar.md`
+- `docs/i18n/translation-rules.md` ↔ `docs/i18n/translation-rules.ar.md`
+- `.agents/notes/implemented/process/2026-07-02-bilingual-docs-and-pairing-gate.md` ↔ مقابل `.ar.md`
 
 حقن طريقة: في نظام رسالة (هذا نموذج لوح) بعد، انتظار ترجمة وثيقة قبل، كل مجموعة بصفة واحد جولة عرض مثال محادثة——user رسالة لـ مصدر وثيقة كل نص،assistant رسالة لـ تحديد مسودة ترجمة نص كل نص (عار نص، لا حمل ثلاثة مقطع XML حزمة تركيب؛ فقط لديه حقيقي طلب اشتراط ثلاثة مقطع إخراج). سياق لا كاف وقت حسب فوق صف ترتيب من بعد نحو قبل حذف نقص مجموعة عدد. هذا 5 مجموعة أيضا هو مراجعة تدقيق دقيق مرساة نقطة (رؤية [style-samples.md](style-samples.md)) ، تعديل أي واحد مجموعة أي تغيير خط الإنتاج سلوك.
 
@@ -56,8 +56,8 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Keep each prose paragraph on one physical line. Use paragraph breaks, not hard-wrapped lines inside a paragraph.
 - Fenced code blocks must be byte-identical to the source, including info strings, whitespace, and ALL comments inside them. Do NOT translate or reformat any content inside code blocks. This is a hard rule with no exceptions.
 - Inline code spans must be kept verbatim. This includes commands, flags, paths, identifiers, API and event names, config keys, protocol values, version numbers, and other machine-readable tokens. Never translate or reformat them.
-- Every repository-relative document link must keep the source link's semantic target and exact query/fragment suffix. When the target belongs to the active bilingual corpus, English output uses its `.md` path and Chinese output uses its `.zh.md` path; a missing counterpart in that corpus is an error, while targets outside it keep the original path. External URLs, images, and pure in-page fragments stay unchanged. Translate link text.
-- Language switcher line: when an English source contains `English | [العربية](source-filename.zh.md)`, write `[English](source-filename.md) | العربية`. When a Chinese source contains `[English](source-filename.md) | العربية`, write `English | [العربية](source-filename.zh.md)`. Do NOT copy the source switcher unchanged. If the source has no switcher, do not invent a filename or switcher; the pipeline inserts the canonical target switcher after parsing `<final>`.
+- Every repository-relative document link must keep the source link's semantic target and exact query/fragment suffix. When the target belongs to the active bilingual corpus, English output uses its `.md` path and Arabic output uses its `.ar.md` path; a missing counterpart in that corpus is an error, while targets outside it keep the original path. External URLs, images, and pure in-page fragments stay unchanged. Translate link text.
+- Language switcher line: when an English source contains `English | [العربية](source-filename.ar.md)`, write `[English](source-filename.md) | العربية`. When a Chinese source contains `[English](source-filename.md) | العربية`, write `English | [العربية](source-filename.ar.md)`. Do NOT copy the source switcher unchanged. If the source has no switcher, do not invent a filename or switcher; the pipeline inserts the canonical target switcher after parsing `<final>`.
 - Preserve emphasis marker types and the semantic spans they cover. Do not add, remove, move, or change bold and italic markers.
 
 ### Faithfulness
@@ -96,18 +96,18 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 ### Punctuation
 
 #### When translating into Chinese
-- Use full-width Chinese punctuation in Chinese prose: `،.: ؛؟!()«»`. Keep half-width punctuation inside code spans, numbers, and complete verbatim English text.
+- Use full-width Chinese punctuation in Arabic prose: `،.: ؛؟!()«»`. Keep half-width punctuation inside code spans, numbers, and complete verbatim English text.
 - Prefer colons, periods, commas, or parentheses over em dashes when they make the sentence clearer or more natural. Keep an em dash when it is the clearest natural punctuation.
-- Use enumeration commas (،) between parallel Chinese items, not regular commas.
+- Use enumeration commas (،) between parallel Arabic items, not regular commas.
 - Keep list-item endings consistent with their grammar. Complete sentences may end with periods or other grammatically required punctuation; do not end list items with commas.
 - Put one half-width space between Chinese text and Latin words or numerals. Do not add a space next to full-width punctuation, and do not leave a meaningless half-width space between two Chinese characters.
 - Markdown emphasis markers do not create a word boundary. Determine spacing from the rendered adjacent characters: Chinese next to Chinese takes no space, while Chinese next to a Latin word or numeral takes one half-width space.
 - Use half-width digits and Latin letters, never full-width forms.
-- For RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY), translate to the corresponding Chinese term (يجب، منع توقف، ينبغي عند، يمكن), preserve the SOURCE emphasis span exactly, and do not weaken its normative strength: plain source stays plain (يجب), italic source stays italic (*يجب*), and bold source stays bold (**يجب**).
+- For RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY), translate to the corresponding Arabic term (يجب، منع توقف، ينبغي عند، يمكن), preserve the SOURCE emphasis span exactly, and do not weaken its normative strength: plain source stays plain (يجب), italic source stays italic (*يجب*), and bold source stays bold (**يجب**).
 
 #### When translating into English
 - Use half-width English punctuation and standard English spacing. Preserve full-width punctuation only in verbatim Chinese text.
-- Convert enumeration commas (،) to English commas and Chinese prose quotation marks to English double quotes.
+- Convert enumeration commas (،) to English commas and Arabic prose quotation marks to English double quotes.
 - Convert Chinese topic-comment sentences and omitted-subject constructions into clear English subjects when the actor is stated or unambiguously implied. Do not invent an actor.
 - Use concise professional developer prose and established English technical terms. Do not transliterate Chinese engineering idioms literally.
 - Use the terminology table's English column exactly and do not carry Chinese first-occurrence glosses into English prose.
@@ -117,11 +117,11 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 A terminology table is provided below. Follow it strictly:
 - Render every listed term exactly as specified.
 - When the target language is Chinese, use the "العربية" column. On the document's first prose occurrence, write the "أول مرة ظهور" value when one is specified; on later occurrences, write only the part before the parenthetical gloss.
-- When the target language is English, use the "English" column without a Chinese gloss; do not copy the "العربية" or "أول مرة ظهور" value into English prose.
+- When the target language is English, use the "English" column without a Arabic gloss; do not copy the "العربية" or "أول مرة ظهور" value into English prose.
 - If a term has already been glossed as part of a compound term, do not gloss it again when it appears alone later.
 - NEVER use translations listed in the "لا يلزم ترجمة عمل" column.
 - Code spans and other protected tokens remain verbatim even when their text resembles a listed term.
-- For an unlisted technical term, use an established target-language technical term when its meaning is unambiguous in context. For a Chinese target, use an established Chinese rendering from a major Chinese-language OSS or vendor source; if you cannot reliably determine such a rendering, preserve the source term and record `[Terminology: pending]` in `<review>` with a tentative rendering for human review. For an English target, use the established English technical term; if the source term has no unambiguous established equivalent, preserve it with the shortest English gloss needed to make it intelligible and record `[Terminology: pending]` in `<review>`. A tentative rendering may appear in `<review>` but must not be silently adopted in `<translation>` or `<final>`, and you must not invent or claim a specific external precedent. This rule applies to terminology only; for general prose, freely restructure and paraphrase for natural expression.
+- For an unlisted technical term, use an established target-language technical term when its meaning is unambiguous in context. For a Chinese target, use an established Chinese rendering from a major Arabic-language OSS or vendor source; if you cannot reliably determine such a rendering, preserve the source term and record `[Terminology: pending]` in `<review>` with a tentative rendering for human review. For an English target, use the established English technical term; if the source term has no unambiguous established equivalent, preserve it with the shortest English gloss needed to make it intelligible and record `[Terminology: pending]` in `<review>`. A tentative rendering may appear in `<review>` but must not be silently adopted in `<translation>` or `<final>`, and you must not invent or claim a specific external precedent. This rule applies to terminology only; for general prose, freely restructure and paraphrase for natural expression.
 
 {{terminology}}
 
@@ -185,7 +185,7 @@ After writing `<translation>`, verify it in two directions. First re-read it in 
 - Is any slang or internal jargon present?
 
 **Terminology**
-- For a Chinese target, are first-occurrence glosses correctly applied to the true first prose occurrence, neither missing nor repeated? For an English target, are Chinese glosses absent?
+- For a Chinese target, are first-occurrence glosses correctly applied to the true first prose occurrence, neither missing nor repeated? For an English target, are Arabic glosses absent?
 - Are any "لا يلزم ترجمة عمل" forbidden translations present?
 - Do protected tokens remain untouched even when they resemble terminology entries?
 - For an unlisted term, does a Chinese target use an established Chinese rendering or preserve the source term as pending when no reliable rendering is known, and does an English target use the established English technical term or preserve only an ambiguous source term with the shortest necessary gloss and a pending notice?
@@ -253,9 +253,9 @@ Below are representative examples of common problems and their corrections. Foll
 - Good: `# full-screen TUI coding agent (needs DEEPSEEK_API_KEY)` (keep exactly as-is, byte-for-byte)
 
 ### Language switcher — flip direction
-- Source file (English) has: `English | [العربية](README.zh.md)`
-- Bad (copying source unchanged): `English | [العربية](README.zh.md)`
-- Good (flipped for Chinese file): `[English](README.md) | العربية`
+- Source file (English) has: `English | [العربية](README.ar.md)`
+- Bad (copying source unchanged): `English | [العربية](README.ar.md)`
+- Good (flipped for Arabic file): `[English](README.md) | العربية`
 
 ---
 

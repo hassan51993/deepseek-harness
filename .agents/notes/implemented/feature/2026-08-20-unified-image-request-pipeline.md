@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-20-unified-image-request-pipeline.zh.md)
+English | [العربية](2026-08-20-unified-image-request-pipeline.ar.md)
 
 ## Problem
 

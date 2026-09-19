@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-23-locale-owned-client-ui-copy.zh.md)
+English | [العربية](2026-08-23-locale-owned-client-ui-copy.ar.md)
 
 ## Problem
 
@@ -24,7 +24,7 @@ The product-authored error and design-literal exclusions, primitive defaults, an
 
 ## Verification
 
-The AST check's own Vitest spec pins direct JSX, template branches, semantic copy props, label data, formatter returns, locale-key calls, structural attributes, and dictionary owners. Locale dictionary parity pins identical `zh`/`en` keys. Client suites exercise direct translated seats, locale-prop adapters, and built-in catalog-description localization without altering external descriptions. The assembled web replay plus the required real-server GIF demonstrate the shipped locale switch on the actual trajectory surface.
+The AST check's own Vitest spec pins direct JSX, template branches, semantic copy props, label data, formatter returns, locale-key calls, structural attributes, and dictionary owners. Locale dictionary parity pins identical `ar`/`en` keys. Client suites exercise direct translated seats, locale-prop adapters, and built-in catalog-description localization without altering external descriptions. The assembled web replay plus the required real-server GIF demonstrate the shipped locale switch on the actual trajectory surface.
 
 ## Alternatives considered
 

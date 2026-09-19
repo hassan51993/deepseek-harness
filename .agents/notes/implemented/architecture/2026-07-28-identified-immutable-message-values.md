@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-28-identified-immutable-message-values.zh.md)
+English | [العربية](2026-07-28-identified-immutable-message-values.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-messages-historical-tool-input.zh.md)
+English | [العربية](2026-09-16-messages-historical-tool-input.ar.md)
 
 ## Problem
 

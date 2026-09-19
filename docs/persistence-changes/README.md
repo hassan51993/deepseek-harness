@@ -4,7 +4,7 @@ description: "Review and maintain recorded Session persistence-type changes, the
 
 # Persistence-type change records
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 
@@ -33,7 +33,7 @@ Each dated record has four sibling files:
 | File | Owner |
 |---|---|
 | `YYYY-MM-DD-slug.md` | English acknowledgement with `kind: persistence-change`, one machine declaration, compatibility reasoning, and verification evidence |
-| `YYYY-MM-DD-slug.zh.md` | Chinese counterpart with the identical machine declaration |
+| `YYYY-MM-DD-slug.ar.md` | Arabic counterpart with the identical machine declaration |
 | `YYYY-MM-DD-slug.i18n.yaml` | Generated bilingual consistency record |
 | `YYYY-MM-DD-slug.schema.json` | Generated complete after schemas for the affected roots that remain present |
 

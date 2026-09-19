@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-07-ptc-executor-collapse.zh.md)
+English | [العربية](2026-08-07-ptc-executor-collapse.ar.md)
 
 ## Problem
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-07-27-copyable-transcript-no-gutter-bar.md
 2026-07-27-copyable-transcript-no-gutter-bar.md: a4eca191d28a834b05a6839997aab602852912c0
-2026-07-27-copyable-transcript-no-gutter-bar.zh.md: b1f661cb76bb879e414a0dcfd08fc9349ae070c7
+2026-07-27-copyable-transcript-no-gutter-bar.ar.md: b1f661cb76bb879e414a0dcfd08fc9349ae070c7

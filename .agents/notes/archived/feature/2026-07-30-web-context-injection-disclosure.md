@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-07
 
-English | [العربية](2026-07-30-web-context-injection-disclosure.zh.md)
+English | [العربية](2026-07-30-web-context-injection-disclosure.ar.md)
 
 ## Problem
 

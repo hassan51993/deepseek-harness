@@ -35,7 +35,7 @@ export function apply(ctx: ClientContext): void {
     // a failed activation must not squat the namespace's other locale.
     const disposers: (() => void)[] = []
     const dictionaries: [locale: string, dict: Record<string, string>][] = [
-      ['zh', {
+      ['ar', {
         'browser.title': 'اختيار مساحة العمل دليل',
         'browser.home': 'رئيسي دليل',
         'browser.newFolder': 'جديد بناء ملف مشبك',

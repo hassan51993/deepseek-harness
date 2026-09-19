@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-29-web-message-icon-actions-and-clock.md
 2026-07-29-web-message-icon-actions-and-clock.md: a95c7d33a917026c882f17d30264cf9ec743dee5
-2026-07-29-web-message-icon-actions-and-clock.zh.md: b64c14aaa7056e19ccc4d512db3d24714e11a309
+2026-07-29-web-message-icon-actions-and-clock.ar.md: b64c14aaa7056e19ccc4d512db3d24714e11a309

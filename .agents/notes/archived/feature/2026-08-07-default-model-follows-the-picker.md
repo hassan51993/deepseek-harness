@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-07-default-model-follows-the-picker.zh.md)
+English | [العربية](2026-08-07-default-model-follows-the-picker.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-10-session-log-version-mechanism.zh.md)
+English | [العربية](2026-08-10-session-log-version-mechanism.ar.md)
 
 ## Problem
 

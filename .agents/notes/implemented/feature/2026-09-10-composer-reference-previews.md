@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-composer-reference-previews.zh.md)
+English | [العربية](2026-09-10-composer-reference-previews.ar.md)
 
 ## Problem
 

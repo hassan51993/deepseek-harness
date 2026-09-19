@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-web-queue-steer-all-gesture.zh.md)
+English | [العربية](2026-08-06-web-queue-steer-all-gesture.ar.md)
 
 ## Problem
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-20-webworker-node-face.md
 2026-08-20-webworker-node-face.md: 705b55b9518fb0b75644ce33af1a487b4fe4344e
-2026-08-20-webworker-node-face.zh.md: d68a3d4d69d4e1ef13ca48ef212693379be96e41
+2026-08-20-webworker-node-face.ar.md: d68a3d4d69d4e1ef13ca48ef212693379be96e41

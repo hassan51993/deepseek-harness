@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-06-evidence-driven-performance-skill.zh.md)
+English | [العربية](2026-09-06-evidence-driven-performance-skill.ar.md)
 
 ## Problem
 

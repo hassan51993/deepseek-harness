@@ -8,7 +8,7 @@ import { BrowserBody } from './view/BrowserBody.tsx'
 import { BrowserTitle } from './view/BrowserTitle.tsx'
 import { createBrowserControllers } from './browser/BrowserController.ts'
 import { BROWSER_ID, browserDefinition } from './definition.tsx'
-import { en, zh } from './locales.ts'
+import { en, ar } from './locales.ts'
 import { createBrowserStore } from './browser/store.ts'
 
 export type { BrowserBodyProps } from './view/BrowserBody.tsx'
@@ -34,7 +34,7 @@ export function apply(ctx: Context): void {
   const namespace = 'sidebarBrowser'
   const t = ctx.locale.bind(namespace)
   const store = createBrowserStore()
-  ctx.effect(() => ctx.locale.register(namespace, { zh, en }), 'ui-sidebar-browser.copy')
+  ctx.effect(() => ctx.locale.register(namespace, { ar, en }), 'ui-sidebar-browser.copy')
   ctx.effect(() => ctx.sidebarRightTabs.register(browserDefinition(t)), 'ui-sidebar-browser.type')
   ctx.effect(() => ctx.slots.inject('sidebar.right.pane.tab', () => ctx.slots.register({
     name: 'sidebar.right.pane.tab', key: BROWSER_ID, locale: namespace, store,

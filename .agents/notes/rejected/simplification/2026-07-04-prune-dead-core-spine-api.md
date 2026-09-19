@@ -2,7 +2,7 @@
 
 Status: rejected — stale 2026-07 inventory: rows were pruned piecemeal or gained callers; a fresh audit must supersede it
 
-English | [العربية](2026-07-04-prune-dead-core-spine-api.zh.md)
+English | [العربية](2026-07-04-prune-dead-core-spine-api.ar.md)
 
 ## Problem
 

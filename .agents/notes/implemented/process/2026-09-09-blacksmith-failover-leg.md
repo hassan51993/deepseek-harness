@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-blacksmith-failover-leg.zh.md)
+English | [العربية](2026-09-09-blacksmith-failover-leg.ar.md)
 
 ## Problem
 

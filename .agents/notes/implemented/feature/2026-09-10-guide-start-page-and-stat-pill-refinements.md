@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-guide-start-page-and-stat-pill-refinements.zh.md)
+English | [العربية](2026-09-10-guide-start-page-and-stat-pill-refinements.ar.md)
 
 ## Problem
 

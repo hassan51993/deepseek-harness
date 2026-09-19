@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-17-subagent-message-settlement-ordering.zh.md)
+English | [العربية](2026-08-17-subagent-message-settlement-ordering.ar.md)
 
 ## Problem
 

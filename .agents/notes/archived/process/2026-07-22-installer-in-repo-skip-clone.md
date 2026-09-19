@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-22-installer-in-repo-skip-clone.zh.md)
+English | [العربية](2026-07-22-installer-in-repo-skip-clone.ar.md)
 
 ## Problem
 

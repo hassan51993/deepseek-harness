@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-persisted-same-session-goal-domain.zh.md)
+English | [العربية](2026-07-19-persisted-same-session-goal-domain.ar.md)
 
 ## Problem
 

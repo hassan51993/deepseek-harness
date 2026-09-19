@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-19
 
-English | [العربية](2026-07-04-drop-image-content-block.zh.md)
+English | [العربية](2026-07-04-drop-image-content-block.ar.md)
 
 ## Problem
 

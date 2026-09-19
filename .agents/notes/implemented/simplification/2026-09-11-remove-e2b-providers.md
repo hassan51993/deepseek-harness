@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-remove-e2b-providers.zh.md)
+English | [العربية](2026-09-11-remove-e2b-providers.ar.md)
 
 ## Problem
 

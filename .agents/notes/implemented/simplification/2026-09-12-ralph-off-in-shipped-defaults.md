@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-ralph-off-in-shipped-defaults.zh.md)
+English | [العربية](2026-09-12-ralph-off-in-shipped-defaults.ar.md)
 
 ## Problem
 

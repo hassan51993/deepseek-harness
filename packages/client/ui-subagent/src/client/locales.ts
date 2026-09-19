@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'subagent'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'diagnostic.corrupt': 'جلسة سجل ضرر تالف',
   'diagnostic.unsupported': 'فرعي بديل إدارة سجل إصدار لا تلقي دعم حمل',
   'diagnostic.unavailable': 'جلسة سجل مؤقت غير ممكن استخدام',
@@ -46,7 +46,7 @@ export const zh = {
   'readonly.body': 'أب جلسة حالي لا في خط، إعادة فتح أب جلسة بعد يكفي متابعة إرسال رسالة.',
 } as const
 
-/** English dictionary, key-identical to the Chinese source of truth. */
+/** English dictionary, key-identical to the Arabic source of truth. */
 export const en: Record<SubagentKey, string> = {
   'diagnostic.corrupt': 'corrupted session record',
   'diagnostic.unsupported': 'unsupported subagent record version',
@@ -89,5 +89,5 @@ export const en: Record<SubagentKey, string> = {
   'readonly.body': 'The parent session is offline; reopen it to continue sending messages.',
 }
 
-/** Key domain of the `subagent` namespace (zh is the source of truth). */
-export type SubagentKey = keyof typeof zh
+/** Key domain of the `subagent` namespace (ar is the source of truth). */
+export type SubagentKey = keyof typeof ar

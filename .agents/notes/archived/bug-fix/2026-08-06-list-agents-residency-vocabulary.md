@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-list-agents-residency-vocabulary.zh.md)
+English | [العربية](2026-08-06-list-agents-residency-vocabulary.ar.md)
 
 ## Problem
 

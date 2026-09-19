@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-08-background-subagent-tasks.zh.md)
+English | [العربية](2026-07-08-background-subagent-tasks.ar.md)
 
 ## Problem
 

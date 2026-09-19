@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-09-01-streamed-tool-call-identity.md
 2026-09-01-streamed-tool-call-identity.md: d181580e028ecf721a9e5bddc1e83664e2fca712
-2026-09-01-streamed-tool-call-identity.zh.md: 614d65c4c8d8eecced4e9562d3ea11b79d433d64
+2026-09-01-streamed-tool-call-identity.ar.md: 614d65c4c8d8eecced4e9562d3ea11b79d433d64

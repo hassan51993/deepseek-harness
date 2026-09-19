@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-creator-persistent-plugin-management.zh.md)
+English | [العربية](2026-09-16-creator-persistent-plugin-management.ar.md)
 
 ## Problem
 

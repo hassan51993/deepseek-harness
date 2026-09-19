@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'schedule.catalog'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'trigger.one': '{count} عدد رفع تنبيه',
   'trigger.other': '{count} عدد رفع تنبيه',
   'list.aria': 'نشط حركة رفع تنبيه',
@@ -25,7 +25,7 @@ export const zh = {
   'relative.overdue': 'قد تجاوز مدة {value}{unit}',
 } as const
 
-/** English dictionary, key-identical to the Chinese source of truth. */
+/** English dictionary, key-identical to the Arabic source of truth. */
 export const en: Record<ScheduleCatalogKey, string> = {
   'trigger.one': '{count} reminder',
   'trigger.other': '{count} reminders',
@@ -48,4 +48,4 @@ export const en: Record<ScheduleCatalogKey, string> = {
 }
 
 /** Key domain of the Schedule catalog namespace. */
-export type ScheduleCatalogKey = keyof typeof zh
+export type ScheduleCatalogKey = keyof typeof ar

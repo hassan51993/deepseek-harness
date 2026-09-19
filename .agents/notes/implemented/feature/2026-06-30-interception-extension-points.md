@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-30-interception-extension-points.zh.md)
+English | [العربية](2026-06-30-interception-extension-points.ar.md)
 
 ## Problem
 

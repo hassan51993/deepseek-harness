@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-01
 
-English | [العربية](2026-07-26-packed-chunk-rows-by-default.zh.md)
+English | [العربية](2026-07-26-packed-chunk-rows-by-default.ar.md)
 
 ## Problem
 

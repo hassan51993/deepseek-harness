@@ -1,6 +1,6 @@
 # User Interaction
 
-English | [العربية](user-questions.zh.md)
+English | [العربية](user-questions.ar.md)
 
 The user-questions seam of [dsh-user-questions](../../packages/interaction/user-questions). It is the provider-neutral vocabulary a tool or permission plugin uses when it needs the human to answer before the agent can continue. Agent-scoped waterfall listeners compose the available UI surfaces, including listeners relayed to a connected client.
 

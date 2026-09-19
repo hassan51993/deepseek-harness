@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-app-owned-command-line.zh.md)
+English | [العربية](2026-08-06-app-owned-command-line.ar.md)
 
 ## Problem
 

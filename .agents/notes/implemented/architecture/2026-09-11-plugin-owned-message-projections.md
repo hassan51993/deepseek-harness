@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-plugin-owned-message-projections.zh.md)
+English | [العربية](2026-09-11-plugin-owned-message-projections.ar.md)
 
 ## Problem
 

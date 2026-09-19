@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-desktop-primary-runtime.zh.md)
+English | [العربية](2026-09-14-desktop-primary-runtime.ar.md)
 
 ## Problem
 

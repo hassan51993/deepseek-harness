@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-markdown-file-preview-links.zh.md)
+English | [العربية](2026-09-15-markdown-file-preview-links.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-approval-review-workflow-identity.zh.md)
+English | [العربية](2026-09-10-approval-review-workflow-identity.ar.md)
 
 ## Problem
 

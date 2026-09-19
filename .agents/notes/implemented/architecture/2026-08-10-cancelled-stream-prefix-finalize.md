@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-10-cancelled-stream-prefix-finalize.zh.md)
+English | [العربية](2026-08-10-cancelled-stream-prefix-finalize.ar.md)
 
 ## Problem
 

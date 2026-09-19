@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-08-20-attachment-read-quarantine.zh.md)
+English | [العربية](2026-08-20-attachment-read-quarantine.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-30-cordis-config-source-plane-resolution-gate.zh.md)
+English | [العربية](2026-07-30-cordis-config-source-plane-resolution-gate.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-24-agent-loop-observable-state-machine.zh.md)
+English | [العربية](2026-07-24-agent-loop-observable-state-machine.ar.md)
 
 ## Problem
 

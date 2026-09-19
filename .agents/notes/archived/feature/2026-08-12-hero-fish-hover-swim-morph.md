@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-12-hero-fish-hover-swim-morph.zh.md)
+English | [العربية](2026-08-12-hero-fish-hover-swim-morph.ar.md)
 
 ## Problem
 

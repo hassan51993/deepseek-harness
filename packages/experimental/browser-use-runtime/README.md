@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-experimental-browser-use-runtime
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-unified-model-input-controls.zh.md)
+English | [العربية](2026-09-16-unified-model-input-controls.ar.md)
 
 ## Problem
 

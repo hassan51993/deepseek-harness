@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-21-mandatory-app-attribution-headers.zh.md)
+English | [العربية](2026-06-21-mandatory-app-attribution-headers.ar.md)
 
 ## Problem
 

@@ -5,7 +5,7 @@ kind: "package-group"
 
 # acp/ — Agent Client Protocol automation
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

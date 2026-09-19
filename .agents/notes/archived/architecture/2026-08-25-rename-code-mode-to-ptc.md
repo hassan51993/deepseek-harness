@@ -3,15 +3,15 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-25-rename-code-mode-to-ptc.zh.md)
+English | [العربية](2026-08-25-rename-code-mode-to-ptc.ar.md)
 
 ## Problem
 
-The tool-registry presentation mode that exposes tools through a generated SDK and the `run_code` transport shipped under the name Code Mode, while the client preset that selects it already shipped as "PTC mode" (locale `presetPtcName: 'PTC mode'`, zh `PTC نمط`). One feature had two names: config values, plugin and event names, files, and documentation said `code`/`code-mode`, and the user-facing name said "PTC mode". A pre-release rename must update every reference together — no compatibility aliases.
+The tool-registry presentation mode that exposes tools through a generated SDK and the `run_code` transport shipped under the name Code Mode, while the client preset that selects it already shipped as "PTC mode" (locale `presetPtcName: 'PTC mode'`, ar `PTC نمط`). One feature had two names: config values, plugin and event names, files, and documentation said `code`/`code-mode`, and the user-facing name said "PTC mode". A pre-release rename must update every reference together — no compatibility aliases.
 
 ## Decision
 
-The feature is renamed to PTC (programmatic tool calls). Code identifiers use `ptc` — the transport is not a sibling of plan-mode, so the identifier does not carry `-mode`. User-facing prose keeps "PTC mode" (EN) / "PTC نمط" (zh), matching the shipped preset name.
+The feature is renamed to PTC (programmatic tool calls). Code identifiers use `ptc` — the transport is not a sibling of plan-mode, so the identifier does not carry `-mode`. User-facing prose keeps "PTC mode" (EN) / "PTC نمط" (ar), matching the shipped preset name.
 
 Renamed in this PR:
 

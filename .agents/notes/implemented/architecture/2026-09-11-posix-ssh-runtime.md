@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-posix-ssh-runtime.zh.md)
+English | [العربية](2026-09-11-posix-ssh-runtime.ar.md)
 
 ## Problem
 

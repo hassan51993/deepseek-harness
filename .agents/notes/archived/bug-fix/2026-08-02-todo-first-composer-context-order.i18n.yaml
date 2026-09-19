@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-02-todo-first-composer-context-order.md
 2026-08-02-todo-first-composer-context-order.md: 146b5f237d58ed0b9d92791bded2cddc47455431
-2026-08-02-todo-first-composer-context-order.zh.md: 61e989ecd039e0e61196990cbcc7959a5ef929f1
+2026-08-02-todo-first-composer-context-order.ar.md: 61e989ecd039e0e61196990cbcc7959a5ef929f1

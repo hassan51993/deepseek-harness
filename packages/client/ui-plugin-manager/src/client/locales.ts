@@ -1,7 +1,7 @@
 /** Plugin management copy and display names of shipped global rows. */
 
-/** Simplified Chinese dictionary and key source of truth. */
-export const zh = {
+/** Arabic dictionary and key source of truth. */
+export const ar = {
   panel: 'إضافة',
   title: 'إضافة',
   intro: 'إضافة و إدارة إضافة',
@@ -160,9 +160,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Plugin manager locale key union. */
-export type PluginManagerLocaleKey = keyof typeof zh
+export type PluginManagerLocaleKey = keyof typeof ar
 
-/** English dictionary checked against the Chinese key set. */
+/** English dictionary checked against the Arabic key set. */
 export const en = {
   panel: 'Plugins',
   title: 'Plugins',

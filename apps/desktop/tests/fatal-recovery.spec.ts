@@ -19,7 +19,7 @@ function fixture(locale = 'en') {
 
 afterEach(() => { vi.restoreAllMocks() })
 
-it.each(['en', 'zh-CN'])('offers only exit and restart for a listener conflict in %s', async (locale) => {
+it.each(['en', 'ar-SA'])('offers only exit and restart for a listener conflict in %s', async (locale) => {
   const { operations, choice, stopped, recovery } = fixture(locale)
   const pending = recovery.report(new AggregateError([
     new Error('webserver (@deepseek-ai/dsh-host-webserver): Error: listen EADDRINUSE: address already in use 127.0.0.1:19387'),
@@ -48,7 +48,7 @@ it.each(['win32', 'darwin', 'linux'] as const)('offers the same listener conflic
   await pending
 })
 
-it.each(['en', 'zh-CN'])('records the %s native recovery dialog', async (locale) => {
+it.each(['en', 'ar-SA'])('records the %s native recovery dialog', async (locale) => {
   const { operations, choice, stopped, recovery } = fixture(locale)
   const pending = recovery.report(new AggregateError([new Error('Plugin initialization failed')], 'Desktop Host failed'))
   const options = operations.show.mock.calls[0]![0]
@@ -113,7 +113,7 @@ it('allows exit after shutdown cleanup fails', async () => {
   expect(operations.exit).toHaveBeenCalledOnce()
 })
 
-it.each(['en', 'zh-CN'])('bounds long diagnostics and recovery-operation errors in %s', async (locale) => {
+it.each(['en', 'ar-SA'])('bounds long diagnostics and recovery-operation errors in %s', async (locale) => {
   vi.spyOn(console, 'error').mockImplementation(() => {})
   const { operations, stopped, recovery } = fixture(locale)
   operations.show.mockResolvedValueOnce({ response: 2, checkboxChecked: false })

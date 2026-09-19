@@ -1,6 +1,6 @@
 # LLM adapters
 
-English | [العربية](llm-adapter.zh.md)
+English | [العربية](llm-adapter.ar.md)
 
 This guide connects a new LLM provider to Harness.
 

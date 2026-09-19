@@ -1,6 +1,6 @@
 # DeepSeek Harness Architecture
 
-English | [العربية](architecture.zh.md)
+English | [العربية](architecture.ar.md)
 
 Read this before changing anything under `packages/`. It assumes you know Cordis; if you do not, start with the [primer](cordis-primer.md) or the [tutorial](cordis-tutorial/index.md).
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-08-background-subagent-tasks.md
 2026-07-08-background-subagent-tasks.md: ce5858297e72661e462e2fd200ce8e3c1e20b547
-2026-07-08-background-subagent-tasks.zh.md: a1bd8bcb58314e0326af63d998d495409ff7e0b6
+2026-07-08-background-subagent-tasks.ar.md: a1bd8bcb58314e0326af63d998d495409ff7e0b6

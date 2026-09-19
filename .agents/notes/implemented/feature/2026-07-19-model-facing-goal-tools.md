@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-model-facing-goal-tools.zh.md)
+English | [العربية](2026-07-19-model-facing-goal-tools.ar.md)
 
 ## Problem
 

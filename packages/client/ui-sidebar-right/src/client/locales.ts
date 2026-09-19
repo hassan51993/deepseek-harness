@@ -6,8 +6,8 @@
  * vocabulary is this package's to own and translate.
  */
 
-/** Simplified Chinese dictionary and key-set source of truth. */
-export const zh = {
+/** Arabic dictionary and key-set source of truth. */
+export const ar = {
   'chrome.expand': 'فتح جانب حافة شريط',
   'chrome.expandAria': 'فتح يمين جانب حافة شريط',
   'chrome.collapse': 'استلام بدء جانب حافة شريط',
@@ -32,9 +32,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Right-Sidebar dictionary key union. */
-export type SidebarRightKey = keyof typeof zh
+export type SidebarRightKey = keyof typeof ar
 
-/** English dictionary, checked against the Chinese key set. */
+/** English dictionary, checked against the Arabic key set. */
 export const en = {
   'chrome.expand': 'Open sidebar',
   'chrome.expandAria': 'Open right sidebar',

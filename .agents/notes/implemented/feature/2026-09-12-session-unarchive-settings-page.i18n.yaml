@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-12-session-unarchive-settings-page.md
 2026-09-12-session-unarchive-settings-page.md: 3b1e364e3abc6cea0a8b29ad78abb0ff7c274dbe
-2026-09-12-session-unarchive-settings-page.zh.md: 61e108dd50e61b9e6e9f72098973c067e3257407
+2026-09-12-session-unarchive-settings-page.ar.md: 61e108dd50e61b9e6e9f72098973c067e3257407

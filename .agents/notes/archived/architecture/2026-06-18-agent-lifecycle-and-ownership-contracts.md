@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-06-18-agent-lifecycle-and-ownership-contracts.zh.md)
+English | [العربية](2026-06-18-agent-lifecycle-and-ownership-contracts.ar.md)
 
 ## Problem
 

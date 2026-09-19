@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-27-user-message-icon-actions.md: 3a6944143972e8e7f6dcc59033c933d112708b63
-2026-07-27-user-message-icon-actions.zh.md: da80bd9242940da56271c2639114b78e43cd1041
+2026-07-27-user-message-icon-actions.ar.md: da80bd9242940da56271c2639114b78e43cd1041

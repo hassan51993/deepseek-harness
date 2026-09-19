@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-04-doc-tiers-and-budgets.zh.md)
+English | [العربية](2026-07-04-doc-tiers-and-budgets.ar.md)
 
 ## Problem
 

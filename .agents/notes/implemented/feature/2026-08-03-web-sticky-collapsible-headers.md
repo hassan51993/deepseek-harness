@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-03-web-sticky-collapsible-headers.zh.md)
+English | [العربية](2026-08-03-web-sticky-collapsible-headers.ar.md)
 
 ## Problem
 

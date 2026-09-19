@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-26-code-mode-trajectory-waterfall-spans.md: 2e158878faff29aa1ccd03b9b07a370b10cbb4f8
-2026-07-26-code-mode-trajectory-waterfall-spans.zh.md: 462968c9dae66880778b7a5e871a54983402e221
+2026-07-26-code-mode-trajectory-waterfall-spans.ar.md: 462968c9dae66880778b7a5e871a54983402e221

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-11-loader-entry-disabled-interpolation.zh.md)
+English | [العربية](2026-08-11-loader-entry-disabled-interpolation.ar.md)
 
 ## Problem
 

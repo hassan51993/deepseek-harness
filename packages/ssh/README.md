@@ -5,7 +5,7 @@ kind: "package-group"
 
 # ssh/ — POSIX remote execution providers
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

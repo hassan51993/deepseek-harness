@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-31-even-out-shipped-tool-rosters.zh.md)
+English | [العربية](2026-07-31-even-out-shipped-tool-rosters.ar.md)
 
 ## Problem
 

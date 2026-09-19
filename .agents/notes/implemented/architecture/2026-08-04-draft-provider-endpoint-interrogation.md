@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-04-draft-provider-endpoint-interrogation.zh.md)
+English | [العربية](2026-08-04-draft-provider-endpoint-interrogation.ar.md)
 
 ## Problem
 

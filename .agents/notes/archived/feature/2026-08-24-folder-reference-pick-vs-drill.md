@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-24-folder-reference-pick-vs-drill.zh.md)
+English | [العربية](2026-08-24-folder-reference-pick-vs-drill.ar.md)
 
 ## Problem
 

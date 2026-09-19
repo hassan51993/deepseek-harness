@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-turn-duration-hour-unit.zh.md)
+English | [العربية](2026-09-09-turn-duration-hour-unit.ar.md)
 
 ## Problem
 

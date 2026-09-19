@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-docs-page-markdown-actions.zh.md)
+English | [العربية](2026-09-15-docs-page-markdown-actions.ar.md)
 
 ## Problem
 

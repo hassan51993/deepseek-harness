@@ -5,7 +5,7 @@ kind: "package-group"
 
 # api/ — Remote API layers
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

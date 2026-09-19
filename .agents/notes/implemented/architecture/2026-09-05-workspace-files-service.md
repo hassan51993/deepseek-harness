@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-workspace-files-service.zh.md)
+English | [العربية](2026-09-05-workspace-files-service.ar.md)
 
 ## Problem
 

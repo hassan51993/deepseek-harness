@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-23-demo-web-builds-client-bundles.md: abd031c4ee6aeb7ed8c0baa61dfac16e5d64cc33
-2026-07-23-demo-web-builds-client-bundles.zh.md: 70604b344b5607b01815382da316805a9beaf27e
+2026-07-23-demo-web-builds-client-bundles.ar.md: 70604b344b5607b01815382da316805a9beaf27e

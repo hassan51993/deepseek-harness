@@ -1,7 +1,7 @@
 /** `settings.theme` namespace dictionaries (the Appearance and font-size rows' copy). */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'appearance.title': 'خارج مراقبة',
   'appearance.light': 'ضحل لون',
   'appearance.dark': 'عميق لون',
@@ -14,9 +14,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The settings.theme namespace key union. */
-export type ThemeKey = keyof typeof zh
+export type ThemeKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'appearance.title': 'Appearance',
   'appearance.light': 'Light',

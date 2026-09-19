@@ -19,7 +19,7 @@ import type { ClientSessionContext, ConsumeTokenRequest, InputTriggerPick, Input
 import type { CommandContribution, CommandDecoration, PopupSelectSpec, SelectOption } from '../src/client/contract.ts'
 import type { CommandDescriptor } from '../src/client/directory.ts'
 import { CommandUiRuntime } from '../src/client/service.ts'
-import { en, zh, type CommandKey } from '../src/client/locales.ts'
+import { en, ar, type CommandKey } from '../src/client/locales.ts'
 
 const sid = (k: string): SessionId => k as SessionId
 
@@ -280,7 +280,7 @@ describe('candidates', () => {
   })
 
   it('localizes canonical built-in and contribution descriptions on every candidate request', async () => {
-    let locale = 'zh'
+    let locale = 'ar'
     const commands: CommandDescriptor[] = [
       { definitionId: CommandDefinitionId('@deepseek-ai/dsh-command-compact'), name: 'compact', description: 'Compact older conversation history' },
       { name: 'goal', description: 'scoped goal override' },
@@ -296,9 +296,9 @@ describe('candidates', () => {
     const faces = async () => (await source.candidates(proj('s1'), req(''))).map(c => [c.name, c.label, c.description])
     await expect(faces()).resolves.toEqual([
       ['goal', undefined, 'scoped goal override'],
-      ['compact', 'zh:command:label.compact', 'zh:command:description.compact'],
+      ['compact', 'ar:command:label.compact', 'ar:command:description.compact'],
       ['custom', undefined, 'plugin-authored copy'],
-      ['theme', undefined, 'zh:theme'],
+      ['theme', undefined, 'ar:theme'],
     ])
 
     locale = 'en'
@@ -380,7 +380,7 @@ describe('candidates', () => {
       expect(source.matchSpace!(proj('s1'), '/goal')).toHaveProperty('claim.name', 'goal')
     })
 
-    it.each([['en', en], ['zh', zh]] as const)('description edits preserve menu claims and bilingual parsing under %s', async (_locale, dictionary) => {
+    it.each([['en', en], ['ar', ar]] as const)('description edits preserve menu claims and bilingual parsing under %s', async (_locale, dictionary) => {
       const commands = SHIPPED.map(command => ({ ...command, description: command.description + '.' }))
       const { fiber, source, warm } = await bench({
         commands: () => Promise.resolve({ commands }),
@@ -393,7 +393,7 @@ describe('candidates', () => {
         expect(rows.find(row => row.name === name)?.label).toBe(dictionary[`label.${name}`])
         const picked = menuPick(source, name, proj('s1'))
         expect(picked).toHaveProperty('claim.token', `/${dictionary[`token.${name}`]} `)
-        for (const spelling of [en[`token.${name}`], zh[`token.${name}`]]) {
+        for (const spelling of [en[`token.${name}`], ar[`token.${name}`]]) {
           expect(source.matchSpace!(proj('s1'), `/${spelling}`)).toHaveProperty('claim.name', name)
           expect(await source.matchEnter!(proj('s1'), `/${spelling} text`, new AbortController().signal, { attachments: 0 }))
             .toHaveProperty('claim.token', `/${spelling} `)

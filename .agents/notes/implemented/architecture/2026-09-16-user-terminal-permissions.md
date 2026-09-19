@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-user-terminal-permissions.zh.md)
+English | [العربية](2026-09-16-user-terminal-permissions.ar.md)
 
 ## Problem
 

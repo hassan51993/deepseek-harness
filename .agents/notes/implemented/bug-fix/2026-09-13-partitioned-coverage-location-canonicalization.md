@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-13-partitioned-coverage-location-canonicalization.zh.md)
+English | [العربية](2026-09-13-partitioned-coverage-location-canonicalization.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-17-thinking-markdown.zh.md)
+English | [العربية](2026-09-17-thinking-markdown.ar.md)
 
 ## Problem
 

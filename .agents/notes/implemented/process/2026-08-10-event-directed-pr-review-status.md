@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-10-event-directed-pr-review-status.zh.md)
+English | [العربية](2026-08-10-event-directed-pr-review-status.ar.md)
 
 ## Problem
 

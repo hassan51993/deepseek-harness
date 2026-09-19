@@ -1,5 +1,5 @@
 /** Locale-owned image renderer labels and status text. */
-export const zh = {
+export const ar = {
   title: 'صورة',
   preview: 'صورة معاينة:{name}',
   loading: 'صحيح في قراءة…',
@@ -8,9 +8,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Image renderer dictionary keys. */
-export type ImagePreviewKey = keyof typeof zh
+export type ImagePreviewKey = keyof typeof ar
 
-/** English dictionary with the same keys as the Chinese dictionary. */
+/** English dictionary with the same keys as the Arabic dictionary. */
 export const en = {
   title: 'Image',
   preview: 'Image preview: {name}',

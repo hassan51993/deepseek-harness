@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-30-bounded-overwrite-diff-basis.zh.md)
+English | [العربية](2026-07-30-bounded-overwrite-diff-basis.ar.md)
 
 ## Problem
 

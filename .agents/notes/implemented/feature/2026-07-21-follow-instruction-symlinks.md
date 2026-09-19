@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-21-follow-instruction-symlinks.zh.md)
+English | [العربية](2026-07-21-follow-instruction-symlinks.ar.md)
 
 ## Problem
 

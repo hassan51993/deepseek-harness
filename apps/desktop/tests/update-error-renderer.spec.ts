@@ -22,7 +22,7 @@ function page(name: string) {
   return { dom, document, element, run }
 }
 
-it.each(['en', 'zh-CN'])('keeps ordinary diagnostics folded, text-only, and keyboard-accessible: %s', async (language) => {
+it.each(['en', 'ar-SA'])('keeps ordinary diagnostics folded, text-only, and keyboard-accessible: %s', async (language) => {
   const p = page('update-dialog')
   const locale = resolveDesktopLocale(language)
   const state: UpdateDialogView = { locale: locale.id, title: locale.messages.updateFailedTitle,
@@ -59,7 +59,7 @@ it.each(['en', 'zh-CN'])('keeps ordinary diagnostics folded, text-only, and keyb
 
 it('keeps mandatory diagnostics expandable without clearing the block or authorizing installation', async () => {
   const p = page('mandatory-update')
-  const locale = resolveDesktopLocale('zh-CN')
+  const locale = resolveDesktopLocale('ar-SA')
   const initial: MandatoryUpdateView = { locale, deferred: false, policy: { blocking: true, checking: false },
     update: { phase: 'error', failedOperation: 'install', preparationFailure: 'stop-failed', version: '0.1.6-nightly.1',
       message: 'different shell locale', technicalDetails: 'exit 0; shutdown acknowledged false' } }
@@ -106,7 +106,7 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
 
 function mandatoryPage(update: MandatoryUpdateView['update']) {
   const p = page('mandatory-update')
-  const initial: MandatoryUpdateView = { locale: resolveDesktopLocale('zh'), deferred: false,
+  const initial: MandatoryUpdateView = { locale: resolveDesktopLocale('ar'), deferred: false,
     policy: { blocking: true, checking: false, title: 'حاجة تحديث', page: 'https://downloads.example.com/desktop' }, update }
   const action = vi.fn(async () => {})
   let publish!: (view: MandatoryUpdateView) => void

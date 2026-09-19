@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-image-offload-events.zh.md)
+English | [العربية](2026-09-10-image-offload-events.ar.md)
 
 ## Problem
 

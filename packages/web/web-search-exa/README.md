@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-web-search-exa
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

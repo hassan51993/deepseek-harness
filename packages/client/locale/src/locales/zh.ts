@@ -1,5 +1,5 @@
-/** zh base dictionary for the common namespace: cross-feature standard words. */
-export const zh = {
+/** ar base dictionary for the common namespace: cross-feature standard words. */
+export const ar = {
   'ok': 'تحديد',
   'cancel': 'إلغاء',
   'close': 'إغلاق',
@@ -39,5 +39,5 @@ export const zh = {
   'number.million': '{value}M',
 } satisfies Record<string, string>
 
-/** The common vocabulary key union (zh is the key-set source of truth). */
-export type CommonKey = keyof typeof zh
+/** The common vocabulary key union (ar is the key-set source of truth). */
+export type CommonKey = keyof typeof ar

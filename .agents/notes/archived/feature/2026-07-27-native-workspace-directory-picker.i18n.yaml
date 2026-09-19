@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-27-native-workspace-directory-picker.md
 2026-07-27-native-workspace-directory-picker.md: 6f5a9c4fef8fd129dafb0977e92e79e133aeeae9
-2026-07-27-native-workspace-directory-picker.zh.md: d70cde164d501756fb61c0aa7364294825a21719
+2026-07-27-native-workspace-directory-picker.ar.md: d70cde164d501756fb61c0aa7364294825a21719

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-21-tui-reload-command.md: e491e8f4510128b7fda03d41bc1d13e4dfdc9f5e
-2026-07-21-tui-reload-command.zh.md: ed96c689fe4ba700f5b6836d7b7727e0252737a2
+2026-07-21-tui-reload-command.ar.md: ed96c689fe4ba700f5b6836d7b7727e0252737a2

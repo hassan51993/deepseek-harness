@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-web-diff-context.zh.md)
+English | [العربية](2026-09-14-web-diff-context.ar.md)
 
 ## Problem
 

@@ -5,7 +5,7 @@ kind: "package-group"
 
 # packages/extensions
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

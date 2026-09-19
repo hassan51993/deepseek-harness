@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-31-alpha-historical-unknown-event-refusal.zh.md)
+English | [العربية](2026-08-31-alpha-historical-unknown-event-refusal.ar.md)
 
 ## Problem
 

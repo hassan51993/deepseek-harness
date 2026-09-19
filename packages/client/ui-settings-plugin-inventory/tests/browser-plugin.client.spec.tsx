@@ -13,7 +13,7 @@ import { PluginInventorySettingsTab } from '../src/client/PluginInventorySetting
 import type { PluginInventorySettingsTabInjected } from '../src/client/PluginInventorySettingsTab.tsx'
 import { apply as hostApply } from '../src/index.ts'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 afterEach(cleanup)
 
 const EMPTY = { entries: [] }
@@ -82,7 +82,7 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     // Shipped preset names resolve over the agent-preset dictionaries the
     // real plugin registers; user-authored metadata stays untranslated.
-    b.locale.register('settings.agentPreset', 'zh', { presetStandardName: 'معيار نمط' } as never)
+    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'معيار نمط' } as never)
     expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('معيار نمط')
     expect(injected.presetName({ id: 'mine', trust: 'user', name: 'أنا ذاتي ذات', isDefault: false, rows: [] })).toBe('أنا ذاتي ذات')
     await b.ctx.fiber.dispose()
@@ -108,7 +108,7 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     await fiber.dispose()
     expect(b.slots.entries('settings.plugins.tab')).toHaveLength(0)
-    expect(() => b.locale.register(NS, 'zh', {})).not.toThrow()
+    expect(() => b.locale.register(NS, 'ar', {})).not.toThrow()
     await b.ctx.fiber.dispose()
   })
 })

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-onboarding-step-owned-takeover-chrome.zh.md)
+English | [العربية](2026-08-06-onboarding-step-owned-takeover-chrome.ar.md)
 
 ## Problem
 

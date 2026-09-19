@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-28-windows-only-absent-probe-repair.md
 2026-08-28-windows-only-absent-probe-repair.md: 887e5fcf2280700b0f9b5c3fed821fdc4327a6ca
-2026-08-28-windows-only-absent-probe-repair.zh.md: 478110899d5faf931298c2e022ebaf859a1ebfc9
+2026-08-28-windows-only-absent-probe-repair.ar.md: 478110899d5faf931298c2e022ebaf859a1ebfc9

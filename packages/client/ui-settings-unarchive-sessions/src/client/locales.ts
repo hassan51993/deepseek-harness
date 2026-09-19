@@ -1,7 +1,7 @@
 /** Copy dictionaries for the archived-session Settings page. */
 
-/** Simplified Chinese dictionary and key source of truth. */
-export const zh = {
+/** Arabic dictionary and key source of truth. */
+export const ar = {
   nav: 'قد عودة ملف جلسة',
   search: 'بحث قد عودة ملف جلسة',
   loading: 'صحيح في قراءة جلسة…',
@@ -20,9 +20,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Archived-session page locale key union. */
-export type ArchivedSessionsLocaleKey = keyof typeof zh
+export type ArchivedSessionsLocaleKey = keyof typeof ar
 
-/** English dictionary checked against the Chinese key set. */
+/** English dictionary checked against the Arabic key set. */
 export const en = {
   nav: 'Archived sessions',
   search: 'Search archived sessions',

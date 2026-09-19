@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-25-loaded-turn-chat-navigation.zh.md)
+English | [العربية](2026-08-25-loaded-turn-chat-navigation.ar.md)
 
 ## Problem
 

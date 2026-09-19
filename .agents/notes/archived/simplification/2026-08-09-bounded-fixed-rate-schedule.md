@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-09-bounded-fixed-rate-schedule.zh.md)
+English | [العربية](2026-08-09-bounded-fixed-rate-schedule.ar.md)
 
 ## Problem
 

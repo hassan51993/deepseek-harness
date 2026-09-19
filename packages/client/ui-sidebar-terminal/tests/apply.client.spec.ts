@@ -19,7 +19,7 @@ import { TerminalTitle } from '../src/client/TerminalTitle.tsx'
 import { TerminalRecovery, type TerminalRecoveryInjected } from '../src/client/TerminalRecovery.tsx'
 import { TerminalCleanup, type TerminalCleanupInjected } from '../src/client/TerminalCleanup.tsx'
 import type { TerminalBodyInjected } from '../src/client/face.ts'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 
 vi.mock('@xterm/xterm', () => ({ Terminal: vi.fn() }))
 const renderedTerminal = vi.hoisted(() => vi.fn(() => null))
@@ -91,7 +91,7 @@ it('registers terminal views, recovery and cleanup, then releases every contribu
     expect(renderToStaticMarkup(createElement(Icon, { size: 22 }))).toContain('width="22"')
     expect(renderToStaticMarkup(createElement(Icon))).toContain('width="26"')
     expect(definition.multiple).toBe(true)
-    expect(h.dictionaries.get('sidebarTerminal')).toEqual({ en, zh })
+    expect(h.dictionaries.get('sidebarTerminal')).toEqual({ en, ar })
     expect(h.entries.map(entry => [entry.name, entry.component, entry.locale])).toEqual([
       ['sidebar.right.tab.guide.entry', TerminalGuide, 'sidebarTerminal'],
       ['sidebar.right.pane.tab', LazyTerminalBody, 'sidebarTerminal'],

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-20-running-draft-primary-send.md
 2026-08-20-running-draft-primary-send.md: 8b7ef4c9b45a5ec414ff22e443a71f8494b901d6
-2026-08-20-running-draft-primary-send.zh.md: e565b68d14cc6abcff3d6956da9ebd1dd4b6d200
+2026-08-20-running-draft-primary-send.ar.md: e565b68d14cc6abcff3d6956da9ebd1dd4b6d200

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-19-retire-subagent-mock-package.md: 9fce0d2f8ea20b4f31e2042acba4df34152e3201
-2026-07-19-retire-subagent-mock-package.zh.md: d82650c9e74f8fff1386185f0930762d21a7243f
+2026-07-19-retire-subagent-mock-package.ar.md: d82650c9e74f8fff1386185f0930762d21a7243f

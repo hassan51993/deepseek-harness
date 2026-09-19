@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-08-automatic-translation-pairing-merges.zh.md)
+English | [العربية](2026-08-08-automatic-translation-pairing-merges.ar.md)
 
 ## Problem
 
@@ -14,7 +14,7 @@ A bilingual consistency record contains the two owner files' exact blob hashes. 
 
 The installer loads the exact Node/tsx entrypoint before publishing worktree integration. Git invokes a checked-in shell launcher that does not require Node and repeats this probe before every driver execution. When the runtime or entrypoint is unavailable, the launcher materializes Git's ordinary three-way text result in the sidecar but returns a conflict even when that text merge is clean, so Git retains the unmerged index stages and never accepts unverified metadata.
 
-The driver parses the ancestor, current, and other records and loads the six owner blobs named by their hashes. It independently runs Git's default three-way text merge for the English and Chinese triplets, requires both merges to be clean, verifies language switchers and the pairing structural signature, stores the two merged blobs, and writes their hashes as the canonical record. This composes confirmations already present in both parents; it never records an ordinary one-sided documentation edit.
+The driver parses the ancestor, current, and other records and loads the six owner blobs named by their hashes. It independently runs Git's default three-way text merge for the English and Arabic triplets, requires both merges to be clean, verifies language switchers and the pairing structural signature, stores the two merged blobs, and writes their hashes as the canonical record. This composes confirmations already present in both parents; it never records an ordinary one-sided documentation edit.
 
 The driver fails with an ordinary unresolved sidecar when a record is malformed, an object is missing, an owner uses another merge strategy (including a non-text `merge.default` inherited by an otherwise unspecified path), either owner has content conflicts, or the merged pair violates structural checks. Add/delete and rename shapes remain manual because their path ownership is not the same three-record operation.
 

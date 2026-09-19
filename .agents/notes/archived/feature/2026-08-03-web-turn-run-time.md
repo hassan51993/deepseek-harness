@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-03-web-turn-run-time.zh.md)
+English | [العربية](2026-08-03-web-turn-run-time.ar.md)
 
 ## Problem
 

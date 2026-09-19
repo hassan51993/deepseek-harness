@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-22-product-first-root-readme.zh.md)
+English | [العربية](2026-07-22-product-first-root-readme.ar.md)
 
 ## Problem
 
@@ -15,7 +15,7 @@ The root README is a compact product and contributor entry point. It states the 
 
 Both launch paths start the Web UI through the `dsh` profile entry point. The source path builds the checkout before it runs `pnpm dsh web`. Detailed ACP, TUI, SDK, capability, and package guidance stays in the user guide, architecture documentation, and package map instead of being repeated on the landing page.
 
-The remaining sections link community support, contribution guidance, development documentation, agent instructions, the license, and third-party notices. The English and Chinese README sides keep the same technical structure while their community links serve their language audiences. The documentation website keeps a separate [quick-start entry route](../../../../docs/user/index.md).
+The remaining sections link community support, contribution guidance, development documentation, agent instructions, the license, and third-party notices. The English and Arabic README sides keep the same technical structure while their community links serve their language audiences. The documentation website keeps a separate [quick-start entry route](../../../../docs/user/index.md).
 
 ## Alternatives considered
 

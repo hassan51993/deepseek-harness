@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-30-team-send-message-steer.md
 2026-08-30-team-send-message-steer.md: f313a6fb11e4e32ff63944e961c615972807a820
-2026-08-30-team-send-message-steer.zh.md: fd5f7f3b9641048b1d1a113e5e82bef5e0fdf845
+2026-08-30-team-send-message-steer.ar.md: fd5f7f3b9641048b1d1a113e5e82bef5e0fdf845

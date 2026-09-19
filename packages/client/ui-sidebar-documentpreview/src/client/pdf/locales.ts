@@ -1,5 +1,5 @@
 /** Copy owned by the PDF renderer. */
-export const zh = {
+export const ar = {
   title: 'PDF',
   pageImage: 'PDF رقم {page} صفحة',
   loading: 'صحيح في قراءة…',
@@ -12,7 +12,7 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** PDF translation keys shared by both dictionaries. */
-export type PdfLocaleKey = keyof typeof zh
+export type PdfLocaleKey = keyof typeof ar
 
 /** English PDF-renderer dictionary. */
 export const en = {

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-05-base-default-file-editor.md
 2026-09-05-base-default-file-editor.md: e1e15718962322ba8c79107fda31446448b87056
-2026-09-05-base-default-file-editor.zh.md: d43df3313ecaeff8b2123208620779df2048b818
+2026-09-05-base-default-file-editor.ar.md: d43df3313ecaeff8b2123208620779df2048b818

@@ -1,8 +1,8 @@
 /** Locale namespace owned by Session export browser feedback. */
 export const NS = 'session-log-download'
 
-/** Simplified-Chinese Session export strings. */
-export const zh = {
+/** Arabic Session export strings. */
+export const ar = {
   'header.more': 'أكثر كثير عملية',
   'menu.download': 'تحت تحميل Session سجل',
   'dialog.preparingTitle': 'صحيح في توجيه خروج Session',
@@ -15,7 +15,7 @@ export const zh = {
 } as const
 
 /** English Session export strings. */
-export const en: Record<keyof typeof zh, string> = {
+export const en: Record<keyof typeof ar, string> = {
   'header.more': 'More actions',
   'menu.download': 'Download session log',
   'dialog.preparingTitle': 'Exporting Session',
@@ -28,4 +28,4 @@ export const en: Record<keyof typeof zh, string> = {
 }
 
 /** Stable locale keys consumed by the shared modal. */
-export type SessionLogDownloadKey = keyof typeof zh
+export type SessionLogDownloadKey = keyof typeof ar

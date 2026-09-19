@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-09-02-protocol-specific-model-listing-discovery.md
 2026-09-02-protocol-specific-model-listing-discovery.md: 8f7d79c8eba6cc8808bb010a050a1d983986bc43
-2026-09-02-protocol-specific-model-listing-discovery.zh.md: 2bc4d77ae1a50843812a2ce42a02090582f4a017
+2026-09-02-protocol-specific-model-listing-discovery.ar.md: 2bc4d77ae1a50843812a2ce42a02090582f4a017

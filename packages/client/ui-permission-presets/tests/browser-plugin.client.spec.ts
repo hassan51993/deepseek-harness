@@ -27,7 +27,7 @@ import {
 import { PermissionSelect } from '../src/client/PermissionSelect.tsx'
 import type { PermissionSelectInjected } from '../src/client/PermissionSelect.tsx'
 import { apply, inject } from '../src/client/index.ts'
-import { accessEn, accessZh } from '../src/client/locales.ts'
+import { accessEn, accessAr } from '../src/client/locales.ts'
 
 const sid = (k: string): SessionId => k as SessionId
 
@@ -222,12 +222,12 @@ describe('ui-permission browser plugin', () => {
         confirmLabel: 'Enable Auto review',
       },
     })
-    b.locale.setLocale('zh')
+    b.locale.setLocale('ar')
     const localized = await b.popup().options(proj, new AbortController().signal)
     expect(localized.map(option => option.label)).toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review'])
     expect(localized.find(option => option.id === 'danger-full-access')?.confirmation).toEqual({
       title: 'تأكيد تفعيل تماما إذن؟',
-      description: accessZh['confirm.description'],
+      description: accessAr['confirm.description'],
       acknowledgeLabel: 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
       cancelLabel: 'إلغاء',
       confirmLabel: 'تفعيل تماما إذن',
@@ -303,7 +303,7 @@ describe('ui-permission browser plugin', () => {
 
   it('localizes the Auto description instead of displaying host English copy', async () => {
     const b = await bench()
-    b.ctx.locale.setLocale('zh')
+    b.ctx.locale.setLocale('ar')
     const proj = { sessionId: sid('s1') }
     b.values.set(sid('s1'), { currentValue: 'workspace-write' })
     const options = await b.popup().options(proj, new AbortController().signal)

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-24-single-harness-home-resolver.zh.md)
+English | [العربية](2026-07-24-single-harness-home-resolver.ar.md)
 
 ## Problem
 

@@ -22,15 +22,15 @@ import { LocaleRuntime } from '@deepseek-ai/dsh-client-locale/client'
 import { apply, inject } from '@deepseek-ai/dsh-client-ui-workspace/client'
 
 // The service reads its initial locale from the browser; these specs assert
-// the shipped Chinese copy, so they state the browser they assume.
-usePinnedBrowserLanguages('zh-CN')
+// the shipped Arabic copy, so they state the browser they assume.
+usePinnedBrowserLanguages('ar-SA')
 
 const SID = 's1' as SessionId
 
 afterEach(cleanup)
 beforeEach(() => { localStorage.clear() })
 
-/** Runtime with the locale face installed (the browser entry declares `locale:` — zh default backs the t seat). */
+/** Runtime with the locale face installed (the browser entry declares `locale:` — ar default backs the t seat). */
 async function createRuntime(): Promise<SlotTestRuntime> {
   const runtime = await SlotTestRuntime.create()
   runtime.ctx.provide('layout', { selectPanel: vi.fn() })

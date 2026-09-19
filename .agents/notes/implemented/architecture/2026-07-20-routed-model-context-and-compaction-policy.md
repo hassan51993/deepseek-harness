@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-20-routed-model-context-and-compaction-policy.zh.md)
+English | [العربية](2026-07-20-routed-model-context-and-compaction-policy.ar.md)
 
 ## Problem
 

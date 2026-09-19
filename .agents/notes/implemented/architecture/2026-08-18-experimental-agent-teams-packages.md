@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-18-experimental-agent-teams-packages.zh.md)
+English | [العربية](2026-08-18-experimental-agent-teams-packages.ar.md)
 
 ## Problem
 

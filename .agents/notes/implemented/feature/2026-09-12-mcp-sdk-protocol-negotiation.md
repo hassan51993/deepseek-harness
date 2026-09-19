@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-mcp-sdk-protocol-negotiation.zh.md)
+English | [العربية](2026-09-12-mcp-sdk-protocol-negotiation.ar.md)
 
 ## Problem
 

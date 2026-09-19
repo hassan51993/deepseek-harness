@@ -1,7 +1,7 @@
 /** `goal` namespace dictionaries. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'phase.active': 'إجراء في هدف',
   'phase.active.disarmed': 'لم تشغيل هدف',
   'phase.paused': 'قد مؤقت توقف هدف',
@@ -17,9 +17,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The goal namespace key union. */
-export type GoalKey = keyof typeof zh
+export type GoalKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'phase.active': 'Ongoing Goal',
   'phase.active.disarmed': 'Inactive Goal',

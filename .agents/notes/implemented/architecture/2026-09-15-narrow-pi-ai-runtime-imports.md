@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-narrow-pi-ai-runtime-imports.zh.md)
+English | [العربية](2026-09-15-narrow-pi-ai-runtime-imports.ar.md)
 
 ## Problem
 

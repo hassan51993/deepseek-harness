@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-11-plugin-owned-message-projections.md
 2026-09-11-plugin-owned-message-projections.md: 9e1eca92567fc035d48c1c42ad86d371f2542c5b
-2026-09-11-plugin-owned-message-projections.zh.md: b26b5d4549294b37665ac933944b7f51ef7a5717
+2026-09-11-plugin-owned-message-projections.ar.md: b26b5d4549294b37665ac933944b7f51ef7a5717

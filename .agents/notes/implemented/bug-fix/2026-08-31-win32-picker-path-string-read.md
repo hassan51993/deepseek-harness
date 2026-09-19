@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-31-win32-picker-path-string-read.zh.md)
+English | [العربية](2026-08-31-win32-picker-path-string-read.ar.md)
 
 ## Problem
 

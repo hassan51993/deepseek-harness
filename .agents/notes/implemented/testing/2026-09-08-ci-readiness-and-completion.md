@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-ci-readiness-and-completion.zh.md)
+English | [العربية](2026-09-08-ci-readiness-and-completion.ar.md)
 
 ## Problem
 

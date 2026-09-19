@@ -1,7 +1,7 @@
 /** `feedback` namespace dictionaries. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'action.like': 'جيد عودة جواب',
   'action.likeActive': 'إلغاء علامة',
   'action.dislike': 'لديه مشكلة عودة جواب',
@@ -25,7 +25,7 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The feedback namespace key union. */
-export type MessageFeedbackKey = keyof typeof zh
+export type MessageFeedbackKey = keyof typeof ar
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
@@ -34,7 +34,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   }
 }
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'action.like': 'Good response',
   'action.likeActive': 'Remove rating',

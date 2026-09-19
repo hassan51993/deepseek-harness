@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-20-generated-cordis-core-api.md: b6a66e518744354771f25d44d662e2655fa7c758
-2026-07-20-generated-cordis-core-api.zh.md: 82dbb308386b7adc678c6e4bf8ef3f06c3b2df77
+2026-07-20-generated-cordis-core-api.ar.md: 82dbb308386b7adc678c6e4bf8ef3f06c3b2df77

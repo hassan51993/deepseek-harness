@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-patch-plugin-file-urls.zh.md)
+English | [العربية](2026-09-05-patch-plugin-file-urls.ar.md)
 
 ## Problem
 

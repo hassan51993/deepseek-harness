@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-04-claude-code-and-codex-subagent-backends.zh.md)
+English | [العربية](2026-08-04-claude-code-and-codex-subagent-backends.ar.md)
 
 ## Problem
 

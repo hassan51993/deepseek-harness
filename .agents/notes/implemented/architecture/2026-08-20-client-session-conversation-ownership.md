@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-20-client-session-conversation-ownership.zh.md)
+English | [العربية](2026-08-20-client-session-conversation-ownership.ar.md)
 
 ## Problem
 

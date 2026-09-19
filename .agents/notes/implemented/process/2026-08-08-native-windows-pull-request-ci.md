@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-08-native-windows-pull-request-ci.zh.md)
+English | [العربية](2026-08-08-native-windows-pull-request-ci.ar.md)
 
 ## Problem
 

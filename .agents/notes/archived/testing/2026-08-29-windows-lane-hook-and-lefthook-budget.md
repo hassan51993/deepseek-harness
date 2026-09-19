@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-29-windows-lane-hook-and-lefthook-budget.zh.md)
+English | [العربية](2026-08-29-windows-lane-hook-and-lefthook-budget.ar.md)
 
 ## Problem
 

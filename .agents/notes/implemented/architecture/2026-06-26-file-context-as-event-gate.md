@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-26-file-context-as-event-gate.zh.md)
+English | [العربية](2026-06-26-file-context-as-event-gate.ar.md)
 
 ## Problem
 

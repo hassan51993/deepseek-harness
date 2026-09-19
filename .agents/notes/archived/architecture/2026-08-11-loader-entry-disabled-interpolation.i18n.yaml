@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-11-loader-entry-disabled-interpolation.md
 2026-08-11-loader-entry-disabled-interpolation.md: 4a7a2690ce2a9a6e042a969420b5b13dcccd04f1
-2026-08-11-loader-entry-disabled-interpolation.zh.md: 01949fa1d40bfb25f1cb022e697fec064bf132e3
+2026-08-11-loader-entry-disabled-interpolation.ar.md: 01949fa1d40bfb25f1cb022e697fec064bf132e3

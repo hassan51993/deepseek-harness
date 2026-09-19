@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-28-remove-synthetic-log-only-turns.zh.md)
+English | [العربية](2026-07-28-remove-synthetic-log-only-turns.ar.md)
 
 ## Problem
 

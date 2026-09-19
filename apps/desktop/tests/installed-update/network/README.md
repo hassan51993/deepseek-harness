@@ -4,7 +4,7 @@ description: "Operator-owned Windows network fault and recovery for one verified
 
 # Test-application network fault
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

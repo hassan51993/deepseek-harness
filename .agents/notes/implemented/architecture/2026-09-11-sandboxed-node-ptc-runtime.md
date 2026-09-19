@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-11-sandboxed-node-ptc-runtime.zh.md)
+English | [العربية](2026-09-11-sandboxed-node-ptc-runtime.ar.md)
 
 ## Problem
 

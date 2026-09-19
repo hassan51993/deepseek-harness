@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-18-compaction-capability-seam.zh.md)
+English | [العربية](2026-06-18-compaction-capability-seam.ar.md)
 
 ## Problem
 

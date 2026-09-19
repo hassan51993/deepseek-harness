@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-30-source-checkout-workdir-distinction.md
 2026-07-30-source-checkout-workdir-distinction.md: a6ebd1edac794cafc318e7961263106f162361d3
-2026-07-30-source-checkout-workdir-distinction.zh.md: 570f950223688eef251dd6be95e71f7bebe5d453
+2026-07-30-source-checkout-workdir-distinction.ar.md: 570f950223688eef251dd6be95e71f7bebe5d453

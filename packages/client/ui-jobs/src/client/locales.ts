@@ -3,8 +3,8 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'job'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'count.live.one': '{count} عدد خلفية مهمة تشغيل في',
   'count.live.other': '{count} عدد خلفية مهمة تشغيل في',
   'count.idle.one': '{count} عدد خلفية مهمة',
@@ -22,7 +22,7 @@ export const zh = {
   'duration.title.done': 'استهلاك وقت {duration}',
 } as const
 
-/** English dictionary, key-identical to the Chinese source of truth. */
+/** English dictionary, key-identical to the Arabic source of truth. */
 export const en: Record<JobKey, string> = {
   'count.live.one': '{count} background job running',
   'count.live.other': '{count} background jobs running',
@@ -41,5 +41,5 @@ export const en: Record<JobKey, string> = {
   'duration.title.done': 'Took {duration}',
 }
 
-/** Key domain of the `job` namespace (zh is the source of truth). */
-export type JobKey = keyof typeof zh
+/** Key domain of the `job` namespace (ar is the source of truth). */
+export type JobKey = keyof typeof ar

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-05-reconstructable-requests.zh.md)
+English | [العربية](2026-07-05-reconstructable-requests.ar.md)
 
 ## Problem
 

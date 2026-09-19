@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-07-04-trim-acp-bridge-unreachable-surface.md: 2b0e6bba085f30959cd3c33362cd369ca7aec422
-2026-07-04-trim-acp-bridge-unreachable-surface.zh.md: ab924775588e61841f835bfe73ccae6d9886fd2a
+2026-07-04-trim-acp-bridge-unreachable-surface.ar.md: ab924775588e61841f835bfe73ccae6d9886fd2a

@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-06-11-mutation-testing.zh.md)
+English | [العربية](2026-06-11-mutation-testing.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-16-harness-level-loop.zh.md)
+English | [العربية](2026-07-16-harness-level-loop.ar.md)
 
 ## Problem
 

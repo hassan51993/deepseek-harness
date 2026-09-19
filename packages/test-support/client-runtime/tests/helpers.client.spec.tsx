@@ -25,7 +25,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   }
 }
 
-usePinnedBrowserLanguages('zh-CN', 'en-US')
+usePinnedBrowserLanguages('ar-SA', 'en-US')
 afterEach(cleanup)
 afterAll(() => {
   expect(navigator.languages).toEqual(originalLanguages)
@@ -130,8 +130,8 @@ describe('fixture helpers', () => {
   })
 
   it('pins both browser language fields for the calling suite', () => {
-    expect(navigator.languages).toEqual(['zh-CN', 'en-US'])
-    expect(navigator.language).toBe('zh-CN')
+    expect(navigator.languages).toEqual(['ar-SA', 'en-US'])
+    expect(navigator.language).toBe('ar-SA')
   })
 })
 

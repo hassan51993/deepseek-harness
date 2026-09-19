@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-plugin-configuration-on-the-plugins-page.zh.md)
+English | [العربية](2026-09-16-plugin-configuration-on-the-plugins-page.ar.md)
 
 ## Problem
 

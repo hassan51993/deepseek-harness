@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-07-24-configurable-tui-prompt-theme.zh.md)
+English | [العربية](2026-07-24-configurable-tui-prompt-theme.ar.md)
 
 ## Problem
 

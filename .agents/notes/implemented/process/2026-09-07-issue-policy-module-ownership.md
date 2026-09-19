@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-issue-policy-module-ownership.zh.md)
+English | [العربية](2026-09-07-issue-policy-module-ownership.ar.md)
 
 ## Problem
 

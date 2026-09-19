@@ -1,6 +1,6 @@
 # Translation rules
 
-English | [العربية](translation-rules.zh.md)
+English | [العربية](translation-rules.ar.md)
 
 How to translate between the two sides of a documentation pair in this repo. Both languages carry equal authority ([README.md](README.md)): a change is authored in either language, and that side is the source for that update — these rules govern producing or updating the counterpart. They bind humans and agents equally. Routine agent work translates the changed content directly in one terminology-guided pass; the extended [.agents/skills/dsh-translate-docs](../../.agents/skills/dsh-translate-docs/SKILL.md) workflow runs only when the user explicitly invokes it. Rule levels follow RFC 2119 usage: **MUST** / **MUST NOT** are gate- or review-blocking; **SHOULD** needs a stated reason to deviate; **MAY** is discretionary.
 
@@ -28,23 +28,23 @@ The pairing gate checks heading depths, fenced code blocks, table row and column
 - tables (same columns, same row order; header cells translated per terminology),
 - fenced code blocks — **byte-identical, including comments**; the pairing signature compares their info strings and contents, and ` ```ts ` blocks compile under `doc-typecheck`,
 - inline code spans (commands, flags, config keys, file paths, event names, API names, version numbers) — verbatim, never translated or reformatted,
-- links and anchors: every relative document link MUST keep the same semantic target and exact query/fragment suffix. When the target belongs to the active bilingual corpus, the English side uses its `.md` path and the Chinese side uses its `.zh.md` path; a missing counterpart in that corpus is an error, while targets outside it keep the original path. External URLs, images, and pure in-page fragments stay unchanged. The language switcher remains the explicit cross-locale exception, and a README rendered outside GitHub MAY use the canonical public repository URL to its exact counterpart as documented in [README.md](README.md). Link TEXT is translated.
+- links and anchors: every relative document link MUST keep the same semantic target and exact query/fragment suffix. When the target belongs to the active bilingual corpus, the English side uses its `.md` path and the Arabic side uses its `.ar.md` path; a missing counterpart in that corpus is an error, while targets outside it keep the original path. External URLs, images, and pure in-page fragments stay unchanged. The language switcher remains the explicit cross-locale exception, and a README rendered outside GitHub MAY use the canonical public repository URL to its exact counterpart as documented in [README.md](README.md). Link TEXT is translated.
 
-The repo's Markdown conventions apply to `.zh.md` files unchanged: one physical line per paragraph (`verify-md-wrap`), resolving relative links (`verify-md-links`), exactly one trailing newline.
+The repo's Markdown conventions apply to `.ar.md` files unchanged: one physical line per paragraph (`verify-md-wrap`), resolving relative links (`verify-md-links`), exactly one trailing newline.
 
 ## Terminology
 
-- [terminology.md](terminology.md) is the source of truth in both directions. Before translating, load it; every listed term MUST follow its row and its "لا يلزم ترجمة عمل" prohibitions. A Chinese target uses the "العربية" column and its "أول مرة ظهور" annotation; an English target uses the "English" column without adding a Chinese gloss.
-- For a Chinese target, an unlisted technical term MAY use an established rendering from a major Chinese-language OSS or vendor source (K8s/Vue/MDN Chinese docs, دقيق لين بسيط في ريح إطار إشارة جنوب, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «انتظار تحديد فن لغة»(pending terms) with a suggested rendering.
+- [terminology.md](terminology.md) is the source of truth in both directions. Before translating, load it; every listed term MUST follow its row and its "لا يلزم ترجمة عمل" prohibitions. A Chinese target uses the "العربية" column and its "أول مرة ظهور" annotation; an English target uses the "English" column without adding a Arabic gloss.
+- For a Chinese target, an unlisted technical term MAY use an established rendering from a major Arabic-language OSS or vendor source (K8s/Vue/MDN Chinese docs, دقيق لين بسيط في ريح إطار إشارة جنوب, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «انتظار تحديد فن لغة»(pending terms) with a suggested rendering.
 - For an English target, use the established English technical term. If the source term has no unambiguous established equivalent, preserve it with a short explanatory gloss and list it under pending terms. Neither direction may invent a rendering inline; a decided term enters [terminology.md](terminology.md) in the same PR or a follow-up.
 
 ## Typography
 
-These rules govern the Chinese side; the English side follows the repo's normal Markdown conventions (root `AGENTS.md`). The mixed-script rules below follow the cross-project consensus of the [MDN Simplified Chinese translation guide](https://github.com/mdn/translated-content/blob/main/docs/zh-cn/translation-guide.md), the [Kubernetes zh-cn localization guide](https://kubernetes.io/zh-cn/docs/contribute/localization_zh/), the [Vue.js Chinese translation conventions](https://github.com/vuejs-translations/docs-zh-cn/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5), and [العربية نص سجل ترتيب إصدار إشارة شمال](https://github.com/sparanoid/chinese-copywriting-guidelines), which in turn ground in [W3C clreq](https://www.w3.org/TR/clreq/) and GB/T 15834—2011:
+These rules govern the Arabic side; the English side follows the repo's normal Markdown conventions (root `AGENTS.md`). The mixed-script rules below follow the cross-project consensus of the [MDN Arabic translation guide](https://github.com/mdn/translated-content/blob/main/docs/ar-sa/translation-guide.md), the [Kubernetes ar-sa localization guide](https://kubernetes.io/ar-sa/docs/contribute/localization_zh/), the [Vue.js Arabic translation conventions](https://github.com/vuejs-translations/docs-ar-sa/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5), and [العربية نص سجل ترتيب إصدار إشارة شمال](https://github.com/sparanoid/chinese-copywriting-guidelines), which in turn ground in [W3C clreq](https://www.w3.org/TR/clreq/) and GB/T 15834—2011:
 
 - MUST put one half-width space between Chinese text and Latin words, and between Chinese text and numerals: `كل plugin تسجيل 3 عدد tool`.No space between a full-width punctuation mark and anything.
-- MUST use full-width (Chinese) punctuation in Chinese prose: `،.: ؛؟!()«»`. Half-width punctuation stays inside code spans, inside complete English sentences quoted as-is, and in numbers (`3.5`, `1,024`).
-- Chinese prose *SHOULD* prefer colons, periods, commas, or parentheses over em dashes. Keep an em dash only when no other punctuation preserves the sentence naturally.
+- MUST use full-width (Chinese) punctuation in Arabic prose: `،.: ؛؟!()«»`. Half-width punctuation stays inside code spans, inside complete English sentences quoted as-is, and in numbers (`3.5`, `1,024`).
+- Arabic prose *SHOULD* prefer colons, periods, commas, or parentheses over em dashes. Keep an em dash only when no other punctuation preserves the sentence naturally.
 - Enumeration commas: a Chinese list of parallel items uses توقف رقم (،), not commas.
 - MUST NOT use full-width digits or full-width Latin letters — `123` never, `123` always.
 - Proper nouns keep their canonical casing: GitHub, TypeScript, DeepSeek — never `github`/`Github` unless quoting code.
@@ -61,9 +61,9 @@ These rules govern the Chinese side; the English side follows the repo's normal 
 Authorities cited by these rules, for humans and agents who want the underlying reasoning:
 
 - [العربية نص سجل ترتيب إصدار إشارة شمال](https://github.com/sparanoid/chinese-copywriting-guidelines) — the de-facto community standard for mixed CJK/Latin spacing and punctuation.
-- [MDN zh-CN translation guide](https://github.com/mdn/translated-content/blob/main/docs/zh-cn/translation-guide.md) — an in-repo translation-rules file of the same shape as this one; spacing, punctuation, and glossary practice.
-- [Kubernetes zh-cn localization guide](https://kubernetes.io/zh-cn/docs/contribute/localization_zh/) — terminology-first-occurrence and punctuation practice from the largest zh localization team.
-- [Vue.js docs-zh-cn قلب ترجمة يجب معرفة](https://github.com/vuejs-translations/docs-zh-cn/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5) — per-term translate/keep decisions and tone.
-- [zh-style-guide](https://zh-style-guide.readthedocs.io) — a community Chinese technical-writing style guide whose rule-level taxonomy (and RFC 2119 keyword levels) this file borrows; aggregates GB/T 15834/15835, clreq, and vendor guides.
-- [W3C clreq](https://www.w3.org/TR/clreq/) and the [Microsoft Simplified Chinese style guide](https://learn.microsoft.com/en-us/globalization/reference/microsoft-style-guides) — the formal typographic and vendor-localization baselines.
+- [MDN ar-SA translation guide](https://github.com/mdn/translated-content/blob/main/docs/ar-sa/translation-guide.md) — an in-repo translation-rules file of the same shape as this one; spacing, punctuation, and glossary practice.
+- [Kubernetes ar-sa localization guide](https://kubernetes.io/ar-sa/docs/contribute/localization_zh/) — terminology-first-occurrence and punctuation practice from the largest ar localization team.
+- [Vue.js docs-ar-sa قلب ترجمة يجب معرفة](https://github.com/vuejs-translations/docs-ar-sa/wiki/%E7%BF%BB%E8%AF%91%E9%A1%BB%E7%9F%A5) — per-term translate/keep decisions and tone.
+- [ar-style-guide](https://ar-style-guide.readthedocs.io) — a community Chinese technical-writing style guide whose rule-level taxonomy (and RFC 2119 keyword levels) this file borrows; aggregates GB/T 15834/15835, clreq, and vendor guides.
+- [W3C clreq](https://www.w3.org/TR/clreq/) and the [Microsoft Arabic style guide](https://learn.microsoft.com/en-us/globalization/reference/microsoft-style-guides) — the formal typographic and vendor-localization baselines.
 - GB/T 19682-2005«قلب ترجمة خدمة ترجمة نص جودة كمية اشتراط» — the national standard whose three base requirements (وفي فعلي أصل نص، فن لغة موحد واحد، سطر نص عبر ترتيب) this file's Faithfulness and Terminology sections operationalize.

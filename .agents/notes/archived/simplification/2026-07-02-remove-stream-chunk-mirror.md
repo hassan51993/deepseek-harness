@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [العربية](2026-07-02-remove-stream-chunk-mirror.zh.md)
+English | [العربية](2026-07-02-remove-stream-chunk-mirror.ar.md)
 
 ## Problem
 

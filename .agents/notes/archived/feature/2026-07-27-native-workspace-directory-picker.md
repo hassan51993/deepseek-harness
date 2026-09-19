@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-27-native-workspace-directory-picker.zh.md)
+English | [العربية](2026-07-27-native-workspace-directory-picker.ar.md)
 
 ## Problem
 

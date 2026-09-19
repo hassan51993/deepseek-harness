@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-user-bubbles-drop-the-branch-action.zh.md)
+English | [العربية](2026-08-06-user-bubbles-drop-the-branch-action.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-06-11-custom-schema-dsl.zh.md)
+English | [العربية](2026-06-11-custom-schema-dsl.ar.md)
 
 ## Problem
 

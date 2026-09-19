@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-08-12-documentation-site-navigation-and-chrome.md: f33f017d54bcbb3583f37be27dcd6c69952bc66a
-2026-08-12-documentation-site-navigation-and-chrome.zh.md: 7f3ff5c829c561167d8e2475cd1c2adf050975be
+2026-08-12-documentation-site-navigation-and-chrome.ar.md: 7f3ff5c829c561167d8e2475cd1c2adf050975be

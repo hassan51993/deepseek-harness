@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-16-movable-mandatory-update-window.md
 2026-09-16-movable-mandatory-update-window.md: 4695074429b76b467e6ec90201632dbb5a007e68
-2026-09-16-movable-mandatory-update-window.zh.md: 3b416c53dc02abce1276bb70a13bb45b4c1afa44
+2026-09-16-movable-mandatory-update-window.ar.md: 3b416c53dc02abce1276bb70a13bb45b4c1afa44

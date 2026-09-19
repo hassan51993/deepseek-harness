@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-07-08-interactive-side-sessions.zh.md)
+English | [العربية](2026-07-08-interactive-side-sessions.ar.md)
 
 ## Problem
 

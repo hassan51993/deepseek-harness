@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-07-27-session-projection-and-command-log.zh.md)
+English | [العربية](2026-07-27-session-projection-and-command-log.ar.md)
 
 ## Problem
 

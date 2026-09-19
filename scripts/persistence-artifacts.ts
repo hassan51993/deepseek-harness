@@ -26,28 +26,28 @@ export interface PersistenceArtifact {
  * @param root - checkout root used to resolve relative link identities.
  * @param source - repository-relative English document path.
  * @param en - complete authored or generated English Markdown.
- * @param zh - complete authored or generated Chinese Markdown.
+ * @param ar - complete authored or generated Chinese Markdown.
  * @returns the documents and their matching consistency sidecar, without writing files.
  */
-export function renderPersistencePair(root: string, source: string, en: string, zh: string): PersistenceArtifact[] {
+export function renderPersistencePair(root: string, source: string, en: string, ar: string): PersistenceArtifact[] {
   const paths = translationPairPaths(source)
   const sourceTree = parseTranslationMarkdown(en)
-  const zhTree = parseTranslationMarkdown(zh)
+  const arTree = parseTranslationMarkdown(ar)
   const sourceTargets = languageSwitcherTargets(paths.source)
-  const zhTargets = languageSwitcherTargets(paths.zh)
-  if (!hasLanguageSwitcher(zhTree, zh, sourceTargets)
-    || requiresSourceLanguageSwitcher(source) && !hasLanguageSwitcher(sourceTree, en, zhTargets)) {
+  const arTargets = languageSwitcherTargets(paths.ar)
+  if (!hasLanguageSwitcher(arTree, ar, sourceTargets)
+    || requiresSourceLanguageSwitcher(source) && !hasLanguageSwitcher(sourceTree, en, arTargets)) {
     throw new Error(`${source}: both authored languages need their counterpart switcher`)
   }
   const context = { repoRoot: root, isTranslationPairSource, repositoryFileExists: () => true }
   const errors = translationStructureDiff(
-    translationStructureSignature(sourceTree, zhTargets, { ...context, sourcePath: paths.source, markdown: en }),
-    translationStructureSignature(zhTree, sourceTargets, { ...context, sourcePath: paths.zh, markdown: zh }),
+    translationStructureSignature(sourceTree, arTargets, { ...context, sourcePath: paths.source, markdown: en }),
+    translationStructureSignature(arTree, sourceTargets, { ...context, sourcePath: paths.ar, markdown: ar }),
   )
   if (errors.length > 0) throw new Error(`${source}: bilingual structure mismatch: ${errors.join('; ')}`)
   return [
     { path: paths.source, content: en },
-    { path: paths.zh, content: zh },
-    { path: paths.meta, content: renderPairMeta(paths.source, blobHash(Buffer.from(en)), paths.zh, blobHash(Buffer.from(zh))) },
+    { path: paths.ar, content: ar },
+    { path: paths.meta, content: renderPairMeta(paths.source, blobHash(Buffer.from(en)), paths.ar, blobHash(Buffer.from(ar))) },
   ]
 }

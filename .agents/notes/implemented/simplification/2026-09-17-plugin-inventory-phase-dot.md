@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-17-plugin-inventory-phase-dot.zh.md)
+English | [العربية](2026-09-17-plugin-inventory-phase-dot.ar.md)
 
 ## Problem
 

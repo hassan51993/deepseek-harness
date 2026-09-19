@@ -11,8 +11,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
-import { zh } from '../src/client/locales.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
+import { ar } from '../src/client/locales.ts'
 import type {
   InputTriggerCrumb, MenuState, TriggerHit,
 } from '@deepseek-ai/dsh-client-ui-input-trigger/client'
@@ -54,10 +54,10 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-// The framework-injected t seat, stubbed over the zh dictionaries (the
+// The framework-injected t seat, stubbed over the ar dictionaries (the
 // default locale); the stub mirrors the LocaleRuntime key fallback, so an
 // unknown source comes back verbatim (its raw name).
-const t = makeTranslate(zh, commonZh)
+const t = makeTranslate(ar, commonAr)
 
 function mount(state: MenuState, crumbs: ReadonlyMap<string, readonly InputTriggerCrumb[]> = new Map()) {
   const menu = createSnapshotStore<MenuState>(state)

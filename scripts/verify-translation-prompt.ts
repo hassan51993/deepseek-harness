@@ -28,11 +28,11 @@ try {
   // churn the prompt snapshot. Each pair mirrors the other side's structure and uses
   // terminology-table forms.
   const examplePaths = [
-    ['scripts/fixtures/translation-prompt/examples/product.md', 'scripts/fixtures/translation-prompt/examples/product.zh.md'],
-    ['scripts/fixtures/translation-prompt/examples/rules.md', 'scripts/fixtures/translation-prompt/examples/rules.zh.md'],
+    ['scripts/fixtures/translation-prompt/examples/product.md', 'scripts/fixtures/translation-prompt/examples/product.ar.md'],
+    ['scripts/fixtures/translation-prompt/examples/rules.md', 'scripts/fixtures/translation-prompt/examples/rules.ar.md'],
     [
       'scripts/fixtures/translation-prompt/examples/agent-note.md',
-      'scripts/fixtures/translation-prompt/examples/agent-note.zh.md',
+      'scripts/fixtures/translation-prompt/examples/agent-note.ar.md',
     ],
   ] as const
   const examples: TranslationExample[] = examplePaths.map(([english, chinese]) => ({
@@ -50,12 +50,12 @@ try {
   const englishSource = renderTranslationPrompt(document, englishInput)
   const chineseSource = renderTranslationPrompt(document, {
     sourceLanguage: 'Chinese',
-    sourceFilename: 'snapshot-note.zh.md',
+    sourceFilename: 'snapshot-note.ar.md',
     terminology,
   })
   if (englishSource.includes('{{') || chineseSource.includes('{{')) throw new Error('rendered prompt contains an unresolved placeholder')
   if (!englishSource.includes('from English to Chinese')) throw new Error('English-source render does not translate into Chinese')
-  if (!chineseSource.includes('from Chinese to English')) throw new Error('Chinese-source render does not translate into English')
+  if (!chineseSource.includes('from Arabic to English')) throw new Error('Arabic-source render does not translate into English')
 
   const example = /```xml\n([\s\S]*?)\n```/.exec(englishSource)?.[1]
   if (example === undefined) throw new Error('rendered prompt has no three-section response example')
@@ -66,7 +66,7 @@ try {
   if (JSON.stringify(parsed) !== JSON.stringify(roundTrip)) throw new Error('three-section response does not round-trip')
 
   const request = renderTranslationRequest(document, { ...englishInput, sourceDocument, examples })
-  if (request.targetFilename !== 'snapshot-note.zh.md') throw new Error('English request resolves the wrong target filename')
+  if (request.targetFilename !== 'snapshot-note.ar.md') throw new Error('English request resolves the wrong target filename')
   const expectedRoles = ['system', ...examples.flatMap(() => ['user', 'assistant']), 'user']
   if (request.messages.map(message => message.role).join('\n') !== expectedRoles.join('\n')) {
     throw new Error('reviewed examples are not assembled as system, example pairs, then source')

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-desktop-cos-upload-transport.zh.md)
+English | [العربية](2026-09-16-desktop-cos-upload-transport.ar.md)
 
 ## Problem
 

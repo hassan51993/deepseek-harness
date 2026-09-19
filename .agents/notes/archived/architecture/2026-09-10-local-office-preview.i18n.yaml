@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-10-local-office-preview.md
 2026-09-10-local-office-preview.md: ea32e37f0b2dcba866b78947c785dcee8e475b29
-2026-09-10-local-office-preview.zh.md: a1ac8337a1cf22f5842485c0790c6554635dc125
+2026-09-10-local-office-preview.ar.md: a1ac8337a1cf22f5842485c0790c6554635dc125

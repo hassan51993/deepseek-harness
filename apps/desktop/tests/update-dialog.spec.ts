@@ -42,7 +42,7 @@ afterEach(() => {
 
 function setup() {
   const parent = new fixture.FakeWindow({})
-  dialogs = new DesktopUpdateDialog('preload-update-dialog.cjs', resolveDesktopLocale('zh-CN'))
+  dialogs = new DesktopUpdateDialog('preload-update-dialog.cjs', resolveDesktopLocale('ar-SA'))
   const show = (signal?: AbortSignal) => dialogs!.show(parent as unknown as BrowserWindow, {
     message: 'تحت تحميل إتمام', buttons: ['تثبيت و إعادة بدء'], cancelId: 1, ...(signal === undefined ? {} : { signal }),
   })

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-deepseek-image-token-calculator-v41.zh.md)
+English | [العربية](2026-09-10-deepseek-image-token-calculator-v41.ar.md)
 
 ## Problem
 

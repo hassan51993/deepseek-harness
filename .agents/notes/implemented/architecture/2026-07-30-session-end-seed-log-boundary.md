@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-30-session-end-seed-log-boundary.zh.md)
+English | [العربية](2026-07-30-session-end-seed-log-boundary.ar.md)
 
 ## Problem
 

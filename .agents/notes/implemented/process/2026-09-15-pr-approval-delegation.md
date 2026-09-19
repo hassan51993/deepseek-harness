@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-pr-approval-delegation.zh.md)
+English | [العربية](2026-09-15-pr-approval-delegation.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-06-environment-prompt-suffix.zh.md)
+English | [العربية](2026-09-06-environment-prompt-suffix.ar.md)
 
 ## Problem
 

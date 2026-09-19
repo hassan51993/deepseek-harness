@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-28-web-conversation-polish-sweep.md
 2026-07-28-web-conversation-polish-sweep.md: 338b687c041c585c1d490fdad9b8bbcf88fc3912
-2026-07-28-web-conversation-polish-sweep.zh.md: 166662070b67837b9f4755e6457578f74af771ed
+2026-07-28-web-conversation-polish-sweep.ar.md: 166662070b67837b9f4755e6457578f74af771ed

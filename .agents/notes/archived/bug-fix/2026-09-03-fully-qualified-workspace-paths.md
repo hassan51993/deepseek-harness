@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-09-03-fully-qualified-workspace-paths.zh.md)
+English | [العربية](2026-09-03-fully-qualified-workspace-paths.ar.md)
 
 ## Problem
 

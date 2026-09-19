@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-subagent-in-process-driver
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/client/ui-input-trigger/README.md
 README.md: 10c0f8df7b2cc0698ba7e10f695da09c1fa72a33
-README.zh.md: fb0f0a969965c27bbd129e70381692c4b1297f5b
+README.ar.md: fb0f0a969965c27bbd129e70381692c4b1297f5b

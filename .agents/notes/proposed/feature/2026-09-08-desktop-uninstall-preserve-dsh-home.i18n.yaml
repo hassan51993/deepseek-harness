@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-09-08-desktop-uninstall-preserve-dsh-home.md
 2026-09-08-desktop-uninstall-preserve-dsh-home.md: e1c2435814a4563f1fed6652d521928200d4ade7
-2026-09-08-desktop-uninstall-preserve-dsh-home.zh.md: 27fd7c8cbec360db35cadc75ff26b575629ad571
+2026-09-08-desktop-uninstall-preserve-dsh-home.ar.md: 27fd7c8cbec360db35cadc75ff26b575629ad571

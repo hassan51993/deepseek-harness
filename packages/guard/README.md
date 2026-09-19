@@ -5,7 +5,7 @@ kind: "package-group"
 
 # guard/ — loop-hygiene guard family
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

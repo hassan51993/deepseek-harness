@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-session-unarchive-settings-page.zh.md)
+English | [العربية](2026-09-12-session-unarchive-settings-page.ar.md)
 
 ## Problem
 

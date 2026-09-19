@@ -5,7 +5,7 @@ kind: "package-group"
 
 # host/ — web-GUI host half
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

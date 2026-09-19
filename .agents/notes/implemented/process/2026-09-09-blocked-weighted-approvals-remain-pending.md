@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-09-blocked-weighted-approvals-remain-pending.zh.md)
+English | [العربية](2026-09-09-blocked-weighted-approvals-remain-pending.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-29-ask-question-web-presentation.zh.md)
+English | [العربية](2026-07-29-ask-question-web-presentation.ar.md)
 
 ## Problem
 
@@ -21,7 +21,7 @@ A cancelled or interrupted row has no answer payload to pair. Its expanded card 
 
 The composer redesign moves paging into the footer next to the actions, renders multi-select options with explicit checkboxes, keeps single-select numbered rows, and replaces the expand-to-open custom entry with an always-visible custom input row (textarea for optionless questions). The `parseQuestionTitle` multi-select suffix convention is deleted; `multi_select` is already structured metadata, so the title renders verbatim.
 
-Composer chrome copy becomes bilingual: the plugin registers zh/en dictionaries under the `question` namespace of `dsh-client-locale` and hands the entry a namespace-bound translator plus the locale snapshot as a hooks-compartment source through the slot inject face, so a locale flip re-renders a mounted composer. Validation feedback is stored as a dictionary key and re-translated on flip; carrier failure messages and all model-authored question/option text render verbatim.
+Composer chrome copy becomes bilingual: the plugin registers ar/en dictionaries under the `question` namespace of `dsh-client-locale` and hands the entry a namespace-bound translator plus the locale snapshot as a hooks-compartment source through the slot inject face, so a locale flip re-renders a mounted composer. Validation feedback is stored as a dictionary key and re-translated on flip; carrier failure messages and all model-authored question/option text render verbatim.
 
 Two adjacent fixes ride along. All generic toolview leading icons (and the hover chevron) now inherit the single tertiary label color — the others-variant secondary override and the separate chevron color rule are deleted, leaving only the intentional cordis business-primary accent. And the client dev-watch bundler registers each CSS module with `addWatchFile`, because the virtual-module indirection previously hid css-only edits from the watcher.
 

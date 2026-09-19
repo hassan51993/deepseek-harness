@@ -1,5 +1,5 @@
 /** Locale-owned Browser tab copy. */
-export const zh = {
+export const ar = {
   'type.label': 'متصفح',
   'guide.title': 'متصفح',
   'guide.description': 'تصفح تصفح HTTP(S) شبكة صفحة',
@@ -25,7 +25,7 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Browser dictionary key union. */
-export type SidebarBrowserKey = keyof typeof zh
+export type SidebarBrowserKey = keyof typeof ar
 
 /** English dictionary with the same keys. */
 export const en = {

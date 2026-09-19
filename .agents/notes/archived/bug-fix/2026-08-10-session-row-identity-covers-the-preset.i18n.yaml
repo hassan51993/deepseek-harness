@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-10-session-row-identity-covers-the-preset.md
 2026-08-10-session-row-identity-covers-the-preset.md: 7d9fc5e5b200cc0ea0592a3ecaedfe6a14becd5a
-2026-08-10-session-row-identity-covers-the-preset.zh.md: 4e707f8b25fcc38e2cf8cd5eb76c5c5e51f88a2e
+2026-08-10-session-row-identity-covers-the-preset.ar.md: 4e707f8b25fcc38e2cf8cd5eb76c5c5e51f88a2e

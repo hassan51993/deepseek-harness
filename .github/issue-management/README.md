@@ -4,7 +4,7 @@ description: "Issue policy enforcement, Project access, and lifecycle events for
 
 # Issue management
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

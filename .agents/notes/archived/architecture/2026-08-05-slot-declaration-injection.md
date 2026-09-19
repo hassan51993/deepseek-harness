@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-05-slot-declaration-injection.zh.md)
+English | [العربية](2026-08-05-slot-declaration-injection.ar.md)
 
 ## Problem
 

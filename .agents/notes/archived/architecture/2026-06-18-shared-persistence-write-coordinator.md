@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-31
 
-English | [العربية](2026-06-18-shared-persistence-write-coordinator.zh.md)
+English | [العربية](2026-06-18-shared-persistence-write-coordinator.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-05-sidebar-text-preview-and-file-tree.zh.md)
+English | [العربية](2026-09-05-sidebar-text-preview-and-file-tree.ar.md)
 
 ## Problem
 

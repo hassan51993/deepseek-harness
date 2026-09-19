@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-14-provider-routed-llm-adapters.zh.md)
+English | [العربية](2026-07-14-provider-routed-llm-adapters.ar.md)
 
 ## Problem
 

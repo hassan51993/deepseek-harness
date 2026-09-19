@@ -3,12 +3,12 @@ import type {} from '@deepseek-ai/dsh-client-ui-slots'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
-    sidebarTerminal: keyof typeof zh
+    sidebarTerminal: keyof typeof ar
   }
 }
 
-/** Simplified Chinese terminal copy. */
-export const zh = {
+/** Arabic terminal copy. */
+export const ar = {
   recoveryFailed: 'استعادة طرفية فشل:{message}', retryRecovery: 'إعادة محاولة استعادة طرفية',
   shell: 'اختيار Shell', shellLoading: 'صحيح في قراءة Shell…', shellEmpty: 'لا يوجد متاح Shell', description: 'في جلسة مساحة العمل تشغيل أمر',
   title: 'طرفية', new: 'جديد بناء طرفية', loading: 'صحيح في قراءة طرفية بيئة…', creating: 'صحيح في بدء…',
@@ -39,4 +39,4 @@ export const en = {
   attachmentEnded: 'The terminal connection ended. Reconnect to continue.',
   invalidOutput: 'The terminal screen could not be received. Reconnect to recover it.',
   terminalLimit: 'The terminal limit has been reached. Close unused terminals and try again. Exited terminals also count toward the limit.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof ar, string>

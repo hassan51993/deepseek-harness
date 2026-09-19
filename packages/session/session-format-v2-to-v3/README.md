@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-session-format-v2-to-v3
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

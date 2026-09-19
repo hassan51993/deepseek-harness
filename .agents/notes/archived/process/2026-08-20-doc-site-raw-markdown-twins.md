@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-20-doc-site-raw-markdown-twins.zh.md)
+English | [العربية](2026-08-20-doc-site-raw-markdown-twins.ar.md)
 
 ## Problem
 

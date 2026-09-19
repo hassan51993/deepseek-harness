@@ -6,13 +6,13 @@ import type {} from '@deepseek-ai/dsh-client-ui-slots'
 export const NS = 'reference'
 
 /**
- * Simplified Chinese dictionary (the key-set source of truth).
+ * Arabic dictionary (the key-set source of truth).
  *
  * The `time.*` bucket words are this namespace's own copy of the session-row
  * vocabulary: locale-owned copy keeps the words per plugin, while the
  * bucketing they name is the one shared {@link relativeTime} in ui-primitives.
  */
-export const zh = {
+export const ar = {
   'section.files': 'ملف و ملف مشبك',
   'section.subagents': 'فرعي ذكي جسم',
   'section.sessions': 'محادثة',
@@ -27,7 +27,7 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The reference namespace key union. */
-export type ReferenceKey = keyof typeof zh
+export type ReferenceKey = keyof typeof ar
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap {
@@ -36,7 +36,7 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
   }
 }
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'section.files': 'Files & folders',
   'section.subagents': 'Subagents',

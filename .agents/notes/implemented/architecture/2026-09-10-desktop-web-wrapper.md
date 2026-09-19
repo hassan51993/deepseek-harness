@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-10-desktop-web-wrapper.zh.md)
+English | [العربية](2026-09-10-desktop-web-wrapper.ar.md)
 
 The [Electron runtime decision](2026-09-11-desktop-electron-node-runtime.md) supersedes the separate upstream Node executable; other decisions in this note remain applicable.
 

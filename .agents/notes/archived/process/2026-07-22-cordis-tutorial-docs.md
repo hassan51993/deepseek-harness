@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [العربية](2026-07-22-cordis-tutorial-docs.zh.md)
+English | [العربية](2026-07-22-cordis-tutorial-docs.ar.md)
 
 ## Problem
 
@@ -20,7 +20,7 @@ The repo documents Cordis at two levels: the condensed [cordis-primer](../../../
 
 ## Alternatives considered
 
-**Under `docs/user/develop/` as paired product docs.** That tier requires en+zh+i18n records in the same PR, roughly doubling the change and coupling every future tutorial edit to a translation. Rejected for the first landing; the mirrored projection keeps the same public visibility.
+**Under `docs/user/develop/` as paired product docs.** That tier requires en+ar+i18n records in the same PR, roughly doubling the change and coupling every future tutorial edit to a translation. Rejected for the first landing; the mirrored projection keeps the same public visibility.
 
 **Pure-Cordis tutorial with no harness packages.** Cleaner as framework documentation, but the audience is agent developers extending this harness; ending at `ctx.tools.execute` and `tools/result` teaches the composition they will actually work in. The user chose this explicitly.
 

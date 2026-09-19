@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-desktop-policy-login-loading.zh.md)
+English | [العربية](2026-09-16-desktop-policy-login-loading.ar.md)
 
 ## Problem
 

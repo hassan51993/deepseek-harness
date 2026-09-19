@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-plugin-command-registration.zh.md)
+English | [العربية](2026-07-19-plugin-command-registration.ar.md)
 
 ## Problem
 

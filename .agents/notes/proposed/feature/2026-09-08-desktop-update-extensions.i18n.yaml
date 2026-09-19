@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-09-08-desktop-update-extensions.md
 2026-09-08-desktop-update-extensions.md: 6c8a2ebe4a38809f6c3a7fb4741b3520111402c6
-2026-09-08-desktop-update-extensions.zh.md: 06096c8b28136ab2e22325857021926e06b3b17e
+2026-09-08-desktop-update-extensions.ar.md: 06096c8b28136ab2e22325857021926e06b3b17e

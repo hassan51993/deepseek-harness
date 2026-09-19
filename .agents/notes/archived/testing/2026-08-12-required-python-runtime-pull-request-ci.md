@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-23
 
-English | [العربية](2026-08-12-required-python-runtime-pull-request-ci.zh.md)
+English | [العربية](2026-08-12-required-python-runtime-pull-request-ci.ar.md)
 
 ## Problem
 

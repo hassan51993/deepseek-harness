@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-21-tui-banner-sweep.zh.md)
+English | [العربية](2026-07-21-tui-banner-sweep.ar.md)
 
 > **Superseded** by the [no-banner Agent Note](2026-07-21-tui-no-banner.md): the banner itself was removed, taking the sweep with it.
 

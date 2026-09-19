@@ -1,6 +1,6 @@
 # Safety
 
-English | [العربية](SAFETY.zh.md)
+English | [العربية](SAFETY.ar.md)
 
 ## Experimental status
 

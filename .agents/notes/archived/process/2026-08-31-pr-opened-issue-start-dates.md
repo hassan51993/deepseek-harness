@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-02
 
-English | [العربية](2026-08-31-pr-opened-issue-start-dates.zh.md)
+English | [العربية](2026-08-31-pr-opened-issue-start-dates.ar.md)
 
 ## Problem
 

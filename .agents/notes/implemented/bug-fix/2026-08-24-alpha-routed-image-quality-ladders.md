@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-24-alpha-routed-image-quality-ladders.zh.md)
+English | [العربية](2026-08-24-alpha-routed-image-quality-ladders.ar.md)
 
 ## Problem
 

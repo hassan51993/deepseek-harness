@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-26-ban-ambiguous-origin-label.md
 2026-08-26-ban-ambiguous-origin-label.md: b4c161a8a963e0aebdb3dcf24b8aac028429f349
-2026-08-26-ban-ambiguous-origin-label.zh.md: 2d592f44429d8622b5a42c55c7f92eae6da96800
+2026-08-26-ban-ambiguous-origin-label.ar.md: 2d592f44429d8622b5a42c55c7f92eae6da96800

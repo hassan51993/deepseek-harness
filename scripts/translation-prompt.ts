@@ -22,7 +22,7 @@ type TranslationLanguage = 'English' | 'Chinese'
 /** Inputs that vary for one rendered translation request. */
 export interface TranslationPromptInput {
   sourceLanguage: TranslationLanguage
-  /** Source basename, including `.md` or `.zh.md`. */
+  /** Source basename, including `.md` or `.ar.md`. */
   sourceFilename: string
   /** Complete current `terminology.md` contents. */
   terminology: string
@@ -75,19 +75,19 @@ function translationFiles(input: Pick<TranslationPromptInput, 'sourceFilename' |
   if (basename(input.sourceFilename) !== input.sourceFilename) {
     throw new Error(`translation prompt: sourceFilename must be a basename; got ${JSON.stringify(input.sourceFilename)}`)
   }
-  const sourceIsChinese = input.sourceFilename.endsWith('.zh.md')
+  const sourceIsChinese = input.sourceFilename.endsWith('.ar.md')
   const sourceIsEnglish = input.sourceFilename.endsWith('.md') && !sourceIsChinese
   if (input.sourceLanguage === 'Chinese' ? !sourceIsChinese : !sourceIsEnglish) {
     throw new Error(`translation prompt: ${input.sourceFilename} does not match source language ${input.sourceLanguage}`)
   }
   if (sourceIsChinese) {
     return {
-      targetFilename: input.sourceFilename.replace(/\.zh\.md$/, '.md'),
+      targetFilename: input.sourceFilename.replace(/\.ar\.md$/, '.md'),
       targetSwitcher: `English | [العربية](${input.sourceFilename})`,
     }
   }
   return {
-    targetFilename: input.sourceFilename.replace(/\.md$/, '.zh.md'),
+    targetFilename: input.sourceFilename.replace(/\.md$/, '.ar.md'),
     targetSwitcher: `[English](${input.sourceFilename}) | العربية`,
   }
 }

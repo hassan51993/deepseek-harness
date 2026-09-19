@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-01
 
-English | [العربية](2026-08-15-packed-session-history-transport.zh.md)
+English | [العربية](2026-08-15-packed-session-history-transport.ar.md)
 
 ## Problem
 

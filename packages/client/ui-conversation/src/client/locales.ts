@@ -7,8 +7,8 @@ export const NS = 'conversation'
 const PLAN_NEXT_ACTION_ZH = 'وصف أنت مهمة بـ توليد حساب تخطيط'
 const PLAN_NEXT_ACTION_EN = 'describe your task to generate plan'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'hint.plan': PLAN_NEXT_ACTION_ZH,
   'hint.goal': 'إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ',
   'hint.goal.active': 'حالي هدف إجراء في. يمكن إدخال edit تعديل / pause مؤقت توقف / resume متابعة / clear صاف حذف',
@@ -167,9 +167,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The conversation namespace key union. */
-export type ConversationKey = keyof typeof zh
+export type ConversationKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'hint.plan': PLAN_NEXT_ACTION_EN,
   'hint.goal': 'describe the objective for a long-running task',

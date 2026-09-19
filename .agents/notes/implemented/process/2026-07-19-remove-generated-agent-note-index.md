@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-remove-generated-agent-note-index.zh.md)
+English | [العربية](2026-07-19-remove-generated-agent-note-index.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-08-tool-output-spill-files.zh.md)
+English | [العربية](2026-07-08-tool-output-spill-files.ar.md)
 
 ## Problem
 

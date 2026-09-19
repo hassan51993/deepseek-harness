@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-03-hmr-initial-scan-boot-deadlock.zh.md)
+English | [العربية](2026-08-03-hmr-initial-scan-boot-deadlock.ar.md)
 
 ## Problem
 

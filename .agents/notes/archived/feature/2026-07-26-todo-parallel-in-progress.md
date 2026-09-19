@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-26-todo-parallel-in-progress.zh.md)
+English | [العربية](2026-07-26-todo-parallel-in-progress.ar.md)
 
 ## Problem
 

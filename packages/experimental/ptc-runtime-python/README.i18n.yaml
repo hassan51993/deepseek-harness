@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/ptc-runtime-python/README.md
 README.md: 287617991c5da9c13775e40c325877c231dbc312
-README.zh.md: f0c64a535cbac53241a807cc9901074f9ddd843d
+README.ar.md: f0c64a535cbac53241a807cc9901074f9ddd843d

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-21-deepseek-llm-api-request-extensions.zh.md)
+English | [العربية](2026-08-21-deepseek-llm-api-request-extensions.ar.md)
 
 ## Problem
 

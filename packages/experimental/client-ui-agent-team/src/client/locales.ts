@@ -3,8 +3,8 @@
 /** Locale namespace owned by the Agent Teams Web UI. */
 export const NS = 'agent-team'
 
-/** Simplified Chinese dictionary and key source. */
-export const zh = {
+/** Arabic dictionary and key source. */
+export const ar = {
   trigger: 'Agent Team',
   refresh: 'تحديث جديد Team',
   close: 'إغلاق',
@@ -43,9 +43,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Agent Teams locale key union. */
-export type TeamKey = keyof typeof zh
+export type TeamKey = keyof typeof ar
 
-/** English dictionary checked against the Chinese key set. */
+/** English dictionary checked against the Arabic key set. */
 export const en = {
   trigger: 'Agent Team',
   refresh: 'Refresh Team',

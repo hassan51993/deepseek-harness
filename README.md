@@ -1,6 +1,6 @@
 # DeepSeek Harness
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 DeepSeek Harness (`dsh`) is an open-source agent harness developed by [DeepSeek AI](https://deepseek.com).
 

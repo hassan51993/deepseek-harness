@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-06-20-remove-agent-boundary-mirror-events.zh.md)
+English | [العربية](2026-06-20-remove-agent-boundary-mirror-events.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-06-bwrap-private-pid-namespace.zh.md)
+English | [العربية](2026-08-06-bwrap-private-pid-namespace.ar.md)
 
 ## Problem
 

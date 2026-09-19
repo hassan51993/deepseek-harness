@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-31-serial-windows-notices-timeout-budget.zh.md)
+English | [العربية](2026-08-31-serial-windows-notices-timeout-budget.ar.md)
 
 ## Problem
 

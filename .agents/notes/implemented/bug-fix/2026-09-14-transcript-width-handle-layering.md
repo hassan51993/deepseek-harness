@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-14-transcript-width-handle-layering.zh.md)
+English | [العربية](2026-09-14-transcript-width-handle-layering.ar.md)
 
 ## Problem
 

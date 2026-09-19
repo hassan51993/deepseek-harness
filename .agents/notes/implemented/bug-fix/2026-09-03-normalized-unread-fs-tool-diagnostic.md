@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-03-normalized-unread-fs-tool-diagnostic.zh.md)
+English | [العربية](2026-09-03-normalized-unread-fs-tool-diagnostic.ar.md)
 
 ## Problem
 

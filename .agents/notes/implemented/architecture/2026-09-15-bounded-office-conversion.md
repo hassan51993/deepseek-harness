@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-bounded-office-conversion.zh.md)
+English | [العربية](2026-09-15-bounded-office-conversion.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-29-code-runtime-python-call-backlog-and-binding-metadata-snapshot.zh.md)
+English | [العربية](2026-08-29-code-runtime-python-call-backlog-and-binding-metadata-snapshot.ar.md)
 
 ## Problem
 

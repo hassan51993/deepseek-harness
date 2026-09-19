@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-31-released-session-format-migrations.zh.md)
+English | [العربية](2026-08-31-released-session-format-migrations.ar.md)
 
 ## Problem
 

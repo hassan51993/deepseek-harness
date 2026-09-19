@@ -1,6 +1,6 @@
 # Python SDK example
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 Runnable Python SDK example over the sole application launcher, `dsh --profile sdk-minimal`. The Python client owns JSON-RPC stdio; the profile owns the agent composition, persistence, execution policy, and plugins.
 

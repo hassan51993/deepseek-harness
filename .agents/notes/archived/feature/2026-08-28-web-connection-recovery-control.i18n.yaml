@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-28-web-connection-recovery-control.md
 2026-08-28-web-connection-recovery-control.md: 22baf100f4cdc12054b8f1b06150abf6e5a43a29
-2026-08-28-web-connection-recovery-control.zh.md: 748c8325d5da15299517c54cce72a18639da3f86
+2026-08-28-web-connection-recovery-control.ar.md: 748c8325d5da15299517c54cce72a18639da3f86

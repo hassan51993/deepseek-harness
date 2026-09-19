@@ -8,7 +8,7 @@ import { chatViewDefinition } from '../../ui-chat/src/client/conversation-nodes/
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { en as commonEn } from '@deepseek-ai/dsh-client-locale/src/locales/en.ts'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 import { PlanCards, PlanReviewOpen } from '../src/client/PlanCard.tsx'
 import { PlanPreview, PlanTitle } from '../src/client/PlanPreview.tsx'
 import { planAddress, parsePlanAddress, submittedPlan } from '../src/client/plan.ts'
@@ -123,7 +123,7 @@ it('projects native and PTC submissions into their resolved turns without duplic
 
 describe('plan entry points and document', () => {
   it('opens the exact persistent card in either locale', () => {
-    for (const dictionary of [en, zh]) {
+    for (const dictionary of [en, ar]) {
       const openPlan = vi.fn()
       const props = { turn: { turn: 1 }, useChat: planHook([planNode(plan)]), seq: 30,
         t: makeTranslate(dictionary, commonEn), openPlan,
@@ -240,7 +240,7 @@ describe('plan entry points and document', () => {
       else Object.defineProperty(navigator, 'clipboard', clipboard)
     }
   })
-  it.each([en, zh])('localizes plan failures and unavailable providers', (dictionary) => {
+  it.each([en, ar])('localizes plan failures and unavailable providers', (dictionary) => {
     const props = { t: makeTranslate(dictionary, commonEn),
       useTabInfo: () => ({ tab: { title: 'Plan', navigation: { address: planAddress(target) } } }),
     }

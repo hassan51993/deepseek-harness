@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-03-per-session-agent-presets.zh.md)
+English | [العربية](2026-08-03-per-session-agent-presets.ar.md)
 
 ## Problem
 

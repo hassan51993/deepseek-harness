@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-sidebar-browser.zh.md)
+English | [العربية](2026-09-16-sidebar-browser.ar.md)
 
 ## Problem
 

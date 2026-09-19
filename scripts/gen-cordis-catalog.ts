@@ -4,7 +4,7 @@
  * maps to exactly one `docs/subsystems/` page through the curated tables below;
  * the generator injects each page's Cordis API reference between its GENERATED markers —
  * into both language sides of the pair, localizing paired document paths for
- * the Chinese side while retaining every other byte — and re-records a pair's
+ * the Arabic side while retaining every other byte — and re-records a pair's
  * `.i18n.yaml` only when nothing outside the region changed. The
  * projection enforces event modes, JSDoc parameter/return completeness, and
  * signature type-link coverage; the inherited (vendor) tier renders to
@@ -959,7 +959,7 @@ export interface WalkPartitionMaps {
 
 /** Project paired Markdown destinations in one generated region to the page's locale. */
 export function localizePageRegion(region: string, pageRel: string, scanRoot: string = root): string {
-  if (!pageRel.endsWith('.zh.md')) return region
+  if (!pageRel.endsWith('.ar.md')) return region
   const manifest = parseTranslationPairingManifest(
     readFileSync(resolve(scanRoot, 'scripts/translation-pairing.manifest.json'), 'utf8'),
   )
@@ -1091,7 +1091,7 @@ export function computeOutputs(): [string, string][] {
       events.filter(e => EVENT_SCOPE_PAGE[e.scope] === page),
       CORDIS_CATALOG_POLICY,
     )
-    for (const side of [page, page.replace(/\.md$/, '.zh.md')]) {
+    for (const side of [page, page.replace(/\.md$/, '.ar.md')]) {
       const rel = `${SUBSYSTEMS_DIR}/${side}`
       const localizedRegion = localizePageRegion(region, rel)
       let current: string
@@ -1127,7 +1127,7 @@ export function computeOutputs(): [string, string][] {
  * @returns true when the record was refreshed.
  */
 export function maybeRecordPair(pageRel: string, before: Map<string, Buffer>, scanRoot: string = root): boolean {
-  const zhRel = pageRel.replace(/\.md$/, '.zh.md')
+  const arRel = pageRel.replace(/\.md$/, '.ar.md')
   const metaRel = pageRel.replace(/\.md$/, '.i18n.yaml')
   const metaAbs = resolve(scanRoot, metaRel)
   let meta: string
@@ -1142,9 +1142,9 @@ export function maybeRecordPair(pageRel: string, before: Map<string, Buffer>, sc
   // a malformed or renamed-key sidecar is the pairing gate's problem to
   // report, never something regeneration silently repairs into validity.
   const recorded = parsePairMeta(meta)
-  const names = [pageRel, zhRel].map(rel => rel.split('/').at(-1) ?? rel)
+  const names = [pageRel, arRel].map(rel => rel.split('/').at(-1) ?? rel)
   if (!recorded || recorded.size !== 2 || !names.every(name => recorded.has(name))) return false
-  for (const rel of [pageRel, zhRel]) {
+  for (const rel of [pageRel, arRel]) {
     const previous = before.get(rel)
     if (!previous) return false
     if (recorded.get(rel.split('/').at(-1) ?? rel) !== blobHash(previous)) return false
@@ -1154,8 +1154,8 @@ export function maybeRecordPair(pageRel: string, before: Map<string, Buffer>, sc
     if (strippedBefore !== strippedAfter) return false
   }
   const source = readFileSync(resolve(scanRoot, pageRel))
-  const zh = readFileSync(resolve(scanRoot, zhRel))
-  writeFileSync(metaAbs, renderPairMeta(pageRel, blobHash(source), zhRel, blobHash(zh)))
+  const ar = readFileSync(resolve(scanRoot, arRel))
+  writeFileSync(metaAbs, renderPairMeta(pageRel, blobHash(source), arRel, blobHash(ar)))
   return true
 }
 
@@ -1210,8 +1210,8 @@ export function main(): void {
   }
   for (const page of [...new Set([...Object.values(SERVICE_PAGE), ...Object.values(EVENT_SCOPE_PAGE)])]) {
     const rel = `${SUBSYSTEMS_DIR}/${page}`
-    const zhRel = rel.replace(/\.md$/, '.zh.md')
-    const wroteEither = [rel, zhRel].some((side) => {
+    const arRel = rel.replace(/\.md$/, '.ar.md')
+    const wroteEither = [rel, arRel].some((side) => {
       const previous = before.get(side)
       return previous !== undefined && previous.toString('utf8') !== readFileSync(resolve(root, side), 'utf8')
     })

@@ -139,7 +139,7 @@ export function loadPersistenceFormats(root: string): PersistenceFormats {
   const files = new Set(existsSync(directory) ? readdirSync(directory) : [])
   const expected = new Set<string>()
   for (let version = 0; version < currentVersion; version += 1) {
-    for (const suffix of ['.md', '.zh.md', '.schema.json']) {
+    for (const suffix of ['.md', '.ar.md', '.schema.json']) {
       const name = `v${version}${suffix}`
       expected.add(name)
       if (!files.has(name)) throw new Error(`v${version}: missing persistence format artifact ${name}`)
@@ -159,11 +159,11 @@ export function loadPersistenceFormats(root: string): PersistenceFormats {
     const document = current ? CURRENT_DOCUMENT : `${DIRECTORY}/v${version}.md`
     const schemaPath = current ? CURRENT_SCHEMA : `${DIRECTORY}/v${version}.schema.json`
     const english = read(document)
-    const chinese = read(document.replace(/\.md$/u, '.zh.md'))
+    const chinese = read(document.replace(/\.md$/u, '.ar.md'))
     let record: PersistenceFormatRecord | undefined
     if (!current) {
       const block = machineBlock(english, document)
-      if (block !== machineBlock(chinese, document.replace(/\.md$/u, '.zh.md'))) throw new Error(`v${version}: bilingual machine records differ`)
+      if (block !== machineBlock(chinese, document.replace(/\.md$/u, '.ar.md'))) throw new Error(`v${version}: bilingual machine records differ`)
       record = parseRecord(block, version)
     }
     const inventory = (current ? parsePersistenceSnapshot : parseHistoricalPersistenceSnapshot)(JSON.parse(read(schemaPath)))
@@ -175,7 +175,7 @@ export function loadPersistenceFormats(root: string): PersistenceFormats {
     }
     const schemaName = current ? 'persistence-schema.json' : `v${version}.schema.json`
     validateDocument(english, schemaName, inventory, document, current)
-    validateDocument(chinese, schemaName, inventory, document.replace(/\.md$/u, '.zh.md'), current)
+    validateDocument(chinese, schemaName, inventory, document.replace(/\.md$/u, '.ar.md'), current)
     entries.push({ version, document, schemaPath, inventory, ...(record === undefined ? {} : { source: record.source }) })
   }
   return { currentVersion, entries }

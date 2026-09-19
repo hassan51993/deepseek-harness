@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-04-web-composer-shared-width-axis.zh.md)
+English | [العربية](2026-08-04-web-composer-shared-width-axis.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-06-web-install-manifest.zh.md)
+English | [العربية](2026-08-06-web-install-manifest.ar.md)
 
 ## Problem
 

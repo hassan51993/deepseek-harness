@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-06-20-collapse-trace-only-session-events.zh.md)
+English | [العربية](2026-06-20-collapse-trace-only-session-events.ar.md)
 
 ## Problem
 

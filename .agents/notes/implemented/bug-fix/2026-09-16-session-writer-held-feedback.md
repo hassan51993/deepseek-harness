@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-session-writer-held-feedback.zh.md)
+English | [العربية](2026-09-16-session-writer-held-feedback.ar.md)
 
 ## Problem
 

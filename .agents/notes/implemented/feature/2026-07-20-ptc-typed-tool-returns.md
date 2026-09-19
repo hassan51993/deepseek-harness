@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-20-ptc-typed-tool-returns.zh.md)
+English | [العربية](2026-07-20-ptc-typed-tool-returns.ar.md)
 
 ## Problem
 

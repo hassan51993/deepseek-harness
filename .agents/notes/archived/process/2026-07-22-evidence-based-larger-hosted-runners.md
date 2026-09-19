@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-22-evidence-based-larger-hosted-runners.zh.md)
+English | [العربية](2026-07-22-evidence-based-larger-hosted-runners.ar.md)
 
 ## Problem
 

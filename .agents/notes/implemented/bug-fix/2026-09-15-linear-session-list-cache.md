@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-15-linear-session-list-cache.zh.md)
+English | [العربية](2026-09-15-linear-session-list-cache.ar.md)
 
 ## Problem
 

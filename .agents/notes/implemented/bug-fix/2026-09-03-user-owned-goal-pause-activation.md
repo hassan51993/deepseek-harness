@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-03-user-owned-goal-pause-activation.zh.md)
+English | [العربية](2026-09-03-user-owned-goal-pause-activation.ar.md)
 
 ## Problem
 

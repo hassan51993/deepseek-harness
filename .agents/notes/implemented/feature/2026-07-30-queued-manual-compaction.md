@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-30-queued-manual-compaction.zh.md)
+English | [العربية](2026-07-30-queued-manual-compaction.ar.md)
 
 ## Problem
 

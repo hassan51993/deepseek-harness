@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-08
 
-English | [العربية](2026-09-08-web-explicit-file-delivery.zh.md)
+English | [العربية](2026-09-08-web-explicit-file-delivery.ar.md)
 
 ## Problem
 

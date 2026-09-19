@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-24-model-facing-session-query-tools.md
 2026-07-24-model-facing-session-query-tools.md: 31218776e5876fa34378f4a9406b7090ebc10246
-2026-07-24-model-facing-session-query-tools.zh.md: 4d6821868e9d1d68e20b96606759bf5856f49309
+2026-07-24-model-facing-session-query-tools.ar.md: 4d6821868e9d1d68e20b96606759bf5856f49309

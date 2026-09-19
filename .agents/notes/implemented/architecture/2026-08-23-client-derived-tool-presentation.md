@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-23-client-derived-tool-presentation.zh.md)
+English | [العربية](2026-08-23-client-derived-tool-presentation.ar.md)
 
 ## Problem
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-08-11-python-publication-workflow.md
 2026-08-11-python-publication-workflow.md: eb17d5bc947daa9f5725ae330f9d628d46c9cf35
-2026-08-11-python-publication-workflow.zh.md: 85e261bfc51cf21f2cbeb1c651d93f0fe3efb651
+2026-08-11-python-publication-workflow.ar.md: 85e261bfc51cf21f2cbeb1c651d93f0fe3efb651

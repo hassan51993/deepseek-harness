@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-07-27-assistant-timing-header-trailing.zh.md)
+English | [العربية](2026-07-27-assistant-timing-header-trailing.ar.md)
 
 ## Problem
 

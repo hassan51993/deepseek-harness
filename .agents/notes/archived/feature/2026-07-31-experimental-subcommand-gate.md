@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-03
 
-English | [العربية](2026-07-31-experimental-subcommand-gate.zh.md)
+English | [العربية](2026-07-31-experimental-subcommand-gate.ar.md)
 
 ## Problem
 

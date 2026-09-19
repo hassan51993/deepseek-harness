@@ -5,8 +5,8 @@
  * popupSelect shell's copy.
  */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'section.add': 'إضافة',
   'section.commands': 'إشارة أمر',
   'label.goal': 'هدف',
@@ -38,9 +38,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** The command namespace key union. */
-export type CommandKey = keyof typeof zh
+export type CommandKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'section.add': 'Add',
   'section.commands': 'Commands',

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-08-self-referential-cordis-toolset.zh.md)
+English | [العربية](2026-07-08-self-referential-cordis-toolset.ar.md)
 
 ## Problem
 

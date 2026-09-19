@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-05-context-meter-blind-to-compaction.md
 2026-08-05-context-meter-blind-to-compaction.md: 3ce225706badf6aa1b7d34d570653a6fe84c908e
-2026-08-05-context-meter-blind-to-compaction.zh.md: 43c5a9d73838347884194ddec1103b336ab84275
+2026-08-05-context-meter-blind-to-compaction.ar.md: 43c5a9d73838347884194ddec1103b336ab84275

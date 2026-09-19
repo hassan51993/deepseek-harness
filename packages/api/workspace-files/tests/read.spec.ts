@@ -63,8 +63,8 @@ describe('workspaceFiles.read — the happy path', () => {
   })
 
   it('accepts multi-byte UTF-8 and counts the file bytes, not its characters', async () => {
-    await writeFile(join(workspace, 'zh.txt'), 'جانب شريط', 'utf8')
-    const result = await endpoint().read(harness.scope, 'zh.txt', {}, signal())
+    await writeFile(join(workspace, 'ar.txt'), 'جانب شريط', 'utf8')
+    const result = await endpoint().read(harness.scope, 'ar.txt', {}, signal())
     expect(result.text).toBe('جانب شريط')
     expect(result.bytes).toBe(6)
   })

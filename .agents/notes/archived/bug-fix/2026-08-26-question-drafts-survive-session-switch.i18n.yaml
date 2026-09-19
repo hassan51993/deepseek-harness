@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-26-question-drafts-survive-session-switch.md
 2026-08-26-question-drafts-survive-session-switch.md: d2178cb5cba805b9c2238974f137a8a612b1b03f
-2026-08-26-question-drafts-survive-session-switch.zh.md: c9e8167733e432f5f705f7b4384dffcbe8f233c7
+2026-08-26-question-drafts-survive-session-switch.ar.md: c9e8167733e432f5f705f7b4384dffcbe8f233c7

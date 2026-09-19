@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-sidebar-last-tab-close-rules.zh.md)
+English | [العربية](2026-09-08-sidebar-last-tab-close-rules.ar.md)
 
 ## Problem
 

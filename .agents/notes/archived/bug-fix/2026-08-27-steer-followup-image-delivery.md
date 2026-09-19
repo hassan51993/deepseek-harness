@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-27-steer-followup-image-delivery.zh.md)
+English | [العربية](2026-08-27-steer-followup-image-delivery.ar.md)
 
 ## Problem
 

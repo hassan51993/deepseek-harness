@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-29-sticky-composer-conversation-scroll.md
 2026-07-29-sticky-composer-conversation-scroll.md: e861439d249f844f3cb781d23f0392ec5701cf01
-2026-07-29-sticky-composer-conversation-scroll.zh.md: 3cc252d2e937e50dbe9bc47255224fd155c72e53
+2026-07-29-sticky-composer-conversation-scroll.ar.md: 3cc252d2e937e50dbe9bc47255224fd155c72e53

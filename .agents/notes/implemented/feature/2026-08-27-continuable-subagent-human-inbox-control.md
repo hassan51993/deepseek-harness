@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-27-continuable-subagent-human-inbox-control.zh.md)
+English | [العربية](2026-08-27-continuable-subagent-human-inbox-control.ar.md)
 
 ## Problem
 

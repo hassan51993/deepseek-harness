@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-30-web-remote-markdown-images.zh.md)
+English | [العربية](2026-07-30-web-remote-markdown-images.ar.md)
 
 ## Problem
 

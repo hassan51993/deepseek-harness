@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-17
 
-English | [العربية](2026-09-09-desktop-in-place-profile.zh.md)
+English | [العربية](2026-09-09-desktop-in-place-profile.ar.md)
 
 ## Problem
 

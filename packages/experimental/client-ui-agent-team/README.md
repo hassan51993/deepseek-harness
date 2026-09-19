@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-experimental-client-ui-agent-team
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 
@@ -51,7 +51,7 @@ Starting a create or update invalidates older refreshes. Success reloads the com
 |---|---|
 | [`src/client/mount.ts`](src/client/mount.ts) | Generated Remote, locale, navigation, and slot registrations |
 | [`src/client/TeamAction.tsx`](src/client/TeamAction.tsx) | Roster and task-board interaction state |
-| [`src/client/locales.ts`](src/client/locales.ts) | English and Chinese panel copy |
+| [`src/client/locales.ts`](src/client/locales.ts) | English and Arabic panel copy |
 | [`src/index.ts`](src/index.ts) | Inert Host entry |
 
 </details>

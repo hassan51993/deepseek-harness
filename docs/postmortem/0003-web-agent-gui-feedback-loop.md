@@ -1,6 +1,6 @@
 # Post-mortem 0003: Web agent validated a replacement server instead of its current GUI
 
-English | [العربية](0003-web-agent-gui-feedback-loop.zh.md)
+English | [العربية](0003-web-agent-gui-feedback-loop.ar.md)
 
 Status: resolved
 

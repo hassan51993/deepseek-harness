@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [العربية](2026-09-10-session-capability-protocols.zh.md)
+English | [العربية](2026-09-10-session-capability-protocols.ar.md)
 
 ## Problem
 

@@ -74,7 +74,7 @@ function saveReference(root: string, version: number, currentVersion: number, sn
     `# Session format v${version}`, '', `[Inventory](${schemaName})`, '', '| Root | Kind | SHA-256 |', '|---|---|---|',
     ...snapshot.roots.map(root => `| \`${root.key}\` | ${root.kind} | \`${root.digest}\` |`), '',
   ]
-  for (const suffix of ['.md', '.zh.md']) write(root, `docs/${filename}${suffix}`, lines.join('\n'))
+  for (const suffix of ['.md', '.ar.md']) write(root, `docs/${filename}${suffix}`, lines.join('\n'))
   replaceSnapshot(root, version, currentVersion, snapshot)
 }
 
@@ -95,17 +95,17 @@ function edit(root: string, path: string, from: string, to: string): void {
 }
 
 function editPair(root: string, version: number, from: string, to: string): void {
-  for (const suffix of ['.md', '.zh.md']) edit(root, `docs/persistence-changes/historical-formats/v${version}${suffix}`, from, to)
+  for (const suffix of ['.md', '.ar.md']) edit(root, `docs/persistence-changes/historical-formats/v${version}${suffix}`, from, to)
 }
 
 function prepareFacts(root: string, currentVersion = 3): void {
-  for (const suffix of ['.md', '.zh.md']) {
+  for (const suffix of ['.md', '.ar.md']) {
     for (let version = 0; version < currentVersion; version += 1) {
       const path = `docs/persistence-changes/historical-formats/v${version}${suffix}`
-      const switcher = suffix === '.md' ? `English | [العربية](v${version}.zh.md)` : `[English](v${version}.md) | العربية`
+      const switcher = suffix === '.md' ? `English | [العربية](v${version}.ar.md)` : `[English](v${version}.md) | العربية`
       write(root, path, readFileSync(join(root, path), 'utf8') + `\n${switcher}\n\n<!-- persistence-format-schema:start -->\n\nPending schemas.\n\n<!-- persistence-format-schema:end -->\n`)
     }
-    const switcher = suffix === '.md' ? 'English | [العربية](README.zh.md)' : '[English](README.md) | العربية'
+    const switcher = suffix === '.md' ? 'English | [العربية](README.ar.md)' : '[English](README.md) | العربية'
     write(root, `docs/persistence-changes/historical-formats/README${suffix}`, `# Session formats\n\n${switcher}\n\nAuthored context.\n\n<!-- persistence-format-index:start -->\n\nPending formats.\n\n<!-- persistence-format-index:end -->\n`)
   }
 }
@@ -190,7 +190,7 @@ describe('archive current persistence format', () => {
 })
 
 describe('complete persistence format references', () => {
-  it.each(['.md', '.zh.md'])('rejects source coordinates in authored format evidence in %s', (suffix) => {
+  it.each(['.md', '.ar.md'])('rejects source coordinates in authored format evidence in %s', (suffix) => {
     const root = fixture()
     const path = `docs/persistence-changes/historical-formats/v1${suffix}`
     const original = readFileSync(join(root, path), 'utf8')
@@ -218,7 +218,7 @@ describe('complete persistence format references', () => {
     expect(loadPersistenceFormats(root).entries).toHaveLength(1)
   })
 
-  it.each(['.md', '.zh.md', '.schema.json'])('requires every historical companion %s', (suffix) => {
+  it.each(['.md', '.ar.md', '.schema.json'])('requires every historical companion %s', (suffix) => {
     const root = fixture()
     rmSync(join(root, `docs/persistence-changes/historical-formats/v1${suffix}`))
     expect(() => loadPersistenceFormats(root)).toThrow(`missing persistence format artifact v1${suffix}`)
@@ -226,11 +226,11 @@ describe('complete persistence format references', () => {
 
   it('rejects a gap even when all remaining versions have complete companions', () => {
     const root = fixture()
-    for (const suffix of ['.md', '.zh.md', '.schema.json']) rmSync(join(root, `docs/persistence-changes/historical-formats/v1${suffix}`))
+    for (const suffix of ['.md', '.ar.md', '.schema.json']) rmSync(join(root, `docs/persistence-changes/historical-formats/v1${suffix}`))
     expect(() => loadPersistenceFormats(root)).toThrow('v1: missing persistence format artifact')
   })
 
-  it.each(['persistence-catalog.md', 'persistence-catalog.zh.md', 'persistence-schema.json'])('requires the current reference artifact %s', (filename) => {
+  it.each(['persistence-catalog.md', 'persistence-catalog.ar.md', 'persistence-schema.json'])('requires the current reference artifact %s', (filename) => {
     const root = fixture()
     rmSync(join(root, `docs/${filename}`))
     expect(() => loadPersistenceFormats(root)).toThrow(`missing persistence format artifact docs/${filename}`)
@@ -253,7 +253,7 @@ describe('complete persistence format references', () => {
 
   it('rejects bilingual declarations that differ', () => {
     const root = fixture()
-    edit(root, 'docs/persistence-changes/historical-formats/v1.zh.md', 'pullRequest: 3349', 'pullRequest: 3397')
+    edit(root, 'docs/persistence-changes/historical-formats/v1.ar.md', 'pullRequest: 3349', 'pullRequest: 3397')
     expect(() => loadPersistenceFormats(root)).toThrow('bilingual machine records differ')
   })
 
@@ -303,7 +303,7 @@ describe('complete persistence format references', () => {
 
   it.each(['missing', 'duplicate'])('rejects a %s machine block', (variant) => {
     const root = fixture()
-    for (const suffix of ['.md', '.zh.md']) {
+    for (const suffix of ['.md', '.ar.md']) {
       const path = `docs/persistence-changes/historical-formats/v1${suffix}`
       const text = readFileSync(join(root, path), 'utf8')
       write(root, path, variant === 'missing' ? text.replace('```yaml persistence-format', '```yaml') : text + '\n```yaml persistence-format\n{}\n```\n')
@@ -386,14 +386,14 @@ describe('complete persistence format references', () => {
     expect(() => loadPersistenceFormats(root)).toThrow(variant === 'duplicate-root' ? 'duplicate schema root' : variant === 'invalid-digest' ? 'schema digest mismatch' : variant === 'invalid-graph' ? 'unknown schema node' : 'unknown field extra')
   })
 
-  it.each(['persistence-changes/historical-formats/v1.md', 'persistence-changes/historical-formats/v1.zh.md', 'persistence-catalog.md', 'persistence-catalog.zh.md'])('requires the matching schema link in %s', (document) => {
+  it.each(['persistence-changes/historical-formats/v1.md', 'persistence-changes/historical-formats/v1.ar.md', 'persistence-catalog.md', 'persistence-catalog.ar.md'])('requires the matching schema link in %s', (document) => {
     const root = fixture()
     const schema = document.startsWith('persistence-changes/historical-formats/') ? 'v1.schema.json' : 'persistence-schema.json'
     edit(root, `docs/${document}`, `](${schema})`, '](wrong.schema.json)')
     expect(() => loadPersistenceFormats(root)).toThrow(`missing link to ${schema}`)
   })
 
-  it.each(['persistence-catalog.md', 'persistence-catalog.zh.md'])('rejects a placeholder current catalog in %s', (document) => {
+  it.each(['persistence-catalog.md', 'persistence-catalog.ar.md'])('rejects a placeholder current catalog in %s', (document) => {
     const root = fixture()
     write(root, `docs/${document}`, '# Placeholder\n\n[Inventory](persistence-schema.json)\n')
     expect(() => loadPersistenceFormats(root)).toThrow('missing schema index entry for SessionHeader')
@@ -412,9 +412,9 @@ describe('complete persistence format references', () => {
     expect(index).toContain('Authored context.')
     expect(index).toContain('[V1](v1.md) | [JSON](v1.schema.json)')
     expect(index).toContain('[Current catalog](../../persistence-catalog.md) | [JSON](../../persistence-schema.json)')
-    const translatedIndex = readFileSync(join(root, 'docs/persistence-changes/historical-formats/README.zh.md'), 'utf8')
-    expect(translatedIndex).toContain('[V1](v1.zh.md) | [JSON](v1.schema.json)')
-    expect(translatedIndex).toContain('[حالي دليل](../../persistence-catalog.zh.md) | [JSON](../../persistence-schema.json)')
+    const translatedIndex = readFileSync(join(root, 'docs/persistence-changes/historical-formats/README.ar.md'), 'utf8')
+    expect(translatedIndex).toContain('[V1](v1.ar.md) | [JSON](v1.schema.json)')
+    expect(translatedIndex).toContain('[حالي دليل](../../persistence-catalog.ar.md) | [JSON](../../persistence-schema.json)')
     const english = readFileSync(join(root, 'docs/persistence-changes/historical-formats/v1.md'), 'utf8')
     expect(english).toContain('pullRequest: 3349')
     const [visible, collapsed] = english.split('<details>')

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-30-web-search-card.zh.md)
+English | [العربية](2026-07-30-web-search-card.ar.md)
 
 ## Problem
 

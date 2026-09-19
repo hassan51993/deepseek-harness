@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [العربية](2026-07-23-demo-web-builds-client-bundles.zh.md)
+English | [العربية](2026-07-23-demo-web-builds-client-bundles.ar.md)
 
 ## Problem
 

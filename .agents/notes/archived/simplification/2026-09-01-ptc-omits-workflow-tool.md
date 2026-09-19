@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-09-01-ptc-omits-workflow-tool.zh.md)
+English | [العربية](2026-09-01-ptc-omits-workflow-tool.ar.md)
 
 ## Problem
 

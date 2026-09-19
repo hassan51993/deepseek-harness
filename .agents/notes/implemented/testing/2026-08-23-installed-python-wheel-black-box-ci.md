@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-23-installed-python-wheel-black-box-ci.zh.md)
+English | [العربية](2026-08-23-installed-python-wheel-black-box-ci.ar.md)
 
 ## Problem
 

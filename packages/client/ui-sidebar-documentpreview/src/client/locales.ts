@@ -6,8 +6,8 @@
  * suggests a different next step for the reader.
  */
 
-/** Simplified Chinese dictionary and key-set source of truth. */
-export const zh = {
+/** Arabic dictionary and key-set source of truth. */
+export const ar = {
   loading: 'صحيح في قراءة…',
   loadMore: 'تحميل أكثر كثير',
   changed: 'ملف قد تحديث، حالي عرض لـ قديم محتوى',
@@ -30,9 +30,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** Text-preview dictionary key union. */
-export type SidebarDocumentPreviewKey = keyof typeof zh
+export type SidebarDocumentPreviewKey = keyof typeof ar
 
-/** English dictionary, checked against the Chinese key set. */
+/** English dictionary, checked against the Arabic key set. */
 export const en = {
   loading: 'Reading…',
   loadMore: 'Load more',

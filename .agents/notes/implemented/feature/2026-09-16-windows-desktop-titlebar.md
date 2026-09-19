@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-16-windows-desktop-titlebar.zh.md)
+English | [العربية](2026-09-16-windows-desktop-titlebar.ar.md)
 
 ## Problem
 

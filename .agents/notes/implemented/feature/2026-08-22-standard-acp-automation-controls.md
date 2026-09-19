@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-22-standard-acp-automation-controls.zh.md)
+English | [العربية](2026-08-22-standard-acp-automation-controls.ar.md)
 
 > This note supersedes only the prompt-only protocol inventory in [ACP as an automation-only protocol](../simplification/2026-07-23-acp-automation-only-protocol.md). That decision's prohibition on ACP becoming a second product UI remains authoritative.
 

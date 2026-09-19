@@ -17,8 +17,8 @@ import { apply as applyConversation, inject as injectConversation } from '@deeps
 import { apply as applyTool, inject as injectTool } from '../src/client/apply.ts'
 
 // The service reads its initial locale from the browser; these specs assert
-// the shipped Chinese copy, so they state the browser they assume.
-usePinnedBrowserLanguages('zh-CN')
+// the shipped Arabic copy, so they state the browser they assume.
+usePinnedBrowserLanguages('ar-SA')
 
 const SID = 's1' as SessionId
 

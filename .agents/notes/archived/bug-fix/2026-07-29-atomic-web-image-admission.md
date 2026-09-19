@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-07-29-atomic-web-image-admission.zh.md)
+English | [العربية](2026-07-29-atomic-web-image-admission.ar.md)
 
 ## Problem
 

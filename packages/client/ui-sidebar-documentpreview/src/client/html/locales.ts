@@ -1,5 +1,5 @@
 /** Locale-owned HTML implementation name and iframe status text. */
-export const zh = {
+export const ar = {
   title: 'HTML',
   frame: 'HTML وثيقة معاينة',
   loading: 'صحيح في قراءة…',
@@ -7,9 +7,9 @@ export const zh = {
 } satisfies Record<string, string>
 
 /** HTML renderer dictionary keys. */
-export type HtmlPreviewKey = keyof typeof zh
+export type HtmlPreviewKey = keyof typeof ar
 
-/** English dictionary with the same keys as the Chinese dictionary. */
+/** English dictionary with the same keys as the Arabic dictionary. */
 export const en = {
   title: 'HTML',
   frame: 'HTML document preview',

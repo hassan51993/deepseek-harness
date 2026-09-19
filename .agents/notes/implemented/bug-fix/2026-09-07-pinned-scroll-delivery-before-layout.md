@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-pinned-scroll-delivery-before-layout.zh.md)
+English | [العربية](2026-09-07-pinned-scroll-delivery-before-layout.ar.md)
 
 ## Problem
 

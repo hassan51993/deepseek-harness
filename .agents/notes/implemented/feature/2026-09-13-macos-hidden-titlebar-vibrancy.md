@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-13-macos-hidden-titlebar-vibrancy.zh.md)
+English | [العربية](2026-09-13-macos-hidden-titlebar-vibrancy.ar.md)
 
 ## Problem
 

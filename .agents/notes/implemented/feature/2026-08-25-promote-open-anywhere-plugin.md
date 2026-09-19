@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-25-promote-open-anywhere-plugin.zh.md)
+English | [العربية](2026-08-25-promote-open-anywhere-plugin.ar.md)
 
 ## Problem
 

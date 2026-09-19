@@ -1,6 +1,6 @@
 # Contributing
 
-English | [العربية](CONTRIBUTING.zh.md)
+English | [العربية](CONTRIBUTING.ar.md)
 
 Thank you for your interest in contributing to DeepSeek Harness!
 

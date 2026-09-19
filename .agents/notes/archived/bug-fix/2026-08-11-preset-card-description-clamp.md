@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [العربية](2026-08-11-preset-card-description-clamp.zh.md)
+English | [العربية](2026-08-11-preset-card-description-clamp.ar.md)
 
 ## Problem
 

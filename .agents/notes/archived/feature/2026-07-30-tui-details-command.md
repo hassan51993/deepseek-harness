@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-04
 
-English | [العربية](2026-07-30-tui-details-command.zh.md)
+English | [العربية](2026-07-30-tui-details-command.ar.md)
 
 ## Problem
 

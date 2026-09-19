@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-07-session-prose-local-media-display.zh.md)
+English | [العربية](2026-09-07-session-prose-local-media-display.ar.md)
 
 ## Problem
 

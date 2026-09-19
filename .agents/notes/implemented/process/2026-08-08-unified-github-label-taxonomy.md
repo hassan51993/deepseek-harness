@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-08-unified-github-label-taxonomy.zh.md)
+English | [العربية](2026-08-08-unified-github-label-taxonomy.ar.md)
 
 ## Problem
 

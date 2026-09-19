@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/persistence-changes/historical-formats/v1.md
 v1.md: 2cac9741d03659ef7afa80de4dae4e609b1b730e
-v1.zh.md: 6eb7a5bc6fef32df2b6182f35272a9d237ffde16
+v1.ar.md: 6eb7a5bc6fef32df2b6182f35272a9d237ffde16

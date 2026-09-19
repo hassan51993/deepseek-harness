@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
 2026-08-13-remove-first-run-beta-notice.md: 535d0a20a5805c137551e6047f40fc5cf53153b8
-2026-08-13-remove-first-run-beta-notice.zh.md: 20626bbd9d0bd13c00d4ee66f5dbc267c2e92082
+2026-08-13-remove-first-run-beta-notice.ar.md: 20626bbd9d0bd13c00d4ee66f5dbc267c2e92082

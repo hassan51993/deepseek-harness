@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-default-product-experimental-isolation.zh.md)
+English | [العربية](2026-09-12-default-product-experimental-isolation.ar.md)
 
 ## Problem
 

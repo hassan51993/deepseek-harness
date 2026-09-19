@@ -1,6 +1,6 @@
 # Session format version and release status
 
-English | [العربية](session-format-status.zh.md)
+English | [العربية](session-format-status.ar.md)
 
 ## Summary
 

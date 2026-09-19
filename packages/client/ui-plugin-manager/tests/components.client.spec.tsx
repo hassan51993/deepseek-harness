@@ -9,7 +9,7 @@ import { PluginManagerPage } from '../src/client/PluginManagerPage.tsx'
 import type { PluginManagerPageProps } from '../src/client/PluginManagerPage.tsx'
 import type { ConfigLedger } from '../src/client/config-ledger.ts'
 import { rowKey, type InstallState, type PackageRow, type PackageView, type PluginManagerState } from '../src/client/manager-store.ts'
-import { en, zh, type PluginManagerLocaleKey } from '../src/client/locales.ts'
+import { en, ar, type PluginManagerLocaleKey } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -214,12 +214,12 @@ describe('PluginManagerPage', () => {
       expect(screen.queryByText('Original metadata.')).toBeNull()
     }
     assertCard(en)
-    setLanguage(zh)
-    assertCard(zh)
-    fireEvent.click(screen.getByRole('switch', { name: zh.enableToggle.replace('{name}', zh[titleKey]) }))
+    setLanguage(ar)
+    assertCard(ar)
+    fireEvent.click(screen.getByRole('switch', { name: ar.enableToggle.replace('{name}', ar[titleKey]) }))
     expect(actions.setEnabled).toHaveBeenCalledExactlyOnceWith(name, false)
-    fireEvent.click(screen.getByRole('button', { name: zh.openDetail.replace('{name}', zh[titleKey]) }))
-    for (const dict of [zh, en]) {
+    fireEvent.click(screen.getByRole('button', { name: ar.openDetail.replace('{name}', ar[titleKey]) }))
+    for (const dict of [ar, en]) {
       setLanguage(dict)
       expect(screen.getByRole('heading', { level: 3 }).textContent).toBe(dict[titleKey])
       expect(screen.getByText(dict[descriptionKey])).toBeTruthy()
@@ -230,7 +230,7 @@ describe('PluginManagerPage', () => {
     fireEvent.click(screen.getByRole('button', { name: en.uninstallLabel.replace('{name}', en[titleKey]) }))
     expect(actions.uninstall).toHaveBeenCalledExactlyOnceWith(name)
     set({ confirm: { action: 'uninstall', packageName: name } })
-    for (const dict of [en, zh]) {
+    for (const dict of [en, ar]) {
       setLanguage(dict)
       expect(screen.getByRole('dialog', { name: dict.confirmUninstallTitle.replace('{name}', dict[titleKey]) })).toBeTruthy()
     }
@@ -300,8 +300,8 @@ describe('PluginManagerPage', () => {
   it('preserves metadata for another scope with the same short name', () => {
     const name = '@acme/dsh-experimental-agent-team-profile'
     const { setLanguage } = renderTab({ packages: [pkg({ name, description: 'Third-party description.' })] })
-    setLanguage(zh)
-    fireEvent.click(screen.getByRole('button', { name: zh.openDetail.replace('{name}', 'experimental-agent-team-profile') }))
+    setLanguage(ar)
+    fireEvent.click(screen.getByRole('button', { name: ar.openDetail.replace('{name}', 'experimental-agent-team-profile') }))
     expect(screen.getByRole('heading', { level: 3 }).textContent).toBe('experimental-agent-team-profile')
     expect(screen.getByText('Third-party description.')).toBeTruthy()
     expect(document.querySelector('[data-plugin-name]')?.textContent).toBe(name)

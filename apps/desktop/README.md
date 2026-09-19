@@ -1,6 +1,6 @@
 # DeepSeek Harness Desktop
 
-English | [العربية](README.zh.md)
+English | [العربية](README.ar.md)
 
 The desktop application is an Electron shell around the complete dsh Web application. An Electron RunAsNode child starts the shared profile runner, and Electron immediately loads the packaged Web entry at `dsh-app://app/`. Its shared loading page waits for Host boot injections, then starts the client without navigating to another document. Electron forwards application HTTP requests to the authenticated Web Host; WebSocket streams connect to that Host with credentials attached only for the owned application window. Node IPC carries boot injections, readiness, and shutdown. Desktop defaults to port `19387`, separate from Web’s `3080`; a `webserver.config.port` patch can override it.
 
@@ -206,7 +206,7 @@ The theme follows Windows at startup; `/THEME=light`, `/THEME=dark`, and `/THEME
 
 Windows packaging compiles an x86 Win32/GDI+ helper with Visual C++ Build Tools and a Windows SDK; signed builds sign this helper through the configured Windows signer. The preparation hook leaves production dependency collection to electron-builder on every platform. The [installer decision](../../.agents/notes/implemented/architecture/2026-09-10-windows-native-installer-pages.md) records the NSIS integration and release checks.
 
-Run `pnpm --dir apps/desktop run test:installer` from the repository root on an interactive Windows x64 desktop to build and exercise a small native test payload through the production installer configuration. Each run uses a unique product identity and sequentially exercises English-only and Chinese-only installer variants, selecting test labels from the displayed welcome button. Both variants install into private directories and uninstall after testing; screenshots and results remain under `.desktop-build/installer-tests/`. The checks include upgrades to registered paths with trailing separators and rejection of drive roots. The optional `--signed` flag uses the Windows EV configuration below to sign test executables and the helper before embedding them; it does not enable an update feed.
+Run `pnpm --dir apps/desktop run test:installer` from the repository root on an interactive Windows x64 desktop to build and exercise a small native test payload through the production installer configuration. Each run uses a unique product identity and sequentially exercises English-only and Arabic-only installer variants, selecting test labels from the displayed welcome button. Both variants install into private directories and uninstall after testing; screenshots and results remain under `.desktop-build/installer-tests/`. The checks include upgrades to registered paths with trailing separators and rejection of drive roots. The optional `--signed` flag uses the Windows EV configuration below to sign test executables and the helper before embedding them; it does not enable an update feed.
 
 ### Windows EV signing
 

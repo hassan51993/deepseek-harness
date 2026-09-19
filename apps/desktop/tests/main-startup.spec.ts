@@ -309,8 +309,8 @@ afterEach(async () => {
 describe('desktop main startup', () => {
   it.each([
     ['darwin', true, 'en-US'],
-    ['darwin', false, 'zh-CN'],
-    ['win32', true, 'zh-CN'],
+    ['darwin', false, 'ar-SA'],
+    ['win32', true, 'ar-SA'],
     ['win32', false, 'en-US'],
   ] as const)('offers the native About panel before other commands on %s (packaged=%s, locale=%s)', async (platform, packaged, locale) => {
     vi.stubGlobal('process', { ...process, platform })
@@ -511,9 +511,9 @@ describe('desktop main startup', () => {
     const window = harness.windows[0]!
     const listener = harness.ipcOn.mock.calls.find(([channel]) => channel === DESKTOP_IPC.windowsAppearance)![1]
     const event = { sender: window.webContents, senderFrame: window.webContents.mainFrame }
-    listener({ ...event, senderFrame: { url: 'dsh-app://app/' } }, 'zh-CN', '#ffffff', '#000000')
+    listener({ ...event, senderFrame: { url: 'dsh-app://app/' } }, 'ar-SA', '#ffffff', '#000000')
     expect(window.setTitleBarOverlay).not.toHaveBeenCalled()
-    listener(event, 'zh-CN', 'rgb(249, 250, 251)', '#0f1115')
+    listener(event, 'ar-SA', 'rgb(249, 250, 251)', '#0f1115')
     expect(window.setTitleBarOverlay).toHaveBeenCalledWith({ color: 'rgb(249, 250, 251)', symbolColor: '#0f1115' })
     window.webContents.emit('context-menu', {}, { isEditable: false, selectionText: 'text', editFlags: { canCopy: true } })
     expect(harness.menu.buildFromTemplate).toHaveBeenLastCalledWith([{ role: 'copy', enabled: true, label: 'نسخ', accelerator: '' }])
@@ -527,7 +527,7 @@ describe('desktop main startup', () => {
     expect(window.setTitleBarOverlay).toHaveBeenLastCalledWith({ color: '#fff', symbolColor: '#000' })
     window.setTitleBarOverlay.mockClear()
     window.webContents.mainFrame.url = 'dsh-app://unowned/index.html'
-    listener(event, 'zh-CN', '#fff', '#000')
+    listener(event, 'ar-SA', '#fff', '#000')
     expect(window.setTitleBarOverlay).not.toHaveBeenCalled()
     expect(harness.menu.setApplicationMenu).toHaveBeenCalledExactlyOnceWith(null)
   })
@@ -539,7 +539,7 @@ describe('desktop main startup', () => {
     const window = harness.windows[0]!
     const event = { sender: window.webContents, senderFrame: window.webContents.mainFrame }
     const appearance = harness.ipcOn.mock.calls.find(([channel]) => channel === DESKTOP_IPC.windowsAppearance)![1]
-    appearance(event, 'zh-CN', '#fff', '#000')
+    appearance(event, 'ar-SA', '#fff', '#000')
     const handler = harness.handlers.get(DESKTOP_IPC.windowsMenu)!
     const foreignEvent = { ...event, sender: {} }
     expect(() => handler(foreignEvent, 'application', 48, 34)).toThrow('rejected sender')

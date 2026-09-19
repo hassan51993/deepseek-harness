@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-12-mcp-resources-and-instructions.zh.md)
+English | [العربية](2026-09-12-mcp-resources-and-instructions.ar.md)
 
 ## Problem
 

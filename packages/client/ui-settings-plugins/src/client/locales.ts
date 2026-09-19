@@ -91,8 +91,8 @@ export const en: Record<PluginsSettingsLocaleKey, string> = {
   subagentModelSelectionOff: 'Subagents use configured defaults or inherit the parent agent\'s model. Saved model choices are retained.',
 }
 
-/** Simplified Chinese copy. */
-export const zh: Record<PluginsSettingsLocaleKey, string> = {
+/** Arabic copy. */
+export const ar: Record<PluginsSettingsLocaleKey, string> = {
   nav: 'داخل وضع إضافة',
   title: 'داخل وضع إضافة',
   intro: 'فحص نظر داخل وضع نشر إضافة قائمة',

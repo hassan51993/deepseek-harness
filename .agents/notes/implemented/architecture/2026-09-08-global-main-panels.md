@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-global-main-panels.zh.md)
+English | [العربية](2026-09-08-global-main-panels.ar.md)
 
 ## Problem
 

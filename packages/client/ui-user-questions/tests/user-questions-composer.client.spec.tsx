@@ -7,9 +7,9 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { PendingQuestion, type QuestionComposerProps } from '../src/client/contract/slots.ts'
 import { createQuestionDraftStore } from '../src/client/draft-store.ts'
 import { QuestionComposer, parseRecommendedLabel } from '../src/client/QuestionComposer.tsx'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 import { en as commonEn } from '@deepseek-ai/dsh-client-locale/src/locales/en.ts'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 
 // Every session-scope fixture carries the resource hook the resources plugin merges into GlobalStandardProps.
 const useResource = (() => ({ status: 'none' as const, value: undefined, failure: undefined, reload: () => {} })) as GlobalStandardProps['useResource']
@@ -131,7 +131,7 @@ const kitBase: Omit<QuestionComposerProps, 'matched' | 'useStore' | 'actions'> =
     submit: () => { throw new Error('unused') },
   },
   // The seat's key domain is question ∪ common.
-  t: seatOver(zh, commonZh),
+  t: seatOver(ar, commonAr),
 }
 
 let kit: Omit<QuestionComposerProps, 'matched'>
@@ -443,14 +443,14 @@ describe('PendingQuestion domain face', () => {
     // Expanded: the option list is visible.
     expect(screen.getByRole('radiogroup')).toBeTruthy()
     // Collapse: options leave the tree; the title and minimize toggle stay.
-    fireEvent.click(screen.getByLabelText(zh['nav.minimize']))
+    fireEvent.click(screen.getByLabelText(ar['nav.minimize']))
     expect(screen.queryByRole('radiogroup')).toBeNull()
     expect(screen.getByText('اختيار مرشح شخص نوع')).toBeTruthy()
     // Expand: the options return (the toggle label flips while collapsed).
-    fireEvent.click(screen.getByLabelText(zh['nav.maximize']))
+    fireEvent.click(screen.getByLabelText(ar['nav.maximize']))
     expect(screen.getByRole('radiogroup')).toBeTruthy()
     // Expanded again: the toggle reports expanded and the option list is back.
-    expect(screen.getByLabelText(zh['nav.minimize']).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByLabelText(ar['nav.minimize']).getAttribute('aria-expanded')).toBe('true')
   })
 
   it('keeps the collapse toggle out of the cancel path and preserves drafts across collapse', () => {
@@ -459,9 +459,9 @@ describe('PendingQuestion domain face', () => {
     fireEvent.click(screen.getByRole('radio', { name: /عمل مسار سقوط أرض نوع/ }))
     // Single-select auto-advances to the second question; collapse and expand
     // must not lose either the picked option or the current position.
-    fireEvent.click(screen.getByLabelText(zh['nav.minimize']))
-    fireEvent.click(screen.getByLabelText(zh['nav.maximize']))
-    const custom = screen.getByPlaceholderText(zh['custom.placeholder'])
+    fireEvent.click(screen.getByLabelText(ar['nav.minimize']))
+    fireEvent.click(screen.getByLabelText(ar['nav.maximize']))
+    const custom = screen.getByPlaceholderText(ar['custom.placeholder'])
     fireEvent.change(custom, { target: { value: 'يلزم قدرة مستقل ترتيب فحص خط فوق مشكلة' } })
     // Re-expanding must not steal focus back into the textarea: it was
     // autofocused on first presentation, so focus stays on the expand toggle.
@@ -478,7 +478,7 @@ describe('PendingQuestion domain face', () => {
 })
 
 describe('parseRecommendedLabel', () => {
-  it('recognizes English and Chinese suffixes without changing ordinary labels', () => {
+  it('recognizes English and Arabic suffixes without changing ordinary labels', () => {
     expect(parseRecommendedLabel('Fast (Recommended)')).toEqual({ label: 'Fast', recommended: true })
     expect(parseRecommendedLabel('مستقر ملائم (دفع ترشيح)')).toEqual({ label: 'مستقر ملائم', recommended: true })
     expect(parseRecommendedLabel('مستقر ملائم (دفع ترشيح)')).toEqual({ label: 'مستقر ملائم', recommended: true })

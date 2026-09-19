@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-09-08-shared-file-type-icons.zh.md)
+English | [العربية](2026-09-08-shared-file-type-icons.ar.md)
 
 ## Problem
 

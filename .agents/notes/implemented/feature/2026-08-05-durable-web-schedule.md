@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-08-05-durable-web-schedule.zh.md)
+English | [العربية](2026-08-05-durable-web-schedule.ar.md)
 
 ## Problem
 

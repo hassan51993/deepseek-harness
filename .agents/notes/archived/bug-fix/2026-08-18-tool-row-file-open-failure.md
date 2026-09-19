@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [العربية](2026-08-18-tool-row-file-open-failure.zh.md)
+English | [العربية](2026-08-18-tool-row-file-open-failure.ar.md)
 
 ## Problem
 

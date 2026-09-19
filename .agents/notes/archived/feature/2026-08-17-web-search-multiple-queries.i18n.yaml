@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-17-web-search-multiple-queries.md
 2026-08-17-web-search-multiple-queries.md: fd7553b332f3906f678ab337cfed4c60a072cc6c
-2026-08-17-web-search-multiple-queries.zh.md: a16b407418be80c4f002eb931d799aff919fc802
+2026-08-17-web-search-multiple-queries.ar.md: a16b407418be80c4f002eb931d799aff919fc802

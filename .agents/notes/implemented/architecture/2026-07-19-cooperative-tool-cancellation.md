@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [العربية](2026-07-19-cooperative-tool-cancellation.zh.md)
+English | [العربية](2026-07-19-cooperative-tool-cancellation.ar.md)
 
 ## Problem
 
