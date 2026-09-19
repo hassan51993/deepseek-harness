@@ -6,7 +6,7 @@ import { createCordisInventory } from '../src/client/inventory.ts'
 import type { CordisDynamicPort, CordisInventoryRow } from '../src/client/dynamic-port.ts'
 
 const ROW = {
-  id: 'dyn-1', name: 'clock', purpose: 'قمة شريط وقت ساعات', agentId: 'sess-1', running: true,
+  id: 'dyn-1', name: 'clock', purpose: 'قمة شريط وقت ساعة', agentId: 'sess-1', running: true,
 } as unknown as CordisInventoryRow
 
 /** A port whose inventory answer the test controls. */

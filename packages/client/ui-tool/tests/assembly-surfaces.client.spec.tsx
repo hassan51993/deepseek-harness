@@ -115,7 +115,7 @@ describe('todo_write assembly (product registrations, no outlet twins)', () => {
     // Keyed toolview registration took the row (summary derived from args).
     const row = view.container.querySelector('[data-tool="todo_write"]')
     expect(row).not.toBeNull()
-    expect(row!.textContent).toContain('1/3 اكتمل · تنفيذ fixture مثال هذا')
+    expect(row!.textContent).toContain('1/3 مكتملة · تنفيذ fixture مثال هذا')
 
     // The plan strip sits in the input dock, fed by the projection
     // (default-collapsed: the header summary shows; rows appear on expand).

@@ -148,8 +148,8 @@ export async function connectFreshWorkspace(page: Page, root: string, name = 'wo
  */
 export async function connectFreshWorkspaceAr(page: Page, root: string, name = 'workspace'): Promise<void> {
   mkdirSync(join(root, name), { recursive: true })
-  await page.getByRole('textbox', { name: 'اختيار مساحات العمل' }).click()
-  const dialog = page.getByRole('dialog', { name: 'اختيار مساحات العمل دليل' })
+  await page.getByRole('textbox', { name: 'اختيار مساحة العمل' }).click()
+  const dialog = page.getByRole('dialog', { name: 'اختيار مساحة العمل دليل' })
   await dialog.waitFor({ timeout: 10_000 })
   await dialog.getByRole('button', { name: 'تحرير مسار' }).click()
   const pathInput = dialog.getByRole('textbox', { name: 'تحرير مسار' })

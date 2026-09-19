@@ -80,11 +80,11 @@ describe('PermissionSelect', () => {
 
     fireEvent.click(trigger())
     expect(screen.getAllByRole('menuitem').map(item => item.textContent))
-      .toEqual(['قراءة فقط', 'الكتابة في مساحات العمل', 'وصول كامل', 'Auto reviewEXP'])
-    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحات العمل' }))
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto reviewEXP'])
+    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحة العمل' }))
 
     expect(select).toHaveBeenCalledExactlyOnceWith('workspace-write')
-    expect(trigger().textContent).toBe('الكتابة في مساحات العمل')
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
     expect(trigger().disabled).toBe(true)
     submitted.resolve(true)
     await act(async () => { await submitted.promise })
@@ -152,9 +152,9 @@ describe('PermissionSelect', () => {
     act(() => { selection.set({ value: { currentValue: 'auto' } }) })
     await act(async () => {})
 
-    expect(trigger().getAttribute('aria-label')).toBe('وصول نمط، حالي:Auto review EXP')
+    expect(trigger().getAttribute('aria-label')).toBe('وضع الوصول، الحالي: Auto review EXP')
     expect(trigger().querySelector('sup')?.textContent).toBe('EXP')
-    expect(trigger().getAttribute('title')).toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي الاستدعاءات الالأدوات و PTC داخل طبقة الاستدعاءات قبل من نفس النموذج إجراء فعلي تحقق صفة مراجعة فحص.')
+    expect(trigger().getAttribute('title')).toBe('يعمل بلا عزل، بعد مراجعة تجريبية يجريها النموذج نفسه لكل استدعاء أداة أصلي ولكل استدعاء داخلي في PTC.')
   })
 
   it('revokes open UI when locked or either source disappears', () => {
@@ -223,11 +223,11 @@ describe('PermissionSelect', () => {
     expect(trigger().querySelectorAll('svg')).toHaveLength(1)
 
     fireEvent.click(trigger())
-    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحات العمل' }))
-    expect(trigger().textContent).toBe('الكتابة في مساحات العمل')
+    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحة العمل' }))
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
     await act(async () => {})
     expect(trigger().textContent).toBe('Custom')
     act(() => { selection.set({ value: { currentValue: 'workspace-write' } }) })
-    expect(trigger().textContent).toBe('الكتابة في مساحات العمل')
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
   })
 })

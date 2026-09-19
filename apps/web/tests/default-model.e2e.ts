@@ -102,7 +102,7 @@ describe('web e2e: the composer model switch is the default for later sessions',
       reason: 'initial',
     })
 
-    const trigger = page.getByRole('button', { name: /^اختيار النموذج/ })
+    const trigger = page.getByRole('button', { name: /^اختيار نموذج/ })
     await trigger.waitFor({ timeout: 15_000 })
     await trigger.click()
     await page.getByRole('menuitem', { name: /النموذج/ }).click()
@@ -138,7 +138,7 @@ describe('web e2e: the composer model switch is the default for later sessions',
     await scaffold.ctx.settings.replace('llm-pi-ai', { providers: {} })
 
     await expect.poll(async () => box.isEnabled(), { timeout: 15_000 }).toBe(false)
-    expect(await box.getAttribute('data-placeholder')).toBe('هذا الالنموذج غير متاح — اختر النموذجًا للمتابعة')
+    expect(await box.getAttribute('data-placeholder')).toBe('هذا النموذج غير متاح — اختر نموذجًا للمتابعة')
 
     // The block is an affordance; the refusal is the Host's. A client that
     // never disabled anything still cannot start a turn on a dead route.
@@ -151,7 +151,7 @@ describe('web e2e: the composer model switch is the default for later sessions',
 
     // The way out stays open. Locking the model seat with everything else
     // would leave the composer asking for the one thing it prevents.
-    const seat = page.getByRole('button', { name: /^اختيار النموذج/ })
+    const seat = page.getByRole('button', { name: /^اختيار نموذج/ })
     expect(await seat.isEnabled()).toBe(true)
     await seat.click()
     await page.getByRole('menuitem', { name: /النموذج/ }).click()

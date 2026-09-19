@@ -46,11 +46,11 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-setup-card-cancel'))
     const credentialStep = page.getByRole('dialog', { name: CREDENTIAL_STEP })
     await credentialStep.waitFor({ timeout: 15_000 })
-    await credentialStep.getByRole('button', { name: 'لاحقًا إعداد' }).click()
+    await credentialStep.getByRole('button', { name: 'قليلا بعد إعداد' }).click()
     await credentialStep.waitFor({ state: 'detached', timeout: 15_000 })
 
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
-    const settings = page.getByRole('dialog', { name: 'ضبط' })
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
+    const settings = page.getByRole('dialog', { name: 'الإعدادات' })
     await settings.waitFor({ timeout: 10_000 })
     // Dismissing the onboarding step leaves Settings closed, so enter the
     // Models section explicitly before exercising its normal cards.
@@ -58,7 +58,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     const setupKey = settings.getByRole('textbox', { name: 'API مفتاح', exact: true })
     await setupKey.waitFor({ timeout: 10_000 })
 
-    const add = settings.getByRole('button', { name: 'إضافة المزوّد' })
+    const add = settings.getByRole('button', { name: 'إضافة مزود' })
     await expect.poll(async () => add.isEnabled(), { timeout: 10_000 }).toBe(true)
     await add.click()
     const pick = settings.getByLabel('المزوّد')
@@ -87,7 +87,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
 
   it('stops prompting for DeepSeek once the other provider can serve requests', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-other-provider'))
-    const settings = page.getByRole('dialog', { name: 'ضبط' })
+    const settings = page.getByRole('dialog', { name: 'الإعدادات' })
     await settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).fill('sk-e2e-minimax')
     await settings.getByRole('button', { name: 'حفظ', exact: true }).click()
     await settings.getByText('قد حفظ minimax-cn.', { exact: true }).waitFor({ timeout: 15_000 })
@@ -113,7 +113,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
 
     // The Models page agrees: DeepSeek stays a row rather than reopening its
     // setup card over a user who already has somewhere to send a request.
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
     await settings.waitFor({ timeout: 10_000 })
     await settings.getByRole('button', { name: 'النموذج' }).click()
     await settings.getByRole('button', { name: 'تحرير DeepSeek (deepseek-official)' }).waitFor({ timeout: 10_000 })

@@ -622,11 +622,11 @@ describe('sendSession submission echo', () => {
         mode: 'steer',
         text: 'قيام أي تصحيح انحراف',
       }))
-      await expect(b.root.sendSession(session, 'لاحقًا معالجة', [], 'queue'))
+      await expect(b.root.sendSession(session, 'قليلا بعد معالجة', [], 'queue'))
         .resolves.toEqual({ kind: 'success' })
       expect(b.beginSubmission).toHaveBeenLastCalledWith(expect.objectContaining({
         mode: 'queue',
-        text: 'لاحقًا معالجة',
+        text: 'قليلا بعد معالجة',
       }))
     } finally {
       b.restore()

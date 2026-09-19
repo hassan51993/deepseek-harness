@@ -70,10 +70,10 @@ describe('JobListAction visibility', () => {
 
   it('counts only live jobs, and falls back to the total when none are live', () => {
     const { rerender } = render(<JobListAction {...props([job(), job({ id: 'bash-2' as JobView['id'] })])} />)
-    expect(screen.getByRole('button', { name: '2 عدد مهام الخلفية قيد التشغيل' })).toBeDefined()
+    expect(screen.getByRole('button', { name: '2 مهام خلفية قيد التشغيل' })).toBeDefined()
 
     rerender(<JobListAction {...props([job({ status: 'completed', finishedAt: START + 3_000 })])} />)
-    expect(screen.getByRole('button', { name: '1 عدد مهام الخلفية' })).toBeDefined()
+    expect(screen.getByRole('button', { name: '1 مهمة خلفية' })).toBeDefined()
   })
 
   it('closes and unmounts when the last job disappears while the list is open', () => {
@@ -96,10 +96,10 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells()).toEqual([
-      ['bash', 'earlier live', 'قيد التشغيل', '0ثوانٍ'],
-      ['bash', 'later live', 'قيد التشغيل', '0ثوانٍ'],
-      ['bash', 'new done', 'فاشلة', '9ثوانٍ'],
-      ['bash', 'old done', 'اكتمل', '1ثوانٍ'],
+      ['bash', 'earlier live', 'قيد التشغيل', '0ثانية'],
+      ['bash', 'later live', 'قيد التشغيل', '0ثانية'],
+      ['bash', 'new done', 'فاشلة', '9ثانية'],
+      ['bash', 'old done', 'مكتملة', '1ثانية'],
     ])
   })
 
@@ -130,7 +130,7 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     const words = rowCells().map(cells => cells[2])
-    expect(new Set(words)).toEqual(new Set(['قيد التشغيل', 'جارٍ الإيقاف', 'اكتمل', 'قد إلغاء', 'فاشلة']))
+    expect(new Set(words)).toEqual(new Set(['قيد التشغيل', 'جارٍ الإيقاف', 'مكتملة', 'ملغاة', 'فاشلة']))
   })
 })
 
@@ -142,12 +142,12 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-2' as JobView['id'], label: 'done', status: 'completed', finishedAt: START + 4_000 }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells()[0]).toContain('1ثوانٍ')
-    expect(rowCells()[1]).toContain('4ثوانٍ')
+    expect(rowCells()[0]).toContain('1ثانية')
+    expect(rowCells()[1]).toContain('4ثانية')
 
     act(() => { vi.advanceTimersByTime(2_000) })
-    expect(rowCells()[0]).toContain('3ثوانٍ')
-    expect(rowCells()[1]).toContain('4ثوانٍ')
+    expect(rowCells()[0]).toContain('3ثانية')
+    expect(rowCells()[1]).toContain('4ثانية')
   })
 
   it('widens to minutes and then hours, and never shows a negative figure', () => {
@@ -158,7 +158,7 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-3' as JobView['id'], label: 'skew', status: 'completed', startedAt: START + 5_000, finishedAt: START }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells().map(cells => cells[3])).toEqual(['2ساعات3قسم', '2قسم5ثوانٍ', '0ثوانٍ'])
+    expect(rowCells().map(cells => cells[3])).toEqual(['2 س 3 د', '2 د 5 ث', '0ثانية'])
   })
 
   it('runs no clock while the list is closed', () => {
@@ -223,8 +223,8 @@ describe('JobListAction wire tolerance', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells().map(cells => [cells[1], cells[3]])).toEqual([
-      ['finished', '3ثوانٍ'],
-      ['no finish', '0ثوانٍ'],
+      ['finished', '3ثانية'],
+      ['no finish', '0ثانية'],
     ])
   })
 

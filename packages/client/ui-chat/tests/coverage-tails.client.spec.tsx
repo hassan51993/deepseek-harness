@@ -26,9 +26,9 @@ describe('tails', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    expect(view.getByText('تفكير اعتبار')).toBeTruthy()
+    expect(view.getByText('تفكير')).toBeTruthy()
     expect(view.getByText('thinking hard')).toBeTruthy()
-    expect(view.getByText(/كتلة المحتوى غير معروفة/)).toBeTruthy()
+    expect(view.getByText(/كتلة محتوى غير معروفة/)).toBeTruthy()
     const stopped = render(
       <AssistantMarkdown
         t={t}

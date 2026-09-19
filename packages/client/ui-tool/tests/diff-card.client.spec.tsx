@@ -247,7 +247,7 @@ describe('FileMutationRow diff card', () => {
     expect(view.getByText('+1 -0')).toBeTruthy()
     // The footer counts live inside the collapsed diff card.
     toggleRow(view)
-    expect(view.getByText('└ +1 -0 · 1 عدد ملف')).toBeTruthy()
+    expect(view.getByText('└ +1 -0 · 1 ملف')).toBeTruthy()
   })
 
   it('reflects the run state on its leading slot', () => {

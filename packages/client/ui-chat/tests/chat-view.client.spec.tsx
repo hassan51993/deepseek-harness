@@ -553,15 +553,15 @@ describe('Chat node rendering', () => {
 
   it('formatRunDuration localizes units and floors partial seconds', () => {
     const t = makeTranslate(ar, commonAr)
-    expect(formatRunDuration(0, t)).toBe('0ثوانٍ')
-    expect(formatRunDuration(-500, t)).toBe('0ثوانٍ')
-    expect(formatRunDuration(15_999, t)).toBe('15ثوانٍ')
-    expect(formatRunDuration(125_000, t)).toBe('2قسم05ثوانٍ')
+    expect(formatRunDuration(0, t)).toBe('0ثانية')
+    expect(formatRunDuration(-500, t)).toBe('0ثانية')
+    expect(formatRunDuration(15_999, t)).toBe('15ثانية')
+    expect(formatRunDuration(125_000, t)).toBe('2د05ث')
     // The hour rolls at exactly 3600s, never at 60 displayed minutes.
-    expect(formatRunDuration(3_599_999, t)).toBe('59قسم59ثوانٍ')
-    expect(formatRunDuration(3_600_000, t)).toBe('1ساعات00قسم00ثوانٍ')
-    expect(formatRunDuration(3_903_000, t)).toBe('1ساعات05قسم03ثوانٍ')
-    expect(formatRunDuration(7_261_000, t)).toBe('2ساعات01قسم01ثوانٍ')
+    expect(formatRunDuration(3_599_999, t)).toBe('59د59ث')
+    expect(formatRunDuration(3_600_000, t)).toBe('1 س 00 د 00 ث')
+    expect(formatRunDuration(3_903_000, t)).toBe('1 س 05 د 03 ث')
+    expect(formatRunDuration(7_261_000, t)).toBe('2 س 01 د 01 ث')
   })
 
   it('formatRunDuration uses the English hour template', () => {
@@ -618,8 +618,8 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const navigation = view.getByRole('navigation', { name: 'التنقّل بين الجولات' })
     expect(navigation.style.getPropertyValue('--turn-natural-height')).toBe('22px')
-    const first = view.getByRole('button', { name: 'قفز تحويل إلى رقم 1 الجولات' })
-    const second = view.getByRole('button', { name: 'قفز تحويل إلى رقم 2 الجولات' })
+    const first = view.getByRole('button', { name: 'الانتقال إلى الجولة 1' })
+    const second = view.getByRole('button', { name: 'الانتقال إلى الجولة 2' })
     expect(first.parentElement?.style.getPropertyValue('--turn-natural-position')).toBe('0px')
     expect(second.parentElement?.style.getPropertyValue('--turn-natural-position')).toBe('10px')
     expect(second.getAttribute('aria-current')).toBe('true')
@@ -636,7 +636,7 @@ describe('ChatView', () => {
     ]
     const h = makeHarness({ nodes: later }, { hasMore: true })
     const view = render(<h.ChatView {...h.props} />)
-    const second = view.getByRole('button', { name: 'قفز تحويل إلى رقم 2 الجولات' })
+    const second = view.getByRole('button', { name: 'الانتقال إلى الجولة 2' })
     const secondPosition = second.parentElement as HTMLElement
     expect(secondPosition.style.getPropertyValue('--turn-natural-position')).toBe('0px')
 
@@ -656,7 +656,7 @@ describe('ChatView', () => {
         turnTimings: new Map([[1, { startTime: 1_000 }], [2, { startTime: 4_000 }], [3, { startTime: 7_000 }]]),
       })
     })
-    const movedSecond = view.getByRole('button', { name: 'قفز تحويل إلى رقم 2 الجولات' })
+    const movedSecond = view.getByRole('button', { name: 'الانتقال إلى الجولة 2' })
     expect(movedSecond.parentElement).toBe(secondPosition)
     // Fixed pitch: the mark moves one slot down and never compresses.
     expect(secondPosition.style.getPropertyValue('--turn-natural-position')).toBe('10px')
@@ -671,9 +671,9 @@ describe('ChatView', () => {
       { turn: 3, seq: 8, prompt: 'third prompt', response: 'third response' },
     ])
     const view = render(<h.ChatView {...h.props} />)
-    const first = view.getByRole('button', { name: 'تحميل و قفز تحويل إلى رقم 1 الجولات' })
-    view.getByRole('button', { name: 'تحميل و قفز تحويل إلى رقم 2 الجولات' })
-    const third = view.getByRole('button', { name: 'قفز تحويل إلى رقم 3 الجولات' })
+    const first = view.getByRole('button', { name: 'تحميل الجولة 1 والانتقال إليها' })
+    view.getByRole('button', { name: 'تحميل الجولة 2 والانتقال إليها' })
+    const third = view.getByRole('button', { name: 'الانتقال إلى الجولة 3' })
     expect(third.getAttribute('aria-current')).toBe('true')
     fireEvent.focus(first)
     // An unloaded turn previews both sides from the outline.
@@ -689,7 +689,7 @@ describe('ChatView', () => {
     await act(async () => {})
     expect(h.loadThrough.mock.calls).toEqual([[0], [0]])
     expect(first.getAttribute('aria-busy')).toBeNull()
-    expect(view.getByRole('button', { name: 'قفز تحويل إلى رقم 3 الجولات' }).getAttribute('aria-current')).toBe('true')
+    expect(view.getByRole('button', { name: 'الانتقال إلى الجولة 3' }).getAttribute('aria-current')).toBe('true')
   })
 
   it('a jump from the pinned tail releases bottom ownership so the follow snap cannot cancel it', async () => {
@@ -705,7 +705,7 @@ describe('ChatView', () => {
     // Pinned to the tail on open: the back-to-bottom control is absent.
     expect(view.queryByRole('button', { name: 'العودة إلى الأسفل' })).toBeNull()
 
-    const first = view.getByRole('button', { name: 'تحميل و قفز تحويل إلى رقم 1 الجولات' })
+    const first = view.getByRole('button', { name: 'تحميل الجولة 1 والانتقال إليها' })
     fireEvent.click(first)
     // The click itself leaves the tail...
     expect(view.getByRole('button', { name: 'العودة إلى الأسفل' })).toBeTruthy()
@@ -725,7 +725,7 @@ describe('ChatView', () => {
       { turn: 3, seq: 8, prompt: 'third prompt', response: '' },
     ])
     const view = render(<h.ChatView {...h.props} />)
-    const first = view.getByRole('button', { name: 'تحميل و قفز تحويل إلى رقم 1 الجولات' })
+    const first = view.getByRole('button', { name: 'تحميل الجولة 1 والانتقال إليها' })
     fireEvent.click(first)
     // The session-side guard refuses the busy-pager jump instantly, yet the
     // mark stays busy instead of degrading to the nearest loaded turn.
@@ -787,7 +787,7 @@ describe('ChatView', () => {
     h.loadThrough.mockImplementation(() => new Promise<void>((resolve) => { releaseJump = resolve }))
     const view = render(<h.ChatView {...h.props} />)
 
-    fireEvent.click(view.getByRole('button', { name: 'تحميل و قفز تحويل إلى رقم 1 الجولات' }))
+    fireEvent.click(view.getByRole('button', { name: 'تحميل الجولة 1 والانتقال إليها' }))
     expect(h.loadThrough).toHaveBeenCalledWith(0)
 
     // The paged window commits: turn 1's rows and rail item enter the snapshot.
@@ -797,7 +797,7 @@ describe('ChatView', () => {
         turnTimings: new Map([[1, { startTime: 1_000 }], [3, { startTime: 8_000 }]]),
       })
     })
-    const first = view.getByRole('button', { name: 'قفز تحويل إلى رقم 1 الجولات' })
+    const first = view.getByRole('button', { name: 'الانتقال إلى الجولة 1' })
     expect(first.getAttribute('aria-current')).toBe('true')
     // The mark stays busy until the jump settles: the loader's completion
     // runs the final landing correction after the load-earlier button leaves.
@@ -1005,7 +1005,7 @@ describe('ChatView', () => {
     expect(pendingBubble).not.toBeNull()
     fireEvent.click(within(pendingBubble as HTMLElement).getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith('interrupt now')
-    expect(within(pendingBubble as HTMLElement).queryByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })).toBeNull()
+    expect(within(pendingBubble as HTMLElement).queryByRole('button', { name: 'التفرّع إلى محادثة جديدة' })).toBeNull()
     expect(view.getByRole('status').compareDocumentPosition(view.getByText('interrupt now'))
       & Node.DOCUMENT_POSITION_FOLLOWING).not.toBe(0)
 
@@ -1029,7 +1029,7 @@ describe('ChatView', () => {
     // carries a branch action.
     expect(view.getAllByRole('button', { name: 'نسخ' })).toHaveLength(1)
     const durableBubble = view.getByText('interrupt now').closest('[class*="userRow"]') as HTMLElement
-    expect(within(durableBubble).queryByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })).toBeNull()
+    expect(within(durableBubble).queryByRole('button', { name: 'التفرّع إلى محادثة جديدة' })).toBeNull()
 
     act(() => {
       h.setSession({ running: false })
@@ -1037,7 +1037,7 @@ describe('ChatView', () => {
     })
     // The Turn Tail belongs to the closed Turn, independently of a later
     // steering bubble's placement in the Chat list.
-    const branchButtons = view.getAllByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })
+    const branchButtons = view.getAllByRole('button', { name: 'التفرّع إلى محادثة جديدة' })
     expect(branchButtons).toHaveLength(1)
     expect(branchButtons[0]!.getAttribute('aria-disabled')).toBeNull()
     fireEvent.click(branchButtons[0]!)
@@ -1268,14 +1268,14 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const disclosure = view.container.querySelector('details') as HTMLDetailsElement
     expect(disclosure.dataset.active).toBe('true')
-    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (1/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1s')
 
     act(() => {
       h.setChat({ nodes: [user(1, 'try'), nextRetry] })
     })
     expect(within(disclosure).getAllByRole('status')).toHaveLength(1)
     expect(view.container.querySelector('details')).toBe(disclosure)
-    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (2/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 1s')
 
     act(() => {
       h.setChat({
@@ -1289,7 +1289,7 @@ describe('ChatView', () => {
       h.setSession({ running: false })
     })
     expect(disclosure.dataset.active).toBeUndefined()
-    expect(within(disclosure).getByRole('status').textContent).toBe('أُعيدت محاولة طلب الالنموذج (2/2) · 1s')
+    expect(within(disclosure).getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 1s')
 
     act(() => {
       h.setChat({ nodes: [user(1, 'try'), { ...retry(6), retryState: 'cancelled' }] })
@@ -1297,7 +1297,7 @@ describe('ChatView', () => {
     })
     const cancelledDisclosure = view.container.querySelector('details') as HTMLDetailsElement
     expect(cancelledDisclosure.dataset.active).toBeUndefined()
-    expect(within(cancelledDisclosure).getByRole('status').textContent).toContain('إعادة المحاولة قد إلغاء')
+    expect(within(cancelledDisclosure).getByRole('status').textContent).toContain('إعادة محاولة قد إلغاء')
   })
 
   it('renders terminal turn failures inline with their durable message and optional code', () => {
@@ -1305,8 +1305,8 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const statuses = view.getAllByRole('status')
     expect(statuses.map(status => status.textContent)).toEqual([
-      'فشلت هذه الالجولاتمفتاح API غير صالحAUTH',
-      'فشلت هذه الالجولاتplugin exploded',
+      'فشلت هذه الجولةمفتاح API غير صالحAUTH',
+      'فشلت هذه الجولةplugin exploded',
     ])
   })
 
@@ -1315,9 +1315,9 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const statuses = view.getAllByRole('status')
     expect(statuses.map(status => status.textContent)).toEqual([
-      'بلغ الإخراج حد الرموزاقتُطع الرد؛ ويبقى ما صدر قبله في الالجلسات. أرسِل «متابعة» ليواصل الالنموذج.',
+      'بلغ الإخراج حد الرموزاقتُطع الرد؛ ويبقى ما صدر قبله في المحادثة. أرسِل «متابعة» ليواصل النموذج.',
     ])
-    expect(view.queryByText('فشلت هذه الالجولات')).toBeNull()
+    expect(view.queryByText('فشلت هذه الجولة')).toBeNull()
   })
 
   it('hands the trajectory callback to the Tool seat', () => {
@@ -1344,7 +1344,7 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     // Branch renders only under assistant answers; user bubbles keep copy alone.
     expect(view.getAllByRole('button', { name: 'نسخ' })).toHaveLength(4)
-    const branchButtons = view.getAllByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })
+    const branchButtons = view.getAllByRole('button', { name: 'التفرّع إلى محادثة جديدة' })
     expect(branchButtons).toHaveLength(2)
     expect(branchButtons.map(button => button.getAttribute('aria-disabled'))).toEqual([null, null])
   })
@@ -1370,7 +1370,7 @@ describe('ChatView', () => {
       turnEnds: new Map([[1, 6]]),
     })
     const view = render(<h.ChatView {...h.props} />)
-    const toggle = view.getByRole('button', { name: '1 مرة الاستدعاءات الالأدوات · 1 بند رسالة · 1 عدد subagent' })
+    const toggle = view.getByRole('button', { name: '1 مرة استدعاء الأداة · 1 بند رسالة · 1 وكيل فرعي' })
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
     expect(toggle.getAttribute('data-turn-process-tool-calls')).toBe('1')
     expect(toggle.getAttribute('data-turn-process-messages')).toBe('1')
@@ -1401,7 +1401,7 @@ describe('ChatView', () => {
     act(() => { h.set({
       nodes: [user(1, 'question'), first, toolResult(3, 'a'), toolResult(4, 'b', 'subagent'), second],
     }) })
-    const renewedToggle = view.getByRole('button', { name: '1 مرة الاستدعاءات الالأدوات · 1 بند رسالة · 1 عدد subagent' })
+    const renewedToggle = view.getByRole('button', { name: '1 مرة استدعاء الأداة · 1 بند رسالة · 1 وكيل فرعي' })
     expect(renewedToggle.getAttribute('aria-expanded')).toBe('true')
     expect(members[0]?.getAttribute('hidden')).toBeNull()
   })
@@ -1662,7 +1662,7 @@ describe('ChatView', () => {
       running: true,
     })
     const view = render(<h.ChatView {...h.props} />)
-    const contextToggle = view.getByRole('button', { name: 'حقن الالسياق' })
+    const contextToggle = view.getByRole('button', { name: 'حقن السياق' })
     const contextRow = view.container.querySelector<HTMLElement>('[data-chat-flow-kind="context"]')
     contextToggle.focus()
     expect(document.activeElement).toBe(contextToggle)
@@ -1859,7 +1859,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     // The exact turn/end includes trailing tool activity after the final text.
-    expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent).toContain('استخدام وقت 19ثوانٍ')
+    expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent).toContain('استغرق 19ثانية')
   })
 
   it('the actions-owning assistant footer shows an hour-scale run time', () => {
@@ -1875,7 +1875,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     expect(view.container.querySelector('[data-turn-tail="1"]')?.textContent)
-      .toContain('استخدام وقت 1ساعات05قسم03ثوانٍ')
+      .toContain('استخدام وقت 1 س 05 د 03 ث')
   })
 
   it('the settled footer exposes ttft, decode throughput, and usage as the details trigger', () => {
@@ -1907,22 +1907,22 @@ describe('ChatView', () => {
     expect(view.queryByRole('dialog')).toBeNull()
     fireEvent.click(trigger)
     const dialog = view.getByRole('dialog')
-    expect(dialog.getAttribute('aria-label')).toBe('استهلاك الالجولات')
-    expect(dialog.firstChild?.textContent).toBe('استهلاك الالجولات10,100 tok')
-    expect(dialog.textContent).toContain('إصابة الذاكرة المؤقتة49.4%')
+    expect(dialog.getAttribute('aria-label')).toBe('استهلاك الجولة')
+    expect(dialog.firstChild?.textContent).toBe('استهلاك الجولة10,100 tok')
+    expect(dialog.textContent).toContain('ذاكرة مؤقتة أمر في49.4%')
     expect(dialog.textContent).toContain('إدخال غير مخزَّن5,060 tok')
     fireEvent.keyDown(document, { key: 'Escape' })
     // The time pill carries the run time; first-step ttft (1.2s) and 100
     // tokens over 5s of decode move into its dialog.
-    const timeTrigger = view.getByRole('button', { name: /استخدام وقت 19ثوانٍ/ })
-    expect(timeTrigger.textContent).toBe('استخدام وقت 19ثوانٍ')
+    const timeTrigger = view.getByRole('button', { name: /استغرق 19ثانية/ })
+    expect(timeTrigger.textContent).toBe('استغرق 19ثانية')
     expect(view.queryByText(/سرعة درجة 20 tok\/s|أول token/)).toBeNull()
     fireEvent.click(timeTrigger)
     const timeDialog = view.getByRole('dialog')
-    expect(timeDialog.getAttribute('aria-label')).toBe('زمن الالجولات وسرعتها')
-    expect(timeDialog.textContent).toContain('إجمالي زمن التشغيل19ثوانٍ')
-    expect(timeDialog.textContent).toContain('الرموز في الثوانٍ (TPS)20 tok/s')
-    expect(timeDialog.textContent).toContain('زمن أول رمز (TTFT)1.2ثوانٍ')
+    expect(timeDialog.getAttribute('aria-label')).toBe('زمن الجولة وسرعتها')
+    expect(timeDialog.textContent).toContain('إجمالي زمن التشغيل19ثانية')
+    expect(timeDialog.textContent).toContain('الرموز في الثانية (TPS)20 tok/s')
+    expect(timeDialog.textContent).toContain('زمن أول رمز (TTFT)1.2ثانية')
   })
 
   it('withholds the usage-details trigger when turn usage is outside the window', () => {
@@ -1996,7 +1996,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     // The user bubble offers no branch; the settled answer's is live.
-    const buttons = view.getAllByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })
+    const buttons = view.getAllByRole('button', { name: 'التفرّع إلى محادثة جديدة' })
     expect(buttons).toHaveLength(1)
     expect(buttons[0]!.getAttribute('aria-disabled')).toBeNull()
     fireEvent.click(buttons[0]!)
@@ -2019,7 +2019,7 @@ describe('ChatView', () => {
     }
     const h = makeHarness({}, {}, chat)
     const view = render(<h.ChatView {...h.props} />)
-    const branch = view.getByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })
+    const branch = view.getByRole('button', { name: 'التفرّع إلى محادثة جديدة' })
     expect(branch.getAttribute('aria-disabled')).toBe('true')
     fireEvent.click(branch)
     expect(h.forkAt).not.toHaveBeenCalled()
@@ -2036,7 +2036,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     expect(view.getAllByRole('button', { name: 'نسخ' })).toHaveLength(2)
-    const buttons = view.getAllByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })
+    const buttons = view.getAllByRole('button', { name: 'التفرّع إلى محادثة جديدة' })
     expect(buttons).toHaveLength(1)
     expect(buttons[0]!.getAttribute('aria-disabled')).toBe('true')
     fireEvent.click(buttons[0]!)
@@ -2189,7 +2189,7 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     // Freshly mounted (as after a reload) yet already past the 15s gate.
     const status = view.getByRole('status')
-    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2قسم0\dثوانٍ$/)
+    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2د0\dث$/)
     expect(status.querySelector('[aria-hidden="true"]')).not.toBeNull()
     act(() => {
       h.setSession({ testInbox: { 'next-turn': [], 'next-step': [{
@@ -2199,7 +2199,7 @@ describe('ChatView', () => {
         role: 'user', source: { kind: 'user' },
       }] } })
     })
-    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2قسم0\dثوانٍ$/)
+    expect(status.textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.2د0\dث$/)
   })
 
   it('the running clock reads hours once the turn passes an hour', () => {
@@ -2210,7 +2210,7 @@ describe('ChatView', () => {
       { running: true },
     )
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.getByRole('status').textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.1ساعات05قسم0\dثوانٍ$/)
+    expect(view.getByRole('status').textContent).toMatch(/^عميق درجة طلب بحث في\.\.\.1 س 05 د 0\d ث$/)
   })
 
   it('hands each ordered root call to the keyed business-node slot', () => {
@@ -2668,7 +2668,7 @@ describe('ChatView', () => {
     })
 
     expect(scroller.scrollTop).toBe(900)
-    expect(view.getByRole('button', { name: 'قفز تحويل إلى رقم 2 الجولات' }).getAttribute('aria-current')).toBe('true')
+    expect(view.getByRole('button', { name: 'الانتقال إلى الجولة 2' }).getAttribute('aria-current')).toBe('true')
     expect(rect).not.toHaveBeenCalled()
   })
 
@@ -2813,7 +2813,7 @@ describe('ChatView', () => {
       openError: { code: 'gateway/internal', message: 'boom' } as never,
     })
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.getByText(/تاريخ تعذّر التحميل:boom/)).toBeTruthy()
+    expect(view.getByText(/تعذّر تحميل تاريخ: boom/)).toBeTruthy()
     const loading = makeHarness({}, { openState: 'loading' })
     const lv = render(<loading.ChatView {...loading.props} />)
     expect(lv.getByText('جارٍ تحميل السجل…')).toBeTruthy()
@@ -2853,8 +2853,8 @@ describe('ChatView', () => {
       nodes: [command({ seq: 8, commandId: 'cmd-4' as CommandNode['commandId'], name: null, args: null, outcome: { kind: 'success' } })],
     })
     const ov = render(<orphan.ChatView {...orphan.props} />)
-    expect(ov.getByText('إشارة أمر')).toBeTruthy()
-    expect(ov.getByText('اكتمل')).toBeTruthy()
+    expect(ov.getByText('أمر')).toBeTruthy()
+    expect(ov.getByText('مكتمل')).toBeTruthy()
   })
 
   it('renders /compact as one stateful disclosure from running through completion', () => {
@@ -2865,7 +2865,7 @@ describe('ChatView', () => {
     })
     const h = makeHarness({ nodes: [running] })
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.getByText('جارٍ ضغط الالسياق…')).toBeTruthy()
+    expect(view.getByText('جارٍ ضغط السياق…')).toBeTruthy()
     expect(view.container.querySelector('[data-state="running"]')).not.toBeNull()
 
     act(() => {
@@ -2881,9 +2881,9 @@ describe('ChatView', () => {
       })
     })
 
-    expect(view.queryByText('جارٍ ضغط الالسياق…')).toBeNull()
-    expect(view.queryByText('ضُغط الالسياق')).toBeNull()
-    expect(view.getByText('مضغوط 16 بند تاريخ سجل (نحو 11309 tokens)')).toBeTruthy()
+    expect(view.queryByText('جارٍ ضغط السياق…')).toBeNull()
+    expect(view.queryByText('ضُغط السياق')).toBeNull()
+    expect(view.getByText('ضُغط 16 عنصرًا من السجل (~11309 رمز)')).toBeTruthy()
     const row = view.getByRole('button', { name: /compact/ })
     expect(row.getAttribute('aria-expanded')).toBe('false')
     expect(row.querySelector('[data-compaction-icon="context"]')).not.toBeNull()

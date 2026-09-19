@@ -32,7 +32,7 @@ it.each(['win32', 'darwin'])('requests one silent reminder and returns to confir
   const f = setup(platform)
   f.ready(); f.ready()
   expect(native.notices).toHaveLength(1)
-  expect(native.notices[0]!.options).toEqual({ title: 'التحديث جاهز', body: 'عُد إلى الالتطبيق لتأكيد التثبيت وإعادة التشغيل.', silent: true })
+  expect(native.notices[0]!.options).toEqual({ title: 'التحديث جاهز', body: 'عُد إلى التطبيق لتأكيد التثبيت وإعادة التشغيل.', silent: true })
   if (platform === 'win32') expect(f.window.flashFrame).toHaveBeenCalledWith(true)
   else expect(native.dock.bounce).toHaveBeenCalledWith('informational')
   native.notices[0]!.emit('click')

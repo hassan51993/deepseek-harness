@@ -109,8 +109,8 @@ function commandSource(
 }
 
 const COMMANDS: FakeCommand[] = [
-  { name: 'goal', description: 'ضبط موافق هدف', input: { hint: 'نص الهدف' } },
-  { name: 'compact', description: 'ضغط السياق' },
+  { name: 'goal', description: 'ضبط تحديد هدف', input: { hint: 'نص الهدف' } },
+  { name: 'compact', description: 'ضغط سياق' },
   { name: 'vision', description: 'تعرف آخر صورة', input: { hint: 'تفكير سؤال ماذا', attachments: true } },
 ]
 
@@ -226,7 +226,7 @@ describe('scenario A: menu-pick /goal, type args, enter submits', () => {
     act(() => { b.shell.editor.update(() => {}, { discrete: true }) }) // flush the queued decoration refresh
     expect(b.view.container.querySelector('[data-lexical-text][style*="warn-label"]')?.textContent).toBe('/goal ')
     // The ar dictionary owns a hint.goal entry, which overrides the machine's raw hint (production behavior).
-    expect(b.textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف المهام طويلة'))
+    expect(b.textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
     // Continue typing args; hint drops; claim holds.
     b.type('/goal الإصدار v1')
     expect(b.shell.snapshot.phase).toBe('claimed')
@@ -245,9 +245,9 @@ describe('scenario C: pasted /goal xxx + enter (menu never opened)', () => {
     const b = await bench()
     // Paste lands whole; caret at end means detectTrigger sees no token under
     // the caret mid-whitespace — menu stays closed; enter runs adjudication.
-    act(() => { b.shell.setDraft('/goal كل سريع الإصدار') })
+    act(() => { b.shell.setDraft('/goal كل سريع إصدار') })
     fireEvent.keyDown(b.textarea, { key: 'Enter' })
-    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal كل سريع الإصدار', []) })
+    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal كل سريع إصدار', []) })
     await vi.waitFor(() => { expect(b.shell.snapshot.phase).toBe('plain') })
     expect(b.shell.snapshot.draft).toBe('')
     expect(b.sink).not.toHaveBeenCalled()
@@ -300,9 +300,9 @@ describe('scenario: images ride an accepting command through the real pipeline',
 
   it('an imageless enter adjudicates with a zero-image envelope', async () => {
     const b = await bench()
-    act(() => { b.shell.setDraft('/goal الإصدار') })
+    act(() => { b.shell.setDraft('/goal إصدار') })
     fireEvent.keyDown(b.textarea, { key: 'Enter' })
-    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal الإصدار', []) })
+    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal إصدار', []) })
     expect(b.envelopes).toEqual([{ attachments: 0 }])
     expect(b.serialize).not.toHaveBeenCalled()
     expect(b.release).not.toHaveBeenCalled()
@@ -310,7 +310,7 @@ describe('scenario: images ride an accepting command through the real pipeline',
 })
 
 describe('scenario H: backspace breaks the token', () => {
-  it.each(['goal', 'هدف', 'plan', 'خطة', 'feedback', 'ملاحظات'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
+  it.each(['goal', 'هدف', 'plan', 'الخطة', 'feedback', 'ملاحظات'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
     const { source } = commandSource([{ name, description: name, input: { hint: 'نص الهدف' } }],
       () => Promise.resolve({ kind: 'success' }))
     const b = await scopedBench((triggers) => { triggers.registerSource(source) })

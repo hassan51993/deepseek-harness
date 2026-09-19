@@ -102,7 +102,7 @@ describe('MessageItem arms', () => {
     expect(view.container.querySelector('[data-ref-chip="session"]')?.textContent).toBe('أنت جيد')
     expect(view.container.querySelector('[data-ref-chip="session"] svg')).not.toBeNull()
     expect(view.getByText('هذا عدد في شرح ماذا')).toBeTruthy()
-    expect(view.getByText('مرجع الجلسات · أنت جيد')).toBeTruthy()
+    expect(view.getByText('جلسة مرجعية · أنت جيد')).toBeTruthy()
   })
 
   it('renders the complete metadata-confirmed multi-word session label', () => {
@@ -121,7 +121,7 @@ describe('MessageItem arms', () => {
     )
     expect(view.container.querySelector('[data-ref-chip="session"]')?.textContent).toBe('Research notes')
     expect(view.getByText('what changed?')).toBeTruthy()
-    expect(view.getByText('مرجع الجلسات · Research notes')).toBeTruthy()
+    expect(view.getByText('جلسة مرجعية · Research notes')).toBeTruthy()
   })
 
   it('renders no-extension paths as files and leaves sentence punctuation outside the reference', () => {
@@ -175,7 +175,7 @@ describe('MessageItem arms', () => {
     )
     expect(screen.getByText('14:24')).toBeTruthy()
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'التفرّع إلى محادثة جديدة' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'تحرير' })).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith('hello bubble')
@@ -319,10 +319,10 @@ describe('MessageItem arms', () => {
     )
     expect(view.queryByText('إدراج كلام')).toBeNull()
     expect(view.getByText('steer!')).toBeTruthy()
-    expect(view.getByText(/كتلة المحتوى إضافية/)).toBeTruthy()
+    expect(view.getByText(/كتلة محتوى إضافية/)).toBeTruthy()
     fireEvent.click(view.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith('steer!')
-    expect(view.queryByRole('button', { name: 'التفرّع إلى الجلسات جديدة' })).toBeNull()
+    expect(view.queryByRole('button', { name: 'التفرّع إلى محادثة جديدة' })).toBeNull()
   })
 
   it('context uses the Tool calls disclosure chrome and keeps its body collapsed by default', () => {
@@ -337,7 +337,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    const disclosure = ctxView.getByRole('button', { name: /^حقن الالسياق\s*fixture$/ })
+    const disclosure = ctxView.getByRole('button', { name: /^حقن السياق\s*fixture$/ })
     expect(disclosure.getAttribute('aria-expanded')).toBe('false')
     expect(ctxView.container.querySelector('[data-context-injection-body]')).toBeNull()
     expect(ctxView.container.querySelector('svg')).not.toBeNull()
@@ -378,7 +378,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*AGENTS\.md, sub\/AGENTS\.md$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*AGENTS\.md, sub\/AGENTS\.md$/ }))
     const files = [...view.container.querySelectorAll('[data-context-files] li')].map(node => node.textContent)
     expect(files).toEqual(['AGENTS.mdحُمِّلت', 'sub/AGENTS.mdأُزيلت'])
     // The `<system-reminder>` framing is part of what the model read, so the
@@ -406,9 +406,9 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*new\/AGENTS\.md, old\/AGENTS\.md$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*new\/AGENTS\.md, old\/AGENTS\.md$/ }))
     const files = [...view.container.querySelectorAll('[data-context-files] li')].map(node => node.textContent)
-    expect(files).toEqual(['new/AGENTS.mdأُضيفت', 'old/AGENTS.mdحُدِّثت'])
+    expect(files).toEqual(['new/AGENTS.mdأُضيفت', 'old/AGENTS.mdقد تحديث'])
   })
 
   it('keeps an interleaved unknown block in the order the model received it', () => {
@@ -427,10 +427,10 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: 'حقن الالسياق' }))
+    fireEvent.click(view.getByRole('button', { name: 'حقن السياق' }))
     const texts = [...view.container.querySelectorAll('[data-context-text]')].map(node => node.textContent)
     expect(texts).toEqual(['before', 'after'])
-    expect(view.getByText(/كتلة المحتوى غير معروفة/)).toBeTruthy()
+    expect(view.getByText(/كتلة محتوى غير معروفة/)).toBeTruthy()
   })
 
   it('the catalog form lists its durable entries instead of the model-facing prose', () => {
@@ -449,7 +449,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     const entries = [...view.container.querySelectorAll('[data-context-entries] li')].map(node => node.textContent)
     expect(entries).toEqual(['a-skillDoes A', 'b-skillDoes B'])
     expect(view.container.querySelector('[data-context-text]')).toBeNull()
@@ -473,7 +473,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     expect(view.container.querySelector('[data-context-catalog-update]')?.textContent).toBe('كتالوج بديل')
   })
 
@@ -495,7 +495,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     expect(view.container.querySelector('[data-context-entries]')).toBeNull()
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('catalog prose')
     // The marker reports what rendered, not what was declared.
@@ -515,7 +515,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*agent-instructions$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*agent-instructions$/ }))
     expect(view.container.querySelector('[data-context-files]')).toBeNull()
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('instruction prose')
     expect(view.container.querySelector('[data-context-fields]')).not.toBeNull()
@@ -535,7 +535,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: 'حقن الالسياق' }))
+    fireEvent.click(view.getByRole('button', { name: 'حقن السياق' }))
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('firstsecond')
   })
 
@@ -551,9 +551,9 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*plugin$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*plugin$/ }))
     expect(view.container.querySelector('[data-context-fields] dd')?.textContent)
-      .toMatch(/… مقتطع، مشترك \d+ محرف$/)
+      .toMatch(/… اقتُطع عند \d+ حرف$/)
   })
 
   it('an empty replacement catalog stays a catalog: it retires every earlier name', () => {
@@ -570,7 +570,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     expect(view.container.querySelector('[data-context-catalog-update]')?.textContent).toBe('كتالوج بديل')
     expect(view.container.querySelectorAll('[data-context-entries] li')).toHaveLength(0)
     expect(view.container.querySelector('[data-context-injection-body]')?.getAttribute('data-context-form'))
@@ -589,7 +589,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     expect(view.container.querySelector('[data-context-entries]')).toBeNull()
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('catalog prose')
   })
@@ -605,9 +605,9 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
     expect(view.container.querySelectorAll('[data-context-entries] li')).toHaveLength(200)
-    expect(view.container.querySelector('[data-context-entries-truncated]')?.textContent).toBe('…أيضا لديه 5 بند')
+    expect(view.container.querySelector('[data-context-entries-truncated]')?.textContent).toBe('… 5 إضافية')
   })
 
   it('a catalog keeps a content block this version does not know', () => {
@@ -622,8 +622,8 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*skill-catalog$/ }))
-    expect(view.getByText(/كتلة المحتوى غير معروفة/)).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*skill-catalog$/ }))
+    expect(view.getByText(/كتلة محتوى غير معروفة/)).toBeTruthy()
   })
 
   it('an instruction change with an unrecognized action falls back whole', () => {
@@ -640,7 +640,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*agent-instructions$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*agent-instructions$/ }))
     expect(view.container.querySelector('[data-context-files]')).toBeNull()
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('instruction prose')
   })
@@ -656,7 +656,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*later$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*later$/ }))
     const fields = [...view.container.querySelectorAll('[data-context-fields] dt')].map(node => node.textContent)
     expect(fields).toEqual(['plugin', 'form'])
   })
@@ -678,7 +678,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*@deepseek-ai\/dsh-system-prompt$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*@deepseek-ai\/dsh-system-prompt$/ }))
     const rows = [...view.container.querySelectorAll('[data-context-sections] div')].map(node => node.textContent)
     expect(rows).toEqual(['sandbox:policyworkspace-write', 'workspace/repo'])
   })
@@ -712,7 +712,7 @@ describe('MessageItem arms', () => {
       />,
     )
     expect(view.container.querySelector('[data-context-summary]')).toBeNull()
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*tool-jobs$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*tool-jobs$/ }))
     expect(view.container.querySelector('[data-context-fields]')).not.toBeNull()
   })
 
@@ -733,7 +733,7 @@ describe('MessageItem arms', () => {
         } as never}
         />,
       )
-      fireEvent.click(view.getByRole('button', { name: new RegExp(`^حقن الالسياق\\s*${label}$`) }))
+      fireEvent.click(view.getByRole('button', { name: new RegExp(`^حقن السياق\\s*${label}$`) }))
       expect(view.container.querySelector('[data-context-text]')?.textContent).toBe(`${form} prose`)
       expect(view.container.querySelector('[data-context-injection-body]')?.getAttribute('data-context-form'))
         .toBeNull()
@@ -750,7 +750,7 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*plugin$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*plugin$/ }))
     expect(view.container.querySelector('[data-context-snapshot-supersedes]')?.textContent)
       .toBe('يحل محل اللقطات السابقة')
   })
@@ -767,8 +767,8 @@ describe('MessageItem arms', () => {
       } as never}
       />,
     )
-    fireEvent.click(view.getByRole('button', { name: /^حقن الالسياق\s*agent-message$/ }))
-    expect(view.container.querySelector('[data-context-relay-sender]')?.textContent).toBe('من الجلسات child-7')
+    fireEvent.click(view.getByRole('button', { name: /^حقن السياق\s*agent-message$/ }))
+    expect(view.container.querySelector('[data-context-relay-sender]')?.textContent).toBe('من الجلسة child-7')
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('child report body')
   })
 
@@ -795,9 +795,9 @@ describe('MessageItem arms', () => {
       />,
     )
     expect(view.container.querySelector('[data-context-recall-icon]')).not.toBeNull()
-    fireEvent.click(view.getByRole('button', { name: /^استرجاع من الجلسات\s*إعادة بنية loader, إصلاح CI$/ }))
+    fireEvent.click(view.getByRole('button', { name: /^استرجاع من جلسة\s*إعادة بنية loader, إصلاح CI$/ }))
     const rows = [...view.container.querySelectorAll('[data-context-recalls] li')].map(node => node.textContent)
-    expect(rows).toEqual(['إعادة بنية loaderإبقاء 18 بند · حذف 42 بندمقتطع', 'إصلاح CIإبقاء 3 بند · حذف 0 بند'])
+    expect(rows).toEqual(['إعادة بنية loaderأُبقي 18 · حُذف 42قد مقتطع', 'إصلاح CIأُبقي 3 · حُذف 0'])
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('recalled material')
   })
 
@@ -805,7 +805,7 @@ describe('MessageItem arms', () => {
     const unknownView = render(
       <MessageItem t={t} node={{ kind: 'unknown', seq: 4, type: 'surface/next', data: { x: 1 } } as never} />,
     )
-    expect(unknownView.getByText(/غير معروف surface حدث:surface\/next/)).toBeTruthy()
+    expect(unknownView.getByText(/حدث واجهة غير معروف: surface\/next/)).toBeTruthy()
   })
 
   it('a compaction marker discloses its summary and never shows the framed checkpoint', () => {
@@ -819,9 +819,9 @@ describe('MessageItem arms', () => {
       }}
       />,
     )
-    const row = view.getByRole('button', { name: /ضُغط الالسياق/ })
+    const row = view.getByRole('button', { name: /ضُغط السياق/ })
     expect(row.getAttribute('aria-expanded')).toBe('false')
-    expect(view.getByText('مضغوط 16 بند تاريخ سجل (نحو 11309 tokens)')).toBeTruthy()
+    expect(view.getByText('ضُغط 16 عنصرًا من السجل (~11309 رمز)')).toBeTruthy()
     expect(view.queryByText(/إبقاء واقع/)).toBeNull()
     fireEvent.click(row)
     expect(row.getAttribute('aria-expanded')).toBe('true')
@@ -844,7 +844,7 @@ describe('MessageItem arms', () => {
     // Collapsed there is no body sibling, so the rule's `:has(.compactionBody)`
     // gate never matches.
     expect(view.container.querySelector('[class*="compactionRow"] [class*="compactionBody"]')).toBeNull()
-    fireEvent.click(view.getByRole('button', { name: /ضُغط الالسياق/ }))
+    fireEvent.click(view.getByRole('button', { name: /ضُغط السياق/ }))
     expect(view.container.querySelector('[class*="compactionRow"] [class*="compactionBody"]')).not.toBeNull()
   })
 
@@ -853,7 +853,7 @@ describe('MessageItem arms', () => {
       kind: 'compaction', seq: 6, time: 1_000, summary: null,
       summaryEventSeq: null, shadowedItemCount: null, shadowedTokenCount: null,
     }} />)
-    const row = view.getByRole('button', { name: /ضُغط الالسياق/ })
+    const row = view.getByRole('button', { name: /ضُغط السياق/ })
     expect(row).toHaveProperty('disabled', true)
     expect(row.getAttribute('aria-expanded')).toBeNull()
     expect(view.getByText('ملخّص الضغط غير متاح')).toBeTruthy()
@@ -889,14 +889,14 @@ describe('MessageItem arms', () => {
     const summary = view.container.querySelector('summary')
     expect(details?.open).toBe(false)
     expect(details?.dataset.active).toBe('true')
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (1/2) · 3s')
-    expect(view.getByText('مهلة إعادة المحاولة:').parentElement?.textContent).toBe('مهلة إعادة المحاولة: 2500مللي ثوانٍ')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 3s')
+    expect(view.getByText('إعادة محاولة تأخير متأخر:').parentElement?.textContent).toBe('إعادة محاولة تأخير متأخر: 2500 م.ث')
     expect(view.getByText('سبب الفشل:').parentElement?.textContent).toBe('سبب الفشل: اتصال يتم إعادة وضع')
 
     act(() => { vi.advanceTimersByTime(1_100) })
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (1/2) · 2s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 2s')
     act(() => { vi.advanceTimersByTime(1_000) })
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (1/2) · 1s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (1/2) · 1s')
 
     view.rerender(
       <MessageItem
@@ -919,7 +919,7 @@ describe('MessageItem arms', () => {
         }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة المحاولة طلب الالنموذج (2/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('جارٍ إعادة محاولة طلب النموذج (2/2) · 4s')
 
     if (summary === null) throw new Error('retry summary missing')
     fireEvent.click(summary)
@@ -945,7 +945,7 @@ describe('MessageItem arms', () => {
       />,
     )
     expect(details?.dataset.active).toBeUndefined()
-    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب الالنموذج (2/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (2/2) · 4s')
 
     view.rerender(
       <MessageItem t={t} node={{
@@ -961,11 +961,11 @@ describe('MessageItem arms', () => {
         policyKey: 'mock-always',
         retry: 3,
         delayMs: 3_500.4,
-        failure: { code: 'TRANSPORT', message: 'متابعة إعادة المحاولة' },
+        failure: { code: 'TRANSPORT', message: 'متابعة إعادة محاولة' },
       }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب الالنموذج (3/∞) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُعيدت محاولة طلب النموذج (3/∞) · 4s')
 
     view.rerender(
       <MessageItem t={t} node={{
@@ -982,11 +982,11 @@ describe('MessageItem arms', () => {
         retry: 1,
         maxRetries: 2,
         delayMs: 3_500.4,
-        failure: { code: 'TRANSPORT', message: 'المستخدم إلغاء' },
+        failure: { code: 'TRANSPORT', message: 'مستخدم إلغاء' },
       }}
       />,
     )
-    expect(view.getByRole('status').textContent).toBe('أُلغيت إعادة المحاولة طلب الالنموذج (1/2) · 4s')
+    expect(view.getByRole('status').textContent).toBe('أُلغيت إعادة محاولة طلب النموذج (1/2) · 4s')
   })
 
 })
@@ -999,11 +999,11 @@ describe('formatMessageClock', () => {
   })
 
   it('prefixes month and day across days in the same year', () => {
-    expect(formatMessageClock(new Date(2026, 0, 1, 14, 24).getTime(), t, now)).toBe('1شهر1يوم 14:24')
+    expect(formatMessageClock(new Date(2026, 0, 1, 14, 24).getTime(), t, now)).toBe('1/1 14:24')
   })
 
   it('prefixes year, month, and day across years', () => {
-    expect(formatMessageClock(new Date(2025, 11, 31, 9, 5).getTime(), t, now)).toBe('2025سنة12شهر31يوم 09:05')
+    expect(formatMessageClock(new Date(2025, 11, 31, 9, 5).getTime(), t, now)).toBe('2025-12-31 09:05')
   })
 
   it('arms the next local midnight from an in-day instant', () => {
@@ -1037,7 +1037,7 @@ describe('useCalendarDay boundary refresh', () => {
     act(() => {
       vi.advanceTimersByTime(msUntilNextLocalMidnight(dayStart) + 1)
     })
-    expect(screen.getByText('7شهر29يوم 14:24')).toBeTruthy()
+    expect(screen.getByText('7/29 14:24')).toBeTruthy()
   })
 })
 
@@ -1073,7 +1073,7 @@ describe('small branch tails', () => {
     )
     // The untimed counts pill renders static, so the usage pill is the only button.
     const [usagePill] = [...view.getAllByRole('button')] as [HTMLElement]
-    expect(view.getByText('1 الجولات 1 خطوة').closest('button')).toBeNull()
+    expect(view.getByText('1 جولة 1 خطوة').closest('button')).toBeNull()
     expect(usagePill.textContent).toBe('10 tok')
     // Pure output accounting still reaches the usage pill's click-open dialog rows.
     fireEvent.click(usagePill)

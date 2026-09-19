@@ -38,7 +38,7 @@ it('cancels installation through the UI, restores files, and offers the spec aga
       const tripwire = watchConsole(page)
       await page.goto(scaffold.authenticatedUrl)
       await page.waitForSelector('[class*="frame"]')
-      if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) await page.keyboard.press('Escape')
+      if (await page.getByRole('dialog', { name: 'الإعدادات' }).count() > 0) await page.keyboard.press('Escape')
       await page.getByRole('navigation', { name: 'اللوحات العامة' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
       await panel.getByRole('button', { name: 'إضافة', exact: true }).click()

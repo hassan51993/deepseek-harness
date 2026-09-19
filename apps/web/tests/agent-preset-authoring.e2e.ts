@@ -41,7 +41,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
 
   /** The settings dialog, opened on the Agent-presets section. */
   function settingsDialog(): Locator {
-    return page.getByRole('dialog', { name: 'ضبط' })
+    return page.getByRole('dialog', { name: 'الإعدادات' })
   }
 
   beforeAll(async () => {
@@ -71,14 +71,14 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
 
   it('offers the roster with copy as the only way to create', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-section'))
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
     const dialog = settingsDialog()
     await dialog.waitFor({ timeout: 10_000 })
     await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()
     await dialog.getByRole('heading', { name: 'Agent مسبق ضبط' }).waitFor({ timeout: 10_000 })
-    // The intro copy also names النمط العاديي. Wait for the roster's own action so
+    // The intro copy also names النمط المعياري. Wait for the roster's own action so
     // the snapshot cannot land between the section shell and its cards.
-    await dialog.getByRole('button', { name: 'عرض: النمط العاديي', exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'عرض: النمط المعياري', exact: true }).waitFor({ timeout: 10_000 })
 
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
 
@@ -90,8 +90,8 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // install is overwritten by upgrades and is not the user's to manage.
     expect(snapshot).toContain('أو استخدام «إنشاء صنع نمط» يجعل Agent مساعدة أنت إنشاء')
     expect(snapshot).not.toContain('جديد بناء مسبق ضبط')
-    expect(snapshot).toContain('عرض: النمط العاديي')
-    expect(snapshot).not.toContain('حذف: النمط العاديي')
+    expect(snapshot).toContain('عرض: النمط المعياري')
+    expect(snapshot).not.toContain('حذف: النمط المعياري')
     expect(snapshot).not.toContain('فتح دليل')
     // The rest of this scenario exercises the existing default and Creator
     // actions with the beta picker enabled by default.
@@ -100,8 +100,8 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
   it('views a shipped composition read-only instead of editing it', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-view'))
     const dialog = settingsDialog()
-    await dialog.getByRole('button', { name: 'عرض: النمط العاديي' }).click()
-    const viewer = page.getByRole('dialog', { name: 'عرض · النمط العاديي' })
+    await dialog.getByRole('button', { name: 'عرض: النمط المعياري' }).click()
+    const viewer = page.getByRole('dialog', { name: 'عرض · النمط المعياري' })
     await viewer.waitFor({ timeout: 10_000 })
 
     // The real shipped composition, not a golden: the viewer shows whatever
@@ -157,7 +157,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     expect(composition).toBe(await readFile(join(SHIPPED_PRESETS, 'minimal', 'agent.cordis.yml'), 'utf8'))
     const metadata = await readFile(join(userRoot, 'my-agent', 'preset.yml'), 'utf8')
     expect(metadata).toContain('name: أنا نمط')
-    expect(metadata).toContain('description: فقط توفير حمل دائم shell مفرد الأدوات تحرير رمز Agent.')
+    expect(metadata).toContain('description: فقط توفير حمل دائم shell مفرد أداة تحرير رمز Agent.')
     expect(metadata).not.toContain('order:')
   }, 60_000)
 
@@ -176,7 +176,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // creator entry so the place to author a preset never disappears.
     expect(await dialog.getByRole('heading', { name: 'ذاتي تعريف' }).count()).toBe(1)
     expect(await dialog.getByRole('button', { name: 'استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط' }).count()).toBe(1)
-    expect(await dialog.getByText('النمط العاديي').count()).toBeGreaterThan(0)
+    expect(await dialog.getByText('النمط المعياري').count()).toBeGreaterThan(0)
   }, 60_000)
 
   it('marks damaged presets broken and clears a ghost through delete', async () => {
@@ -200,11 +200,11 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     await compareOrRefreshGolden(DAMAGED_EXPECTED, snapshot, MODE)
     // Both damage shapes surface as marked, unselectable, uncopyable cards
     // that still carry their metadata and the discovery-reported reason.
-    expect(snapshot).toContain('تعذّر التحميل: broken-yaml')
-    expect(snapshot).toContain('تعذّر التحميل: خفي مرن مسبق ضبط')
+    expect(snapshot).toContain('تحميل فشل: broken-yaml')
+    expect(snapshot).toContain('تحميل فشل: خفي مرن مسبق ضبط')
     expect(snapshot).toContain('not valid YAML')
     expect(snapshot).toContain('agent.cordis.yml is missing')
-    expect(await dialog.getByRole('button', { name: 'تعذّر التحميل: broken-yaml' }).isDisabled()).toBe(true)
+    expect(await dialog.getByRole('button', { name: 'تحميل فشل: broken-yaml' }).isDisabled()).toBe(true)
     expect(await dialog.getByRole('button', { name: 'نسخ: خفي مرن مسبق ضبط' }).isDisabled()).toBe(true)
     // A broken card offers no "set default" affordance at all — the aria name
     // IS the broken marking, so the picking name must not exist.
@@ -244,7 +244,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // the way to a composed host session.
     await settingsDialog().getByRole('button', { name: 'إغلاق' }).last().click()
     await connectFreshWorkspaceAr(page, scaffold.workspaceCwd)
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
     const dialog = settingsDialog()
     await dialog.waitFor({ timeout: 10_000 })
     await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()

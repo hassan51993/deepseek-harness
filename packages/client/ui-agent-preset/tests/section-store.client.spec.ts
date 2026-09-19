@@ -163,7 +163,7 @@ function fakeCtx(
 
 function seed(): Map<string, FakePreset> {
   return new Map<string, FakePreset>([
-    ['standard', { trust: 'system', content: '- id: tool-bash\n', name: 'النمط العاديي' }],
+    ['standard', { trust: 'system', content: '- id: tool-bash\n', name: 'النمط المعياري' }],
     ['mine', { trust: 'user', content: '- id: tool-read\n' }],
   ])
 }
@@ -215,7 +215,7 @@ describe('loading the roster', () => {
     expect(state.authorable).toBe(true)
     expect(state.hasDocument).toBe(false)
     expect(state.rows.map((row: PresetRow) => row.id)).toEqual(['standard', 'mine'])
-    expect(state.rows[0]).toMatchObject({ trust: 'system', isDefault: true, name: 'النمط العاديي' })
+    expect(state.rows[0]).toMatchObject({ trust: 'system', isDefault: true, name: 'النمط المعياري' })
   })
 
   it('reports an empty roster as unavailable, not as an error', async () => {
@@ -255,7 +255,7 @@ describe('the read-only viewer', () => {
     await controller.view('standard')
 
     expect(controller.store.getSnapshot().view).toEqual({
-      id: 'standard', title: 'النمط العاديي', content: '- id: tool-bash\n',
+      id: 'standard', title: 'النمط المعياري', content: '- id: tool-bash\n',
     })
   })
 
@@ -299,7 +299,7 @@ describe('the copy dialog', () => {
     controller.beginCopy('standard')
 
     expect(copyOf(controller)).toMatchObject({
-      from: 'standard', fromTitle: 'النمط العاديي', id: '', name: '', saving: false,
+      from: 'standard', fromTitle: 'النمط المعياري', id: '', name: '', saving: false,
     })
   })
 
@@ -355,7 +355,7 @@ describe('the copy blocker', () => {
     { id: 'mine', trust: 'user', isDefault: false },
   ]
   const draft = (id: string): CopyDraft =>
-    ({ from: 'standard', fromTitle: 'النمط العاديي', id, name: '', saving: false, error: null })
+    ({ from: 'standard', fromTitle: 'النمط المعياري', id, name: '', saving: false, error: null })
 
   it('requires an id, a containable shape, and a free name', () => {
     expect(draftBlocker(draft(''), rows)).toBe('idRequired')

@@ -29,7 +29,7 @@ const PARALLEL: TodoItem[] = [
   { content: 'تركيب هيكل هيكل', status: 'completed' },
   { content: 'كتابة مكون', status: 'in_progress' },
   { content: 'ركض خلفية بناء', status: 'in_progress' },
-  { content: 'قراءة شفرة الالمصدر', status: 'in_progress' },
+  { content: 'قراءة شفرة المصدر', status: 'in_progress' },
   { content: 'تكملة اختبار', status: 'pending' },
 ]
 
@@ -54,7 +54,7 @@ describe('TodoPanel', () => {
       { content: 'تكملة اختبار', status: 'pending' },
     ]} t={t} />)
     expect(screen.getByText('1 إجراء في · 1 معلّقة')).toBeTruthy()
-    expect(screen.queryByText(/اكتمل/)).toBeNull()
+    expect(screen.queryByText(/تم/)).toBeNull()
   })
 
   it('expands to show one row per item with its status glyph', () => {
@@ -89,7 +89,7 @@ describe('TodoPanel', () => {
     const statuses = screen.getAllByRole('listitem').map(li => li.getAttribute('data-status'))
     expect(statuses.filter(s => s === 'in_progress')).toHaveLength(3)
     expect(screen.getByText('ركض خلفية بناء')).toBeTruthy()
-    expect(screen.getByText('قراءة شفرة الالمصدر')).toBeTruthy()
+    expect(screen.getByText('قراءة شفرة المصدر')).toBeTruthy()
     expect(screen.getByText('1 اكتمل · 3 إجراء في · 1 معلّقة')).toBeTruthy()
   })
 
@@ -97,8 +97,8 @@ describe('TodoPanel', () => {
     render(<TodoPanel todos={[{ content: 'كل تمام', status: 'completed' }]} t={t} />)
     expect(screen.getByRole('button', { expanded: false })).toBeTruthy()
     expect(screen.queryByText('كل تمام')).toBeNull()
-    expect(screen.getByText('1 اكتمل')).toBeTruthy()
-    expect(screen.queryByText(/إجراء في|معلّقة/)).toBeNull()
+    expect(screen.getByText('1 مكتملة')).toBeTruthy()
+    expect(screen.queryByText(/إجراء في|انتظار معالجة/)).toBeNull()
   })
 })
 

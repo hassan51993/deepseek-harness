@@ -61,7 +61,7 @@ describe('AskQuestionRow', () => {
       { id: 'b', selected: [], custom: 'freeform' },
       { id: 'c', selected: ['y', 'z'], custom: '' },
     ])))} />)
-    expect(screen.getByText('3/3 قد عودة جواب')).toBeTruthy()
+    expect(screen.getByText('3/3 مُجاب عنها')).toBeTruthy()
   })
 
   it('expands a successful result as paired questions and readable answer lines', () => {
@@ -110,7 +110,7 @@ describe('AskQuestionRow', () => {
       { id: 'b', selected: [], custom: '' },
       { id: 'c' },
     ])))} />)
-    expect(screen.getByText('1/3 قد عودة جواب')).toBeTruthy()
+    expect(screen.getByText('1/3 مُجاب عنها')).toBeTruthy()
     expect(view.container.querySelector('[data-state="ok"]')).not.toBeNull()
   })
 
@@ -150,7 +150,7 @@ describe('AskQuestionRow', () => {
     const view = render(<AskQuestionRow {...rowProps(resultNode(args, answers([
       { id: 'a', selected: ['x'] },
     ])))} />)
-    expect(screen.getByText('1/1 قد عودة جواب')).toBeTruthy()
+    expect(screen.getByText('1/1 مُجاب عنها')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { expanded: false }))
     expect(view.container.querySelector('[class*="ioCard"]')).not.toBeNull()
   })
@@ -187,7 +187,7 @@ describe('AskQuestionRow', () => {
     // ASK_ABORTED: the ask handler's turn-abort settlement.
     const view = render(<AskQuestionRow {...rowProps(resultNode(READABLE_ARGS, null,
       { isError: true, error: { name: 'UserQuestionError', code: 'ASK_ABORTED' } }))} />)
-    expect(screen.getByText('قد في قطع')).toBeTruthy()
+    expect(screen.getByText('مقطوع')).toBeTruthy()
     expect(view.container.querySelector('[data-state="stopped"]')).not.toBeNull()
     fireEvent.click(screen.getByRole('button', { expanded: false }))
     expect(screen.getByText('قُوطعت مجموعة الأسئلة هذه قبل إرسال الإجابات.')).toBeTruthy()

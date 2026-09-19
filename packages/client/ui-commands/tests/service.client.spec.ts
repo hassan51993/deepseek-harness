@@ -338,7 +338,7 @@ describe('candidates', () => {
     const modelContribution = (): CommandContribution => ({
       name: 'model',
       label: () => 'النموذج',
-      description: () => 'اختيار الالنموذج الالمستخدم في هذه الالجلسات',
+      description: () => 'اختيار النموذج المستخدم في هذه المحادثة',
       icon: Glyph,
       available: () => true,
       ui: themeUi(),
@@ -365,7 +365,7 @@ describe('candidates', () => {
         section: 'command:section.add',
       })
       expect(rows[0]).toEqual({ name: 'file', label: 'command:label.file', icon: Glyph, section: 'command:section.add' })
-      expect(rows[6]).toMatchObject({ name: 'model', label: 'النموذج', description: 'اختيار الالنموذج الالمستخدم في هذه الالجلسات', icon: Glyph })
+      expect(rows[6]).toMatchObject({ name: 'model', label: 'النموذج', description: 'اختيار النموذج المستخدم في هذه المحادثة', icon: Glyph })
       // A third-party command keeps its catalog text and gets no glyph.
       expect(rows[8]).toEqual({ name: 'deploy', description: 'third-party command', section: 'command:section.commands' })
     })

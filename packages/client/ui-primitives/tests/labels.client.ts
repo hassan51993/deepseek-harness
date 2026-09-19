@@ -15,38 +15,38 @@ export const markdownLabels: MarkdownLabels = {
 
 export const diffBlockLabels: DiffBlockLabels = {
   copy: 'نسخ', copied: 'تم النسخ', collapseAria: 'طي الفروق',
-  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر الفروق`,
-  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر فرق مختلف`,
+  collapse: 'عرض أقل', expand: hidden => `… ذلك بقية ${hidden} سطر`,
   files: count => `${count} ${count === 1 ? 'file' : 'files'}`,
 }
 
 export const readBlockLabels: ReadBlockLabels = {
   window: (shown, total) => `عرض ${shown} / ${total} سطر`,
-  copy: 'نسخ', copied: 'تم النسخ', collapseAria: 'طي الالمحتوى',
+  copy: 'نسخ', copied: 'تم النسخ', collapseAria: 'طي المحتوى',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر`,
-  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  collapse: 'عرض أقل', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
 
 export const searchBlockLabels: SearchBlockLabels = {
   pathsSummary: (shown, total, truncated) => truncated
     ? `عرض ${shown} / مشترك ${total} عدد مسار`
-    : `${shown} مسار`,
+    : `${shown} عدد مسار`,
   matchesSummary: (shown, total, files, truncated) => truncated
     ? `عرض ${shown} / مشترك ${total} موضع مطابقة · ${files} عدد ملف`
     : `${shown} موضع مطابقة · ${files} عدد ملف`,
   copy: 'نسخ', copied: 'تم النسخ', noResults: 'لا توجد نتائج',
   collapseAria: 'طي النتائج',
-  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر النتيجة`,
-  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر نتيجة`,
+  collapse: 'عرض أقل', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
 
 export const terminalBlockLabels: TerminalBlockLabels = {
   signal: signal => `إشارة ${signal}`,
-  exitCode: code => `خروج رمز ${code}`,
+  exitCode: code => `رمز الخروج ${code}`,
   noExitCode: 'بلا رمز خروج',
   running: 'قيد التشغيل', failed: 'فشل', done: 'اكتمل',
-  copy: 'نسخ', copied: 'تم النسخ', noOutput: 'بلا إخراج',
-  collapseAria: 'طي الإخراج', collapse: 'طي',
+  copy: 'نسخ', copied: 'تم النسخ', noOutput: 'لا يوجد إخراج',
+  collapseAria: 'طي الإخراج', collapse: 'عرض أقل',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر إخراج`,
   expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
@@ -61,5 +61,5 @@ export const jsonTreeLabels: JsonTreeLabels = {
 
 export const webBlockLabels: WebBlockLabels = {
   noResults: 'لم يُعثر على نتائج', sourcesTruncated: 'اقتُطعت قائمة المصادر',
-  http: 'HTTP', contentTruncated: 'اقتُطع الالمحتوى', markdown: markdownLabels,
+  http: 'HTTP', contentTruncated: 'اقتُطع المحتوى', markdown: markdownLabels,
 }

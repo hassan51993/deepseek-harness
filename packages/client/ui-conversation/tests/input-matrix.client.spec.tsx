@@ -163,10 +163,10 @@ describe('matrix row: claimed', () => {
     expect(shell.snapshot.claim).toEqual({ name: 'goal', token: '/goal ', hint: 'هدف' })
     expect(view.container.querySelector('[data-lexical-text][style*="warn-label"]')?.textContent).toBe('/goal ')
     // The ar dictionary owns a hint.goal entry, which overrides the raw claim hint (production behavior).
-    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف المهام طويلة'))
+    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
     expect(textarea.getAttribute('contenteditable')).toBe('true')
     // Free editing beyond the token: hint drops, claim holds.
-    act(() => { shell.setDraft('/goal الإصدار الإصدار') })
+    act(() => { shell.setDraft('/goal الإصدار إصدار') })
     expect(shell.snapshot.phase).toBe('claimed')
     expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe('')
   })
@@ -175,7 +175,7 @@ describe('matrix row: claimed', () => {
     const submit = vi.fn(() => Promise.resolve({ kind: 'success' as const, text: 'إتمام', source: 'command', name: 'goal' }))
     const { view, textarea, shell, sink, claim } = bench({ submit })
     claim()
-    act(() => { shell.setDraft('/goal الإصدار') })
+    act(() => { shell.setDraft('/goal إصدار') })
     fireEvent.keyDown(textarea, { key: 'Enter' })
     expect(sink).not.toHaveBeenCalled()
     await vi.waitFor(() => { expect(submit).toHaveBeenCalledWith('الإصدار', SCTX, []) })
@@ -187,7 +187,7 @@ describe('matrix row: claimed', () => {
   it('backspacing the token auto-releases to plain and the visuals vanish (scenario H)', () => {
     const { view, shell, claim } = bench()
     claim()
-    act(() => { shell.setDraft('/goa الإصدار') }) // token broken
+    act(() => { shell.setDraft('/goa إصدار') }) // token broken
     expect(shell.snapshot.phase).toBe('plain')
     expect(shell.snapshot.claim).toBeUndefined()
     act(() => { shell.editor.update(() => {}, { discrete: true }) }) // flush the queued decoration refresh
@@ -247,11 +247,11 @@ describe('matrix row: claimed with attachments', () => {
 
   it('a serialize rejection blocks the transaction: notice, no submit call, images kept', async () => {
     const submit = vi.fn(() => Promise.resolve({ kind: 'success' as const }))
-    const { view, textarea, shell, claim, release } = bench({ submit, serialize: () => Promise.reject(new Error('المرفقات قد بطلان')) })
+    const { view, textarea, shell, claim, release } = bench({ submit, serialize: () => Promise.reject(new Error('مرفق عنصر قد بطلان')) })
     claim('/goal ', 'هدف', true)
     act(() => { shell.addAttachments([img]) })
     fireEvent.keyDown(textarea, { key: 'Enter' })
-    await vi.waitFor(() => { expect(view.getByText('المرفقات قد بطلان')).toBeTruthy() })
+    await vi.waitFor(() => { expect(view.getByText('مرفق عنصر قد بطلان')).toBeTruthy() })
     expect(submit).not.toHaveBeenCalled()
     expect(shell.snapshot.attachmentIds).toEqual([img])
     expect(release).not.toHaveBeenCalled()
@@ -325,10 +325,10 @@ describe('matrix row: submitting', () => {
     second.claim()
     fireEvent.keyDown(second.textarea, { key: 'Enter' })
     await vi.waitFor(() => { expect(submit2).toHaveBeenCalled() })
-    act(() => { second.shell.setDraft('المستخدم طيران سطر في ضرب جديد مسودة') })
+    act(() => { second.shell.setDraft('مستخدم طيران سطر في ضرب جديد مسودة') })
     act(() => { rejectSubmit(new Error('متأخر إلى فشل')) })
     await vi.waitFor(() => { expect(second.shell.snapshot.phase).toBe('plain') })
-    expect(second.shell.snapshot.draft).toBe('المستخدم طيران سطر في ضرب جديد مسودة')
+    expect(second.shell.snapshot.draft).toBe('مستخدم طيران سطر في ضرب جديد مسودة')
     expect(second.view.getByText('متأخر إلى فشل')).toBeTruthy()
   })
 })

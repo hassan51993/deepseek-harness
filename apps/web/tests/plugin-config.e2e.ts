@@ -62,8 +62,8 @@ describe('web e2e: plugin configuration pages', () => {
     await page.getByRole('navigation', { name: 'اللوحات العامة' }).getByRole('button', { name: 'إضافة', exact: true }).click()
     const panel = page.locator('[data-plugin-panel]')
     await panel.waitFor({ timeout: 10_000 })
-    while (await panel.getByRole('button', { name: /^التراجع/ }).count() > 0) {
-      await panel.getByRole('button', { name: /^التراجع/ }).first().click()
+    while (await panel.getByRole('button', { name: /^إرجاع/ }).count() > 0) {
+      await panel.getByRole('button', { name: /^إرجاع/ }).first().click()
     }
     await panel.getByRole('heading', { name: 'رسمية', exact: true }).waitFor({ timeout: 20_000 })
     return panel
@@ -96,7 +96,7 @@ describe('web e2e: plugin configuration pages', () => {
     }
     // A card carries the one-liner; the fields wait for the page.
     expect(await official.getByText('حد agent تشغيل كل واحد بند أمر.', { exact: true }).count()).toBe(1)
-    expect(await panel.getByLabel('أمر مهلة (مللي ثوانٍ)').count()).toBe(0)
+    expect(await panel.getByLabel('أمر مهلة (مللي ث)').count()).toBe(0)
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(OFFICIAL_EXPECTED, snapshot, MODE)
@@ -146,17 +146,17 @@ describe('web e2e: plugin configuration pages', () => {
     await depthHelp.press('Enter')
     const depthRules = panel.getByRole('region', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true })
     await depthRules.waitFor()
-    expect(await depthRules.getByText('حد Agent إنشاء Subagent تمرير عودة التسلسل.', { exact: true }).count()).toBe(1)
+    expect(await depthRules.getByText('حد Agent إنشاء Subagent تمرير عودة طبقة درجة.', { exact: true }).count()).toBe(1)
     const depthTable = depthRules.getByRole('table', { name: 'الأكثر كبير تمرير عودة عميق درجة شرح', exact: true })
     expect(await depthTable.getByRole('row', { name: '0 منع استخدام Subagent', exact: true }).count()).toBe(1)
     expect(await depthTable.getByRole('row', { name: '1 فقط سماح رئيسي Agent إنشاء Subagent', exact: true }).count()).toBe(1)
-    expect(await depthRules.getByText('إذا بعض عدد الأدوات مفرد وحيد ضبط الأكثر كبير تمرير عودة عميق درجة، بـ هذا الأدوات ضبط لـ دقيق.', { exact: true }).count()).toBe(1)
+    expect(await depthRules.getByText('إذا بعض عدد أداة مفرد وحيد ضبط الأكثر كبير تمرير عودة عميق درجة، بـ هذا أداة ضبط لـ دقيق.', { exact: true }).count()).toBe(1)
     await depthHelp.press('Enter')
     expect(await depthRules.count()).toBe(0)
     expect(await depth.inputValue()).toBe('2')
     await panel.getByRole('button', { name: 'Subagent و سطر عدد كمية حد أعلى شرح', exact: true }).click()
     const capacityRules = panel.getByRole('region', { name: 'Subagent و سطر عدد كمية حد أعلى شرح', exact: true })
-    expect(await capacityRules.getByText('نفس رئيسي Agent تحت، كل تمرير عودة التسلسل معا تخزين نشط Subagent مجموع عدد، رئيسي Agent لا حساب دخول. بلوغ إلى حد أعلى وقت، جديد بدء طلب سوف يتم رفض.', { exact: true }).count()).toBe(1)
+    expect(await capacityRules.getByText('نفس رئيسي Agent تحت، كل تمرير عودة طبقة درجة معا تخزين نشط Subagent مجموع عدد، رئيسي Agent لا حساب دخول. بلوغ إلى حد أعلى وقت، جديد بدء طلب سوف يتم رفض.', { exact: true }).count()).toBe(1)
     await panel.getByRole('button', { name: 'العودة إلى الإضافات', exact: true }).click()
     await openPage(panel, 'Subagent')
     expect(await depth.inputValue()).toBe('1')
@@ -166,11 +166,11 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-subagent-model-selection'))
     const panel = await openPlugins()
     await openPage(panel, 'Subagent')
-    const toggle = panel.getByRole('switch', { name: 'سماح Agent لـ Subagent اختيار النموذج' })
+    const toggle = panel.getByRole('switch', { name: 'سماح Agent لـ Subagent اختيار نموذج' })
 
     await panel.getByLabel('الأكثر كبير تمرير عودة عميق درجة', { exact: true }).fill('2')
     await toggle.click()
-    const models = panel.getByRole('group', { name: 'Agent اختياري اختيار النموذج' })
+    const models = panel.getByRole('group', { name: 'Agent اختياري اختيار نموذج' })
     await models.waitFor({ timeout: 10_000 })
     const firstModel = models.getByRole('checkbox').first()
     await firstModel.check()
@@ -201,7 +201,7 @@ describe('web e2e: plugin configuration pages', () => {
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
 
-    const timeout = panel.getByLabel('أمر مهلة (مللي ثوانٍ)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
     // The composed default this deployment ships, before any user layer.
     expect(await timeout.inputValue()).toBe('60000')
@@ -230,7 +230,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-leave'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (مللي ثوانٍ)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
 
     await timeout.fill('7000')
@@ -238,7 +238,7 @@ describe('web e2e: plugin configuration pages', () => {
     await panel.getByRole('heading', { name: 'رسمية', exact: true }).waitFor({ timeout: 10_000 })
     await openPage(panel, 'طرفية')
 
-    await expect.poll(() => panel.getByLabel('أمر مهلة (مللي ثوانٍ)').inputValue(), { timeout: 5_000 }).toBe('12000')
+    await expect.poll(() => panel.getByLabel('أمر مهلة (مللي ث)').inputValue(), { timeout: 5_000 }).toBe('12000')
     expect(await settingsDocument()).toContain('timeoutMs: 12000')
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
@@ -247,7 +247,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-invalid'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (مللي ثوانٍ)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
 
     await timeout.fill('soon')
@@ -262,7 +262,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-reset'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (مللي ثوانٍ)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ث)')
     await timeout.waitFor({ timeout: 10_000 })
     expect(await timeout.inputValue()).toBe('12000')
 
@@ -302,14 +302,14 @@ describe('web e2e: plugin configuration pages', () => {
     await rowPage.waitFor({ timeout: 10_000 })
     expect(await rowPage.getByRole('heading', { level: 3 }).textContent()).toBe('fixture-live-client')
     expect(await rowPage.getByText('عرض مثال بند إعداد', { exact: true }).count()).toBe(1)
-    const form = rowPage.getByRole('form', { name: 'حركة الحالة إضافة إعداد' })
+    const form = rowPage.getByRole('form', { name: 'حركة حالة إضافة إعداد' })
     await form.getByLabel('سؤال انتظار لغة').fill('أنت جيد')
     await form.getByRole('button', { name: 'حفظ' }).click()
     await expect.poll(() => page.evaluate(() => document.documentElement.dataset.liveSaves), { timeout: 5_000 }).toBe('1')
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(ROW_EXPECTED, snapshot, MODE)
-    await rowPage.getByRole('button', { name: 'التراجع live-client' }).click()
+    await rowPage.getByRole('button', { name: 'العودة إلى live-client' }).click()
     await panel.locator('[data-plugin-detail="@fixture/live-client"]').waitFor({ timeout: 10_000 })
     expect(tripwire.pageErrors).toEqual([])
   }, 90_000)

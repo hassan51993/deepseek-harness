@@ -55,14 +55,14 @@ describe('SkillRow', () => {
     expect(row.getAttribute('aria-expanded')).toBe('false')
     expect(view.container.querySelector('[data-tool="skill"]')?.getAttribute('data-state')).toBe('ok')
     expect(view.container.querySelector('[data-tool="skill"] svg')?.getAttribute('width')).toBe('14')
-    expect(screen.queryByLabelText('شرح')).toBeNull()
+    expect(screen.queryByLabelText('التعليمات')).toBeNull()
 
     fireEvent.click(row)
     expect(row.getAttribute('aria-expanded')).toBe('true')
-    const card = screen.getByLabelText('شرح')
+    const card = screen.getByLabelText('التعليمات')
     expect(card.textContent).toBe('شرحFollow the issue workflow.\nKeep project fields in sync.')
     expect(view.container.textContent).not.toContain('{"name":"dsh-manage-issues"}')
-    fireEvent.click(screen.getByRole('button', { name: 'عرض' }))
+    fireEvent.click(screen.getByRole('button', { name: 'فحص' }))
     expect(inspect).toHaveBeenCalledTimes(1)
 
     fireEvent.click(row)

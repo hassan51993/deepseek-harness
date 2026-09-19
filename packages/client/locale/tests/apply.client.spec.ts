@@ -85,7 +85,7 @@ describe('locale apply', () => {
     // The lane has no jsdom `window`, so detection never runs and a fresh
     // service opens on FALLBACK_LOCALE (en); read the ar side explicitly.
     locale.setLocale('ar')
-    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('لغة')
+    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('اللغة')
     const entry = before.slots.entries(SLOT).find(e => e.component === LanguageRow)!
     expect(entry.options).toMatchObject({ id: 'language', order: 0 })
 
@@ -117,7 +117,7 @@ describe('locale apply', () => {
     face.setLocale('ar')
     expect(locale.getLocale().active).toBe('ar')
     expect(instance.getSnapshot().active).toBe('ar')
-    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('لغة')
+    expect(locale.bind(SETTINGS_NS)('language.title')).toBe('اللغة')
     await vi.waitFor(() => { expect(b.mutate).toHaveBeenCalledTimes(2) })
   })
 

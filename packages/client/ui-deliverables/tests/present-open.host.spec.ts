@@ -27,7 +27,7 @@ async function fixture() {
   cleanups.push(() => rm(root, { recursive: true, force: true }))
   const cwd = join(root, 'workspace')
   await mkdir(cwd)
-  const file = { path: 'يوم تسجيل النموذج لوح.docx' }
+  const file = { path: 'يوم تسجيل نموذج لوح.docx' }
   await writeFile(join(cwd, file.path), Uint8Array.of(80, 75, 0, 255))
   const ctx = new Context()
   cleanups.push(() => ctx.fiber.dispose())
@@ -221,7 +221,7 @@ it('refuses native opening without a matching Host mapping even when a same-name
 
 it('opens a viewed child Session without activating an Agent', async () => {
   const { session, readEvent, open, opener, resolveAgent } = await fixture()
-  readEvent.mockResolvedValueOnce({ session, target: { type: 'deliverables/presented', data: { turn: 1, callId: 'child', files: [{ path: 'يوم تسجيل النموذج لوح.docx' }] } } as SessionEvent })
+  readEvent.mockResolvedValueOnce({ session, target: { type: 'deliverables/presented', data: { turn: 1, callId: 'child', files: [{ path: 'يوم تسجيل نموذج لوح.docx' }] } } as SessionEvent })
   expect((await open('?sessionId=child&seq=7&index=0')).status).toBe(204)
   expect(opener).toHaveBeenCalledOnce()
   expect(resolveAgent).not.toHaveBeenCalled()

@@ -249,6 +249,6 @@ describe('failureLine', () => {
 
   it('carries an unclassified failure\'s own message', () => {
     const failure = { code: 'remote/transport', message: 'socket closed' } as unknown as RemoteFailure
-    expect(failureLine(t, failure)).toBe('قراءة فشل:socket closed')
+    expect(failureLine(t, failure)).toBe('تعذّرت القراءة: socket closed')
   })
 })

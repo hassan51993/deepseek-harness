@@ -232,12 +232,12 @@ function bench(over?: BenchOptions) {
     attachment.kind === 'file' && over?.fileUploads?.[attachment.id]?.status !== 'ready')
   const plainMessageDraft = sendableDraft && !uploadsPending && !(over?.draft?.trimStart().startsWith('/') ?? false)
   const primaryLabel = primaryStops
-    ? 'إيقاف الالتوليد'
+    ? 'إيقاف التوليد'
     : over?.running === true && steeringAvailable && !composerLocked && plainMessageDraft
       ? (over.busyEnter === 'steer' ? 'إدراج كلام إرسال' : 'ترتيب طابور إرسال')
-      : 'إرسال الرسالة'
+      : 'إرسال رسالة'
   const button = view.container.querySelector<HTMLButtonElement>(`button[aria-label="${primaryLabel}"]`)!
-  const interruptButton = view.container.querySelector<HTMLButtonElement>('button[aria-label="إيقاف الالتوليد"]')
+  const interruptButton = view.container.querySelector<HTMLButtonElement>('button[aria-label="إيقاف التوليد"]')
   return {
     view, textarea, button, interruptButton, props, sink, shell, wiring: shell, session, stop, removeAttachment, slotCalls,
     menuLauncher, busyEnter,
@@ -365,13 +365,13 @@ describe('image draft rail', () => {
     // Count: three at once over a two-image limit → the whole batch refused.
     const overCount = bench({ addFiles: vi.fn(() => null), imageLimits: limits })
     intake(overCount, [png(8, 'a.png'), png(8, 'b.png'), png(8, 'c.png')])
-    expect(overCount.view.getByRole('alert').textContent).toContain('واحد بند رسالة الالمزيد إضافة 2 ورقة صورة')
+    expect(overCount.view.getByRole('alert').textContent).toContain('يمكن أن تتضمّن الرسالة حتى 2 صورة')
     expect(overCount.props.addFiles).not.toHaveBeenCalled()
     cleanup()
     // Per-file bytes.
     const overFile = bench({ addFiles: vi.fn(() => null), imageLimits: limits })
     intake(overFile, [png(1024 * 1024 + 1, 'big.png')])
-    expect(overFile.view.getByRole('alert').textContent).toContain('مفرد ورقة صورة لا يستطيع تجاوز مرور 1MB')
+    expect(overFile.view.getByRole('alert').textContent).toContain('يجب أن تكون كل صورة أصغر من 1MB')
     expect(overFile.props.addFiles).not.toHaveBeenCalled()
     cleanup()
     // Aggregate bytes across the existing rail plus the new batch.
@@ -434,7 +434,7 @@ describe('image draft rail', () => {
       error: new RemoteError('session/attachment-invalid', 'raw wire text', { reason }),
     })
     const model = bench({ promptError: attachmentError('MODEL_DOES_NOT_SUPPORT_IMAGES') })
-    expect(model.view.getByRole('alert').textContent).toContain('الالنموذج الحالي لا يدعم الصور؛ بدّل إلى النموذج يدعمها')
+    expect(model.view.getByRole('alert').textContent).toContain('النموذج الحالي لا يدعم الصور؛ بدّل إلى نموذج يدعمها')
     cleanup()
     const unknown = bench({ promptError: attachmentError('ATTACHMENT_NOT_REFERENCED') })
     expect(unknown.view.getByRole('alert').textContent).toContain('صورة إرسال فشل (ATTACHMENT_NOT_REFERENCED)')
@@ -448,7 +448,7 @@ describe('image draft rail', () => {
         }),
       },
     })
-    expect(subagent.view.getByRole('alert').textContent).toContain('الالنموذج الحالي لا يدعم الصور؛ بدّل إلى النموذج يدعمها')
+    expect(subagent.view.getByRole('alert').textContent).toContain('النموذج الحالي لا يدعم الصور؛ بدّل إلى نموذج يدعمها')
     cleanup()
     const other = bench({
       promptError: { op: 'send', error: new RemoteError('gateway/internal', 'boom', {}) },
@@ -470,7 +470,7 @@ describe('image draft rail', () => {
     ]
     const result = bench({ attachments })
     const { view, textarea, sink, removeAttachment } = result
-    expect((view.getByRole('button', { name: 'إرسال الرسالة' }) as HTMLButtonElement).disabled).toBe(false)
+    expect((view.getByRole('button', { name: 'إرسال رسالة' }) as HTMLButtonElement).disabled).toBe(false)
     const owner = attachmentOwner(result.slotCalls)
     act(() => { owner.onRemoveAttachment('draft-2' as DraftAttachmentId) })
     expect(removeAttachment).toHaveBeenCalledWith('draft-2')
@@ -528,14 +528,14 @@ describe('image draft rail', () => {
   })
 
   it('announces a rejected attachment-slot intake through the same toast', () => {
-    const addFiles = vi.fn(() => 'صورة قراءة خدمة غير متاح')
+    const addFiles = vi.fn(() => 'صورة قراءة خدمة غير ممكن استخدام')
     const result = bench({ addFiles })
     act(() => {
       attachmentOwner(result.slotCalls).onAddFiles([
         new File([Uint8Array.of(1)], 'x.png', { type: 'image/png' }),
       ])
     })
-    expect(result.view.getByRole('alert').textContent).toContain('صورة قراءة خدمة غير متاح')
+    expect(result.view.getByRole('alert').textContent).toContain('صورة قراءة خدمة غير ممكن استخدام')
   })
 })
 
@@ -554,21 +554,21 @@ describe('Enter semantics', () => {
   })
 
   it('keeps the owning placeholder or ordinary guidance when whole-queue steering is unavailable', () => {
-    expect(bench({ running: true }).placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
-    expect(bench({ queue: [row('q-1')] }).placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
-    expect(bench({ running: true, queue: [row('q-1')], draft: 'رسالة' }).placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
+    expect(bench({ running: true }).placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
+    expect(bench({ queue: [row('q-1')] }).placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
+    expect(bench({ running: true, queue: [row('q-1')], draft: 'رسالة' }).placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
     expect(bench({
       running: true,
       queue: [row('q-1')],
-      placeholder: 'فوق طبقة إشارة موافق تلميح',
-    }).placeholder).toBe('فوق طبقة إشارة موافق تلميح')
+      placeholder: 'فوق طبقة إشارة تحديد تلميح',
+    }).placeholder).toBe('فوق طبقة إشارة تحديد تلميح')
     // The command menu owns Enter while open: neither the hint nor the
     // gesture may claim the chord.
     expect(bench({
       running: true,
       queue: [row('q-1')],
       commandMenuOpen: true,
-    }).placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
+    }).placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
     // The steer hint intentionally outranks the plan placeholder: while it
     // shows, the whole-queue gesture is genuinely available in plan mode.
     expect(bench({
@@ -805,12 +805,12 @@ describe('running and lock semantics', () => {
       const { button, view, session } = bench({ running: true })
       fireEvent.mouseEnter(button)
       act(() => { vi.advanceTimersByTime(500) })
-      expect(view.getByRole('tooltip').textContent).toBe('إيقاف الالتوليد')
+      expect(view.getByRole('tooltip').textContent).toBe('إيقاف التوليد')
 
       // Disabling a hovered native button need not deliver mouseleave.
       act(() => { session.set(snapshotOf({ running: false })) })
       expect(button.disabled).toBe(true)
-      expect(button.getAttribute('aria-label')).toBe('إرسال الرسالة')
+      expect(button.getAttribute('aria-label')).toBe('إرسال رسالة')
       expect(view.queryByRole('tooltip')).toBeNull()
     } finally {
       vi.useRealTimers()
@@ -820,19 +820,19 @@ describe('running and lock semantics', () => {
   it('running switches the primary between Stop and Queue Send with the draft', async () => {
     const { textarea, button, stop, sink, shell } = bench({ running: true })
     expect(textarea.getAttribute('aria-disabled')).not.toBe('true')
-    expect(button.getAttribute('aria-label')).toBe('إيقاف الالتوليد')
+    expect(button.getAttribute('aria-label')).toBe('إيقاف التوليد')
     fireEvent.click(button)
     expect(stop).toHaveBeenCalledTimes(1)
 
     writeDraft(shell, 'ترتيب طابور رسالة')
     expect(button.getAttribute('aria-label')).toBe('ترتيب طابور إرسال')
     writeDraft(shell, '   ')
-    expect(button.getAttribute('aria-label')).toBe('إيقاف الالتوليد')
+    expect(button.getAttribute('aria-label')).toBe('إيقاف التوليد')
     writeDraft(shell, 'ترتيب طابور رسالة2')
     expect(button.getAttribute('aria-label')).toBe('ترتيب طابور إرسال')
     fireEvent.click(button)
     expect(sink).toHaveBeenCalledWith('ترتيب طابور رسالة2', [], 'queue', expect.any(AbortSignal))
-    await vi.waitFor(() => { expect(button.getAttribute('aria-label')).toBe('إيقاف الالتوليد') })
+    await vi.waitFor(() => { expect(button.getAttribute('aria-label')).toBe('إيقاف التوليد') })
     expect(stop).toHaveBeenCalledTimes(1)
   })
 
@@ -868,7 +868,7 @@ describe('running and lock semantics', () => {
       )
     })
     expect(claimed.shell.snapshot.phase).toBe('claimed')
-    const button = claimed.view.container.querySelector<HTMLButtonElement>('button[aria-label="إرسال الرسالة"]')
+    const button = claimed.view.container.querySelector<HTMLButtonElement>('button[aria-label="إرسال رسالة"]')
     expect(button).not.toBeNull()
     expect(claimed.view.container.querySelector('button[aria-label="إدراج كلام إرسال"]')).toBeNull()
   })
@@ -876,7 +876,7 @@ describe('running and lock semantics', () => {
   it('running Send keeps the plain label while a file upload is still pending', () => {
     const file = { kind: 'file' as const, id: 'file-1' as DraftAttachmentId, file: new File(['x'], 'note.txt', { type: 'text/plain' }) }
     const pending = bench({
-      running: true, busyEnter: 'steer', draft: 'حمل المرفقات', attachments: [file],
+      running: true, busyEnter: 'steer', draft: 'حمل مرفق عنصر', attachments: [file],
       fileUploads: { [file.id]: { status: 'uploading', loaded: 0 } },
     })
     expect(pending.button.getAttribute('aria-label')).toBe('إرسال الرسالة')
@@ -884,17 +884,17 @@ describe('running and lock semantics', () => {
 
     // A failed upload holds the same gate until it is retried or removed.
     const failed = bench({
-      running: true, busyEnter: 'steer', draft: 'حمل المرفقات', attachments: [file],
+      running: true, busyEnter: 'steer', draft: 'حمل مرفق عنصر', attachments: [file],
       fileUploads: { [file.id]: { status: 'error', message: 'upload failed' } },
     })
     expect(failed.button.getAttribute('aria-label')).toBe('إرسال الرسالة')
     expect(failed.button.disabled).toBe(true)
 
     const ready = bench({
-      running: true, busyEnter: 'steer', draft: 'حمل المرفقات', attachments: [file],
+      running: true, busyEnter: 'steer', draft: 'حمل مرفق عنصر', attachments: [file],
       fileUploads: { [file.id]: { status: 'ready', receiptId: 'receipt-1' as never, file: { kind: 'file' } as never } },
     })
-    expect(ready.button.getAttribute('aria-label')).toBe('إدراج كلام إرسال')
+    expect(ready.button.getAttribute('aria-label')).toBe('توجيه الرسالة')
     expect(ready.button.disabled).toBe(false)
   })
 
@@ -913,22 +913,22 @@ describe('running and lock semantics', () => {
       previewUrl: 'blob:pixel',
     }
     const { button, sink } = bench({ running: true, attachments: [attachment] })
-    expect(button.getAttribute('aria-label')).toBe('ترتيب طابور إرسال')
+    expect(button.getAttribute('aria-label')).toBe('إضافة الرسالة إلى الطابور')
     fireEvent.click(button)
     expect(sink).toHaveBeenCalledWith('', ['draft-1'], 'queue', expect.any(AbortSignal))
-    await vi.waitFor(() => { expect(button.getAttribute('aria-label')).toBe('إيقاف الالتوليد') })
+    await vi.waitFor(() => { expect(button.getAttribute('aria-label')).toBe('إيقاف التوليد') })
   })
 
   it('running blocked composer keeps Stop with a retained draft', () => {
     const { button, sink, stop, textarea } = bench({
       running: true,
       draft: 'إبقاء مسودة مسودة',
-      blocked: { reason: 'طلب اختيار متاح النموذج' },
-      placeholder: 'طلب اختيار متاح النموذج',
+      blocked: { reason: 'طلب اختيار متاح نموذج' },
+      placeholder: 'طلب اختيار متاح نموذج',
     })
     expect(textarea.getAttribute('aria-disabled')).toBe('true')
-    expect(textarea.getAttribute('data-placeholder')).toBe('طلب اختيار متاح النموذج')
-    expect(button.getAttribute('aria-label')).toBe('إيقاف الالتوليد')
+    expect(textarea.getAttribute('data-placeholder')).toBe('طلب اختيار متاح نموذج')
+    expect(button.getAttribute('aria-label')).toBe('إيقاف التوليد')
     expect(button.disabled).toBe(false)
     fireEvent.click(button)
     expect(stop).toHaveBeenCalledTimes(1)
@@ -942,9 +942,9 @@ describe('running and lock semantics', () => {
   })
 
   it('running Cmd/Ctrl+Enter uses the opposite of the busy-state Enter preference', () => {
-    const meta = bench({ running: true, busyEnter: 'steer', draft: 'ترتيب إلى تحت واحد الجولات' })
+    const meta = bench({ running: true, busyEnter: 'steer', draft: 'ترتيب إلى تحت واحد جولة' })
     fireEvent.keyDown(meta.textarea, { key: 'Enter', metaKey: true })
-    expect(meta.sink).toHaveBeenCalledWith('ترتيب إلى تحت واحد الجولات', [], 'queue', expect.any(AbortSignal))
+    expect(meta.sink).toHaveBeenCalledWith('ترتيب إلى تحت واحد جولة', [], 'queue', expect.any(AbortSignal))
 
     const ctrl = bench({ running: true, busyEnter: 'steer', draft: 'also queue' })
     fireEvent.keyDown(ctrl.textarea, { key: 'Enter', ctrlKey: true })
@@ -964,7 +964,7 @@ describe('running and lock semantics', () => {
         parentAvailable: true,
       },
     })
-    expect(button.getAttribute('aria-label')).toBe('ترتيب طابور إرسال')
+    expect(button.getAttribute('aria-label')).toBe('إضافة الرسالة إلى الطابور')
     expect(interruptButton).not.toBeNull()
     expect(textarea.getAttribute('aria-disabled')).not.toBe('true')
     expect(view.container.querySelector<HTMLInputElement>('input[type="file"]')?.disabled).toBe(true)
@@ -991,7 +991,7 @@ describe('running and lock semantics', () => {
       parentAvailable: true,
     }
     const { button, sink } = bench({ running: true, busyEnter: 'steer', draft: 'فرعي بديل إدارة إدراج كلام', subagent })
-    expect(button.getAttribute('aria-label')).toBe('إدراج كلام إرسال')
+    expect(button.getAttribute('aria-label')).toBe('توجيه الرسالة')
     fireEvent.click(button)
     expect(sink).toHaveBeenCalledWith('فرعي بديل إدارة إدراج كلام', [], 'steer', expect.any(AbortSignal))
 
@@ -1058,7 +1058,7 @@ describe('running and lock semantics', () => {
       },
     })
     expect(textarea.getAttribute('aria-disabled')).toBe('true')
-    expect(placeholderOf(view.container)).toBe('الالجلسات الأم غير متصلة؛ الإرسال غير متاح، لكن ما زال بإمكانك إيقاف التشغيل')
+    expect(placeholderOf(view.container)).toBe('الجلسة الأم غير متصلة؛ الإرسال غير متاح، لكن ما زال بإمكانك إيقاف التشغيل')
     expect((view.getByLabelText('إضافة ملفات أو تشغيل أوامر') as HTMLButtonElement).disabled).toBe(true)
     expect(button.getAttribute('aria-label')).toBe('إرسال الرسالة')
     expect(button.disabled).toBe(true)
@@ -1110,7 +1110,7 @@ describe('running and lock semantics', () => {
   it('disabled (session removed) locks the textarea and chrome', () => {
     const { textarea, view } = bench({ disabled: true })
     expect(textarea.getAttribute('aria-disabled')).toBe('true')
-    expect(placeholderOf(view.container)).toBe('الالجلسات غير متاحة')
+    expect(placeholderOf(view.container)).toBe('الجلسة غير متاحة')
     expect((view.getByLabelText('إضافة ملفات أو تشغيل أوامر') as HTMLButtonElement).disabled).toBe(true)
   })
 
@@ -1129,7 +1129,7 @@ describe('running and lock semantics', () => {
     textarea.focus = (options?: FocusOptions) => { focused.push(options?.preventScroll) }
     act(() => { first.session.set(snapshotOf({ removed: false })) })
     expect(focused).toEqual([true])
-    fireEvent.mouseDown(first.view.container.querySelector('button[aria-label="إرسال الرسالة"]')!)
+    fireEvent.mouseDown(first.view.container.querySelector('button[aria-label="إرسال رسالة"]')!)
     expect(focused).toEqual([true, true])
   })
 
@@ -1225,9 +1225,9 @@ describe('running and lock semantics', () => {
   })
 
   it('disabled state shows the unavailable placeholder; custom placeholder wins', () => {
-    expect(bench({ disabled: true }).placeholder).toBe('الالجلسات غير متاحة')
+    expect(bench({ disabled: true }).placeholder).toBe('الجلسة غير متاحة')
     const live = bench()
-    expect(live.placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
+    expect(live.placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
     const custom = bench({ placeholder: 'Custom placeholder' })
     expect(custom.placeholder).toBe('Custom placeholder')
   })
@@ -1268,13 +1268,13 @@ describe('running and lock semantics', () => {
 
   it('the plan projection swaps the placeholder while its effective target is plan mode', () => {
     const active = bench({ plan: { active: true, pending: false } })
-    expect(active.placeholder).toBe('صِف مهمتك لالتوليد خطة')
+    expect(active.placeholder).toBe('صِف مهمتك لتوليد خطة')
     // /plan just ran: pending entry already reads as the plan target.
     const entering = bench({ plan: { active: false, pending: true } })
-    expect(entering.placeholder).toBe('صِف مهمتك لالتوليد خطة')
+    expect(entering.placeholder).toBe('صِف مهمتك لتوليد خطة')
     // Pending exit: target is default again.
     const leaving = bench({ plan: { active: true, pending: true } })
-    expect(leaving.placeholder).toBe('أرسِل رسالة أو شغّل المهام، / للأوامر، @ للملفات أو الجلسات')
+    expect(leaving.placeholder).toBe('أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات')
     // Owner placeholder outranks the plan swap.
     const custom = bench({ plan: { active: true, pending: false }, placeholder: 'Custom placeholder' })
     expect(custom.placeholder).toBe('Custom placeholder')
@@ -1300,7 +1300,7 @@ describe('machine pending lock', () => {
     expect(shell.snapshot.phase).toBe('submitting')
     const textarea = view.container.querySelector<HTMLDivElement>('[data-composer-input]')!
     expect(editableOf(textarea)).toBe(false)
-    expect(view.container.querySelector<HTMLButtonElement>('button[aria-label="إرسال الرسالة"]')!.disabled).toBe(true)
+    expect(view.container.querySelector<HTMLButtonElement>('button[aria-label="إرسال رسالة"]')!.disabled).toBe(true)
   })
 })
 
@@ -1324,7 +1324,7 @@ describe('decorations', () => {
     expect(tokenSpanOf(view.container)?.textContent).toBe('/goal ')
     expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('نص الهدف'))
     // Args typed: the hint disappears, the token style stays.
-    act(() => { shell.setDraft('/goal الإصدار') })
+    act(() => { shell.setDraft('/goal إصدار') })
     act(() => { shell.editor.update(() => {}, { discrete: true }) }) // flush the queued decoration refresh
     expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe('')
     expect(tokenSpanOf(view.container)).not.toBeNull()
@@ -1339,7 +1339,7 @@ describe('decorations', () => {
         { start: 0, end: 6, draftRev: shell.snapshot.draftRev },
       )
     })
-    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف المهام طويلة'))
+    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
   })
 
   it('the hint lookup keys on the claim name, so a localized claim token keeps the locale entry', () => {
@@ -1351,7 +1351,7 @@ describe('decorations', () => {
         { start: 0, end: 4, draftRev: shell.snapshot.draftRev },
       )
     })
-    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف المهام طويلة'))
+    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
   })
 
   it('suppresses placeholders throughout native composition, including a temporarily empty draft', async () => {

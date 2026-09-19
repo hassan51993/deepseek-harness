@@ -35,7 +35,7 @@ describe('assembled max-tokens turn-end notice', () => {
     mountAssembledApp()
 
     const tree = await screen.findByRole('tree', { name: 'Sessions' }, { timeout: 10_000 })
-    fireEvent.click(await within(tree).findByText('Fixture تاريخ الجلسات'))
+    fireEvent.click(await within(tree).findByText('Fixture تاريخ جلسة'))
     // The truncated answer itself stays in the flow: the notice supplements the
     // partial output, it never replaces it.
     await screen.findByText(/بند 3: هذا واحد بند كتابة إلى واحد نصف يتم/, undefined, { timeout: 10_000 })

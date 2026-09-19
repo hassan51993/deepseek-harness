@@ -797,7 +797,7 @@ describe.skipIf(!process.env.DEEPSEEK_API_KEY || notReady.length > 0)('web smoke
   it('bash differential rendering: tool row click leaves the default details column closed', async () => {
     onTestFailed(() => saveFailureShot(page, 'w5-tool-details'))
     const input = page.locator('[data-composer-input]').first()
-    await input.fill('طلب استخدام bash الأدوات تشغيل أمر echo w5marker لكن بعد إبلاغ إبلاغ أنا النتيجة')
+    await input.fill('طلب استخدام bash أداة تشغيل أمر echo w5marker لكن بعد إبلاغ إبلاغ أنا نتيجة')
     await input.press('Enter')
     // Wait for the tool ROW, not response text (the reply echoes any marker).
     // Bash renders through the third-party sample registration. Match that

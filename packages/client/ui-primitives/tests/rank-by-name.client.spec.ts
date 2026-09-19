@@ -37,7 +37,7 @@ describe('rankByName', () => {
   it('matches the display label as a second key and keeps the stronger alignment', () => {
     const items = [
       { name: 'goal', label: 'هدف' },
-      { name: 'plan', label: 'خطة' },
+      { name: 'plan', label: 'الخطة' },
       { name: 'permission', label: 'إذن' },
     ]
     expect(names(rankByName(items, 'هدف'))).toEqual(['goal'])

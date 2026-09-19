@@ -50,14 +50,14 @@ describe('ContextMeter', () => {
       contextPressure: { pressureTokens: 32_000, contextWindow: 128_000 },
       contextBreakdown: BREAKDOWN,
     })
-    const trigger = view.getByRole('button', { name: 'من الالسياق المستخدم 25%' })
+    const trigger = view.getByRole('button', { name: 'استُخدم 25% من السياق' })
     expect(view.queryByRole('dialog')).toBeNull()
     fireEvent.click(trigger)
     const panel = view.queryByRole('dialog')!
     expect(panel.textContent).toContain('~32K / 128K')
     expect(panel.textContent).toContain('25%')
-    expect(panel.textContent).toContain('من الالسياق المستخدم')
-    expect(panel.textContent).toContain('توجيه الالنظام~120')
+    expect(panel.textContent).toContain('من السياق مستخدم')
+    expect(panel.textContent).toContain('توجيه النظام~120')
     expect(panel.textContent).toContain('تعريفات الأدوات~21.5K')
     expect(panel.textContent).toContain('الرسائل~477K')
     // The occupancy bar splits into one colored segment per composition row.
@@ -73,11 +73,11 @@ describe('ContextMeter', () => {
       contextBreakdown: BREAKDOWN,
     }
     const arView = meter(values)
-    fireEvent.click(arView.getByRole('button', { name: 'من الالسياق المستخدم 25%' }))
+    fireEvent.click(arView.getByRole('button', { name: 'استُخدم 25% من السياق' }))
     // The reading follows the label in Arabic and leads it in English; both
     // headers read as one sentence rather than a concatenated fragment.
     expect(arView.queryByRole('dialog')!.textContent)
-      .toMatch(/^من الالسياق المستخدم25%/)
+      .toMatch(/^سياق قد استخدام25%/)
     const enView = meter(values, tEn)
     fireEvent.click(enView.getByRole('button', { name: '25% of context used' }))
     expect(enView.queryByRole('dialog', { name: 'of context used' })!.textContent)
@@ -89,7 +89,7 @@ describe('ContextMeter', () => {
       contextPressure: { pressureTokens: 0, contextWindow: 128_000 },
       contextBreakdown: BREAKDOWN,
     })
-    fireEvent.click(view.getByRole('button', { name: 'من الالسياق المستخدم 0%' }))
+    fireEvent.click(view.getByRole('button', { name: 'استُخدم 0% من السياق' }))
     const panel = view.queryByRole('dialog')!
     // `.segment` carries a min-width, so a zero-width part would still paint a
     // filled sliver over an empty context.
@@ -104,17 +104,17 @@ describe('ContextMeter', () => {
       contextPressure: { pressureTokens: 32_000, projectedTokens: 3_000, contextWindow: 128_000 },
       contextBreakdown: BREAKDOWN,
     })
-    const trigger = view.getByRole('button', { name: 'من الالسياق المستخدم 2%' })
+    const trigger = view.getByRole('button', { name: 'استُخدم 2% من السياق' })
     fireEvent.click(trigger)
     expect(view.queryByRole('dialog')!.textContent).toContain('~3K / 128K')
   })
 
   it('omits the composition rows while the contextBreakdown projection is absent', () => {
     const view = meter({ contextPressure: { pressureTokens: 32_000, contextWindow: 128_000 } })
-    fireEvent.click(view.getByRole('button', { name: 'من الالسياق المستخدم 25%' }))
+    fireEvent.click(view.getByRole('button', { name: 'استُخدم 25% من السياق' }))
     const panel = view.queryByRole('dialog')!
     expect(panel.textContent).toContain('~32K / 128K')
-    expect(panel.textContent).not.toContain('توجيه الالنظام')
+    expect(panel.textContent).not.toContain('توجيه النظام')
     expect(panel.textContent).not.toContain('الرسائل')
     // Without composition shares, the bar falls back to one plain segment.
     expect(panel.getElementsByClassName(segmentClass)).toHaveLength(1)
@@ -126,7 +126,7 @@ describe('ContextMeter', () => {
       contextBreakdown: BREAKDOWN,
     }
     const view = render(<ContextMeter useProjection={(key: string) => values[key]} t={t} />)
-    fireEvent.click(view.getByRole('button', { name: 'من الالسياق المستخدم 25%' }))
+    fireEvent.click(view.getByRole('button', { name: 'استُخدم 25% من السياق' }))
     expect(view.queryByRole('dialog')).not.toBeNull()
 
     values = { contextPressure: { pressureTokens: 32_000 }, contextBreakdown: BREAKDOWN }
@@ -138,7 +138,7 @@ describe('ContextMeter', () => {
       contextBreakdown: BREAKDOWN,
     }
     view.rerender(<ContextMeter useProjection={(key: string) => values[key]} t={t} />)
-    expect(view.getByRole('button', { name: 'من الالسياق المستخدم 25%' }).getAttribute('aria-expanded')).toBe('false')
+    expect(view.getByRole('button', { name: 'استُخدم 25% من السياق' }).getAttribute('aria-expanded')).toBe('false')
     expect(view.queryByRole('dialog')).toBeNull()
   })
 
@@ -147,7 +147,7 @@ describe('ContextMeter', () => {
       contextPressure: { pressureTokens: 32_000, contextWindow: 128_000 },
       contextBreakdown: BREAKDOWN,
     })
-    const trigger = view.getByRole('button', { name: 'من الالسياق المستخدم 25%' })
+    const trigger = view.getByRole('button', { name: 'استُخدم 25% من السياق' })
     const openPanel = () => {
       fireEvent.click(trigger)
       return view.queryByRole('dialog')!

@@ -1093,9 +1093,9 @@ describe('web e2e: shipped right Sidebar', () => {
         const column = arPage.locator('[data-rightbar-col]')
         await expandOf(arPage).waitFor({ timeout: 20_000 })
         await expandOf(arPage).click()
-        await expect.poll(async () => await tabTitles(column)).toEqual(['بدء'])
+        await expect.poll(async () => await tabTitles(column)).toEqual(['البداية'])
         await column.locator('[data-sidebar-right-guide-entry="files"]').click()
-        await expect.poll(async () => await tabTitles(column)).toEqual(['ملف'])
+        await expect.poll(async () => await tabTitles(column)).toEqual(['الملفات'])
         await column.locator('[data-dockkit-add-tab]').click()
 
         const guide = column.locator('[data-sidebar-right-guide]')
@@ -1104,9 +1104,9 @@ describe('web e2e: shipped right Sidebar', () => {
         // the column has the width, and a screenshot taken mid-transition reads
         // as a layout defect that is not there.
         expect(await width(column)).toBeGreaterThan(300)
-        await expect.poll(async () => await tabTitles(column)).toEqual(['ملف', 'بدء'])
+        await expect.poll(async () => await tabTitles(column)).toEqual(['الملفات', 'البداية'])
         await expect.poll(async () => await guide.locator('[data-sidebar-right-guide-entry="files"]').innerText())
-          .toBe('ملفات مساحات العمل\nتصفّح ملفات مساحة عمل هذه الالجلسات')
+          .toBe('مساحة العمل ملف\nتصفّح ملفات مساحة عمل هذه الجلسة')
         await shot(arPage, '05-guide-copy-ar')
 
         expect(arTripwire.pageErrors).toEqual([])

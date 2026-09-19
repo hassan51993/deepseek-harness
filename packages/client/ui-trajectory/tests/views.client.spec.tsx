@@ -541,8 +541,8 @@ describe('tab switching in ConversationRoot', () => {
 
     fireEvent.keyDown(screen.getByRole('row', { name: /الأدوات/ }), { key: 'Enter' })
     expect(screen.getByRole('complementary', { name: 'تفاصيل الحدث' })).toBeTruthy()
-    expect(screen.getByText('رقم 1 الجولات · رقم 1 خطوة')).toBeTruthy()
-    expect(screen.getByText('اكتمل')).toBeTruthy()
+    expect(screen.getByText('الخطوة 1 جولة · رقم 1')).toBeTruthy()
+    expect(screen.getByText('مكتمل')).toBeTruthy()
     expect(screen.getByRole('tab', { name: 'النتيجة' })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'إغلاق التفاصيل' }))
@@ -579,7 +579,7 @@ describe('tab switching in ConversationRoot', () => {
     expect(screen.getByText('بين الجولات')).toBeTruthy()
     expect(view.container.textContent).not.toContain('Turn null')
 
-    fireEvent.click(screen.getByRole('button', { name: 'طلب #2 · ضغط' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الطلب #2 · ضغط' }))
     expect(screen.getByText('ضغط · بين الجولات')).toBeTruthy()
     expect(view.container.textContent).not.toContain('Turn null')
   })
@@ -628,8 +628,8 @@ describe('tab switching in ConversationRoot', () => {
     mount(b)
     fireEvent.click(screen.getByRole('tab', { name: 'Trajectory' }))
 
-    const firstRequest = screen.getByRole('button', { name: 'طلب #2 · ضغط' })
-    const secondRequest = screen.getByRole('button', { name: 'طلب #4 · ضغط' })
+    const firstRequest = screen.getByRole('button', { name: 'الطلب #2 · ضغط' })
+    const secondRequest = screen.getByRole('button', { name: 'الطلب #4 · ضغط' })
     const firstSection = firstRequest.closest('tr')?.querySelector('span')
     const secondSection = secondRequest.closest('tr')?.querySelector('span')
     expect(firstSection?.textContent).toBe('بين الجولات')
@@ -728,7 +728,7 @@ describe('tab switching in ConversationRoot', () => {
       name: 'طي الجولات',
     }).disabled).toBe(false)
     expect(screen.getByRole<HTMLButtonElement>('button', {
-      name: 'طي الالاستدعاءاتات',
+      name: 'طي الاستدعاءات',
     }).disabled).toBe(false)
     expect(screen.queryByRole('row')).toBeNull()
     expect(screen.queryByText(/turns ·/)).toBeNull()
@@ -1395,7 +1395,7 @@ describe('TrajectoryView state', () => {
     await waitFor(() => { expect(screen.getByRole('button', { name: 'طلب #11' })).toBeTruthy() })
     fireEvent.click(screen.getByRole('button', { name: 'طلب #11' }))
     fireEvent.click(screen.getByRole('tab', { name: 'الاستهلاك' }))
-    expect(screen.getByText('إجمالي الالجلسات').closest('section')?.textContent).toContain('11 tok')
+    expect(screen.getByText('إجمالي الجلسة').closest('section')?.textContent).toContain('11 tok')
   })
 
   it.each([

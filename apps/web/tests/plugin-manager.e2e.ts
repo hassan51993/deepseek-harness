@@ -44,9 +44,9 @@ describe('web e2e: plugin manager', () => {
 
   /** Close any open settings dialog, so the sidebar and the main column are clickable. */
   async function closeSettings() {
-    if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) {
+    if (await page.getByRole('dialog', { name: 'الإعدادات' }).count() > 0) {
       await page.keyboard.press('Escape')
-      await expect.poll(() => page.getByRole('dialog', { name: 'ضبط' }).count(), { timeout: 5_000 }).toBe(0)
+      await expect.poll(() => page.getByRole('dialog', { name: 'الإعدادات' }).count(), { timeout: 5_000 }).toBe(0)
     }
   }
 
@@ -81,10 +81,10 @@ describe('web e2e: plugin manager', () => {
     // A bundle that is off still shows the rows its patch declares, without switches.
     await panel.getByRole('button', { name: 'عرض bundle' }).click()
     await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
-    expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).count()).toBe(0)
-    await panel.getByRole('button', { name: 'إلغاء التثبيت bundle' }).waitFor({ timeout: 5_000 })
+    expect(await panel.getByRole('switch', { name: 'تفعيل المكوّن fixture-row' }).count()).toBe(0)
+    await panel.getByRole('button', { name: 'إلغاء تثبيت bundle' }).waitFor({ timeout: 5_000 })
     await panel.getByRole('button', { name: 'العودة إلى الإضافات' }).click()
-    await expect.poll(() => panel.getByRole('button', { name: 'إلغاء التثبيت bundle' }).count(), { timeout: 5_000 }).toBe(0)
+    await expect.poll(() => panel.getByRole('button', { name: 'إلغاء تثبيت bundle' }).count(), { timeout: 5_000 }).toBe(0)
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(MANAGER_EXPECTED, snapshot, MODE)
@@ -94,13 +94,13 @@ describe('web e2e: plugin manager', () => {
   it('updates built-in names and descriptions when the UI language changes', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-locale'))
     const panel = await openPluginsPanel()
-    await panel.getByRole('button', { name: 'عرض فرق الوكلاء', exact: true }).click()
+    await panel.getByRole('button', { name: 'عرض ذكي جسم مجموعة طابور', exact: true }).click()
     const packageName = panel.locator('[data-plugin-name]')
     expect(await packageName.textContent()).toBe('@deepseek-ai/dsh-experimental-agent-team-profile')
     expect(await panel.getByText('تفعيل التعاون بين فرق الوكلاء وأدوات الفريق.').count()).toBe(1)
     try {
-      await page.getByRole('button', { name: 'ضبط', exact: true }).click()
-      await page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'العربية' }).click()
+      await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
+      await page.getByRole('dialog', { name: 'الإعدادات' }).getByRole('button', { name: 'العربية' }).click()
       await page.getByRole('menuitem', { name: 'English' }).click()
       await page.getByRole('dialog', { name: 'Settings' }).waitFor()
       await page.keyboard.press('Escape')
@@ -124,11 +124,11 @@ describe('web e2e: plugin manager', () => {
         }
         await page.getByRole('dialog', { name: 'Settings' }).getByRole('button', { name: 'English' }).click()
         await page.getByRole('menuitem', { name: 'العربية' }).click()
-        await page.getByRole('dialog', { name: 'ضبط' }).waitFor()
+        await page.getByRole('dialog', { name: 'الإعدادات' }).waitFor()
       }
       await closeSettings()
     }
-    await panel.getByRole('button', { name: 'عرض فرق الوكلاء', exact: true }).waitFor()
+    await panel.getByRole('button', { name: 'عرض ذكي جسم مجموعة طابور', exact: true }).waitFor()
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
@@ -154,7 +154,7 @@ describe('web e2e: plugin manager', () => {
     // A name the registry would refuse never reaches it.
     await field.fill('Not A Package')
     await install.click()
-    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toContain('لا يمكن تعرف آخر هذا عدد اسم الحزمة أو العنوان')
+    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toContain('لا يمكن تعرف آخر هذا عدد حزمة اسم أو عنوان')
     await dialog.getByRole('button', { name: 'إغلاق' }).click()
     await expect.poll(() => page.getByRole('dialog', { name: 'إضافة' }).count(), { timeout: 5_000 }).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
@@ -177,12 +177,12 @@ describe('web e2e: plugin manager', () => {
     // A live profile: the row mounts once the whole tree recomposed, the switch is on, and nothing waits for a restart.
     await expect.poll(() => mounted()?.fiber?.state, { timeout: 20_000 }).toBe(2)
     await expect.poll(() => toggle.getAttribute('aria-checked'), { timeout: 10_000 }).toBe('true')
-    expect(await panel.getByText(/تحت مرة بدء التوليد فاعلية/).count()).toBe(0)
+    expect(await panel.getByText(/تحت مرة بدء توليد فاعلية/).count()).toBe(0)
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(LIVE_EXPECTED, snapshot, MODE)
     // The pack's page lists its rows as the Host runs them, each with a switch that writes the profile patch.
     await panel.getByRole('button', { name: 'عرض bundle' }).click()
-    const rowSwitch = panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' })
+    const rowSwitch = panel.getByRole('switch', { name: 'تفعيل المكوّن fixture-row' })
     await rowSwitch.waitFor({ timeout: 10_000 })
     expect(await rowSwitch.getAttribute('aria-checked')).toBe('true')
     await rowSwitch.click()
@@ -238,7 +238,7 @@ describe('web e2e: startup-applied plugin management', () => {
       // The pack's page lists its rows from their declarations, with no live entry to switch.
       await panel.getByRole('button', { name: 'عرض bundle' }).click()
       await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
-      expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).isDisabled()).toBe(true)
+      expect(await panel.getByRole('switch', { name: 'تفعيل المكوّن fixture-row' }).isDisabled()).toBe(true)
       await panel.getByRole('button', { name: 'العودة إلى الإضافات' }).click()
 
       await toggle.click()

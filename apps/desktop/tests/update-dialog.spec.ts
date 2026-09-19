@@ -125,7 +125,7 @@ it('denies navigation away from the owned document', async () => {
 it('supplies localized disclosure copy without putting diagnostics in the ordinary detail', async () => {
   const f = setup()
   const pending = dialogs!.show(f.parent as unknown as BrowserWindow, {
-    message: 'لم قدرة أمان إيقاف المهام', technicalDetails: 'exit 0; shutdown acknowledged false',
+    message: 'لم قدرة أمان إيقاف مهمة', technicalDetails: 'exit 0; shutdown acknowledged false',
   })
   expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ detail: '',
     technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'عرض التفاصيل التقنية' })

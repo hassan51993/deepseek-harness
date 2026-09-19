@@ -79,7 +79,7 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
       [
         "تعذّر إيقاف المهام بأمان، ولم يُثبَّت التحديث. حاول مرة أخرى لاحقًا.",
         "عرض التفاصيل التقنية",
-        "إعادة المحاولة التحديث",
+        "إعادة محاولة تحديث",
       ]
     `)
   p.element('technical-details-label').click()
@@ -157,9 +157,9 @@ it('uses the same modal for download, verification, inspected confirmation and t
   expect(p.action).toHaveBeenLastCalledWith('install', '1.0.1-nightly.1', 1)
   pending.resolve(undefined)
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'preparing' })
-  expect(p.element('detail').textContent).toBe('سيُعاد تشغيل الالتطبيق بعد قليل. يُرجى الانتظار.')
+  expect(p.element('detail').textContent).toBe('سيُعاد تشغيل التطبيق بعد قليل. يُرجى الانتظار.')
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'stopping-tasks' })
-  expect(p.element('detail').textContent).toBe('جارٍ الإيقاف مهام الالتطبيق بأمان.')
+  expect(p.element('detail').textContent).toBe('جارٍ إيقاف مهام التطبيق بأمان.')
   expect(p.document.querySelector('main')).toBe(modal)
 })
 

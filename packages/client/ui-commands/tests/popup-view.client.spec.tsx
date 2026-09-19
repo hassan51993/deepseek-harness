@@ -70,7 +70,7 @@ async function mountOpen(overrides: Partial<PopupSpec<string>> = {}, consumeResu
     popup.open('theme', spec(overrides), 'ctx-A', SEGMENT)
     await Promise.resolve()
   })
-  return { popup, view, consume, focusComposer, search: screen.getByRole('textbox', { name: 'تصفية الالخياراتات' }) }
+  return { popup, view, consume, focusComposer, search: screen.getByRole('textbox', { name: 'تصفية الخيارات' }) }
 }
 
 function rowLabels(): string[] {
@@ -86,7 +86,7 @@ describe('PopupSelectView', () => {
       popup.open('theme', spec(), 'ctx-A', SEGMENT)
       await Promise.resolve()
     })
-    const search = screen.getByRole('textbox', { name: 'تصفية الالخياراتات' })
+    const search = screen.getByRole('textbox', { name: 'تصفية الخيارات' })
     expect(document.activeElement).toBe(search)
     expect(rowLabels()).toEqual(['Dark', 'Light', 'Sepia'])
   })
@@ -108,7 +108,7 @@ describe('PopupSelectView', () => {
     expect(options).toHaveBeenCalledTimes(1)
     act(() => { fireEvent.change(search, { target: { value: 'zzz' } }) })
     expect(screen.queryByRole('option')).toBeNull()
-    expect(screen.queryByText('لا توجد الخياراتات')).not.toBeNull()
+    expect(screen.queryByText('لا توجد خيارات')).not.toBeNull()
   })
 
   it('ArrowUp/Down move the filtered highlight; ArrowLeft/Right are left to the native caret', async () => {
@@ -150,11 +150,11 @@ describe('PopupSelectView', () => {
     const popup = new PopupSelectController<string>({ consume: () => true, focusComposer: () => {} })
     render(<PopupSelectView popup={popup} t={t} />)
     await act(async () => { popup.open('theme', spec({ options: () => new Promise(() => {}) }), 'ctx-A', SEGMENT) })
-    const search = screen.getByRole('textbox', { name: 'تصفية الالخياراتات' })
+    const search = screen.getByRole('textbox', { name: 'تصفية الخيارات' })
     // Nothing is settleable yet, so the keystroke is not swallowed.
     expect(fireEvent.keyDown(search, { key: 'Tab' })).toBe(true)
     expect(document.activeElement).toBe(search)
-    expect(screen.getByText('جارٍ تحميل الالخياراتات…')).toBeTruthy()
+    expect(screen.getByText('جارٍ تحميل الخيارات…')).toBeTruthy()
   })
 
   it('Tab stays the browser\'s on a failed load, so the retry stays reachable', async () => {
@@ -164,7 +164,7 @@ describe('PopupSelectView', () => {
       popup.open('theme', spec({ options: () => Promise.reject(new Error('directory down')) }), 'ctx-A', SEGMENT)
       await Promise.resolve()
     })
-    const search = screen.getByRole('textbox', { name: 'تصفية الالخياراتات' })
+    const search = screen.getByRole('textbox', { name: 'تصفية الخيارات' })
     expect(fireEvent.keyDown(search, { key: 'Tab' })).toBe(true)
     expect(screen.getByRole('button', { name: 'إعادة المحاولة' })).toBeTruthy()
   })
@@ -181,13 +181,13 @@ describe('PopupSelectView', () => {
   it('caps the card height at the design maximum when the composer sits low enough', async () => {
     vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ bottom: 800 } as DOMRect)
     await mountOpen()
-    expect(screen.getByLabelText('/theme الخيارات').style.maxHeight).toBe('320px')
+    expect(screen.getByLabelText('خيارات /theme').style.maxHeight).toBe('320px')
   })
 
   it('clamps the card height to the space above the composer minus the safe margin', async () => {
     vi.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ bottom: 200 } as DOMRect)
     await mountOpen()
-    expect(screen.getByLabelText('/theme الخيارات').style.maxHeight).toBe('188px')
+    expect(screen.getByLabelText('خيارات /theme').style.maxHeight).toBe('188px')
   })
 
   it('Enter accepts the parked highlight — the current value on open — then consumes, closes, and refocuses', async () => {
@@ -220,7 +220,7 @@ describe('PopupSelectView', () => {
       onSelect,
     })
     await act(async () => { fireEvent.click(screen.getByRole('option', { name: 'Full access' })) })
-    expect(screen.queryByLabelText('/theme الخيارات')).toBeNull()
+    expect(screen.queryByLabelText('خيارات /theme')).toBeNull()
     expect(screen.getByRole('dialog', { name: 'Enable Full access?' })).toBeTruthy()
     const enable = screen.getByRole('button', { name: 'Enable Full access' }) as HTMLButtonElement
     expect(enable.disabled).toBe(true)
@@ -239,7 +239,7 @@ describe('PopupSelectView', () => {
     await act(async () => { fireEvent.click(screen.getByRole('option', { name: 'Full access' })) })
     fireEvent.click(screen.getByRole('checkbox'))
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }))
-    expect(screen.getByLabelText('/theme الخيارات')).toBeTruthy()
+    expect(screen.getByLabelText('خيارات /theme')).toBeTruthy()
     await act(async () => { fireEvent.click(screen.getByRole('option', { name: 'Full access' })) })
     expect(screen.getByRole<HTMLInputElement>('checkbox').checked).toBe(false)
   })
@@ -249,7 +249,7 @@ describe('PopupSelectView', () => {
     const onSelect = vi.fn(() => new Promise<void>((resolve) => { release = resolve }))
     const { search, consume } = await mountOpen({ onSelect })
     await act(async () => { fireEvent.keyDown(search, { key: 'Enter' }) })
-    expect(screen.queryByText('جارٍ الالتطبيق…')).not.toBeNull()
+    expect(screen.queryByText('جارٍ التطبيق…')).not.toBeNull()
     expect((search as HTMLInputElement).readOnly).toBe(true)
     await act(async () => {
       fireEvent.keyDown(search, { key: 'Enter' })

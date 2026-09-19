@@ -54,7 +54,7 @@ function providePresentation(ctx: Context): PresentationCapture {
       return () => { capture.localeDisposed = true }
     },
     // Minimal bound-translate fake: ar dictionary lookup, key passthrough on miss.
-    bind: () => (key: string) => key === 'menu.userOnly' ? 'للالمستخدم فقط' : key,
+    bind: () => (key: string) => key === 'menu.userOnly' ? 'للمستخدم فقط' : key,
   })
   return capture
 }
@@ -129,9 +129,9 @@ describe('apply', () => {
           'row.running': 'جارٍ تحميل المهارة',
           'row.failed': 'تعذّر تحميل المهارة',
           'row.stopped': 'توقّف تحميل المهارة',
-          'row.instructions': 'شرح',
-          'row.inspect': 'عرض',
-          'menu.userOnly': 'للالمستخدم فقط',
+          'row.instructions': 'التعليمات',
+          'row.inspect': 'فحص',
+          'menu.userOnly': 'للمستخدم فقط',
         },
         en: {
           'row.title': 'Skill',
@@ -386,7 +386,7 @@ describe('user-only marking', () => {
     const candidates = await source.candidates(proj('s1'), req(''))
     expect(candidates).toEqual([
       { name: 'shared-skill', description: 'both surfaces' },
-      { name: 'user-only-skill', description: 'للالمستخدم فقط · user surface only' },
+      { name: 'user-only-skill', description: 'للمستخدم فقط · user surface only' },
     ])
   })
 })

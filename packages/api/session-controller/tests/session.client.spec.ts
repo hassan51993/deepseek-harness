@@ -720,11 +720,11 @@ describe('remaining branches', () => {
 
   it('drops live events while cold/error (no window upkeep)', async ({ mock, start }) => {
     const session = await sessionBench(mock, start, SID)
-    await pushEvent(mock, ev.user(SessionSeq(0), 'بارد الحالة لقطة')) // no follow is open: nothing receives it
+    await pushEvent(mock, ev.user(SessionSeq(0), 'بارد حالة لقطة')) // no follow is open: nothing receives it
     expect(eventSeqs(session)).toEqual([])
     mock.stream(FOLLOW, followScript(err(new RemoteError('gateway/internal', 'x', {}))))
     await session.open()
-    await pushEvent(mock, ev.user(SessionSeq(0), 'خطأ الحالة لقطة'))
+    await pushEvent(mock, ev.user(SessionSeq(0), 'خطأ حالة لقطة'))
     expect(eventSeqs(session)).toEqual([])
   })
 

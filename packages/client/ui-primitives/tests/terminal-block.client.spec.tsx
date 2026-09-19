@@ -92,7 +92,7 @@ describe('TerminalBlock states', () => {
   it('running with nothing printed yet shows the command line only: no placeholder, no copy, no body', () => {
     const view = render(<TerminalBlock command="sleep 5" running />)
     expect(view.getByText('sleep 5')).toBeTruthy()
-    expect(view.queryByText('بلا إخراج')).toBeNull()
+    expect(view.queryByText('لا يوجد إخراج')).toBeNull()
     expect(view.queryByRole('button')).toBeNull()
     expect(view.container.firstElementChild?.getAttribute('data-running')).toBe('')
     expect(view.container.firstElementChild?.hasAttribute('data-body')).toBe(false)
@@ -113,18 +113,18 @@ describe('TerminalBlock states', () => {
 
   it('settled with whitespace-only output shows the dimmed placeholder', () => {
     const view = render(<TerminalBlock command="true" output={'  \n '} exitCode={0} />)
-    expect(view.getByText('بلا إخراج')).toBeTruthy()
+    expect(view.getByText('لا يوجد إخراج')).toBeTruthy()
     expect(view.queryByRole('button', { name: 'نسخ' })).toBeNull()
   })
 
   it('settled with absent output shows the placeholder', () => {
     render(<TerminalBlock command="true" exitCode={0} />)
-    expect(screen.getByText('بلا إخراج')).toBeTruthy()
+    expect(screen.getByText('لا يوجد إخراج')).toBeTruthy()
   })
 
   it('settled with an empty string shows the placeholder', () => {
     render(<TerminalBlock command="true" output="" exitCode={0} />)
-    expect(screen.getByText('بلا إخراج')).toBeTruthy()
+    expect(screen.getByText('لا يوجد إخراج')).toBeTruthy()
   })
 
   it('treats output that renders nothing visible as empty', () => {
@@ -132,10 +132,10 @@ describe('TerminalBlock states', () => {
     // to nothing. Judging emptiness on the raw text drew a box of blank rows
     // plus a copy control for invisible bytes, and hid the placeholder.
     const view = render(<TerminalBlock command="true" output={`${ESC}[0m`} exitCode={0} />)
-    expect(view.getByText('بلا إخراج')).toBeTruthy()
+    expect(view.getByText('لا يوجد إخراج')).toBeTruthy()
     expect(view.queryByText('نسخ')).toBeNull()
     view.rerender(<TerminalBlock command="true" output={`${ESC}]0;title${ESC}\\`} exitCode={0} />)
-    expect(view.getByText('بلا إخراج')).toBeTruthy()
+    expect(view.getByText('لا يوجد إخراج')).toBeTruthy()
   })
 
   it('merges className onto the wrapper', () => {
@@ -191,7 +191,7 @@ describe('TerminalBlock status pill', () => {
 
   it('renders the exit-code pill for a non-zero exit', () => {
     render(<TerminalBlock command="false" output="a" exitCode={1} />)
-    expect(screen.getByText('خروج رمز 1')).toBeTruthy()
+    expect(screen.getByText('رمز الخروج 1')).toBeTruthy()
   })
 
   it('renders the no-exit-code pill and the error dot for a command that settled without one', () => {
@@ -304,15 +304,15 @@ describe('TerminalBlock height cap', () => {
     const view = render(<TerminalBlock command="ls" output={body(10)} maxLines={4} />)
     // maxLines 4: head = ceil(4/2) = 2, tail = 4 - 2 = 2, 6 hidden.
     expect(outputLines(view.container)).toEqual(['line 1', 'line 2', 'line 9', 'line 10'])
-    const toggle = view.getByRole('button', { name: 'توسيع ذلك بقية 6 سطر إخراج' })
+    const toggle = view.getByRole('button', { name: 'توسيع أسطر الإخراج المتبقية (6)' })
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
-    expect(toggle.textContent).toBe('… ذلك بقية 6 سطر')
+    expect(toggle.textContent).toBe('… 6 سطر إضافي')
 
     fireEvent.click(toggle)
     expect(outputLines(view.container)).toHaveLength(10)
     const collapse = view.getByRole('button', { name: 'طي الإخراج' })
     expect(collapse.getAttribute('aria-expanded')).toBe('true')
-    expect(collapse.textContent).toBe('طي')
+    expect(collapse.textContent).toBe('عرض أقل')
 
     fireEvent.click(collapse)
     expect(outputLines(view.container)).toEqual(['line 1', 'line 2', 'line 9', 'line 10'])
@@ -321,13 +321,13 @@ describe('TerminalBlock height cap', () => {
   it('renders the head slice alone when the cap leaves no tail', () => {
     const view = render(<TerminalBlock command="ls" output={body(5)} maxLines={1} />)
     expect(outputLines(view.container)).toEqual(['line 1'])
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 4 سطر إخراج' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع أسطر الإخراج المتبقية (4)' })).toBeTruthy()
   })
 
   it('caps at the documented default when maxLines is absent', () => {
     const view = render(<TerminalBlock command="ls" output={body(DEFAULT_TERMINAL_MAX_LINES + 1)} />)
     expect(outputLines(view.container)).toHaveLength(DEFAULT_TERMINAL_MAX_LINES)
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 1 سطر إخراج' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع أسطر الإخراج المتبقية (1)' })).toBeTruthy()
   })
 })
 

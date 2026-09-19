@@ -199,10 +199,10 @@ describe('WebBlock fetch card', () => {
 
   it('shows the truncated indicator only when the content was cut', () => {
     const on = render(<WebBlock kind="fetch" url="https://example.com" statusCode={200} truncated />)
-    expect(on.getByText('اقتُطع الالمحتوى')).toBeTruthy()
+    expect(on.getByText('اقتُطع المحتوى')).toBeTruthy()
     cleanup()
     const off = render(<WebBlock kind="fetch" url="https://example.com" statusCode={200} truncated={false} />)
-    expect(off.queryByText('اقتُطع الالمحتوى')).toBeNull()
+    expect(off.queryByText('اقتُطع المحتوى')).toBeNull()
   })
 
   it('carries a non-200 status verbatim', () => {

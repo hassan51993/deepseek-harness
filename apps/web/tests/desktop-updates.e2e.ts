@@ -49,7 +49,7 @@ describe('web e2e: Desktop update workspace chrome', () => {
           await page.waitForSelector('[class*="frame"]')
           await expect.poll(() => page.evaluate(() => (window as FixtureWindow).updateFixture.listeners.size)).toBe(1)
           const availableLabel = locale === 'ar-SA' ? 'تحديث' : 'Update'
-          const retryLabel = locale === 'ar-SA' ? 'إعادة المحاولة التحديث' : 'Retry update'
+          const retryLabel = locale === 'ar-SA' ? 'إعادة محاولة التحديث' : 'Retry update'
           const errorDetail = locale === 'ar-SA' ? 'تعذّر تنزيل التحديث. حاول مرة أخرى.' : 'Could not download the update. Please try again.'
           const readyLabel = locale === 'ar-SA' ? 'التثبيت وإعادة التشغيل' : 'Install and Restart'
           const version = '0.1.5-nightly.20260911'

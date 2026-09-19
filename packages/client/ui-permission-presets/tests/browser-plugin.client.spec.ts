@@ -224,7 +224,7 @@ describe('ui-permission browser plugin', () => {
     })
     b.locale.setLocale('ar')
     const localized = await b.popup().options(proj, new AbortController().signal)
-    expect(localized.map(option => option.label)).toEqual(['قراءة فقط', 'الكتابة في مساحات العمل', 'وصول كامل', 'Auto review'])
+    expect(localized.map(option => option.label)).toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto review'])
     expect(localized.find(option => option.id === 'danger-full-access')?.confirmation).toEqual({
       title: 'تفعيل الوصول الكامل؟',
       description: accessAr['confirm.description'],
@@ -308,7 +308,7 @@ describe('ui-permission browser plugin', () => {
     b.values.set(sid('s1'), { currentValue: 'workspace-write' })
     const options = await b.popup().options(proj, new AbortController().signal)
     expect(options.find(option => option.id === 'auto')?.detail)
-      .toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي الاستدعاءات الالأدوات و PTC داخل طبقة الاستدعاءات قبل من نفس النموذج إجراء فعلي تحقق صفة مراجعة فحص.')
+      .toBe('يعمل بلا عزل، بعد مراجعة تجريبية يجريها النموذج نفسه لكل استدعاء أداة أصلي ولكل استدعاء داخلي في PTC.')
   })
 
   it('a pick submits the /permission line; rejection and unmatched throw', async () => {

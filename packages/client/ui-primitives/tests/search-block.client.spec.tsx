@@ -56,7 +56,7 @@ describe('SearchBlock matches kind', () => {
     expect(fileHeaders(view.container)).toEqual(['a.ts2', 'b.ts1'])
     expect(lines(view.container)).toEqual(['12: const a = 1', '40: return a', '7: const b = 2'])
     // The summary counts matches and files, with no folded pre-cap total below the cap.
-    expect(view.getByText('3 موضع مطابقة · 2 عدد ملف')).toBeTruthy()
+    expect(view.getByText('3 مطابقة · 2 ملف')).toBeTruthy()
     expect(view.queryByText(/عرض|مشترك/u)).toBeNull()
   })
 
@@ -77,7 +77,7 @@ describe('SearchBlock matches kind', () => {
 
   it('folds the pre-cap total into the summary when truncated', () => {
     const view = render(<SearchBlock kind="matches" truncated total={99} files={[group('a.ts', 2)]} />)
-    expect(view.getByText('عرض 2 / مشترك 99 موضع مطابقة · 1 عدد ملف')).toBeTruthy()
+    expect(view.getByText('عرض 2 من 99 مطابقة · 1 ملف')).toBeTruthy()
   })
 })
 
@@ -85,14 +85,14 @@ describe('SearchBlock paths kind', () => {
   it('renders a flat path list with a path-count summary', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={2} paths={['src/a.ts', 'src/b.ts']} />)
     expect(lines(view.container)).toEqual(['src/a.ts', 'src/b.ts'])
-    expect(view.getByText('2 عدد مسار')).toBeTruthy()
+    expect(view.getByText('2 مسار')).toBeTruthy()
     // No file-group headers in the paths shape.
     expect(fileHeaders(view.container)).toEqual([])
   })
 
   it('folds the pre-cap total into the paths summary when truncated', () => {
     const view = render(<SearchBlock kind="paths" truncated total={50} paths={['a', 'b']} />)
-    expect(view.getByText('عرض 2 / مشترك 50 عدد مسار')).toBeTruthy()
+    expect(view.getByText('عرض 2 من 50 مسار')).toBeTruthy()
   })
 })
 
@@ -101,7 +101,7 @@ describe('SearchBlock empty arm', () => {
     const view = render(<SearchBlock kind="matches" truncated={false} total={0} files={[]} />)
     expect(view.getByText('لا توجد نتائج')).toBeTruthy()
     expect(view.queryByText('نسخ')).toBeNull()
-    expect(view.getByText('0 موضع مطابقة · 0 عدد ملف')).toBeTruthy()
+    expect(view.getByText('0 مطابقة · 0 ملف')).toBeTruthy()
   })
 
   it('shows the placeholder for an empty paths result', () => {
@@ -124,12 +124,12 @@ describe('SearchBlock height cap', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={10} paths={paths} maxLines={4} />)
     // maxLines 4: head = ceil(4/2) = 2, tail = 2, 6 hidden.
     expect(lines(view.container)).toEqual(['p1', 'p2', 'p9', 'p10'])
-    const toggle = view.getByRole('button', { name: 'توسيع ذلك بقية 6 سطر النتيجة' })
-    expect(toggle.textContent).toBe('… ذلك بقية 6 سطر')
+    const toggle = view.getByRole('button', { name: 'توسيع 6 سطر نتائج إضافي' })
+    expect(toggle.textContent).toBe('… 6 سطر إضافي')
     fireEvent.click(toggle)
     expect(lines(view.container)).toHaveLength(10)
     const collapse = view.getByRole('button', { name: 'طي النتائج' })
-    expect(collapse.textContent).toBe('طي')
+    expect(collapse.textContent).toBe('عرض أقل')
     fireEvent.click(collapse)
     expect(lines(view.container)).toEqual(['p1', 'p2', 'p9', 'p10'])
   })
@@ -141,14 +141,14 @@ describe('SearchBlock height cap', () => {
     // Head takes the header then the first match; tail takes the last two matches.
     expect(lines(view.container)).toEqual(['1: hit 1', '9: hit 9', '10: hit 10'])
     expect(fileHeaders(view.container)).toEqual(['a.ts10'])
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 7 سطر النتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع 7 سطر نتائج إضافي' })).toBeTruthy()
   })
 
   it('renders the head slice alone when the cap leaves no tail', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={5}
       paths={['a', 'b', 'c', 'd', 'e']} maxLines={1} />)
     expect(lines(view.container)).toEqual(['a'])
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 4 سطر النتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع 4 سطر نتائج إضافي' })).toBeTruthy()
   })
 
   it('restores the owning file header above a tail slice that begins mid-file', () => {
@@ -166,14 +166,14 @@ describe('SearchBlock height cap', () => {
     ])
     // Visible rows hold at maxLines (2 headers + 6 matches = 8), so the hidden
     // count stays exact: 22 − 8 = 14.
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 14 سطر النتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع 14 سطر نتائج إضافي' })).toBeTruthy()
   })
 
   it('caps at the documented default when maxLines is absent', () => {
     const paths = Array.from({ length: DEFAULT_SEARCH_MAX_LINES + 1 }, (_v, i) => `p${i}`)
     const view = render(<SearchBlock kind="paths" truncated={false} total={paths.length} paths={paths} />)
     expect(lines(view.container)).toHaveLength(DEFAULT_SEARCH_MAX_LINES)
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 1 سطر النتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع 1 سطر نتائج إضافي' })).toBeTruthy()
   })
 })
 

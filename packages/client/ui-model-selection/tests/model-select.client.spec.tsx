@@ -71,7 +71,7 @@ describe('ModelSelect reasoning effort', () => {
     />)
 
     const trigger = screen.getByRole('button', {
-      name: 'اختيار النموذج، حالي DeepSeek-V4-Flash، جهد الاستدلال High',
+      name: 'اختيار نموذج، الحالي DeepSeek-V4-Flash، جهد الاستدلال High',
     })
     fireEvent.click(trigger)
     fireEvent.click(screen.getByRole('menuitem', { name: /جهد الاستدلال/ }))
@@ -86,7 +86,7 @@ describe('ModelSelect reasoning effort', () => {
         model: 'deepseek-v4-flash',
         reasoningEffort: 'max',
       })
-      expect(trigger.getAttribute('aria-label')).toBe('اختيار النموذج، حالي DeepSeek-V4-Flash، جهد الاستدلال Max')
+      expect(trigger.getAttribute('aria-label')).toBe('اختيار نموذج، الحالي DeepSeek-V4-Flash، جهد الاستدلال Max')
     })
   })
 
@@ -113,7 +113,7 @@ describe('ModelSelect reasoning effort', () => {
     />)
 
     fireEvent.click(screen.getByRole('button', {
-      name: 'اختيار النموذج، حالي Model، جهد الاستدلال Default',
+      name: 'اختيار نموذج، الحالي Model، جهد الاستدلال Default',
     }))
     fireEvent.click(screen.getByRole('menuitem', { name: /جهد الاستدلال/ }))
     expect(screen.getAllByRole('menuitemradio').map(item => item.textContent))
@@ -134,7 +134,7 @@ describe('ModelSelect reasoning effort', () => {
       t={t}
     />)
 
-    const trigger = screen.getByRole('button', { name: 'اختيار النموذج، حالي deepseek-official/removed-model' })
+    const trigger = screen.getByRole('button', { name: 'اختيار نموذج، الحالي deepseek-official/removed-model' })
     expect(trigger.textContent).toContain('deepseek-official/removed-model')
     fireEvent.click(trigger)
     expect(screen.queryByRole('menuitem', { name: /جهد الاستدلال/ })).toBeNull()
@@ -165,7 +165,7 @@ describe('ModelSelect reasoning effort', () => {
     directory.set(state())
     await waitFor(() => {
       expect(screen.getByRole('button', {
-        name: 'اختيار النموذج، حالي DeepSeek-V4-Flash، جهد الاستدلال High',
+        name: 'اختيار نموذج، الحالي DeepSeek-V4-Flash، جهد الاستدلال High',
       })).toBeTruthy()
     })
   })
@@ -196,13 +196,13 @@ describe('ModelSelect reasoning effort', () => {
       t={t}
     />)
 
-    fireEvent.click(screen.getByRole('button', { name: /اختيار النموذج|حالي/ }))
+    fireEvent.click(screen.getByRole('button', { name: /اختيار نموذج|حالي/ }))
     fireEvent.click(screen.getByRole('menuitem', { name: /النموذج/ }))
     fireEvent.click(screen.getByRole('menuitemradio', { name: /DeepSeek-V4-Pro/ }))
     const toast = await screen.findByRole('alert')
     expect(toast.textContent).toBe(sessionInUse
       ? ar['error.sessionInUse']
-      : 'النموذج عملية فشل:session/model-unavailable: session already contains images')
+      : 'فشلت عملية النموذج: session/model-unavailable: session already contains images')
     // The selection failure does not render the in-menu load strip (no Retry).
     expect(screen.queryByRole('button', { name: 'إعادة المحاولة' })).toBeNull()
   })
@@ -221,7 +221,7 @@ describe('ModelSelect reasoning effort', () => {
         select={vi.fn().mockResolvedValue({ ok: true, value: undefined })}
         t={t}
       />)
-      const trigger = screen.getByRole('button', { name: /اختيار النموذج/ })
+      const trigger = screen.getByRole('button', { name: /اختيار نموذج/ })
       fireEvent.click(trigger)
       const menu = screen.getByRole('menu')
       // Outside the composer subtree — column overflow clips cannot crop it.
@@ -271,7 +271,7 @@ describe('ModelSelect keyboard walk', () => {
       select={select}
       t={t}
     />)
-    fireEvent.click(screen.getByRole('button', { name: /اختيار النموذج/ }))
+    fireEvent.click(screen.getByRole('button', { name: /اختيار نموذج/ }))
     return select
   }
 
@@ -330,7 +330,7 @@ describe('ModelSelect keyboard walk', () => {
       select={vi.fn().mockResolvedValue({ ok: true, value: undefined })}
       t={t}
     />)
-    const trigger = screen.getByRole('button', { name: /اختيار النموذج/ })
+    const trigger = screen.getByRole('button', { name: /اختيار نموذج/ })
     // A real click focuses the trigger first; jsdom's does not.
     trigger.focus()
     fireEvent.click(trigger)
@@ -346,7 +346,7 @@ describe('ModelSelect keyboard walk', () => {
     const [modelRow, effortRow] = screen.getAllByRole('menuitem')
     expect(fireEvent.keyDown(modelRow!, { key: 'ArrowUp' })).toBe(false)
     expect(document.activeElement).toBe(effortRow)
-    const trigger = screen.getByRole('button', { name: /اختيار النموذج/ })
+    const trigger = screen.getByRole('button', { name: /اختيار نموذج/ })
     fireEvent.keyDown(trigger, { key: 'Escape' })
     expect(screen.queryByRole('menu')).toBeNull()
     expect(fireEvent.keyDown(trigger, { key: 'Tab' })).toBe(true)
@@ -377,11 +377,11 @@ describe('ModelSelect keyboard walk', () => {
       select={vi.fn().mockResolvedValue({ ok: true, value: undefined })}
       t={t}
     />)
-    const trigger = screen.getByRole('button', { name: /اختيار النموذج/ })
+    const trigger = screen.getByRole('button', { name: /اختيار نموذج/ })
     // A real click focuses the trigger first; jsdom's does not.
     trigger.focus()
     fireEvent.click(trigger)
-    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
     // No rows to hand the keyboard to: the trigger keeps it, so the card's
     // keys still reach the menu.
     expect(document.activeElement).toBe(trigger)
@@ -400,7 +400,7 @@ describe('ModelSelect keyboard walk', () => {
 
   it('drills into the model list on the selected model', () => {
     mountOpen()
-    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
     const rows = screen.getAllByRole('menuitemradio')
     expect(rows[0]!.getAttribute('aria-checked')).toBe('true')
     expect(document.activeElement).toBe(rows[0])
@@ -423,7 +423,7 @@ describe('ModelSelect keyboard walk', () => {
 
   it('Escape from the model list lands back on the model cell', () => {
     mountOpen()
-    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
     fireEvent.keyDown(screen.getAllByRole('menuitemradio')[0]!, { key: 'Escape' })
     const cells = screen.getAllByRole('menuitem')
     expect(document.activeElement).toBe(cells[0])
@@ -439,8 +439,8 @@ describe('ModelSelect keyboard walk', () => {
       select={vi.fn().mockResolvedValue({ ok: true, value: undefined })}
       t={t}
     />)
-    fireEvent.click(screen.getByRole('button', { name: /اختيار النموذج/ }))
-    fireEvent.click(screen.getByRole('menuitem', { name: /^النموذج/ }))
+    fireEvent.click(screen.getByRole('button', { name: /اختيار نموذج/ }))
+    fireEvent.click(screen.getByRole('menuitem', { name: /^نموذج/ }))
     const rows = screen.getAllByRole('menuitemradio')
     expect(rows.every(row => row.getAttribute('aria-checked') === 'false')).toBe(true)
     expect(document.activeElement).toBe(rows[0])

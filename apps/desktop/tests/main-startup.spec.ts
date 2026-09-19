@@ -555,7 +555,7 @@ describe('desktop main startup', () => {
     await application
     const edit = handler(event, 'edit', 104, 34)
     expect(harness.menu.buildFromTemplate.mock.lastCall![0].map(item => item.label ?? item.type)).toEqual([
-      'تراجع', 'إعادة', 'separator', 'قص', 'نسخ', 'لصق', 'حذف', 'separator', 'موافق الكل',
+      'تراجع', 'إعادة', 'separator', 'قص', 'نسخ', 'لصق', 'حذف', 'separator', 'تحديد الكل',
     ])
     const commands = harness.menu.buildFromTemplate.mock.lastCall![0].filter(item => item.type !== 'separator')
     for (const [index, keyCode] of ['Z', 'Y', 'X', 'C', 'V', 'Delete', 'A'].entries()) {

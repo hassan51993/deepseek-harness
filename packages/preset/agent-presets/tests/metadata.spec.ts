@@ -29,9 +29,9 @@ async function presetDir(content?: string): Promise<string> {
 
 describe('reading display metadata', () => {
   it('reads a name and a description', async () => {
-    const dir = await presetDir('name: النمط العاديي\ndescription: كامل تحرير رمز agent.\n')
+    const dir = await presetDir('name: النمط المعياري\ndescription: كامل تحرير رمز agent.\n')
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط العاديي', description: 'كامل تحرير رمز agent.' })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' })
   })
 
   it('treats an absent file as no metadata', async () => {
@@ -75,9 +75,9 @@ describe('reading display metadata', () => {
   })
 
   it('reads a declared order', async () => {
-    const dir = await presetDir('name: النمط العاديي\norder: 1\n')
+    const dir = await presetDir('name: النمط المعياري\norder: 1\n')
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط العاديي', order: 1 })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط المعياري', order: 1 })
   })
 
   it('ignores an order that is not a finite number', async () => {
@@ -103,7 +103,7 @@ describe('rendering display metadata', () => {
   })
 
   it('stores a declared order', () => {
-    expect(renderPresetMetadata({ name: 'النمط العاديي', order: 1 })).toBe('name: النمط العاديي\norder: 1\n')
+    expect(renderPresetMetadata({ name: 'النمط المعياري', order: 1 })).toBe('name: النمط المعياري\norder: 1\n')
   })
 
   it('omits an absent field rather than writing it blank', () => {

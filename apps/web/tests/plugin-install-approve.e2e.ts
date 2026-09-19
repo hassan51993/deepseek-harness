@@ -46,7 +46,7 @@ it('offers approval for blocked install scripts and installs once they are allow
       const tripwire = watchConsole(page)
       await page.goto(scaffold.authenticatedUrl)
       await page.waitForSelector('[class*="frame"]')
-      if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) await page.keyboard.press('Escape')
+      if (await page.getByRole('dialog', { name: 'الإعدادات' }).count() > 0) await page.keyboard.press('Escape')
       await page.getByRole('navigation', { name: 'اللوحات العامة' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
       await panel.getByRole('button', { name: 'إضافة', exact: true }).click()
@@ -66,7 +66,7 @@ it('offers approval for blocked install scripts and installs once they are allow
       await approval.getByRole('button', { name: 'السماح بهذه النصوص وإعادة المحاولة', exact: true }).click()
       // The Host saved the permission before running pnpm again, and the installed screen says so.
       await dialog.getByRole('button', { name: 'تفعيلها الآن', exact: true }).waitFor({ timeout: 20_000 })
-      await dialog.getByText('قد سماح تشغيل تثبيت نص برمجي:native-package', { exact: true }).waitFor()
+      await dialog.getByText('سُمح بنصوص التثبيت لـ native-package', { exact: true }).waitFor()
       expect(await readFile(policyPath, 'utf8')).toMatch(/native-package: true/)
       expect(JSON.parse(await readFile(join(profile, 'package.json'), 'utf8'))).toMatchObject({ dependencies: { 'native-package': '1.0.0' } })
       expect(tripwire.pageErrors).toEqual([])

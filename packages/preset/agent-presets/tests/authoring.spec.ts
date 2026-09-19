@@ -105,7 +105,7 @@ describe('copying a preset', () => {
   })
 
   it('keeps the source description but never its name or order', async () => {
-    await seedPreset(userRoot, 'source', { metadata: 'name: المصدر نمط\ndescription: فقط فعل فحص بحث.\norder: 1\n' })
+    await seedPreset(userRoot, 'source', { metadata: 'name: مصدر نمط\ndescription: فقط فعل فحص بحث.\norder: 1\n' })
 
     await ctx.agentPresets.copy('source', 'mine')
 

@@ -62,7 +62,7 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
 
   it('offers exactly the declared levels and records the picked one', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-declared-reasoning'))
-    const trigger = page.getByRole('button', { name: /^اختيار النموذج/ })
+    const trigger = page.getByRole('button', { name: /^اختيار نموذج/ })
     await trigger.waitFor({ timeout: 15_000 })
     await trigger.click()
     await page.getByRole('menuitem', { name: /جهد الاستدلال/ }).click()
@@ -103,7 +103,7 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
       { timeout: 10_000 },
     ).toContain('reasoningEffort: high')
     await expect.poll(() => trigger.getAttribute('aria-label'), { timeout: 10_000 })
-      .toBe('اختيار النموذج، حالي Acme Think، جهد الاستدلال High')
+      .toBe('اختيار نموذج، الحالي Acme Think، جهد الاستدلال High')
 
     // Reopening the drilled pane parks the keyboard on the level in use, and
     // Shift+Tab walks back out like Escape: to the drilled cell, then closed.

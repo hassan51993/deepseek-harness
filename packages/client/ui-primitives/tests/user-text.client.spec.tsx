@@ -44,11 +44,11 @@ describe('projectUserText', () => {
   })
 
   it('decorates recall-associated labels, files, folders, and quoted paths', () => {
-    const host = project('@الجلسات واحد قول @src/deep/file.txt و @dir/ و @"a b.md"', ['الجلسات واحد'])
+    const host = project('@جلسة واحد قول @src/deep/file.txt و @dir/ و @"a b.md"', ['جلسة واحد'])
     const kinds = [...host.querySelectorAll('[data-ref-chip]')].map(c =>
       [c.getAttribute('data-ref-chip'), c.textContent])
     expect(kinds).toEqual([
-      ['session', 'الجلسات واحد'],
+      ['session', 'جلسة واحد'],
       ['file', 'file.txt'],
       ['folder', 'dir'],
       ['file', 'a b.md'],
@@ -94,10 +94,10 @@ describe('projectUserText', () => {
   })
 
   it('prefers the longer recall label when one nests inside another', () => {
-    const host = project('@الجلسات واحد استلام ذيل', ['الجلسات', 'الجلسات واحد'])
+    const host = project('@جلسة واحد استلام ذيل', ['الجلسات', 'جلسة واحد'])
     const chips = [...host.querySelectorAll('[data-ref-chip="session"]')]
-    expect(chips.map(c => c.textContent)).toEqual(['الجلسات واحد'])
-    expect(host.textContent).toBe('الجلسات واحد استلام ذيل')
+    expect(chips.map(c => c.textContent)).toEqual(['جلسة واحد'])
+    expect(host.textContent).toBe('جلسة واحد استلام ذيل')
   })
 
   it('falls back to the raw quoted label when the path has no basename', () => {

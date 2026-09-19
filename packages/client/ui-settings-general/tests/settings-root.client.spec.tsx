@@ -158,14 +158,14 @@ describe('SettingsRoot trigger', () => {
     expect(screen.queryByText('جارٍ إعادة الاتصال')).toBeNull()
     f.setDesktopUpdate({ failed: false, opening: false,
       presentation: { phase: 'error', version: presentation.version, failure: 'install' } })
-    expect(screen.queryByRole('button', { name: 'إعادة المحاولة التحديث' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'إعادة محاولة التحديث' })).toBeNull()
     expect(screen.getByText('جارٍ إعادة الاتصال')).toBeTruthy()
   })
   it.each([
     { column: 'expanded English', wide: true, dictionary: en, name: 'Settings' },
     { column: 'collapsed English', wide: false, dictionary: en, name: 'Settings' },
-    { column: 'expanded Arabic', wide: true, dictionary: ar, name: 'ضبط' },
-    { column: 'collapsed Arabic', wide: false, dictionary: ar, name: 'ضبط' },
+    { column: 'expanded Arabic', wide: true, dictionary: ar, name: 'الإعدادات' },
+    { column: 'collapsed Arabic', wide: false, dictionary: ar, name: 'الإعدادات' },
   ])('uses the locale name and accepts keyboard-style activation for the $column trigger', ({
     wide, dictionary, name,
   }) => {

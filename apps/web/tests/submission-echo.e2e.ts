@@ -38,9 +38,9 @@ it('paints the submission echo on the send keystroke and swaps it for the durabl
     }
   }, { timeout: 5_000 })
   fireEvent.paste(composer, {
-    clipboardData: { items: [], getData: () => 'عودة إظهار هذا بند رسالة' },
+    clipboardData: { items: [], getData: () => 'عودة إظهار هذا رسالة' },
   })
-  await waitFor(() => { expect(composer.textContent).toBe('عودة إظهار هذا بند رسالة') })
+  await waitFor(() => { expect(composer.textContent).toBe('عودة إظهار هذا رسالة') })
   fireEvent.keyDown(composer, { key: 'Enter' })
 
   // Synchronously after the keystroke: the echo bubble is in the flow with
@@ -49,7 +49,7 @@ it('paints the submission echo on the send keystroke and swaps it for the durabl
   // already cleared, editable, and free of the rail.
   const echo = document.querySelector<HTMLElement>('[data-submission-echo]')
   if (echo === null) throw new Error('submission echo missing on the send keystroke')
-  expect(echo.textContent).toContain('عودة إظهار هذا بند رسالة')
+  expect(echo.textContent).toContain('عودة إظهار هذا رسالة')
   expect(echo.querySelector('img')?.getAttribute('src')?.split(':')[0]).toBe('blob')
   expect(composer.textContent).toBe('')
   expect(composer.getAttribute('contenteditable')).toBe('true')
@@ -63,7 +63,7 @@ it('paints the submission echo on the send keystroke and swaps it for the durabl
       throw new Error('submission echo still present after the durable node arrived')
     }
   }, { timeout: 10_000 })
-  expect(screen.getAllByText('عودة إظهار هذا بند رسالة')).toHaveLength(1)
+  expect(screen.getAllByText('عودة إظهار هذا رسالة')).toHaveLength(1)
   await waitFor(() => {
     if (document.querySelector('[data-align="end"] img') === null) {
       throw new Error('durable user gallery missing')

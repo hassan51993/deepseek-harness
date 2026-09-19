@@ -117,7 +117,7 @@ describe('ui-settings-general apply', () => {
     const english = localeView('en', 1)
     settings.mutate.mockResolvedValueOnce(ok(english))
     const t = c.ctx.locale.bind(NS)
-    expect(t('title')).toBe('ضبط')
+    expect(t('title')).toBe('الإعدادات')
     expect(t('connection.error')).toBe('انقطع الاتصال')
     expect(t('connection.connecting')).toBe('جارٍ إعادة الاتصال')
     expect(t('connection.connected')).toBe('متصل')

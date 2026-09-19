@@ -187,10 +187,10 @@ describe('ScheduleCatalogAction rows', () => {
     const samples = [
       [86_400, 'Every 1 day', 'كل 1 يوم'],
       [172_800, 'Every 2 days', 'كل 2 يوم'],
-      [3_600, 'Every 1 hour', 'كل 1 ساعات'],
-      [7_200, 'Every 2 hours', 'كل 2 ساعات'],
-      [300, 'Every 5 minutes', 'كل 5 دقائق'],
-      [301, 'Every 301 seconds', 'كل 301 ثوانٍ'],
+      [3_600, 'Every 1 hour', 'كل 1 ساعة'],
+      [7_200, 'Every 2 hours', 'كل 2 ساعة'],
+      [300, 'Every 5 minutes', 'كل 5 دقيقة'],
+      [301, 'Every 301 seconds', 'كل 301 ث'],
     ] as const
     for (const [seconds, english, arabic] of samples) {
       const item = record(String(seconds), 'every', START + 1_000, { everySeconds: seconds })
@@ -198,7 +198,7 @@ describe('ScheduleCatalogAction rows', () => {
       expect(formatScheduleFrequency(item, tAr)).toBe(arabic)
     }
     expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tAr)).toBe('مرة واحدة')
-    expect(tAr('status.scheduled')).toBe('انتظار في')
+    expect(tAr('status.scheduled')).toBe('مجدول')
     expect(tAr('status.overdue')).toBe('متأخر')
   })
 

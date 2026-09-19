@@ -121,7 +121,7 @@ describe('MenuView', () => {
         source: 'command',
         status: 'ready',
         items: [
-          { name: 'plan', label: 'خطة', description: 'الدخول إلى وضع التخطيط أو الخروج منه', icon: Glyph, section: 'إضافة' },
+          { name: 'plan', label: 'الخطة', description: 'الدخول إلى وضع التخطيط أو الخروج منه', icon: Glyph, section: 'إضافة' },
           { name: 'file', label: 'File', section: 'إضافة' },
         ],
       }],
@@ -161,7 +161,7 @@ describe('MenuView', () => {
         { source: 'skill', status: 'pending', items: [] },
       ],
     }))
-    expect(titles(view.container)).toEqual(['إشارة أمر', 'mystery', 'المهارات'])
+    expect(titles(view.container)).toEqual(['الأوامر', 'mystery', 'المهارات'])
   })
 
   it('renders contiguous candidate sections once without changing option indexes', () => {
