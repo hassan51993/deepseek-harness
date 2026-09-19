@@ -2,18 +2,18 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'phase.active': 'إجراء في هدف',
-  'phase.active.disarmed': 'لم تشغيل هدف',
-  'phase.paused': 'قد مؤقت توقف هدف',
-  'phase.blocked': 'تلقي منع هدف',
-  'objective.aria': 'هدف محتوى',
-  'commandInput.aria': 'إشارة أمر إدخال',
-  'action.save': 'حفظ هدف',
-  'action.cancel': 'إلغاء تحرير',
-  'action.pause': 'مؤقت توقف هدف',
-  'action.resume': 'استعادة هدف',
-  'action.edit': 'تحرير هدف',
-  'action.clear': 'صاف حذف هدف',
+  'phase.active': 'هدف جارٍ',
+  'phase.active.disarmed': 'هدف غير مفعّل',
+  'phase.paused': 'هدف موقوف مؤقتًا',
+  'phase.blocked': 'هدف متعثّر',
+  'objective.aria': 'نص الهدف',
+  'commandInput.aria': 'إدخال الأوامر',
+  'action.save': 'حفظ الهدف',
+  'action.cancel': 'إلغاء التحرير',
+  'action.pause': 'إيقاف الهدف مؤقتًا',
+  'action.resume': 'استئناف الهدف',
+  'action.edit': 'تحرير الهدف',
+  'action.clear': 'مسح الهدف',
 } satisfies Record<string, string>
 
 /** The goal namespace key union. */

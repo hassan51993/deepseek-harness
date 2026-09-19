@@ -192,9 +192,9 @@ describe('loadWin32DialogBindings over the fake COM world', () => {
     const bindings = await loadWin32DialogBindings()
     const showing = vi.fn()
 
-    expect(runFolderDialog(bindings, 'اختيار مساحة العمل دليل', showing)).toBe('C:\\اختيار في\\directory')
+    expect(runFolderDialog(bindings, 'اختيار مساحات العمل دليل', showing)).toBe('C:\\اختيار في\\directory')
     expect(world.dpiContexts).toEqual([-4])
-    expect(world.titles).toEqual(['اختيار مساحة العمل دليل'])
+    expect(world.titles).toEqual(['اختيار مساحات العمل دليل'])
     expect(world.options).toHaveLength(1)
     expect(showing).toHaveBeenCalledWith(31337)
     // One synthesized Alt press (down, then up) immediately precedes Show, so

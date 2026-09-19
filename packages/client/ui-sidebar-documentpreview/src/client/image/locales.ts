@@ -1,10 +1,10 @@
 /** Locale-owned image renderer labels and status text. */
 export const ar = {
   title: 'صورة',
-  preview: 'صورة معاينة:{name}',
-  loading: 'جارٍ قراءة…',
-  failed: 'لا يمكن عرض هذا ورقة صورة',
-  unsupported: 'صورة معاينة حاجة كامل ملف محتوى',
+  preview: 'معاينة الصورة: {name}',
+  loading: 'جارٍ القراءة…',
+  failed: 'تعذّر عرض هذه الصورة.',
+  unsupported: 'تتطلّب معاينة الصورة محتوى الملف كاملًا.',
 } satisfies Record<string, string>
 
 /** Image renderer dictionary keys. */

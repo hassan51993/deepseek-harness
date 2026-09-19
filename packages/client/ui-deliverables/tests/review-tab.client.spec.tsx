@@ -67,7 +67,7 @@ describe('review addresses', () => {
     const definition = changesReviewDefinition(makeTranslate(ar))
     expect(definition).toMatchObject({ kind: 'changes-review', priority: 'builtin', patterns: ['dsh-resource://changes-review/**'] })
     expect(definition.canOpen?.(ADDRESS)).toBe(true)
-    expect(definition.title(ADDRESS)).toBe('رقم 2 جولة تعديل')
+    expect(definition.title(ADDRESS)).toBe('رقم 2 الجولات تعديل')
     for (const bad of [
       'dsh-resource://file/session/viewed/a.ts', 'dsh-resource://changes-review/session/viewed/5',
       'dsh-resource://changes-review/session//5/2', 'dsh-resource://changes-review/session/viewed/x/2',
@@ -289,7 +289,7 @@ describe('ReviewTab', () => {
     summaries.state.set({ [SUMMARY_URL]: 'missing' })
     const missing = mount({ summaries, locale: ar })
     expect(missing.view.getByText(ar['diff.missing'])).toBeTruthy()
-    expect(missing.view.getByText('رقم 2 جولة تعديل')).toBeTruthy()
+    expect(missing.view.getByText('رقم 2 الجولات تعديل')).toBeTruthy()
     missing.view.unmount()
     summaries.state.set({ [SUMMARY_URL]: summary })
     const diffs = new ChangesDiffStore()

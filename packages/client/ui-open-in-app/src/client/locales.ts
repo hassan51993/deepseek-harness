@@ -39,16 +39,16 @@ const PRODUCT_NAMES = {
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'open.title': 'في {app} في فتح عمل دليل',
-  'open.tooltip': 'في محلي فتح',
-  'open.error': 'فتح فشل',
-  'menu.toggle': 'اختيار فتح طريقة',
-  'menu.aria': 'فتح طريقة',
+  'open.title': 'فتح مساحة العمل في {app}',
+  'open.tooltip': 'الفتح محليًا',
+  'open.error': 'تعذّر الفتح',
+  'menu.toggle': 'اختر تطبيقًا للفتح به',
+  'menu.aria': 'الفتح بواسطة',
   ...PRODUCT_NAMES,
-  'app.finder': 'زيارة بلوغ',
-  'app.explorer': 'ملف مورد إدارة جهاز',
-  'app.filemanager': 'ملف إدارة جهاز',
-  'app.terminal': 'طرفية',
+  'app.finder': 'Finder',
+  'app.explorer': 'File Explorer',
+  'app.filemanager': 'Files',
+  'app.terminal': 'Terminal',
 } as const
 
 /** English dictionary, key-identical to the Arabic source of truth. */

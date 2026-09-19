@@ -121,13 +121,13 @@ describe('MenuView', () => {
         source: 'command',
         status: 'ready',
         items: [
-          { name: 'plan', label: 'خطة', description: 'دخول أو خروج خطة نمط', icon: Glyph, section: 'إضافة' },
+          { name: 'plan', label: 'خطة', description: 'الدخول إلى وضع التخطيط أو الخروج منه', icon: Glyph, section: 'إضافة' },
           { name: 'file', label: 'File', section: 'إضافة' },
         ],
       }],
     }))
     const options = screen.getAllByRole('option')
-    expect(options.map(o => o.textContent)).toEqual(['خطةplanدخول أو خروج خطة نمط', 'File'])
+    expect(options.map(o => o.textContent)).toEqual(['خطةplanالدخول إلى وضع التخطيط أو الخروج منه', 'File'])
     expect(options[0]?.querySelector('[data-glyph="plan"]')?.getAttribute('width')).toBe('16')
     // A label that is the name in another letter case renders no alias.
     expect(options[1]?.querySelectorAll('span')).toHaveLength(1)
@@ -161,7 +161,7 @@ describe('MenuView', () => {
         { source: 'skill', status: 'pending', items: [] },
       ],
     }))
-    expect(titles(view.container)).toEqual(['إشارة أمر', 'mystery', 'تقنية قدرة'])
+    expect(titles(view.container)).toEqual(['إشارة أمر', 'mystery', 'المهارات'])
   })
 
   it('renders contiguous candidate sections once without changing option indexes', () => {
@@ -170,16 +170,16 @@ describe('MenuView', () => {
         source: 'reference',
         status: 'ready',
         items: [
-          { name: 'Folder · src/', section: 'ملف و ملف مشبك' },
-          { name: 'File · README.md', section: 'ملف و ملف مشبك' },
-          { name: 'Session · Research', section: 'محادثة' },
+          { name: 'Folder · src/', section: 'الملفات والمجلدات' },
+          { name: 'File · README.md', section: 'الملفات والمجلدات' },
+          { name: 'Session · Research', section: 'الجلسات' },
         ],
       }],
       highlight: { source: 'reference', index: 0 },
     }))
     expect(screen.queryByText('reference')).toBeNull()
-    expect(screen.getAllByText('ملف و ملف مشبك')).toHaveLength(1)
-    expect(screen.getAllByText('محادثة')).toHaveLength(1)
+    expect(screen.getAllByText('الملفات والمجلدات')).toHaveLength(1)
+    expect(screen.getAllByText('الجلسات')).toHaveLength(1)
     const options = screen.getAllByRole('option')
     expect(options.map(option => option.textContent)).toEqual([
       'Folder · src/',
@@ -202,7 +202,7 @@ describe('MenuView', () => {
       }],
       highlight: { source: 'reference', index: 0 },
     }))
-    const chevrons = screen.getAllByRole('button', { name: 'دخول دليل' })
+    const chevrons = screen.getAllByRole('button', { name: 'تصفّح المجلد' })
     expect(chevrons).toHaveLength(1)
     // The chevron drills; the row body still settles the pick untouched.
     fireEvent.mouseDown(chevrons[0]!)
@@ -348,7 +348,7 @@ describe('MenuView', () => {
       { label: 'src', value: 'src' },
       { label: 'module1', value: 'module1', current: true },
     ]]]))
-    const nav = screen.getByRole('navigation', { name: 'دليل تنقل' })
+    const nav = screen.getByRole('navigation', { name: 'التنقّل بين المجلدات' })
     expect([...nav.querySelectorAll('button')].map(button => button.textContent))
       .toEqual(['Workspace', 'src', 'module1'])
     // The listbox holds options alone; the header is its sibling, not a row.
@@ -360,7 +360,7 @@ describe('MenuView', () => {
       { label: 'Workspace', value: 'root' },
       { label: 'src', value: 'src', current: true },
     ]]]))
-    const crumbs = screen.getByRole('navigation', { name: 'دليل تنقل' }).querySelectorAll('button')
+    const crumbs = screen.getByRole('navigation', { name: 'التنقّل بين المجلدات' }).querySelectorAll('button')
     expect(fireEvent.mouseDown(crumbs[0]!)).toBe(false)
     expect(onCrumb).toHaveBeenCalledWith('command', 0)
     onCrumb.mockClear()

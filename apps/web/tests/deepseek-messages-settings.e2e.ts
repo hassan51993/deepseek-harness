@@ -8,7 +8,7 @@ import {
   captureStableAria, compareOrRefreshGolden, launchWebScaffold,
   watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceAr, saveFailureShot, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, saveFailureShot, AR_BROWSER_LOCALE } from './support.ts'
 
 const EXPECTED = fileURLToPath(new URL('./expected/deepseek-messages-settings/', import.meta.url))
 
@@ -21,7 +21,7 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
   beforeAll(async () => {
     scaffold = await launchWebScaffold({ deepSeekMissingCredential: true, deepSeekMessages: true })
     browser = await chromium.launch()
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
   }, 120_000)
@@ -45,7 +45,7 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     await onboarding.waitFor({ state: 'detached' })
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'ضبط', exact: true })
-    await dialog.getByRole('button', { name: 'نموذج', exact: true }).click()
+    await dialog.getByRole('button', { name: 'النموذج', exact: true }).click()
     await dialog.getByText('DeepSeek', { exact: true }).waitFor()
     expect(await dialog.getByText('DeepSeek', { exact: true }).count()).toBe(1)
     await dialog.getByText('DeepSeek', { exact: true }).locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
@@ -57,7 +57,7 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
       await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd), webSnapshotMode())
     await messages.getByLabel('API مفتاح', { exact: true }).fill('sk-e2e-messages')
     await messages.getByLabel('API عنوان', { exact: true }).fill('https://messages.example/anthropic')
-    expect(await messages.getByLabel('نموذج ID 1').inputValue()).toBe('deepseek-flash')
+    expect(await messages.getByLabel('النموذج ID 1').inputValue()).toBe('deepseek-flash')
     await messages.getByLabel('عرض اسم 1', { exact: true }).fill('Messages Flash')
     await messages.getByRole('button', { name: 'حفظ', exact: true }).click()
     await dialog.getByText('قد حفظ DeepSeek (deepseek-official).', { exact: true }).waitFor()
@@ -76,8 +76,8 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     expect(await page.locator('body').innerText()).not.toContain('sk-e2e-')
     await page.keyboard.press('Escape')
     await connectFreshWorkspaceAr(page, scaffold.workspaceCwd, 'messages-settings-e2e')
-    await page.getByRole('button', { name: /^اختيار نموذج/ }).click()
-    await page.getByRole('menuitem', { name: /نموذج/ }).click()
+    await page.getByRole('button', { name: /^اختيار النموذج/ }).click()
+    await page.getByRole('menuitem', { name: /النموذج/ }).click()
     await page.getByRole('menuitemradio', { name: 'Messages Flash', exact: true }).waitFor()
     await compareOrRefreshGolden(join(EXPECTED, 'picker.expected.md'),
       await captureStableAria(page, '[role="menu"]', scaffold.workspaceCwd), webSnapshotMode())
@@ -91,8 +91,8 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     await page.reload({ waitUntil: 'load' })
     const input = page.locator('[data-composer-input]').first()
     await expect.poll(() => input.isEnabled()).toBe(true)
-    await page.getByRole('button', { name: /^اختيار نموذج/ }).click()
-    await page.getByRole('menuitem', { name: /نموذج/ }).click()
+    await page.getByRole('button', { name: /^اختيار النموذج/ }).click()
+    await page.getByRole('menuitem', { name: /النموذج/ }).click()
     await page.getByRole('menuitemradio', { name: 'Messages Flash', exact: true }).click()
     await expect.poll(() => input.isEnabled()).toBe(true)
     await expect.poll(() => scaffold.ctx.agentDefaultModel.currentSelection().provider).toBe('deepseek-official')

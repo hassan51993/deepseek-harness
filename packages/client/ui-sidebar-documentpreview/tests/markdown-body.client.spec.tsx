@@ -91,7 +91,7 @@ describe('MarkdownBody', () => {
     dictionary = ar
     view.rerender(<MarkdownBody {...props(value, t)} />)
     expect(view.getByRole('button', { name: 'نسخ' })).toBeDefined()
-    expect(view.getByRole('heading', { name: 'قدم ملاحظة' })).toBeDefined()
+    expect(view.getByRole('heading', { name: 'الحواشي' })).toBeDefined()
   })
 
   it('renders empty text and leaves non-text deliveries to their selected implementation', () => {

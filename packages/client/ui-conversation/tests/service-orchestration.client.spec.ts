@@ -622,11 +622,11 @@ describe('sendSession submission echo', () => {
         mode: 'steer',
         text: 'قيام أي تصحيح انحراف',
       }))
-      await expect(b.root.sendSession(session, 'قليلا بعد معالجة', [], 'queue'))
+      await expect(b.root.sendSession(session, 'لاحقًا معالجة', [], 'queue'))
         .resolves.toEqual({ kind: 'success' })
       expect(b.beginSubmission).toHaveBeenLastCalledWith(expect.objectContaining({
         mode: 'queue',
-        text: 'قليلا بعد معالجة',
+        text: 'لاحقًا معالجة',
       }))
     } finally {
       b.restore()
@@ -730,8 +730,8 @@ describe('sendSession submission echo', () => {
     vi.stubGlobal('requestAnimationFrame', undefined)
     try {
       const session = b.runtime.sessions.binding('s1')!.session
-      await expect(b.root.sendSession(session, 'صاف نص', [], 'queue')).resolves.toEqual({ kind: 'success' })
-      expect(b.prompt).toHaveBeenCalledWith([{ type: 'text', text: 'صاف نص' }], 'queue', undefined, 'req-echo')
+      await expect(b.root.sendSession(session, 'نص عادي', [], 'queue')).resolves.toEqual({ kind: 'success' })
+      expect(b.prompt).toHaveBeenCalledWith([{ type: 'text', text: 'نص عادي' }], 'queue', undefined, 'req-echo')
     } finally {
       vi.unstubAllGlobals()
       b.restore()
@@ -862,7 +862,7 @@ describe('InputHub queue steering (empty-draft accelerated Enter)', () => {
     b.shell.steerQueue()
     await vi.waitFor(() => {
       expect(b.shell.notices.getSnapshot()).toEqual(
-        expect.objectContaining({ level: 'error', text: 'إدراج كلام إرسال فشل، طلب إعادة محاولة.' }),
+        expect.objectContaining({ level: 'error', text: 'فشل التوجيه. أعد المحاولة.' }),
       )
     })
     expect(b.updateQueue).toHaveBeenCalledTimes(1)

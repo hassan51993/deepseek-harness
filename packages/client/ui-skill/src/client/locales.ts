@@ -5,13 +5,13 @@ export const NS = 'skill'
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'row.title': 'Skill',
-  'row.running': 'جارٍ تحميل skill',
-  'row.failed': 'skill تحميل فشل',
-  'row.stopped': 'skill تحميل قد في توقف',
-  'row.instructions': 'شرح',
-  'row.inspect': 'عرض',
-  'menu.userOnly': 'فقط مستخدم',
+  'row.title': 'مهارة',
+  'row.running': 'جارٍ تحميل المهارة',
+  'row.failed': 'تعذّر تحميل المهارة',
+  'row.stopped': 'توقّف تحميل المهارة',
+  'row.instructions': 'التعليمات',
+  'row.inspect': 'فحص',
+  'menu.userOnly': 'للمستخدم فقط',
 } satisfies Record<string, string>
 
 /** The skill namespace key union. */

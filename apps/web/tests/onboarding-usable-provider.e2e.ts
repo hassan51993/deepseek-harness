@@ -14,7 +14,7 @@ import {
   acknowledgeReloadConnectionLoss, assertFixtureInventory, captureStableAria, compareOrRefreshGolden,
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, saveFailureShot } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/onboarding-usable-provider', import.meta.url))
 const DISMISSED_EXPECTED = join(SNAPSHOT_DIR, 'dismissed.expected.md')
@@ -31,7 +31,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     scaffold = await launchWebScaffold({ deepSeekMissingCredential: true })
     browser = await chromium.launch()
     // The scenario asserts the shipped Arabic copy, so the browser asks for it.
-    page = await browser.newPage({ viewport: { width: 1440, height: 960 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1440, height: 960 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -46,7 +46,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     onTestFailed(() => saveFailureShot(page, 'web-e2e-onboarding-setup-card-cancel'))
     const credentialStep = page.getByRole('dialog', { name: CREDENTIAL_STEP })
     await credentialStep.waitFor({ timeout: 15_000 })
-    await credentialStep.getByRole('button', { name: 'قليلا بعد إعداد' }).click()
+    await credentialStep.getByRole('button', { name: 'لاحقًا إعداد' }).click()
     await credentialStep.waitFor({ state: 'detached', timeout: 15_000 })
 
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
@@ -54,14 +54,14 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     await settings.waitFor({ timeout: 10_000 })
     // Dismissing the onboarding step leaves Settings closed, so enter the
     // Models section explicitly before exercising its normal cards.
-    await settings.getByRole('button', { name: 'نموذج' }).click()
+    await settings.getByRole('button', { name: 'النموذج' }).click()
     const setupKey = settings.getByRole('textbox', { name: 'API مفتاح', exact: true })
     await setupKey.waitFor({ timeout: 10_000 })
 
-    const add = settings.getByRole('button', { name: 'إضافة مزود' })
+    const add = settings.getByRole('button', { name: 'إضافة المزوّد' })
     await expect.poll(async () => add.isEnabled(), { timeout: 10_000 }).toBe(true)
     await add.click()
-    const pick = settings.getByLabel('مزود')
+    const pick = settings.getByLabel('المزوّد')
     await pick.waitFor({ timeout: 10_000 })
     await pick.selectOption('minimax-cn')
     await expect.poll(
@@ -72,7 +72,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     // Cancelling the setup card must not close the independent add-provider
     // draft beside it.
     await settings.getByRole('button', { name: 'إلغاء', exact: true }).first().click()
-    expect(await settings.getByLabel('مزود').count()).toBe(1)
+    expect(await settings.getByLabel('المزوّد').count()).toBe(1)
     await expect.poll(
       async () => settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).count(),
       { timeout: 10_000 },
@@ -115,7 +115,7 @@ describe.skipIf(MODE === 'record')('web e2e: another usable provider ends first-
     // setup card over a user who already has somewhere to send a request.
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     await settings.waitFor({ timeout: 10_000 })
-    await settings.getByRole('button', { name: 'نموذج' }).click()
+    await settings.getByRole('button', { name: 'النموذج' }).click()
     await settings.getByRole('button', { name: 'تحرير DeepSeek (deepseek-official)' }).waitFor({ timeout: 10_000 })
     expect(await settings.getByRole('textbox', { name: 'API مفتاح', exact: true }).count()).toBe(0)
 

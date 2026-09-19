@@ -153,7 +153,7 @@ describe('directory-picker-browse client half', () => {
       // The ar registration rolled back with the failure: once the rival
       // leaves, a fresh registrant owns the whole namespace again.
       disposeRival()
-      const disposeAr = locale.register('directory-browser', 'ar', { 'browser.title': 'فارغ خامل' })
+      const disposeAr = locale.register('directory-browser', 'ar', { 'browser.title': 'خامل' })
       disposeAr()
     } finally {
       await new Promise(resolve => setTimeout(resolve, 0))
@@ -168,7 +168,7 @@ describe('directory-picker-browse client half', () => {
     const entry = b.slots.entries(HOLES[0])[0]!
     const injected = (entry.inject as () => { t: (key: string) => string })()
     // ar is the shipped default locale.
-    expect(injected.t('browser.title')).toBe('اختيار مساحة العمل دليل')
+    expect(injected.t('browser.title')).toBe('اختيار مساحات العمل دليل')
     expect(injected.t('browser.newFolder')).toBe('جديد بناء ملف مشبك')
     expect(injected.t('browser.showHidden')).toBe('عرض إخفاء ملف')
   })

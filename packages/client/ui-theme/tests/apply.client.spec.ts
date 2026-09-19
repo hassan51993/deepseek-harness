@@ -95,8 +95,8 @@ describe('ui-theme apply', () => {
     const before = await bench()
     declareItems(before.slots)
     await before.ctx.plugin({ inject: [...inject], apply }).await()
-    expect(before.locale.bind(SETTINGS_NS)('appearance.title')).toBe('خارج مراقبة')
-    expect(before.locale.bind(SETTINGS_NS)('fontSize.title')).toBe('حرف رقم كبير صغير')
+    expect(before.locale.bind(SETTINGS_NS)('appearance.title')).toBe('المظهر')
+    expect(before.locale.bind(SETTINGS_NS)('fontSize.title')).toBe('حجم الخط')
     before.locale.setLocale('en')
     expect(before.locale.bind(SETTINGS_NS)('appearance.title')).toBe('Appearance')
     const entry = before.slots.entries(SLOT).find(e => e.component === AppearanceRow)!

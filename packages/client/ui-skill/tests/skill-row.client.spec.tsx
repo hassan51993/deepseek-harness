@@ -84,7 +84,7 @@ describe('SkillRow', () => {
     const view = render(<SkillRow {...props(running())} />)
     const row = view.container.querySelector('[data-tool="skill"] > div')!
     expect(row.getAttribute('role')).toBeNull()
-    expect(view.container.textContent).toContain('جارٍ تحميل skill')
+    expect(view.container.textContent).toContain('جارٍ تحميل المهارة')
     expect(view.container.textContent).toContain('dsh-manage-issues')
     expect(view.container.querySelector('svg [fill="currentColor"]')).not.toBeNull()
   })
@@ -95,7 +95,7 @@ describe('SkillRow', () => {
       isError: true,
       error: { name: 'SkillError', code: 'missing' },
     }))} />)
-    const row = screen.getByRole('button', { name: 'skill تحميل فشلSkillSkillError: missing resource' })
+    const row = screen.getByRole('button', { name: 'تعذّر تحميل المهارةSkillSkillError: missing resource' })
     expect(view.container.querySelector('[data-tool="skill"]')?.getAttribute('data-state')).toBe('error')
     expect(row.textContent).not.toContain('Check SKILL.md.')
     fireEvent.click(row)
@@ -108,7 +108,7 @@ describe('SkillRow', () => {
     const stoppedView = render(<SkillRow {...props(settled({
       error: { name: 'InterruptedError', code: 'interrupted' },
     }))} />)
-    expect(stoppedView.container.textContent).toContain('skill تحميل قد في توقف')
+    expect(stoppedView.container.textContent).toContain('توقّف تحميل المهارة')
     expect(stoppedView.container.querySelector('[data-state="warning"]')).not.toBeNull()
     cleanup()
 
@@ -124,7 +124,7 @@ describe('SkillRow', () => {
       isError: true,
       error: { name: 'SkillError', code: 'missing' },
     }))} />)
-    const errorRow = screen.getByRole('button', { name: 'skill تحميل فشلSkillSkillError: missing' })
+    const errorRow = screen.getByRole('button', { name: 'تعذّر تحميل المهارةSkillSkillError: missing' })
     fireEvent.click(errorRow)
     expect(screen.getAllByText('SkillError: missing')).toHaveLength(2)
   })
@@ -145,6 +145,6 @@ describe('SkillRow', () => {
     const blank = render(<SkillRow {...props(settled({ call: null, content: [] }))} />)
     expect(blank.container.textContent).toContain('call-skill')
     expect(blank.container.querySelector('[role="button"]')).toBeNull()
-    expect(blank.container.textContent).not.toContain('جارٍ تحميل skill')
+    expect(blank.container.textContent).not.toContain('جارٍ تحميل المهارة')
   })
 })

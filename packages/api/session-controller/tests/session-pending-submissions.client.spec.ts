@@ -92,13 +92,13 @@ describe('beginSubmission', () => {
 
   it('derives and captures the echo placement from running state and delivery mode', async ({ mock, start }) => {
     const session = await sessionBench(mock, start, SID)
-    session.beginSubmission({ mode: 'queue', text: 'فارغ خامل', attachments: [] })
+    session.beginSubmission({ mode: 'queue', text: 'خامل', attachments: [] })
     session.handleRunning(true)
     session.beginSubmission({ mode: 'queue', text: 'ترتيب طابور', attachments: [] })
     session.beginSubmission({ mode: 'steer', text: 'تصحيح انحراف', attachments: [] })
     session.handleRunning(false)
     expect(session.getSnapshot().pendingSubmissions.map(({ text, placement }) => ({ text, placement }))).toEqual([
-      { text: 'فارغ خامل', placement: 'transcript' },
+      { text: 'خامل', placement: 'transcript' },
       { text: 'ترتيب طابور', placement: 'queued' },
       { text: 'تصحيح انحراف', placement: 'steering' },
     ])

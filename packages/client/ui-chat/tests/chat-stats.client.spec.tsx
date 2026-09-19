@@ -298,20 +298,20 @@ describe('StatsPills', () => {
     const { source } = makeSource({ nodes: [timedStep()] })
     const view = render(<StatsPills {...props(source, { tokenUsage: tokenUsage(9_995, 5) })} t={t} />)
     const [timePill, usagePill] = [...view.getAllByRole('button')] as [HTMLElement, HTMLElement]
-    expect(timePill.textContent).toBe('1 جولة 1 خطوة·20 tok/s')
+    expect(timePill.textContent).toBe('1 الجولات 1 خطوة·20 tok/s')
     // Whole-log total 9995 + 5 + 1 compacts to 10K.
-    expect(usagePill.textContent).toBe('10K tok·ذاكرة مؤقتة أمر في 99.95%')
+    expect(usagePill.textContent).toBe('10K tok·إصابة الذاكرة المؤقتة 99.95%')
     fireEvent.click(timePill)
     const timeDialog = view.getByRole('dialog')
-    expect(timeDialog.getAttribute('aria-label')).toBe('جلسة موحد حساب')
-    expect(timeDialog.textContent).toContain('نموذج استخدام وقت3.8ثانية')
-    expect(timeDialog.textContent).toContain('أول token مستو متساو (TTFT)0.8ثانية')
-    expect(timeDialog.textContent).toContain('إخراج سرعة درجة (TPS)20 tok/s')
+    expect(timeDialog.getAttribute('aria-label')).toBe('إحصاءات الالجلسات')
+    expect(timeDialog.textContent).toContain('زمن الالنموذج3.8ثوانٍ')
+    expect(timeDialog.textContent).toContain('متوسط زمن أول رمز (TTFT)0.8ثوانٍ')
+    expect(timeDialog.textContent).toContain('الرموز في الثوانٍ (TPS)20 tok/s')
     fireEvent.keyDown(document, { key: 'Escape' })
     fireEvent.click(usagePill)
     const usageDialog = view.getByRole('dialog')
-    expect(usageDialog.getAttribute('aria-label')).toBe('Token استخدام كمية')
-    expect(usageDialog.textContent).toContain('لم ذاكرة مؤقتة إدخال5 tok')
+    expect(usageDialog.getAttribute('aria-label')).toBe('استهلاك الرموز')
+    expect(usageDialog.textContent).toContain('إدخال غير مخزَّن5 tok')
   })
 
   it('keeps the durable usage pill after the visible step window is empty', () => {
@@ -380,7 +380,7 @@ describe('StatsPills', () => {
   })
 
   it('renders whole-log speed and dialog figures from the projection, not the loaded window', () => {
-    // The تحميل أكثر مبكر hazard beyond counts: the pill's speed segment and the
+    // The تحميل الأقدم hazard beyond counts: the pill's speed segment and the
     // dialog's time split, TTFT, and throughput must not grow per loaded page
     // either. An untimed 1-node window renders the projection's whole-log figures.
     const { source } = makeSource({ nodes: [assistant(1, 1)] })

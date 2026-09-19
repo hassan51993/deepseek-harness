@@ -99,14 +99,14 @@ describe('SearchBlock paths kind', () => {
 describe('SearchBlock empty arm', () => {
   it('shows the placeholder and no copy control for an empty matches result', () => {
     const view = render(<SearchBlock kind="matches" truncated={false} total={0} files={[]} />)
-    expect(view.getByText('بلا نتيجة')).toBeTruthy()
+    expect(view.getByText('لا توجد نتائج')).toBeTruthy()
     expect(view.queryByText('نسخ')).toBeNull()
     expect(view.getByText('0 موضع مطابقة · 0 عدد ملف')).toBeTruthy()
   })
 
   it('shows the placeholder for an empty paths result', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={0} paths={[]} />)
-    expect(view.getByText('بلا نتيجة')).toBeTruthy()
+    expect(view.getByText('لا توجد نتائج')).toBeTruthy()
     expect(view.queryByText('نسخ')).toBeNull()
   })
 })
@@ -124,11 +124,11 @@ describe('SearchBlock height cap', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={10} paths={paths} maxLines={4} />)
     // maxLines 4: head = ceil(4/2) = 2, tail = 2, 6 hidden.
     expect(lines(view.container)).toEqual(['p1', 'p2', 'p9', 'p10'])
-    const toggle = view.getByRole('button', { name: 'توسيع ذلك بقية 6 سطر نتيجة' })
+    const toggle = view.getByRole('button', { name: 'توسيع ذلك بقية 6 سطر النتيجة' })
     expect(toggle.textContent).toBe('… ذلك بقية 6 سطر')
     fireEvent.click(toggle)
     expect(lines(view.container)).toHaveLength(10)
-    const collapse = view.getByRole('button', { name: 'طي نتيجة' })
+    const collapse = view.getByRole('button', { name: 'طي النتائج' })
     expect(collapse.textContent).toBe('طي')
     fireEvent.click(collapse)
     expect(lines(view.container)).toEqual(['p1', 'p2', 'p9', 'p10'])
@@ -141,14 +141,14 @@ describe('SearchBlock height cap', () => {
     // Head takes the header then the first match; tail takes the last two matches.
     expect(lines(view.container)).toEqual(['1: hit 1', '9: hit 9', '10: hit 10'])
     expect(fileHeaders(view.container)).toEqual(['a.ts10'])
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 7 سطر نتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 7 سطر النتيجة' })).toBeTruthy()
   })
 
   it('renders the head slice alone when the cap leaves no tail', () => {
     const view = render(<SearchBlock kind="paths" truncated={false} total={5}
       paths={['a', 'b', 'c', 'd', 'e']} maxLines={1} />)
     expect(lines(view.container)).toEqual(['a'])
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 4 سطر نتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 4 سطر النتيجة' })).toBeTruthy()
   })
 
   it('restores the owning file header above a tail slice that begins mid-file', () => {
@@ -166,14 +166,14 @@ describe('SearchBlock height cap', () => {
     ])
     // Visible rows hold at maxLines (2 headers + 6 matches = 8), so the hidden
     // count stays exact: 22 − 8 = 14.
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 14 سطر نتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 14 سطر النتيجة' })).toBeTruthy()
   })
 
   it('caps at the documented default when maxLines is absent', () => {
     const paths = Array.from({ length: DEFAULT_SEARCH_MAX_LINES + 1 }, (_v, i) => `p${i}`)
     const view = render(<SearchBlock kind="paths" truncated={false} total={paths.length} paths={paths} />)
     expect(lines(view.container)).toHaveLength(DEFAULT_SEARCH_MAX_LINES)
-    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 1 سطر نتيجة' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'توسيع ذلك بقية 1 سطر النتيجة' })).toBeTruthy()
   })
 })
 
@@ -191,9 +191,9 @@ describe('SearchBlock copy', () => {
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith('a.ts\n1: x\n2: y\n\nb.ts\n3: z')
     await act(async () => { await Promise.resolve() })
-    expect(screen.getByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تم النسخ' })).toBeTruthy()
     // A second click while the ok label shows is a no-op.
-    fireEvent.click(screen.getByRole('button', { name: 'نسخ نجاح' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تم النسخ' }))
     expect(writeText).toHaveBeenCalledTimes(1)
     await vi.advanceTimersByTimeAsync(1000)
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
@@ -205,7 +205,7 @@ describe('SearchBlock copy', () => {
     render(<SearchBlock kind="paths" truncated={false} total={2} paths={['src/a.ts', 'src/b.ts']} />)
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith('src/a.ts\nsrc/b.ts')
-    expect(await screen.findByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'تم النسخ' })).toBeTruthy()
   })
 
   it('does not claim success when the host refuses the write', async () => {
@@ -216,7 +216,7 @@ describe('SearchBlock copy', () => {
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     await act(async () => { await Promise.resolve() })
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'نسخ نجاح' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'تم النسخ' })).toBeNull()
   })
 
   it('merges className onto the wrapper and tags the wrapper with the kind', () => {

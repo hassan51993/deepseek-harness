@@ -9,19 +9,19 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 /** Arabic terminal copy. */
 export const ar = {
-  recoveryFailed: 'استعادة طرفية فشل:{message}', retryRecovery: 'إعادة محاولة استعادة طرفية',
-  shell: 'اختيار Shell', shellLoading: 'جارٍ قراءة Shell…', shellEmpty: 'لا يوجد متاح Shell', description: 'في جلسة مساحة العمل تشغيل أمر',
-  title: 'طرفية', new: 'جديد بناء طرفية', loading: 'جارٍ قراءة طرفية بيئة…', creating: 'جارٍ بدء…',
-  connecting: 'جارٍ اتصال…', disconnected: 'اتصال قد قطع فتح.', reconnect: 'إعادة اتصال',
-  readonly: 'هذا صفحة حالي فقط قراءة.', control: 'وصل إدارة إدخال',
-  closed: 'طرفية قد إغلاق.', exited: 'عملية قد خروج ({code})', failed: 'طرفية خطأ:{message}',
-  rename: 'طرفية اسم', unavailable: 'غير ممكن استخدام', retry: 'إعادة محاولة',
-  cleanupFailed: 'طرفية «{title}» لم قدرة انتهاء:{message}',
-  missingTerminal: 'هذا طرفية قد لا وجود، طلب جديد بناء طرفية.',
-  inputFull: 'إدخال مؤقت اندفاع منطقة قد ممتلئ، طلب إعادة اتصال بعد إعادة محاولة.',
-  attachmentEnded: 'طرفية اتصال قد انتهاء، طلب إعادة اتصال.',
-  invalidOutput: 'طرفية رسم وجه نقل استثناء، طلب إعادة اتصال.',
-  terminalLimit: 'طرفية عدد كمية قد بلوغ حد أعلى، طلب إغلاق لا استخدام طرفية بعد إعادة محاولة. قد خروج طرفية أيضا حساب دخول عدد كمية.',
+  recoveryFailed: 'تعذّرت استعادة الطرفية: {message}', retryRecovery: 'إعادة محاولة استعادة الطرفية',
+  shell: 'اختيار Shell', shellLoading: 'جارٍ تحميل قائمة Shell…', shellEmpty: 'لا يوجد Shell متاح', description: 'تشغيل الأوامر في مساحة عمل الجلسة',
+  title: 'الطرفية', new: 'طرفية جديدة', loading: 'جارٍ قراءة بيئة الطرفية…', creating: 'جارٍ البدء…',
+  connecting: 'جارٍ الاتصال…', disconnected: 'انقطع الاتصال.', reconnect: 'إعادة الاتصال',
+  readonly: 'هذا العرض للقراءة فقط.', control: 'تولّي التحكّم',
+  closed: 'أُغلقت الطرفية.', exited: 'انتهت العملية ({code})', failed: 'خطأ في الطرفية: {message}',
+  rename: 'اسم الطرفية', unavailable: 'غير متاح', retry: 'إعادة المحاولة',
+  cleanupFailed: 'تعذّر إنهاء الطرفية «{title}»: {message}',
+  missingTerminal: 'لم تعد هذه الطرفية موجودة. افتح طرفية جديدة.',
+  inputFull: 'ذاكرة الإدخال ممتلئة. أعِد الاتصال ثم حاول مجددًا.',
+  attachmentEnded: 'انتهى اتصال الطرفية. أعِد الاتصال للمتابعة.',
+  invalidOutput: 'تعذّر استقبال شاشة الطرفية. أعِد الاتصال لاستعادتها.',
+  terminalLimit: 'بلغ عدد الطرفيات الحد الأقصى. أغلِق الطرفيات غير المستخدمة ثم حاول مجددًا. الطرفيات المنتهية تُحتسب ضمن الحد أيضًا.',
 } satisfies Record<string, string>
 
 /** English terminal copy. */

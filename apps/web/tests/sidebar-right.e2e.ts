@@ -26,7 +26,7 @@ import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
 import { createMessage, createUserMessage } from '@deepseek-ai/dsh-llm'
 import { acknowledgeReloadConnectionLoss, launchWebScaffold, watchConsole, type WebScaffold } from './scaffold.ts'
 import {
-  connectFreshWorkspace, newEnglishPage, saveFailureShot, ZH_BROWSER_LOCALE,
+  connectFreshWorkspace, newEnglishPage, saveFailureShot, AR_BROWSER_LOCALE,
 } from './support.ts'
 
 /** The produced file the seeded turn writes, and what the preview should show. */
@@ -1080,7 +1080,7 @@ describe('web e2e: shipped right Sidebar', () => {
     // this block because a settled session is its precondition too — a case that
     // depends on a sibling block's setup passes only in the right order.
     it('renders the shipped Arabic copy on an Arabic page', async () => {
-      const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+      const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
       const arTripwire = watchConsole(arPage)
       onTestFailed(() => saveFailureShot(arPage, 'web-e2e-sidebar-right-ar'))
       try {
@@ -1106,7 +1106,7 @@ describe('web e2e: shipped right Sidebar', () => {
         expect(await width(column)).toBeGreaterThan(300)
         await expect.poll(async () => await tabTitles(column)).toEqual(['ملف', 'بدء'])
         await expect.poll(async () => await guide.locator('[data-sidebar-right-guide-entry="files"]').innerText())
-          .toBe('مساحة العمل ملف\nتصفح جلسة مساحة العمل ملف')
+          .toBe('ملفات مساحات العمل\nتصفّح ملفات مساحة عمل هذه الالجلسات')
         await shot(arPage, '05-guide-copy-ar')
 
         expect(arTripwire.pageErrors).toEqual([])

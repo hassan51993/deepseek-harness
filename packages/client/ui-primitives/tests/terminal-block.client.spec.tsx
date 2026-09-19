@@ -196,7 +196,7 @@ describe('TerminalBlock status pill', () => {
 
   it('renders the no-exit-code pill and the error dot for a command that settled without one', () => {
     const view = render(<TerminalBlock command="pnpm add x" output="spawn pnpm ENOENT" exitCode={null} />)
-    expect(view.getByText('لم صحيح معتاد خروج')).toBeTruthy()
+    expect(view.getByText('بلا رمز خروج')).toBeTruthy()
     expect(runStateOf(view.container)).toEqual({ state: 'error', label: 'فشل' })
   })
 
@@ -210,7 +210,7 @@ describe('TerminalBlock status pill', () => {
 describe('TerminalBlock run-state dot', () => {
   it('shows the running chase and its running label while the command runs', () => {
     const view = render(<TerminalBlock command="sleep 5" running />)
-    expect(runStateOf(view.container)).toEqual({ state: 'ongoing', label: 'تشغيل في' })
+    expect(runStateOf(view.container)).toEqual({ state: 'ongoing', label: 'قيد التشغيل' })
   })
 
   it('shows the done dot for a clean settled exit', () => {
@@ -283,7 +283,7 @@ describe('TerminalBlock run-state dot', () => {
 
   it('keeps the running dot even while a settled-looking status pill is supplied', () => {
     const view = render(<TerminalBlock command="sleep 5" running signal="SIGINT" />)
-    expect(runStateOf(view.container)).toEqual({ state: 'ongoing', label: 'تشغيل في' })
+    expect(runStateOf(view.container)).toEqual({ state: 'ongoing', label: 'قيد التشغيل' })
   })
 })
 
@@ -310,7 +310,7 @@ describe('TerminalBlock height cap', () => {
 
     fireEvent.click(toggle)
     expect(outputLines(view.container)).toHaveLength(10)
-    const collapse = view.getByRole('button', { name: 'طي إخراج' })
+    const collapse = view.getByRole('button', { name: 'طي الإخراج' })
     expect(collapse.getAttribute('aria-expanded')).toBe('true')
     expect(collapse.textContent).toBe('طي')
 
@@ -344,9 +344,9 @@ describe('TerminalBlock copy', () => {
     await act(async () => {
       await Promise.resolve()
     })
-    expect(screen.getByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تم النسخ' })).toBeTruthy()
     // While the ok label is showing, further clicks are no-ops.
-    fireEvent.click(screen.getByRole('button', { name: 'نسخ نجاح' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تم النسخ' }))
     expect(writeText).toHaveBeenCalledTimes(1)
     await vi.advanceTimersByTimeAsync(1000)
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
@@ -359,7 +359,7 @@ describe('TerminalBlock copy', () => {
     render(<TerminalBlock command="ls" output={output} maxLines={4} exitCode={0} />)
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith(output)
-    expect(await screen.findByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'تم النسخ' })).toBeTruthy()
   })
 
   it('does not claim success when the host refuses the write', async () => {
@@ -373,7 +373,7 @@ describe('TerminalBlock copy', () => {
       await Promise.resolve()
     })
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'نسخ نجاح' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'تم النسخ' })).toBeNull()
   })
 })
 

@@ -119,10 +119,10 @@ describe('resident composer', () => {
     fireEvent.click(textarea!)
     expect(view.getByTestId('workspace-probe').textContent).toBe('true:0')
     expect(textarea!.getAttribute('aria-expanded')).toBe('true')
-    fireEvent.click(view.getByRole('button', { name: 'اختيار مساحة العمل' }))
+    fireEvent.click(view.getByRole('button', { name: 'اختيار مساحات العمل' }))
     fireEvent.keyDown(textarea!, { key: 'Enter' })
     expect(view.getByTestId('workspace-probe').textContent).toBe('true:0')
-    expect(view.getByRole('button', { name: 'اختيار مساحة العمل' })).toBeTruthy()
+    expect(view.getByRole('button', { name: 'اختيار مساحات العمل' })).toBeTruthy()
     await runtime.dispose()
   })
 
@@ -145,7 +145,7 @@ describe('resident composer', () => {
     const scrollBody = view.container.querySelector('[data-conversation-scroll]')!
     const composerSeat = view.container.querySelector('[data-composer-seat]')!
     const textarea = view.container.querySelector<HTMLDivElement>('[data-composer-input]')!
-    const workspaceChip = view.getByRole('button', { name: 'اختيار مساحة العمل' })
+    const workspaceChip = view.getByRole('button', { name: 'اختيار مساحات العمل' })
     const workspaceProbe = view.getByTestId('workspace-probe')
     expect(textarea.getAttribute('aria-disabled')).not.toBe('true')
     expect(textarea.getAttribute('contenteditable')).not.toBe('true')
@@ -166,7 +166,7 @@ describe('resident composer', () => {
     expect(view.container.querySelector('[data-conversation-scroll]')).toBe(scrollBody)
     expect(view.container.querySelector('[data-composer-seat]')).toBe(composerSeat)
     expect(view.container.querySelector<HTMLDivElement>('[data-composer-input]')).toBe(textarea)
-    expect(view.getByRole('button', { name: 'اختيار مساحة العمل' })).toBe(workspaceChip)
+    expect(view.getByRole('button', { name: 'اختيار مساحات العمل' })).toBe(workspaceChip)
     expect(view.getByTestId('workspace-probe')).toBe(workspaceProbe)
     expect(workspaceProbe.textContent).toBe('true:1')
     expect(textarea.getAttribute('aria-disabled')).not.toBe('true')
@@ -242,7 +242,7 @@ describe('title projection across assembled surfaces', () => {
   it('one summary update re-labels the current-session crumb', async () => {
     const runtime = await bench()
     const view = runtime.renderRoot()
-    const hierarchy = view.getByRole('navigation', { name: 'جلسة طبقة درجة' })
+    const hierarchy = view.getByRole('navigation', { name: 'تسلسل الجلسات' })
     expect(within(hierarchy).getByRole('button', { name: 'S' }).hasAttribute('disabled')).toBe(true)
 
     await runtime.sessions.updateSummary(SID, { displayTitle: 'إصلاح حجز عنوان', title: 'إصلاح حجز عنوان' })

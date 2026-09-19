@@ -10,9 +10,9 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 /** Arabic dictionary and key source. */
 export const ar = {
-  title: 'شفرة',
+  title: 'الشيفرة',
   copy: 'نسخ',
-  copied: 'قد نسخ',
+  copied: 'تم النسخ',
 }
 
 /** English dictionary with the same keys. */

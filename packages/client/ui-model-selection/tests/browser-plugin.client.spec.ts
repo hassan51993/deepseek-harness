@@ -224,10 +224,10 @@ describe('ui-model-selection dual entry', () => {
     ])
     expect(options[0]).toMatchObject({
       active: true,
-      detail: 'DeepSeek · سريع سرعة، عال فاعلية كما مرور عون؛ ملائم دمج هدف واضح، معتاد قاعدة أو و سطر مهمة.',
+      detail: 'DeepSeek · سريع وفعّال واقتصادي؛ مناسب للمهام المحدّدة أو الروتينية أو المتوازية.',
     })
     expect(options[1]?.detail)
-      .toBe('DeepSeek · أكثر قوي ذاتي رئيسي تحرير رمز، معرفة تعرف و تكرار مختلط دفع إدارة قدرة؛ ملائم دمج تكرار مختلط أو جودة كمية أولوية مهمة، لكن صار هذا أكثر عال.')
+      .toBe('DeepSeek · أقوى في البرمجة الوكيلة والمعرفة والاستدلال الصعب؛ مناسب للمهام المعقّدة أو الحسّاسة للجودة، بتكلفة أعلى.')
     expect(options[2]?.detail).toBe('External Provider · Provider-authored description.')
     expect(options[1]?.active).toBeUndefined()
   })

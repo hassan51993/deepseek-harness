@@ -160,7 +160,7 @@ const QUESTIONS: PendingQuestion['questions'] = [
   },
   {
     id: 'signals', question: 'اختيار إعادة يلزم إشارة (يمكن كثير اختيار)', multiSelect: true,
-    options: [{ label: 'نظام تصميم' }, { label: 'شفرة جودة كمية' }, { label: 'منتج حكم قطع' }],
+    options: [{ label: 'النظام تصميم' }, { label: 'شفرة جودة كمية' }, { label: 'منتج حكم قطع' }],
   },
 ]
 
@@ -182,7 +182,7 @@ describe('QuestionComposer', () => {
 
     expect(screen.getByText('انحراف جيد')).toBeTruthy()
     expect(screen.getByText('1 / 3')).toBeTruthy()
-    expect(screen.getByText('دفع ترشيح')).toBeTruthy()
+    expect(screen.getByText('موصى به')).toBeTruthy()
     expect(screen.getByText('عمل مسار سقوط أرض نوع')).toBeTruthy()
     const detail = screen.getByText('حسب حالي فارغ نقص موقع موضع أولوية درجة اختيار.')
     const scrollRegion = detail.closest('[data-question-scroll]')
@@ -197,21 +197,21 @@ describe('QuestionComposer', () => {
     // detail is per-question: the second question carries none.
     expect(screen.queryByText('حسب حالي فارغ نقص موقع موضع أولوية درجة اختيار.')).toBeNull()
     expect(screen.queryByRole('button', { name: 'ملء كتابة جواب سجل' })).toBeNull()
-    const custom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const custom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.change(custom, { target: { value: 'يلزم قدرة مستقل ترتيب فحص خط فوق مشكلة' } })
     fireEvent.keyDown(custom, { key: 'Enter' })
 
     expect(screen.getByText('3 / 3')).toBeTruthy()
     // The model's question text renders verbatim — no marker filtering.
     expect(screen.getByText('اختيار إعادة يلزم إشارة (يمكن كثير اختيار)')).toBeTruthy()
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'شفرة جودة كمية' }))
-    const multiCustom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const multiCustom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.change(multiCustom, { target: { value: 'خندق عبر قدرة' } })
     fireEvent.click(screen.getByRole('checkbox', { name: 'منتج حكم قطع' }))
-    expect(screen.getByRole('checkbox', { name: 'نظام تصميم' }).getAttribute('aria-checked')).toBe('true')
+    expect(screen.getByRole('checkbox', { name: 'النظام تصميم' }).getAttribute('aria-checked')).toBe('true')
     expect(screen.getByRole('checkbox', { name: 'شفرة جودة كمية' }).getAttribute('aria-checked')).toBe('true')
     expect((multiCustom as HTMLInputElement).value).toBe('خندق عبر قدرة')
     fireEvent.keyDown(multiCustom, { key: 'Enter' })
@@ -220,21 +220,21 @@ describe('QuestionComposer', () => {
     expect(answer).toHaveBeenCalledWith(answerBatch([
       { id: 'profile', selected: ['عمل مسار سقوط أرض نوع (Recommended)'] },
       { id: 'detail', selected: [], custom: 'يلزم قدرة مستقل ترتيب فحص خط فوق مشكلة' },
-      { id: 'signals', selected: ['نظام تصميم', 'شفرة جودة كمية', 'منتج حكم قطع'], custom: 'خندق عبر قدرة' },
+      { id: 'signals', selected: ['النظام تصميم', 'شفرة جودة كمية', 'منتج حكم قطع'], custom: 'خندق عبر قدرة' },
     ]))
-    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'جارٍ إيداع…' }).disabled).toBe(true)
+    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'جارٍ الإرسال…' }).disabled).toBe(true)
   })
 
   it('renders plan detail through the shared assistant Markdown primitive', () => {
     const { carrier } = wait([{
       id: 'plan',
       question: 'دفعة دقيق هذا عدد خطة هل؟',
-      detail: '# فعلي تطبيق خطة\n\n- **أولا تحقق**الآن حالة\n- تعديل `QuestionComposer`',
+      detail: '# فعلي التطبيق خطة\n\n- **أولا تحقق**الآن الحالة\n- تعديل `QuestionComposer`',
       options: [{ label: 'دفعة دقيق' }],
     }])
     const view = render(<QuestionComposer matched={carrier} {...kit} />)
 
-    expect(screen.getByRole('heading', { level: 1, name: 'فعلي تطبيق خطة' })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'فعلي التطبيق خطة' })).toBeTruthy()
     expect(view.container.querySelector('strong')?.textContent).toBe('أولا تحقق')
     expect(view.container.querySelector('code')?.textContent).toBe('QuestionComposer')
     expect(view.container.querySelectorAll('li')).toHaveLength(2)
@@ -247,9 +247,9 @@ describe('QuestionComposer', () => {
     expect((screen.getByText('تحت واحد عنوان').closest('button') as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByRole('radio', { name: 'بحث بحث كامن قوة نوع' }))
     expect(screen.getByText('2 / 3')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'قفز مرور' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }))
     expect(screen.getByText('3 / 3')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'قفز مرور' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }))
 
     expect(answer).toHaveBeenCalledWith(answerBatch([
       { id: 'profile', selected: ['بحث بحث كامن قوة نوع'] },
@@ -263,7 +263,7 @@ describe('QuestionComposer', () => {
     render(<QuestionComposer matched={carrier} {...kit} />)
 
     fireEvent.click(screen.getByRole('radio', { name: 'بحث بحث كامن قوة نوع' }))
-    const custom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const custom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.change(custom, { target: { value: 'العربية إدخال' } })
 
     fireEvent.keyDown(custom, { key: 'Enter', isComposing: true })
@@ -282,20 +282,20 @@ describe('QuestionComposer', () => {
     const { carrier, answer } = wait()
     render(<QuestionComposer matched={carrier} {...kit} />)
 
-    expect(screen.getByPlaceholderText('إدخال أنت جواب سجل')).toBeTruthy()
+    expect(screen.getByPlaceholderText('اكتب إجابتك')).toBeTruthy()
     fireEvent.click(screen.getByRole('radio', { name: 'عمل مسار سقوط أرض نوع' }))
-    const emptyCustom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const emptyCustom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.keyDown(emptyCustom, { key: 'Enter', shiftKey: true })
     expect(screen.getByText('2 / 3')).toBeTruthy()
     fireEvent.keyDown(emptyCustom, { key: 'Enter' })
-    expect(screen.getByText('طلب اختيار واحد خيار أو ملء كتابة ذاتي تعريف جواب سجل.')).toBeTruthy()
+    expect(screen.getByText('اختر أحد الالخياراتات أو اكتب إجابة خاصة بك.')).toBeTruthy()
 
     fireEvent.click(screen.getByLabelText('تحت واحد عنوان'))
     fireEvent.click(screen.getByRole('checkbox', { name: 'منتج حكم قطع' }))
-    fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))
-    expect(screen.getByText('طلب أولا إتمام هذا طريق مشكلة.')).toBeTruthy()
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }))
+    expect(screen.getByText('أكمِل هذا السؤال أولًا.')).toBeTruthy()
     expect(screen.getByText('2 / 3')).toBeTruthy()
-    fireEvent.click(screen.getByLabelText('فوق واحد عنوان'))
+    fireEvent.click(screen.getByLabelText('السؤال السابق'))
     expect(screen.getByText('1 / 3')).toBeTruthy()
     expect(answer).not.toHaveBeenCalled()
   })
@@ -306,7 +306,7 @@ describe('QuestionComposer', () => {
 
     // Both question shapes answer into a textarea, so the engine soft-wraps a
     // long answer and Shift+Enter breaks the line natively.
-    const inline = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const inline = screen.getByPlaceholderText('اكتب إجابتك')
     expect(inline.tagName).toBe('TEXTAREA')
 
     const multiline = 'رقم واحد سطر\nثاني سطر'
@@ -319,7 +319,7 @@ describe('QuestionComposer', () => {
     expect(screen.getByText('1 / 3')).toBeTruthy()
 
     fireEvent.keyDown(inline, { key: 'Enter' })
-    const optionless = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const optionless = screen.getByPlaceholderText('اكتب إجابتك')
     expect(optionless.tagName).toBe('TEXTAREA')
     fireEvent.change(optionless, { target: { value: multiline } })
     expect(optionless.previousElementSibling?.textContent).toBe(`${multiline}\n`)
@@ -327,13 +327,13 @@ describe('QuestionComposer', () => {
     expect(screen.getByText('2 / 3')).toBeTruthy()
 
     fireEvent.keyDown(optionless, { key: 'Enter' })
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
-    fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }))
     // Line breaks reach the model verbatim: nothing along the way flattens them.
     expect(answer).toHaveBeenCalledWith(answerBatch([
       { id: 'profile', selected: [], custom: multiline },
       { id: 'detail', selected: [], custom: multiline },
-      { id: 'signals', selected: ['نظام تصميم'] },
+      { id: 'signals', selected: ['النظام تصميم'] },
     ]))
   })
 
@@ -344,11 +344,11 @@ describe('QuestionComposer', () => {
       .mockRejectedValueOnce(new Error('ثاني مرة إلغاء فشل'))
     render(<QuestionComposer matched={carrier} {...kit} />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'وضع ترك كامل مجموعة مشكلة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تجاهل كل الأسئلة' }))
     expect(await screen.findByText('رقم مرة إلغاء فشل')).toBeTruthy()
-    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'قفز مرور' }).disabled).toBe(false)
+    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'تخطّي' }).disabled).toBe(false)
 
-    fireEvent.click(screen.getByRole('button', { name: 'وضع ترك كامل مجموعة مشكلة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تجاهل كل الأسئلة' }))
     expect(await screen.findByText('ثاني مرة إلغاء فشل')).toBeTruthy()
   })
 
@@ -366,20 +366,20 @@ describe('QuestionComposer', () => {
     expect(screen.getByRole('radio', { name: /بحث بحث كامن قوة نوع/ }).getAttribute('aria-checked')).toBe('false')
 
     fireEvent.click(screen.getByRole('radio', { name: /عمل مسار سقوط أرض نوع/ }))
-    const custom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const custom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.change(custom, { target: { value: 'x' } })
     fireEvent.keyDown(custom, { key: 'Enter' })
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
-    fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }))
     expect(second.answer).toHaveBeenNthCalledWith(1, answerBatch([
       { id: 'profile', selected: ['عمل مسار سقوط أرض نوع (Recommended)'] },
       { id: 'detail', selected: [], custom: 'x' },
-      { id: 'signals', selected: ['نظام تصميم'] },
+      { id: 'signals', selected: ['النظام تصميم'] },
     ]))
     expect(await screen.findByText('شبكة في قطع')).toBeTruthy()
-    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'إيداع' }).disabled).toBe(false)
+    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'إرسال' }).disabled).toBe(false)
 
-    fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }))
     expect(await screen.findByText('نص خطأ')).toBeTruthy()
   })
 
@@ -395,7 +395,7 @@ describe('QuestionComposer', () => {
     const pending = wait()
     const view = render(<QuestionComposer matched={pending.carrier} {...kit} />)
     fireEvent.click(screen.getByRole('radio', { name: /بحث بحث كامن قوة نوع/ }))
-    const custom = screen.getByPlaceholderText('إدخال أنت جواب سجل')
+    const custom = screen.getByPlaceholderText('اكتب إجابتك')
     fireEvent.change(custom, { target: { value: 'إبقاء هذا مقطع مسودة مسودة' } })
     expect(screen.getByText('2 / 3')).toBeTruthy()
 
@@ -403,8 +403,8 @@ describe('QuestionComposer', () => {
     render(<QuestionComposer matched={pending.carrier} {...kit} />)
 
     expect(screen.getByText('2 / 3')).toBeTruthy()
-    expect(screen.getByPlaceholderText<HTMLTextAreaElement>('إدخال أنت جواب سجل').value).toBe('إبقاء هذا مقطع مسودة مسودة')
-    fireEvent.click(screen.getByLabelText('فوق واحد عنوان'))
+    expect(screen.getByPlaceholderText<HTMLTextAreaElement>('اكتب إجابتك').value).toBe('إبقاء هذا مقطع مسودة مسودة')
+    fireEvent.click(screen.getByLabelText('السؤال السابق'))
     expect(screen.getByRole('radio', { name: /بحث بحث كامن قوة نوع/ }).getAttribute('aria-checked')).toBe('true')
   })
 })
@@ -467,12 +467,12 @@ describe('PendingQuestion domain face', () => {
     // autofocused on first presentation, so focus stays on the expand toggle.
     expect(document.activeElement).not.toBe(custom)
     fireEvent.click(screen.getByLabelText('تحت واحد عنوان'))
-    fireEvent.click(screen.getByRole('checkbox', { name: 'نظام تصميم' }))
-    fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'النظام تصميم' }))
+    fireEvent.click(screen.getByRole('button', { name: 'إرسال' }))
     expect(answer).toHaveBeenCalledWith(answerBatch([
       { id: 'profile', selected: ['عمل مسار سقوط أرض نوع (Recommended)'] },
       { id: 'detail', custom: 'يلزم قدرة مستقل ترتيب فحص خط فوق مشكلة', selected: [] },
-      { id: 'signals', selected: ['نظام تصميم'] },
+      { id: 'signals', selected: ['النظام تصميم'] },
     ]))
   })
 })
@@ -480,7 +480,7 @@ describe('PendingQuestion domain face', () => {
 describe('parseRecommendedLabel', () => {
   it('recognizes English and Arabic suffixes without changing ordinary labels', () => {
     expect(parseRecommendedLabel('Fast (Recommended)')).toEqual({ label: 'Fast', recommended: true })
-    expect(parseRecommendedLabel('مستقر ملائم (دفع ترشيح)')).toEqual({ label: 'مستقر ملائم', recommended: true })
+    expect(parseRecommendedLabel('مستقر ملائم (موصى به)')).toEqual({ label: 'مستقر ملائم', recommended: true })
     expect(parseRecommendedLabel('Plain')).toEqual({ label: 'Plain', recommended: false })
   })
 })

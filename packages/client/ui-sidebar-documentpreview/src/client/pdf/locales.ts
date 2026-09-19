@@ -1,14 +1,14 @@
 /** Copy owned by the PDF renderer. */
 export const ar = {
   title: 'PDF',
-  pageImage: 'PDF رقم {page} صفحة',
-  loading: 'جارٍ قراءة…',
-  rendering: 'جارٍ رسم صنع صفحة…',
-  failed: 'لا يمكن عرض PDF:{message}',
-  password: 'هذا PDF حاجة سري رمز، مؤقت لا دعم حمل معاينة',
-  workerFailed: 'PDF تصيير عملية لا يمكن متابعة، طلب إعادة محاولة',
-  unsupported: 'PDF معاينة حاجة كامل ملف محتوى',
-  retry: 'إعادة محاولة',
+  pageImage: 'صفحة PDF رقم {page}',
+  loading: 'جارٍ القراءة…',
+  rendering: 'جارٍ عرض الصفحة…',
+  failed: 'تعذّر عرض PDF: {message}',
+  password: 'يتطلّب ملف PDF هذا كلمة مرور، ومعاينة الملفات المحمية بكلمة مرور غير مدعومة.',
+  workerFailed: 'تعذّر إكمال عملية عرض PDF. أعد المحاولة.',
+  unsupported: 'تتطلّب معاينة PDF محتوى الملف كاملًا.',
+  retry: 'إعادة المحاولة',
 } satisfies Record<string, string>
 
 /** PDF translation keys shared by both dictionaries. */

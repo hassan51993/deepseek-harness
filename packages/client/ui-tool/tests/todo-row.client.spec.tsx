@@ -27,7 +27,7 @@ const PARALLEL: TodoItem[] = [
   { content: 'تركيب هيكل هيكل', status: 'completed' },
   { content: 'كتابة مكون', status: 'in_progress' },
   { content: 'ركض خلفية بناء', status: 'in_progress' },
-  { content: 'قراءة شفرة المصدر', status: 'in_progress' },
+  { content: 'قراءة شفرة الالمصدر', status: 'in_progress' },
   { content: 'تكملة اختبار', status: 'pending' },
 ]
 
@@ -80,7 +80,7 @@ describe('TodoRow', () => {
 
   it('summarizes counts and the active item from the call args', () => {
     render(<TodoRow {...rowProps(resultNode(ARGS))} />)
-    expect(screen.getByText('تحديث مهمة بيان')).toBeTruthy()
+    expect(screen.getByText('تحديث قائمة المهام')).toBeTruthy()
     expect(screen.getByText('1/3 اكتمل · كتابة مكون')).toBeTruthy()
   })
 

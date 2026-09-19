@@ -64,7 +64,7 @@ it('keeps the newest event, hides for connection priority, and invokes only the 
   try {
     await f.emit(available)
     await act(async () => { f.status.resolve({ phase: 'idle' }) })
-    fireEvent.click(screen.getByRole('button', { name: 'جديد إصدار' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تحديث' }))
     await act(async () => {})
     expect(f.open).toHaveBeenCalledOnce()
     f.view.rerender(<f.Indicator hidden />)
@@ -74,10 +74,10 @@ it('keeps the newest event, hides for connection priority, and invokes only the 
     fireEvent.click(screen.getByRole('button', { name: '58%…' }))
     expect(f.open).toHaveBeenCalledOnce()
     await f.emit({ phase: 'error', version: available.version, failure: 'download' })
-    const retry = screen.getByRole('button', { name: 'إعادة محاولة تحديث' })
+    const retry = screen.getByRole('button', { name: 'إعادة المحاولة التحديث' })
     expect(retry.getAttribute('data-error')).toBe('true')
     fireEvent.focus(retry)
-    expect((await screen.findByRole('tooltip')).textContent).toBe('تحت تحميل تحديث فشل، طلب إعادة محاولة.')
+    expect((await screen.findByRole('tooltip')).textContent).toBe('تعذّر تنزيل التحديث. حاول مرة أخرى.')
     f.view.rerender(<f.Indicator wide={false} />)
     expect(screen.queryByRole('button')).toBeNull()
   } finally { f.view.unmount(); f.status.resolve(available) }
@@ -88,7 +88,7 @@ it('keeps bridge failures actionable and ignores status completion after unmount
   const f = fixture()
   await act(async () => { f.status.reject(new Error('IPC unavailable')) })
   f.open.mockRejectedValueOnce(new Error('IPC unavailable'))
-  fireEvent.click(screen.getByRole('button', { name: 'إعادة محاولة تحديث' }))
+  fireEvent.click(screen.getByRole('button', { name: 'إعادة المحاولة التحديث' }))
   await act(async () => {})
   expect(screen.getByRole('button').getAttribute('data-error')).toBe('true')
   f.view.unmount()
@@ -103,7 +103,7 @@ it('accepts initial status, coalesces actions, and ignores late events and actio
   const pending = Promise.withResolvers<undefined>()
   try {
     await act(async () => { f.status.resolve(available) })
-    expect(screen.getByRole('button', { name: 'جديد إصدار' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تحديث' })).toBeTruthy()
     await f.emit({ phase: 'verifying', version: available.version })
     f.source.open()
     expect(f.open).not.toHaveBeenCalled()
@@ -133,7 +133,7 @@ it('renders the same semantic update in the active Web locale', async () => {
   const f = fixture()
   try {
     await f.emit(available)
-    expect(screen.getByRole('button', { name: 'جديد إصدار' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تحديث' })).toBeTruthy()
     f.view.rerender(<f.Indicator dictionary={en} />)
     expect(screen.getByRole('button', { name: 'Update' })).toBeTruthy()
   } finally { f.view.unmount(); f.status.resolve(available) }
@@ -150,7 +150,7 @@ it('shows fallback progress and error details when the shell omits optional fiel
     fireEvent.focus(screen.getByRole('button', { name: '0%…' }))
     expect((await screen.findByRole('tooltip')).textContent).toContain('1.0.1')
     await f.emit({ phase: 'error' })
-    fireEvent.focus(screen.getByRole('button', { name: 'إعادة محاولة تحديث' }))
-    expect((await screen.findByRole('tooltip')).textContent).toBe('تثبيت تحديث فشل، طلب قليلا بعد إعادة محاولة.')
+    fireEvent.focus(screen.getByRole('button', { name: 'إعادة المحاولة التحديث' }))
+    expect((await screen.findByRole('tooltip')).textContent).toBe('تعذّر تثبيت التحديث. حاول مرة أخرى لاحقًا.')
   } finally { f.view.unmount(); f.status.resolve({ phase: 'idle' }) }
 })

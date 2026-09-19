@@ -12,12 +12,12 @@ import {
   fixtureUserPrompts, launchWebScaffold, recordFixture, watchConsole,
   webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceAr, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, AR_BROWSER_LOCALE } from './support.ts'
 
 const DIR = fileURLToPath(new URL('../../../snapshots/web/present-svg', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
 const MODE = webSnapshotMode()
-const PROMPT = 'بسيط مفرد رسم واحد SVG يمثل فنغ وعد اعتماد مان هيكل بنية, حفظ لـ von-neumann.svg'
+const PROMPT = 'بسيط مفرد رسم واحد SVG يمثل فنغ وعد معطَّلة بـ مان هيكل بنية, حفظ لـ von-neumann.svg'
 const FILE = 'von-neumann.svg'
 
 describe('web e2e: requested SVG is explicitly delivered', () => {
@@ -45,7 +45,7 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
     })
     browser = await chromium.launch()
     page = await browser.newPage({
-      viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
+      viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
     })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
@@ -114,7 +114,7 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
 
   it.skipIf(MODE === 'record')('replays the delivered file and Arabic conversation', async () => {
     await assertFinalWorkspaceSnapshot(DIR, cwd)
-    await expect.poll(() => page.getByRole('button', { name: `${FILE} أكثر كثير ملف عملية`, exact: true }).isDisabled()).toBe(true)
+    await expect.poll(() => page.getByRole('button', { name: `${FILE} المزيد ملف عملية`, exact: true }).isDisabled()).toBe(true)
     // Delivery owns the transcript; navigation and composer chrome have separate scenarios.
     const aria = await captureExpandedTurnProcessAria(page, '[data-chat-flow]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(join(DIR, 'ui.expected.md'), aria, MODE)

@@ -106,9 +106,9 @@ describe('workspace browser rows', () => {
 
     const row = screen.getByRole('treeitem')
     const title = screen.getByText('Scheduled result')
-    const indicator = screen.getByRole('img', { name: 'لديه نشط حركة تحديد وقت مهمة' })
+    const indicator = screen.getByRole('img', { name: 'لديها المهام مجدولة نشطة' })
     expect(title.nextElementSibling).toBe(indicator)
-    expect(indicator.getAttribute('title')).toBe('لديه نشط حركة تحديد وقت مهمة')
+    expect(indicator.getAttribute('title')).toBe('لديها المهام مجدولة نشطة')
     expect(indicator.getAttribute('tabindex')).toBeNull()
     expect(row.querySelectorAll('button')).toHaveLength(0)
 
@@ -143,7 +143,7 @@ describe('workspace browser rows', () => {
     render(<ProjectRowItem group={group} onToggle={onToggle} onCreate={onCreate} t={t} />)
 
     expect(screen.getByRole('treeitem').getAttribute('aria-expanded')).toBe('true')
-    fireEvent.click(screen.getByRole('button', { name: 'في “Project” في جديد بناء جلسة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'في “Project” في الجلسات جديدة' }))
     expect(onCreate).toHaveBeenCalledOnce()
     expect(onToggle).not.toHaveBeenCalled()
     fireEvent.click(screen.getByText('Project'))
@@ -232,11 +232,11 @@ describe('workspace browser rows', () => {
 
     const assertIndicator = (): HTMLElement => {
       const title = screen.getByText('Scheduled Session')
-      const time = screen.getByText('للتو')
-      const indicator = screen.getByRole('img', { name: 'لديه نشط حركة تحديد وقت مهمة' })
+      const time = screen.getByText('الآن')
+      const indicator = screen.getByRole('img', { name: 'لديها المهام مجدولة نشطة' })
       expect(title.nextElementSibling).toBe(indicator)
       expect(indicator.nextElementSibling).toBe(time)
-      expect(indicator.getAttribute('title')).toBe('لديه نشط حركة تحديد وقت مهمة')
+      expect(indicator.getAttribute('title')).toBe('لديها المهام مجدولة نشطة')
       expect(indicator.getAttribute('tabindex')).toBeNull()
       return indicator
     }
@@ -294,12 +294,12 @@ describe('workspace browser rows', () => {
         onRename={vi.fn()} onFork={vi.fn()} onArchive={vi.fn()} t={t} />)
       const row = screen.getByRole('treeitem')
       expect(row.querySelector('[data-state="ongoing"]')).not.toBeNull()
-      expect(screen.getByText('2 عدد فرعي بديل إدارة تشغيل في')).toBeTruthy()
+      expect(screen.getByText('2 عدد فرعي بديل إدارة قيد التشغيل')).toBeTruthy()
       expect(screen.queryByText('إجراء في')).toBeNull()
 
       fireEvent.pointerEnter(row.parentElement as HTMLElement)
       act(() => { vi.advanceTimersByTime(500) })
-      expect(screen.getAllByText('2 عدد فرعي بديل إدارة تشغيل في')).toHaveLength(2)
+      expect(screen.getAllByText('2 عدد فرعي بديل إدارة قيد التشغيل')).toHaveLength(2)
     } finally {
       vi.useRealTimers()
     }
@@ -317,12 +317,12 @@ describe('workspace browser rows', () => {
       const row = screen.getByRole('treeitem')
       expect(row.querySelectorAll('[data-state="ongoing"]')).toHaveLength(1)
       expect(screen.getByText('إجراء في')).toBeTruthy()
-      expect(screen.getByText('1 عدد فرعي بديل إدارة تشغيل في')).toBeTruthy()
+      expect(screen.getByText('1 عدد فرعي بديل إدارة قيد التشغيل')).toBeTruthy()
 
       fireEvent.pointerEnter(row.parentElement as HTMLElement)
       act(() => { vi.advanceTimersByTime(500) })
       expect(screen.getAllByText('إجراء في')).toHaveLength(2)
-      expect(screen.getAllByText('1 عدد فرعي بديل إدارة تشغيل في')).toHaveLength(2)
+      expect(screen.getAllByText('1 عدد فرعي بديل إدارة قيد التشغيل')).toHaveLength(2)
     } finally {
       vi.useRealTimers()
     }
@@ -339,7 +339,7 @@ describe('workspace browser rows', () => {
     expect(row.querySelector('[data-state="warning"]')).not.toBeNull()
     expect(row.querySelector('[data-state="ongoing"]')).toBeNull()
     expect(screen.getByText('انتظار عودة جواب')).toBeTruthy()
-    expect(screen.getByText('1 عدد فرعي بديل إدارة تشغيل في')).toBeTruthy()
+    expect(screen.getByText('1 عدد فرعي بديل إدارة قيد التشغيل')).toBeTruthy()
   })
 
   it('shows the green done dot on a finished search result row', () => {
@@ -365,20 +365,20 @@ describe('workspace browser rows', () => {
       group={group} onToggle={onToggle} onCreate={vi.fn()}
       actions={{ rename: onRename, delete: onDelete }} t={t}
     />)
-    fireEvent.click(screen.getByRole('button', { name: 'مساحة العمل “Project” عملية' }))
+    fireEvent.click(screen.getByRole('button', { name: 'مساحات العمل “Project” عملية' }))
     // Opening the menu neither toggles the group nor renames yet.
     expect(onToggle).not.toHaveBeenCalled()
-    expect(screen.getByRole('menuitem', { name: 'حذف مساحة العمل' }).className).toMatch(/danger/)
+    expect(screen.getByRole('menuitem', { name: 'حذف مساحات العمل' }).className).toMatch(/danger/)
     fireEvent.click(screen.getByRole('menuitem', { name: 'إعادة تسمية' }))
     expect(onRename).toHaveBeenCalledOnce()
     expect(screen.queryByRole('menu')).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'مساحة العمل “Project” عملية' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'حذف مساحة العمل' }))
+    fireEvent.click(screen.getByRole('button', { name: 'مساحات العمل “Project” عملية' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'حذف مساحات العمل' }))
     expect(screen.queryByRole('menu')).toBeNull()
     expect(onRename).toHaveBeenCalledOnce()
     expect(onDelete).toHaveBeenCalledOnce()
     // Escape closes without selecting (Menu onClose path).
-    fireEvent.click(screen.getByRole('button', { name: 'مساحة العمل “Project” عملية' }))
+    fireEvent.click(screen.getByRole('button', { name: 'مساحات العمل “Project” عملية' }))
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByRole('menu')).toBeNull()
   })
@@ -401,7 +401,7 @@ describe('workspace browser rows', () => {
       expect(screen.getByText(/^إنشاء في \d+سنة\d+شهر\d+يوم /)).toBeTruthy()
       await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'نسخ: /projects/project' })) })
       expect(writeText).toHaveBeenCalledWith('/projects/project')
-      expect(screen.getByRole('status').textContent).toBe('قد نسخ')
+      expect(screen.getByRole('status').textContent).toBe('تم النسخ')
     } finally {
       restoreClipboard()
       vi.useRealTimers()
@@ -470,7 +470,7 @@ describe('workspace browser rows', () => {
       sessionCount: 0, expanded: false, containsCurrent: false, sessions: [],
     }
     render(<ProjectRowItem group={group} onToggle={vi.fn()} onCreate={vi.fn()} t={t} />)
-    expect(screen.queryByRole('button', { name: /مساحة العمل/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /مساحات العمل/ })).toBeNull()
   })
 
   it('blank New Session rows carry no menu, no time label, and no hover-card time', () => {
@@ -483,16 +483,16 @@ describe('workspace browser rows', () => {
       render(<SessionNodeItem node={node} currentId={node.id} now={0} onOpen={vi.fn()}
         onRename={vi.fn()} onFork={vi.fn()} onArchive={vi.fn()} t={t} />)
       // The placeholder has no content yet: no row verbs, no "now" stamp.
-      expect(screen.queryByRole('button', { name: /جلسة.*عملية/ })).toBeNull()
-      expect(screen.queryByText('للتو')).toBeNull()
+      expect(screen.queryByRole('button', { name: /الجلسات.*عملية/ })).toBeNull()
+      expect(screen.queryByText('الآن')).toBeNull()
       // The hover card keeps title + status but drops the timestamp line.
       const wrapper = screen.getByRole('treeitem').parentElement as HTMLElement
       fireEvent.pointerEnter(wrapper)
       act(() => { vi.advanceTimersByTime(500) })
-      expect(screen.getAllByText('جلسة جديدة').length).toBeGreaterThanOrEqual(2)
-      expect(screen.getByText('فارغ خامل')).toBeTruthy()
-      expect(screen.queryByText('للتو')).toBeNull()
-      expect(screen.getByText('فارغ خامل').closest('[role="button"]')).toBeNull()
+      expect(screen.getAllByText('الجلسات جديدة').length).toBeGreaterThanOrEqual(2)
+      expect(screen.getByText('خامل')).toBeTruthy()
+      expect(screen.queryByText('الآن')).toBeNull()
+      expect(screen.getByText('خامل').closest('[role="button"]')).toBeNull()
     } finally {
       vi.useRealTimers()
     }
@@ -509,26 +509,26 @@ describe('workspace browser rows', () => {
     }
     render(<SessionNodeItem node={node} currentId={undefined} now={0} onOpen={onOpen}
       onRename={onRename} onFork={onFork} onArchive={onArchive} t={t} />)
-    fireEvent.click(screen.getByRole('button', { name: 'جلسة “One” عملية' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الجلسات “One” عملية' }))
     expect(onOpen).not.toHaveBeenCalled()
     // Archive is not destructive (log and accounting slot remain): no danger styling.
-    expect(screen.getByRole('menuitem', { name: 'عودة ملف جلسة' }).className).not.toMatch(/danger/)
+    expect(screen.getByRole('menuitem', { name: 'أرشفة الالجلسات' }).className).not.toMatch(/danger/)
     // Rename dispatches with the current display title (dialog prefill).
     fireEvent.click(screen.getByRole('menuitem', { name: 'إعادة تسمية' }))
     expect(screen.queryByRole('menu')).toBeNull()
     expect(onRename).toHaveBeenCalledWith(node.id, 'One')
     expect(onOpen).not.toHaveBeenCalled()
-    fireEvent.click(screen.getByRole('button', { name: 'جلسة “One” عملية' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'قسم تقاطع جلسة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الجلسات “One” عملية' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'تفريع الالجلسات' }))
     expect(onFork).toHaveBeenCalledWith(node.id)
     // Archive dispatches without opening the session.
-    fireEvent.click(screen.getByRole('button', { name: 'جلسة “One” عملية' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'عودة ملف جلسة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الجلسات “One” عملية' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'أرشفة الالجلسات' }))
     expect(onArchive).toHaveBeenCalledWith(node.id)
     expect(onRename).toHaveBeenCalledOnce()
     expect(onOpen).not.toHaveBeenCalled()
     // Escape closes without selecting (Menu onClose path).
-    fireEvent.click(screen.getByRole('button', { name: 'جلسة “One” عملية' }))
+    fireEvent.click(screen.getByRole('button', { name: 'الجلسات “One” عملية' }))
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByRole('menu')).toBeNull()
   })
@@ -548,14 +548,14 @@ describe('workspace browser rows', () => {
       act(() => { vi.advanceTimersByTime(500) })
       // Card body: full title + relative time + running status.
       expect(screen.getAllByText('Hovered')).toHaveLength(2)
-      expect(screen.getByText('1دقيقة قبل')).toBeTruthy()
+      expect(screen.getByText('1دقائق قبل')).toBeTruthy()
       expect(screen.getAllByText('إجراء في')).toHaveLength(2)
       fireEvent.pointerLeave(wrapper)
       // Menu open (disabled=true) suppresses the card for the same hover.
-      fireEvent.click(screen.getByRole('button', { name: 'جلسة “Hovered” عملية' }))
+      fireEvent.click(screen.getByRole('button', { name: 'الجلسات “Hovered” عملية' }))
       fireEvent.pointerEnter(wrapper)
       act(() => { vi.advanceTimersByTime(1000) })
-      expect(screen.queryByText('1دقيقة قبل')).toBeNull()
+      expect(screen.queryByText('1دقائق قبل')).toBeNull()
     } finally {
       vi.useRealTimers()
     }
@@ -604,8 +604,8 @@ describe('workspace browser rows', () => {
         onRename={vi.fn()} onFork={vi.fn()} onArchive={vi.fn()} t={t} />)
       fireEvent.pointerEnter(screen.getByRole('treeitem').parentElement as HTMLElement)
       act(() => { vi.advanceTimersByTime(500) })
-      expect(screen.getByText('فارغ خامل')).toBeTruthy()
-      expect(screen.getAllByText('للتو')).toHaveLength(2)
+      expect(screen.getByText('خامل')).toBeTruthy()
+      expect(screen.getAllByText('الآن')).toHaveLength(2)
     } finally {
       vi.useRealTimers()
     }

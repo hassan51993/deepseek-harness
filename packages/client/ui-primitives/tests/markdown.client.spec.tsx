@@ -84,27 +84,27 @@ describe('MarkdownText', () => {
 
   it('keeps the CJK strong extension out of escaped, code, math, and ASCII contexts', () => {
     const source = [
-      String.raw`\**ملاحظة معنى:**محتوى`,
-      '`**ملاحظة معنى:**محتوى`',
+      String.raw`\**ملاحظة معنى:**المحتوى`,
+      '`**ملاحظة معنى:**المحتوى`',
       '**Notice:**text',
       '*رفع تنبيه!*متابعة',
-      '$**ملاحظة معنى:**محتوى$',
+      '$**ملاحظة معنى:**المحتوى$',
       '```md',
-      '**ملاحظة معنى:**محتوى',
+      '**ملاحظة معنى:**المحتوى',
       '```',
-      '**عادي**محتوى',
-      '*عادي*محتوى',
+      '**عادي**المحتوى',
+      '*عادي*المحتوى',
     ].join('\n\n')
     const { container } = render(<MarkdownText text={source} />)
 
     expect([...container.querySelectorAll('strong')].map(node => node.textContent)).toEqual(['عادي'])
     expect([...container.querySelectorAll('em')].map(node => node.textContent)).toEqual(['عادي'])
-    expect(container.querySelector('code')?.textContent).toBe('**ملاحظة معنى:**محتوى')
-    expect(container.querySelector('.katex annotation')?.textContent).toBe('**ملاحظة معنى:**محتوى')
-    expect(container.querySelector('pre code')?.textContent).toContain('**ملاحظة معنى:**محتوى')
+    expect(container.querySelector('code')?.textContent).toBe('**ملاحظة معنى:**المحتوى')
+    expect(container.querySelector('.katex annotation')?.textContent).toBe('**ملاحظة معنى:**المحتوى')
+    expect(container.querySelector('pre code')?.textContent).toContain('**ملاحظة معنى:**المحتوى')
     expect(container.textContent).toContain('**Notice:**text')
     expect(container.textContent).toContain('*رفع تنبيه!*متابعة')
-    expect(container.textContent).toContain('**ملاحظة معنى:**محتوى')
+    expect(container.textContent).toContain('**ملاحظة معنى:**المحتوى')
   })
 
   it('links complete HTTP(S) inline code without promoting commands, unsafe schemes, or fences', () => {

@@ -9,7 +9,7 @@ import {
   captureStableAria, compareOrRefreshGolden, launchWebScaffold,
   watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { saveFailureShot, ZH_BROWSER_LOCALE } from './support.ts'
+import { saveFailureShot, AR_BROWSER_LOCALE } from './support.ts'
 
 const EXPECTED = fileURLToPath(new URL('./expected/models-settings-recovery/stored-error.expected.md', import.meta.url))
 const FAILURE = 'llm-pi-ai: provider "openrouter" model "111" needs an api; '
@@ -33,12 +33,12 @@ describe('web e2e: repairs a stored provider after catalog drift', () => {
     ].join('\n'))
     scaffold = await launchWebScaffold({ harnessHome: home })
     browser = await chromium.launch()
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'ضبط' })
-    await dialog.getByRole('button', { name: 'نموذج', exact: true }).click()
+    await dialog.getByRole('button', { name: 'النموذج', exact: true }).click()
     await dialog.getByText(FAILURE, { exact: true }).waitFor()
   }, 120_000)
 
@@ -61,12 +61,12 @@ describe('web e2e: repairs a stored provider after catalog drift', () => {
     expect(await dialog.getByRole('button', { name: 'تحرير zai', exact: true }).count()).toBe(1)
     expect(await dialog.getByRole('button', { name: 'تحرير acme-gateway', exact: true }).count()).toBe(1)
     expect(await dialog.getByText(CUSTOM_FAILURE, { exact: true }).count()).toBe(1)
-    expect(await dialog.getByRole('button', { name: 'إضافة مزود', exact: true }).isEnabled()).toBe(true)
-    expect(await dialog.getByRole('button', { name: 'إضافة ذاتي تعريف مزود', exact: true }).isEnabled()).toBe(true)
+    expect(await dialog.getByRole('button', { name: 'إضافة المزوّد', exact: true }).isEnabled()).toBe(true)
+    expect(await dialog.getByRole('button', { name: 'إضافة ذاتي تعريف المزوّد', exact: true }).isEnabled()).toBe(true)
     await compareOrRefreshGolden(EXPECTED, await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd), webSnapshotMode())
 
-    await dialog.getByRole('button', { name: 'إضافة مزود', exact: true }).click()
-    await dialog.getByLabel('مزود', { exact: true }).selectOption('minimax-cn')
+    await dialog.getByRole('button', { name: 'إضافة المزوّد', exact: true }).click()
+    await dialog.getByLabel('المزوّد', { exact: true }).selectOption('minimax-cn')
     await dialog.getByRole('button', { name: 'حفظ', exact: true }).click()
     await dialog.getByText('قد حفظ minimax-cn.', { exact: true }).waitFor()
     expect(await readFile(join(home, 'settings.yaml'), 'utf8')).toContain('minimax-cn: {}')
@@ -82,7 +82,7 @@ describe('web e2e: repairs a stored provider after catalog drift', () => {
     await dialog.getByRole('button', { name: 'حفظ', exact: true }).click()
     await expect.poll(() => dialog.getByText(FAILURE, { exact: true }).count()).toBe(2)
     expect(await readFile(join(home, 'settings.yaml'), 'utf8')).toBe(before)
-    await dialog.getByRole('button', { name: 'حذف نموذج 1', exact: true }).click()
+    await dialog.getByRole('button', { name: 'حذف النموذج 1', exact: true }).click()
     await dialog.getByRole('button', { name: 'حفظ', exact: true }).click()
     await dialog.getByText('قد حفظ openrouter.', { exact: true }).waitFor()
     expect(await dialog.getByText(FAILURE, { exact: true }).count()).toBe(0)

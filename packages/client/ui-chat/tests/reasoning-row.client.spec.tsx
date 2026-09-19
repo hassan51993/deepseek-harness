@@ -46,7 +46,7 @@ describe('ReasoningRow', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    expect(view.getByText('تشغيل في')).toBeTruthy()
+    expect(view.getByText('قيد التشغيل')).toBeTruthy()
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
     expect(view.getByText('Newest reasoning tokens').parentElement?.getAttribute('data-follow-end'))
       .toBe('true')
@@ -72,7 +72,7 @@ describe('ReasoningRow', () => {
     )
     const settledSummary = view.getByText('Inspect the session')
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
-    expect(view.queryByText('تشغيل في')).toBeNull()
+    expect(view.queryByText('قيد التشغيل')).toBeNull()
     expect(settledSummary.parentElement?.hasAttribute('data-follow-end')).toBe(false)
   })
 

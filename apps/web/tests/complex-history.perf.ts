@@ -71,7 +71,7 @@ const LIVE_PROMPT = [
   ...Array.from(
     { length: 48 },
     (_, index) =>
-      `Context ${String(index + 1).padStart(2, '0')}: مستخدم جارٍ فحص طويل جلسة في زيادة كمية تصيير صفة قدرة.`
+      `Context ${String(index + 1).padStart(2, '0')}: المستخدم جارٍ فحص طويل الجلسات في زيادة كمية تصيير صفة قدرة.`
       + ` Preserve item ${String(index)} and compare ${'payload'.repeat(8)}.`,
   ),
   '```ts',
@@ -428,7 +428,7 @@ function textStream(deltas: readonly string[], inputTokens: number): StreamChunk
 function comparisonPrompt(index: number): string {
   if (index === COMPARISON_TURNS) return LIVE_PROMPT
   return (`${LONG_CONTINUATION_USER_PREFIX}_${String(index)} `
-    + `متابعة قسم تحليل هذا عدد طويل جلسة رقم ${String(index)} عدد زيادة كمية مشكلة، و إبقاء حالي تمرير و إدخال استجابة. `
+    + `متابعة قسم تحليل هذا عدد طويل الجلسات رقم ${String(index)} عدد زيادة كمية مشكلة، و إبقاء حالي تمرير و إدخال استجابة. `
     + 'context '.repeat(80)).trimEnd()
 }
 
@@ -470,7 +470,7 @@ function soakTurn(index: number): ConversationTurnSpec {
     : undefined
   return {
     prompt: (`${SOAK_USER_PREFIX}_${suffix} `
-      + `حمل متابعة محادثة رقم ${String(index)} جولة، فحص زيادة كمية تصيير و إبقاء حالة. `
+      + `حمل متابعة الجلسات رقم ${String(index)} الجولات، فحص زيادة كمية تصيير و إبقاء الحالة. `
       + 'context '.repeat(20)).trimEnd(),
     deltas: Array.from({ length: SOAK_DELTA_COUNT }, (_, chunkIndex) => {
       if (chunkIndex === 0) return `${SOAK_FIRST_PREFIX}_${suffix} `

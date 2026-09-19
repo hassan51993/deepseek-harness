@@ -129,7 +129,7 @@ describe('ui-settings-plugins apply', () => {
     await vi.waitFor(() => { expect(slots.entries('plugins.item')).toHaveLength(4) })
     const entries = slots.entries('plugins.item')
     expect(entries.map(entry => entry.options.id)).toEqual(['bash', 'agent-loop', 'subagent', 'web-search'])
-    expect(entries.map(entry => resolveSlotLabel(entry.options.label))).toEqual(['طرفية', 'Agent حلقة', 'Subagent', 'شبكة صفحة بحث'])
+    expect(entries.map(entry => resolveSlotLabel(entry.options.label))).toEqual(['طرفية', 'Agent حلقة', 'Subagent', 'بحث في الويب'])
     expect(entries.every(entry => entry.locale === 'settings.plugins')).toBe(true)
   })
 

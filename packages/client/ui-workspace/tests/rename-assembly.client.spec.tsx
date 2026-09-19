@@ -78,11 +78,11 @@ describe('session rename through the assembled browser', () => {
 
     // The current session's group auto-expands; open the row's action menu.
     const row = (await view.findByText('قديم عنوان')).closest('[role="treeitem"]')!
-    fireEvent.click(within(row as HTMLElement).getByLabelText('جلسة “قديم عنوان” عملية'))
+    fireEvent.click(within(row as HTMLElement).getByLabelText('الجلسات “قديم عنوان” عملية'))
     fireEvent.click(view.getByRole('menuitem', { name: 'إعادة تسمية', hidden: true }))
 
     // The dialog seeds from the current title; submit a padded value.
-    const input = await view.findByLabelText('جلسة اسم') as HTMLInputElement
+    const input = await view.findByLabelText('اسم الالجلسات') as HTMLInputElement
     expect(input.value).toBe('قديم عنوان')
     fireEvent.change(input, { target: { value: '  قسم تقاطع  فعلي تحقق سجل  ' } })
     fireEvent.click(view.getByRole('button', { name: 'إعادة تسمية' }))
@@ -91,7 +91,7 @@ describe('session rename through the assembled browser', () => {
     // (the dialog trims edges; interior normalization is host-side).
     await waitFor(() => { expect(rename).toHaveBeenCalledWith('قسم تقاطع  فعلي تحقق سجل') })
     // Acceptance closes the dialog without any push-frame wait.
-    await waitFor(() => { expect(view.queryByLabelText('جلسة اسم')).toBeNull() })
+    await waitFor(() => { expect(view.queryByLabelText('اسم الالجلسات')).toBeNull() })
     // The manager lands the unary echo in the list store (its own package
     // tests own that hop); the row re-labels from list state alone.
     await runtime.sessions.updateSummary(SID, { displayTitle: 'قسم تقاطع فعلي تحقق سجل', title: 'قسم تقاطع فعلي تحقق سجل' })
@@ -126,9 +126,9 @@ describe('session rename through the assembled browser', () => {
     await runtime.flush()
 
     const row = (await view.findByText('قديم عنوان')).closest('[role="treeitem"]')!
-    fireEvent.click(within(row as HTMLElement).getByLabelText('جلسة “قديم عنوان” عملية'))
+    fireEvent.click(within(row as HTMLElement).getByLabelText('الجلسات “قديم عنوان” عملية'))
     fireEvent.click(view.getByRole('menuitem', { name: 'إعادة تسمية', hidden: true }))
-    const input = await view.findByLabelText('جلسة اسم')
+    const input = await view.findByLabelText('اسم الالجلسات')
     fireEvent.change(input, { target: { value: 'جديد اسم' } })
     fireEvent.click(view.getByRole('button', { name: 'إعادة تسمية' }))
 
@@ -136,7 +136,7 @@ describe('session rename through the assembled browser', () => {
     // stays open with the alert and the row keeps its title.
     const alert = await view.findByRole('alert')
     expect(alert.textContent).toContain('title write failed')
-    expect(view.getByLabelText('جلسة اسم')).toBeTruthy()
+    expect(view.getByLabelText('اسم الالجلسات')).toBeTruthy()
     expect(view.getByText('قديم عنوان')).toBeTruthy()
     await runtime.dispose()
   })

@@ -9,20 +9,20 @@ import type {
 } from '../src/index.ts'
 
 export const markdownLabels: MarkdownLabels = {
-  code: { copyLabel: 'نسخ', copiedLabel: 'نسخ نجاح' },
+  code: { copyLabel: 'نسخ', copiedLabel: 'تم النسخ' },
   footnotes: 'Footnotes',
 }
 
 export const diffBlockLabels: DiffBlockLabels = {
-  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'طي فرق مختلف',
-  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر فرق مختلف`,
+  copy: 'نسخ', copied: 'تم النسخ', collapseAria: 'طي الفروق',
+  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر الفروق`,
   collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
   files: count => `${count} ${count === 1 ? 'file' : 'files'}`,
 }
 
 export const readBlockLabels: ReadBlockLabels = {
   window: (shown, total) => `عرض ${shown} / ${total} سطر`,
-  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'طي محتوى',
+  copy: 'نسخ', copied: 'تم النسخ', collapseAria: 'طي الالمحتوى',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر`,
   collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
@@ -30,23 +30,23 @@ export const readBlockLabels: ReadBlockLabels = {
 export const searchBlockLabels: SearchBlockLabels = {
   pathsSummary: (shown, total, truncated) => truncated
     ? `عرض ${shown} / مشترك ${total} عدد مسار`
-    : `${shown} عدد مسار`,
+    : `${shown} مسار`,
   matchesSummary: (shown, total, files, truncated) => truncated
     ? `عرض ${shown} / مشترك ${total} موضع مطابقة · ${files} عدد ملف`
     : `${shown} موضع مطابقة · ${files} عدد ملف`,
-  copy: 'نسخ', copied: 'نسخ نجاح', noResults: 'بلا نتيجة',
-  collapseAria: 'طي نتيجة',
-  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر نتيجة`,
+  copy: 'نسخ', copied: 'تم النسخ', noResults: 'لا توجد نتائج',
+  collapseAria: 'طي النتائج',
+  expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر النتيجة`,
   collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
 
 export const terminalBlockLabels: TerminalBlockLabels = {
   signal: signal => `إشارة ${signal}`,
   exitCode: code => `خروج رمز ${code}`,
-  noExitCode: 'لم صحيح معتاد خروج',
-  running: 'تشغيل في', failed: 'فشل', done: 'اكتمل',
-  copy: 'نسخ', copied: 'نسخ نجاح', noOutput: 'بلا إخراج',
-  collapseAria: 'طي إخراج', collapse: 'طي',
+  noExitCode: 'بلا رمز خروج',
+  running: 'قيد التشغيل', failed: 'فشل', done: 'اكتمل',
+  copy: 'نسخ', copied: 'تم النسخ', noOutput: 'بلا إخراج',
+  collapseAria: 'طي الإخراج', collapse: 'طي',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر إخراج`,
   expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
@@ -60,6 +60,6 @@ export const jsonTreeLabels: JsonTreeLabels = {
 }
 
 export const webBlockLabels: WebBlockLabels = {
-  noResults: 'لم بحث إلى نتيجة', sourcesTruncated: 'مصدر قائمة قد مقتطع',
-  http: 'HTTP', contentTruncated: 'محتوى قد مقتطع', markdown: markdownLabels,
+  noResults: 'لم يُعثر على نتائج', sourcesTruncated: 'اقتُطعت قائمة المصادر',
+  http: 'HTTP', contentTruncated: 'اقتُطع الالمحتوى', markdown: markdownLabels,
 }

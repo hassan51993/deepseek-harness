@@ -5,24 +5,24 @@ export const NS = 'schedule.catalog'
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'trigger.one': '{count} عدد رفع تنبيه',
-  'trigger.other': '{count} عدد رفع تنبيه',
-  'list.aria': 'نشط حركة رفع تنبيه',
-  'status.scheduled': 'انتظار في',
-  'status.overdue': 'قد تجاوز مدة',
+  'trigger.one': '{count} تذكير',
+  'trigger.other': '{count} تذكيرات',
+  'list.aria': 'التذكيرات النشطة',
+  'status.scheduled': 'مجدول',
+  'status.overdue': 'متأخر',
   'frequency.once': 'مرة واحدة',
   'frequency.every': 'كل {value} {unit}',
   'unit.day.one': 'يوم',
-  'unit.day.other': 'يوم',
+  'unit.day.other': 'أيام',
   'unit.hour.one': 'ساعة',
-  'unit.hour.other': 'ساعة',
+  'unit.hour.other': 'ساعات',
   'unit.minute.one': 'دقيقة',
-  'unit.minute.other': 'دقيقة',
+  'unit.minute.other': 'دقائق',
   'unit.second.one': 'ثانية',
-  'unit.second.other': 'ثانية',
-  'relative.now': 'الآن إلى مدة',
-  'relative.future': '{value}{unit}بعد',
-  'relative.overdue': 'قد تجاوز مدة {value}{unit}',
+  'unit.second.other': 'ثوانٍ',
+  'relative.now': 'حان الآن',
+  'relative.future': 'بعد {value} {unit}',
+  'relative.overdue': 'متأخر {value} {unit}',
 } as const
 
 /** English dictionary, key-identical to the Arabic source of truth. */

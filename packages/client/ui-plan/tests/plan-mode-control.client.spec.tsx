@@ -32,7 +32,7 @@ function setup(
   return { store, exitPlanMode, view }
 }
 
-const chip = () => screen.getByRole('button', { name: 'plan mode قد فتح بدء، حسب تحت إغلاق' })
+const chip = () => screen.getByRole('button', { name: 'وضع التخطيط مفعّل، اضغط لإيقافه' })
 
 describe('PlanChip', () => {
   it('renders nothing for an absent capability or a default-mode target', () => {
@@ -65,7 +65,7 @@ describe('PlanChip', () => {
     resolve(null)
     store.set({ value: { active: true, pending: true } })
     await waitFor(() => {
-      expect(screen.queryByRole('button', { name: 'plan mode قد فتح بدء، حسب تحت إغلاق' })).toBeNull()
+      expect(screen.queryByRole('button', { name: 'وضع التخطيط مفعّل، اضغط لإيقافه' })).toBeNull()
     })
   })
 
@@ -81,7 +81,7 @@ describe('PlanChip', () => {
       .mockRejectedValueOnce('socket closed')
     setup({ active: true, pending: false }, exitPlanMode)
     fireEvent.click(chip())
-    expect((await screen.findByText('خروج plan mode فشل')).getAttribute('title')).toBe('host said no')
+    expect((await screen.findByText('تعذّر الخروج من وضع التخطيط')).getAttribute('title')).toBe('host said no')
     expect(chip()).toBeTruthy()
 
     fireEvent.click(chip())

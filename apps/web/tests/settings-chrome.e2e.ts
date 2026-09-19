@@ -1,6 +1,6 @@
 // Web e2e scenarios: the settings surface — the modal shell (trigger, nav,
 // section switching, both close paths), the Appearance preference row (the
-// real theme gesture — click عميق لون and the whole cascade runs: ThemeRuntime preference -> Host settings
+// real theme gesture — click داكن and the whole cascade runs: ThemeRuntime preference -> Host settings
 // -> theme/change -> ui-layout's presenter -> body attribute -> alias token +
 // browser theme-color metadata)
 // the Language row and busy-state Enter preference (both Host-backed), plus
@@ -19,7 +19,7 @@ import {
   acknowledgeReloadConnectionLoss, assertFixtureInventory, captureStableAria, compareOrRefreshGolden,
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, saveFailureShot } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/settings-chrome', import.meta.url))
 const DIALOG_EXPECTED = join(SNAPSHOT_DIR, 'dialog.expected.md')
@@ -41,7 +41,7 @@ describe('web e2e: settings modal and General preferences', () => {
     browser = await chromium.launch()
     // Arabic browser: the shared page asserts the localized settings surface
     // the client derives from it (the English default has its own spec below).
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -62,11 +62,11 @@ describe('web e2e: settings modal and General preferences', () => {
     await dialog.waitFor({ timeout: 10_000 })
     expect(await trigger.getAttribute('aria-expanded')).toBe('true')
     // General is active by default; Permission, Language and Appearance are functional.
-    expect(await dialog.getByRole('button', { name: 'عام ضبط' }).getAttribute('aria-current')).toBe('true')
-    await dialog.getByRole('button', { name: 'مساحة العمل داخل تعديل' }).waitFor({ timeout: 10_000 })
+    expect(await dialog.getByRole('button', { name: 'عام' }).getAttribute('aria-current')).toBe('true')
+    await dialog.getByRole('button', { name: 'الكتابة في مساحات العمل' }).waitFor({ timeout: 10_000 })
     await expect.poll(() => dialog.getByText('لغة', { exact: true }).count(), { timeout: 5_000 }).toBe(1)
-    await expect.poll(() => dialog.getByText('خارج مراقبة', { exact: true }).count(), { timeout: 5_000 }).toBe(1)
-    const openDocument = dialog.getByRole('button', { name: 'فتح ملف إعداد' })
+    await expect.poll(() => dialog.getByText('المظهر', { exact: true }).count(), { timeout: 5_000 }).toBe(1)
+    const openDocument = dialog.getByRole('button', { name: 'فتح ملف الإعدادات' })
     await openDocument.waitFor({ timeout: 10_000 })
     let openRequests = 0
     await page.route('**/api/settings/openSettingsDocument', async (route) => {
@@ -94,9 +94,9 @@ describe('web e2e: settings modal and General preferences', () => {
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(DIALOG_EXPECTED, snapshot, MODE)
     // Section switch: aria-current moves (the Models page itself has its own scenario file).
-    await dialog.getByRole('button', { name: 'نموذج' }).click()
-    await expect.poll(() => dialog.getByRole('button', { name: 'نموذج' }).getAttribute('aria-current'), { timeout: 5_000 }).toBe('true')
-    expect(await dialog.getByRole('button', { name: 'عام ضبط' }).getAttribute('aria-current')).toBeNull()
+    await dialog.getByRole('button', { name: 'النموذج' }).click()
+    await expect.poll(() => dialog.getByRole('button', { name: 'النموذج' }).getAttribute('aria-current'), { timeout: 5_000 }).toBe('true')
+    expect(await dialog.getByRole('button', { name: 'عام' }).getAttribute('aria-current')).toBeNull()
     // Built-in plugins: the read-only Plugin list, a projection of the same
     // assembled Loader tree, shown as the section's one page; management and
     // configuration live on the sidebar's Plugins panel (its own scenario files
@@ -106,11 +106,11 @@ describe('web e2e: settings modal and General preferences', () => {
     await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).click()
     await dialog.getByRole('heading', { name: 'داخل وضع إضافة', exact: true }).waitFor({ timeout: 10_000 })
     // Both groups start collapsed; the preset group's header still carries its display-only switcher.
-    const presetSwitcher = dialog.getByRole('button', { name: 'اختيار يلزم عرض Agent مسبق ضبط' })
+    const presetSwitcher = dialog.getByRole('button', { name: 'اختر الإعداد المسبق للوكيل المراد فحصه' })
     await presetSwitcher.waitFor({ timeout: 10_000 })
     // The shipped default's ar display name comes from the ar dictionaries.
-    expect(await presetSwitcher.textContent()).toBe('النمط المعياري (افتراضي)')
-    const presetToggle = dialog.getByRole('button', { name: 'جلسة إضافة', exact: true })
+    expect(await presetSwitcher.textContent()).toBe('النمط العاديي (افتراضي)')
+    const presetToggle = dialog.getByRole('button', { name: 'إضافات الالجلسات', exact: true })
     expect(await presetToggle.getAttribute('aria-expanded')).toBe('false')
     expect(await dialog.locator('[data-plugin-scope="preset"] [data-plugin-entry]').count()).toBe(0)
     await presetToggle.click()
@@ -120,7 +120,7 @@ describe('web e2e: settings modal and General preferences', () => {
     const expectedPluginCount = [...scaffold.ctx.loader.entries()]
       .filter(entry => !entry.options.group)
       .length
-    const pluginSearch = dialog.getByRole('searchbox', { name: 'بحث إضافة' })
+    const pluginSearch = dialog.getByRole('searchbox', { name: 'بحث في الإضافات' })
     expect(await pluginSearch.count()).toBe(1)
     // Every Loader entry appears exactly once in the global group — rows the
     // presets took over included, preset compositions excluded.
@@ -129,15 +129,15 @@ describe('web e2e: settings modal and General preferences', () => {
     // The enablement tag is the row's collapsed status: an active fiber draws no
     // dot, so no global row names the active phase. Guard the assertion against
     // matching nothing because no row is enabled.
-    expect(await dialog.locator('[data-plugin-scope="global"] [data-plugin-entry] button[aria-label$="قد تفعيل"]').count())
+    expect(await dialog.locator('[data-plugin-scope="global"] [data-plugin-entry] button[aria-label$="مفعّلة"]').count())
       .toBeGreaterThan(0)
-    expect(await dialog.locator('[data-plugin-scope="global"] [role="img"][aria-label="تشغيل في"]').count()).toBe(0)
+    expect(await dialog.locator('[data-plugin-scope="global"] [role="img"][aria-label="قيد التشغيل"]').count()).toBe(0)
     expect(await dialog.locator('[data-plugin-count]').getAttribute('data-plugin-count'))
       .toBe(String(expectedPluginCount))
     expect(await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).getAttribute('aria-current')).toBe('true')
     // One contribution shows as the page itself, without a tab row.
     expect(await dialog.getByRole('tab').count()).toBe(0)
-    expect(await dialog.getByRole('button', { name: 'نموذج' }).getAttribute('aria-current')).toBeNull()
+    expect(await dialog.getByRole('button', { name: 'النموذج' }).getAttribute('aria-current')).toBeNull()
     const pluginsSnapshot = await captureStableAria(
       page,
       PLUGIN_ROW_SELECTOR,
@@ -146,10 +146,10 @@ describe('web e2e: settings modal and General preferences', () => {
     await compareOrRefreshGolden(PLUGINS_EXPECTED, pluginsSnapshot, MODE)
     await pluginSearch.fill('tool-subagent')
     const instanceRows = [
-      ['tool-subagent', 'قد تفعيل'],
-      ['tool-subagent-fork', 'قد تفعيل'],
-      ['tool-subagent-codex', 'قد توقف استخدام'],
-      ['tool-subagent-claude-code', 'قد توقف استخدام'],
+      ['tool-subagent', 'مفعّلة'],
+      ['tool-subagent-fork', 'مفعّلة'],
+      ['tool-subagent-codex', 'معطّلة'],
+      ['tool-subagent-claude-code', 'معطّلة'],
     ] as const
     for (const [entryId, status] of instanceRows) {
       const row = dialog.locator(`[data-plugin-scope="preset"] [data-plugin-entry="${entryId}"]`)
@@ -167,7 +167,7 @@ describe('web e2e: settings modal and General preferences', () => {
     )
     await compareOrRefreshGolden(PLUGIN_INSTANCES_EXPECTED, instancesSnapshot, MODE)
     await dialog.getByRole('button', {
-      name: 'tool-subagent, tool-subagent-claude-code, قد توقف استخدام',
+      name: 'tool-subagent, tool-subagent-claude-code, معطّلة',
       exact: true,
     }).click()
     expect(await dialog.locator('[data-plugin-entry="tool-subagent-claude-code"] button')
@@ -193,12 +193,12 @@ describe('web e2e: settings modal and General preferences', () => {
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'ضبط' })
     await dialog.waitFor({ timeout: 10_000 })
-    const selector = dialog.getByRole('button', { name: 'مساحة العمل داخل تعديل' })
+    const selector = dialog.getByRole('button', { name: 'الكتابة في مساحات العمل' })
     await selector.waitFor({ timeout: 10_000 })
     await expect.poll(() => selector.isEnabled(), { timeout: 5_000 }).toBe(true)
     await selector.click()
-    await page.getByRole('menuitem', { name: 'فقط يمكن عرض' }).click()
-    await dialog.getByRole('button', { name: 'فقط يمكن عرض' }).waitFor({ timeout: 10_000 })
+    await page.getByRole('menuitem', { name: 'قراءة فقط' }).click()
+    await dialog.getByRole('button', { name: 'قراءة فقط' }).waitFor({ timeout: 10_000 })
 
     const document = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
     expect(document).toContain('permission:')
@@ -213,14 +213,14 @@ describe('web e2e: settings modal and General preferences', () => {
       ['approval/policy', { policy: 'ask' }],
     ])
 
-    await dialog.getByRole('button', { name: 'فقط يمكن عرض' }).click()
-    await page.getByRole('menuitem', { name: 'تماما إذن' }).click()
-    const confirmation = page.getByRole('dialog', { name: 'تأكيد تفعيل تماما إذن؟' })
-    const enable = confirmation.getByRole('button', { name: 'تفعيل تماما إذن' })
+    await dialog.getByRole('button', { name: 'قراءة فقط' }).click()
+    await page.getByRole('menuitem', { name: 'وصول كامل' }).click()
+    const confirmation = page.getByRole('dialog', { name: 'تفعيل الوصول الكامل؟' })
+    const enable = confirmation.getByRole('button', { name: 'تفعيل الوصول الكامل' })
     expect(await enable.isDisabled()).toBe(true)
     await confirmation.getByRole('checkbox').click()
     await enable.click()
-    await dialog.getByRole('button', { name: 'تماما إذن' }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'وصول كامل' }).waitFor({ timeout: 10_000 })
     const confirmedDocument = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
     expect(confirmedDocument).toContain('defaultPreset: danger-full-access')
     const confirmed = scaffold.ctx.sessions.create(SessionId('settings-permission-confirmed'))
@@ -258,7 +258,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await page.emulateMedia({ colorScheme: 'light' })
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const initialDialog = page.getByRole('dialog', { name: 'ضبط' })
-    const darkCube = initialDialog.getByRole('button', { name: 'عميق لون' })
+    const darkCube = initialDialog.getByRole('button', { name: 'داكن' })
     await selectTheme(darkCube, 'dark')
     await expect.poll(() => darkCube.getAttribute('aria-pressed'), { timeout: 5_000 }).toBe('true')
     await expect.poll(async () => readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8'), { timeout: 5_000 })
@@ -304,9 +304,9 @@ describe('web e2e: settings modal and General preferences', () => {
     acknowledgeReloadConnectionLoss(tripwire, warningStart)
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const restoredDialog = page.getByRole('dialog', { name: 'ضبط' })
-    const systemCube = restoredDialog.getByRole('button', { name: 'تتبع مع نظام' })
+    const systemCube = restoredDialog.getByRole('button', { name: 'حسب الالنظام' })
     // The boot palette precedes the settings mirror's saved preference.
-    const restoredDarkCube = restoredDialog.getByRole('button', { name: 'عميق لون' })
+    const restoredDarkCube = restoredDialog.getByRole('button', { name: 'داكن' })
     await expect.poll(() => restoredDarkCube.getAttribute('aria-pressed'), { timeout: 5_000 }).toBe('true')
     await selectTheme(systemCube, 'system')
     await expect.poll(() => systemCube.getAttribute('aria-pressed'), { timeout: 5_000 }).toBe('true')
@@ -355,7 +355,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'ضبط' })
     await dialog.waitFor({ timeout: 10_000 })
-    const darkCube = dialog.getByRole('button', { name: 'عميق لون' })
+    const darkCube = dialog.getByRole('button', { name: 'داكن' })
     expect(await darkCube.getAttribute('aria-pressed')).toBe('false')
     await selectTheme(darkCube, 'dark')
     // The full cascade: pressed state, Host-backed preference, body attribute,
@@ -385,7 +385,7 @@ describe('web e2e: settings modal and General preferences', () => {
     // user-settings home. Its fresh origin has no theme localStorage and still
     // converges to dark before the settings dialog opens.
     const second = await launchWebScaffold({ harnessHome: scaffold.harnessHome })
-    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     const secondTripwire = watchConsole(secondPage)
     try {
       expect(second.baseUrl).not.toBe(scaffold.baseUrl)
@@ -405,7 +405,7 @@ describe('web e2e: settings modal and General preferences', () => {
 
     // `system` follows the emulated OS scheme (dark stays dark, light clears).
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
-    const systemCube = page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'تتبع مع نظام' })
+    const systemCube = page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'حسب الالنظام' })
     await selectTheme(systemCube, 'system')
     await expect.poll(() => systemCube.getAttribute('aria-pressed'), { timeout: 5_000 }).toBe('true')
     await expect.poll(async () => (await readState()).attr, { timeout: 5_000 }).toBe(false)
@@ -415,7 +415,7 @@ describe('web e2e: settings modal and General preferences', () => {
     expectThemeColorSynchronized(await readState())
     // Restore for the specs that follow: light preference beats the emulated
     // dark OS scheme, leaving the shared page in the light default.
-    await selectTheme(page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'ضحل لون' }), 'light')
+    await selectTheme(page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'فاتح' }), 'light')
     await expect.poll(async () => (await readState()).attr, { timeout: 5_000 }).toBe(false)
     expectThemeColorSynchronized(await readState())
     await page.keyboard.press('Escape')
@@ -467,7 +467,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await dialog.waitFor({ timeout: 10_000 })
     // The stepper reveals its arrows on hover; the up arrow steps 14 → 15 → 16.
     await dialog.getByText('14', { exact: true }).hover()
-    const increase = dialog.getByRole('button', { name: 'زيادة كبير حرف رقم' })
+    const increase = dialog.getByRole('button', { name: 'تكبير حجم الخط' })
     await stepFontSize(increase, 15)
     // 15 is the piecewise boundary: the secondary tier holds at 13px (−2)
     // where the ≤14 branch would have given 14px (−1).
@@ -491,7 +491,7 @@ describe('web e2e: settings modal and General preferences', () => {
     const restored = page.getByRole('dialog', { name: 'ضبط' })
     await restored.waitFor({ timeout: 10_000 })
     await restored.getByText('16', { exact: true }).hover()
-    const decrease = restored.getByRole('button', { name: 'نقص صغير حرف رقم' })
+    const decrease = restored.getByRole('button', { name: 'تصغير حجم الخط' })
     await stepFontSize(decrease, 15)
     await stepFontSize(decrease, 14)
     await page.keyboard.press('Escape')
@@ -503,10 +503,10 @@ describe('web e2e: settings modal and General preferences', () => {
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const dialog = page.getByRole('dialog', { name: 'ضبط' })
     await dialog.waitFor({ timeout: 10_000 })
-    await dialog.getByText('محادثة عرض', { exact: true }).waitFor({ timeout: 10_000 })
-    await dialog.getByRole('button', { name: 'ضيق تجميع', exact: true }).click()
-    await page.getByRole('menuitem', { name: 'معيار', exact: true }).click()
-    await dialog.getByRole('button', { name: 'معيار', exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByText('عرض الالجلسات', { exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'مضغوط', exact: true }).click()
+    await page.getByRole('menuitem', { name: 'عادي', exact: true }).click()
+    await dialog.getByRole('button', { name: 'عادي', exact: true }).waitFor({ timeout: 10_000 })
     await expect.poll(async () => readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8'), { timeout: 5_000 })
       .toMatch(/ui-chat:\n\s+transcriptView: normal/)
     await page.keyboard.press('Escape')
@@ -517,11 +517,11 @@ describe('web e2e: settings modal and General preferences', () => {
     acknowledgeReloadConnectionLoss(tripwire, warningStart)
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const reloaded = page.getByRole('dialog', { name: 'ضبط' })
-    await reloaded.getByRole('button', { name: 'معيار', exact: true }).waitFor({ timeout: 10_000 })
+    await reloaded.getByRole('button', { name: 'عادي', exact: true }).waitFor({ timeout: 10_000 })
 
-    await reloaded.getByRole('button', { name: 'معيار', exact: true }).click()
-    await page.getByRole('menuitem', { name: 'ضيق تجميع', exact: true }).click()
-    await reloaded.getByRole('button', { name: 'ضيق تجميع', exact: true }).waitFor({ timeout: 10_000 })
+    await reloaded.getByRole('button', { name: 'عادي', exact: true }).click()
+    await page.getByRole('menuitem', { name: 'مضغوط', exact: true }).click()
+    await reloaded.getByRole('button', { name: 'مضغوط', exact: true }).waitFor({ timeout: 10_000 })
     await expect.poll(async () => readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8'), { timeout: 5_000 })
       .toMatch(/ui-chat:\n\s+transcriptView: compact/)
     await page.keyboard.press('Escape')
@@ -550,7 +550,7 @@ describe('web e2e: settings modal and General preferences', () => {
     await reloaded.getByRole('button', { name: 'إدراج كلام إرسال' }).waitFor({ timeout: 10_000 })
 
     const second = await launchWebScaffold({ harnessHome: scaffold.harnessHome })
-    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     const secondTripwire = watchConsole(secondPage)
     try {
       expect(second.baseUrl).not.toBe(scaffold.baseUrl)
@@ -616,7 +616,7 @@ describe('web e2e: settings modal and General preferences', () => {
     // An Arabic browser on another port still receives the explicit English
     // preference from the shared Host settings document.
     const second = await launchWebScaffold({ harnessHome: scaffold.harnessHome })
-    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const secondPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     const secondTripwire = watchConsole(secondPage)
     try {
       expect(second.baseUrl).not.toBe(scaffold.baseUrl)

@@ -48,7 +48,7 @@ const SNAPSHOT = {
     {
       id: 'standard',
       trust: 'system',
-      name: 'النمط المعياري',
+      name: 'النمط العاديي',
       isDefault: true,
       rows: [
         { entryId: 'bash', moduleName: '@deepseek-ai/dsh-tool-bash', enabled: true, fiberPhase: 'active' },
@@ -94,10 +94,10 @@ describe('PluginInventorySettingsTab', () => {
     const view = await renderReady()
 
     const switcher = screen.getByRole('button', { name: en.switcherLabel })
-    expect(switcher.textContent).toBe('النمط المعياري (default)')
+    expect(switcher.textContent).toBe('النمط العاديي (default)')
     fireEvent.click(switcher)
     expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
-      'النمط المعياري (default)',
+      'النمط العاديي (default)',
       'ptc',
       'تالف مسبق ضبط (failed to load)',
     ])
@@ -128,7 +128,7 @@ describe('PluginInventorySettingsTab', () => {
     // A preset row expands into its source facts.
     fireEvent.click(screen.getByRole('button', { name: 'pwsh, pwsh, Conditional' }))
     expect(screen.getByText(en.fromPreset)).toBeTruthy()
-    expect(screen.getByText('النمط المعياري')).toBeTruthy()
+    expect(screen.getByText('النمط العاديي')).toBeTruthy()
     expect(screen.getByText(en.condition)).toBeTruthy()
     expect(screen.getByText('process.platform === \'win32\'')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'pwsh, pwsh, Conditional' }))
@@ -225,7 +225,7 @@ describe('PluginInventorySettingsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'tool-bash, bash-host, Enabled via presets' }))
     expect(screen.getByText(en.presetProvidedDetail)).toBeTruthy()
     expect(screen.getByText(en.enabledIn)).toBeTruthy()
-    expect(screen.getByText('النمط المعياري · ptc')).toBeTruthy()
+    expect(screen.getByText('النمط العاديي · ptc')).toBeTruthy()
 
     // The failed global card reports its runtime state.
     fireEvent.click(screen.getByRole('button', { name: 'telemetry, telemetry, Failed' }))
@@ -322,7 +322,7 @@ describe('PluginInventorySettingsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'tool-bash, bash-host, Enabled via presets' }))
     fireEvent.click(screen.getByRole('button', { name: en.viewInPreset }))
     expect(screen.getByRole('button', { name: en.switcherLabel }).textContent)
-      .toBe('النمط المعياري (default)')
+      .toBe('النمط العاديي (default)')
   })
 
   it('searches across scopes and points at matches in other presets', async () => {

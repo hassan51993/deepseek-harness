@@ -13,7 +13,7 @@ import {
   fixtureUserPrompts, launchWebScaffold, recordFixture, watchConsole,
   webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceAr, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, AR_BROWSER_LOCALE } from './support.ts'
 
 const DIR = fileURLToPath(new URL('../../../snapshots/web/changed-files-turn', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
@@ -58,7 +58,7 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
     await seedRepository(join(scaffold.workspaceCwd, 'workspace'))
     browser = await chromium.launch()
     page = await browser.newPage({
-      viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
+      viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
     })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
@@ -111,7 +111,7 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
     expect(await card.getByRole('listitem').count()).toBe(3)
     expect(await card.getByRole('button', { name: 'توسيع الكل 4 عدد تعديل ملف' }).count()).toBe(1)
     // The header and every row open the turn's review in the Sidebar, with or without a Host desktop.
-    expect(await card.getByRole('button', { name: 'في الشريط الجانبي عرض هذا جولة تعديل' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'مراجعة تغييرات هذه الالجولات في الشريط الجانبي' }).count()).toBe(1)
     expect(await card.getByRole('button', { name: 'عرض notes.txt تعديل' }).count()).toBe(1)
     expect(tripwire.pageErrors).toEqual([])
     expect(tripwire.warnings).toEqual([])
@@ -124,23 +124,23 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
       root.locator('[data-diff-line]').evaluateAll(lines => lines.map(line => `${line.getAttribute('data-diff-line')}:${line.textContent}`))
     const review = column.locator('[data-changes-review]')
     // The header lands on the first listed file; a row lands on its own.
-    await card.getByRole('button', { name: 'في الشريط الجانبي عرض هذا جولة تعديل' }).click()
+    await card.getByRole('button', { name: 'مراجعة تغييرات هذه الالجولات في الشريط الجانبي' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
     await card.getByRole('button', { name: 'عرض notes.txt تعديل' }).click()
     await review.locator('[data-review-file="notes.txt"]').waitFor({ state: 'visible' })
-    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
+    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 الجولات تعديل' }).count()).toBe(1)
     await expect.poll(() => drawn(review)).toEqual(['context:11 start', 'add:2+done'])
     // The ignored file has no snapshot; its comparison comes from the copies captured around the write call.
-    await review.getByRole('button', { name: 'اختيار يلزم عرض ملف' }).click()
+    await review.getByRole('button', { name: 'اختر الملف المراد مراجعته' }).click()
     await page.getByRole('menuitem').filter({ hasText: 'app.local' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
     await expect.poll(() => drawn(review)).toEqual(['add:1+mode=demo'])
-    expect(await review.getByText('هذا جولة جديد بناء ملف').count()).toBe(1)
+    expect(await review.getByText('أُنشئ في هذه الالجولات').count()).toBe(1)
     // A card row opens the same tab on another file; the split and wrap choices switch the drawing.
     await card.getByRole('button', { name: 'عرض intro.md تعديل' }).click()
     await review.locator('[data-review-file="intro.md"]').waitFor({ state: 'visible' })
-    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
-    await review.getByRole('button', { name: 'يسار يمين مقابل مقارنة' }).click()
+    expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 الجولات تعديل' }).count()).toBe(1)
+    await review.getByRole('button', { name: 'عرض مقسوم' }).click()
     await review.locator('[data-review-view="split"]').waitFor({ state: 'visible' })
     await expect.poll(() => drawn(review.locator('[data-diff-side="left"]'))).toEqual(['del:1# عرض مثال مشروع', 'context:2', 'context:3واحد لأجل عرض عرض مستودع.'])
     expect(await drawn(review.locator('[data-diff-side="right"]'))).toEqual(['del:1# مشروع شرح', 'context:2', 'context:3واحد لأجل عرض عرض مستودع.'])

@@ -23,14 +23,14 @@ describe('attachment rejection copy', () => {
   })
 
   it('maps user-solvable reasons to limit-naming copy', () => {
-    expect(attachmentErrorText(t, 'MODEL_DOES_NOT_SUPPORT_IMAGES')).toBe('حالي نموذج لا دعم حمل صورة، طلب تبديل دعم حمل صورة نموذج')
-    expect(attachmentErrorText(t, 'IMAGE_TOO_MANY_PIXELS')).toBe('صورة قسم تمييز معدل مرور كبير، طلب ضغط بعد إعادة محاولة')
-    expect(attachmentErrorText(t, 'INVALID_IMAGE')).toBe('فقط دعم حمل PNG،JPG،WebP،GIF صيغة صورة')
-    expect(attachmentErrorText(t, 'IMAGE_TYPE_MISMATCH')).toBe('فقط دعم حمل PNG،JPG،WebP،GIF صيغة صورة')
-    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES', limits)).toBe('واحد بند رسالة الأكثر كثير إضافة 20 ورقة صورة')
+    expect(attachmentErrorText(t, 'MODEL_DOES_NOT_SUPPORT_IMAGES')).toBe('الالنموذج الحالي لا يدعم الصور؛ بدّل إلى النموذج يدعمها')
+    expect(attachmentErrorText(t, 'IMAGE_TOO_MANY_PIXELS')).toBe('دقة الصورة عالية جدًا؛ اضغطها وأعد المحاولة')
+    expect(attachmentErrorText(t, 'INVALID_IMAGE')).toBe('صور PNG وJPG وWebP وGIF فقط مدعومة')
+    expect(attachmentErrorText(t, 'IMAGE_TYPE_MISMATCH')).toBe('صور PNG وJPG وWebP وGIF فقط مدعومة')
+    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES', limits)).toBe('واحد بند رسالة الالمزيد إضافة 20 ورقة صورة')
     expect(attachmentErrorText(t, 'IMAGE_TOO_LARGE', limits)).toBe('مفرد ورقة صورة لا يستطيع تجاوز مرور 5MB')
-    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE', limits)).toBe('صورة مجموع كبير صغير تجاوز مرور 100MB، طلب إزالة جزء صورة')
-    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE', limits)).toBe('صورة عرض عال لا يستطيع تجاوز مرور 2000px، طلب تقليص صغير بعد إعادة محاولة')
+    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE', limits)).toBe('صورة مجموع كبير صغير تجاوز مرور 100MB، طلب إلغاء التثبيت جزء صورة')
+    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE', limits)).toBe('صورة عرض عال لا يستطيع تجاوز مرور 2000px، طلب تقليص صغير بعد إعادة المحاولة')
     expect(attachmentErrorText(enT, 'TOO_MANY_IMAGES', limits)).toBe('A message can include up to 20 images')
   })
 

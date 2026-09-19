@@ -337,8 +337,8 @@ describe('candidates', () => {
     })
     const modelContribution = (): CommandContribution => ({
       name: 'model',
-      label: () => 'نموذج',
-      description: () => 'اختيار هذا جلسة استخدام نموذج',
+      label: () => 'النموذج',
+      description: () => 'اختيار الالنموذج الالمستخدم في هذه الالجلسات',
       icon: Glyph,
       available: () => true,
       ui: themeUi(),
@@ -365,7 +365,7 @@ describe('candidates', () => {
         section: 'command:section.add',
       })
       expect(rows[0]).toEqual({ name: 'file', label: 'command:label.file', icon: Glyph, section: 'command:section.add' })
-      expect(rows[6]).toMatchObject({ name: 'model', label: 'نموذج', description: 'اختيار هذا جلسة استخدام نموذج', icon: Glyph })
+      expect(rows[6]).toMatchObject({ name: 'model', label: 'النموذج', description: 'اختيار الالنموذج الالمستخدم في هذه الالجلسات', icon: Glyph })
       // A third-party command keeps its catalog text and gets no glyph.
       expect(rows[8]).toEqual({ name: 'deploy', description: 'third-party command', section: 'command:section.commands' })
     })
@@ -405,7 +405,7 @@ describe('candidates', () => {
       const { command, source } = await bench({ commands: () => Promise.resolve({ commands: SHIPPED }) })
       command.register(modelContribution())
       const names = async (query: string) => (await source.candidates(proj('s1'), req(query))).map(c => c.name)
-      await expect(names('نموذج')).resolves.toEqual(['model'])
+      await expect(names('النموذج')).resolves.toEqual(['model'])
       await expect(names('label.goal')).resolves.toEqual(['goal'])
       await expect(names('ex')).resolves.toEqual(['export'])
       // Prefix hits lead; the empty-query section order no longer applies.

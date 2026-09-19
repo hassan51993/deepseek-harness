@@ -547,7 +547,7 @@ describe('desktop main startup', () => {
     expect(() => handler(event, 'application', NaN, 34)).toThrow('invalid popup request')
     const application = handler(event, 'application', 48, 34)
     expect(harness.menu.buildFromTemplate.mock.lastCall![0].map(item => item.label ?? item.type)).toEqual([
-      'صلة في DeepSeek Harness', 'separator', 'فحص تحديث…', 'separator', 'خروج',
+      'حول DeepSeek Harness', 'separator', 'البحث عن تحديثات…', 'separator', 'خروج',
     ])
     expect(harness.popup.mock.lastCall![0]).toMatchObject({ window, x: 48, y: 34 })
     expect(harness.popup.mock.lastCall![0].callback).toBeTypeOf('function')
@@ -555,7 +555,7 @@ describe('desktop main startup', () => {
     await application
     const edit = handler(event, 'edit', 104, 34)
     expect(harness.menu.buildFromTemplate.mock.lastCall![0].map(item => item.label ?? item.type)).toEqual([
-      'سحب إلغاء', 'إعادة فعل', 'separator', 'قص قطع', 'نسخ', 'لصق لصق', 'حذف', 'separator', 'كل اختيار',
+      'تراجع', 'إعادة', 'separator', 'قص', 'نسخ', 'لصق', 'حذف', 'separator', 'موافق الكل',
     ])
     const commands = harness.menu.buildFromTemplate.mock.lastCall![0].filter(item => item.type !== 'separator')
     for (const [index, keyCode] of ['Z', 'Y', 'X', 'C', 'V', 'Delete', 'A'].entries()) {

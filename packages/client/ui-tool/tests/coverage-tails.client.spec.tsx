@@ -109,6 +109,6 @@ describe('Tool presentation tails', () => {
 
     const stoppedView = render(<BashRow {...bashProps(stoppedResult)} />)
     expect(stoppedView.container.querySelector('[data-state="stopped"]')).not.toBeNull()
-    expect(stoppedView.getByText('قد إيقاف')).toBeTruthy()
+    expect(stoppedView.getByText('توقّف')).toBeTruthy()
   })
 })

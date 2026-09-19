@@ -23,7 +23,7 @@ const UI_EXPECTED = join(SNAPSHOT_DIR, 'ui.expected.md')
 const UI_EXPANDED_EXPECTED = join(SNAPSHOT_DIR, 'ui-expanded.expected.md')
 const MODE = webSnapshotMode()
 
-const PROMPT = 'فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه'
+const PROMPT = 'فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج المحتوى، إيقاف، أنا جمع النظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه'
 const COMMAND = `/goal ${PROMPT}`
 
 const PACKAGE_FILES: Readonly<Record<string, string>> = {

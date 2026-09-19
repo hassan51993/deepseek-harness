@@ -2,21 +2,21 @@
 
 /** Arabic dictionary and key source of truth. */
 export const ar = {
-  nav: 'قد عودة ملف جلسة',
-  search: 'بحث قد عودة ملف جلسة',
-  loading: 'جارٍ قراءة جلسة…',
-  empty: 'مؤقت بلا قد عودة ملف جلسة.',
-  unavailable: 'هذا داخل لا يوجد يمكن استعادة قد عودة ملف جلسة.',
-  emptySearch: 'لا يوجد مطابقة جلسة.',
-  unarchive: 'إلغاء عودة ملف',
-  unarchiveNamed: 'إلغاء عودة ملف {title}',
-  ungrouped: 'لم قسم مجموعة',
-  'time.now': 'للتو',
-  'time.minutes': '{n}دقيقة',
-  'time.hours': '{n}ساعة',
-  'time.days': '{n}يوم',
-  'time.months': '{n}عدد شهر',
-  'time.years': '{n}سنة',
+  nav: 'الجلسات المؤرشفة',
+  search: 'بحث في الجلسات المؤرشفة',
+  loading: 'جارٍ قراءة الجلسات…',
+  empty: 'لا توجد جلسات مؤرشفة.',
+  unavailable: 'لا توجد هنا جلسة مؤرشفة يمكن استعادتها.',
+  emptySearch: 'لا توجد جلسات مطابقة.',
+  unarchive: 'إلغاء الأرشفة',
+  unarchiveNamed: 'إلغاء أرشفة {title}',
+  ungrouped: 'بلا مجموعة',
+  'time.now': 'الآن',
+  'time.minutes': '{n} دقيقة',
+  'time.hours': '{n} ساعة',
+  'time.days': '{n} يوم',
+  'time.months': '{n} شهر',
+  'time.years': '{n} سنة',
 } satisfies Record<string, string>
 
 /** Archived-session page locale key union. */

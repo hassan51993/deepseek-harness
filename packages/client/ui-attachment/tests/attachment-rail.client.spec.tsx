@@ -25,7 +25,7 @@ beforeEach(() => {
 afterEach(() => { vi.unstubAllGlobals() })
 
 const labels: AttachmentRailLabels = {
-  group: 'انتظار إرسال صورة',
+  group: 'صور معلّقة',
   scrollLeft: 'نحو يسار تمرير صورة',
   scrollRight: 'نحو يمين تمرير صورة',
 }
@@ -57,7 +57,7 @@ describe('AttachmentRail', () => {
   it('renders owner-provided attachment cards in order', () => {
     const items = [item('a'), item('b')]
     const view = render(<AttachmentRail items={items} labels={labels} renderItem={renderItem} />)
-    const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+    const rail = view.getByRole('group', { name: 'صور معلّقة' })
     expect([...rail.children].map(child => child.textContent)).toEqual(['a', 'b'])
   })
 
@@ -65,7 +65,7 @@ describe('AttachmentRail', () => {
     const view = render(
       <AttachmentRail items={[item('a'), item('b'), item('c')]} labels={labels} renderItem={renderItem} />,
     )
-    const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+    const rail = view.getByRole('group', { name: 'صور معلّقة' })
     const { scrollBy } = stubGeometry(rail, { scrollWidth: 400, clientWidth: 200 })
     // No arrows until geometry is observed (mount saw jsdom's zero metrics).
     expect(view.queryByLabelText('نحو يمين تمرير صورة')).toBeNull()
@@ -91,7 +91,7 @@ describe('AttachmentRail', () => {
     const view = render(
       <AttachmentRail items={[item('a'), item('b'), item('c')]} labels={labels} renderItem={renderItem} />,
     )
-    const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+    const rail = view.getByRole('group', { name: 'صور معلّقة' })
     const { setScrollLeft } = stubGeometry(rail, { scrollWidth: 400, clientWidth: 200 })
     setScrollLeft(100)
     // The component observes the rail element, not the window: a sidebar or
@@ -107,7 +107,7 @@ describe('AttachmentRail', () => {
     const view = render(
       <AttachmentRail items={[item('a')]} labels={labels} renderItem={renderItem} />,
     )
-    expect(view.getByRole('group', { name: 'انتظار إرسال صورة' })).toBeTruthy()
+    expect(view.getByRole('group', { name: 'صور معلّقة' })).toBeTruthy()
     view.unmount()
   })
 
@@ -115,7 +115,7 @@ describe('AttachmentRail', () => {
     const view = render(
       <AttachmentRail items={[item('a'), item('b')]} labels={labels} renderItem={renderItem} />,
     )
-    const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+    const rail = view.getByRole('group', { name: 'صور معلّقة' })
     const { scrollBy } = stubGeometry(rail, { scrollWidth: 400, clientWidth: 200 })
     // Converted ticks are consumed (preventDefault): fireEvent returns false.
     expect(fireEvent.wheel(rail, { deltaY: 30 })).toBe(false)
@@ -145,7 +145,7 @@ describe('AttachmentRail', () => {
       const view = render(
         <AttachmentRail items={[item('a'), item('b'), item('c')]} labels={labels} renderItem={renderItem} />,
       )
-      const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+      const rail = view.getByRole('group', { name: 'صور معلّقة' })
       const { scrollBy } = stubGeometry(rail, { scrollWidth: 400, clientWidth: 200 })
       fireEvent.scroll(rail)
       fireEvent.click(view.getByLabelText('نحو يمين تمرير صورة'))
@@ -159,7 +159,7 @@ describe('AttachmentRail', () => {
     const view = render(
       <AttachmentRail items={first} labels={labels} renderItem={renderItem} />,
     )
-    const rail = view.getByRole('group', { name: 'انتظار إرسال صورة' })
+    const rail = view.getByRole('group', { name: 'صور معلّقة' })
     stubGeometry(rail, { scrollWidth: 400, clientWidth: 200 })
     view.rerender(
       <AttachmentRail items={[...first, item('c')]} labels={labels} renderItem={renderItem} />,

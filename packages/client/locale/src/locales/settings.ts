@@ -2,7 +2,7 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'language.title': 'لغة',
+  'language.title': 'اللغة',
 } satisfies Record<string, string>
 
 /** The settings.locale namespace key union. */

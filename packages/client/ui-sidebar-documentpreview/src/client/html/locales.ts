@@ -1,9 +1,9 @@
 /** Locale-owned HTML implementation name and iframe status text. */
 export const ar = {
   title: 'HTML',
-  frame: 'HTML وثيقة معاينة',
-  loading: 'جارٍ قراءة…',
-  failed: 'لا يمكن معاينة هذا نسخة HTML وثيقة',
+  frame: 'معاينة مستند HTML',
+  loading: 'جارٍ القراءة…',
+  failed: 'تعذّرت معاينة مستند HTML هذا.',
 } satisfies Record<string, string>
 
 /** HTML renderer dictionary keys. */

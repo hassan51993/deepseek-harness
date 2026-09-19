@@ -18,7 +18,7 @@ import { chromium } from 'playwright'
 import { afterAll, beforeAll, describe, expect, it, onTestFailed } from 'vitest'
 import { SessionId } from '@deepseek-ai/dsh-session'
 import { launchWebScaffold, watchConsole, type WebScaffold } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
 
 /** Points the shipped shared Agent default at this scenario's own route. */
 const OVERLAY = fileURLToPath(new URL('./default-model.overlay.yml', import.meta.url))
@@ -78,7 +78,7 @@ describe('web e2e: the composer model switch is the default for later sessions',
       },
     })
     browser = await chromium.launch()
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -102,10 +102,10 @@ describe('web e2e: the composer model switch is the default for later sessions',
       reason: 'initial',
     })
 
-    const trigger = page.getByRole('button', { name: /^اختيار نموذج/ })
+    const trigger = page.getByRole('button', { name: /^اختيار النموذج/ })
     await trigger.waitFor({ timeout: 15_000 })
     await trigger.click()
-    await page.getByRole('menuitem', { name: /نموذج/ }).click()
+    await page.getByRole('menuitem', { name: /النموذج/ }).click()
     await page.getByRole('menuitemradio', { name: 'Acme Large' }).click()
 
     // The switch is what sets the default: the shared Agent-route settings section
@@ -138,7 +138,7 @@ describe('web e2e: the composer model switch is the default for later sessions',
     await scaffold.ctx.settings.replace('llm-pi-ai', { providers: {} })
 
     await expect.poll(async () => box.isEnabled(), { timeout: 15_000 }).toBe(false)
-    expect(await box.getAttribute('data-placeholder')).toBe('حالي نموذج غير ممكن استخدام، طلب أولا اختيار نموذج')
+    expect(await box.getAttribute('data-placeholder')).toBe('هذا الالنموذج غير متاح — اختر النموذجًا للمتابعة')
 
     // The block is an affordance; the refusal is the Host's. A client that
     // never disabled anything still cannot start a turn on a dead route.
@@ -151,10 +151,10 @@ describe('web e2e: the composer model switch is the default for later sessions',
 
     // The way out stays open. Locking the model seat with everything else
     // would leave the composer asking for the one thing it prevents.
-    const seat = page.getByRole('button', { name: /^اختيار نموذج/ })
+    const seat = page.getByRole('button', { name: /^اختيار النموذج/ })
     expect(await seat.isEnabled()).toBe(true)
     await seat.click()
-    await page.getByRole('menuitem', { name: /نموذج/ }).click()
+    await page.getByRole('menuitem', { name: /النموذج/ }).click()
     await page.getByRole('menuitemradio').first().click()
     await expect.poll(async () => box.isEnabled(), { timeout: 15_000 }).toBe(true)
     expect(tripwire.pageErrors).toEqual([])

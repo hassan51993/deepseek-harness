@@ -84,9 +84,9 @@ describe('ui-settings-models apply', () => {
     expect(before.slots.spec('settings.models.provider-card')).toMatchObject({ kind: 'keyed', scope: 'root' })
     expect(before.slots.spec('settings.models.footer')).toMatchObject({ kind: 'list', scope: 'root' })
     // The nav label is a locale-following thunk; owners resolve at read time.
-    expect(resolveSlotLabel(entry.options.label)).toBe('نموذج')
+    expect(resolveSlotLabel(entry.options.label)).toBe('النموذج')
     const injected = (entry.inject as unknown as () => import('../src/client/ModelsSection.tsx').ModelsSectionInjected)()
-    expect(injected.t('nav')).toBe('نموذج')
+    expect(injected.t('nav')).toBe('النموذج')
     expect(injected.t('deleteTitle')).toBe('حذف {provider}؟')
     expect(typeof injected.controller.load).toBe('function')
     expect(injected.hooks.snapshot).toBe(injected.controller.store)
@@ -127,7 +127,7 @@ describe('ui-settings-models apply', () => {
     const injected = b.slots.entries('settings.section')[0]!.inject as unknown as () => import('../src/client/ModelsSection.tsx').ModelsSectionInjected
     expect(injected().t('deleteTitle')).toBe('Delete {provider}?')
     b.locale.setLocale('ar')
-    expect(resolveSlotLabel(b.slots.entries('settings.section')[0]!.options.label)).toBe('نموذج')
+    expect(resolveSlotLabel(b.slots.entries('settings.section')[0]!.options.label)).toBe('النموذج')
     expect(injected().t('deleteTitle')).toBe('حذف {provider}؟')
   })
 
@@ -186,7 +186,7 @@ describe('ui-settings-models apply', () => {
     declare(b.slots)
     const fiber = b.ctx.plugin({ inject: [...inject], apply })
     await fiber.await()
-    expect(b.locale.bind('settings.models')('nav')).toBe('نموذج')
+    expect(b.locale.bind('settings.models')('nav')).toBe('النموذج')
     await fiber.dispose()
     expect(b.slots.entries('settings.section')).toHaveLength(0)
     expect(b.slots.entries('settings.onboarding')).toHaveLength(0)

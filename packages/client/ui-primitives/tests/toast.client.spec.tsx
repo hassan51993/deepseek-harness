@@ -11,9 +11,9 @@ describe('Toast', () => {
     vi.useFakeTimers()
     try {
       const onDone = vi.fn()
-      const view = render(<Toast text="الأكثر كثير إضافة 50 ورقة صورة" icon={<svg data-testid="icon" />} onDone={onDone} />)
+      const view = render(<Toast text="الالمزيد إضافة 50 ورقة صورة" icon={<svg data-testid="icon" />} onDone={onDone} />)
       const banner = view.getByRole('alert')
-      expect(banner.textContent).toContain('الأكثر كثير إضافة 50 ورقة صورة')
+      expect(banner.textContent).toContain('الالمزيد إضافة 50 ورقة صورة')
       expect(view.getByTestId('icon')).toBeTruthy()
       vi.advanceTimersByTime(3999)
       expect(onDone).not.toHaveBeenCalled()

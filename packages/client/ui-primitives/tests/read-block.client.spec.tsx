@@ -158,7 +158,7 @@ describe('ReadBlock height cap', () => {
 
     fireEvent.click(toggle)
     expect(rowTexts(view.container)).toHaveLength(10)
-    const collapse = view.getByRole('button', { name: 'طي محتوى' })
+    const collapse = view.getByRole('button', { name: 'طي الالمحتوى' })
     expect(collapse.getAttribute('aria-expanded')).toBe('true')
     expect(collapse.textContent).toBe('طي')
 
@@ -192,9 +192,9 @@ describe('ReadBlock copy', () => {
     await act(async () => {
       await Promise.resolve()
     })
-    expect(screen.getByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تم النسخ' })).toBeTruthy()
     // While the ok label is showing, further clicks are no-ops.
-    fireEvent.click(screen.getByRole('button', { name: 'نسخ نجاح' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تم النسخ' }))
     expect(writeText).toHaveBeenCalledTimes(1)
     await vi.advanceTimersByTimeAsync(1000)
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
@@ -206,7 +206,7 @@ describe('ReadBlock copy', () => {
     render(<ReadBlock label="a" lines={lines(10)} totalLines={10} maxLines={4} />)
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(writeText).toHaveBeenCalledWith(lines(10).map(line => line.text).join('\n'))
-    expect(await screen.findByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'تم النسخ' })).toBeTruthy()
   })
 
   it('does not claim success when the host refuses the write', async () => {
@@ -220,7 +220,7 @@ describe('ReadBlock copy', () => {
       await Promise.resolve()
     })
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'نسخ نجاح' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'تم النسخ' })).toBeNull()
   })
 
   it('merges className onto the wrapper', () => {

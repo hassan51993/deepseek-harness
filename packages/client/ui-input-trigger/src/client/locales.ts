@@ -6,15 +6,15 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'command': 'إشارة أمر',
-  'skill': 'تقنية قدرة',
-  'subagent': 'فرعي ذكي جسم',
+  command: 'الأوامر',
+  skill: 'المهارات',
+  subagent: 'الوكلاء الفرعيون',
   'loading': 'جارٍ تحميل…',
-  'drill.aria': 'دخول دليل',
-  'drill.hint': 'دخول دليل',
+  'drill.aria': 'تصفّح المجلد',
+  'drill.hint': 'تصفّح المجلد',
   'drill.key': 'Tab',
-  'crumbs.aria': 'دليل تنقل',
-  'suggestions.aria': 'إطلاق مرشح بناء اقتراح',
+  'crumbs.aria': 'التنقّل بين المجلدات',
+  'suggestions.aria': 'اقتراحات الإدخال',
 } satisfies Record<string, string>
 
 /** The slash.menu namespace key union. */

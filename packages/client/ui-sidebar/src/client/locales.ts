@@ -3,10 +3,10 @@
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
   'session.new': 'جلسة جديدة',
-  'session.new.label': 'جديد بناء جلسة',
+  'session.new.label': 'جلسة جديدة',
   'toggle.open': 'فتح الشريط الجانبي',
   'toggle.collapse': 'طي الشريط الجانبي',
-  'panels.label': 'عام وجه لوح',
+  'panels.label': 'اللوحات العامة',
 } satisfies Record<string, string>
 
 /** The sidebar namespace key union. */

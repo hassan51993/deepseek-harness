@@ -9,12 +9,12 @@ afterEach(cleanup)
 describe('DropOverlay', () => {
   it('portals the invitation with its title and limits desc to the body', () => {
     const view = render(
-      <DropOverlay disabled={false} labels={{ title: 'صورة سحب حركة إلى هذا موضع يكفي إضافة', desc: 'الأكثر كثير 20 ورقة، كل ورقة 5MB' }} />,
+      <DropOverlay disabled={false} labels={{ title: 'صورة سحب حركة إلى هذا موضع يكفي إضافة', desc: 'الالمزيد 20 ورقة، كل ورقة 5MB' }} />,
     )
     const overlay = view.getByRole('status')
     expect(overlay.parentElement).toBe(document.body)
     expect(overlay.textContent).toContain('صورة سحب حركة إلى هذا موضع يكفي إضافة')
-    expect(overlay.textContent).toContain('الأكثر كثير 20 ورقة، كل ورقة 5MB')
+    expect(overlay.textContent).toContain('الالمزيد 20 ورقة، كل ورقة 5MB')
   })
 
   it('omits the desc line when none is resolved', () => {

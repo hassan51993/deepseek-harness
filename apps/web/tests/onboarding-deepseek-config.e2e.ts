@@ -16,7 +16,7 @@ import {
   WELCOME_NOTICE_ACK_FIELD, WELCOME_NOTICE_COPY, WELCOME_NOTICE_SETTINGS_NAMESPACE,
   WELCOME_NOTICE_VERSION,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/onboarding-deepseek-config', import.meta.url))
 const WELCOME_EXPECTED = join(SNAPSHOT_DIR, 'welcome.expected.md')
@@ -36,7 +36,7 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     scaffold = await launchWebScaffold({ deepSeekMissingCredential: true, welcomeNoticePending: true })
     browser = await chromium.launch()
     // The scenario asserts the shipped Arabic copy, so the browser asks for it.
-    page = await browser.newPage({ viewport: { width: 1440, height: 960 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1440, height: 960 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     page.on('console', message => browserConsole.push(message.text()))
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
@@ -99,7 +99,7 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const settings = page.getByRole('dialog', { name: 'ضبط' })
     await settings.waitFor({ timeout: 10_000 })
-    await settings.getByRole('button', { name: 'نموذج' }).click()
+    await settings.getByRole('button', { name: 'النموذج' }).click()
     const deepSeekRow = settings.getByText('DeepSeek', { exact: true }).first()
     await deepSeekRow.waitFor({ timeout: 10_000 })
     await deepSeekRow.locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
@@ -199,16 +199,16 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     await page.getByRole('button', { name: 'ضبط', exact: true }).click()
     const settings = page.getByRole('dialog', { name: 'ضبط' })
     await settings.waitFor({ timeout: 10_000 })
-    await settings.getByRole('button', { name: 'نموذج' }).click()
+    await settings.getByRole('button', { name: 'النموذج' }).click()
     const deepSeek = settings.getByText('DeepSeek', { exact: true }).first()
     await deepSeek.waitFor({ timeout: 10_000 })
     await deepSeek.locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
     await settings.getByText('ذاتي تعريف ضبط').click()
-    expect(await settings.getByLabel('نموذج ID 1').inputValue()).toBe('deepseek-flash')
+    expect(await settings.getByLabel('النموذج ID 1').inputValue()).toBe('deepseek-flash')
     expect(await settings.getByLabel('عرض اسم 1').inputValue()).toBe('DeepSeek-V41-Flash')
-    expect(await settings.getByLabel('نموذج ID 2').inputValue()).toBe('deepseek-v4-pro')
-    expect(await settings.getByRole('button', { name: /حذف نموذج/ }).count()).toBe(2)
-    await settings.getByRole('button', { name: 'نموذج خيار 1' }).click()
+    expect(await settings.getByLabel('النموذج ID 2').inputValue()).toBe('deepseek-v4-pro')
+    expect(await settings.getByRole('button', { name: /حذف النموذج/ }).count()).toBe(2)
+    await settings.getByRole('button', { name: 'النموذج الخيارات 1' }).click()
     expect(await settings.getByRole('group', { name: 'إدخال نوع 1' }).getByRole('checkbox', { name: 'صورة' }).isChecked()).toBe(true)
     await assertModelInputLayout(page, settings)
     const defaultModels = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
@@ -216,7 +216,7 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     await settings.getByLabel('عرض اسم 1').fill('Configured Flash')
     await settings.getByRole('group', { name: 'إدخال نوع 1' }).getByRole('checkbox', { name: 'صورة' }).uncheck()
     await settings.getByRole('button', { name: 'حفظ', exact: true }).click()
-    await settings.getByLabel('نموذج ID 1').waitFor({ state: 'detached', timeout: 15_000 })
+    await settings.getByLabel('النموذج ID 1').waitFor({ state: 'detached', timeout: 15_000 })
     const savedDefaults = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
     expect(savedDefaults).toContain('id: deepseek-flash')
     expect(savedDefaults).toContain('inputModalities:')
@@ -231,14 +231,14 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     await deepSeek.locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
     await settings.getByText('ذاتي تعريف ضبط').click()
     for (let index = 0; index < 2; index++) {
-      await settings.getByRole('button', { name: /حذف نموذج/ }).first().click()
+      await settings.getByRole('button', { name: /حذف النموذج/ }).first().click()
     }
-    await settings.getByRole('button', { name: 'إضافة نموذج' }).click()
-    const customModelId = settings.getByLabel('نموذج ID 1')
+    await settings.getByRole('button', { name: 'إضافة النموذج' }).click()
+    const customModelId = settings.getByLabel('النموذج ID 1')
     await customModelId.fill('private-preview')
     await settings.getByLabel('عرض اسم 1').fill('Private Preview')
-    await settings.getByRole('button', { name: 'نموذج خيار 1' }).click()
-    await settings.getByLabel('سياق نافذة 1').fill('131072')
+    await settings.getByRole('button', { name: 'النموذج الخيارات 1' }).click()
+    await settings.getByLabel('السياق نافذة 1').fill('131072')
     await settings.getByLabel('الأكثر كبير إخراج token عدد 1').fill('64K')
     expect(await settings.getByRole('group', { name: 'إدخال نوع 1' }).getByRole('checkbox', { name: 'صورة' }).isChecked()).toBe(false)
     await settings.getByRole('group', { name: 'إدخال نوع 1' }).getByRole('checkbox', { name: 'صورة' }).check()
@@ -263,7 +263,7 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     })
     await deepSeek.locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
     await settings.getByText('ذاتي تعريف ضبط').click()
-    await settings.getByRole('button', { name: 'نموذج خيار 1' }).click()
+    await settings.getByRole('button', { name: 'النموذج الخيارات 1' }).click()
     expect(await settings.getByRole('group', { name: 'إدخال نوع 1' }).getByRole('checkbox', { name: 'صورة' }).isChecked()).toBe(true)
     await settings.getByRole('button', { name: 'إلغاء', exact: true }).click()
 
@@ -272,10 +272,10 @@ describe.skipIf(MODE === 'record')('web e2e: first-run DeepSeek credential setup
     // trigger — on the page; the scaffold boots without one.
     await connectFreshWorkspaceAr(page, scaffold.workspaceCwd, 'model-fallback-e2e')
 
-    const modelTrigger = page.getByRole('button', { name: /^اختيار نموذج/ })
+    const modelTrigger = page.getByRole('button', { name: /^اختيار النموذج/ })
     await modelTrigger.waitFor({ timeout: 10_000 })
     await modelTrigger.click()
-    await page.getByRole('menuitem', { name: /نموذج/ }).click()
+    await page.getByRole('menuitem', { name: /النموذج/ }).click()
     expect(await page.getByText('Configured Flash', { exact: true }).count()).toBe(0)
     await page.getByRole('menuitemradio', { name: 'Private Preview' }).waitFor({ timeout: 10_000 })
     expect(tripwire.warnings).toEqual([])

@@ -23,7 +23,7 @@ import {
   launchWebScaffold, recordFixture, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
 import {
-  connectFreshWorkspace, expandOwningTurnProcess, newEnglishPage, saveFailureShot, writeComposerDraft, ZH_BROWSER_LOCALE,
+  connectFreshWorkspace, expandOwningTurnProcess, newEnglishPage, saveFailureShot, writeComposerDraft, AR_BROWSER_LOCALE,
 } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('../../../snapshots/web/lifecycle-chrome', import.meta.url))
@@ -31,7 +31,7 @@ const FIXTURE = join(SNAPSHOT_DIR, 'session.v3.jsonl')
 const REPLAY_OVERRIDE = join(SNAPSHOT_DIR, 'replay.override.json')
 const HERO_EXPECTED = join(SNAPSHOT_DIR, 'hero.expected.md')
 const COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu.expected.md')
-const COMMAND_MENU_ZH_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-ar.expected.md')
+const COMMAND_MENU_AR_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-ar.expected.md')
 const FUZZY_COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-fuzzy.expected.md')
 const PLAN_ACTIVE_EXPECTED = join(SNAPSHOT_DIR, 'plan-active.expected.md')
 const CONNECTION_ERROR_EXPECTED = join(SNAPSHOT_DIR, 'connection-error.expected.md')
@@ -113,19 +113,19 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
   })
 
   it.skipIf(MODE === 'record')('localizes slash-command descriptions from the browser language', async () => {
-    const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     const arTripwire = watchConsole(arPage)
     onTestFailed(() => saveFailureShot(arPage, 'web-e2e-command-menu-ar'))
     try {
       await arPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
       await arPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
-      const launcher = arPage.getByRole('button', { name: 'إضافة ملف أو استدعاء إشارة أمر' })
+      const launcher = arPage.getByRole('button', { name: 'إضافة ملفات أو تشغيل أوامر' })
       await launcher.click()
-      const menu = arPage.getByRole('listbox', { name: 'إطلاق مرشح بناء اقتراح' })
+      const menu = arPage.getByRole('listbox', { name: 'اقتراحات الإدخال' })
       await menu.getByRole('option').first().waitFor({ timeout: 10_000 })
       await menu.getByRole('status').waitFor({ state: 'hidden', timeout: 10_000 })
       const snapshot = await captureStableAria(arPage, '[role="listbox"]', scaffold.workspaceCwd)
-      await compareOrRefreshGolden(COMMAND_MENU_ZH_EXPECTED, snapshot, MODE)
+      await compareOrRefreshGolden(COMMAND_MENU_AR_EXPECTED, snapshot, MODE)
       expect(arTripwire.pageErrors).toEqual([])
       expect(arTripwire.warnings).toEqual([])
     } finally {
@@ -136,8 +136,8 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
   it.skipIf(MODE === 'record').each([
     { locale: 'en-US', token: '/goal', row: 'Goal Set or view the goal for a long-running task', hint: 'describe the objective for a long-running task' },
     { locale: 'en-US', token: '/plan', row: 'Plan Enter or leave plan mode', hint: 'describe your task to generate plan' },
-    { locale: ZH_BROWSER_LOCALE, token: '/هدف', row: 'هدف goal ضبط أو عرض طويل مدة مهمة هدف', hint: 'إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ' },
-    { locale: ZH_BROWSER_LOCALE, token: '/خطة', row: 'خطة plan دخول أو خروج خطة نمط', hint: 'وصف أنت مهمة بـ توليد خطة' },
+    { locale: AR_BROWSER_LOCALE, token: '/هدف', row: 'هدف goal موافق هدف المهام طويلة أو عرضه', hint: 'صِف هدف المهام طويلة' },
+    { locale: AR_BROWSER_LOCALE, token: '/خطة', row: 'خطة plan الدخول إلى وضع التخطيط أو الخروج منه', hint: 'صِف مهمتك لالتوليد خطة' },
   ])('keeps $token claimed across separator edits and hides hints during IME composition', async ({ locale, token, row, hint }) => {
     const inputPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale })
     const inputTripwire = watchConsole(inputPage)
@@ -150,8 +150,8 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
       await inputPage.getByRole('listbox').getByRole('option', { name: row, exact: true }).click()
       await expect.poll(() => input.textContent()).toBe(`${token} `)
       await input.press('End')
-      await inputPage.keyboard.insertText('هذا هو مهمة')
-      await expect.poll(() => input.textContent()).toBe(`${token} هذا هو مهمة`)
+      await inputPage.keyboard.insertText('اكتب لي خطة')
+      await expect.poll(() => input.textContent()).toBe(`${token} اكتب لي خطة`)
       for (let i = 0; i < 5; i++) await input.press('Backspace')
       const tokenText = () => input.locator('[data-lexical-text][style*="warn-label"]').textContent()
       await expect.poll(() => input.textContent()).toBe(token)

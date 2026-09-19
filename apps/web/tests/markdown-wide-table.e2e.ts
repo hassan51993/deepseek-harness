@@ -75,7 +75,7 @@ const WIDTHS = [1680, 1100, 640]
 const SENTENCE = 'This cell carries one full sentence so the unwrapped table is far wider than the message column.'
 /** Unbroken path-like token (no scheme, so GFM does not autolink it and no anchor joins the tab order). */
 const LONG_TOKEN = 'workspace/deepseek-harness/packages/client/ui-primitives/src/markdown/render.tsx/'.repeat(3)
-const CJK_SENTENCE = 'هذا عدد وحدة إطار يتضمن واحد مقطع مقارنة طويل العربية شرح، استخدام قدوم تحقق طويل محتوى في ضيق صف عرض تحت حسب الأكثر صغير يمكن قراءة عرض درجة تبديل سطر بينما لا هو يأخذ صف ضغط إلى لا يمكن قراءة قراءة.'
+const CJK_SENTENCE = 'هذا عدد وحدة إطار يتضمن واحد مقطع مقارنة طويل العربية شرح، استخدام قدوم تحقق طويل المحتوى في ضيق صف عرض تحت حسب الأكثر صغير يمكن قراءة عرض درجة تبديل سطر بينما لا هو يأخذ صف ضغط إلى لا يمكن قراءة قراءة.'
 
 /** The assistant markdown includes fitting and overflowing wide tables. */
 function tablesMarkdown(): string {

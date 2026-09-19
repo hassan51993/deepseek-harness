@@ -23,8 +23,8 @@ const MODE = webSnapshotMode()
 const SEED_ID = 'markdown-cjk-strong-web-e2e'
 const DONE = 'CJK_STRONG_DONE'
 const CASES = [
-  ['**ملاحظة معنى:**محتوى', 'ملاحظة معنى:', 'ملاحظة معنى: محتوى'],
-  ['**Notice:**محتوى', 'Notice:', 'Notice: محتوى'],
+  ['**ملاحظة معنى:**المحتوى', 'ملاحظة معنى:', 'ملاحظة معنى: المحتوى'],
+  ['**Notice:**المحتوى', 'Notice:', 'Notice: المحتوى'],
   ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)', 'حدث في بين عنصر (waterfall) تنفيذ'],
   ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)', 'حدث في بين عنصر (waterfall) تنفيذ'],
   ['**جملة رقم.**لاحق', 'جملة رقم.', 'جملة رقم. لاحق'],

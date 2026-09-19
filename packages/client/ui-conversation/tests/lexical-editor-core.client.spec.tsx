@@ -29,9 +29,9 @@ import {
 const SESSION_REF: ReferenceInsert = {
   source: 'session-reference',
   ref: 'session-a',
-  label: 'مع معنى عودة تكرار لا استدعاء أداة',
+  label: 'مع معنى عودة تكرار لا الاستدعاءات الأدوات',
   appearance: 'session',
-  clipboardText: '@session: مع معنى عودة تكرار لا استدعاء أداة',
+  clipboardText: '@session: مع معنى عودة تكرار لا الاستدعاءات الأدوات',
 }
 
 const SKILL_REF: ReferenceInsert = {
@@ -82,9 +82,9 @@ describe('ReferenceChipNode', () => {
       const chip = $createReferenceChipNode(SESSION_REF)
       expect(chip.getSource()).toBe('session-reference')
       expect(chip.getReference()).toBe('session-a')
-      expect(chip.getLabel()).toBe('مع معنى عودة تكرار لا استدعاء أداة')
+      expect(chip.getLabel()).toBe('مع معنى عودة تكرار لا الاستدعاءات الأدوات')
       expect(chip.getAppearance()).toBe('session')
-      expect(chip.getTextContent()).toBe('@session: مع معنى عودة تكرار لا استدعاء أداة')
+      expect(chip.getTextContent()).toBe('@session: مع معنى عودة تكرار لا الاستدعاءات الأدوات')
       expect(chip.isInvalid()).toBe(false)
       expect(chip.isInline()).toBe(true)
       expect(chip.isKeyboardSelectable()).toBe(false)
@@ -172,7 +172,7 @@ describe('$projectComposer', () => {
     editor.read(() => {
       const projection = $projectComposer(idAssigner())
       expect(projection.detectText).toBe(`ask ${ATOMIC_CHAR} now`)
-      expect(projection.clipboardText).toBe('ask @session: مع معنى عودة تكرار لا استدعاء أداة now')
+      expect(projection.clipboardText).toBe('ask @session: مع معنى عودة تكرار لا الاستدعاءات الأدوات now')
       expect(projection.occurrences).toHaveLength(1)
       const occurrence = projection.occurrences[0]
       expect(occurrence).toMatchObject({
