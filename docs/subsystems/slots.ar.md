@@ -48,7 +48,7 @@ Slot إعلان ثابت اثنان عدد متبادل متبادل مستقل 
 | صيانة درجة | قيمة | يحتوي معنى |
 |---|---|---|
 | cardinality | `single` | مفرد عدد cell، تصيير حالي priority فوز من؛ حاجة و صف محتوى وقت ينبغي إعلان child slot، بينما لا هو يأخذ هو عند عمل قائمة. |
-| cardinality | `list` | cell من لا بد ملء `id` تحديد عنوان، أولا حسب `order`، مجددا حسب تسجيل ترتيب ترتيب صف. |
+| cardinality | `list` | cell من لا بد ملء `id` تحديد عنوان، أولا حسب `order`، مجددا حسب تسجيل ترتيب صف. |
 | cardinality | `keyed` | owner نقل دخول `entryKey`؛ مطابقة cell بـ هذا key مقابل props تصيير. |
 | cardinality | `chain` | كل entry توفير صاف `select(owner)` دالة؛ حسب priority ترتيب لقاء إلى رقم واحد غير null نتيجة نيل اختيار، و بـ `matched` نقل إعطاء مكون؛ الكل رفض وقت تصيير owner fallback. |
 | scope | `root` | واحد root أثر مجال مكون و store نسخة. |

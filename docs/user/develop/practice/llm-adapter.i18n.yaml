@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/develop/practice/llm-adapter.md
 llm-adapter.md: 06cc175e58f9b2a10343c24f40783c2c33b16674
-llm-adapter.ar.md: c744b3659deea93a1fef256a7ee6b9de27fbbbcb
+llm-adapter.ar.md: 0c2c82e7d36c3dff56c1120d69a0e081fe0eb941

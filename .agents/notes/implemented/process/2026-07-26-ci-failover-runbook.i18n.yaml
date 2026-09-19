@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-07-26-ci-failover-runbook.md
 2026-07-26-ci-failover-runbook.md: f7e051843534bb1a1df68402b672e21784c4136e
-2026-07-26-ci-failover-runbook.ar.md: 19f6cff2c82c1f25750828ea018de5361a4271c2
+2026-07-26-ci-failover-runbook.ar.md: add2de69ccfd2f297d899794d3ea85202313abd6

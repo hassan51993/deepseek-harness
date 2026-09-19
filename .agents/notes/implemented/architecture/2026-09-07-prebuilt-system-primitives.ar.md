@@ -12,7 +12,7 @@ JSONL كتابة جهة اعتماد `fs-ext` في مستخدم تثبيت وق�
 
 [native/system](../../../../native/system/README.ar.md) في مستقل إصدار `@deepseek-ai/node-addon-system` حزمة عائلة توزيع قائم `landlock-run` يمكن تنفيذ ملف و استخدام مستقر Node-API v8 `system.node` addon. منصة حزمة حسب عملية نظام و CPU اختيار؛Linux قسم آخر يحمل glibc و musl addon ملف.macOS يحمل addon، لكن لا يتضمن Landlock يمكن تنفيذ ملف. مدخل حزمة و منصة حزمة كل لا في تثبيت خلال تحرير ترجمة.
 
-حزمة لا توفير أصل توجيه خروج.`./landlock-run` JavaScript مدخل إبقاء Landlock API و [CLI بروتوكول](../../../../native/system/docs/cli-contract.md).`./flock` مدخل فقط في استدعاء `tryLockExclusive(fd)` وقت تحميل addon. هو في مختلف خطوة أصلي عمل في تنفيذ `flock(fd, LOCK_EX | LOCK_NB)`، و في هذا عمل خط مسار حفظ errno. استدعاء جهة في إتمام قبل يحتفظ وصف رمز، و عبر إغلاق هو تحرير قفل. ربط ناقص وقت رفض نيل أخذ قفل، لا منح إعطاء لا يوجد حفظ حماية قفل.
+حزمة لا توفير أصل تصدير.`./landlock-run` JavaScript مدخل إبقاء Landlock API و [CLI بروتوكول](../../../../native/system/docs/cli-contract.md).`./flock` مدخل فقط في استدعاء `tryLockExclusive(fd)` وقت تحميل addon. هو في مختلف خطوة أصلي عمل في تنفيذ `flock(fd, LOCK_EX | LOCK_NB)`، و في هذا عمل خط مسار حفظ errno. استدعاء جهة في إتمام قبل يحتفظ وصف رمز، و عبر إغلاق هو تحرير قفل. ربط ناقص وقت رفض نيل أخذ قفل، لا منح إعطاء لا يوجد حفظ حماية قفل.
 
 [Session كتابة إيجار نحو قرار](../feature/2026-08-31-cross-process-session-write-lease.ar.md) متابعة مسؤول نيل أخذ وقت آلة،inode تحقق، إغلاق كل حق و انهيار انهيار دلالة.Windows إبقاء قائم koffi إشارة كمية. متصفح worker فقط استبدال flock فرعي مسار، استخدام لم مرور تعديل `./landlock-run` JavaScript API.
 

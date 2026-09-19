@@ -118,7 +118,7 @@
 .controlThumb {
   position: absolute;
   top: 2px;
-  left: 2px;
+  inset-inline-start: 2px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -171,7 +171,7 @@
   align-items: center;
   min-width: 84px;
   height: 22px;
-  margin-left: auto;
+  margin-inline-start: auto;
   padding: 0 6px;
   gap: 4px;
   border: 0.5px solid var(--dsw-alias-border-l4);

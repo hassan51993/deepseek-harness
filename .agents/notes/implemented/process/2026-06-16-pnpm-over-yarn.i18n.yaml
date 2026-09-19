@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-06-16-pnpm-over-yarn.md
 2026-06-16-pnpm-over-yarn.md: 010547875dfc7aeb55175fd68fde9f87067c42a7
-2026-06-16-pnpm-over-yarn.ar.md: b3ccb9906002a61c6c7432e14e58913de1d8a745
+2026-06-16-pnpm-over-yarn.ar.md: 5b9135c80749435aef640be7c041dfd7f6fff185

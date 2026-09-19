@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.md
 2026-08-28-ctx-remote-failure-vocabulary.md: 7bec24f11bc738cc39927b8c299c93b09043fa68
-2026-08-28-ctx-remote-failure-vocabulary.ar.md: 589048b9f32cac9036bc8109734050ee8271705a
+2026-08-28-ctx-remote-failure-vocabulary.ar.md: be41944e3ab69f2f9ef483e670015c3048f522ca

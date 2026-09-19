@@ -10,7 +10,7 @@ Status: implemented
 
 هذا ثلاثة صنف بيانات لا يستطيع مشترك استخدام واحد نوع استعادة قاعدة.Session سجل لديه مستقر seq و persistence، يمكن حسب cursor تكملة متساو نقص فتحة؛jobs،projection قيمة و Workspace قائمة انتظار حالة حاجة بـ كامل snapshot استبدال قديم مرآة مثل؛ عادي إشعار فقط حفظ إثبات حالي Connection generation داخل إلقاء تمرير.
 
-مراقبة Session تاريخ، قائمة و إسقاط يجب سماح بارد قراءة. إذا transport بسبب معامل في ظهور Session أو Agent حينئذ إطلاق عام Typert lookup، فتح صفحة، تبديل وسم أو شبكة شبكة إعادة وصل كل سوف خفي صيغة استعادة Agent، مراقبة عملية لذلك إنتاج تنفيذ فرعي أثر.
+مراقبة Session تاريخ، قائمة و إسقاط يجب سماح بارد قراءة. إذا transport بسبب معامل في ظهور Session أو Agent حينئذ إطلاق عام Typert lookup، فتح صفحة، تبديل وسم أو شبكة إعادة وصل كل سوف خفي صيغة استعادة Agent، مراقبة عملية لذلك إنتاج تنفيذ فرعي أثر.
 
 prompt،create،fork، نموذج اختيار انتظار أمر أيضا تأكيد فعلي حاجة حسب كل منها دلالة إنشاء أو استعادة Agent. تنشيط إذن يجب يخص أداة جسم Remote طريقة، بينما لا يستطيع من carrier، معامل نوع أو مشترك lookup داكن في قرار.
 
@@ -67,7 +67,7 @@ Host حسب إعداد `websocketHeartbeatIntervalMs` بين فصل (افترا�
 أول مرة بناء وصل فشل أو قد اتصال socket فقد فقد بعد، قد فتح logical stream سوف بـ `RemoteStreamCarrierError` انتهاء حالي شيء إدارة generation.`ConnectionController` يملك حمل متابعة كما بين فصل غلاف قمة إشارة عدد retry ضبط درجة؛ كل مرة محاولة تجربة كل اشتراط mux تماما جيد مرة استبدال مرشح أو نشط حركة socket، مجددا إعادة فتح `$events`. مستخدم اشتراط إعادة وصل عبر نفس مسار إعادة وضع attempt تسلسل و قفز مرور انتظار (رؤية[قرار](../../archived/feature/2026-08-28-web-connection-recovery-control.md)).
 
 
-متصفح شبكة شبكة حالة حدث هو نفس Controller إدخال.`offline` سوف سحب عودة Connection generation و مؤقت توقف تلقائي retry؛ تحت مرة `online` تحويل سوف من أساس أساس تراجع تجنب ملف إعادة بدء. هذه حدث لن بناء قيام اتصال؛ فقط لديه جديد `$events` ready لقطة عندئذ سوف إصدار Connection generation.
+متصفح شبكة حالة حدث هو نفس Controller إدخال.`offline` سوف سحب عودة Connection generation و مؤقت توقف تلقائي retry؛ تحت مرة `online` تحويل سوف من أساس أساس تراجع تجنب ملف إعادة بدء. هذه حدث لن بناء قيام اتصال؛ فقط لديه جديد `$events` ready لقطة عندئذ سوف إصدار Connection generation.
 
 عملية داخل `connection.rpc.open` استخدام نفس logical endpoint دلالة، لكن التفاف مرور متصفح WebSocket mux.
 
@@ -215,7 +215,7 @@ projection baseline و tail page سجل قطع نقطة مستقل إنتاج،C
 
 Session added،removed،activity،running status و بلا turn موضع Agent error لا دخول stateful control stream؛ هو جمع هو يمكن من قائمة baseline إصلاح أو بلا حاجة إعادة وضع `ctx.remote.$on` إشعار.
 
-Session قائمة `updatedAt` أخذ `max(header.createdAt, sessionListMetadata.lastPromptAt)`.`lastPromptAt` فقط من مستخدم مصدر `user/message` تحديث، يمكن من بارد projection استعادة، لا اعتماد متصفح هل صحيح في تتبع مع هذا Session.
+Session قائمة `updatedAt` أخذ `max(header.createdAt, sessionListMetadata.lastPromptAt)`.`lastPromptAt` فقط من مستخدم مصدر `user/message` تحديث، يمكن من بارد projection استعادة، لا اعتماد متصفح هل جارٍ تتبع مع هذا Session.
 
 ### Workspace Controller
 
@@ -225,7 +225,7 @@ Session قائمة `updatedAt` أخذ `max(header.createdAt, sessionListMetadata
 
 `WorkspaceFeed` تزامن مراقبة storage `domain/changed`، و لـ كل follow generation أولا إرسال كامل baseline، مجددا إرسال `upsert`،`remove`،`order` و `archived` زيادة كمية.
 
-كامل `order` frame هو Workspace ترتيب ترتيب مرجعي قيمة. هو تجنب تجنب Client أصل حسب upsert وصول ترتيب تخمين قياس عرض ترتيب، أيضا قدرة في إعادة وصل baseline بعد استلام جمع.
+كامل `order` frame هو Workspace ترتيب مرجعي قيمة. هو تجنب تجنب Client أصل حسب upsert وصول ترتيب تخمين قياس عرض ترتيب، أيضا قدرة في إعادة وصل baseline بعد استلام جمع.
 
 `createWorkspaceStateStream()` يأخذ `workspace.follow` تركيب إعداد لـ `RemoteSnapshotStream`.Client Runtime فقط مسؤول بدء و يحتفظ هذا stream.
 
@@ -308,7 +308,7 @@ API Proxy فقط تحمل وصل ذاته يملك مستقل عمل خدمة AP
 
 ## تجهيز اختيار خطة
 
-**بناء قيام مهمة معنى Session stream وقت تلقائي استعادة Agent.** هذا سوف يجعل فحص نظر تاريخ، قراءة title، إعادة وصل وسم صفحة أو مراقبة خلفية حالة إنتاج تنفيذ فرعي أثر، أيضا سوف يجعل كثير عدد متصفح إطلاق تكرار استعادة؛ بارد سجل و إسقاط قد لديه persistence مصدر.
+**بناء قيام مهمة معنى Session stream وقت تلقائي استعادة Agent.** هذا سوف يجعل عرض تاريخ، قراءة title، إعادة وصل وسم صفحة أو مراقبة خلفية حالة إنتاج تنفيذ فرعي أثر، أيضا سوف يجعل كثير عدد متصفح إطلاق تكرار استعادة؛ بارد سجل و إسقاط قد لديه persistence مصدر.
 
 **فقط سماح live Agent استخدام `session.follow`.** هذا سوف إجبار جعل transcript أول شاشة استعادة Agent، أو إعادة جذب دخول unary history و live subscription بين تنافس حالة؛ حسب identity أولا follow مجددا بارد قراءة قدرة معا تغطية تاريخ و لم قدوم صريح تنشيط.
 
@@ -316,7 +316,7 @@ API Proxy فقط تحمل وصل ذاته يملك مستقل عمل خدمة AP
 
 **يأخذ jobs،projection،Workspace و سجل كل تعديل صار عادي `$on`.** عادي حدث لا يوجد reconnect baseline،cursor أو gap repair، تسرب إسقاط مرة دفع إرسال حينئذ سوف إبقاء تحت دائم دائم قديم قديم حالة؛ فقط لديه بلا حاجة استعادة، يمكن من مستقل استعلام إصلاح، أو بـ waterfall ذاته يحتفظ طلب دورة الحياة إشعار ملائم دمج `$on`.
 
-**يجعل كل مجال Controller وراثة واحد page/follow/retry أساس صنف.** Session journal و Workspace snapshot opening، استعادة و ترتيب ترتيب قاعدة مختلف؛Gateway ثلاثة عدد تركيب صيغة stream كائن إعادة استخدام transport دورة الحياة، معا يجعل مجال adapter فقط إعلان ذاتي ذات frame دلالة.
+**يجعل كل مجال Controller وراثة واحد page/follow/retry أساس صنف.** Session journal و Workspace snapshot opening، استعادة و ترتيب قاعدة مختلف؛Gateway ثلاثة عدد تركيب صيغة stream كائن إعادة استخدام transport دورة الحياة، معا يجعل مجال adapter فقط إعلان ذاتي ذات frame دلالة.
 
 **إعطاء Remote Event جديد بناء واحد نسخة Client invocation إعلان.** ثاني ورقة map أو Client `@Remote` سوف نسخ owner Cordis حدث توقيع و شكل صار عائم نقل نقطة؛ من نفس `Events` إعلان دفع توجيه `$on` listener و نتيجة نوع يمكن بنية صنع صفة أرض إبقاء متسق.
 
@@ -330,7 +330,7 @@ API Proxy فقط تحمل وصل ذاته يملك مستقل عمل خدمة AP
 
 **متابعة إبقاء API Proxy Host mux.** هذا سوف إبقاء يد كتابة union،schema، استجابة envelope و ثاني طقم stream دورة الحياة، و جعل Session و Workspace Controller لا يستطيع مستقل يملك ذاتي ذات بيانات بروتوكول.
 
-**من تجمع دمج `session/event` تحديث Session قائمة وقت.** قائمة صحيح تأكيد صفة سوف اعتماد متصفح صحيح في إزالة استهلاك أي بعض Session، و يأخذ مهمة معنى إضافة حدث خطأ حكم لـ مستخدم نشط وثب؛ حمل دائم `lastPromptAt` إسقاط مباشر جدول بلوغ ترتيب ترتيب واقع.
+**من تجمع دمج `session/event` تحديث Session قائمة وقت.** قائمة صحيح تأكيد صفة سوف اعتماد متصفح جارٍ إزالة استهلاك أي بعض Session، و يأخذ مهمة معنى إضافة حدث خطأ حكم لـ مستخدم نشط وثب؛ حمل دائم `lastPromptAt` إسقاط مباشر جدول بلوغ ترتيب واقع.
 
 ## تحقق
 
@@ -352,7 +352,7 @@ Session Client اختبار ثابت كل Session مفرد واحد journal owne
 
 Workspace Host اختبار ثابت baseline-first،upsert/remove، مرجعي order،archived set و follower disposal.
 
-Workspace Client اختبار ثابت snapshot replacement،unary/stream تنافس حالة، حذف لا تكرار نشط، مستقر ترتيب ترتيب و terminal failure.
+Workspace Client اختبار ثابت snapshot replacement،unary/stream تنافس حالة، حذف لا تكرار نشط، مستقر ترتيب و terminal failure.
 
 Remote Event نوع اختبار رفض لم اختيار حدث، غير void unscoped حدث، غير Agent-scoped waterfall و توقيع لا مطابقة mode.
 
@@ -362,7 +362,7 @@ Remote Event Client اختبار ثابت نسخة خاص key،Cordis تسجيل
 
 ناقص source، تكرار source، سحب عودة source، غير ready أول بند، لم معرفة discriminant، مقدار خارج حقل و غير JSON قيمة كل في كل منها wire مدخل صدى مضيء فشل.
 
-ساكن حالة فحص ثابت API Proxy لم يعد توجيه خروج Session/Workspace Host frame carrier،Client Runtime لم يعد يتضمن مقابل bridge.
+ساكن حالة فحص ثابت API Proxy لم يعد تصدير Session/Workspace Host frame carrier،Client Runtime لم يعد يتضمن مقابل bridge.
 
 ## عاقبة
 

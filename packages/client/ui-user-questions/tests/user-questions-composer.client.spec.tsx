@@ -222,19 +222,19 @@ describe('QuestionComposer', () => {
       { id: 'detail', selected: [], custom: 'يلزم قدرة مستقل ترتيب فحص خط فوق مشكلة' },
       { id: 'signals', selected: ['نظام تصميم', 'شفرة جودة كمية', 'منتج حكم قطع'], custom: 'خندق عبر قدرة' },
     ]))
-    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'صحيح في إيداع…' }).disabled).toBe(true)
+    expect(screen.getByRole<HTMLButtonElement>('button', { name: 'جارٍ إيداع…' }).disabled).toBe(true)
   })
 
   it('renders plan detail through the shared assistant Markdown primitive', () => {
     const { carrier } = wait([{
       id: 'plan',
-      question: 'دفعة دقيق هذا عدد حساب تخطيط هل؟',
-      detail: '# فعلي تطبيق حساب تخطيط\n\n- **أولا تحقق**الآن حالة\n- تعديل `QuestionComposer`',
+      question: 'دفعة دقيق هذا عدد خطة هل؟',
+      detail: '# فعلي تطبيق خطة\n\n- **أولا تحقق**الآن حالة\n- تعديل `QuestionComposer`',
       options: [{ label: 'دفعة دقيق' }],
     }])
     const view = render(<QuestionComposer matched={carrier} {...kit} />)
 
-    expect(screen.getByRole('heading', { level: 1, name: 'فعلي تطبيق حساب تخطيط' })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 1, name: 'فعلي تطبيق خطة' })).toBeTruthy()
     expect(view.container.querySelector('strong')?.textContent).toBe('أولا تحقق')
     expect(view.container.querySelector('code')?.textContent).toBe('QuestionComposer')
     expect(view.container.querySelectorAll('li')).toHaveLength(2)
@@ -360,7 +360,7 @@ describe('QuestionComposer', () => {
     expect(screen.getByText('2 / 3')).toBeTruthy()
     const second = wait()
     second.answer
-      .mockRejectedValueOnce(new Error('شبكة شبكة في قطع'))
+      .mockRejectedValueOnce(new Error('شبكة في قطع'))
       .mockRejectedValueOnce('نص خطأ')
     view.rerender(<QuestionComposer matched={second.carrier} {...kit} />)
     expect(screen.getByRole('radio', { name: /بحث بحث كامن قوة نوع/ }).getAttribute('aria-checked')).toBe('false')
@@ -376,7 +376,7 @@ describe('QuestionComposer', () => {
       { id: 'detail', selected: [], custom: 'x' },
       { id: 'signals', selected: ['نظام تصميم'] },
     ]))
-    expect(await screen.findByText('شبكة شبكة في قطع')).toBeTruthy()
+    expect(await screen.findByText('شبكة في قطع')).toBeTruthy()
     expect(screen.getByRole<HTMLButtonElement>('button', { name: 'إيداع' }).disabled).toBe(false)
 
     fireEvent.click(screen.getByRole('button', { name: 'إيداع' }))

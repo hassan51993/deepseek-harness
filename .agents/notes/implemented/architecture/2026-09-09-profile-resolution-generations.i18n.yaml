@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-09-profile-resolution-generations.md
 2026-09-09-profile-resolution-generations.md: 2ff4b39f82d351c056bc8dc396db9a1e0d8ff84a
-2026-09-09-profile-resolution-generations.ar.md: 2e86a63777da290b17b7c0fb43d57275f158f4c0
+2026-09-09-profile-resolution-generations.ar.md: caffa8b038cc29a3bb80d51cac582fb29b0f2dde

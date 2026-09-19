@@ -14,7 +14,7 @@ Status: implemented
 
 `ReactLoopAgent.step()` في إزالة استهلاك نموذج stream خلال التقاط إمساك إلغاء، هذا وقت `BlockAssembler`، ضيق تجميع stream accumulator و provider route يمكن تحديد قد إرسال بلوغ بادئة.loop يأخذ هذا بادئة إلحاق لـ step `assistant/message`، و ضبط `interrupted: true`،`surfaceOp: 'append'` و دقيق تضمين دخول صيغة حمل وقت stream. هذا إلحاق أولا في committed `agent/assistant-stream` end frame،`step/end` و سجل aborted `turn/end`.
 
-`BlockAssembler.interruptedBlocks()` حسب stream ترتيب إرجاع محتوى غير فارغ أبيض قد إغلاق دمج و لم إغلاق دمج `text` و `reasoning` block. ضرب قطع أولا في قسم إرسال، لا يوجد حقيقي أداة نتيجة، لذلك هو سوف حذف أداة استدعاء، أيضا سوف حذف فارغ block و لم إغلاق دمج لم معرفة block نوع. إرجاع نتيجة لـ فارغ وقت إلحاق `assistant/attempt`، بينما لا هو surface message.Provider `error` و `aborted` finish أيضا سوف في `agent/request-error` قبل إيداع `assistant/attempt`، لذلك ذلك stream إبقاء حمل دائم، لكن فشل طلب محتوى لن دخول نموذج تاريخ.
+`BlockAssembler.interruptedBlocks()` حسب stream ترتيب إرجاع محتوى غير فارغ أبيض قد إغلاق دمج و لم إغلاق دمج `text` و `reasoning` block. ضرب قطع أولا في قسم إرسال، لا يوجد حقيقي أداة نتيجة، لذلك هو سوف حذف استدعاء الأداة، أيضا سوف حذف فارغ block و لم إغلاق دمج لم معرفة block نوع. إرجاع نتيجة لـ فارغ وقت إلحاق `assistant/attempt`، بينما لا هو surface message.Provider `error` و `aborted` finish أيضا سوف في `agent/request-error` قبل إيداع `assistant/attempt`، لذلك ذلك stream إبقاء حمل دائم، لكن فشل طلب محتوى لن دخول نموذج تاريخ.
 
 Chat و Trajectory Conversation Definition من حمل دائم message قراءة `interrupted`.Chat تصيير Stopped marker،Trajectory فإن في `step/end` بعد يأخذ provider request إبقاء في error دورة الحياة، و إبقاء حمل دائم result seq و provider معلومة. أداة تنفيذ خلال إلغاء التزام دوران أداة مجدول اتفاق، لأن assistant message قد إيداع: قد بدء استدعاء توليد حقيقي نتيجة، لم قسم إرسال استدعاء نيل نيل `ABORTED_BEFORE_DISPATCH` نتيجة.
 
@@ -24,7 +24,7 @@ Chat و Trajectory Conversation Definition من حمل دائم message قراء
 
 **في إسقاط وقت من تضمين دخول صيغة attempt تجميع بادئة.** `deriveMessages()` و Client Conversation Definition كل حاجة تنفيذ ضرب قطع تجميع قاعدة، سجل في أيضا لا يوجد هذا بادئة مرجعي surface message. هذا أيضا سوف يجعل نموذج تاريخ تجاوز خروج ثلاثة صنف `SurfaceEventType` حدث.
 
-**إبقاء كامل أداة استدعاء و دمج صار aborted نتيجة.** هذه استدعاء من لم قسم إرسال، دمج صار نتيجة سوف صوت تسمية واحد و لم حدوث تنفيذ نتيجة، أيضا سوف زيادة مستخدم لم استلام إلى أداة نتيجة محتوى.
+**إبقاء كامل استدعاء الأداة و دمج صار aborted نتيجة.** هذه استدعاء من لم قسم إرسال، دمج صار نتيجة سوف صوت تسمية واحد و لم حدوث تنفيذ نتيجة، أيضا سوف زيادة مستخدم لم استلام إلى أداة نتيجة محتوى.
 
 **إلحاق `[interrupted by user]` لـ صنف نموذج مرئي ضرب قطع رسالة.** هذا يمكن إبلاغ إبلاغ نموذج بادئة و لا كامل، لكن حاجة مستقل مصدر نوع، إسقاط قاعدة،UI معالجة و محلي تحويل نص سجل. حمل دائم aborted `turn/end` إبقاء هذا لاحق قرار الذي يحتاج واقع.
 
@@ -36,4 +36,4 @@ Chat و Trajectory Conversation Definition من حمل دائم message قراء
 
 ## Testing
 
-`packages/core/agent-loop/tests/cancel.spec.ts` تغطية content، تضمين دخول صيغة stream، حدث ترتيب، تحت واحد طلب متسق صفة، فقط reasoning إخراج، أداة استدعاء حذف، استعادة خلال إلغاء و فارغ بادئة attempt.`packages/llm/llm/tests/assembler.spec.ts` تغطية `interruptedBlocks()`.`packages/client/ui-chat/tests/conversation-node-definitions.client.spec.ts` و `packages/client/ui-trajectory/tests/conversation-definitions.client.spec.ts` تغطية اثنان نوع Client إسقاط.keyless `cancel` ACP snapshot و `goal-round-driver` goal snapshot تغطية تجميع تطبيق.
+`packages/core/agent-loop/tests/cancel.spec.ts` تغطية content، تضمين دخول صيغة stream، حدث ترتيب، تحت واحد طلب متسق صفة، فقط reasoning إخراج، استدعاء الأداة حذف، استعادة خلال إلغاء و فارغ بادئة attempt.`packages/llm/llm/tests/assembler.spec.ts` تغطية `interruptedBlocks()`.`packages/client/ui-chat/tests/conversation-node-definitions.client.spec.ts` و `packages/client/ui-trajectory/tests/conversation-definitions.client.spec.ts` تغطية اثنان نوع Client إسقاط.keyless `cancel` ACP snapshot و `goal-round-driver` goal snapshot تغطية تجميع تطبيق.

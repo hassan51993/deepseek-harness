@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-Host API Proxy عند وقت في واحد حزمة داخل معا تحمل تحمل مباشر طريقة استدعاء، حمل حالة تفاعل و Session حدث تدفق. ثلاثة من دورة الحياة، توجيه دلالة و عميل تحرير مسار واجهة مختلف، متابعة مشترك استخدام واحد عمل خدمة توجيه خروج حزمة سوف يجعل عمل خدمة Service، نقل بروتوكول، حالة آلة و عميل نوع ذاك هذا اقتران دمج.
+Host API Proxy عند وقت في واحد حزمة داخل معا تحمل تحمل مباشر طريقة استدعاء، حمل حالة تفاعل و Session حدث تدفق. ثلاثة من دورة الحياة، توجيه دلالة و عميل تحرير مسار واجهة مختلف، متابعة مشترك استخدام واحد عمل خدمة تصدير حزمة سوف يجعل عمل خدمة Service، نقل بروتوكول، حالة آلة و عميل نوع ذاك هذا اقتران دمج.
 
 هذا قرار فقط شمول غطاء مرة طلب مقابل مرة نتيجة تحديد نحو طريقة استدعاء.Permission،Approval انتظار حمل حالة تفاعل و Session حدث تدفق ما زال اعتماد مستقل تصميم.
 
@@ -36,7 +36,7 @@ Remote إزالة استهلاك طرف إسقاط معا يتضمن `.d.ts`،`.
 | API Gateway Client face | `ctx.remote`،`ctx.remote.<namespace>` | mount Remote contribution، يأخذ كل namespace فعلي جسم تحويل لـ يمكن تتبع أثر `remote.<namespace>` فرعي Service، و يأخذ مواصفة استدعاء تسليم إعطاء `ctx.connection.rpc` |
 | API Remotes | بلا إضافة جديدة خدمة | مسؤول Host Agent/Session lookup سياسة، و بصفة Client عمل خدمة وحيد facade، اختيار و تركيب `/remote` contribution، معا كشف الذي اختيار API إعلان |
 | Agent/Session owning حزمة | قائم مجال خدمة | معا توفير ساكن حالة interface merge و وقت التشغيل lookup/Context provider |
-| Goal انتظار عمل خدمة حزمة | قائم عمل خدمة Service | فقط إعلان binding،Remote طريقة و وحيد DTO، و توجيه خروج توليد `/remote` فرعي مسار |
+| Goal انتظار عمل خدمة حزمة | قائم عمل خدمة Service | فقط إعلان binding،Remote طريقة و وحيد DTO، و تصدير توليد `/remote` فرعي مسار |
 
 Host Gateway لا اعتماد `ctx.agents`،`ctx.sessions`،`ctx.goals` أو `ctx.webServer` أداة جسم تنفيذ.Client Remote لا إدارة حل شيء إدارة carrier،Connection أيضا لا إدارة حل Goal،Agent،lookup،`InvocationDescriptor` أو Remote namespace.
 
@@ -183,7 +183,7 @@ Remote طريقة ذاته استخدام declaration map تنقل.Typert يأخ
 
 Typert لـ نفس symbol key توليد wire Zod codec.Host Gateway استخدام معامل و identity codec تحقق إدخال؛Client Remote معلومة مهمة توليد TypeScript معامل و نجاح Host نتيجة، لا تنفيذ استدعاء codec. تكرار مختلط نوع لا يمكن توليد صارم إطار codec وقت،LIB بناء فشل، لا تخفيض لـ `unknown` أو بلا تحقق JSON.
 
-Remote طريقة مرجع تسمية عمل خدمة نوع يجب من صاف نوع عام مشترك subpath توجيه خروج. إذا وحيد يمكن بلوغ مدخل سوف حمل دخول Host Service،Cordis `Context` merge أو Host-only تنفيذ، بناء فشل و اشتراط عمل خدمة حزمة توفير أمان نوع خروج فتحة. أصلي قيمة، حرف وجه كمية و Typert واضح دعم حمل بسيط مفرد تركيب لا حاجة مقدار خارج تسمية.
+Remote طريقة مرجع تسمية عمل خدمة نوع يجب من صاف نوع عام مشترك subpath تصدير. إذا وحيد يمكن بلوغ مدخل سوف حمل دخول Host Service،Cordis `Context` merge أو Host-only تنفيذ، بناء فشل و اشتراط عمل خدمة حزمة توفير أمان نوع خروج فتحة. أصلي قيمة، حرف وجه كمية و Typert واضح دعم حمل بسيط مفرد تركيب لا حاجة مقدار خارج تسمية.
 
 lookup معامل لن يأخذ `Agent` class كشف إعطاء إزالة استهلاك طرف.Remote إسقاط مرجع lookup إعلان في وحيد ID نوع، مثال مثل `SessionId`؛Host داخلي ما زال بـ وحيد `Agent` class symbol إتمام كائن تحليل.
 
@@ -221,7 +221,7 @@ Host lib build
 
 ## `/remote` حزمة مدخل
 
-كل توفير Remote طريقة عمل خدمة حزمة توجيه خروج توليد `/remote` فرعي مسار:
+كل توفير Remote طريقة عمل خدمة حزمة تصدير توليد `/remote` فرعي مسار:
 
 ```text
 "./remote": {
@@ -311,11 +311,11 @@ await ctx.remote.$mount(goalsRemote)
 await ctx.remote.$mount(sessionsRemote)
 ```
 
-Client عمل خدمة حزمة فقط مرجع `@deepseek-ai/dsh-api-remotes/client`، لا مباشر اعتماد API Gateway أو كل عمل خدمة `/remote` وقت التشغيل مدخل.API Remotes إزالة استهلاك مشترك `TypertClientRemote` اتفاق و Cordis `ctx.remote` خدمة، مجددا إعادة توجيه خروج إعلان، جعل الذي اختيار Remote map دخول عمل خدمة تحرير ترجمة؛ إضافة جديدة أو إزالة كامل طقم Client قدرة فقط تعديل هذا واحد موضع assembly.
+Client عمل خدمة حزمة فقط مرجع `@deepseek-ai/dsh-api-remotes/client`، لا مباشر اعتماد API Gateway أو كل عمل خدمة `/remote` وقت التشغيل مدخل.API Remotes إزالة استهلاك مشترك `TypertClientRemote` اتفاق و Cordis `ctx.remote` خدمة، مجددا إعادة تصدير إعلان، جعل الذي اختيار Remote map دخول عمل خدمة تحرير ترجمة؛ إضافة جديدة أو إزالة كامل طقم Client قدرة فقط تعديل هذا واحد موضع assembly.
 
 `ctx.remote.$mount()` يأخذ contribution تسجيل إلى `Typert.remotes`، تثبيت هو namespace Service و أداة جسم طريقة، و في هو جمع حينئذ خيط بعد عندئذ resolve. استدعاء هذا طريقة Cordis fiber يحتفظ disposer.endpoint تكرار، نفس namespace/method نمط اندفاع مفاجئ أو descriptor و قائم نوع هوية اندفاع مفاجئ وقت مباشر فشل.
 
-Client Remote Service يأخذ `@Remote` descriptor فعلي جسم تحويل لـ `remote.<namespace>` فرعي Service فوق حقيقي دالة. دالة فحص موضع معامل عدد كمية، حسب descriptor معامل ترتيب بنية صنع أداة اسم `args`، لا فعل وقت التشغيل نوع تحليل، لكن بعد استدعاء `ctx.connection.rpc.call('/api', endpoint, { args }, signal)`. مقابل في دعم حمل إلغاء descriptor، توليد دالة قبول الأكثر بعد واحد اختياري signal، و سوف ذلك و contribution تركيب دورة الحياة دمج؛ لذلك إزالة سوف إلغاء كل صحيح في إجراء carrier استدعاء، بينما استدعاء جهة أيضا يمكن مفرد وحيد إلغاء مرة استدعاء.
+Client Remote Service يأخذ `@Remote` descriptor فعلي جسم تحويل لـ `remote.<namespace>` فرعي Service فوق حقيقي دالة. دالة فحص موضع معامل عدد كمية، حسب descriptor معامل ترتيب بنية صنع أداة اسم `args`، لا فعل وقت التشغيل نوع تحليل، لكن بعد استدعاء `ctx.connection.rpc.call('/api', endpoint, { args }, signal)`. مقابل في دعم حمل إلغاء descriptor، توليد دالة قبول الأكثر بعد واحد اختياري signal، و سوف ذلك و contribution تركيب دورة الحياة دمج؛ لذلك إزالة سوف إلغاء كل جارٍ إجراء carrier استدعاء، بينما استدعاء جهة أيضا يمكن مفرد وحيد إلغاء مرة استدعاء.
 
 حمل `scope` direct descriptor و `@RemoteScope` descriptor كل لا لـ كل Agent Scope نسخ دالة.Client Remote Service لـ كل namespace إنشاء واحد تسجيل لـ `remote.<namespace>` Cordis فرعي Service، و في ذلك فوق فعلي جسم تحويل direct و scoped تغيير جسم. عبر `agentCtx.remote.goals` أخذ نيل طريقة وقت،accessor سوف في إرجاع يمكن استدعاء جملة مقبض قبل التقاط حالي Agent Context. طريقة مجددا عبر مقابل Context binder من هذا Context أخذ نيل identity.direct scoped إسقاط استخدام identity بديل `scope.wire` إشارة تحديد lookup موضع،Remote Scope descriptor فإن يأخذ identity كتابة receiver مستقل wire حقل؛ اثنان من كل إرسال بدء نفس نوع `/api` استدعاء.
 
@@ -458,7 +458,7 @@ Gateway فقط نحو Connection تسجيل ownership matcher و RPC handler، �
 - Connection: يملك وحيد HTTP Server/لم قدوم WebSocket carrier، مشترك `/api` route و ذلك تكرار دمج FetchHandler، كل owner تسجيل دقيق Fetch route،RPC envelope،rpcId، تسلسل تحويل،trust و خطأ نقل.
 - Agent/Session انتظار عمل خدمة كائن حزمة: يملك lookup،Context provider، وحيد ID نوع و صاف نوع عام مشترك خروج فتحة.
 - `@deepseek-ai/dsh-api-session-controller`: إعداد مشترك `agent`/`session` lookup و `agent` Host Context resolver، لذلك كل استقبال هذه كائن Remote endpoint مشترك استخدام نفس طقم استعادة و ownership fence سياسة.
-- عمل خدمة Service حزمة: إعلان binding،Remote طريقة و ذلك request/result نوع، و توجيه خروج توليد `/remote` فرعي مسار.
+- عمل خدمة Service حزمة: إعلان binding،Remote طريقة و ذلك request/result نوع، و تصدير توليد `/remote` فرعي مسار.
 
 ## قد تسليم نطاق و لاحق عمل
 
@@ -524,6 +524,6 @@ Remote endpoint استخدام Connection `trusted-host` authority. نظام ا�
 
 `hasSeen()` أولوية حفظ عائق strict definition أمان صفة، بينما غير SRC متاح صفة.strict descriptor سحب عودة وقت (مثال مثل HMR خلال) ،Gateway سوف متابعة إقرار قيادة endpoint و تقرير إبلاغ غير ممكن استخدام، بينما لن رجوع إلى ضعيف SRC descriptor. إعادة تسجيل يكفي استعادة؛ فقط لديه إعادة بدء Typert سجل التسجيل عندئذ سوف نسيان تسجيل تاريخ strict definition.
 
-دعم حمل إلغاء Remote توقيع سوف استقبال Connection طلب `AbortSignal`، لذلك HTTP قطع وصل أو Client جانب abort قدرة في لا دخول JSON بروتوكول حال حال تحت نقل تمرير إلى صحيح في إجراء عمل خدمة عمل. إلغاء ما زال هو تنسيق عمل صيغة: لا يوجد إبقاء نهاية موضع معامل طريقة سوف متابعة تشغيل؛ استلام إلى signal طريقة يجب سوف هو نقل إعطاء ذاته دعم حمل إلغاء عملية، أو ذاتي سطر مراقبة قياس هو.
+دعم حمل إلغاء Remote توقيع سوف استقبال Connection طلب `AbortSignal`، لذلك HTTP قطع وصل أو Client جانب abort قدرة في لا دخول JSON بروتوكول حال حال تحت نقل تمرير إلى جارٍ إجراء عمل خدمة عمل. إلغاء ما زال هو تنسيق عمل صيغة: لا يوجد إبقاء نهاية موضع معامل طريقة سوف متابعة تشغيل؛ استلام إلى signal طريقة يجب سوف هو نقل إعطاء ذاته دعم حمل إلغاء عملية، أو ذاتي سطر مراقبة قياس هو.
 
 lookup إعداد حالي بـ key لـ حبة درجة، لذلك كل `agent` أو `session` معامل كل اعتماد نفس طقم بارد استعادة سياسة. حاجة live-only دلالة خاص تحديد Remote يجب انتظار صريح تدريجي معامل أو تدريجي endpoint سياسة، لا يستطيع اعتماد عمل خدمة تنفيذ تخمين قياس كائن هل للتو يتم استعادة.

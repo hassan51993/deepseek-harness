@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-client-resource-model.md
 2026-09-05-client-resource-model.md: 02d74f5f38de77ffdcc011b0b4b6c414527b6a19
-2026-09-05-client-resource-model.ar.md: db0a91c10c6a918025e753b13e387a405607e1d9
+2026-09-05-client-resource-model.ar.md: fe4ec5d1de205e5695f01fde790a947a6f1a3d22

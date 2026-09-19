@@ -74,7 +74,7 @@ kind: "package-reference"
 - [ui-settings-plugins](../ui-settings-plugins/README.ar.md)——«إضافة» قسم منطقة و ذلك يمكن إعداد مضيف مستو وجه بطاقة.
 - [ui-settings-models](../ui-settings-models/README.ar.md)——بناء قيام في هذا قاع مقعد لـ فوق Models صفحة و DeepSeek جذب توجيه.
 - [settings](../../settings/README.ar.md)——حفظ دائم مستخدم ضبط seam و ذلك ملف مزود.
-- [ui-sidebar](../ui-sidebar/README.ar.md)——قاع جزء مقعد موضع تحمل تحميل ضبط إطلاق تحكم عنصر جانب حافة شريط خارج قشرة.
+- [ui-sidebar](../ui-sidebar/README.ar.md)——قاع جزء مقعد موضع تحمل تحميل ضبط إطلاق تحكم عنصر الشريط الجانبي خارج قشرة.
 
 -----
 

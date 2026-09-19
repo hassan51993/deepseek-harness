@@ -41,7 +41,7 @@
 }
 
 :global([data-windows-titlebar]) .sidebarCol {
-  border-right: none;
+  border-inline-end: none;
 }
 
 :global([data-windows-titlebar]) .handle {
@@ -58,7 +58,7 @@
   min-width: 0;
   overflow: hidden;
   background: var(--dsw-specific-sidebar-fill);
-  border-right: 0.5px solid var(--dsw-alias-border-l3);
+  border-inline-end: 0.5px solid var(--dsw-alias-border-l3);
 }
 
 .centerCol {
@@ -79,18 +79,18 @@
 
 :global([data-platform='darwin']) .sidebarCol {
   background: color-mix(in srgb, var(--dsw-specific-sidebar-fill) 60%, transparent);
-  border-right: none;
+  border-inline-end: none;
 }
 
 :global([data-platform='darwin']) .centerCol {
   background: var(--dsw-alias-bg-base);
-  border-left: 0.5px solid var(--dsw-alias-border-l3);
+  border-inline-start: 0.5px solid var(--dsw-alias-border-l3);
 }
 
 /* The darwin closed sidebar has no rail: the centre reaches the window edge,
    where a separator would draw a seam against nothing. */
 :global([data-platform='darwin']) [data-sidebar-collapsed] .centerCol {
-  border-left: none;
+  border-inline-start: none;
 }
 
 /* Drag handles are frame children (columns clip overflow): an 8px hit strip
@@ -104,13 +104,13 @@
   top: 0;
   bottom: 0;
   width: 8px;
-  margin-left: -4px;
+  margin-inline-start: -4px;
   cursor: col-resize;
   z-index: 11;
   touch-action: none;
   /* Rides the same curve as the tracks so the pill stays on the moving
      border during collapse/expand; paused while dragging (frame rule). */
-  transition: left var(--ds-transition-duration-slow) var(--ds-ease-in-out);
+  transition: inset-inline-start var(--ds-transition-duration-slow) var(--ds-ease-in-out);
 }
 
 .frame[data-dragging] .handle {

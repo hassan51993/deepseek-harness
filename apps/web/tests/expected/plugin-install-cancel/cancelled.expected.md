@@ -1,5 +1,5 @@
-- dialog "إضافة إضافة":
-  - heading "إضافة إضافة" [level=2]
+- dialog "إضافة":
+  - heading "إضافة" [level=2]
   - button "إغلاق":
     - img
   - paragraph: إدخال إضافة حزمة اسم،GitHub مستودع عنوان أو محلي دليل مسار.

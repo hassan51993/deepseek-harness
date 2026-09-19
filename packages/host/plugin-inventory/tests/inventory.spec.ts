@@ -97,7 +97,7 @@ describe('PluginInventoryGateway', () => {
         {
           id: 'standard',
           trust: 'system',
-          name: 'معيار نمط',
+          name: 'النمط المعياري',
           isDefault: true,
           rows: [
             { entryId: 'alpha', moduleName: 'pkg-alpha', enabled: true, fiberState: FiberState.ACTIVE },
@@ -113,7 +113,7 @@ describe('PluginInventoryGateway', () => {
       {
         id: 'standard',
         trust: 'system',
-        name: 'معيار نمط',
+        name: 'النمط المعياري',
         isDefault: true,
         rows: [
           { entryId: 'alpha', moduleName: 'pkg-alpha', enabled: true, fiberPhase: 'active' },

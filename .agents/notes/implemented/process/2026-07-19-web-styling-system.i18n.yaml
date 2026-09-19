@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-07-19-web-styling-system.md
 2026-07-19-web-styling-system.md: 1fa9ed5850dbabf39f143f9d4b6805daea3e87dc
-2026-07-19-web-styling-system.ar.md: f4b46925a88055259247ac0c4a4813a16e115e08
+2026-07-19-web-styling-system.ar.md: 11bd4653573422634e89ce30e32725224107116c

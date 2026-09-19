@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-27-adjacent-agent-steer-messaging.md
 2026-08-27-adjacent-agent-steer-messaging.md: 68ede3c4a11fe951532387dd1293ebdcd0b0bd4c
-2026-08-27-adjacent-agent-steer-messaging.ar.md: 1ce7988860be39871d20db490805b67041a77c5b
+2026-08-27-adjacent-agent-steer-messaging.ar.md: 641719a074b802b249ee0c5571039ec0d672e989

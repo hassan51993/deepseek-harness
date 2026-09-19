@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-09-cancel-superseded-ci.md
 2026-09-09-cancel-superseded-ci.md: 5b3d0724ed8a36453c2edd848e6f8c0cd4749554
-2026-09-09-cancel-superseded-ci.ar.md: 75af8f140b00de0d729ba5631d700e37315c2656
+2026-09-09-cancel-superseded-ci.ar.md: 069816e9e9c1a4492e9dfc14f234f068990d8fb3

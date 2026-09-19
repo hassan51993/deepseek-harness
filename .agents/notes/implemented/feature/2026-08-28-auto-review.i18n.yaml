@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-28-auto-review.md
 2026-08-28-auto-review.md: 149361a820a893831bdbfd015925613d5730d251
-2026-08-28-auto-review.ar.md: c249757900aa98f842187c4d8c10ec7b04277de8
+2026-08-28-auto-review.ar.md: 291c907021b656b9ae221e13a74845f6d43717cd

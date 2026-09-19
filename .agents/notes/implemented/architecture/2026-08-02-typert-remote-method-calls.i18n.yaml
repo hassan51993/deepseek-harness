@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.md
 2026-08-02-typert-remote-method-calls.md: ed6113e7bef8d8e866acde23f109ed8568968d30
-2026-08-02-typert-remote-method-calls.ar.md: a33ed95960ac1e0b32a2db2e21a063144b697aee
+2026-08-02-typert-remote-method-calls.ar.md: 435b927bf8ef7fdc79c2be92bb302995df24cf7f

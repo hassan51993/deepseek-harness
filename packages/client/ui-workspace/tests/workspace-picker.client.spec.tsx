@@ -248,7 +248,7 @@ describe('WorkspacePicker', () => {
     )
     // An empty list is not final yet: jumping into the directory flow here
     // would pre-empt the workspaces about to arrive.
-    expect(screen.getByRole('status').textContent).toBe('صحيح في تحميل مساحة العمل…')
+    expect(screen.getByRole('status').textContent).toBe('جارٍ تحميل مساحة العمل…')
     expect(screen.queryByTestId('directory-flow')).toBeNull()
     expect(screen.getByRole('menuitem', { name: 'إضافة مساحة العمل…' })).toBeTruthy()
   })

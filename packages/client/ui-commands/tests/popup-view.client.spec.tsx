@@ -154,7 +154,7 @@ describe('PopupSelectView', () => {
     // Nothing is settleable yet, so the keystroke is not swallowed.
     expect(fireEvent.keyDown(search, { key: 'Tab' })).toBe(true)
     expect(document.activeElement).toBe(search)
-    expect(screen.getByText('صحيح في تحميل خيار…')).toBeTruthy()
+    expect(screen.getByText('جارٍ تحميل خيار…')).toBeTruthy()
   })
 
   it('Tab stays the browser\'s on a failed load, so the retry stays reachable', async () => {
@@ -249,7 +249,7 @@ describe('PopupSelectView', () => {
     const onSelect = vi.fn(() => new Promise<void>((resolve) => { release = resolve }))
     const { search, consume } = await mountOpen({ onSelect })
     await act(async () => { fireEvent.keyDown(search, { key: 'Enter' }) })
-    expect(screen.queryByText('صحيح في تطبيق…')).not.toBeNull()
+    expect(screen.queryByText('جارٍ تطبيق…')).not.toBeNull()
     expect((search as HTMLInputElement).readOnly).toBe(true)
     await act(async () => {
       fireEvent.keyDown(search, { key: 'Enter' })

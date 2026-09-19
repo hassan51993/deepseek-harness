@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-06-node-compatibility-selfhosted.md
 2026-09-06-node-compatibility-selfhosted.md: b8f0bb78687059e5c79cbe251474ee3859beb284
-2026-09-06-node-compatibility-selfhosted.ar.md: 6621f0f55ac5fd598566d632b1545a02b27cdc38
+2026-09-06-node-compatibility-selfhosted.ar.md: 6f099b5ae096537acc96f957240a14b16d6c88db

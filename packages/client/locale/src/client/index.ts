@@ -48,6 +48,9 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 /** Locale dictionary: flat key to template string ({name} placeholders). */
 export type LocaleDict = Record<string, string>
 
+/** Script direction a language is written in, as `<html dir>` accepts it. */
+export type LocaleDirection = 'ltr' | 'rtl'
+
 /** Input accepted when a language-pack plugin adds a selectable language. */
 export interface LanguageRegistration {
   /** Stable BCP 47-style id stored as the locale preference. */
@@ -56,6 +59,8 @@ export interface LanguageRegistration {
   label: string
   /** Registered language consulted when this language lacks a dictionary key. */
   fallback: LocaleId
+  /** Script direction the document adopts while this language is active; left-to-right when absent. */
+  direction?: LocaleDirection
 }
 
 /** One normalized selectable locale published in snapshots. */
@@ -66,6 +71,8 @@ export interface LocaleDefinition {
   readonly label: string
   /** Next language in the per-key fallback chain; absent only for English. */
   readonly fallback?: LocaleId
+  /** Script direction the document adopts while this language is active; left-to-right when absent. */
+  readonly direction?: LocaleDirection
 }
 
 /** Immutable locale state published on every change. */
@@ -114,7 +121,7 @@ export const SETTINGS_NS = 'settings.locale'
 
 /** The two locales and dictionaries shipped by this package. */
 const BUILT_IN_LOCALE_METADATA = {
-  ar: { label: 'العربية', fallback: 'en' },
+  ar: { label: 'العربية', fallback: 'en', direction: 'rtl' },
   en: { label: 'English' },
 } as const satisfies Record<BuiltInLocaleId, Omit<LocaleDefinition, 'id'>>
 const BUILT_IN_LOCALES: readonly LocaleDefinition[] = Object.freeze(
@@ -135,18 +142,31 @@ function normalizeLanguage(input: LanguageRegistration): Readonly<LanguageRegist
   if (!LOCALE_ID_PATTERN.test(input.fallback)) {
     throw new Error(`locale fallback "${input.fallback}" is not a BCP 47-style tag`)
   }
-  return Object.freeze({ id: input.id, label: input.label, fallback: input.fallback })
+  if (input.direction !== undefined && input.direction !== 'ltr' && input.direction !== 'rtl') {
+    throw new Error(`locale direction "${String(input.direction)}" is neither "ltr" nor "rtl"`)
+  }
+  return Object.freeze({
+    id: input.id,
+    label: input.label,
+    fallback: input.fallback,
+    ...(input.direction === undefined ? {} : { direction: input.direction }),
+  })
 }
 
 /**
- * Point `<html lang>` at the active locale, keeping the served document in
- * sync with locale snapshot changes.
+ * Point `<html lang>` and `<html dir>` at the active locale, keeping the
+ * served document in sync with locale snapshot changes. The direction drives
+ * every CSS logical property in the client, so a right-to-left language
+ * mirrors the layout rather than only reordering the glyphs a browser's
+ * bidirectional algorithm already handles inside each text run.
  * @param snapshot - current locale state, including the active definition.
  */
 function syncDocumentLanguage(snapshot: LocaleSnapshot): void {
   // Non-browser runs (node boots of the client tree) have no document.
   if (typeof document === 'undefined') return
   document.documentElement.lang = snapshot.active === 'ar' ? 'ar-SA' : snapshot.active
+  const active = snapshot.locales.find(locale => locale.id === snapshot.active)
+  document.documentElement.dir = active?.direction ?? 'ltr'
 }
 
 /**

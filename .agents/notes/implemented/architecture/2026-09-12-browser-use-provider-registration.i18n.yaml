@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-12-browser-use-provider-registration.md
 2026-09-12-browser-use-provider-registration.md: f269424ade7ae61848c2db6bc60b2db427f4c9cf
-2026-09-12-browser-use-provider-registration.ar.md: c4bbf90c834c1eba7f3d300c3ffdac62f22e9d74
+2026-09-12-browser-use-provider-registration.ar.md: dd33f864cb6a0cb67d5018145df7977d7bd385ca

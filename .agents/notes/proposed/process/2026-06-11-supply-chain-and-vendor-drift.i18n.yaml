@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/process/2026-06-11-supply-chain-and-vendor-drift.md
 2026-06-11-supply-chain-and-vendor-drift.md: 54a89c0e4d172fdf9948728a257b31f3302067f2
-2026-06-11-supply-chain-and-vendor-drift.ar.md: cb3779ea2fb0c77eab69f045c9a7738cb8018d2e
+2026-06-11-supply-chain-and-vendor-drift.ar.md: 92698bfef6fadc5ebe5a8c38b4642b2b73223771

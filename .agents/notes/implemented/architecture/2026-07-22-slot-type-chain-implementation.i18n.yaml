@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-22-slot-type-chain-implementation.md
 2026-07-22-slot-type-chain-implementation.md: 152eafdc424683912d4797eb4d73d860f9c694f4
-2026-07-22-slot-type-chain-implementation.ar.md: fca818ee1b4b581d80d02e79fb2748d0172946a8
+2026-07-22-slot-type-chain-implementation.ar.md: 78726fa96b3d8a2cee2e74f79b1ec2657f4146c7

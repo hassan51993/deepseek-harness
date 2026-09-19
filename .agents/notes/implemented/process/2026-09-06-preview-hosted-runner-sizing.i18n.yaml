@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-06-preview-hosted-runner-sizing.md
 2026-09-06-preview-hosted-runner-sizing.md: 4afc022dca769a14c12782522d50b0997565cbcb
-2026-09-06-preview-hosted-runner-sizing.ar.md: 5a33e36795dcab82bc2867265be826e2af0f9e5b
+2026-09-06-preview-hosted-runner-sizing.ar.md: 1feb5af49c071477a343a45faa66496a812ddb57

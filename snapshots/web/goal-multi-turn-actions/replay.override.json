@@ -134,8 +134,8 @@
         "kind": "chunks",
         "chunks": [
           { "type": "block-start", "index": 0, "blockType": "text" },
-          { "type": "text-delta", "index": 0, "text": "اثنان عدد turn متساو قد إتمام، هدف بلوغ صار، علامة goal لـ إتمام." },
-          { "type": "block-end", "index": 0, "block": { "type": "text", "text": "اثنان عدد turn متساو قد إتمام، هدف بلوغ صار، علامة goal لـ إتمام." } },
+          { "type": "text-delta", "index": 0, "text": "اثنان عدد turn متساو اكتمل، هدف بلوغ صار، علامة goal لـ إتمام." },
+          { "type": "block-end", "index": 0, "block": { "type": "text", "text": "اثنان عدد turn متساو اكتمل، هدف بلوغ صار، علامة goal لـ إتمام." } },
           { "type": "block-start", "index": 1, "blockType": "tool-call" },
           { "type": "tool-call-delta", "index": 1, "id": "call_goal_complete", "name": "update_goal", "argumentsDelta": "{\"goal_id\":\"{{fromRequest:goal-[0-9a-f-]+}}\",\"revision\":1,\"action\":\"complete\"}" },
           { "type": "block-end", "index": 1, "block": { "type": "tool-call", "id": "call_goal_complete", "name": "update_goal", "arguments": "{\"goal_id\":\"{{fromRequest:goal-[0-9a-f-]+}}\",\"revision\":1,\"action\":\"complete\"}" } },

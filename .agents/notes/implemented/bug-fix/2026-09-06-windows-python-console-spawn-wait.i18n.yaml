@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-06-windows-python-console-spawn-wait.md
 2026-09-06-windows-python-console-spawn-wait.md: d52cfea14ab421c4316f65b5189e554e685152e7
-2026-09-06-windows-python-console-spawn-wait.ar.md: e837695e0314eddd6567e3829fd044a43f32bd92
+2026-09-06-windows-python-console-spawn-wait.ar.md: 54ce64a162f8bd437e6a73c88534fdbfaf819685

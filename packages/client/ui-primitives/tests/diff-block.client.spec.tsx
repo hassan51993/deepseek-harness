@@ -199,14 +199,14 @@ describe('DiffBlock height cap', () => {
     const collapsedCount = bodyRows(container).length
     expect(collapsedCount).toBeLessThan(DEFAULT_DIFF_MAX_LINES + 1)
     fireEvent.click(toggle)
-    expect(screen.getByRole('button', { name: 'استلام بدء فرق مختلف' }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: 'طي فرق مختلف' }).getAttribute('aria-expanded')).toBe('true')
     expect(bodyRows(container).length).toBeGreaterThan(collapsedCount)
   })
 
   it('shows no expand control at or under the cap', () => {
     const diffs: DiffHunk[] = [{ path: 'a.ts', oldText: null, newText: added(4) }]
     render(<DiffBlock diffs={diffs} maxLines={16} />)
-    expect(screen.queryByRole('button', { name: /توسيع ذلك بقية|استلام بدء فرق مختلف/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /توسيع ذلك بقية|طي فرق مختلف/ })).toBeNull()
   })
 })
 

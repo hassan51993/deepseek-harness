@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-07-29-durable-last-activity-index.md
 2026-07-29-durable-last-activity-index.md: 6dc05dc6f7dac468d71d9134e5ad823de02d9cde
-2026-07-29-durable-last-activity-index.ar.md: f7c7edc43a1002c88a50279ec385c5c9e498ec0a
+2026-07-29-durable-last-activity-index.ar.md: 3149c42fa39a8bd3937673cfad8470d9ed37cdc1

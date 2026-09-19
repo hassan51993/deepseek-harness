@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-08-30-jsonl-only-session-persistence.md
 2026-08-30-jsonl-only-session-persistence.md: 06a849ef0fc52eddde3aad6cb65fa8443f9d1706
-2026-08-30-jsonl-only-session-persistence.ar.md: 7f326f91a55d1bf84230ed04cfbd953d1983f682
+2026-08-30-jsonl-only-session-persistence.ar.md: b519dd1767ab3971c3d655add16fa58618179aed

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-15-product-subagent-noninteractive-permissions.md
 2026-08-15-product-subagent-noninteractive-permissions.md: 3aa80e76cf9d7e94329275823af8e21377af27e8
-2026-08-15-product-subagent-noninteractive-permissions.ar.md: 19a0afbeef5434fbe6c77f8364630102e4962684
+2026-08-15-product-subagent-noninteractive-permissions.ar.md: 46fb8520729b241ffbffefbe7675067f5f48da2e

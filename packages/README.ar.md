@@ -9,7 +9,7 @@ kind: "package-group"
 
 ## عام وصف
 
-harness من `packages/` تحت npm حزمة تجميع بينما صار، حسب قدرة نظام صف قسم مجموعة: جلسة و agent loop(ذكي جسم حلقة) ، موجه إلى نموذج أداة،shell و نظام الملفات تنفيذ،Web وصول،subagent انتظار انتظار. يأخذ هذا صفحة عند عمل قمة طبقة أرض رسم استخدام: أولا بحث إلى يملك بعض قدرة مجموعة، مجددا فتح ذلك README فحص نظر حزمة قائمة. كل حزمة كل بـ `@deepseek-ai/dsh-*` لـ أثر مجال، فقط يخص واحد مجموعة؛ كل مجموعة README كل هو هذا قدرة نظام صف مرجعي حزمة خريطة.
+harness من `packages/` تحت npm حزمة تجميع بينما صار، حسب قدرة نظام صف قسم مجموعة: جلسة و agent loop(ذكي جسم حلقة) ، موجه إلى نموذج أداة،shell و نظام الملفات تنفيذ،Web وصول،subagent انتظار انتظار. يأخذ هذا صفحة عند عمل قمة طبقة أرض رسم استخدام: أولا بحث إلى يملك بعض قدرة مجموعة، مجددا فتح ذلك README عرض حزمة قائمة. كل حزمة كل بـ `@deepseek-ai/dsh-*` لـ أثر مجال، فقط يخص واحد مجموعة؛ كل مجموعة README كل هو هذا قدرة نظام صف مرجعي حزمة خريطة.
 
 ## دليل
 
@@ -33,7 +33,7 @@ harness من `packages/` تحت npm حزمة تجميع بينما صار، حس
 | [`typert/`](typert/README.ar.md) | نوع رسم توليد، ناتج تحميل و وقت التشغيل سجل التسجيل |
 | [`goal/`](goal/README.ar.md) | نفس جلسة goal حفظ دائم و دورة الحياة |
 | [`schedule/`](schedule/README.ar.md) | فقط حد جلسة داخل تحديد وقت لاحق عملية |
-| [`feedback/`](feedback/README.ar.md) | شخص صنف عكس تغذية أخذ تجميع و أمر |
+| [`feedback/`](feedback/README.ar.md) | شخص صنف ملاحظات أخذ تجميع و أمر |
 | [`identity/`](identity/README.ar.md) | مشترك مجهول اسم هوية |
 | [`llm/`](llm/README.ar.md) | LLM(كبير لغة نموذج) قدرة نظام صف: سحب كائن خدمة + مزود مهايئ |
 | [`subprocess/`](subprocess/README.ar.md) | عملية فرعية قدرة نظام صف:Service Definition + محلي عملية شجرة مزود |
@@ -104,7 +104,7 @@ harness من `packages/` تحت npm حزمة تجميع بينما صار، حس
 <a id="package-readme-contracts"></a>
 ## حزمة README اتفاق
 
-كل حزمة README كل تغطية استخدام طريق، إعداد، نقطة توسيع و[تجربة النموذج](../docs/cookbook/adding-a-package.ar.md#4-write-the-package-readme) ، صف دخول نموذج غير متصل[حذف سماح بيان](../scripts/verify-package-readme-model-experience.ts) حزمة حذف خارج. هو أيضا يلزم يتضمن `## Known Limitations and Deferred Work`، أو صف دخول ذلك[سماح بيان](../scripts/verify-package-readme-limitations.ts). حزمة اتفاق——توجيه خروج، خدمة وصول، ثابت صيغة، اختبار——رؤية [packages/AGENTS.md](AGENTS.md).
+كل حزمة README كل تغطية استخدام طريق، إعداد، نقطة توسيع و[تجربة النموذج](../docs/cookbook/adding-a-package.ar.md#4-write-the-package-readme) ، صف دخول نموذج غير متصل[حذف سماح بيان](../scripts/verify-package-readme-model-experience.ts) حزمة حذف خارج. هو أيضا يلزم يتضمن `## Known Limitations and Deferred Work`، أو صف دخول ذلك[سماح بيان](../scripts/verify-package-readme-limitations.ts). حزمة اتفاق——تصدير، خدمة وصول، ثابت صيغة، اختبار——رؤية [packages/AGENTS.md](AGENTS.md).
 
 -----
 

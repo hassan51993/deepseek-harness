@@ -35,11 +35,11 @@ Factory `children` ما زال هو عادي عام Slots كما يجب و `Slot
 
 ### خمسة عدد إطار هيكل props share
 
-كل قد تسجيل مكون كل سوف استلام إلى من خمسة عدد إطار هيكل share تركيب بينما صار props: وقت التشغيل share(أب درجة render استدعاء نقطة `owner`، إضافة فوق جلسة معيار أداة حزمة و عام مقعد موضع) ،child render share(ساكن حالة تقليص ضيق إلى قد إعلان children `renderSlot`) ،Factory render share(`renderFactorySlot`) ،store share(قد إعلان handle selector خطاف و إزالة draft actions) ، و عمل خدمة share(من `inject` دفع توجيه). مكون مرجع دفع توجيه خروج props آخر اسم؛ هو جمع أبدا في محلي إعادة تعريف أي share نوع.
+كل قد تسجيل مكون كل سوف استلام إلى من خمسة عدد إطار هيكل share تركيب بينما صار props: وقت التشغيل share(أب درجة render استدعاء نقطة `owner`، إضافة فوق جلسة معيار أداة حزمة و عام مقعد موضع) ،child render share(ساكن حالة تقليص ضيق إلى قد إعلان children `renderSlot`) ،Factory render share(`renderFactorySlot`) ،store share(قد إعلان handle selector خطاف و إزالة draft actions) ، و عمل خدمة share(من `inject` دفع توجيه). مكون مرجع دفع تصدير props آخر اسم؛ هو جمع أبدا في محلي إعادة تعريف أي share نوع.
 
 ### Store مقعد موضع
 
-register استدعاء يمكن استخدام `store: defineStore(...)` إعلان store مقعد موضع:`init` دفع قطع حالة schema،`actions` هو كامل draft-transform كتابة تجميع دمج. مكون مرور selector خطاف قراءة، مرور تجفيف خبز عودة ضبط كتابة؛`defineStore` جذب محرك تنفيذ يقع في وقت التشغيل حزمة، و ممتلئ كاف هذا داخل توجيه خروج `DefineStore` اتفاق.
+register استدعاء يمكن استخدام `store: defineStore(...)` إعلان store مقعد موضع:`init` دفع قطع حالة schema،`actions` هو كامل draft-transform كتابة تجميع دمج. مكون مرور selector خطاف قراءة، مرور تجفيف خبز عودة ضبط كتابة؛`defineStore` جذب محرك تنفيذ يقع في وقت التشغيل حزمة، و ممتلئ كاف هذا داخل تصدير `DefineStore` اتفاق.
 
 ### إعلان سجل قاعدة
 

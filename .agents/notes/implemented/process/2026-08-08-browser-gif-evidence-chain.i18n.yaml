@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-08-browser-gif-evidence-chain.md
 2026-08-08-browser-gif-evidence-chain.md: 7aeff1c7ab48e4de4524dfa82505b5b32729d6bc
-2026-08-08-browser-gif-evidence-chain.ar.md: 3f831ab094e17e2280886c453fb7ec6f41b483ea
+2026-08-08-browser-gif-evidence-chain.ar.md: af7c944d25da7b16a8cbe8d753a0798156df1d5a

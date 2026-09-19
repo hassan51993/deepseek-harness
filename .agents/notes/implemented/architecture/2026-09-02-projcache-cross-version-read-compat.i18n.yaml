@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-02-projcache-cross-version-read-compat.md
 2026-09-02-projcache-cross-version-read-compat.md: 1c3b974a16b2fce02f0492a47edb2207a50400a3
-2026-09-02-projcache-cross-version-read-compat.ar.md: 698f9bb9596692c9f9b55e883d37317fe403c2eb
+2026-09-02-projcache-cross-version-read-compat.ar.md: 109bd22595da5162544fb19f4eb9c3a76c28217a

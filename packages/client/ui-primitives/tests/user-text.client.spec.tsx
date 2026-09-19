@@ -29,12 +29,12 @@ describe('projectUserText', () => {
   })
 
   it('folds the wire session form to its label with the session glyph', () => {
-    const host = project('نظر نظر @[فحص نظر و قسم تحليل صورة](dsh-session:InNlc3Npb24tNDM0) ربط نقاش')
+    const host = project('نظر نظر @[عرض و قسم تحليل صورة](dsh-session:InNlc3Npb24tNDM0) ربط نقاش')
     const chip = host.querySelector('[data-ref-chip="session"]')!
-    expect(chip.textContent).toBe('فحص نظر و قسم تحليل صورة')
-    expect(chip.getAttribute('title')).toBe('@[فحص نظر و قسم تحليل صورة](dsh-session:InNlc3Npb24tNDM0)')
+    expect(chip.textContent).toBe('عرض و قسم تحليل صورة')
+    expect(chip.getAttribute('title')).toBe('@[عرض و قسم تحليل صورة](dsh-session:InNlc3Npb24tNDM0)')
     expect(chip.querySelector('svg')).not.toBeNull()
-    expect(host.textContent).toBe('نظر نظر فحص نظر و قسم تحليل صورة ربط نقاش')
+    expect(host.textContent).toBe('نظر نظر عرض و قسم تحليل صورة ربط نقاش')
   })
 
   it('prefers the wire fold over the bare-token scan on the same range', () => {

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-10-image-offload-events.md
 2026-09-10-image-offload-events.md: 0cb7a23a9e119c489973aa11f3183ffa48ef395b
-2026-09-10-image-offload-events.ar.md: e5724c7c5fca5441defadee57d16afe0b5b349a0
+2026-09-10-image-offload-events.ar.md: 2adb7feeb31cf94772fd735dff02bca7f44f4a02

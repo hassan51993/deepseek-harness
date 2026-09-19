@@ -2,11 +2,11 @@
   - img
   - img
   - text: توجيه النظام
-- text: لا استخدام أولا فحص نظر دليل، مباشر فعل أربعة عنصر أمر: يأخذ intro.md داخل عنوان «عرض مثال مشروع» تعديل صار «مشروع شرح» ، جديد بناء src/util.ts توجيه خروج واحد اثنان عدد متبادل إضافة add دالة، جديد بناء app.local كتابة واحد سطر mode=demo، الأكثر بعد استخدام bash في notes.txt نهاية ذيل إلحاق واحد سطر done. {{clock}}
+- text: لا استخدام أولا عرض دليل، مباشر فعل أربعة عنصر أمر: يأخذ intro.md داخل عنوان «عرض مثال مشروع» تعديل صار «مشروع شرح» ، جديد بناء src/util.ts تصدير واحد اثنان عدد متبادل إضافة add دالة، جديد بناء app.local كتابة واحد سطر mode=demo، الأكثر بعد استخدام bash في notes.txt نهاية ذيل إلحاق واحد سطر done. {{clock}}
 - button "نسخ":
   - img
-- button "7 مرة أداة استدعاء" [expanded]:
-  - text: 7 مرة أداة استدعاء
+- button "7 مرة استدعاء الأداة" [expanded]:
+  - text: 7 مرة استدعاء الأداة
   - img
 - button "سياق حقن @deepseek-ai/dsh-system-prompt":
   - img
@@ -63,7 +63,7 @@
   - listitem:
     - strong:
       - code:
-        - button "في جانب حافة شريط فتح intro.md": intro.md
+        - button "في الشريط الجانبي فتح intro.md": intro.md
     - text: — عنوان
     - code: "# عرض مثال مشروع"
     - text: قد تعديل لـ
@@ -72,21 +72,21 @@
   - listitem:
     - strong:
       - code:
-        - button "في جانب حافة شريط فتح src/util.ts": src/util.ts
-    - text: — جديد بناء، توجيه خروج
+        - button "في الشريط الجانبي فتح src/util.ts": src/util.ts
+    - text: — جديد بناء، تصدير
     - code: "add(a: number, b: number): number"
     - text: .
   - listitem:
     - strong:
       - code:
-        - button "في جانب حافة شريط فتح app.local": app.local
+        - button "في الشريط الجانبي فتح app.local": app.local
     - text: — جديد بناء، محتوى لـ واحد سطر
     - code: mode=demo
     - text: .
   - listitem:
     - strong:
       - code:
-        - button "في جانب حافة شريط فتح notes.txt": notes.txt
+        - button "في الشريط الجانبي فتح notes.txt": notes.txt
     - text: — استخدام
     - code: bash
     - text: إلحاق نجاح، قائم محتوى لـ
@@ -97,41 +97,41 @@
 - paragraph:
   - text: شرح:
   - code:
-    - button "في جانب حافة شريط فتح intro.md": intro.md
-  - text: تعديل أنا حسب ملف سياسة اشتراط أولا قراءة مرة أصل ملف (فقط قراءة هذا ملف، لم تصفح تصفح دليل) ،
+    - button "في الشريط الجانبي فتح intro.md": intro.md
+  - text: تعديل أنا حسب ملف سياسة اشتراط أولا قراءة مرة أصل ملف (فقط قراءة هذا ملف، لم تصفح دليل) ،
   - code:
-    - button "في جانب حافة شريط فتح notes.txt": notes.txt
+    - button "في الشريط الجانبي فتح notes.txt": notes.txt
   - text: إلحاق فإن تماما مشي bash.
-- button "في جانب حافة شريط فحص نظر هذا جولة تعديل": قد تحرير 4 عدد ملف +6 -1
+- button "في الشريط الجانبي عرض هذا جولة تعديل": قد تحرير 4 عدد ملف +6 -1
 - list:
   - listitem:
-    - button "فحص نظر app.local تعديل": app.local +1 -0
+    - button "عرض app.local تعديل": app.local +1 -0
   - listitem:
-    - button "فحص نظر intro.md تعديل": intro.md +1 -1
+    - button "عرض intro.md تعديل": intro.md +1 -1
   - listitem:
-    - button "فحص نظر notes.txt تعديل": notes.txt +1 -0
+    - button "عرض notes.txt تعديل": notes.txt +1 -0
 - button "توسيع الكل 4 عدد تعديل ملف":
   - text: الكل 4 عدد ملف
   - img
-- text: هذا رئيسي آلة لا يوجد متاح طاولة وجه، لا يمكن استخدام خارجي برنامج فتح ملف أو ملف مشبك؛ ملف ما زال يمكن في جانب حافة شريط معاينة
-- button "في جانب حافة شريط معاينة intro.md"
+- text: هذا رئيسي آلة لا يوجد متاح طاولة وجه، لا يمكن استخدام خارجي برنامج فتح ملف أو ملف مشبك؛ ملف ما زال يمكن في الشريط الجانبي معاينة
+- button "في الشريط الجانبي معاينة intro.md"
 - text: intro.md عنوان قد تعديل لـ «مشروع شرح»
-- button "في جانب حافة شريط فتح intro.md": فتح
+- button "في الشريط الجانبي فتح intro.md": فتح
 - button "intro.md أكثر كثير ملف عملية" [disabled]:
   - img
-- button "في جانب حافة شريط معاينة src/util.ts"
+- button "في الشريط الجانبي معاينة src/util.ts"
 - text: util.ts إضافة جديدة add اثنان عدد متبادل إضافة دالة
-- button "في جانب حافة شريط فتح src/util.ts": فتح
+- button "في الشريط الجانبي فتح src/util.ts": فتح
 - button "src/util.ts أكثر كثير ملف عملية" [disabled]:
   - img
-- button "في جانب حافة شريط معاينة app.local"
+- button "في الشريط الجانبي معاينة app.local"
 - text: app.local إضافة جديدة ملف إعداد، محتوى mode=demo
-- button "في جانب حافة شريط فتح app.local": فتح
+- button "في الشريط الجانبي فتح app.local": فتح
 - button "app.local أكثر كثير ملف عملية" [disabled]:
   - img
-- button "في جانب حافة شريط معاينة notes.txt"
+- button "في الشريط الجانبي معاينة notes.txt"
 - text: notes.txt نهاية ذيل إلحاق done واحد سطر
-- button "في جانب حافة شريط فتح notes.txt": فتح
+- button "في الشريط الجانبي فتح notes.txt": فتح
 - button "notes.txt أكثر كثير ملف عملية" [disabled]:
   - img
 - button "نسخ":

@@ -9,7 +9,7 @@ kind: persistence-release
 
 ## عام وصف
 
-إضافة جديدة deliverables/presented و subagent/catalog. عكس تغذية سجل إضافة جديدة اختياري حقل category،feedback/record text تعديل لـ اختياري حقل؛ كتابة صيغة ما زال لـ 3.
+إضافة جديدة deliverables/presented و subagent/catalog. ملاحظات سجل إضافة جديدة اختياري حقل category،feedback/record text تعديل لـ اختياري حقل؛ كتابة صيغة ما زال لـ 3.
 
 ## دليل
 

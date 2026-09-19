@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/user-questions.md
 user-questions.md: 8a043fb7f94ffafffbdd036840d068541bbe394b
-user-questions.ar.md: 7b2cbb8e73d2897557b0d834f898c4b73bcacf84
+user-questions.ar.md: dbeb1fabe5bb2da59f4bc72d7d33406c8c6d9527

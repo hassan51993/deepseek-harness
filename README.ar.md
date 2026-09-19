@@ -10,7 +10,7 @@ DeepSeek Harness(`dsh`) هو من [DeepSeek AI](https://deepseek.com) تطوير
 
 ## تطوير من معاينة
 
-DeepSeek Harness موضع في _تطوير من معاينة_ مرحلة مقطع، صحيح في سريع سرعة تكرار بديل.**لم قدوم سوف ظهور كسر تالف توافق صفة تغيير.**
+DeepSeek Harness موضع في _تطوير من معاينة_ مرحلة مقطع، جارٍ سريع سرعة تكرار بديل.**لم قدوم سوف ظهور كسر تالف توافق صفة تغيير.**
 
 تشغيل هذا مشروع قبل، طلب قراءة قراءة[أمان شرح](SAFETY.ar.md).
 
@@ -46,7 +46,7 @@ pnpm dsh web
 
 ## مجتمع منطقة و دعم حمل
 
-- عبر [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) إيداع عكس تغذية أو bug تقرير إبلاغ.
+- عبر [GitHub Discussions](https://github.com/deepseek-ai/deepseek-harness/discussions) إيداع ملاحظات أو bug تقرير إبلاغ.
 - لـ أنت إضافة مستودع إضافة [`dsh-plugin`](https://github.com/topics/dsh-plugin) كلام عنوان، سهل في يتم اكتشاف.
 - فرح استقبال إضافة دخول DeepSeek Harness مؤسسة دقيق مجموعة: مسح رمز إضافة مؤسسة دقيق صغير مساعدة يد و ملء كتابة مجموعة سؤال لفة، إتمام بعد صغير مساعدة يد سوف دعوة طلب أنت دخول مجموعة.
 

@@ -40,9 +40,9 @@ body[data-ds-dark-theme] {
 }
 
 /* ---------- حرف جسم ---------- */
-/* من @deepseek-figma-plugin/custom-variable-name إضافة توجيه خروج */
+/* من @deepseek-figma-plugin/custom-variable-name إضافة تصدير */
 /* Markdown مرحلة سلم كامل جسم حسب 0.875(متن 16 → 14) انتظار مقارنة تقليص وضع، أربعة ترك خمسة دخول إلى كامل عدد مثل عنصر؛
-   إعادة من Figma توجيه خروج وقت حاجة إبقاء هذا واحد تقليص وضع. */
+   إعادة من Figma تصدير وقت حاجة إبقاء هذا واحد تقليص وضع. */
 /* متن حرف رقم ضبط عقدة:--dsh-content-font-size من رئيسي عنوان bootstrap و ThemePresenter
    كتابة في body فوق (كامل عدد px،12–17، افتراضي 14). عنوان و متن تغيير جسم حسب نفس مثل عنصر زيادة كمية
    (--dsh-content-font-delta) مع حركة، إبقاء طبقة درجة. منخفض واحد ملف نص (think، أداة/bash
@@ -168,7 +168,7 @@ body {
   --dsw-font-markdown-code-block-font-size: 11px;
   --dsw-font-markdown-code-block-font-style: normal;
 
-  /* يد عمل تكملة ملء (غير إضافة توجيه خروج):tool row توسيع بطاقة داخل صغير رقم code حرف جسم. */
+  /* يد عمل تكملة ملء (غير إضافة تصدير):tool row توسيع بطاقة داخل صغير رقم code حرف جسم. */
   --dsw-font-markdown-code-block-small: 11px/16px var(--ds-font-family-code);
   --dsw-font-markdown-code-block-small-font-family: var(--ds-font-family-code);
   --dsw-font-markdown-code-block-small-font-weight: 400;

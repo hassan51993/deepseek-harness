@@ -2,10 +2,10 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'session.new': 'جديد جلسة',
+  'session.new': 'جلسة جديدة',
   'session.new.label': 'جديد بناء جلسة',
-  'toggle.open': 'فتح جانب حافة شريط',
-  'toggle.collapse': 'استلام بدء جانب حافة شريط',
+  'toggle.open': 'فتح الشريط الجانبي',
+  'toggle.collapse': 'طي الشريط الجانبي',
   'panels.label': 'عام وجه لوح',
 } satisfies Record<string, string>
 

@@ -34,7 +34,7 @@ Lead يجب انتظار الذي يحتاج عمل بعد عندئذ قدرة �
 
 Root استعادة وقت سوف يأخذ لم نهاية ربط provisioning سجل و مستقل حمل دائم child Session مقابل حساب. مباشر parent و continuable descriptor مطابقة، و كما قد سجل ابتدائي مستخدم رسالة، عندئذ قدرة إثبات دقيق دخول نجاح و تحويل لـ active؛ ناقص، ضرر تالف،provider/lineage لا مطابقة أو نقص قليل قد دقيق دخول رسالة كل سوف تحويل لـ failed.creator سوف في نفس Lead سجل serializer داخل إعادة قراءة نهاية حالة؛ إذا recovery في إنشاء نجاح وقت أولا علامة failed،creator سوف drain child و تقرير إبلاغ provisioning conflict، بينما لا هو متروك إبقاء منعزل طفل. هذا مثال حيث بلا حاجة إعادة بناء من لم حفظ في Team سجل في ابتدائي prompt، أيضا قدرة قيد إضافة reload تنافس تنازع.
 
-fresh child لا وراثة محادثة.fork child فقط التقاط مرة Lead قد إتمام turn بادئة، و إبقاء لـ ذاتي ذات حمل دائم seed. حالي delegation turn إبقاء ترتيب حذف، و قائم fork provider عقد نحو متسق.
+fresh child لا وراثة محادثة.fork child فقط التقاط مرة Lead اكتمل turn بادئة، و إبقاء لـ ذاتي ذات حمل دائم seed. حالي delegation turn إبقاء ترتيب حذف، و قائم fork provider عقد نحو متسق.
 
 ## Mailbox and task transactions
 

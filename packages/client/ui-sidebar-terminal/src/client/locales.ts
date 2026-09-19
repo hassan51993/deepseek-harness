@@ -10,9 +10,9 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 /** Arabic terminal copy. */
 export const ar = {
   recoveryFailed: 'استعادة طرفية فشل:{message}', retryRecovery: 'إعادة محاولة استعادة طرفية',
-  shell: 'اختيار Shell', shellLoading: 'صحيح في قراءة Shell…', shellEmpty: 'لا يوجد متاح Shell', description: 'في جلسة مساحة العمل تشغيل أمر',
-  title: 'طرفية', new: 'جديد بناء طرفية', loading: 'صحيح في قراءة طرفية بيئة…', creating: 'صحيح في بدء…',
-  connecting: 'صحيح في اتصال…', disconnected: 'اتصال قد قطع فتح.', reconnect: 'إعادة اتصال',
+  shell: 'اختيار Shell', shellLoading: 'جارٍ قراءة Shell…', shellEmpty: 'لا يوجد متاح Shell', description: 'في جلسة مساحة العمل تشغيل أمر',
+  title: 'طرفية', new: 'جديد بناء طرفية', loading: 'جارٍ قراءة طرفية بيئة…', creating: 'جارٍ بدء…',
+  connecting: 'جارٍ اتصال…', disconnected: 'اتصال قد قطع فتح.', reconnect: 'إعادة اتصال',
   readonly: 'هذا صفحة حالي فقط قراءة.', control: 'وصل إدارة إدخال',
   closed: 'طرفية قد إغلاق.', exited: 'عملية قد خروج ({code})', failed: 'طرفية خطأ:{message}',
   rename: 'طرفية اسم', unavailable: 'غير ممكن استخدام', retry: 'إعادة محاولة',

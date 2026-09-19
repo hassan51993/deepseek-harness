@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-09-plugin-management-in-the-web-sidebar.md
 2026-09-09-plugin-management-in-the-web-sidebar.md: 3cc9ec01530357986230efdacdcdc90ca6e83761
-2026-09-09-plugin-management-in-the-web-sidebar.ar.md: 674de901b6a77d6cfe4e8dc707f4cf8f2db69ed9
+2026-09-09-plugin-management-in-the-web-sidebar.ar.md: a6e4a02981fc98a4b47680c1e62271bbfc651ddf

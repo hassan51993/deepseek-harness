@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-14-desktop-installed-update-materials.md
 2026-09-14-desktop-installed-update-materials.md: 7e3c664895d4399bc0ad09427daab49ca05e7862
-2026-09-14-desktop-installed-update-materials.ar.md: da97bc7ca3c4305278fea27c960a1097949a05f7
+2026-09-14-desktop-installed-update-materials.ar.md: fcddbdc0d7c10c3842b42174587c79c11c2390d9

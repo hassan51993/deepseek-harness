@@ -33,7 +33,7 @@
 - button "Copy"
 - code: session-reference ├── README.md ├── package.json ├── src │ ├── index.ts │ └── uri.ts └── tests └── session-reference.spec.ts
 - button "Copy"
-- code: "session-reference/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ ├── index.ts # مدخل، توجيه خروج عام مشترك API │ └── uri.ts # جلسة مرجع URI متبادل صلة تنفيذ └── tests/ └── session-reference.spec.ts # اختبار وحدة"
+- code: "session-reference/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ ├── index.ts # مدخل، تصدير عام مشترك API │ └── uri.ts # جلسة مرجع URI متبادل صلة تنفيذ └── tests/ └── session-reference.spec.ts # اختبار وحدة"
 - paragraph: هذا هو واحد جدا قاموس نوع خفيف كمية TypeScript حزمة بنية: مدخل + تنفيذ + اختبار. هذا واحد جولة إلى هذا انتهاء، انتظار نظام فتح بدء تحت واحد turn.
 - button "Copy":
   - img

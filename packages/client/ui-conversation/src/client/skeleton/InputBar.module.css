@@ -133,7 +133,7 @@
   overflow-y: auto;
   /* Keeps the bar off the card's right border; .input's right pad gives the
      4px back so the text column is unchanged. */
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 /* The card's 22px corner arc still overlaps the scrollport's top (8px top
@@ -295,7 +295,7 @@
      line instead of the left group shrinking until its chip overlaps the
      model trigger (external:107). The auto margin re-anchors it right on the
      wrapped line; on a single line space-between already pins it right. */
-  margin-left: auto;
+  margin-inline-start: auto;
   gap: 12px;
 }
 
@@ -389,7 +389,7 @@
 }
 
 .retry {
-  margin-left: 8px;
+  margin-inline-start: 8px;
   padding: 1px 8px;
   border: 1px solid currentColor;
   border-radius: 4px;

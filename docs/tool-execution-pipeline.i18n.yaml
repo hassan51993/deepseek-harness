@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/tool-execution-pipeline.md
 tool-execution-pipeline.md: f9d3d145bb3d7c271882942b4adc100f53a55290
-tool-execution-pipeline.ar.md: 84b1c1e7ee71c3bc04073d6bf84fc651add0f126
+tool-execution-pipeline.ar.md: 24d53c90be2aae40ca890a94e073801ef0bedbf2

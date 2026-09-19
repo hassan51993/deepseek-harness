@@ -31,9 +31,9 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-browser-use'
 ```
 
-خدمة لا يوجد إعداد. مزود إضافة حقن `browserUse` و استدعاء `ctx.browserUse.register(BrowserUseProviderName(name))`؛ صنف لوحة نوع من `@deepseek-ai/dsh-browser-use/brand` توجيه خروج. إرجاع effect تنظيف جهاز تحرير هذا تسجيل.
+خدمة لا يوجد إعداد. مزود إضافة حقن `browserUse` و استدعاء `ctx.browserUse.register(BrowserUseProviderName(name))`؛ صنف لوحة نوع من `@deepseek-ai/dsh-browser-use/brand` تصدير. إرجاع effect تنظيف جهاز تحرير هذا تسجيل.
 
-مزود في تحرير تسجيل قبل إيقاف استقبال أداة استدعاء، إغلاق مورد و انتظار ذاتي ذات يملك عمل انتهاء.`ctx.browserUse.providerName` في تحرير قبل حمل متابعة تقرير إبلاغ قد تسجيل اسم.
+مزود في تحرير تسجيل قبل إيقاف استقبال استدعاء الأداة، إغلاق مورد و انتظار ذاتي ذات يملك عمل انتهاء.`ctx.browserUse.providerName` في تحرير قبل حمل متابعة تقرير إبلاغ قد تسجيل اسم.
 
 -----
 

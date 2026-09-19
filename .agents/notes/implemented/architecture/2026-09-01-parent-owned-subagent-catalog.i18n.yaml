@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-01-parent-owned-subagent-catalog.md
 2026-09-01-parent-owned-subagent-catalog.md: d30b68f976650f2d83b51c9c2d350fad89418019
-2026-09-01-parent-owned-subagent-catalog.ar.md: d4ef1205cbb4b2d8bb3d1acf68beed7bf203eff6
+2026-09-01-parent-owned-subagent-catalog.ar.md: 8a7b8dbaf48a1697e7079bd911d70aa4883913f3

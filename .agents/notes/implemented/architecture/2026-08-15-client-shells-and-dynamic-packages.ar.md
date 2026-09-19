@@ -39,7 +39,7 @@ Client npm اعتماد منطقة مقطع وصف تثبيت و تطوير عل
 1. طلب الذي تسمية dynamic package row؛ نهاية ذيل `/client` سوف آخر اسم إلى هذا package row.
 2. خارج قشرة ساكن حالة وحدة جدول في دقيق key.
 
-لا وجود عام `dsh.client.provide` آخر اسم آلية. حركة حالة row و ساكن حالة key قد نفاد كل فعلي مزود،Cordis service provide و هذا متبادل متبادل مستقل. رسم تركيب سوف رفض شاذ شكل أو ناقص طلب، ذاتي طلب و تزامن طلب حلقة، و يأخذ حركة حالة مزود ترتيب في إزالة استهلاك من قبل.`ClientModuleSystem.import()` و `prefetch()` سوف في إزالة استهلاك من قدرة كاف شيء تحويل قبل تمرير عودة تسجيل تسجيل هذه حركة حالة مزود factory، لذلك شبكة شبكة وقت ترتيب لا يمكن كسر تالف تزامن طلب رسم.
+لا وجود عام `dsh.client.provide` آخر اسم آلية. حركة حالة row و ساكن حالة key قد نفاد كل فعلي مزود،Cordis service provide و هذا متبادل متبادل مستقل. رسم تركيب سوف رفض شاذ شكل أو ناقص طلب، ذاتي طلب و تزامن طلب حلقة، و يأخذ حركة حالة مزود ترتيب في إزالة استهلاك من قبل.`ClientModuleSystem.import()` و `prefetch()` سوف في إزالة استهلاك من قدرة كاف شيء تحويل قبل تمرير عودة تسجيل تسجيل هذه حركة حالة مزود factory، لذلك شبكة وقت ترتيب لا يمكن كسر تالف تزامن طلب رسم.
 
 ### Parser مسبق تحميل و React نقل تسليم
 
@@ -51,7 +51,7 @@ Modules Node نصف حسب التالي ترتيب نحو فعلي إرجاع HT
 4. منح قيمة `window.__DSH_BOOT__`، منها يتضمن الكل ضبط درجة وصف و كل row مفرد مورد HMR combo URL.
 5. تنفيذ Vite رئيسي وحدة.
 
-Bootstrap combo حالي فقط تسجيل تسجيل modules factory. بدء داخل نواة يأخذ أصلي رسم و خارج قشرة seed نقل إعطاء `__ModuleLoader__.create()`.Facade إزالة modules registration، استخدام رفض الكل external `require` دالة سوف ذلك شيء تحويل، مجددا استدعاء ذلك `createClientModuleSystem` توجيه خروج.Modules bundle تحليل رسم، بنية صنع و إرجاع `ClientModuleSystem`، يأخذ ذاته exports ذاكرة مؤقتة لـ modules row، و يأخذ نفس facade تبديل إلى live نمط. داخل نواة يأخذ هذا نسخة تركيب صار ذاته Loader `internal`،modules إضافة من هذا داخل قراءة و توفير `ctx.modules`. لذلك modules client face إبقاء صفر external ذاتي رفع اشتراط، أيضا لا يوجد وحدة درجة نظام هوية.
+Bootstrap combo حالي فقط تسجيل تسجيل modules factory. بدء داخل نواة يأخذ أصلي رسم و خارج قشرة seed نقل إعطاء `__ModuleLoader__.create()`.Facade إزالة modules registration، استخدام رفض الكل external `require` دالة سوف ذلك شيء تحويل، مجددا استدعاء ذلك `createClientModuleSystem` تصدير.Modules bundle تحليل رسم، بنية صنع و إرجاع `ClientModuleSystem`، يأخذ ذاته exports ذاكرة مؤقتة لـ modules row، و يأخذ نفس facade تبديل إلى live نمط. داخل نواة يأخذ هذا نسخة تركيب صار ذاته Loader `internal`،modules إضافة من هذا داخل قراءة و توفير `ctx.modules`. لذلك modules client face إبقاء صفر external ذاتي رفع اشتراط، أيضا لا يوجد وحدة درجة نظام هوية.
 
 Host إصدار graph و combo descriptor وقت لن تجميع وصل استجابة body. كل نص برمجي URL مشترك استخدام واحد كسول صفة Promise، في أول مرة `GET` وقت تجميع وصل التقاط bundle بايت و إلحاق مقابل map URL؛ كل map URL استخدام آخر عدد كسول صفة Promise، فقط في أول مرة `GET` وقت قراءة و تركيب source map.`HEAD` لا إطلاق مهمة واحد body.Web URL ما زال من Loader تسوية و required-entry audit تحكم، لكن هذا عدد حينئذ خيط نقطة لن شيء تحويل combo body؛index طلب قراءة عند وقت الأكثر جديد graph.
 

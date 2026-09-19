@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-05-continuous-client-recovery.md
 2026-09-05-continuous-client-recovery.md: 8c311b2b5d435c1324cc2fe342fab5fb468a3876
-2026-09-05-continuous-client-recovery.ar.md: 9ba9a118fd366b836205e22d089d531a0ba5e80a
+2026-09-05-continuous-client-recovery.ar.md: 0762713160e9d445035d677cf0d0c9f7e34f49fc

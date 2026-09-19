@@ -1268,10 +1268,10 @@ describe('running and lock semantics', () => {
 
   it('the plan projection swaps the placeholder while its effective target is plan mode', () => {
     const active = bench({ plan: { active: true, pending: false } })
-    expect(active.placeholder).toBe('وصف أنت مهمة بـ توليد حساب تخطيط')
+    expect(active.placeholder).toBe('وصف أنت مهمة بـ توليد خطة')
     // /plan just ran: pending entry already reads as the plan target.
     const entering = bench({ plan: { active: false, pending: true } })
-    expect(entering.placeholder).toBe('وصف أنت مهمة بـ توليد حساب تخطيط')
+    expect(entering.placeholder).toBe('وصف أنت مهمة بـ توليد خطة')
     // Pending exit: target is default again.
     const leaving = bench({ plan: { active: true, pending: true } })
     expect(leaving.placeholder).toBe('إرسال رسالة أو إنشاء مهمة, / استدعاء إشارة أمر, @ ملف أو محادثة')

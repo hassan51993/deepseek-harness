@@ -391,7 +391,7 @@ describe('LocaleRuntime', () => {
   it('starts with exactly the two shipped locales and their fallback relation', () => {
     const { svc } = make()
     expect(svc.getLocale().locales).toEqual([
-      { id: 'ar', label: 'العربية', fallback: 'en' },
+      { id: 'ar', label: 'العربية', fallback: 'en', direction: 'rtl' },
       { id: 'en', label: 'English' },
     ])
   })

@@ -5,13 +5,13 @@ export const NS = 'session-log-download'
 export const ar = {
   'header.more': 'أكثر كثير عملية',
   'menu.download': 'تحت تحميل Session سجل',
-  'dialog.preparingTitle': 'صحيح في توجيه خروج Session',
-  'dialog.preparingDescription': 'صحيح في دقيق تجهيز يتضمن حالي Session، فرعي Session و مرفق عنصر ZIP ملف.',
-  'dialog.successTitle': 'Session توجيه خروج قد بدء تحت تحميل',
-  'dialog.successDescription': 'متصفح صحيح في تحت تحميل Session ZIP ملف.',
-  'dialog.errorTitle': 'Session توجيه خروج فشل',
+  'dialog.preparingTitle': 'جارٍ تصدير Session',
+  'dialog.preparingDescription': 'جارٍ دقيق تجهيز يتضمن حالي Session، فرعي Session و مرفق عنصر ZIP ملف.',
+  'dialog.successTitle': 'Session تصدير قد بدء تحت تحميل',
+  'dialog.successDescription': 'متصفح جارٍ تحت تحميل Session ZIP ملف.',
+  'dialog.errorTitle': 'Session تصدير فشل',
   'dialog.close': 'إغلاق',
-  'dialog.commandFailed': 'لا يمكن بدء Session توجيه خروج.',
+  'dialog.commandFailed': 'لا يمكن بدء Session تصدير.',
 } as const
 
 /** English Session export strings. */

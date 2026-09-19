@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-07-20-gui-testing-system.md
 2026-07-20-gui-testing-system.md: 28ccc70127309660ba77f08836d95b58d298362c
-2026-07-20-gui-testing-system.ar.md: b5d645e31eb5ad9d384b4a2e74637c8fc1590971
+2026-07-20-gui-testing-system.ar.md: 4e5ed91ce21d0500bccafb956b6c80aa5c0705cb

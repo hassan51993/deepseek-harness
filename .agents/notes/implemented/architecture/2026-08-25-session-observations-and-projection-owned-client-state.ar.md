@@ -59,7 +59,7 @@ flowchart LR
 
 Observation لا يملك أي mutation إذن. ذلك حدث عدد مجموعة هو غير ممكن تغيير بادئة،prepared Session إبقاء لم إصدار.Promotion هو Session Controller في opening snapshot إرسال خروج بعد تنفيذ صريح ownership transfer؛ أخرى قراءة جهة لا يستطيع يأخذ observation تغيير صار live Agent.
 
-Projection عمل واضح فقط لديه `all | none` اثنان نوع نمط.`all` في observation حدث cursor فوق حساب حساب كل قد تسجيل projection؛`none` تماما لا لمس اصطدام projection حالة. نظام لا وجود حسب key preparation حالة،`projectionKeys` نمط أو مقدار خارج `viewedState`/`viewedValue` cache. إصدار جهة يمكن حسب audience غربلة اختيار قد إتمام قيمة، لكن قاع طبقة observation لن موضع في فقط حساب تمام جزء projection حالة.
+Projection عمل واضح فقط لديه `all | none` اثنان نوع نمط.`all` في observation حدث cursor فوق حساب حساب كل قد تسجيل projection؛`none` تماما لا لمس اصطدام projection حالة. نظام لا وجود حسب key preparation حالة،`projectionKeys` نمط أو مقدار خارج `viewedState`/`viewedValue` cache. إصدار جهة يمكن حسب audience غربلة اختيار اكتمل قيمة، لكن قاع طبقة observation لن موضع في فقط حساب تمام جزء projection حالة.
 
 ### Projection تنفيذ حد
 

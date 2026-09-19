@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-05-dynamic-workflows.md
 2026-07-05-dynamic-workflows.md: 5a8d30d29bb1541fd69ba1120c812d346d5fb998
-2026-07-05-dynamic-workflows.ar.md: b8395fddfdcd2e21591cd393d539c70763805bf7
+2026-07-05-dynamic-workflows.ar.md: a1c0acdedbd5a5a5852f037b7ee8eb59635638bf

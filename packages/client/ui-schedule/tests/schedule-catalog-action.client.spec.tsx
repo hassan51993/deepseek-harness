@@ -187,9 +187,9 @@ describe('ScheduleCatalogAction rows', () => {
     const samples = [
       [86_400, 'Every 1 day', 'كل 1 يوم'],
       [172_800, 'Every 2 days', 'كل 2 يوم'],
-      [3_600, 'Every 1 hour', 'كل 1 صغير وقت'],
-      [7_200, 'Every 2 hours', 'كل 2 صغير وقت'],
-      [300, 'Every 5 minutes', 'كل 5 قسم ساعة'],
+      [3_600, 'Every 1 hour', 'كل 1 ساعة'],
+      [7_200, 'Every 2 hours', 'كل 2 ساعة'],
+      [300, 'Every 5 minutes', 'كل 5 دقيقة'],
       [301, 'Every 301 seconds', 'كل 301 ثانية'],
     ] as const
     for (const [seconds, english, arabic] of samples) {

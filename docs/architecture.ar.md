@@ -30,7 +30,7 @@ YAML تحكم HMR:base تفعيل فقط مراقبة نظر إعداد `dsh-hmr
 
 base توفير لأجل Web و Agent [إضافة إدارة جهاز](../packages/boot/plugin-manager/README.ar.md).
 
-يلزم فحص نظر أنت آلة جهاز بدء إعداد شجرة:
+يلزم عرض أنت آلة جهاز بدء إعداد شجرة:
 
 ```sh
 dsh --profile web --dump-config

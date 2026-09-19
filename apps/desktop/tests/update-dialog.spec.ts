@@ -128,7 +128,7 @@ it('supplies localized disclosure copy without putting diagnostics in the ordina
     message: 'لم قدرة أمان إيقاف مهمة', technicalDetails: 'exit 0; shutdown acknowledged false',
   })
   expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ detail: '',
-    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'فحص نظر تقنية فن تفصيل حال' })
+    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'عرض تقنية فن تفصيل حال' })
   dialogs!.cancel()
   await pending
 })

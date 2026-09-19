@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-05-windows-jsonl-durable-publish.md
 2026-07-05-windows-jsonl-durable-publish.md: 2ffda4c0f247241f64bd5c24a9b641ca1b5c40e2
-2026-07-05-windows-jsonl-durable-publish.ar.md: 07a9a90735837f31c6601f84609ba10baa51e0f0
+2026-07-05-windows-jsonl-durable-publish.ar.md: bfb1252f8f9e91d2a1b75261e790ef0c8fa12500

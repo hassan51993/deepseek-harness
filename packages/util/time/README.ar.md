@@ -39,7 +39,7 @@ kind: "package-library"
 import { canonicalClientTimeZone } from '@deepseek-ai/dsh-util-time'
 ```
 
-| توجيه خروج | مسؤولية |
+| تصدير | مسؤولية |
 |---|---|
 | `canonicalClientTimeZone(value)` | مقابل قبول وقت منطقة عودة جواب مواصفة `UTC` أو IANA `Area/Location` اسم؛ فارغ سلسلة، حمل فارغ أبيض، تقليص كتابة، مفرد مقطع أو منصة لا دعم حمل اسم عودة جواب `undefined`. |
 

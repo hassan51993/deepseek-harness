@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-08-sidebar-default-pages.md
 2026-09-08-sidebar-default-pages.md: e6471ec0ae42053fb12fa224060204c4f4930e49
-2026-09-08-sidebar-default-pages.ar.md: 4c6292bb09f8f58882c25e349838ed6337c1ef74
+2026-09-08-sidebar-default-pages.ar.md: a9de5787321a9c7a4d097ed6e0dba07dd7bac2a2

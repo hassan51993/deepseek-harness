@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-11-desktop-mandatory-update-client.md
 2026-09-11-desktop-mandatory-update-client.md: 9f2ae062342e4c687dc90be43ea4e6c42c1b3dc5
-2026-09-11-desktop-mandatory-update-client.ar.md: c474ae76c7d1b384d93883b51534c29631479f65
+2026-09-11-desktop-mandatory-update-client.ar.md: fcf66c79f7c8f7c07e361b2c67d8b6e03f7caa23

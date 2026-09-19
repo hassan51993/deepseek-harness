@@ -27,7 +27,7 @@ kind: "package-bundle"
 
 | إعداد | قيمة افتراضية | سلوك |
 |---|---|---|
-| `profile` | `sdk` | أمر مساعدة مساعدة في عرض profile اسم؛ تركيب هذا مزود bundle سوف ضبط ذاتي ذات مع مرفق profile اسم. |
+| `profile` | `sdk` | أمر مساعدة في عرض profile اسم؛ تركيب هذا مزود bundle سوف ضبط ذاتي ذات مع مرفق profile اسم. |
 
 `DSH_MAX_TOKENS_AS_SUCCESS` إبقاء SDK نشر خريطة: لم ضبط أو JSON `true` يأخذ token بلوغ حد subagent إتمام تقرير إبلاغ لـ قد قبول،JSON `false` فإن تقرير إبلاغ لـ خطأ. نموذج مزود/نموذج و مساحة العمل cwd عبر SDK ابتدائي تحويل طلب نقل دخول؛base profile يملك مهايئ، أداة، حفظ دائم، سياسة،settings و credentials.
 

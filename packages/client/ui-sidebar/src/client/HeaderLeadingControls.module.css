@@ -18,8 +18,8 @@
      .headerUtilities/.headerCorner), so both ends of the title row read as one
      control set. */
   gap: 8px;
-  padding-left: 68px;
-  margin-right: 8px;
+  padding-inline-start: 68px;
+  margin-inline-end: 8px;
 }
 
 .iconButton {

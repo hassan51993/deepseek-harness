@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/schedule.md
 schedule.md: a19a13668b2f0e4e4b4eed8245955784be37ec41
-schedule.ar.md: fdc96bf00b269abca04436458d94d4401b028fff
+schedule.ar.md: 7e285ccbfd703eb14f4208de8686370e4b7ea304

@@ -19,7 +19,7 @@ Status: rejected — مستقل حفظ دائم Service Definition حزمة هو
 ## تحقق استلام معيار
 
 - `@deepseek-ai/dsh-session-persistence` بصفة حزمة يتم إزالة.
-- `dsh-session` توجيه خروج حفظ دائم خدمة نوع، تنسيق ضبط جهاز و اتفاق مساعد مساعدة أداة.
+- `dsh-session` تصدير حفظ دائم خدمة نوع، تنسيق ضبط جهاز و اتفاق مساعد مساعدة أداة.
 - JSONL و SQLite خلفية حزمة مباشر اعتماد `dsh-session`.
 - `agent-loop` استعادة وظيفة استخدام جلسة حزمة يملك خدمة مفتاح.
 - [جلسة حفظ دائم](../../implemented/architecture/2026-06-14-session-persistence.ar.md) ،[أساس في جملة مقبض جلسة حفظ دائم](../../implemented/architecture/2026-08-27-handle-based-session-persistence.ar.md) و[حزمة وثيقة](../../../../packages/session/session-persistence/README.ar.md) شرح خلفية تنفيذ لـ أي ما زال إبقاء مستقل.

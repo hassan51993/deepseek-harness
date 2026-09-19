@@ -78,7 +78,7 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
     p.element('update').textContent]).toMatchInlineSnapshot(`
       [
         "لم قدرة أمان إيقاف مهمة، تحديث لم تثبيت. طلب قليلا بعد إعادة محاولة.",
-        "فحص نظر تقنية فن تفصيل حال",
+        "عرض تقنية فن تفصيل حال",
         "إعادة محاولة تحديث",
       ]
     `)
@@ -137,7 +137,7 @@ it('uses the same modal for download, verification, inspected confirmation and t
   p.element('update').focus()
   p.element('update').click()
   p.publish({ ...p.initial, update: { phase: 'verifying', version: '1.0.1-nightly.1' } })
-  expect(p.element('status').textContent).toBe('صحيح في تحقق تحديث ملف…')
+  expect(p.element('status').textContent).toBe('جارٍ تحقق تحديث ملف…')
   expect(p.element('update').hidden).toBe(true)
   p.publish({ ...p.initial, update: { phase: 'installing', version: '1.0.1-nightly.1' },
     confirmation: { active: false, version: '1.0.1-nightly.1', revision: 1 } })
@@ -159,7 +159,7 @@ it('uses the same modal for download, verification, inspected confirmation and t
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'preparing' })
   expect(p.element('detail').textContent).toBe('تطبيق أي سوف إعادة بدء، طلب قليلا انتظار.')
   p.publish({ ...p.initial, update: { phase: 'installing' }, restart: 'stopping-tasks' })
-  expect(p.element('detail').textContent).toBe('صحيح في أمان انتهاء تطبيق في مهمة.')
+  expect(p.element('detail').textContent).toBe('جارٍ أمان انتهاء تطبيق في مهمة.')
   expect(p.document.querySelector('main')).toBe(modal)
 })
 

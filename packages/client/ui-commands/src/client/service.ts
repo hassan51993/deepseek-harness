@@ -278,7 +278,7 @@ export class CommandUiRuntime extends Service implements CommandUiContract {
    * action submits nothing and runs regardless.
    *
    * A typed token is resolved through the localized claim tokens, so a line
-   * written as `/حساب تخطيط` reaches the `plan` descriptor and executes as `/plan`.
+   * written as `/خطة` reaches the `plan` descriptor and executes as `/plan`.
    */
   private async matchEnter(
     session: ClientSessionContext,

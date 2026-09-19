@@ -175,7 +175,7 @@ describe('TrajectoryTable', () => {
       />,
     )
 
-    expect(screen.getByText('2 عدد أداة استدعاء · bash')).toBeTruthy()
+    expect(screen.getByText('2 عدد استدعاء الأداة · bash')).toBeTruthy()
   })
 
   it('shows assistant timing facts after keyboard selection', () => {

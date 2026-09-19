@@ -513,7 +513,7 @@ describe('tab switching in ConversationRoot', () => {
     expect(screen.getByRole('toolbar', { name: 'مسار أثر أداة شريط' })).toBeTruthy()
     expect(screen.getByRole('region', { name: 'مسار أثر وقت خط' })).toBeTruthy()
     expect(view.container.querySelector('[data-conversation-composer-overlay]')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'استلام بدء كل جولة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'طي كل جولة' }))
     expect(view.container.querySelector('[data-collapsed-summary="turn"]')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'توسيع كل جولة' }))
     expect(screen.getByRole('row', { name: /مستخدم/ })).toBeTruthy()
@@ -542,7 +542,7 @@ describe('tab switching in ConversationRoot', () => {
     fireEvent.keyDown(screen.getByRole('row', { name: /أداة/ }), { key: 'Enter' })
     expect(screen.getByRole('complementary', { name: 'حدث تفصيل حال' })).toBeTruthy()
     expect(screen.getByText('رقم 1 جولة · رقم 1 خطوة')).toBeTruthy()
-    expect(screen.getByText('قد إتمام')).toBeTruthy()
+    expect(screen.getByText('اكتمل')).toBeTruthy()
     expect(screen.getByRole('tab', { name: 'نتيجة' })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'إغلاق تفصيل حال' }))
@@ -725,10 +725,10 @@ describe('tab switching in ConversationRoot', () => {
     expect(screen.getByRole('toolbar', { name: 'مسار أثر أداة شريط' })).toBeTruthy()
     expect(screen.getByText('بلا حساب وقت بيانات')).toBeTruthy()
     expect(screen.getByRole<HTMLButtonElement>('button', {
-      name: 'استلام بدء كل جولة',
+      name: 'طي كل جولة',
     }).disabled).toBe(false)
     expect(screen.getByRole<HTMLButtonElement>('button', {
-      name: 'استلام بدء كل استدعاء',
+      name: 'طي كل استدعاء',
     }).disabled).toBe(false)
     expect(screen.queryByRole('row')).toBeNull()
     expect(screen.queryByText(/turns ·/)).toBeNull()

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-nonofficial-feedback-otel.md
 2026-09-05-nonofficial-feedback-otel.md: dc08cd24e94268423d3eb0e2420246bfd4d6ae30
-2026-09-05-nonofficial-feedback-otel.ar.md: 3d2a3db5230f734733d4d2da891197a24d14012a
+2026-09-05-nonofficial-feedback-otel.ar.md: b8546ec11bcf2d4068227a5d5127409755a66eb1

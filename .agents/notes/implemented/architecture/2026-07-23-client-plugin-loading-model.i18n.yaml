@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-23-client-plugin-loading-model.md
 2026-07-23-client-plugin-loading-model.md: 25a5440f3d9ecde08882ad93a477a7f21e682d91
-2026-07-23-client-plugin-loading-model.ar.md: f2f8df0db03823636890d0d2d56f3f33a04f8f42
+2026-07-23-client-plugin-loading-model.ar.md: 8e81ab9abfdb6f41ef15fa7372116a8603113317

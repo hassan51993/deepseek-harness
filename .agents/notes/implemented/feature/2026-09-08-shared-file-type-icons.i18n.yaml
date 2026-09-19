@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-08-shared-file-type-icons.md
 2026-09-08-shared-file-type-icons.md: df65b141fae206edb4bee0588525e3d602cb722c
-2026-09-08-shared-file-type-icons.ar.md: e1256f76eacbbd74d0689aa9ca99ad463c405b6b
+2026-09-08-shared-file-type-icons.ar.md: af016cfdc8be4f11ff18bd8da16253e2fa5df6d4

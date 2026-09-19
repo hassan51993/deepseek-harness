@@ -68,15 +68,15 @@
 .splitRow > .divider::before {
   top: 0;
   bottom: 0;
-  left: -0.25px;
+  inset-inline-start: -0.25px;
   width: 0.5px;
 }
 
 .splitRow > .divider::after {
   top: 0;
   bottom: 0;
-  left: -4px;
-  right: -4px;
+  inset-inline-start: -4px;
+  inset-inline-end: -4px;
 }
 
 .splitColumn > .divider {
@@ -85,15 +85,15 @@
 }
 
 .splitColumn > .divider::before {
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   top: -0.25px;
   height: 0.5px;
 }
 
 .splitColumn > .divider::after {
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   top: -4px;
   bottom: -4px;
 }
@@ -218,7 +218,7 @@
   gap: 8px;
   align-items: center;
   height: 28px;
-  margin-left: 4px;
+  margin-inline-start: 4px;
 }
 
 /* The slot between two chips: a 10px box with a hairline down its centre.
@@ -317,7 +317,7 @@
 .tabClose {
   position: absolute;
   top: 4px;
-  right: 4px;
+  inset-inline-end: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -464,7 +464,7 @@
   padding: 5px 8px;
   color: var(--dsw-alias-label-primary);
   font-size: var(--dsh-content-font-size-secondary, 13px);
-  text-align: left;
+  text-align: start;
   background: transparent;
   border: none;
   border-radius: 4px;
@@ -538,25 +538,25 @@
 .dockHint[data-dockkit-dock-zone='left'] {
   top: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   width: 40%;
 }
 
 .dockHint[data-dockkit-dock-zone='right'] {
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   width: 40%;
 }
 
 [data-dockkit-drop-zones='horizontal'] .dockHint[data-dockkit-dock-zone='left'] {
   width: 50%;
-  padding-right: 4px;
+  padding-inline-end: 4px;
 }
 
 [data-dockkit-drop-zones='horizontal'] .dockHint[data-dockkit-dock-zone='right'] {
   width: 50%;
-  padding-left: 4px;
+  padding-inline-start: 4px;
 }
 
 .dockHintCard {
@@ -629,15 +629,15 @@
 
 .dockHint[data-dockkit-dock-zone='top'] {
   top: 0;
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   height: 40%;
 }
 
 .dockHint[data-dockkit-dock-zone='bottom'] {
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   height: 40%;
 }
 
@@ -698,7 +698,7 @@
 
 .floatResize {
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   width: 20px;
   height: 20px;
@@ -713,11 +713,11 @@
 .floatResize::after {
   content: '';
   position: absolute;
-  right: 4px;
+  inset-inline-end: 4px;
   bottom: 4px;
   width: 16px;
   height: 16px;
-  border-right: 1.5px solid var(--dsw-alias-label-caption);
+  border-inline-end: 1.5px solid var(--dsw-alias-label-caption);
   border-bottom: 1.5px solid var(--dsw-alias-label-caption);
   border-bottom-right-radius: 16px;
   opacity: 0;

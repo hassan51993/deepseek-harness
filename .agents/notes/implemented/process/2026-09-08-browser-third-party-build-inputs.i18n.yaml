@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-08-browser-third-party-build-inputs.md
 2026-09-08-browser-third-party-build-inputs.md: afdd84bd1f39581c0d22ed8d2ce90dfff7e8c55a
-2026-09-08-browser-third-party-build-inputs.ar.md: f334f9a53b0956b0f02ecf069c4f8333cb2ee8af
+2026-09-08-browser-third-party-build-inputs.ar.md: 1950d06ac3a8c9460cefef9918342137f1d1a20c

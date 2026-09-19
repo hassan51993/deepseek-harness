@@ -163,7 +163,7 @@ type SettingsUpdateSource = 'update' | 'provider'
 
 ## أصلي وثيقة عملية
 
-`SettingsDocumentOpenValue` تأكيد `settings/openSettingsDocument` قد دقيق تجهيز جيد provider يحتفظ وثيقة، و سوف ذلك تسليم إعطاء أصلي نص تحرير جهاز.`AgentPresetDirectoryOpenValue` تقرير إبلاغ قد إتمام أصلي تسليم وصل، أو في طاولة وجه فتح غير ممكن استخدام وقت إرجاع تحليل بعد مستخدم preset دليل. اثنان بند عملية كل لا قبول من متصفح اختيار Host مسار.
+`SettingsDocumentOpenValue` تأكيد `settings/openSettingsDocument` قد دقيق تجهيز جيد provider يحتفظ وثيقة، و سوف ذلك تسليم إعطاء أصلي نص تحرير جهاز.`AgentPresetDirectoryOpenValue` تقرير إبلاغ اكتمل أصلي تسليم وصل، أو في طاولة وجه فتح غير ممكن استخدام وقت إرجاع تحليل بعد مستخدم preset دليل. اثنان بند عملية كل لا قبول من متصفح اختيار Host مسار.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

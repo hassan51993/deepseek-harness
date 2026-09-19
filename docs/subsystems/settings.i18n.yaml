@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/settings.md
 settings.md: 088cda0e94bb015c2314e8f1bb06d46f4c2be010
-settings.ar.md: 150f9f024cdbcf08d4991bb2f068bc6153ef562b
+settings.ar.md: d44d053da0ad5d2dded33e6437a557abad64039c

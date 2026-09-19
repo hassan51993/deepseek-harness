@@ -118,7 +118,7 @@ describe('workspace browser rows', () => {
 
   it.each([
     ['approval', 'انتظار مراجعة دفعة'],
-    ['plan-review', 'حساب تخطيط انتظار مراجعة'],
+    ['plan-review', 'خطة انتظار مراجعة'],
     ['question', 'انتظار عودة جواب'],
   ] as const)('shows %s ahead of running in search results', (pendingInteraction, label) => {
     const result: SearchResultNode = {
@@ -164,7 +164,7 @@ describe('workspace browser rows', () => {
     const row = screen.getByRole('treeitem')
     expect(row.getAttribute('aria-selected')).toBe('true')
     expect(row.hasAttribute('aria-expanded')).toBe(false)
-    expect(screen.queryByRole('button', { name: /توسيع|استلام بدء/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /توسيع|طي/ })).toBeNull()
     fireEvent.click(row)
     expect(onOpen).toHaveBeenCalledWith(node.id)
   })
@@ -232,7 +232,7 @@ describe('workspace browser rows', () => {
 
     const assertIndicator = (): HTMLElement => {
       const title = screen.getByText('Scheduled Session')
-      const time = screen.getByText('للتو للتو')
+      const time = screen.getByText('للتو')
       const indicator = screen.getByRole('img', { name: 'لديه نشط حركة تحديد وقت مهمة' })
       expect(title.nextElementSibling).toBe(indicator)
       expect(indicator.nextElementSibling).toBe(time)
@@ -484,14 +484,14 @@ describe('workspace browser rows', () => {
         onRename={vi.fn()} onFork={vi.fn()} onArchive={vi.fn()} t={t} />)
       // The placeholder has no content yet: no row verbs, no "now" stamp.
       expect(screen.queryByRole('button', { name: /جلسة.*عملية/ })).toBeNull()
-      expect(screen.queryByText('للتو للتو')).toBeNull()
+      expect(screen.queryByText('للتو')).toBeNull()
       // The hover card keeps title + status but drops the timestamp line.
       const wrapper = screen.getByRole('treeitem').parentElement as HTMLElement
       fireEvent.pointerEnter(wrapper)
       act(() => { vi.advanceTimersByTime(500) })
-      expect(screen.getAllByText('جديد جلسة').length).toBeGreaterThanOrEqual(2)
+      expect(screen.getAllByText('جلسة جديدة').length).toBeGreaterThanOrEqual(2)
       expect(screen.getByText('فارغ خامل')).toBeTruthy()
-      expect(screen.queryByText('للتو للتو')).toBeNull()
+      expect(screen.queryByText('للتو')).toBeNull()
       expect(screen.getByText('فارغ خامل').closest('[role="button"]')).toBeNull()
     } finally {
       vi.useRealTimers()
@@ -548,14 +548,14 @@ describe('workspace browser rows', () => {
       act(() => { vi.advanceTimersByTime(500) })
       // Card body: full title + relative time + running status.
       expect(screen.getAllByText('Hovered')).toHaveLength(2)
-      expect(screen.getByText('1قسم ساعة قبل')).toBeTruthy()
+      expect(screen.getByText('1دقيقة قبل')).toBeTruthy()
       expect(screen.getAllByText('إجراء في')).toHaveLength(2)
       fireEvent.pointerLeave(wrapper)
       // Menu open (disabled=true) suppresses the card for the same hover.
       fireEvent.click(screen.getByRole('button', { name: 'جلسة “Hovered” عملية' }))
       fireEvent.pointerEnter(wrapper)
       act(() => { vi.advanceTimersByTime(1000) })
-      expect(screen.queryByText('1قسم ساعة قبل')).toBeNull()
+      expect(screen.queryByText('1دقيقة قبل')).toBeNull()
     } finally {
       vi.useRealTimers()
     }
@@ -563,7 +563,7 @@ describe('workspace browser rows', () => {
 
   it.each([
     ['approval', 'انتظار مراجعة دفعة'],
-    ['plan-review', 'حساب تخطيط انتظار مراجعة'],
+    ['plan-review', 'خطة انتظار مراجعة'],
     ['question', 'انتظار عودة جواب'],
   ] as const)('shows %s as warning ahead of the running state', (pendingInteraction, label) => {
     vi.useFakeTimers()
@@ -605,7 +605,7 @@ describe('workspace browser rows', () => {
       fireEvent.pointerEnter(screen.getByRole('treeitem').parentElement as HTMLElement)
       act(() => { vi.advanceTimersByTime(500) })
       expect(screen.getByText('فارغ خامل')).toBeTruthy()
-      expect(screen.getAllByText('للتو للتو')).toHaveLength(2)
+      expect(screen.getAllByText('للتو')).toHaveLength(2)
     } finally {
       vi.useRealTimers()
     }
@@ -623,7 +623,7 @@ describe('workspace browser rows', () => {
       fireEvent.pointerEnter(screen.getByRole('treeitem').parentElement as HTMLElement)
       act(() => { vi.advanceTimersByTime(500) })
       // Row's visually-hidden reminder label plus the hover card's status line.
-      expect(screen.getAllByText('قد إتمام')).toHaveLength(2)
+      expect(screen.getAllByText('اكتمل')).toHaveLength(2)
     } finally {
       vi.useRealTimers()
     }

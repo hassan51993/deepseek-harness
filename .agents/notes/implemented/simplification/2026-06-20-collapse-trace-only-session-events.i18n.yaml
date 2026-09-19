@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-06-20-collapse-trace-only-session-events.md
 2026-06-20-collapse-trace-only-session-events.md: b79d1b8778771330a96e5600b94fcc035f5b9ffa
-2026-06-20-collapse-trace-only-session-events.ar.md: 1c1aea44ce48971204a9fa4b3d12ede74e840b04
+2026-06-20-collapse-trace-only-session-events.ar.md: 98b32f277b8611cbdf0baa1935f19dc1341f708b

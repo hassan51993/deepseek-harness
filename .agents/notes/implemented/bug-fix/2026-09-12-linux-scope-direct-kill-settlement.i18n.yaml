@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-12-linux-scope-direct-kill-settlement.md
 2026-09-12-linux-scope-direct-kill-settlement.md: 3bdfeda8084af0be1d421c09e2f554ad9146ebc6
-2026-09-12-linux-scope-direct-kill-settlement.ar.md: d92457ded7ea0497a60a4d44e3264af846e6b8d2
+2026-09-12-linux-scope-direct-kill-settlement.ar.md: 42a5f8b84a065f8a9c85bfa5f9d45a4be05e9520

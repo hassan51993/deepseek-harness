@@ -74,13 +74,13 @@ describe('PermissionSelect', () => {
       selection: { currentValue: 'read-only' },
       select: () => submitted.promise,
     })
-    expect(trigger().textContent).toBe('فقط يمكن فحص نظر')
+    expect(trigger().textContent).toBe('فقط يمكن عرض')
     expect([...trigger().querySelectorAll('svg')]
       .every(icon => icon.closest('[aria-hidden="true"]') !== null)).toBe(true)
 
     fireEvent.click(trigger())
     expect(screen.getAllByRole('menuitem').map(item => item.textContent))
-      .toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
+      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
     fireEvent.click(screen.getByRole('menuitem', { name: 'مساحة العمل داخل تعديل' }))
 
     expect(select).toHaveBeenCalledExactlyOnceWith('workspace-write')
@@ -154,7 +154,7 @@ describe('PermissionSelect', () => {
 
     expect(trigger().getAttribute('aria-label')).toBe('وصول نمط، حالي:Auto review EXP')
     expect(trigger().querySelector('sup')?.textContent).toBe('EXP')
-    expect(trigger().getAttribute('title')).toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
+    expect(trigger().getAttribute('title')).toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
   })
 
   it('revokes open UI when locked or either source disappears', () => {

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-06-standard-hosted-benchmark-runner.md
 2026-09-06-standard-hosted-benchmark-runner.md: d2c8b047071fccef2e0dce1ef6de587574cae3ef
-2026-09-06-standard-hosted-benchmark-runner.ar.md: fb92d3a3e5bb35cf65530e9b7fc5cd7f49872601
+2026-09-06-standard-hosted-benchmark-runner.ar.md: 3df4eff73afcd2257ea6813da4666e56c7dbe96a

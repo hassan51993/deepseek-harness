@@ -81,27 +81,27 @@ describe('TodoRow', () => {
   it('summarizes counts and the active item from the call args', () => {
     render(<TodoRow {...rowProps(resultNode(ARGS))} />)
     expect(screen.getByText('تحديث مهمة بيان')).toBeTruthy()
-    expect(screen.getByText('1/3 قد إتمام · كتابة مكون')).toBeTruthy()
+    expect(screen.getByText('1/3 اكتمل · كتابة مكون')).toBeTruthy()
   })
 
   it('reports the extra active count outside the ellipsized summary text', () => {
     const { container } = render(<TodoRow {...rowProps(resultNode(JSON.stringify({ todos: PARALLEL })))} />)
-    const text = screen.getByText('1/5 قد إتمام · كتابة مكون')
+    const text = screen.getByText('1/5 اكتمل · كتابة مكون')
     const extra = screen.getByText('+2')
     expect(text.contains(extra)).toBe(false)
-    expect(container.textContent).toContain('1/5 قد إتمام · كتابة مكون+2')
+    expect(container.textContent).toContain('1/5 اكتمل · كتابة مكون+2')
   })
 
   it('omits the active clause when no item is in progress and reads running-call args', () => {
     const args = JSON.stringify({ todos: [{ content: 'x', status: 'completed' }] })
     render(<TodoRow {...rowProps({ callId: 'c1', name: 'todo_write', argsRaw: args, turn: 1, step: 1, time: 1_000, subCalls: [] })} />)
-    expect(screen.getByText('1/1 قد إتمام')).toBeTruthy()
+    expect(screen.getByText('1/1 اكتمل')).toBeTruthy()
   })
 
   it('keeps the counts when an active item has unusable content', () => {
     const args = JSON.stringify({ todos: [{ content: 'done', status: 'completed' }, { content: 42, status: 'in_progress' }] })
     const { container } = render(<TodoRow {...rowProps(resultNode(args))} />)
-    expect(screen.getByText('1/2 قد إتمام')).toBeTruthy()
+    expect(screen.getByText('1/2 اكتمل')).toBeTruthy()
     expect(container.textContent).not.toContain('+')
   })
 

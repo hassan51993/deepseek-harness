@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-05-durable-web-schedule.md
 2026-08-05-durable-web-schedule.md: d096ff8b3d046764c828e35967587b140c0c105a
-2026-08-05-durable-web-schedule.ar.md: 51e1452a1c264e4f84932c324f3aa594d57d998e
+2026-08-05-durable-web-schedule.ar.md: c0869b8f128c78f0070daafcf3b0e3aa3f26a340

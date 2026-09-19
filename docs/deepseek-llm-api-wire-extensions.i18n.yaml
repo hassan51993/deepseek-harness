@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/deepseek-llm-api-wire-extensions.md
 deepseek-llm-api-wire-extensions.md: 1cf7548585d1bf84e1dd7d797ead834d019744a7
-deepseek-llm-api-wire-extensions.ar.md: 0c65fe19b16d1485c8480b0570d0963f8a772261
+deepseek-llm-api-wire-extensions.ar.md: 9499c65615c9e094c9f315a4c19be420a973a44e

@@ -33,7 +33,7 @@ kind: "package-reference"
 
 ### مقابل عمل خدمة إضافة
 
-عمل خدمة إضافة تسجيل عادي Slot entry أو يمكن إعادة استخدام Component Factory؛ مصير في تصيير موضع يأخذ وقت التشغيل جلسة و Workspace observable source ربط لـ selector خطاف. إضافة عبر دفع توجيه خروج Component props استلام إلى معيار scope props——هو أبدا استيراد مصير، أيضا لا لمس اصطدام React داخلي آلية. كل من renderer إنشاء Component كل قدرة تصيير Factory occurrence،Factory أيضا قدرة كشف من استدعاء جهة اختيار نطاق جزء Component، بينما بلا حاجة في حزمة بين مشترك تنفيذ قيمة.
+عمل خدمة إضافة تسجيل عادي Slot entry أو يمكن إعادة استخدام Component Factory؛ مصير في تصيير موضع يأخذ وقت التشغيل جلسة و Workspace observable source ربط لـ selector خطاف. إضافة عبر دفع تصدير Component props استلام إلى معيار scope props——هو أبدا استيراد مصير، أيضا لا لمس اصطدام React داخلي آلية. كل من renderer إنشاء Component كل قدرة تصيير Factory occurrence،Factory أيضا قدرة كشف من استدعاء جهة اختيار نطاق جزء Component، بينما بلا حاجة في حزمة بين مشترك تنفيذ قيمة.
 
 -----
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-13-workflow-ptc-sandbox-reuse.md
 2026-09-13-workflow-ptc-sandbox-reuse.md: 5977481ebeacd7e2feda248b5fbc1b180720d17e
-2026-09-13-workflow-ptc-sandbox-reuse.ar.md: 31ba311ebe3263d16dff4c6ba909a1e61cbfa155
+2026-09-13-workflow-ptc-sandbox-reuse.ar.md: f2086c8e01569d5845537bba79ef9ee410d9c9d1

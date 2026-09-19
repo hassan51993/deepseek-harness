@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/simplification/2026-07-26-dependency-swaps-rejected-by-nih-audit.md
 2026-07-26-dependency-swaps-rejected-by-nih-audit.md: 8fd326848397466eaebdfb1a6ee8ddcf74014d8e
-2026-07-26-dependency-swaps-rejected-by-nih-audit.ar.md: a15dd0f267ae61d2b107a0a116137cc013637cb1
+2026-07-26-dependency-swaps-rejected-by-nih-audit.ar.md: ca7165253ab72eeeab93311cdcfea7fb7b7377df

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/browser-use-stagehand-native/README.md
 README.md: eae98be889d3796e8b9adfaca7ab8fa96eae2da7
-README.ar.md: d6cd32625c8247ed9bc67ce727b6b5373d267e47
+README.ar.md: 07a9d6a1bdd45d534ea88ac0ddfdcb98fd9ac062

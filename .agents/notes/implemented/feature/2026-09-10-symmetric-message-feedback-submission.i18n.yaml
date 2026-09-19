@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-10-symmetric-message-feedback-submission.md
 2026-09-10-symmetric-message-feedback-submission.md: 7471b78573e37c7fc2b6b73e0b9dadb4677758f5
-2026-09-10-symmetric-message-feedback-submission.ar.md: 0ec3c3974f9d9571b13f02d4132c22fc057494c2
+2026-09-10-symmetric-message-feedback-submission.ar.md: d4bfa0d59956950012c8fcc7e2ff3f054d3027e7

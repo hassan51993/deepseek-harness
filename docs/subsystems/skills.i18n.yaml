@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/skills.md
 skills.md: 2890b352671fedddcf7ae0a0cde4676edaccf544
-skills.ar.md: ce18e39c0b89c4826376a50297d1643c340310a6
+skills.ar.md: 4d419f3b38264b66ef580ac03ce2d9eb92ede742

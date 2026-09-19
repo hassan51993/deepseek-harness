@@ -1,4 +1,4 @@
-# Agent Note: كل مرة أداة استدعاء قبل فعلي تحقق صفة Auto review
+# Agent Note: كل مرة استدعاء الأداة قبل فعلي تحقق صفة Auto review
 
 Status: implemented
 
@@ -10,7 +10,7 @@ Full access يجعل لديه استخدام مشروع عمل بلا حاجة �
 
 ## قرار
 
-[`dsh-experimental-auto-review`](../../../../packages/experimental/auto-review/README.ar.md) هو صريح تثبيت فعلي تحقق صفة Web طبقة، حسب[فعلي تحقق حزمة إصدار قرار](../process/2026-09-12-publish-all-experimental-packages.ar.md) مشاركة و إصدار. افتراضي Web إبقاء Read Only،Workspace Write و Full access. هذا طبقة مساهمة فقط حد حالي جلسة `auto`، وحيد حمل دائم هوية لـ `permission/preset:auto`؛ هو مشترك استخدام Full access لم تغيير `danger-full-access + never` دوران زر و أداة تعريف.Headless، عام ضبط و جديد جلسة قيمة افتراضية كل ترتيب حذف هذا integration.
+[`dsh-experimental-auto-review`](../../../../packages/experimental/auto-review/README.ar.md) هو صريح تثبيت فعلي تحقق صفة Web طبقة، حسب[فعلي تحقق حزمة إصدار قرار](../process/2026-09-12-publish-all-experimental-packages.ar.md) مشاركة و إصدار. افتراضي Web إبقاء Read Only،Workspace Write و Full access. هذا طبقة مساهمة فقط حد حالي جلسة `auto`، وحيد حمل دائم هوية لـ `permission/preset:auto`؛ هو مشترك استخدام Full access لم تغيير `danger-full-access + never` دوران زر و أداة تعريف.Headless، عام ضبط و جلسة جديدة قيمة افتراضية كل ترتيب حذف هذا integration.
 
 كل أصلي استدعاء و قد بدء PTC `tools.*` inner call كل في body قبل قبول مرة مراجعة فحص. خارج طبقة `run_code` transport و PTC برنامج داخل مباشر Node فاعلية نتيجة لا في حفظ إثبات نطاق داخل. لا توفير حسب أداة اسم إعفاء تجنب، ذاكرة مؤقتة grant، إعادة محاولة، يمكن إعداد سياسة، ثاني تخويل فحص أو شخص عمل fallback. تكرار استدعاء أيضا إعادة مراجعة فحص.
 
@@ -42,7 +42,7 @@ Integration فقط استخدام الأكثر جديد `request/header.config` 
 
 reviewer من Session كامل حركة عمل تاريخ بناء هذا اثنان عدد حركة عمل قسم عقدة: تخويل هو رمز دمج `REVIEW_POLICY` مصدر قاعدة ذلك عدد أكثر مبكر استدعاء، بينما تكرار أو اندفاع مفاجئ هوية يجب في كامل نسخة سجل أي موضع كل مرئي، بينما لا هو فقط في قريب مدة نافذة داخل مرئي، لذلك Session إسقاط و محدود قراءة كل لا يمكن دعم دعم هذا حكم تحديد. هذا مرة قراءة استخدام قد ملغى ترك تزامن `snapshotEvents()`، و حمل لديه سطر درجة `typescript/no-deprecated` إعفاء تجنب.
 
-رئيسي agent V3 `system/message` عقدة،assistant متن/reasoning و tool results الكل ترتيب حذف. حالي استدعاء يجب يخص `step/start` سجل فتح وضع step؛ نقص قليل step ملكية وقت رفض تنفيذ. هذا استدعاء فقط في `PENDING_ACTION` ظهور؛ بعد لم بدء sibling لا يوجد تاريخ استدعاء واقع. أصلي schema قدوم ذاتي الأكثر جديد request header.PTC في binding بنية صنع وقت التقاط تجميد ربط schema، مرور من مجدول نقل دخول `ToolExecution`؛ وصف و معامل schema لا دخول بدء/تسوية حدث أو Session/SDK wire. حركة عمل واقع ناقص، لا متسق أو لديه اختلاف معنى وقت رفض استدعاء، لا استعلام live registry. تجاوز نافذة طلب مباشر رفض، لا فعل ملخص، قطع قطع، مقدار خارج compaction أو ضبط صغير نوع إخراج token ميزانية.
+رئيسي agent V3 `system/message` عقدة،assistant متن/reasoning و tool results الكل ترتيب حذف. حالي استدعاء يجب يخص `step/start` سجل فتح وضع step؛ نقص قليل step ملكية وقت رفض تنفيذ. هذا استدعاء فقط في `PENDING_ACTION` ظهور؛ بعد لم بدء sibling لا يوجد تاريخ استدعاء واقع. أصلي schema قدوم ذاتي الأكثر جديد request header.PTC في binding بنية صنع وقت التقاط تجميد ربط schema، مرور من مجدول نقل دخول `ToolExecution`؛ وصف و معامل schema لا دخول بدء/تسوية حدث أو Session/SDK wire. حركة عمل واقع ناقص، لا متسق أو لديه اختلاف معنى وقت رفض استدعاء، لا استعلام live registry. تجاوز نافذة طلب مباشر رفض، لا فعل ملخص، مقتطع، مقدار خارج compaction أو ضبط صغير نوع إخراج token ميزانية.
 
 ### نتيجة و إلغاء
 

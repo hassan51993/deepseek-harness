@@ -182,7 +182,7 @@
   border-radius: 12px;
   background: transparent;
   color: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background-color 120ms ease, border-color 120ms ease;
 }
@@ -416,7 +416,7 @@
   color: var(--dsw-alias-state-error-primary);
   font-size: 11px;
   line-height: 16px;
-  text-align: right;
+  text-align: end;
 }
 
 @media (max-width: 720px) {

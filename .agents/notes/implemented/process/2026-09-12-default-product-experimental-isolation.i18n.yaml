@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-12-default-product-experimental-isolation.md
 2026-09-12-default-product-experimental-isolation.md: e861c26e4f906950a32a334def010f85c889d588
-2026-09-12-default-product-experimental-isolation.ar.md: 694718088de8423b497d9a09da3bfe487bd30406
+2026-09-12-default-product-experimental-isolation.ar.md: 852bd74b8d05152e23d21187881a940ea26b26ea

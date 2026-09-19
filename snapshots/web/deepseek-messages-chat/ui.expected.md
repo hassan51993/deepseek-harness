@@ -2,10 +2,10 @@
   - navigation "جلسة طبقة درجة":
     - button "فقط عودة تكرار MESSAGES_WEB_READY، لا استدعاء" [disabled]
   - img
-  - text: معيار نمط
+  - text: النمط المعياري
   - button "أكثر كثير عملية":
     - img
-  - button "فتح يمين جانب حافة شريط":
+  - button "فتح يمين الشريط الجانبي":
     - img
   - tablist:
     - tab "محادثة" [selected]

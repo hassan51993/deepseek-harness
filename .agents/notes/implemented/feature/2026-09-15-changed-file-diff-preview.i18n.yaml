@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-15-changed-file-diff-preview.md
 2026-09-15-changed-file-diff-preview.md: b44864d720ede985b96fcbc6ffad788cd5ef9a99
-2026-09-15-changed-file-diff-preview.ar.md: 6edf687c1837f45a9f94d4fd4ea97ee8feaa07cd
+2026-09-15-changed-file-diff-preview.ar.md: 312aa6bac78c1f20c71547ec0d762a3598d727b1

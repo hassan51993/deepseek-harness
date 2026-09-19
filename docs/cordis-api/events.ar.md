@@ -26,7 +26,7 @@ parallel<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K,
 - `name`: حدث اسم.
 - `args`: نقل تمرير إعطاء كل مستمع معامل.
 
-**قيمة راجعة**: واحد Promise، في كل مستمع متساو قد إتمام بعد صرف الآن.
+**قيمة راجعة**: واحد Promise، في كل مستمع متساو اكتمل بعد صرف الآن.
 
 [شفرة المصدر](../../vendor/cordis/src/events.ts#L44)
 

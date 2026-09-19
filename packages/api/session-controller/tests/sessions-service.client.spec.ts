@@ -887,8 +887,8 @@ describe('fork', () => {
   it.for([
     ['Roadmap', 'Roadmap (1)'],
     ['Roadmap (1)', 'Roadmap (2)'],
-    ['حساب تخطيط (1)', 'حساب تخطيط (2)'],
-    ['حساب تخطيط (9)', 'حساب تخطيط (10)'],
+    ['خطة (1)', 'خطة (2)'],
+    ['خطة (9)', 'خطة (10)'],
   ] as const)('increments the durable title %j after the child is published', async ([sourceTitle, childTitle], { bench }) => {
     const b = bench()
     b.svc.handleControlFrame({

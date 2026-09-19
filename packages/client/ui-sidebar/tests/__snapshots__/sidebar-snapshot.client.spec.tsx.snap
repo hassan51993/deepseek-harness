@@ -498,7 +498,7 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
         </span>
       </button>
       <button
-        aria-label="استلام بدء جانب حافة شريط"
+        aria-label="طي الشريط الجانبي"
         class="iconButton toggle"
         type="button"
       >
@@ -529,7 +529,7 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
       <span
         class="newSessionLabel wide"
       >
-        جديد جلسة
+        جلسة جديدة
       </span>
     </button>
     <div

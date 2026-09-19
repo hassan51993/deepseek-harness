@@ -195,7 +195,7 @@ interface PtcRunFailure {
 
 ## خدمة
 
-`PtcRuntime` تعريف في [`src/index.ts`](../../packages/ptc-runtime/ptc-runtime/src/index.ts).`resolve(request)` إرجاع كامل تنفيذ إدخال،`run(spec)` تنفيذ هو جمع.`executionInstructions` توفير من وقت التشغيل يملك استخدام شرح، توفير مستهلك عرض. دعم حمل تدريجي مرة تغطية وقت،`timeout` تقرير إبلاغ إعداد مرور مرور وقت قيمة افتراضية و حد أعلى؛ كل مرة طلب ما زال من `resolve` تحقق و قطع قطع.`language` اختيار دعم حمل برنامج عرض؛`isolation` وصف تنفيذ أساس قاع، لا عمل أمان إعلان.`sandboxMode` إعلان ملف سياسة دعم حمل، لا توفير قيد مزود إرجاع `undefined`. كل تنفيذ سوف كل مرة تشغيل برنامج حالة قسم مغادرة، و في مورد تحرير خلال إنهاء كما انتظار نشط وثب تنفيذ.
+`PtcRuntime` تعريف في [`src/index.ts`](../../packages/ptc-runtime/ptc-runtime/src/index.ts).`resolve(request)` إرجاع كامل تنفيذ إدخال،`run(spec)` تنفيذ هو جمع.`executionInstructions` توفير من وقت التشغيل يملك استخدام شرح، توفير مستهلك عرض. دعم حمل تدريجي مرة تغطية وقت،`timeout` تقرير إبلاغ إعداد مرور مرور وقت قيمة افتراضية و حد أعلى؛ كل مرة طلب ما زال من `resolve` تحقق و مقتطع.`language` اختيار دعم حمل برنامج عرض؛`isolation` وصف تنفيذ أساس قاع، لا عمل أمان إعلان.`sandboxMode` إعلان ملف سياسة دعم حمل، لا توفير قيد مزود إرجاع `undefined`. كل تنفيذ سوف كل مرة تشغيل برنامج حالة قسم مغادرة، و في مورد تحرير خلال إنهاء كما انتظار نشط وثب تنفيذ.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

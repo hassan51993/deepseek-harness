@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/testing/2026-06-11-mutation-testing.md
 2026-06-11-mutation-testing.md: ef4f4bf73fcf9194bb52e3a6e1ad88a2624d77e9
-2026-06-11-mutation-testing.ar.md: 36f8c0c16659cc6ab77c230bb610189713e2867b
+2026-06-11-mutation-testing.ar.md: 269ad3b620b64005558c9b7181214df08560335d

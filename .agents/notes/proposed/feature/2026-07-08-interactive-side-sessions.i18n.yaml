@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-07-08-interactive-side-sessions.md
 2026-07-08-interactive-side-sessions.md: e1406bdb052899b18e9b34948c3a6c1dfa86d983
-2026-07-08-interactive-side-sessions.ar.md: a22f7d3805303cd46918d53fc06789e7aa7ded00
+2026-07-08-interactive-side-sessions.ar.md: e30a004d3089ab4253469974e80664c04c5e4c1f

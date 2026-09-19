@@ -118,7 +118,7 @@ export function apply(ctx: Context) {
 
 ## عرض مثال: سجل إضافة
 
-هذا عدد إضافة سجل أداة استدعاء و أداة نتيجة:
+هذا عدد إضافة سجل استدعاء الأداة و أداة نتيجة:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'

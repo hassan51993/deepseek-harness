@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-05-nested-terminal-cards.md
 2026-09-05-nested-terminal-cards.md: 31532993a2a966e37d11a9f8555746ac6a0933bb
-2026-09-05-nested-terminal-cards.ar.md: 6c03f4acf857728b186e217346d298b159487508
+2026-09-05-nested-terminal-cards.ar.md: 68129fdc4c45f1e426f0b9ffbd639074583e574c

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-19-zstandard-jsonl-session-logs.md
 2026-07-19-zstandard-jsonl-session-logs.md: e4693711451ddf71d01c3f0fc46fa4920e122445
-2026-07-19-zstandard-jsonl-session-logs.ar.md: 1d3905b0bd8e69abf056fe9a33c3e5e66687b306
+2026-07-19-zstandard-jsonl-session-logs.ar.md: 7c15fed0bae6321b3f7a6af3f7960830805e8c67

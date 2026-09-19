@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/architecture/2026-08-08-cordis-web-dynamic-packages.md
 2026-08-08-cordis-web-dynamic-packages.md: 06555848d96687e309759c38d2a86e19e3dbec1d
-2026-08-08-cordis-web-dynamic-packages.ar.md: befdaa5ae8c4e1e57b0248aaaec96fcd983497b7
+2026-08-08-cordis-web-dynamic-packages.ar.md: 7fdca54037320d137cfe2931afd7f4ee0137f5bd

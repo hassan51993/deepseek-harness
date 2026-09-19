@@ -14,7 +14,7 @@ Status: implemented
 
 **Persona تصيير في أداة إشارة توجيه بعد.** agent loop(ذكي جسم حلقة) سوف `agent.options.systemPrompt` نص تجميع وصل في قد تجميع section بعد، في هو نموذج أولا قراءة إلى «Use the read tool…» مجددا قراءة إلى «You are a coding agent»——و identity-first اتفاق (Claude Code،Codex) متبادل عكس، كما هو section خط الإنتاج خارج ثاني بند تركيب مسار.
 
-**Fork أداة وصف هو زائف.** `dsh-tool-subagent` صلب تحرير رمز واحد مقطع لـ spawn دلالة تحرير كتابة وصف——«a separate agent that works in its own context … it does not see this conversation»——بينما `subagent_fork` نسخة (ذلك فرعي agent وراثة أب درجة قد إتمام جولة) أخذ إلى نفس مثال إجراء لفظ؛YAML سطر نص في حمل خارج تصحيح صحيح هذا عدد كذب قول. صغير مشكلة:`PromptSection.name` وثيقة علامة ملاحظة لـ «(diagnostics / dedup)» ، لكن تكرار بند يتم ساكن صامت قبول.
+**Fork أداة وصف هو زائف.** `dsh-tool-subagent` صلب تحرير رمز واحد مقطع لـ spawn دلالة تحرير كتابة وصف——«a separate agent that works in its own context … it does not see this conversation»——بينما `subagent_fork` نسخة (ذلك فرعي agent وراثة أب درجة اكتمل جولة) أخذ إلى نفس مثال إجراء لفظ؛YAML سطر نص في حمل خارج تصحيح صحيح هذا عدد كذب قول. صغير مشكلة:`PromptSection.name` وثيقة علامة ملاحظة لـ «(diagnostics / dedup)» ، لكن تكرار بند يتم ساكن صامت قبول.
 
 ## قرار
 
@@ -40,7 +40,7 @@ Status: implemented
 
 ### Subagent محادثة تاريخ وصف رمز
 
-`SubagentProvider.inheritsParentContext` وصف هو محادثة تاريخ ابتدائي تحويل، بينما غير أثر مجال، خدمة، أداة أو إذن.spawn و ACP سوف ذلك ضبط لـ `false`؛fork ضبط لـ `true`.`dsh-tool-subagent` أصل حسب هذا علامة سجل إرسال توليد أداة وصف و نص التوجيه معامل وصف، يشمل fork وراثة قد إتمام جولة لكن لا وراثة إجراء في جولة هذا واحد نقطة. مزود دورة الحياة حدث جعل هذا إجراء لفظ و استجابة صيغة مزود تسجيل إبقاء تزامن؛ ذلك تصميم حركة آلة رؤية[مزود دورة الحياة حدث Agent Note](../../archived/architecture/2026-07-05-subagent-provider-lifecycle-events.md).
+`SubagentProvider.inheritsParentContext` وصف هو محادثة تاريخ ابتدائي تحويل، بينما غير أثر مجال، خدمة، أداة أو إذن.spawn و ACP سوف ذلك ضبط لـ `false`؛fork ضبط لـ `true`.`dsh-tool-subagent` أصل حسب هذا علامة سجل إرسال توليد أداة وصف و نص التوجيه معامل وصف، يشمل fork وراثة اكتمل جولة لكن لا وراثة إجراء في جولة هذا واحد نقطة. مزود دورة الحياة حدث جعل هذا إجراء لفظ و استجابة صيغة مزود تسجيل إبقاء تزامن؛ ذلك تصميم حركة آلة رؤية[مزود دورة الحياة حدث Agent Note](../../archived/architecture/2026-07-05-subagent-provider-lifecycle-events.md).
 
 ## سبق اعتبار بديل خطة
 
@@ -59,7 +59,7 @@ Status: implemented
 ## تسليم ثابت صيغة
 
 - tui-agent نص التوجيه عبر واحد بند تجميع مسار اعتماد مرة تصيير identity، حمل إدراج قيمة نموذج اسم persona، لكن بعد هو fs/shell/web إشارة توجيه.
-- fork و fresh subagent وصف عكس عكس مزود هل وراثة قد إتمام محادثة جولة؛ أداة مع مزود دورة الحياة تغير بينما ظهور، إزالة فقد و إعادة إجراء لفظ.
+- fork و fresh subagent وصف عكس عكس مزود هل وراثة اكتمل محادثة جولة؛ أداة مع مزود دورة الحياة تغير بينما ظهور، إزالة فقد و إعادة إجراء لفظ.
 - في تفعيل إدراج قيمة مقطع في، لم معرفة، بلا قيمة، صيغة خطأ أو لا مستو توازن متغير مرجع سوف إشارة واضح section اسم و رمي خروج استثناء؛ تكرار section، متغير و أداة تسجيل نفس مثال رمي خروج استثناء.
 - لقطة إعادة تشغيل و نص التوجيه غير متصل: هو حسب جولة و خطوة بحث جذب قد سجل قسم قطعة تدفق، لا مقارنة مقارنة إرسال خروج طلب.
 

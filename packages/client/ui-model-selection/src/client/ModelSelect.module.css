@@ -202,7 +202,7 @@
   outline: none;
   background: transparent;
   color: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 
@@ -265,7 +265,7 @@
   font-size: 14px;
   line-height: 22px;
   cursor: pointer;
-  text-align: left;
+  text-align: start;
 }
 
 .cell:hover {
@@ -283,7 +283,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: right;
+  text-align: end;
   color: var(--dsw-alias-label-tertiary);
 }
 

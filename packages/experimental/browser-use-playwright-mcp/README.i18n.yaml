@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/browser-use-playwright-mcp/README.md
 README.md: a9f3f3e13a39b63df23938d01f43fc61a58c184f
-README.ar.md: 98ee99cd37bfd516407b803f27030f798abf6586
+README.ar.md: f8fa6f7125a47d37dff6bb59659d1a7384686417

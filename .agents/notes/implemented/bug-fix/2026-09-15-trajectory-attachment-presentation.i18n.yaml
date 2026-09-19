@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-15-trajectory-attachment-presentation.md
 2026-09-15-trajectory-attachment-presentation.md: be7c31d8c69bee9b50188f75f257058414f98cbc
-2026-09-15-trajectory-attachment-presentation.ar.md: 6f38ce5fa23fcfb478e3e1e77278861927303811
+2026-09-15-trajectory-attachment-presentation.ar.md: e79956927bcb0baf153946dad4fddaa955afd1ab

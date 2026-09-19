@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-31-win32-picker-path-string-read.md
 2026-08-31-win32-picker-path-string-read.md: 881f72183b46ca8754d05c60b14a7bed45a8f2e5
-2026-08-31-win32-picker-path-string-read.ar.md: 0825e3c677152786f6a87b8bdd73b23b083f9990
+2026-08-31-win32-picker-path-string-read.ar.md: c9402f80d588c28d1a611f974be514f607ad8df5

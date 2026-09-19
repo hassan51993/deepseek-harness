@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-10-command-identities-and-composer-file-action.md
 2026-09-10-command-identities-and-composer-file-action.md: b1eac04c9695bc7b48c98b267fa793222f20efda
-2026-09-10-command-identities-and-composer-file-action.ar.md: 921430d4206543b012ad0272969ac5e36d767d6e
+2026-09-10-command-identities-and-composer-file-action.ar.md: 7d94e426787bf2ab2a97acb7963392e5e4247572

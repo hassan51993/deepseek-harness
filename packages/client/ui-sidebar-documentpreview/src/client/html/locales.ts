@@ -2,7 +2,7 @@
 export const ar = {
   title: 'HTML',
   frame: 'HTML وثيقة معاينة',
-  loading: 'صحيح في قراءة…',
+  loading: 'جارٍ قراءة…',
   failed: 'لا يمكن معاينة هذا نسخة HTML وثيقة',
 } satisfies Record<string, string>
 

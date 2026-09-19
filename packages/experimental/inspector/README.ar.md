@@ -34,7 +34,7 @@ Host إضافة بدء Worker و اتصال مخصص استخدام `MessagePort
 
 شفرة المصدر شجرة التزام دوران هذه تنفيذ بيئة:`client/` و `host/` توفير مرآة مثل مهايئ entry path،`worker/` فقط يتضمن Worker thread orchestration و Chrome protocol حالة،`shared/` يتضمن و بيئة غير متصل Cordis و network model، مواصفة تحويل realm خلفية واجهة و داخلي bridge protocol.Worker جانب Client و Host مهايئ مرآة مثل وضع في `worker/realms/` تحت؛ منها Client مهايئ ما زال في Worker في تنفيذ.
 
-Host و Client producer إرسال داخلي مراقبة قياس سجل، لا إرسال CDP رسالة. سجل يتضمن source generation،sequence،source وقت ساعة وقت،topic و JSON payload.Worker تحقق كل عملية أو شبكة شبكة لقطة، وحيد احتلال source حالة و إبقاء تاريخ، و يأخذ قد تعرف آخر topic تحويل صار معيار CDP domain.
+Host و Client producer إرسال داخلي مراقبة قياس سجل، لا إرسال CDP رسالة. سجل يتضمن source generation،sequence،source وقت ساعة وقت،topic و JSON payload.Worker تحقق كل عملية أو شبكة لقطة، وحيد احتلال source حالة و إبقاء تاريخ، و يأخذ قد تعرف آخر topic تحويل صار معيار CDP domain.
 
 Client source إعلان نوع تحويل Runtime،Console و فقط قراءة Sources قدرة.`Runtime.enable` إصدار حقيقي Host execution context، و لـ كل قد اتصال Client source إصدار واحد synthetic context. اختيار Client context بعد، طلب قيمة، خاصية قراءة، دالة استدعاء،Promise await و كائن تحرير كل سوف توجيه إلى هذا متصفح realm.Client Console argument استخدام نفس نسخة جلسة محلي object table؛`Debugger.enable` إصدار بناء بعد `lib/client.js` catalog،`Debugger.getScriptSource` قراءة محدود content chunk.Client script قطع نقطة،step و call frame ما زال لا دعم حمل؛target-wide pause و resume فقط تحكم Host debugger.
 
@@ -55,7 +55,7 @@ Host إضافة حقن `webServer`، قبول التالي حقل:
 | `maxResponseBodyBytes` | 32 MiB | كل مرة طلب إبقاء response body بادئة |
 | `maxBodyChunkBytes` | 48 KiB | base64 تحرير رمز قبل واحد بند body سجل يحمل أصلي بايت عدد |
 | `maxJournalBytes` | 256 MiB | Worker إبقاء طلب و استجابة body مجموع بايت عدد |
-| `maxRetainedRequests` | `2000` | Worker إبقاء إجراء في و قد إتمام طلب مجموع عدد |
+| `maxRetainedRequests` | `2000` | Worker إبقاء إجراء في و اكتمل طلب مجموع عدد |
 | `maxSourceFrameBytes` | 128 KiB | تحرير رمز بعد source frame حد أعلى |
 | `maxSourceRecordsPerFrame` | `128` | كل source batch سجل عدد |
 | `maxQueuedRecords` | `2048` | كل producer انتظار إرسال سجل عدد |
@@ -69,7 +69,7 @@ Host إضافة حقن `webServer`، قبول التالي حقل:
 | `maxClientRuntimeObjects` | `10000` | كل بند DevTools اتصال إبقاء Client فوري كائن handle عدد |
 | `maxClientRuntimeProperties` | `2000` | مفرد مرة Client كائن فحص إرجاع خاصية وصف رمز عدد |
 | `maxClientSourceBytes` | 8 MiB | مفرد عدد Client script أو source map سماح قراءة الأكثر كبير تحرير رمز بايت عدد |
-| `maxCordisNodes` | `2048` | واحد realm لقطة قطع قطع قبل سماح Context و Fiber عقدة عدد |
+| `maxCordisNodes` | `2048` | واحد realm لقطة مقتطع قبل سماح Context و Fiber عقدة عدد |
 | `maxDisconnectedCordisTrees` | `8` | بصفة غير فوري لقطة إبقاء الأكثر قريب قطع ربط realm شجرة عدد كمية |
 
 توليد[إعداد دليل](../../../docs/config-catalog.ar.md#deepseek-aidsh-experimental-inspector) هو الكل قد قبول حقل و ذلك إعلان تفصيل كل مصدر.
@@ -115,7 +115,7 @@ fetch أخذ تجميع افتراضي فتح بدء، سجل كامل URL، ا�
 
 إعداد body حد أعلى حد إبقاء كمية، بينما لا اختيار حقل: أخذ تجميع إبقاء بادئة و علامة truncated.`Network.getRequestPostData` و `Network.getResponseBody` قراءة Worker إبقاء بايت.`Network.streamResourceContent` إرجاع قد مؤقت اندفاع بادئة، و فقط لـ إرسال بدء استدعاء DevTools اتصال يأخذ لاحق response بايت مرفق إضافة إلى `Network.dataReceived`، بـ قيادة فوري Response و EventStream عرض. مباشر استدعاء Undici Client/Dispatcher، و إضافة تنشيط قبل حفظ fetch مرجع، لا في مراقبة نطاق داخل.
 
-response headers وصول بعد، استدعاء جهة abort ممكن سوف إنهاء observer clone؛ قد أخذ تجميع بايت ما زال يمكن عبر `Network.getResponseBody` قراءة، أخذ تجميع metadata سجل خطأ و قطع قطع، و كما CDP بسبب fetch قد إرجاع Response بينما إرسال `Network.loadingFinished`.response headers وصول قبل حدوث fetch rejection سوف إرسال `Network.loadingFailed`، منها abort مقابل `canceled: true`.
+response headers وصول بعد، استدعاء جهة abort ممكن سوف إنهاء observer clone؛ قد أخذ تجميع بايت ما زال يمكن عبر `Network.getResponseBody` قراءة، أخذ تجميع metadata سجل خطأ و مقتطع، و كما CDP بسبب fetch قد إرجاع Response بينما إرسال `Network.loadingFinished`.response headers وصول قبل حدوث fetch rejection سوف إرسال `Network.loadingFailed`، منها abort مقابل `canceled: true`.
 
 <a id="security"></a>
 ## أمان

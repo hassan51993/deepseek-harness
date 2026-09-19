@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-14-web-diff-context.md
 2026-09-14-web-diff-context.md: a48aa53f542077d07b7cf3a2f97470253dc080bf
-2026-09-14-web-diff-context.ar.md: a629ce719bb3d0c5f38baaa9d0ccb6bd58d815db
+2026-09-14-web-diff-context.ar.md: 40b2eb946cc87306a49d3235c2b5a8ee1a98204b

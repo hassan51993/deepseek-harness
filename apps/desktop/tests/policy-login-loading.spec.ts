@@ -17,8 +17,8 @@ function open(query = ''): Document {
 }
 
 it('renders the login placeholder label from the main-process query', () => {
-  const document = open(`?label=${encodeURIComponent('صحيح في تحميل تسجيل تسجيل صفحة…')}`)
-  expect(document.getElementById('label')?.textContent).toBe('صحيح في تحميل تسجيل تسجيل صفحة…')
+  const document = open(`?label=${encodeURIComponent('جارٍ تحميل تسجيل تسجيل صفحة…')}`)
+  expect(document.getElementById('label')?.textContent).toBe('جارٍ تحميل تسجيل تسجيل صفحة…')
   const policy = document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute('content') ?? ''
   // The placeholder must not be able to reach anything, so its own policy
   // forbids every source but the inline style and reader.

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-31-even-out-shipped-tool-rosters.md
 2026-07-31-even-out-shipped-tool-rosters.md: fc4113287660f2fbb06a64a46ddced6868b605a6
-2026-07-31-even-out-shipped-tool-rosters.ar.md: be2c35805fdc479a9db3778242b81db9172c0225
+2026-07-31-even-out-shipped-tool-rosters.ar.md: 7911191d0ea3f3836b561ad2e548c7dd2dedfd6e

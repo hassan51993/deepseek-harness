@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-07-19-remove-generated-agent-note-index.md
 2026-07-19-remove-generated-agent-note-index.md: 2a8be5709f7f10ce825892574e4064271f676969
-2026-07-19-remove-generated-agent-note-index.ar.md: a0ed6337c00b3c468c4b45686ef2dee6e23902e8
+2026-07-19-remove-generated-agent-note-index.ar.md: b90ec9d127f8c54c4d03789a013641ca7b46b700

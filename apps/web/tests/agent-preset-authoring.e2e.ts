@@ -76,9 +76,9 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     await dialog.waitFor({ timeout: 10_000 })
     await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()
     await dialog.getByRole('heading', { name: 'Agent مسبق ضبط' }).waitFor({ timeout: 10_000 })
-    // The intro copy also names معيار نمط. Wait for the roster's own action so
+    // The intro copy also names النمط المعياري. Wait for the roster's own action so
     // the snapshot cannot land between the section shell and its cards.
-    await dialog.getByRole('button', { name: 'فحص نظر: معيار نمط', exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'عرض: النمط المعياري', exact: true }).waitFor({ timeout: 10_000 })
 
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
 
@@ -90,8 +90,8 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // install is overwritten by upgrades and is not the user's to manage.
     expect(snapshot).toContain('أو استخدام «إنشاء صنع نمط» يجعل Agent مساعدة أنت إنشاء')
     expect(snapshot).not.toContain('جديد بناء مسبق ضبط')
-    expect(snapshot).toContain('فحص نظر: معيار نمط')
-    expect(snapshot).not.toContain('حذف: معيار نمط')
+    expect(snapshot).toContain('عرض: النمط المعياري')
+    expect(snapshot).not.toContain('حذف: النمط المعياري')
     expect(snapshot).not.toContain('فتح دليل')
     // The rest of this scenario exercises the existing default and Creator
     // actions with the beta picker enabled by default.
@@ -100,8 +100,8 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
   it('views a shipped composition read-only instead of editing it', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-view'))
     const dialog = settingsDialog()
-    await dialog.getByRole('button', { name: 'فحص نظر: معيار نمط' }).click()
-    const viewer = page.getByRole('dialog', { name: 'فحص نظر · معيار نمط' })
+    await dialog.getByRole('button', { name: 'عرض: النمط المعياري' }).click()
+    const viewer = page.getByRole('dialog', { name: 'عرض · النمط المعياري' })
     await viewer.waitFor({ timeout: 10_000 })
 
     // The real shipped composition, not a golden: the viewer shows whatever
@@ -176,7 +176,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // creator entry so the place to author a preset never disappears.
     expect(await dialog.getByRole('heading', { name: 'ذاتي تعريف' }).count()).toBe(1)
     expect(await dialog.getByRole('button', { name: 'استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط' }).count()).toBe(1)
-    expect(await dialog.getByText('معيار نمط').count()).toBeGreaterThan(0)
+    expect(await dialog.getByText('النمط المعياري').count()).toBeGreaterThan(0)
   }, 60_000)
 
   it('marks damaged presets broken and clears a ghost through delete', async () => {

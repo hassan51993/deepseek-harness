@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-08-windows-acl-restricted-token-sandbox.md
 2026-08-08-windows-acl-restricted-token-sandbox.md: 3341bfd579887cebdb3ff8a6d083fb4af02f1806
-2026-08-08-windows-acl-restricted-token-sandbox.ar.md: 3e713667e5c8196824a4442c28e32df1eaf8058f
+2026-08-08-windows-acl-restricted-token-sandbox.ar.md: 9ccd621a0260901fbd33480eeca52c02bc4141b6

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-26-generic-file-upload.md
 2026-08-26-generic-file-upload.md: 534b835dd9d73ecd1930cdfea9062fc08682982b
-2026-08-26-generic-file-upload.ar.md: eaf69363533814e7ae07e9c5e8cbcaed568b311c
+2026-08-26-generic-file-upload.ar.md: cb90e5c0b9f45a9ccbe91f443a7a62ec0ed1ed1c

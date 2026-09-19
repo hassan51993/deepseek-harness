@@ -6,7 +6,7 @@ Status: implemented
 
 ## Problem
 
-يمين جانب Sidebar يمكن معاينة قد بحث عنوان مساحة العمل ملف، لكن لا يوجد لأجل وصول شبكة صفحة مستقل واجهة. في تطبيق خارج فتح سوف فقد فقد Sidebar قسم شريط، طفو حركة و tab دورة الحياة. يأخذ مهمة معنى شبكة صفحة عند صار Document Preview محتوى، أيضا سوف خلط خلط اثنان نوع مختلف معلومة مهمة نموذج: شبكة صفحة تحكم واحد نشط وثب تصفح تصفح سياق، بينما وثيقة renderer فقط استقبال لـ مرة معاينة اختيار تحديد بايت.
+يمين جانب Sidebar يمكن معاينة قد بحث عنوان مساحة العمل ملف، لكن لا يوجد لأجل وصول شبكة صفحة مستقل واجهة. في تطبيق خارج فتح سوف فقد فقد Sidebar قسم شريط، طفو حركة و tab دورة الحياة. يأخذ مهمة معنى شبكة صفحة عند صار Document Preview محتوى، أيضا سوف خلط خلط اثنان نوع مختلف معلومة مهمة نموذج: شبكة صفحة تحكم واحد نشط وثب تصفح سياق، بينما وثيقة renderer فقط استقبال لـ مرة معاينة اختيار تحديد بايت.
 
 أب صفحة لا يستطيع فحص أو قيادة عبر مجال iframe داخلي history. دعم حمل سلوك لا يستطيع داكن عرض أداة تجهيز هذا نوع قدرة.
 
@@ -41,7 +41,7 @@ Browser حالة فقط يخص عرض طبقة، لا دخول Session log، ن�
 
 ## Deferred Electron carrier
 
-Electron `<webview>` دعم حمل قد إتمام تصميم، لكن حالي لا تسجيل أيضا لا اختبار.controller إبقاء نفسه أربعة عدد أمر، مستقل per-tab view كائن مسؤول attachment،detachment، حالة مراقبة و target identity. هذا امتداد استخدام Playwright Android WebView تخطيط قسم:`AndroidWebView` هو من package،process و ضبط تجربة socket معرف target و دورة الحياة handle،`page()` إرجاع مسؤول Web تنقل و DOM أمر عادي `Page`؛ ضبط تجهيز درجة إدخال ما زال يخص `AndroidDevice`.
+Electron `<webview>` دعم حمل اكتمل تصميم، لكن حالي لا تسجيل أيضا لا اختبار.controller إبقاء نفسه أربعة عدد أمر، مستقل per-tab view كائن مسؤول attachment،detachment، حالة مراقبة و target identity. هذا امتداد استخدام Playwright Android WebView تخطيط قسم:`AndroidWebView` هو من package،process و ضبط تجربة socket معرف target و دورة الحياة handle،`page()` إرجاع مسؤول Web تنقل و DOM أمر عادي `Page`؛ ضبط تجهيز درجة إدخال ما زال يخص `AndroidDevice`.
 
 Desktop تصميم فقط في تطبيق نافذة تفعيل `webviewTag`. ذلك عزل preload نيل نيل غير ممكن تخمين per-window capability، كل Browser tab مجددا إلحاق جديد UUID، شكل صار مستقل غير حفظ دائم partition. رئيسي عملية فقط قبول يحمل هذا capability كما ابتدائي عنوان لـ `about:blank` guest، حذف أي preload، و قوي صنع تفعيل sandbox و context isolation، في كل frame منع استخدام Node integration، تفعيل Web security و أمان محتوى فحص، منع استخدام تضمين طقم webview و plugin.
 

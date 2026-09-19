@@ -79,7 +79,7 @@ describe('web e2e: plugin manager', () => {
     expect(await panel.locator('[data-plugin-group="official"] [data-plugin-item]').count()).toBe(4)
     expect(await panel.getByText('Beta', { exact: true }).count()).toBe(2)
     // A bundle that is off still shows the rows its patch declares, without switches.
-    await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
+    await panel.getByRole('button', { name: 'عرض bundle' }).click()
     await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
     expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).count()).toBe(0)
     await panel.getByRole('button', { name: 'إزالة bundle' }).waitFor({ timeout: 5_000 })
@@ -94,7 +94,7 @@ describe('web e2e: plugin manager', () => {
   it('updates built-in names and descriptions when the UI language changes', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-locale'))
     const panel = await openPluginsPanel()
-    await panel.getByRole('button', { name: 'فحص نظر ذكي جسم مجموعة طابور', exact: true }).click()
+    await panel.getByRole('button', { name: 'عرض ذكي جسم مجموعة طابور', exact: true }).click()
     const packageName = panel.locator('[data-plugin-name]')
     expect(await packageName.textContent()).toBe('@deepseek-ai/dsh-experimental-agent-team-profile')
     expect(await panel.getByText('تفعيل ذكي جسم مجموعة طابور تنسيق عمل و مجموعة طابور أداة.').count()).toBe(1)
@@ -128,15 +128,15 @@ describe('web e2e: plugin manager', () => {
       }
       await closeSettings()
     }
-    await panel.getByRole('button', { name: 'فحص نظر ذكي جسم مجموعة طابور', exact: true }).waitFor()
+    await panel.getByRole('button', { name: 'عرض ذكي جسم مجموعة طابور', exact: true }).waitFor()
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('checks a spec before installing it and words what the check refused', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-install'))
     const panel = await openPluginsPanel()
-    await panel.getByRole('button', { name: 'إضافة إضافة', exact: true }).click()
-    const dialog = page.getByRole('dialog', { name: 'إضافة إضافة' })
+    await panel.getByRole('button', { name: 'إضافة', exact: true }).click()
+    const dialog = page.getByRole('dialog', { name: 'إضافة' })
     await dialog.waitFor({ timeout: 10_000 })
     const field = dialog.getByRole('textbox', { name: 'حزمة اسم أو عنوان' })
     const install = dialog.getByRole('button', { name: 'تثبيت', exact: true })
@@ -156,7 +156,7 @@ describe('web e2e: plugin manager', () => {
     await install.click()
     await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toContain('لا يمكن تعرف آخر هذا عدد حزمة اسم أو عنوان')
     await dialog.getByRole('button', { name: 'إغلاق' }).click()
-    await expect.poll(() => page.getByRole('dialog', { name: 'إضافة إضافة' }).count(), { timeout: 5_000 }).toBe(0)
+    await expect.poll(() => page.getByRole('dialog', { name: 'إضافة' }).count(), { timeout: 5_000 }).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
@@ -181,7 +181,7 @@ describe('web e2e: plugin manager', () => {
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(LIVE_EXPECTED, snapshot, MODE)
     // The pack's page lists its rows as the Host runs them, each with a switch that writes the profile patch.
-    await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
+    await panel.getByRole('button', { name: 'عرض bundle' }).click()
     const rowSwitch = panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' })
     await rowSwitch.waitFor({ timeout: 10_000 })
     expect(await rowSwitch.getAttribute('aria-checked')).toBe('true')
@@ -236,7 +236,7 @@ describe('web e2e: startup-applied plugin management', () => {
       await page.getByText('أكثر تعديل سوف في تحت مرة بدء توليد فاعلية', { exact: true }).waitFor({ timeout: 10_000 })
       expect(mounted()?.fiber?.state).toBeUndefined()
       // The pack's page lists its rows from their declarations, with no live entry to switch.
-      await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
+      await panel.getByRole('button', { name: 'عرض bundle' }).click()
       await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
       expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).isDisabled()).toBe(true)
       await panel.getByRole('button', { name: 'إرجاع إضافة قائمة' }).click()

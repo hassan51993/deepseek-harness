@@ -59,7 +59,7 @@ it('opens a sandboxed window on explicit action and coalesces logins without aut
     session: browserSession, nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true,
     webviewTag: false, devTools: true } })
   expect(native.create.mock.calls[0]![0].webPreferences?.preload).toBeUndefined()
-  expect(window.loadFile).toHaveBeenCalledWith('renderer/policy-login-loading.html', { query: { label: 'صحيح في تحميل تسجيل تسجيل صفحة…' } })
+  expect(window.loadFile).toHaveBeenCalledWith('renderer/policy-login-loading.html', { query: { label: 'جارٍ تحميل تسجيل تسجيل صفحة…' } })
   // The placeholder is the first document: the remote page waits for it.
   expect(window.loadURL).not.toHaveBeenCalled()
   await vi.waitFor(() => { expect(window.loadURL).toHaveBeenCalledWith('https://policy.example.com/') })

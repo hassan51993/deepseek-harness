@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-07-selective-issue-policy-evaluation.md
 2026-09-07-selective-issue-policy-evaluation.md: c1dffe09b1616f3cd5ab27d87f8f88447320d7e3
-2026-09-07-selective-issue-policy-evaluation.ar.md: 6e0f69a433919fa4619d2496cab5fd05e0b3465f
+2026-09-07-selective-issue-policy-evaluation.ar.md: d121e4d297574ea1c7ecf569b3476f44e82a0668

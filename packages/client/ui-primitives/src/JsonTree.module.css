@@ -53,8 +53,8 @@
 }
 
 .row.topLevelBracket {
-  margin-left: 0;
-  padding-left: 0;
+  margin-inline-start: 0;
+  padding-inline-start: 0;
 }
 
 .children {
@@ -81,8 +81,8 @@
   position: absolute;
   z-index: 0;
   top: 0;
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   height: var(--json-tree-row-height, 16px);
   background: var(--json-tree-hover);
   content: '';
@@ -95,7 +95,7 @@
 }
 
 .label {
-  margin-right: 3px;
+  margin-inline-end: 3px;
   color: var(--json-tree-property);
   font-weight: 400;
 }
@@ -117,7 +117,7 @@
 .stringText {
   display: block;
   max-height: calc(var(--json-tree-collapsed-lines) * 16px);
-  padding-left: 12px;
+  padding-inline-start: 12px;
   overflow: hidden;
   text-indent: -12px;
   word-break: break-all;
@@ -136,7 +136,7 @@
 .stringActions {
   position: absolute;
   top: 1px;
-  right: 4px;
+  inset-inline-end: 4px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -158,10 +158,10 @@
 
 .stringToggleSlot {
   display: flex;
-  float: right;
+  float: inline-end;
   align-items: flex-end;
   height: calc(var(--json-tree-collapsed-lines) * 16px);
-  margin-left: 2px;
+  margin-inline-start: 2px;
   shape-outside: inset(calc((var(--json-tree-collapsed-lines) - 1) * 16px) 0 0);
   pointer-events: none;
 }
@@ -242,7 +242,7 @@
   position: absolute;
   z-index: 2;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
 }
 
 .row:has(> .stringField) > .copySlot {
@@ -251,7 +251,7 @@
 }
 
 .row:has(> .copySlot) > .stringField .stringToggleSlot {
-  padding-right: 24px;
+  padding-inline-end: 24px;
 }
 
 .row:hover:not(:has(.row:hover)) > .copySlot,
@@ -298,7 +298,7 @@
   position: absolute;
   z-index: 2;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
@@ -316,7 +316,7 @@
   height: 0;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
-  border-left: 6px solid currentColor;
+  border-inline-start: 6px solid currentColor;
   content: '';
   transform: scale(0.75);
   transform-origin: 33.333% center;

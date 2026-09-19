@@ -2,7 +2,7 @@
 
 [English](system-prompt.md) | العربية
 
-[system-prompt حزمة](../../packages/core/system-prompt) مسؤول إدارة نص التوجيه مساهمة من و مرة تجميع استدعاء بين تسليم تبديل بيانات. هذا حزمة [README](../../packages/core/system-prompt/README.ar.md) سجل تسجيل، ترتيب ترتيب، أثر مجال و تصيير سلوك؛ هذا صفحة سجل كل إضافة تنفيذ أو نقل تمرير تأكيد قطع عبر حزمة نوع.
+[system-prompt حزمة](../../packages/core/system-prompt) مسؤول إدارة نص التوجيه مساهمة من و مرة تجميع استدعاء بين تسليم تبديل بيانات. هذا حزمة [README](../../packages/core/system-prompt/README.ar.md) سجل تسجيل، ترتيب، أثر مجال و تصيير سلوك؛ هذا صفحة سجل كل إضافة تنفيذ أو نقل تمرير تأكيد قطع عبر حزمة نوع.
 
 شفرة المصدر:[`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts).
 
@@ -39,9 +39,9 @@ interface ToolProviderResult {
 
 ## نص التوجيه مقطع سقوط
 
-توجيه خروج `PERSONA_PREFIX_SECTION`(`deployment:persona-prefix`) و `PERSONA_SUFFIX_SECTION`(`deployment:persona-suffix`) لـ عام إعداد و حمل أثر مجال مساهمة الذي مشترك مقطع سقوط تسمية. هو جمع مقابل `PromptSectionOrderName` بند لـ `DEPLOYMENT_PERSONA_PREFIX` و `DEPLOYMENT_PERSONA_SUFFIX`؛[حزمة README](../../packages/core/system-prompt/README.ar.md#configure-the-prompt) قاعدة تحديد ذلك موضع و نموذج لوح إعداد.
+تصدير `PERSONA_PREFIX_SECTION`(`deployment:persona-prefix`) و `PERSONA_SUFFIX_SECTION`(`deployment:persona-suffix`) لـ عام إعداد و حمل أثر مجال مساهمة الذي مشترك مقطع سقوط تسمية. هو جمع مقابل `PromptSectionOrderName` بند لـ `DEPLOYMENT_PERSONA_PREFIX` و `DEPLOYMENT_PERSONA_SUFFIX`؛[حزمة README](../../packages/core/system-prompt/README.ar.md#configure-the-prompt) قاعدة تحديد ذلك موضع و نموذج لوح إعداد.
 
-`PromptSection` هو واحد نسخة فقط قراءة نفس عملية تسجيل اتفاق. ذلك نص يمكن هو ساكن حالة، أيضا يمكن من حالي تجميع سياق حركة حالة تحليل. كل مقطع أولا حسب order رفع ترتيب ترتيب صف، مجددا حسب اسم شفرة وحدة ترتيب ترتيب صف؛ مستودع مساهمة جهة عبر `getSectionOrder()` تحليل خدمة يحتفظ أداة اسم قسم إعداد.Runtime-context مساهمة جهة عبر `getContextOrder()` تحليل مستقل قسم إعداد. تنسيق عمل صيغة تجميع إتمام بعد، واحد صالح `complete` مقطع سوف يصبح وحيد نص التوجيه مقطع سقوط.agent loop(ذكي جسم حلقة) استخدام `renderPrompt` تصيير تجميع بعد كل مقطع، و يأخذ نص بصفة `system/message` surface عقدة إيداع——أول عدد خطوة بصفة surface رقم 0 رقم عقدة إلحاق، بعد في تصيير نص تغير وقت أصل أرض استبدال، أو من عند قد دقيق تجهيز استدعاء إعلان `systemPromptUpdate: 'in-history'` وقت، في تسلسل تأخير متابعة خلال يأخذ غير فارغ تحديث إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد——لذلك نص التوجيه بصفة إرسال توليد تاريخ في رسالة بينما لا هو طلب حقل وصول نموذج ([قرار](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.ar.md) ؛[قرار قاعدة](../../packages/core/agent-loop/README.ar.md#understand-the-implementation)).
+`PromptSection` هو واحد نسخة فقط قراءة نفس عملية تسجيل اتفاق. ذلك نص يمكن هو ساكن حالة، أيضا يمكن من حالي تجميع سياق حركة حالة تحليل. كل مقطع أولا حسب order رفع ترتيب صف، مجددا حسب اسم شفرة وحدة ترتيب صف؛ مستودع مساهمة جهة عبر `getSectionOrder()` تحليل خدمة يحتفظ أداة اسم قسم إعداد.Runtime-context مساهمة جهة عبر `getContextOrder()` تحليل مستقل قسم إعداد. تنسيق عمل صيغة تجميع إتمام بعد، واحد صالح `complete` مقطع سوف يصبح وحيد نص التوجيه مقطع سقوط.agent loop(ذكي جسم حلقة) استخدام `renderPrompt` تصيير تجميع بعد كل مقطع، و يأخذ نص بصفة `system/message` surface عقدة إيداع——أول عدد خطوة بصفة surface رقم 0 رقم عقدة إلحاق، بعد في تصيير نص تغير وقت أصل أرض استبدال، أو من عند قد دقيق تجهيز استدعاء إعلان `systemPromptUpdate: 'in-history'` وقت، في تسلسل تأخير متابعة خلال يأخذ غير فارغ تحديث إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد——لذلك نص التوجيه بصفة إرسال توليد تاريخ في رسالة بينما لا هو طلب حقل وصول نموذج ([قرار](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.ar.md) ؛[قرار قاعدة](../../packages/core/agent-loop/README.ar.md#understand-the-implementation)).
 
 ```ts type-equiv
 /** One contributed section of the system prompt (registry input). */
@@ -73,7 +73,7 @@ interface PromptSection {
 
 ## حركة حالة نص التوجيه سياق
 
-`PromptContext` هو و `PromptSection` مقابل ذاكرة مؤقتة أمان بنية. تجميع سوف تحليل هذه مساهمة و ترتيب ترتيب؛agent loop(ذكي جسم حلقة) فقط في كامل حالي لقطة حدوث تغير أو يتم ضغط (compaction) إزالة وقت، عندئذ سوف سوف ذلك سجل في إبقاء نموذج تاريخ بعد.
+`PromptContext` هو و `PromptSection` مقابل ذاكرة مؤقتة أمان بنية. تجميع سوف تحليل هذه مساهمة و ترتيب؛agent loop(ذكي جسم حلقة) فقط في كامل حالي لقطة حدوث تغير أو يتم ضغط (compaction) إزالة وقت، عندئذ سوف سوف ذلك سجل في إبقاء نموذج تاريخ بعد.
 
 ```ts type-equiv
 /** Dynamic model context materialized as a durable user-role snapshot. */

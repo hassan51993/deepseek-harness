@@ -2,7 +2,7 @@
 
 [English](subprocess.md) | العربية
 
-عملية فرعية seam قسم لـ Service Definition([dsh-subprocess](../../packages/subprocess/subprocess) ،`ctx.subprocess`) و Service Provider([dsh-subprocess-local](../../packages/subprocess/subprocess-local)) ؛ هو Consumer هو أخرى قدرة seam و عملية خارج خلفية:[bash منفذ بيت عائلة](shell.ar.md) استخدام استلام تجميع نمط دفعة كمية إخراج،LSP استخدام أصلي بروتوكول إدارة طريق،PTY خلفية استخدام طرفية أصل لغة،ACP(Agent Client Protocol)subagent خلفية فإن استخدام عبر إدارة طريق نقل ndjson، و يجعل stderr اعتماد inherit. هذا seam يملك تلقي إدارة `DSH_*` بيئة نطاق الأسماء، مشترك اعتماد صاف حذف (`scrubbedParentEnv`) و `CollectedOutput` شكل حالة؛[dsh-shell](../../packages/shell/shell) إعادة توجيه خروج هذا طقم مفردات، جعل bash مستهلك إبقاء مفرد واحد استيراد مدخل.
+عملية فرعية seam قسم لـ Service Definition([dsh-subprocess](../../packages/subprocess/subprocess) ،`ctx.subprocess`) و Service Provider([dsh-subprocess-local](../../packages/subprocess/subprocess-local)) ؛ هو Consumer هو أخرى قدرة seam و عملية خارج خلفية:[bash منفذ بيت عائلة](shell.ar.md) استخدام استلام تجميع نمط دفعة كمية إخراج،LSP استخدام أصلي بروتوكول إدارة طريق،PTY خلفية استخدام طرفية أصل لغة،ACP(Agent Client Protocol)subagent خلفية فإن استخدام عبر إدارة طريق نقل ndjson، و يجعل stderr اعتماد inherit. هذا seam يملك تلقي إدارة `DSH_*` بيئة نطاق الأسماء، مشترك اعتماد صاف حذف (`scrubbedParentEnv`) و `CollectedOutput` شكل حالة؛[dsh-shell](../../packages/shell/shell) إعادة تصدير هذا طقم مفردات، جعل bash مستهلك إبقاء مفرد واحد استيراد مدخل.
 
 شفرة المصدر:[`packages/subprocess/subprocess/src/types.ts`](../../packages/subprocess/subprocess/src/types.ts) و [`packages/subprocess/subprocess/src/index.ts`](../../packages/subprocess/subprocess/src/index.ts)
 
@@ -12,7 +12,7 @@
 
 ## تلقي إدارة بيئة نطاق الأسماء و التقاط إخراج
 
-`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع؛ تنفيذ سوف في دمج استدعاء جهة صريح `env` قبل إسقاط بيئة في قد لديه `DSH_*` اسم، لذلك حالي واقع فقط سوف بـ متعمد توفير نص بند شكل صيغة وصول، بينما صريح `undefined` tombstone سوف حذف عادي بيئة في قد لديه قيمة. كل بند يتم استلام تجميع تدفق كل عبر `CollectedOutput` تقرير إبلاغ ذاته قطع قطع و spill استعادة حالة.
+`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع؛ تنفيذ سوف في دمج استدعاء جهة صريح `env` قبل إسقاط بيئة في قد لديه `DSH_*` اسم، لذلك حالي واقع فقط سوف بـ متعمد توفير نص بند شكل صيغة وصول، بينما صريح `undefined` tombstone سوف حذف عادي بيئة في قد لديه قيمة. كل بند يتم استلام تجميع تدفق كل عبر `CollectedOutput` تقرير إبلاغ ذاته مقتطع و spill استعادة حالة.
 
 ```ts type-equiv
 /** One environment key inside the managed {@link DSH_ENV_PREFIX} namespace. */
@@ -244,7 +244,7 @@ interface SubprocessOutcome {
 
 `spawnTerminal(spec)` هو غير إدارة طريق عملية أصل لغة. مزود قسم إعداد تحكم طرفية، و مسؤول UTF-8 نص نقل، قبل منصة عملية مجموعة فحص و إشارة إرسال، و واحد بند يجب انتظار TERM→KILL عملية؛ هذا عملية سوف جعل مزود ما زال يمكن مراقبة إلى كل جلسة عضو تماما توقف مستقر، مزود فإن سوف سجل تنفيذ أساس قاع خاص لديه يمكن مراقبة صفة حد.PTY خلفية ما زال مسؤول تلميح رمز فحص قياس، حينئذ خيط دفع قطع،scrollback، صندوق رملي سياسة و حمل دائم جلسة كل حق؛ عادي `spawn()` لا يمكن إعادة بناء تحكم طرفية دلالة.
 
-طرفية spec تماما إشارة تحديد argv،cwd، بيئة تغطية، طرفية نوع، مقياس قياس، تنظيف عرض حد مدة و اختياري قسم إعداد إلغاء و shell نشط حركة مراقبة. ذلك جملة مقبض عام `pid`، لديه ترتيب إخراج،`done`،`write`،`resize`،`inspectForeground`،`inspectActivity`،`signalForeground` و يجب انتظار `terminate`؛[`SubprocessTerminalSpawnSpec` و `SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) تعريف هذه حقل و عملية.`resize(cols, rows)` تحديث صحيح في تشغيل PTY مقياس قياس، عملية خروج بعد رفض استدعاء.
+طرفية spec تماما إشارة تحديد argv،cwd، بيئة تغطية، طرفية نوع، مقياس قياس، تنظيف عرض حد مدة و اختياري قسم إعداد إلغاء و shell نشط حركة مراقبة. ذلك جملة مقبض عام `pid`، لديه ترتيب إخراج،`done`،`write`،`resize`،`inspectForeground`،`inspectActivity`،`signalForeground` و يجب انتظار `terminate`؛[`SubprocessTerminalSpawnSpec` و `SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) تعريف هذه حقل و عملية.`resize(cols, rows)` تحديث جارٍ تشغيل PTY مقياس قياس، عملية خروج بعد رفض استدعاء.
 
 `inspectActivity()` إرجاع `SubprocessTerminalActivity`:`state` لـ `idle`،`busy` أو `unknown`،`revision` مع provider مراقبة إلى نشط حركة أو إدخال تغير. طرفية طلب عبر `shellActivity` تفعيل تلقي دعم حمل shell دورة الحياة مراقبة؛ كل provider دعم حمل نطاق و حفظ حراسة إرجاع unknown حال حال رؤية [subprocess-local](../../packages/subprocess/subprocess-local/README.ar.md#running-terminal-sessions).
 

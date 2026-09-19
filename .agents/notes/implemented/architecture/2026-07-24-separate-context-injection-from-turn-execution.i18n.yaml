@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-24-separate-context-injection-from-turn-execution.md
 2026-07-24-separate-context-injection-from-turn-execution.md: 37c618f9a35ba8e51fa5e8ceddc24989e1291d3f
-2026-07-24-separate-context-injection-from-turn-execution.ar.md: 87a08f8ea1e7586f442a4f50c5975290bada993d
+2026-07-24-separate-context-injection-from-turn-execution.ar.md: fabf2e780d9efb9f7758d7a873e44327b09354cc

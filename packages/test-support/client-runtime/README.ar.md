@@ -66,7 +66,7 @@ expect(view.getByRole('alert')).toHaveTextContent('goal/not-found')
 
 ### كامل جسم ملف
 
-فوق وجه slot ملف يأخذ واحد وظيفة تعليق في بديل ذات فوق. كامل جسم ملف بدء حقيقي تركيب إعداد:`TestClient.start(plan, mock, options)` عملية داخل import كل roster سطر `/client` وحدة (أو أخذ حساب تخطيط داخل `provide` استبدال) ، يأخذ `{ rpc: mock.rpc }` ربط إلى هذا عميل Connection وحدة، استخدام `graphFromRoster` دمج صار بدء رسم و يأخذ قد تحميل وحدة تسليم إعطاء إنتاج وحدة نظام، مرور إنتاج `bootClient` بدء، حسب يحتاج تركيب `uiRenderer`، مجددا انتظار `ctx.connection.state === 'connected'`. هو إخفاء في عميق import بعد وجه،slot ملف اختبار دائم لا تحميل هو:
+فوق وجه slot ملف يأخذ واحد وظيفة تعليق في بديل ذات فوق. كامل جسم ملف بدء حقيقي تركيب إعداد:`TestClient.start(plan, mock, options)` عملية داخل import كل roster سطر `/client` وحدة (أو أخذ خطة داخل `provide` استبدال) ، يأخذ `{ rpc: mock.rpc }` ربط إلى هذا عميل Connection وحدة، استخدام `graphFromRoster` دمج صار بدء رسم و يأخذ قد تحميل وحدة تسليم إعطاء إنتاج وحدة نظام، مرور إنتاج `bootClient` بدء، حسب يحتاج تركيب `uiRenderer`، مجددا انتظار `ctx.connection.state === 'connected'`. هو إخفاء في عميق import بعد وجه،slot ملف اختبار دائم لا تحميل هو:
 
 ```text
 // @vitest-environment jsdom
@@ -171,7 +171,7 @@ test('registers into the sidebar', async ({ remote, start }) => {
 هذه حد شرح هذا اختبار منصة مثل أي يتم إزالة استهلاك. هو جمع هو حالي حزمة قيد، لا هو مهمة تراكم ضغط.
 
 - **كامل جسم ملف لا تشغيل توليد Remote عميل**——`remote.<ns>` بديل إدارة تحويل إرسال موضع معامل، لا مرور مرور توليد zod تحقق،wire اسم خريطة أو scoped هوية حقن؛mock handler مباشر استقبال هذه معامل، توليد عميل ما زال من built-artifact e2e عربة طريق تغطية.
-- **بديل إدارة استدعاء التفاف مرور Gateway عميل `invoke` و `invokeStream`**——لا فعل `$mount` دورة الحياة فحص، تدفق فشل لا مرور `normalizeConnectionStream` إعادة علامة، واحد عنصر رفض من بديل إدارة ذاتي ذات استخدام Gateway عميل توجيه خروج `carrierFailure` و `cancelledFailure` طي.`ctx.remote.$stream`،`$on`،`$host` هو حق Gateway عميل.
+- **بديل إدارة استدعاء التفاف مرور Gateway عميل `invoke` و `invokeStream`**——لا فعل `$mount` دورة الحياة فحص، تدفق فشل لا مرور `normalizeConnectionStream` إعادة علامة، واحد عنصر رفض من بديل إدارة ذاتي ذات استخدام Gateway عميل تصدير `carrierFailure` و `cancelledFailure` طي.`ctx.remote.$stream`،`$on`،`$host` هو حق Gateway عميل.
 - **لم إعلان طرف نقطة حسب واحد عنصر استدعاء إرسال خروج**——بديل إدارة من mock تسجيل تسجيل تعلم إلى كل طرف نقطة نمط؛spec حيث لا إعطاء نص برمجي أيضا لا إعلان (`RemoteTable.streams`،`mock.stream(endpoint)`) تدفق طرف نقطة تسجيل لـ `unary` تسرب إعداد، منتج شفرة استلام إلى هو طي نتيجة بينما لا هو فشل تدفق.`remoteDefaultResponses` إعلان roster بدء بعد عندئذ فتح تدفق؛ بلا نقاش أي نوع،`dispose()` كل سوف يجعل اختبار فشل.
 - **هذه الحزمة client تحرير ترجمة برنامج إضافة `node` بيئة نوع**، جيد يجعل roster قراءة جهاز استخدام `node:fs`؛slot ملف شفرة المصدر أيضا في هذه نوع تحت تحرير ترجمة.
 - **Session،Conversation و Chat fixture إبقاء قسم مغادرة**——`sessionSnapshot` فقط يتضمن Session تحكم جهاز حالة،`conversationSnapshot` يتضمن و هدف غير متصل Conversation حالة،`chatSnapshot` يتضمن Chat هدف حالة. تجميع اختبار توفير Session حدث بند، بينما لا هو نحو `SessionSnapshot` إضافة Conversation أو Chat حقل.

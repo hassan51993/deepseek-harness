@@ -14,17 +14,17 @@ export const markdownLabels: MarkdownLabels = {
 }
 
 export const diffBlockLabels: DiffBlockLabels = {
-  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'استلام بدء فرق مختلف',
+  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'طي فرق مختلف',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر فرق مختلف`,
-  collapse: 'استلام بدء', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
   files: count => `${count} ${count === 1 ? 'file' : 'files'}`,
 }
 
 export const readBlockLabels: ReadBlockLabels = {
   window: (shown, total) => `عرض ${shown} / ${total} سطر`,
-  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'استلام بدء محتوى',
+  copy: 'نسخ', copied: 'نسخ نجاح', collapseAria: 'طي محتوى',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر`,
-  collapse: 'استلام بدء', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
 
 export const searchBlockLabels: SearchBlockLabels = {
@@ -35,18 +35,18 @@ export const searchBlockLabels: SearchBlockLabels = {
     ? `عرض ${shown} / مشترك ${total} موضع مطابقة · ${files} عدد ملف`
     : `${shown} موضع مطابقة · ${files} عدد ملف`,
   copy: 'نسخ', copied: 'نسخ نجاح', noResults: 'بلا نتيجة',
-  collapseAria: 'استلام بدء نتيجة',
+  collapseAria: 'طي نتيجة',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر نتيجة`,
-  collapse: 'استلام بدء', expand: hidden => `… ذلك بقية ${hidden} سطر`,
+  collapse: 'طي', expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
 
 export const terminalBlockLabels: TerminalBlockLabels = {
   signal: signal => `إشارة ${signal}`,
   exitCode: code => `خروج رمز ${code}`,
   noExitCode: 'لم صحيح معتاد خروج',
-  running: 'تشغيل في', failed: 'فشل', done: 'قد إتمام',
+  running: 'تشغيل في', failed: 'فشل', done: 'اكتمل',
   copy: 'نسخ', copied: 'نسخ نجاح', noOutput: 'بلا إخراج',
-  collapseAria: 'استلام بدء إخراج', collapse: 'استلام بدء',
+  collapseAria: 'طي إخراج', collapse: 'طي',
   expandAria: hidden => `توسيع ذلك بقية ${hidden} سطر إخراج`,
   expand: hidden => `… ذلك بقية ${hidden} سطر`,
 }
@@ -60,6 +60,6 @@ export const jsonTreeLabels: JsonTreeLabels = {
 }
 
 export const webBlockLabels: WebBlockLabels = {
-  noResults: 'لم بحث إلى نتيجة', sourcesTruncated: 'مصدر قائمة قد قطع قطع',
-  http: 'HTTP', contentTruncated: 'محتوى قد قطع قطع', markdown: markdownLabels,
+  noResults: 'لم بحث إلى نتيجة', sourcesTruncated: 'مصدر قائمة قد مقتطع',
+  http: 'HTTP', contentTruncated: 'محتوى قد مقتطع', markdown: markdownLabels,
 }

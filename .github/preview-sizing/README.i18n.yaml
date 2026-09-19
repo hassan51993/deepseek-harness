@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .github/preview-sizing/README.md
 README.md: 9ead526d24c01d093c1bb0029117340e0a85a5a0
-README.ar.md: 910af7660f3d63525cd88c4301418cb5f58feff0
+README.ar.md: ca6990c968e576864725c0c0d247d9d29dcb45a2

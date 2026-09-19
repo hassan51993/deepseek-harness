@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/session/session-checkpoint-policy/README.md
 README.md: d2973f7e3b8382f62f7b9a72ee89f2298e1bb8fa
-README.ar.md: 8b2e8b833d8911b2c204f7bdb6524a519374c930
+README.ar.md: b9e48942e77123529b7858847fb5b8e18c514ec3

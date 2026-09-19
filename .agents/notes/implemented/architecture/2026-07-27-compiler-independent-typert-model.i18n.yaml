@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-27-compiler-independent-typert-model.md
 2026-07-27-compiler-independent-typert-model.md: ba0e00ec97c7d2aa37465e0ba9a312049006179f
-2026-07-27-compiler-independent-typert-model.ar.md: af205977388d0f55b3b1b545bed1957b911fc762
+2026-07-27-compiler-independent-typert-model.ar.md: e781ee1537faa50eb9e748e313b8c801bf607a73

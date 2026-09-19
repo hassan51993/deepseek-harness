@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-09-committed-artifact-citations.md
 2026-08-09-committed-artifact-citations.md: 4fdbb6f883b423b7ff7495579bbc715a773a1ef9
-2026-08-09-committed-artifact-citations.ar.md: 9a7a34dfd8eae724b219953a68a43cb93388a9d8
+2026-08-09-committed-artifact-citations.ar.md: 62547ef25971f28482c781906341aec86d0691b9

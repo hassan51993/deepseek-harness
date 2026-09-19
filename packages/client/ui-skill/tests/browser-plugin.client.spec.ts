@@ -126,11 +126,11 @@ describe('apply', () => {
       namespace: 'skill', dictionaries: {
         ar: {
           'row.title': 'Skill',
-          'row.running': 'صحيح في تحميل skill',
+          'row.running': 'جارٍ تحميل skill',
           'row.failed': 'skill تحميل فشل',
           'row.stopped': 'skill تحميل قد في توقف',
           'row.instructions': 'شرح',
-          'row.inspect': 'فحص نظر',
+          'row.inspect': 'عرض',
           'menu.userOnly': 'فقط مستخدم',
         },
         en: {

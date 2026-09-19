@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-11-sidebar-document-preview-polish.md
 2026-09-11-sidebar-document-preview-polish.md: 672456bcccd6201585f9bdf97ea6db891d006252
-2026-09-11-sidebar-document-preview-polish.ar.md: f478084928ab984af99cb91dbcc0aa6761cbd332
+2026-09-11-sidebar-document-preview-polish.ar.md: 1e8965418b16816c711ca8ab7c1420da5a7f9252

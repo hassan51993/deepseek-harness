@@ -655,7 +655,7 @@ describe('WorkflowRunPanel', () => {
         ],
       })],
     })} />)
-    expect(screen.getByText('قد إتمام 1 · قد في قطع 1')).toBeTruthy()
+    expect(screen.getByText('اكتمل 1 · قد في قطع 1')).toBeTruthy()
     expect(interruptedView.container.querySelector('[data-run-status="interrupted"]')).toBeTruthy()
     expect(interruptedView.container.querySelectorAll('[data-state="warning"]')).toHaveLength(2)
   })

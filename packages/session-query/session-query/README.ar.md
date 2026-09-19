@@ -42,7 +42,7 @@ kind: "package-reference"
 | `traceEvent(request)` | واحد حدث موضع استبدال و يتم مرجع مصدر حدث علاقة |
 | `searchSessions(request)` / `searchEvents(request)` | كل نص بحث قسم صفحة نتيجة، من تركيب خلفية تنفيذ |
 
-لا حمل متن سجل فقط عام `SessionHeader.isSeeded`. إرجاع حدث متن قراءة (`readSession`،`readSurface`،`readEvent`) و إبقاء `SessionObservation` قيمة أيضا يحمل دقيق `inheritedEventCount`، لذلك استدعاء جهة بلا حاجة من سجل دفع قطع قطع نقطة يكفي منطقة قسم وراثة حدث و ذاتي لديه حدث.
+لا حمل متن سجل فقط عام `SessionHeader.isSeeded`. إرجاع حدث متن قراءة (`readSession`،`readSurface`،`readEvent`) و إبقاء `SessionObservation` قيمة أيضا يحمل دقيق `inheritedEventCount`، لذلك استدعاء جهة بلا حاجة من سجل دفع مقتطع نقطة يكفي منطقة قسم وراثة حدث و ذاتي لديه حدث.
 
 ### مرور ترشيح جهاز
 

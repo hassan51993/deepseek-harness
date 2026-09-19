@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/process/2026-08-20-audience-first-documentation-quality.md
 2026-08-20-audience-first-documentation-quality.md: d658d786358e4f470690e36a22b7af5e09cab387
-2026-08-20-audience-first-documentation-quality.ar.md: 06b81f9e6762af3d58cc3dfd2e34add51633b6fe
+2026-08-20-audience-first-documentation-quality.ar.md: 291968763d3e5239df3ef9ee067681e1c3228961

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-29-terminal-llm-stream-failures.md
 2026-07-29-terminal-llm-stream-failures.md: 00e9e1d64f9a746f7a4b9f6b8c7ca3af067ed071
-2026-07-29-terminal-llm-stream-failures.ar.md: e3428152d93c1c135644189322c3f702a576707d
+2026-07-29-terminal-llm-stream-failures.ar.md: de833b92971e305ae31033e2d58954587531139d

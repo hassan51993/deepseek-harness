@@ -1,6 +1,6 @@
 # Agent Note: سوف وحيد ضغط خلفية و دخول خدمة حزمة
 
-Status: rejected — حساب تخطيط زيادة أكثر كثير ضغط خلفية، لذلك Service Definition حزمة و basic مزود حزمة متابعة قسم مغادرة.
+Status: rejected — خطة زيادة أكثر كثير ضغط خلفية، لذلك Service Definition حزمة و basic مزود حزمة متابعة قسم مغادرة.
 
 [English](2026-07-19-fold-compaction-package-split.md) | العربية
 

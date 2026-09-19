@@ -71,7 +71,7 @@ describe('web e2e: plugin configuration pages', () => {
 
   /** Open one official plugin's page from its card and wait for its form. */
   async function openPage(panel: Locator, title: string): Promise<void> {
-    await panel.getByRole('button', { name: `فحص نظر ${title}`, exact: true }).click()
+    await panel.getByRole('button', { name: `عرض ${title}`, exact: true }).click()
     await panel.locator('[data-plugin-config]').waitFor({ timeout: 10_000 })
   }
 
@@ -87,16 +87,16 @@ describe('web e2e: plugin configuration pages', () => {
     // Every page the shipped web composition exposes: the shell executor, the
     // agent loop, subagent selection, and the DeepSeek search provider, after
     // the two official bundles the installation ships switched off.
-    await panel.getByRole('button', { name: 'فحص نظر شبكة صفحة بحث', exact: true }).waitFor({ timeout: 20_000 })
+    await panel.getByRole('button', { name: 'عرض شبكة صفحة بحث', exact: true }).waitFor({ timeout: 20_000 })
     const official = panel.locator('[data-plugin-group="official"]')
     expect(await official.locator('[data-plugin-package]').count()).toBe(2)
     expect(await official.locator('[data-plugin-item]').count()).toBe(4)
     for (const title of ['طرفية', 'Agent حلقة', 'Subagent', 'شبكة صفحة بحث']) {
-      expect(await official.getByRole('button', { name: `فحص نظر ${title}`, exact: true }).count()).toBe(1)
+      expect(await official.getByRole('button', { name: `عرض ${title}`, exact: true }).count()).toBe(1)
     }
     // A card carries the one-liner; the fields wait for the page.
     expect(await official.getByText('حد agent تشغيل كل واحد بند أمر.', { exact: true }).count()).toBe(1)
-    expect(await panel.getByLabel('أمر مهلة (جزء ثانية)').count()).toBe(0)
+    expect(await panel.getByLabel('أمر مهلة (مللي ثانية)').count()).toBe(0)
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(OFFICIAL_EXPECTED, snapshot, MODE)
@@ -201,7 +201,7 @@ describe('web e2e: plugin configuration pages', () => {
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
 
-    const timeout = panel.getByLabel('أمر مهلة (جزء ثانية)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ثانية)')
     await timeout.waitFor({ timeout: 10_000 })
     // The composed default this deployment ships, before any user layer.
     expect(await timeout.inputValue()).toBe('60000')
@@ -230,7 +230,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-leave'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (جزء ثانية)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ثانية)')
     await timeout.waitFor({ timeout: 10_000 })
 
     await timeout.fill('7000')
@@ -238,7 +238,7 @@ describe('web e2e: plugin configuration pages', () => {
     await panel.getByRole('heading', { name: 'رسمي جهة', exact: true }).waitFor({ timeout: 10_000 })
     await openPage(panel, 'طرفية')
 
-    await expect.poll(() => panel.getByLabel('أمر مهلة (جزء ثانية)').inputValue(), { timeout: 5_000 }).toBe('12000')
+    await expect.poll(() => panel.getByLabel('أمر مهلة (مللي ثانية)').inputValue(), { timeout: 5_000 }).toBe('12000')
     expect(await settingsDocument()).toContain('timeoutMs: 12000')
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
@@ -247,7 +247,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-invalid'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (جزء ثانية)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ثانية)')
     await timeout.waitFor({ timeout: 10_000 })
 
     await timeout.fill('soon')
@@ -262,7 +262,7 @@ describe('web e2e: plugin configuration pages', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-config-reset'))
     const panel = await openPlugins()
     await openPage(panel, 'طرفية')
-    const timeout = panel.getByLabel('أمر مهلة (جزء ثانية)')
+    const timeout = panel.getByLabel('أمر مهلة (مللي ثانية)')
     await timeout.waitFor({ timeout: 10_000 })
     expect(await timeout.inputValue()).toBe('12000')
 
@@ -286,7 +286,7 @@ describe('web e2e: plugin configuration pages', () => {
     const panel = await openPlugins()
 
     // Off, the bundle's browser half is not loaded and the row has no configuration to open.
-    await panel.getByRole('button', { name: 'فحص نظر live-client', exact: true }).click()
+    await panel.getByRole('button', { name: 'عرض live-client', exact: true }).click()
     const row = panel.locator('[data-plugin-row]', { hasText: 'fixture-live-client' })
     await row.waitFor({ timeout: 10_000 })
     expect(await panel.getByRole('button', { name: 'إعداد fixture-live-client' }).count()).toBe(0)

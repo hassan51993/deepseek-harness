@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-08-unified-github-label-taxonomy.md
 2026-08-08-unified-github-label-taxonomy.md: 1f4f52b710c7ed43b9294fd9fc065a4181d949fe
-2026-08-08-unified-github-label-taxonomy.ar.md: 8e165678ebbc97fe2016ff86c2f2e5bfc4f574b7
+2026-08-08-unified-github-label-taxonomy.ar.md: fbe842ef86af3c8575276ab019d715cdf6bf426d

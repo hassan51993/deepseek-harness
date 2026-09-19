@@ -14,7 +14,7 @@
 
 `InstallBundleOptions.enabled` افتراضي لـ true،false يمثل تثبيت لكن لا اختيار تركيب حزمة طبقة.`approvedBuilds` في تثبيت قبل نحو إشارة تحديد انتظار مراجعة دفعة حزمة اسم منح إعطاء حمل دائم نص برمجي إذن.
 
-`ChangeResult.changed` تقرير إبلاغ مغناطيس قرص تعديل، مستقل في `application`:`applied`،`restart-required`،`overridden` أو `failed`. اختياري `error` يتضمن يمكن محلي تحويل رمز خطأ و خارجي تشخيص.`packageResult` سجل pnpm خروج رمز، محدود إخراج، قطع قطع علامة سجل و كامل تشخيص سجل مسار.`pendingBuilds` صف خروج كامل profile بعد لم قرار حزمة؛`approvedBuilds` سجل هذا مرة عملية منح إعطاء إذن حزمة اسم.
+`ChangeResult.changed` تقرير إبلاغ مغناطيس قرص تعديل، مستقل في `application`:`applied`،`restart-required`،`overridden` أو `failed`. اختياري `error` يتضمن يمكن محلي تحويل رمز خطأ و خارجي تشخيص.`packageResult` سجل pnpm خروج رمز، محدود إخراج، مقتطع علامة سجل و كامل تشخيص سجل مسار.`pendingBuilds` صف خروج كامل profile بعد لم قرار حزمة؛`approvedBuilds` سجل هذا مرة عملية منح إعطاء إذن حزمة اسم.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

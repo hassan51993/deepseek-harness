@@ -114,7 +114,7 @@ describe('page Markdown actions', () => {
     expect(link.getAttribute('href')).toBe(`/deepseek-harness/${path}`)
     expect(link.getAttribute('target')).toBe('_blank')
     expect(link.getAttribute('aria-label')).toBe(lang === 'en-US'
-      ? 'View as Markdown (opens in a new tab)' : 'بـ Markdown صيغة فحص نظر (في جديد وسم صفحة فتح)')
+      ? 'View as Markdown (opens in a new tab)' : 'بـ Markdown صيغة عرض (في جديد وسم صفحة فتح)')
     await expect(`${host.innerHTML}\n`).toMatchFileSnapshot(`./expected/page-markdown-static.${lang}.html`)
     expect(fetchMock).not.toHaveBeenCalled()
   })

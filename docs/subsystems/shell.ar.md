@@ -8,7 +8,7 @@ shell تنفيذ seam من [dsh-shell](../../packages/shell/shell) في `ctx.she
 
 ## تلقي إدارة shell بيئة نطاق الأسماء
 
-`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع. موجه إلى نموذج bash أداة عبر `ctx.shellEnv` استلام تجميع هو جمع، مجددا مرور من `ShellExecRequest.dshEnv` نقل تمرير؛ عملية فرعية خدمة في دمج حالي لقطة قبل سوف إزالة وراثة بينما قدوم `DSH_*` اسم.`DshEnvironmentKey`/`DshEnvironment` مفردات عودة[عملية فرعية seam](subprocess.ar.md) كل، من `dsh-shell` إعادة توجيه خروج.
+`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع. موجه إلى نموذج bash أداة عبر `ctx.shellEnv` استلام تجميع هو جمع، مجددا مرور من `ShellExecRequest.dshEnv` نقل تمرير؛ عملية فرعية خدمة في دمج حالي لقطة قبل سوف إزالة وراثة بينما قدوم `DSH_*` اسم.`DshEnvironmentKey`/`DshEnvironment` مفردات عودة[عملية فرعية seam](subprocess.ar.md) كل، من `dsh-shell` إعادة تصدير.
 
 ## طلب و قاعدة إطار:`resolve()` تفكيك قسم
 
@@ -104,7 +104,7 @@ interface ShellExecSpec {
 
 ## قبل منصة تشغيل:`ShellRunResult`
 
-مرة قد إتمام (أو يتم إنهاء) قبل منصة تشغيل نتيجة. صحيح تسليم نتيجة**مستقل تقرير إبلاغ**: واحد عملية يمكن معا مهلة و بـ خروج رمز 0 خروج (لأن هو التقاط إشارة) ، لذلك `timedOut`،`aborted`،`signal` و `exitCode` كل منها مستقل لـ واحد حقل؛ استدعاء جهة دائم بعيد لن يأخذ مرة يتم رفع قبل في قطع تشغيل خطأ قراءة لـ صحيح معتاد نجاح.
+مرة اكتمل (أو يتم إنهاء) قبل منصة تشغيل نتيجة. صحيح تسليم نتيجة**مستقل تقرير إبلاغ**: واحد عملية يمكن معا مهلة و بـ خروج رمز 0 خروج (لأن هو التقاط إشارة) ، لذلك `timedOut`،`aborted`،`signal` و `exitCode` كل منها مستقل لـ واحد حقل؛ استدعاء جهة دائم بعيد لن يأخذ مرة يتم رفع قبل في قطع تشغيل خطأ قراءة لـ صحيح معتاد نجاح.
 
 ```ts type-equiv
 /** The outcome of a foreground run, including timeout during preparation. */
@@ -136,7 +136,7 @@ interface ShellRunResult {
 }
 ```
 
-كل تدفق هو واحد `CollectedOutput`:(ممكن يتم قطع قطع) نص إضافة استعادة معلومة؛ قطع قطع وقت،`text` هو**ذيل جزء**، كامل تدفق فيض خروج إلى واحد خاص ملف. هذه حقل عودة[عملية فرعية seam](subprocess.ar.md) كل، من `dsh-shell` إعادة توجيه خروج.
+كل تدفق هو واحد `CollectedOutput`:(ممكن يتم مقتطع) نص إضافة استعادة معلومة؛ مقتطع وقت،`text` هو**ذيل جزء**، كامل تدفق فيض خروج إلى واحد خاص ملف. هذه حقل عودة[عملية فرعية seam](subprocess.ar.md) كل، من `dsh-shell` إعادة تصدير.
 
 ## ملف صندوق رملي:`ShellSandboxInfo`
 
@@ -221,7 +221,7 @@ interface ShellProcessRead {
 
 ## خدمة
 
-`ShellExecutor` يملك `resolve`، قبل منصة `run`، خلفية عملية `start` و `sandboxMode` قدرة واقع.`dsh-bash-local` يملك أمر قيمة افتراضية تكملة كل، مهلة/في توقف تصنيف، طرفية بيئة و خلفية قراءة دمج؛managed-range إنهاء، محدود استلام تجميع جهاز،spill ملف، اعتماد صاف حذف و dispose(مورد تحرير) بعد تماما توقف مستقر عودة[عملية فرعية خدمة](subprocess.ar.md) كل.`dsh-tool-bash` يملك موجه إلى نموذج تصيير، و سوف خلفية جملة مقبض ملائم إعداد إلى[عام مهمة وقت التشغيل](jobs.ar.md).`dsh-shell` يملك shell أداة مشترك خروج حالة اتفاق: توجيه خروج `parseExitStatus`/`ParsedExitStatus` هو `dsh-tool-bash` `renderResult` و `dsh-tool-pwsh` `renderPwshResult` الذي إلحاق `[exit code: N]` / `[killed by signal: X]` علامة عكس تحليل، اثنان عدد أداة `presentResult` كل استخدام هو يأخذ تصيير نص تفكيك قسم لـ terminal بطاقة إخراج متن و خروج حالة pill.
+`ShellExecutor` يملك `resolve`، قبل منصة `run`، خلفية عملية `start` و `sandboxMode` قدرة واقع.`dsh-bash-local` يملك أمر قيمة افتراضية تكملة كل، مهلة/في توقف تصنيف، طرفية بيئة و خلفية قراءة دمج؛managed-range إنهاء، محدود استلام تجميع جهاز،spill ملف، اعتماد صاف حذف و dispose(مورد تحرير) بعد تماما توقف مستقر عودة[عملية فرعية خدمة](subprocess.ar.md) كل.`dsh-tool-bash` يملك موجه إلى نموذج تصيير، و سوف خلفية جملة مقبض ملائم إعداد إلى[عام مهمة وقت التشغيل](jobs.ar.md).`dsh-shell` يملك shell أداة مشترك خروج حالة اتفاق: تصدير `parseExitStatus`/`ParsedExitStatus` هو `dsh-tool-bash` `renderResult` و `dsh-tool-pwsh` `renderPwshResult` الذي إلحاق `[exit code: N]` / `[killed by signal: X]` علامة عكس تحليل، اثنان عدد أداة `presentResult` كل استخدام هو يأخذ تصيير نص تفكيك قسم لـ terminal بطاقة إخراج متن و خروج حالة pill.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

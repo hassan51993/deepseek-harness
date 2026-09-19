@@ -45,7 +45,7 @@ kind: "package-library"
 | server→client | `subagent.started` | `SubagentStartedNotification` |
 | server→client | `subagent.finished` | `SubagentFinishedNotification`(فقط عملية داخل تشغيل) |
 
-`HarnessSdkRequestMap` و `HarnessSdkNotificationMap` حسب طريقة اسم بحث جذب هذه بنية؛ حزمة أصل و نقل واحد بدء توجيه خروج هو جمع.
+`HarnessSdkRequestMap` و `HarnessSdkNotificationMap` حسب طريقة اسم بحث جذب هذه بنية؛ حزمة أصل و نقل واحد بدء تصدير هو جمع.
 
 ### تحميل حمل دلالة
 

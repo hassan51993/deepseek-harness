@@ -61,7 +61,7 @@
   border-radius: 8px;
   background: transparent;
   color: var(--dsw-alias-label-primary);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
 }
 

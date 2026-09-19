@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-07-06-recallable-compaction.md
 2026-07-06-recallable-compaction.md: 3fa94ec5e5b3e46cc28445c3222492bca0f27658
-2026-07-06-recallable-compaction.ar.md: c53eab2c35ce608011e608d071dda4cd798e8f57
+2026-07-06-recallable-compaction.ar.md: aae8d20058ea7830fd327a97d2c3ef3d7918fe3f

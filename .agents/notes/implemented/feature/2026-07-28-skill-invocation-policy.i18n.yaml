@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-28-skill-invocation-policy.md
 2026-07-28-skill-invocation-policy.md: 193f77d19a81dcf90f86c4da734849079134fab7
-2026-07-28-skill-invocation-policy.ar.md: 3e1b3dbed47079673768ee2c9cd98001c3107773
+2026-07-28-skill-invocation-policy.ar.md: 62fd73eba691d120416112af901e5e7786a7eedc

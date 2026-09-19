@@ -133,7 +133,7 @@ const homeAndGuide = pairedPages([
   {
     source: 'docs/user/guide/network-proxy.md',
     route: 'guide/network-proxy.md',
-    label: { root: 'شبكة شبكة بديل إدارة', en: 'Network proxy' },
+    label: { root: 'شبكة بديل إدارة', en: 'Network proxy' },
     sidebar: { root: 'ar-guide', en: 'en-guide' },
     section: { root: 'دخول باب', en: 'Guide' },
     order: 3,
@@ -336,7 +336,7 @@ const subsystemGroups = [
     ['approval.md', 'مراجعة دفعة', 'Approvals'],
     ['permission-presets.md', 'إذن مسبق ضبط', 'Permission presets'],
     ['sandbox.md', 'صندوق رملي', 'Sandboxing'],
-    ['plan.md', 'حساب تخطيط نمط', 'Plan mode'],
+    ['plan.md', 'خطة نمط', 'Plan mode'],
     ['user-questions.md', 'مستخدم تفاعل', 'User interaction'],
     ['commands.md', 'أمر', 'Human commands'],
     ['goal.md', 'هدف', 'Goals'],

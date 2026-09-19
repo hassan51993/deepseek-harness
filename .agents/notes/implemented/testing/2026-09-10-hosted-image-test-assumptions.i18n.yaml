@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-10-hosted-image-test-assumptions.md
 2026-09-10-hosted-image-test-assumptions.md: 973eea83f13048acb654404c9bf82823e4bb0b11
-2026-09-10-hosted-image-test-assumptions.ar.md: e5d6c3e90dc361a30e1bb3d3ea243f1a679c713b
+2026-09-10-hosted-image-test-assumptions.ar.md: 2b34b8df7b7344f259f74d32ab4d90713e58e501

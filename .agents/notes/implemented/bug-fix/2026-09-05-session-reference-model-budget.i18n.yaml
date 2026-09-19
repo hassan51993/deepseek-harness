@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-05-session-reference-model-budget.md
 2026-09-05-session-reference-model-budget.md: c06578e89992f2ba1c3d03d7c02c29a4caef9747
-2026-09-05-session-reference-model-budget.ar.md: be4d6173c74a9e87fac676eaed05fcf7bbe1df8c
+2026-09-05-session-reference-model-budget.ar.md: 4f6a80d13394eecb308ee968c31b986bb9cc7900

@@ -10,7 +10,7 @@ Status: implemented
 
 ## Decision
 
-[Session-reference](../../../../packages/context/session-reference/README.ar.md) عبر محلي prepend مستمع مراقبة قد إتمام `system-prompt/assemble` شلال نشر، و يأخذ provider/model مقابل تخزين دخول بـ Agent لـ مفتاح WeakMap. دقيق تجهيز مرحلة مقطع عبر اختياري LLM خدمة تحليل هذا توجيه؛ أول مرة تجميع قبل مباشر دقيق تجهيز فإن استخدام agent options. لا حمل Agent تشخيص لن تحديث خريطة.
+[Session-reference](../../../../packages/context/session-reference/README.ar.md) عبر محلي prepend مستمع مراقبة اكتمل `system-prompt/assemble` شلال نشر، و يأخذ provider/model مقابل تخزين دخول بـ Agent لـ مفتاح WeakMap. دقيق تجهيز مرحلة مقطع عبر اختياري LLM خدمة تحليل هذا توجيه؛ أول مرة تجميع قبل مباشر دقيق تجهيز فإن استخدام agent options. لا حمل Agent تشخيص لن تحديث خريطة.
 
 كل مصدر نيل نيل `max(65536, floor(contextWindow × 4 × referenceContextFraction))` بايت، افتراضي مقارنة مثال لـ `0.2`. كل token أربعة بايت هو سعة كمية تقدير حساب. صريح `maxReferenceBytes` قفز مرور نموذج استعلام و إبقاء دقيق قيمة. نقص قليل توجيه، خدمة، مهايئ أو سعة كمية وقت إبقاء تحت حد؛ أخرى استعلام فشل و إلغاء سوف نقل بث. نقص قليل مهايئ لا عائق عائق تدفق في بين عنصر معالجة هذا توجيه.
 

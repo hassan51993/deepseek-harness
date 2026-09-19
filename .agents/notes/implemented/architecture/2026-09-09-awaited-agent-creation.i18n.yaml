@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-09-awaited-agent-creation.md
 2026-09-09-awaited-agent-creation.md: 584c6ed9b65c52c6b7263d9c3bb7a47410f4b542
-2026-09-09-awaited-agent-creation.ar.md: b73c0ab65aa9d1040e27578a816a3e37cdbd361e
+2026-09-09-awaited-agent-creation.ar.md: 44f12b926d96a40ba4bd1739b9ebd0aba055fd83

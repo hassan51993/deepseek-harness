@@ -6,14 +6,14 @@ export const PERMISSION_ACCESS_NS = 'permission.access'
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
   'title': 'إذن',
-  'description': 'اختيار جديد جلسة افتراضي إذن نمط',
+  'description': 'اختيار جلسة جديدة افتراضي إذن نمط',
   'loading': 'تحميل في',
   'unavailable': 'غير ممكن استخدام',
-  'preset.readOnly': 'فقط يمكن فحص نظر',
+  'preset.readOnly': 'فقط يمكن عرض',
   'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
   'preset.fullAccess': 'تماما إذن',
   'confirm.title': 'تأكيد تفعيل تماما إذن؟',
-  'confirm.description': 'تفعيل تماما إذن بعد، جديد جلسة سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة لاحق مهمة وقت استخدام.',
+  'confirm.description': 'تفعيل تماما إذن بعد، جلسة جديدة سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة لاحق مهمة وقت استخدام.',
   'confirm.acknowledge': 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
   'confirm.cancel': 'إلغاء',
   'confirm.enable': 'تفعيل تماما إذن',
@@ -42,7 +42,7 @@ export const en = {
 export const accessAr = {
   'mode': 'وصول نمط، حالي:{name}',
   'close': 'إغلاق',
-  'preset.readOnly': 'فقط يمكن فحص نظر',
+  'preset.readOnly': 'فقط يمكن عرض',
   'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
   'preset.fullAccess': 'تماما إذن',
   'confirm.title': 'تأكيد تفعيل تماما إذن؟',
@@ -52,9 +52,9 @@ export const accessAr = {
   'confirm.enable': 'تفعيل تماما إذن',
   'auto.label': 'Auto review',
   'auto.badge': 'EXP',
-  'auto.description': 'بلا صندوق رملي تشغيل؛ كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.',
+  'auto.description': 'بلا صندوق رملي تشغيل؛ كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.',
   'auto.confirm.title': 'تأكيد تفعيل Auto review(فعلي تحقق) ؟',
-  'auto.confirm.description': 'Auto review لا استخدام صندوق رملي. كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل، كل سوف من و حالي agent نفسه نموذج إجراء مراجعة فحص. هذا وظيفة ما زال تابع فعلي تحقق صفة، ممكن خطأ وضع سطر أو خطأ رفض، و سوف إزالة استهلاك مقدار خارج token.',
+  'auto.confirm.description': 'Auto review لا استخدام صندوق رملي. كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل، كل سوف من و حالي agent نفسه نموذج إجراء مراجعة فحص. هذا وظيفة ما زال تابع فعلي تحقق صفة، ممكن خطأ وضع سطر أو خطأ رفض، و سوف إزالة استهلاك مقدار خارج token.',
   'auto.confirm.acknowledge': 'أنا قد حل هذه ريح خطر، و رغبة معنى متابعة',
   'auto.confirm.enable': 'تفعيل Auto review',
 } satisfies Record<string, string>

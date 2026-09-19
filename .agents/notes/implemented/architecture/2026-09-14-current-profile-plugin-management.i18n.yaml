@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-14-current-profile-plugin-management.md
 2026-09-14-current-profile-plugin-management.md: e435b6cf3505704ab96e470f0ab317aee08338a2
-2026-09-14-current-profile-plugin-management.ar.md: a8745a3cd0ced5e1e5430c626de4747876b6b6f8
+2026-09-14-current-profile-plugin-management.ar.md: bb9a2ece1f82e8fa894f43641dae787fb84d1432

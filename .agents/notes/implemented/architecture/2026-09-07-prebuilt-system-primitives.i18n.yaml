@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-07-prebuilt-system-primitives.md
 2026-09-07-prebuilt-system-primitives.md: 39eb07ae27577b511363ea237d8f704afab6fb4b
-2026-09-07-prebuilt-system-primitives.ar.md: a6159d929e42f926c1520b2bd292e4b3e8312f22
+2026-09-07-prebuilt-system-primitives.ar.md: 6b163b59c9656d29dfb833506dd661c5c76cff60
