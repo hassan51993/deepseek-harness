@@ -1902,7 +1902,7 @@ describe('ChatView', () => {
     })
     const view = render(<h.ChatView {...h.props} />)
     // The usage pill carries the compact total; cache hit stays dialog-only.
-    const trigger = view.getByRole('button', { name: /الاستهلاك 10\.1K tok/ })
+    const trigger = view.getByRole('button', { name: /الاستهلاك 10\.1K رمز/ })
     expect(trigger.textContent).toBe('الاستهلاك 10.1K tok')
     expect(view.queryByRole('dialog')).toBeNull()
     fireEvent.click(trigger)
@@ -1939,7 +1939,7 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     // Timing facts keep their pill, but with no usage in the window there is
     // no usage pill to click.
-    expect(view.getByRole('button', { name: /استخدام وقت/ })).toBeTruthy()
+    expect(view.getByRole('button', { name: /استغرق/ })).toBeTruthy()
     expect(view.queryByRole('button', { name: /الاستهلاك/ })).toBeNull()
   })
 
@@ -1986,7 +1986,7 @@ describe('ChatView', () => {
       turnEnds: new Map([[1, 16]]),
     })
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.queryByText(/استخدام وقت/)).toBeNull()
+    expect(view.queryByText(/استغرق/)).toBeNull()
   })
 
   it('enables fork only on the finalized assistant at the completed transcript tail', () => {
@@ -2813,7 +2813,7 @@ describe('ChatView', () => {
       openError: { code: 'gateway/internal', message: 'boom' } as never,
     })
     const view = render(<h.ChatView {...h.props} />)
-    expect(view.getByText(/تعذّر تحميل تاريخ: boom/)).toBeTruthy()
+    expect(view.getByText(/تعذّر تحميل السجل: boom/)).toBeTruthy()
     const loading = makeHarness({}, { openState: 'loading' })
     const lv = render(<loading.ChatView {...loading.props} />)
     expect(lv.getByText('جارٍ تحميل السجل…')).toBeTruthy()

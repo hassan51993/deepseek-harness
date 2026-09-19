@@ -121,7 +121,7 @@ describe('todo_write assembly (product registrations, no outlet twins)', () => {
     // (default-collapsed: the header summary shows; rows appear on expand).
     const panel = view.container.querySelector('[data-testid="todo-panel"]')
     expect(panel).not.toBeNull()
-    expect(panel!.textContent).toContain('1 اكتمل\u2002·\u20021 إجراء في\u2002·\u20021 معلّقة')
+    expect(panel!.textContent).toContain('1 مكتملة\u2002·\u20021 قيد التنفيذ\u2002·\u20021 معلّقة')
     fireEvent.click(panel!.querySelector('button')!)
     expect([...panel!.querySelectorAll('li')].map(li => li.getAttribute('data-status')))
       .toEqual(['completed', 'in_progress', 'pending'])

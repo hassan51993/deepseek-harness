@@ -79,7 +79,7 @@ it('keeps mandatory diagnostics expandable without clearing the block or authori
       [
         "تعذّر إيقاف المهام بأمان، ولم يُثبَّت التحديث. حاول مرة أخرى لاحقًا.",
         "عرض التفاصيل التقنية",
-        "إعادة محاولة تحديث",
+        "إعادة محاولة التحديث",
       ]
     `)
   p.element('technical-details-label').click()

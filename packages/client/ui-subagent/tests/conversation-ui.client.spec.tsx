@@ -426,9 +426,9 @@ describe('SubagentHeaderLineage', () => {
     expect(within(trigger).getByText('9 وكلاء فرعيون')).toBeTruthy()
     hoverCatalog(trigger)
 
-    const runningRow = screen.getByRole('treeitem', { name: /running.*4\.6K tok · 1 د 10 ث/ })
+    const runningRow = screen.getByRole('treeitem', { name: /running.*4\.6K رمز · 1 د 10 ث/ })
     const runningMetrics = within(runningRow)
-    const tokenMetric = runningMetrics.getByText('4.6K tok')
+    const tokenMetric = runningMetrics.getByText('4.6K رمز')
     const durationMetric = runningMetrics.getByText('1 د 10 ث')
     expect(tokenMetric.parentElement).toBe(durationMetric.parentElement)
     expect(tokenMetric.nextElementSibling).toBe(durationMetric)

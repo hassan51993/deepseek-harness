@@ -34,7 +34,7 @@ interface SearchBlockCommon {
   /**
    * Whether the tool capped the inline result: the shape carries only the
    * retained results, not every result the search found. The banner summary
-   * folds the pre-cap `total` in (`عرض X / مشترك N …`) so the card never presents a
+   * folds the pre-cap `total` in (`عرض X من N …`) so the card never presents a
    * capped result as complete.
    */
   truncated: boolean
@@ -116,10 +116,10 @@ function shownCount(props: SearchBlockProps): number {
 }
 
 /**
- * The banner summary. When the search was capped it reads `عرض X / مشترك N …` so
+ * The banner summary. When the search was capped it reads `عرض X من N …` so
  * the retained count and the pre-cap total sit in one clause (mirroring the read
- * card's `عرض X / Y سطر`); when it was not capped it is a plain count of what the
- * card holds. The unit — `موضع مطابقة · K عدد ملف` for grep, `عدد مسار` for glob — trails
+ * card's `عرض X من Y سطر`); when it was not capped it is a plain count of what the
+ * card holds. The unit — `مطابقة · K ملف` for grep, `مسار` for glob — trails
  * the count either way.
  * @param props - the card's props.
  * @param shown - the retained result count from {@link shownCount}.

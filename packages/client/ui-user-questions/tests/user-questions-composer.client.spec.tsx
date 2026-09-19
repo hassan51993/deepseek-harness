@@ -188,7 +188,7 @@ describe('QuestionComposer', () => {
     const scrollRegion = detail.closest('[data-question-scroll]')
     expect(scrollRegion).toBeTruthy()
     expect(scrollRegion?.contains(screen.getByRole('radio', { name: /عمل مسار سقوط أرض نوع/ }))).toBe(true)
-    expect(scrollRegion?.contains(screen.getByText('السؤال التالي').closest('button'))).toBe(false)
+    expect(scrollRegion?.contains(screen.getByText('التالي').closest('button'))).toBe(false)
     fireEvent.keyDown(screen.getByRole('radio', { name: /عمل مسار سقوط أرض نوع/ }), { key: 'Enter' })
     expect(answer).not.toHaveBeenCalled()
     fireEvent.click(screen.getByRole('radio', { name: /عمل مسار سقوط أرض نوع/ }))
@@ -244,7 +244,7 @@ describe('QuestionComposer', () => {
     const { carrier, answer } = wait()
     render(<QuestionComposer matched={carrier} {...kit} />)
 
-    expect((screen.getByText('السؤال التالي').closest('button') as HTMLButtonElement).disabled).toBe(true)
+    expect((screen.getByText('التالي').closest('button') as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(screen.getByRole('radio', { name: 'بحث بحث كامن قوة نوع' }))
     expect(screen.getByText('2 / 3')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'تخطّي' }))

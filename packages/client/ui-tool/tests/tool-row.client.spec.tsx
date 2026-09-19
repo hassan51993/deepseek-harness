@@ -240,7 +240,7 @@ describe('tool-call-model', () => {
     expect(normalizeAutoReviewReason(null)).toBeNull()
     expect(localizeAutoReviewDenial({ reason: null }, t)).toEqual({
       summary: 'رفضتها المراجعة التلقائية',
-      output: 'لم تُنفَّذ الأداة. السبب: Auto review لم تخويل هذا مرة عملية',
+      output: 'لم تُنفَّذ الأداة. السبب: لم تُخوِّل المراجعة التلقائية هذا الإجراء',
     })
   })
 
@@ -475,19 +475,19 @@ describe('ToolRow', () => {
   it('the expanded card gutter-labels each section it carries (IN / OUT)', () => {
     const both = render(<ToolRow {...rowProps} output="result text" />)
     fireEvent.click(both.getByRole('button'))
-    expect(both.getByText('إدخال')).toBeTruthy()
-    expect(both.getByText('إخراج')).toBeTruthy()
+    expect(both.getByText('دخل')).toBeTruthy()
+    expect(both.getByText('خرج')).toBeTruthy()
     expect(both.getByText('result text')).toBeTruthy()
     cleanup()
     const inputOnly = render(<ToolRow {...rowProps} />)
     fireEvent.click(inputOnly.getByRole('button'))
-    expect(inputOnly.getByText('إدخال')).toBeTruthy()
-    expect(inputOnly.queryByText('إخراج')).toBeNull()
+    expect(inputOnly.getByText('دخل')).toBeTruthy()
+    expect(inputOnly.queryByText('خرج')).toBeNull()
     cleanup()
     const outputOnly = render(<ToolRow {...rowProps} bodyRaw={null} output="only out" />)
     fireEvent.click(outputOnly.getByRole('button'))
-    expect(outputOnly.queryByText('إدخال')).toBeNull()
-    expect(outputOnly.getByText('إخراج')).toBeTruthy()
+    expect(outputOnly.queryByText('دخل')).toBeNull()
+    expect(outputOnly.getByText('خرج')).toBeTruthy()
     expect(outputOnly.getByText('only out')).toBeTruthy()
   })
 })
@@ -573,8 +573,8 @@ describe('GenericToolCard', () => {
     expect(view.getByText('رفضتها المراجعة التلقائية')).toBeTruthy()
     fireEvent.click(view.getByRole('button'))
     expect(view.getByText('لم تُنفَّذ الأداة. السبب: scope was not authorized')).toBeTruthy()
-    expect(view.queryByText('إدخال')).toBeNull()
-    expect(view.getAllByText('إخراج')).toHaveLength(1)
+    expect(view.queryByText('دخل')).toBeNull()
+    expect(view.getAllByText('خرج')).toHaveLength(1)
     expect(stringify.mock.calls.some(([value]) => (
       typeof value === 'object' && value !== null && 'path' in value
     ))).toBe(false)

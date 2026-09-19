@@ -754,7 +754,7 @@ describe('WorkspaceBrowser', () => {
     // The loose session's group is UNGROUPED_KEY: expanded by the effect.
     expect(screen.getByText('loose')).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'إجراءات مساحة العمل «لم قسم مجموعة»' })).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'الجلسات جديدة في «لم قسم مجموعة»' }))
+    fireEvent.click(screen.getByRole('button', { name: 'جلسة جديدة في «بلا مجموعة»' }))
     expect(startSession).not.toHaveBeenCalled()
   })
 

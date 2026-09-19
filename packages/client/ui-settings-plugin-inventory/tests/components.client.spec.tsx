@@ -94,10 +94,10 @@ describe('PluginInventorySettingsTab', () => {
     const view = await renderReady()
 
     const switcher = screen.getByRole('button', { name: en.switcherLabel })
-    expect(switcher.textContent).toBe('النمط المعياري (default)')
+    expect(switcher.textContent).toBe('الوضع المعياري (default)')
     fireEvent.click(switcher)
     expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
-      'النمط المعياري (default)',
+      'الوضع المعياري (default)',
       'ptc',
       'تالف مسبق ضبط (failed to load)',
     ])
@@ -225,7 +225,7 @@ describe('PluginInventorySettingsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'tool-bash, bash-host, Enabled via presets' }))
     expect(screen.getByText(en.presetProvidedDetail)).toBeTruthy()
     expect(screen.getByText(en.enabledIn)).toBeTruthy()
-    expect(screen.getByText('النمط المعياري · ptc')).toBeTruthy()
+    expect(screen.getByText('الوضع المعياري · ptc')).toBeTruthy()
 
     // The failed global card reports its runtime state.
     fireEvent.click(screen.getByRole('button', { name: 'telemetry, telemetry, Failed' }))
@@ -322,7 +322,7 @@ describe('PluginInventorySettingsTab', () => {
     fireEvent.click(screen.getByRole('button', { name: 'tool-bash, bash-host, Enabled via presets' }))
     fireEvent.click(screen.getByRole('button', { name: en.viewInPreset }))
     expect(screen.getByRole('button', { name: en.switcherLabel }).textContent)
-      .toBe('النمط المعياري (default)')
+      .toBe('الوضع المعياري (default)')
   })
 
   it('searches across scopes and points at matches in other presets', async () => {

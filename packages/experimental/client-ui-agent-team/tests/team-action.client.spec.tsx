@@ -313,7 +313,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /مهمة جديدة/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: ' New task ' } })
     fireEvent.change(screen.getByPlaceholderText('وصف المهمة'), { target: { value: ' Details ' } })
-    fireEvent.change(screen.getByPlaceholderText(/اعتماد مهمة/u), { target: { value: 'task-1, task-1' } })
+    fireEvent.change(screen.getByPlaceholderText(/المهام المعطِّلة/u), { target: { value: 'task-1, task-1' } })
     fireEvent.change(screen.getByPlaceholderText(/نطاقات الكتابة/u), { target: { value: 'src/a, src/b' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     await waitFor(() => {
@@ -387,7 +387,7 @@ describe('TeamAction', () => {
     fireEvent.click(screen.getByRole('button', { name: /تحرير/u }))
     fireEvent.change(screen.getByPlaceholderText('عنوان المهمة'), { target: { value: 'Updated runtime' } })
     fireEvent.change(screen.getByPlaceholderText('وصف المهمة'), { target: { value: 'Updated details' } })
-    fireEvent.change(screen.getByPlaceholderText(/اعتماد مهمة/u), { target: { value: 'task-0' } })
+    fireEvent.change(screen.getByPlaceholderText(/المهام المعطِّلة/u), { target: { value: 'task-0' } })
     fireEvent.change(screen.getByPlaceholderText(/نطاقات الكتابة/u), { target: { value: 'src/runtime' } })
     fireEvent.click(screen.getByRole('button', { name: 'حفظ' }))
     expect(await screen.findByText('Updated runtime')).toBeTruthy()
@@ -503,7 +503,7 @@ describe('TeamAction', () => {
     expect(screen.getByRole<HTMLButtonElement>('button', { name: /failed-worker/u }).disabled).toBe(true)
     expect(screen.getByRole<HTMLButtonElement>('button', { name: /provisioning-worker/u }).disabled).toBe(true)
 
-    fireEvent.click(screen.getByRole('button', { name: /^workerتشغيل في/u }))
+    fireEvent.click(screen.getByRole('button', { name: /^workerقيد التشغيل/u }))
     expect(await screen.findByText('Error: navigation failed')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: ar.refresh }))
     await waitFor(() => { expect(load).toHaveBeenCalledTimes(2) })

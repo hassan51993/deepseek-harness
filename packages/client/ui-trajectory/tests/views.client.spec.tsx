@@ -539,9 +539,9 @@ describe('tab switching in ConversationRoot', () => {
     mount(b)
     fireEvent.click(screen.getByRole('tab', { name: 'Trajectory' }))
 
-    fireEvent.keyDown(screen.getByRole('row', { name: /الأدوات/ }), { key: 'Enter' })
+    fireEvent.keyDown(screen.getByRole('row', { name: /أداة/ }), { key: 'Enter' })
     expect(screen.getByRole('complementary', { name: 'تفاصيل الحدث' })).toBeTruthy()
-    expect(screen.getByText('الخطوة 1 جولة · رقم 1')).toBeTruthy()
+    expect(screen.getByText('الجولة 1 · الخطوة 1')).toBeTruthy()
     expect(screen.getByText('مكتمل')).toBeTruthy()
     expect(screen.getByRole('tab', { name: 'النتيجة' })).toBeTruthy()
 
@@ -644,7 +644,7 @@ describe('tab switching in ConversationRoot', () => {
     fireEvent.click(secondRequest)
     expect(firstSection?.className).not.toMatch(/turnLabelActive/)
     expect(secondSection?.className).toMatch(/turnLabelActive/)
-    expect(screen.getByText('طلب #4')).toBeTruthy()
+    expect(screen.getByText('الطلب #4')).toBeTruthy()
     expect(screen.getByText('ضغط · بين الجولات')).toBeTruthy()
   })
 
@@ -1395,7 +1395,7 @@ describe('TrajectoryView state', () => {
     await waitFor(() => { expect(screen.getByRole('button', { name: 'الطلب #11' })).toBeTruthy() })
     fireEvent.click(screen.getByRole('button', { name: 'الطلب #11' }))
     fireEvent.click(screen.getByRole('tab', { name: 'الاستهلاك' }))
-    expect(screen.getByText('إجمالي الجلسة').closest('section')?.textContent).toContain('11 tok')
+    expect(screen.getByText('إجمالي الجلسة').closest('section')?.textContent).toContain('11 رمز')
   })
 
   it.each([

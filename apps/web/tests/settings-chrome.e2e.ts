@@ -109,7 +109,7 @@ describe('web e2e: settings modal and General preferences', () => {
     const presetSwitcher = dialog.getByRole('button', { name: 'اختر الإعداد المسبق للوكيل المراد فحصه' })
     await presetSwitcher.waitFor({ timeout: 10_000 })
     // The shipped default's ar display name comes from the ar dictionaries.
-    expect(await presetSwitcher.textContent()).toBe('النمط المعياري  (افتراضي)')
+    expect(await presetSwitcher.textContent()).toBe('الوضع المعياري  (افتراضي)')
     const presetToggle = dialog.getByRole('button', { name: 'إضافات الجلسة', exact: true })
     expect(await presetToggle.getAttribute('aria-expanded')).toBe('false')
     expect(await dialog.locator('[data-plugin-scope="preset"] [data-plugin-entry]').count()).toBe(0)

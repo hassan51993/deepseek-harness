@@ -29,7 +29,7 @@ async function presetDir(content?: string): Promise<string> {
 
 describe('reading display metadata', () => {
   it('reads a name and a description', async () => {
-    const dir = await presetDir('name: النمط المعياري\ndescription: كامل تحرير رمز agent.\n')
+    const dir = await presetDir('name: الوضع المعياري\ndescription: كامل تحرير رمز agent.\n')
 
     expect(await readPresetMetadata(dir)).toEqual({ name: 'الوضع المعياري', description: 'كامل تحرير رمز agent.' })
   })
@@ -75,7 +75,7 @@ describe('reading display metadata', () => {
   })
 
   it('reads a declared order', async () => {
-    const dir = await presetDir('name: النمط المعياري\norder: 1\n')
+    const dir = await presetDir('name: الوضع المعياري\norder: 1\n')
 
     expect(await readPresetMetadata(dir)).toEqual({ name: 'الوضع المعياري', order: 1 })
   })
@@ -103,7 +103,7 @@ describe('rendering display metadata', () => {
   })
 
   it('stores a declared order', () => {
-    expect(renderPresetMetadata({ name: 'الوضع المعياري', order: 1 })).toBe('name: النمط المعياري\norder: 1\n')
+    expect(renderPresetMetadata({ name: 'الوضع المعياري', order: 1 })).toBe('name: الوضع المعياري\norder: 1\n')
   })
 
   it('omits an absent field rather than writing it blank', () => {
