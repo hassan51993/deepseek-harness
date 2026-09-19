@@ -25,3 +25,9 @@ The gate cannot pass in a run that compares this commit against the pre-migratio
 **Leave the gate failing.** Rejected because `doc-sync` would then fail on every unrelated change, which teaches readers to ignore a red documentation gate.
 
 **Delete the Arabic mirrors and keep only the English side.** Rejected because the archive format requires a complete triplet, so an English-only archived note fails the same gate for a different reason.
+
+## Consequences
+
+The recorded hashes now describe the migrated files, so a later alteration is still detected. What the manifest no longer proves is that the archive matches what its authors originally wrote; that guarantee moves to the conversion commit, which holds the only record of the pre-migration text.
+
+A run that validates the re-sealing commit against the pre-migration baseline fails by design. `doc-sync` passes from the commit after it, and the freeze applies unchanged to every archived triplet from here.
