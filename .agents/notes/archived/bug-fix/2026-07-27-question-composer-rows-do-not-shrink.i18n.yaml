@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-27-question-composer-rows-do-not-shrink.md
-2026-07-27-question-composer-rows-do-not-shrink.md: 47e581a23caaeb9368b075fa84a01d2bc945ab46
-2026-07-27-question-composer-rows-do-not-shrink.zh.md: a1b72cab41c51c268540dcec60e85a0edf2fe9bc
+2026-07-27-question-composer-rows-do-not-shrink.md: 137d7a8011e88742d253a7c0a8cf32ea8333c87a
+2026-07-27-question-composer-rows-do-not-shrink.ar.md: c826eba5365b0581c11b3c6d3f3be60ff60ade91

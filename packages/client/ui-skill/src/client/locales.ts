@@ -3,21 +3,21 @@
 /** Dictionary namespace owned by this plugin. */
 export const NS = 'skill'
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'row.title': 'Skill',
-  'row.running': '正在加载 skill',
-  'row.failed': 'skill 加载失败',
-  'row.stopped': 'skill 加载已中止',
-  'row.instructions': '说明',
-  'row.inspect': '查看',
-  'menu.userOnly': '仅用户',
+  'row.running': 'صحيح في تحميل skill',
+  'row.failed': 'skill تحميل فشل',
+  'row.stopped': 'skill تحميل قد في توقف',
+  'row.instructions': 'شرح',
+  'row.inspect': 'فحص نظر',
+  'menu.userOnly': 'فقط مستخدم',
 } satisfies Record<string, string>
 
 /** The skill namespace key union. */
-export type SkillKey = keyof typeof zh
+export type SkillKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'row.title': 'Skill',
   'row.running': 'Loading skill',

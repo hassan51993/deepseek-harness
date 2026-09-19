@@ -13,7 +13,7 @@ import { PluginInventorySettingsTab } from '../src/client/PluginInventorySetting
 import type { PluginInventorySettingsTabInjected } from '../src/client/PluginInventorySettingsTab.tsx'
 import { apply as hostApply } from '../src/index.ts'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 afterEach(cleanup)
 
 const EMPTY = { entries: [] }
@@ -65,7 +65,7 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
     expect(entry.component).toBe(PluginInventorySettingsTab)
     expect(entry.options).toMatchObject({ id: 'all', order: 10 })
     expect(entry.locale).toBe(NS)
-    expect(resolveSlotLabel(entry.options.label)).toBe('插件列表')
+    expect(resolveSlotLabel(entry.options.label)).toBe('إضافة قائمة')
     expect(b.list).not.toHaveBeenCalled()
 
     const injected = (entry.inject as unknown as () => PluginInventorySettingsTabInjected)()
@@ -82,9 +82,9 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     // Shipped preset names resolve over the agent-preset dictionaries the
     // real plugin registers; user-authored metadata stays untranslated.
-    b.locale.register('settings.agentPreset', 'zh', { presetStandardName: '标准模式' } as never)
-    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('标准模式')
-    expect(injected.presetName({ id: 'mine', trust: 'user', name: '我自己的', isDefault: false, rows: [] })).toBe('我自己的')
+    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'معيار نمط' } as never)
+    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('معيار نمط')
+    expect(injected.presetName({ id: 'mine', trust: 'user', name: 'أنا ذاتي ذات', isDefault: false, rows: [] })).toBe('أنا ذاتي ذات')
     await b.ctx.fiber.dispose()
   })
 
@@ -108,7 +108,7 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     await fiber.dispose()
     expect(b.slots.entries('settings.plugins.tab')).toHaveLength(0)
-    expect(() => b.locale.register(NS, 'zh', {})).not.toThrow()
+    expect(() => b.locale.register(NS, 'ar', {})).not.toThrow()
     await b.ctx.fiber.dispose()
   })
 })

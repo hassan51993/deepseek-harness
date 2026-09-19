@@ -37,7 +37,7 @@
     },
     "description": {
       "en": "Hot Module Replacement",
-      "zh": "模块热替换"
+      "ar": "الاستبدال الساخن للوحدات"
     }
   },
   "peerDependencies": {

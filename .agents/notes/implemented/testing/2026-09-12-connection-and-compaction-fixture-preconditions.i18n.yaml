@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-12-connection-and-compaction-fixture-preconditions.md
-2026-09-12-connection-and-compaction-fixture-preconditions.md: 9b97657c7742bb37a8a70b04350d5e6b43868f6c
-2026-09-12-connection-and-compaction-fixture-preconditions.zh.md: bc73a0e84ab4f60b7f3091f60a5217dcc950cb20
+2026-09-12-connection-and-compaction-fixture-preconditions.md: dfe714020585a9e929ca46a3aa08cc1fc997c01a
+2026-09-12-connection-and-compaction-fixture-preconditions.ar.md: 18d1ee08c5d98677eb3896640ed9559209eee363

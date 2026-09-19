@@ -6,35 +6,35 @@
  * vocabulary is this package's to own and translate.
  */
 
-/** Simplified Chinese dictionary and key-set source of truth. */
-export const zh = {
-  'chrome.expand': '打开侧边栏',
-  'chrome.expandAria': '打开右侧边栏',
-  'chrome.collapse': '收起侧边栏',
-  'chrome.collapseAria': '收起右侧边栏',
-  'chrome.toFullscreen': '全屏',
-  'chrome.exitFullscreen': '退出全屏',
-  'dock.emptyPane': '空面板',
-  'dock.splitPane': '分栏',
-  'dock.splitPaneDisabled': '已达两格上限',
-  'dock.splitPaneNarrow': '栏宽不足，拖宽侧边栏后再分栏',
-  'dock.closeTab': '关闭',
-  'dock.addTab': '新标签页',
-  'dock.dockFloat': '收回到侧边栏',
-  'dock.closeFloat': '关闭',
-  'dock.drop.center': '移到这里',
-  'dock.drop.left': '左分栏',
-  'dock.drop.right': '右分栏',
-  'dock.drop.top': '上分栏',
-  'dock.drop.bottom': '下分栏',
-  'tab.guide.title': '开始',
-  'tab.unavailable': '这类内容还没有可用的查看方式。',
+/** Arabic dictionary and key-set source of truth. */
+export const ar = {
+  'chrome.expand': 'فتح جانب حافة شريط',
+  'chrome.expandAria': 'فتح يمين جانب حافة شريط',
+  'chrome.collapse': 'استلام بدء جانب حافة شريط',
+  'chrome.collapseAria': 'استلام بدء يمين جانب حافة شريط',
+  'chrome.toFullscreen': 'كل شاشة',
+  'chrome.exitFullscreen': 'خروج كل شاشة',
+  'dock.emptyPane': 'فارغ وجه لوح',
+  'dock.splitPane': 'قسم شريط',
+  'dock.splitPaneDisabled': 'قد بلوغ اثنان إطار حد أعلى',
+  'dock.splitPaneNarrow': 'شريط عرض لا كاف، سحب عرض جانب حافة شريط بعد مجددا قسم شريط',
+  'dock.closeTab': 'إغلاق',
+  'dock.addTab': 'جديد وسم صفحة',
+  'dock.dockFloat': 'استلام عودة إلى جانب حافة شريط',
+  'dock.closeFloat': 'إغلاق',
+  'dock.drop.center': 'نقل إلى هذا داخل',
+  'dock.drop.left': 'يسار قسم شريط',
+  'dock.drop.right': 'يمين قسم شريط',
+  'dock.drop.top': 'فوق قسم شريط',
+  'dock.drop.bottom': 'تحت قسم شريط',
+  'tab.guide.title': 'بدء',
+  'tab.unavailable': 'هذا صنف محتوى أيضا لا يوجد متاح فحص نظر طريقة.',
 } satisfies Record<string, string>
 
 /** Right-Sidebar dictionary key union. */
-export type SidebarRightKey = keyof typeof zh
+export type SidebarRightKey = keyof typeof ar
 
-/** English dictionary, checked against the Chinese key set. */
+/** English dictionary, checked against the Arabic key set. */
 export const en = {
   'chrome.expand': 'Open sidebar',
   'chrome.expandAria': 'Open right sidebar',

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-15-shipped-optional-bundles.zh.md)
+English | [العربية](2026-09-15-shipped-optional-bundles.ar.md)
 
 ## Problem
 

@@ -1,76 +1,76 @@
-- button "系统提示词":
+- button "توجيه النظام":
   - img
   - img
-  - text: 系统提示词
-- text: 简单画一个 SVG 表示冯诺依曼架构, 保存为 von-neumann.svg {{clock}}
-- button "复制":
+  - text: توجيه النظام
+- text: بسيط مفرد رسم واحد SVG يمثل فنغ وعد اعتماد مان هيكل بنية, حفظ لـ von-neumann.svg {{clock}}
+- button "نسخ":
   - img
-- button "2 次工具调用 · 1 条消息" [expanded]:
-  - text: 2 次工具调用 · 1 条消息
+- button "2 مرة أداة استدعاء · 1 بند رسالة" [expanded]:
+  - text: 2 مرة أداة استدعاء · 1 بند رسالة
   - img
-- button "上下文注入 @deepseek-ai/dsh-system-prompt":
-  - img
-  - img
-  - text: 上下文注入 @deepseek-ai/dsh-system-prompt
-- button "思考 The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.":
+- button "سياق حقن @deepseek-ai/dsh-system-prompt":
   - img
   - img
-  - text: 思考 The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.
-- paragraph: 我来创建一个冯诺依曼架构的 SVG 示意图。
-- button "写入 von-neumann.svg +83 -0":
+  - text: سياق حقن @deepseek-ai/dsh-system-prompt
+- button "تفكير اعتبار The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.":
   - img
   - img
-  - text: 写入
+  - text: تفكير اعتبار The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.
+- paragraph: أنا قدوم إنشاء واحد فنغ وعد اعتماد مان هيكل بنية SVG عرض معنى رسم.
+- button "كتابة von-neumann.svg +83 -0":
+  - img
+  - img
+  - text: كتابة
   - button "von-neumann.svg"
   - text: +83 -0
-- button "思考 The file is created. Let me present it as a deliverable.":
+- button "تفكير اعتبار The file is created. Let me present it as a deliverable.":
   - img
   - img
-  - text: 思考 The file is created. Let me present it as a deliverable.
-- button "交付文件 已交付 von-neumann.svg":
+  - text: تفكير اعتبار The file is created. Let me present it as a deliverable.
+- button "تسليم ملف قد تسليم von-neumann.svg":
   - img
-  - text: 交付文件 已交付 von-neumann.svg
+  - text: تسليم ملف قد تسليم von-neumann.svg
 - paragraph:
-  - text: 已创建
+  - text: قد إنشاء
   - code:
-    - button "在侧边栏打开 von-neumann.svg": von-neumann.svg
-  - text: ，一个简洁的冯诺依曼架构示意图，包含：
+    - button "في جانب حافة شريط فتح von-neumann.svg": von-neumann.svg
+  - text: ، واحد بسيط نظيف فنغ وعد اعتماد مان هيكل بنية عرض معنى رسم، يتضمن:
 - list:
   - listitem:
-    - strong: CPU（中央处理器）
-    - text: ：内含控制单元 CU、算术逻辑单元 ALU 和寄存器组
+    - strong: CPU(في وسط معالج)
+    - text: : داخل يحتوي تحكم وحدة CU، حساب فن منطق وحدة ALU و إرسال تخزين جهاز مجموعة
   - listitem:
-    - strong: 内存储器 Memory
-    - text: ：标注"指令和数据统一存放"（存储程序思想）
+    - strong: داخل تخزين جهاز Memory
+    - text: : علامة ملاحظة"إشارة أمر و بيانات موحد واحد تخزين وضع"(تخزين برنامج تفكير تفكير)
   - listitem:
-    - strong: 输入设备 / 输出设备
-    - text: ：分别用绿色和粉色表示数据流向
+    - strong: إدخال ضبط تجهيز / إخراج ضبط تجهيز
+    - text: : قسم آخر استخدام أخضر لون و مسحوق لون يمثل بيانات تدفق نحو
   - listitem:
-    - strong: 总线连接
-    - text: ：CPU 与内存间的地址总线，以及 CPU 与 I/O 设备间的数据/控制线，箭头标明数据流向
-- paragraph: 下方附一行核心思想说明：指令与数据以二进制统一存储在存储器中。用浏览器打开该 SVG 文件即可查看。
-- button "在侧边栏查看本轮改动": 已编辑 1 个文件 +83 -0
+    - strong: مجموع خط اتصال
+    - text: :CPU و داخل تخزين بين عنوان مجموع خط، و CPU و I/O ضبط تجهيز بين بيانات/تحكم خط، سهم رأس علامة واضح بيانات تدفق نحو
+- paragraph: تحت جهة مرفق واحد سطر نواة قلب تفكير تفكير شرح: إشارة أمر و بيانات بـ اثنان دخول صنع موحد واحد تخزين في تخزين جهاز في. استخدام متصفح فتح هذا SVG ملف يكفي فحص نظر.
+- button "في جانب حافة شريط فحص نظر هذا جولة تعديل": قد تحرير 1 عدد ملف +83 -0
 - list:
   - listitem:
-    - button "查看 von-neumann.svg 的改动": von-neumann.svg +83 -0
-- text: 此主机没有可用的桌面，无法使用外部程序打开文件或文件夹；文件仍可在侧边栏预览
-- button "在侧边栏预览 von-neumann.svg"
-- text: von-neumann.svg 冯诺依曼架构示意图 SVG
-- button "在侧边栏打开 von-neumann.svg": 打开
-- button "von-neumann.svg 的更多文件操作" [disabled]:
+    - button "فحص نظر von-neumann.svg تعديل": von-neumann.svg +83 -0
+- text: هذا رئيسي آلة لا يوجد متاح طاولة وجه، لا يمكن استخدام خارجي برنامج فتح ملف أو ملف مشبك؛ ملف ما زال يمكن في جانب حافة شريط معاينة
+- button "في جانب حافة شريط معاينة von-neumann.svg"
+- text: von-neumann.svg فنغ وعد اعتماد مان هيكل بنية عرض معنى رسم SVG
+- button "في جانب حافة شريط فتح von-neumann.svg": فتح
+- button "von-neumann.svg أكثر كثير ملف عملية" [disabled]:
   - img
-- button "复制":
+- button "نسخ":
   - img
-- button "好的回答":
+- button "جيد عودة جواب":
   - img
-- button "有问题的回答":
+- button "لديه مشكلة عودة جواب":
   - img
-- button "在新对话中分支":
+- button "في جديد محادثة في فرع":
   - img
-- button "用量 32K tok":
+- button "استخدام كمية 32K tok":
   - img
-  - text: 用量 32K tok
-- button "用时 {{duration}}":
+  - text: استخدام كمية 32K tok
+- button "استخدام وقت {{duration}}":
   - img
-  - text: 用时 {{duration}}
+  - text: استخدام وقت {{duration}}
 - text: {{clock}}

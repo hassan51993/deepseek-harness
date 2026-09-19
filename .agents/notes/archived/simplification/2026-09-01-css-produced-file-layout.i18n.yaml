@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-09-01-css-produced-file-layout.md
-2026-09-01-css-produced-file-layout.md: cc25fc2ab86cbbc03f49db72d12f107dd8c7aaf9
-2026-09-01-css-produced-file-layout.zh.md: f9b670d9f7451304e818c4d1e2febe704caa617d
+2026-09-01-css-produced-file-layout.md: 59ec028b0a4aa7dd1f370697512cc0fcde85944d
+2026-09-01-css-produced-file-layout.ar.md: c390e51dc8056b90e27647ee0724da66cdf01e4f

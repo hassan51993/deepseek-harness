@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-04-web-slash-command-fuzzy-discovery.md
-2026-08-04-web-slash-command-fuzzy-discovery.md: 24275dbcd063cc35d524d8f786fb3d243fc141b8
-2026-08-04-web-slash-command-fuzzy-discovery.zh.md: bf0c368114e9d38ace536b8497ae2cf34920a771
+2026-08-04-web-slash-command-fuzzy-discovery.md: c0f9740b46cf4cbdae9f2f2f6cccbfce9e8dbffe
+2026-08-04-web-slash-command-fuzzy-discovery.ar.md: 819fbcf4dc282186db5ac353a8cf540c14ce53a5

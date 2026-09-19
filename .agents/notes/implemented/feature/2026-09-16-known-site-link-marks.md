@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-16-known-site-link-marks.zh.md)
+English | [العربية](2026-09-16-known-site-link-marks.ar.md)
 
 ## Problem
 

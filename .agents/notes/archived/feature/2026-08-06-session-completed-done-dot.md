@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-06-session-completed-done-dot.zh.md)
+English | [العربية](2026-08-06-session-completed-done-dot.ar.md)
 
 ## Problem
 
@@ -11,7 +11,7 @@ A session the operator delegated work to and then left (switched to another conv
 
 ## Decision
 
-`SessionManager` owns a client-side completion-reminder set, a sibling of the pending-interaction bit: a running→idle edge of a session that is not the selected one arms its reminder; `select()`/`selectSubagent()` consume it; starting a new run disarms it and its completion re-arms it; removal prunes it. The bit rides `SessionListEntry` → `SessionSummary` (optional, absent = no reminder) into the workspace browser, whose session and search rows render the existing `StateDot` `done` state — running keeps the ongoing spinner, an idle session without a reminder shows nothing — and whose hover card labels the reminder 已完成 / Completed.
+`SessionManager` owns a client-side completion-reminder set, a sibling of the pending-interaction bit: a running→idle edge of a session that is not the selected one arms its reminder; `select()`/`selectSubagent()` consume it; starting a new run disarms it and its completion re-arms it; removal prunes it. The bit rides `SessionListEntry` → `SessionSummary` (optional, absent = no reminder) into the workspace browser, whose session and search rows render the existing `StateDot` `done` state — running keeps the ongoing spinner, an idle session without a reminder shows nothing — and whose hover card labels the reminder قد إتمام / Completed.
 
 The reminder is in-memory and per browser. It survives connection generations — a transport blip does not invalidate "you have not looked yet" — but not a page reload.
 

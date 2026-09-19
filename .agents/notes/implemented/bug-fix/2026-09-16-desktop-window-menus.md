@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-16-desktop-window-menus.zh.md)
+English | [العربية](2026-09-16-desktop-window-menus.ar.md)
 
 ## Problem
 
@@ -32,4 +32,4 @@ macOS regains the window and application commands the custom menu suppressed, at
 
 ## Testing
 
-A `apps/desktop/tests/main-startup.spec.ts` case pins the declared menu roles per platform, including the macOS hide commands. Role-based menu items execute natively, so a programmatic `click()` and the vitest Electron mock cannot exercise the shortcuts; a real Electron 44 run of the same template showed the standard File, Window, and application items present only after this change, with the same English labels while `app.getLocale()`, `getSystemLocale()`, and `getPreferredSystemLanguages()` all reported `zh-CN`.
+A `apps/desktop/tests/main-startup.spec.ts` case pins the declared menu roles per platform, including the macOS hide commands. Role-based menu items execute natively, so a programmatic `click()` and the vitest Electron mock cannot exercise the shortcuts; a real Electron 44 run of the same template showed the standard File, Window, and application items present only after this change, with the same English labels while `app.getLocale()`, `getSystemLocale()`, and `getPreferredSystemLanguages()` all reported `ar-SA`.

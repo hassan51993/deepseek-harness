@@ -93,43 +93,43 @@ function diffTexts(before: string, after: string): string {
 
 interface PairState {
   anchor: string
-  zh: string
+  ar: string
   meta: string
   enDrifted: boolean
-  zhDrifted: boolean
+  arDrifted: boolean
   enLast: string
-  zhLast: string
+  arLast: string
 }
 
 /** Load one pair's recorded and current state, or explain why it cannot be briefed. */
 function loadPair(anchor: string): PairState | string {
-  const zh = anchor.replace(/\.md$/, '.zh.md')
+  const ar = anchor.replace(/\.md$/, '.ar.md')
   const meta = anchor.replace(/\.md$/, '.i18n.yaml')
   if (!isTranslationScopeFile(anchor) || isExcluded(anchor)) {
     return `${anchor}: not an in-scope documentation pair (docs/i18n/README.md)`
   }
-  const missing = [anchor, zh, meta].filter(file => !existsSync(join(root, file)))
+  const missing = [anchor, ar, meta].filter(file => !existsSync(join(root, file)))
   if (missing.length > 0) {
     return `${anchor}: incomplete pair (missing ${missing.join(', ')}) — a new counterpart is whole-document translation work, not a minimal update`
   }
   const record = parseMeta(readFileSync(join(root, meta), 'utf8'))
   const enRecorded = record?.get(basename(anchor))
-  const zhRecorded = record?.get(basename(zh))
-  if (record === undefined || enRecorded === undefined || zhRecorded === undefined) {
+  const arRecorded = record?.get(basename(ar))
+  if (record === undefined || enRecorded === undefined || arRecorded === undefined) {
     return `${meta}: malformed consistency record`
   }
   const enCurrent = readFileSync(join(root, anchor), 'utf8')
-  const zhCurrent = readFileSync(join(root, zh), 'utf8')
+  const arCurrent = readFileSync(join(root, ar), 'utf8')
   const enLast = blobText(enRecorded)
-  const zhLast = blobText(zhRecorded)
+  const arLast = blobText(arRecorded)
   return {
     anchor,
-    zh,
+    ar,
     meta,
     enDrifted: enCurrent !== enLast,
-    zhDrifted: zhCurrent !== zhLast,
+    arDrifted: arCurrent !== arLast,
     enLast,
-    zhLast,
+    arLast,
   }
 }
 
@@ -197,7 +197,7 @@ function planScope(
     if (changed.length === 0) continue
     const changedText = changed.map(index => `${confirmed[index]?.text ?? ''}\n${current[index]?.text ?? ''}`).join('\n')
     const rows = relevantTerminologyRows(terminology, direction, changedText)
-    const occurrence = direction === 'en-to-zh'
+    const occurrence = direction === 'en-to-ar'
       ? firstOccurrenceContext(sourceLast, sourceCurrent, confirmed, current, rows, new Set(changed))
       : { notes: [], extraSpanIndices: [] }
     return {
@@ -218,12 +218,12 @@ function planScope(
 /** Validate a computed mechanical counterpart and write it. */
 function applyMechanical(counterpartPath: string, sourceCurrent: string, result: string): void {
   const counterpartBase = basename(counterpartPath)
-  const sourcePath = counterpartPath.endsWith('.zh.md')
-    ? counterpartPath.replace(/\.zh\.md$/, '.md')
-    : counterpartPath.replace(/\.md$/, '.zh.md')
-  const sourceBase = counterpartBase.endsWith('.zh.md')
-    ? counterpartBase.replace(/\.zh\.md$/, '.md')
-    : counterpartBase.replace(/\.md$/, '.zh.md')
+  const sourcePath = counterpartPath.endsWith('.ar.md')
+    ? counterpartPath.replace(/\.ar\.md$/, '.md')
+    : counterpartPath.replace(/\.md$/, '.ar.md')
+  const sourceBase = counterpartBase.endsWith('.ar.md')
+    ? counterpartBase.replace(/\.ar\.md$/, '.md')
+    : counterpartBase.replace(/\.md$/, '.ar.md')
   const errors = translationStructureDiff(
     translationStructureSignature(
       parseTranslationMarkdown(sourceCurrent),
@@ -245,14 +245,14 @@ function applyMechanical(counterpartPath: string, sourceCurrent: string, result:
 
 /** Render (and under `--apply`, apply) the briefing for one drifted side. */
 function briefDirection(pair: PairState, direction: BriefDirection, apply: boolean): string {
-  const sourceIsEnglish = direction === 'en-to-zh'
-  const sourcePath = sourceIsEnglish ? pair.anchor : pair.zh
-  const counterpartPath = sourceIsEnglish ? pair.zh : pair.anchor
-  const sourceLast = sourceIsEnglish ? pair.enLast : pair.zhLast
+  const sourceIsEnglish = direction === 'en-to-ar'
+  const sourcePath = sourceIsEnglish ? pair.anchor : pair.ar
+  const counterpartPath = sourceIsEnglish ? pair.ar : pair.anchor
+  const sourceLast = sourceIsEnglish ? pair.enLast : pair.arLast
   const sourceCurrent = readFileSync(join(root, sourcePath), 'utf8')
   const counterpartCurrent = readFileSync(join(root, counterpartPath), 'utf8')
   const diff = diffTexts(sourceLast, sourceCurrent)
-  const planned = planScope(sourceLast, sourceCurrent, counterpartCurrent, direction, pair.enDrifted && pair.zhDrifted)
+  const planned = planScope(sourceLast, sourceCurrent, counterpartCurrent, direction, pair.enDrifted && pair.arDrifted)
   if (apply && planned.mechanicalResult !== undefined) {
     applyMechanical(counterpartPath, sourceCurrent, planned.mechanicalResult)
   }
@@ -297,12 +297,12 @@ for (const anchor of anchors) {
     if (requested.length > 0) problems.push(pair)
     continue
   }
-  if (!pair.enDrifted && !pair.zhDrifted) {
+  if (!pair.enDrifted && !pair.arDrifted) {
     if (requested.length > 0) skipped.push(`${anchor}: pair is consistent with its record — nothing to brief`)
     continue
   }
-  if (pair.enDrifted) briefs.push(briefDirection(pair, 'en-to-zh', applyMode))
-  if (pair.zhDrifted) briefs.push(briefDirection(pair, 'zh-to-en', applyMode))
+  if (pair.enDrifted) briefs.push(briefDirection(pair, 'en-to-ar', applyMode))
+  if (pair.arDrifted) briefs.push(briefDirection(pair, 'ar-to-en', applyMode))
 }
 
 if (problems.length > 0 || skipped.length > 0) {

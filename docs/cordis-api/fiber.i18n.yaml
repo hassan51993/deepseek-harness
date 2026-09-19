@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-api/fiber.md
 fiber.md: 3044301effde267bf580c3a5138481b10513f755
-fiber.zh.md: bee2f523f1fa2a2add2afc3a3fc322903f1ef6f0
+fiber.ar.md: 19be4ede5b2f829df84950073855dcf981d52268

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-06-19-real-api-e2e-ci.zh.md)
+English | [العربية](2026-06-19-real-api-e2e-ci.ar.md)
 
 ## Problem
 

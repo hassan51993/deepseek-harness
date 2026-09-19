@@ -15,7 +15,7 @@
 //
 // Copy is asserted in English because this page advertises English, which is
 // itself the point: every string in this column now comes from the dictionary,
-// so an English page renders English. The Chinese draft the product ships is
+// so an English page renders English. The Arabic draft the product ships is
 // asserted, and captured for review, on its own page at the end.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -1074,28 +1074,28 @@ describe('web e2e: shipped right Sidebar', () => {
       expect(tripwire.warnings).toEqual([])
     })
 
-    // The product ships Chinese; the cases above advertise English so their role
+    // The product ships Arabic; the cases above advertise English so their role
     // locators stay stable. This is the other half of the same seam, and the
     // screenshot it takes is what the copy draft gets reviewed from. It lives in
     // this block because a settled session is its precondition too — a case that
     // depends on a sibling block's setup passes only in the right order.
-    it('renders the shipped Chinese copy on a Chinese page', async () => {
-      const zhPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
-      const zhTripwire = watchConsole(zhPage)
-      onTestFailed(() => saveFailureShot(zhPage, 'web-e2e-sidebar-right-zh'))
+    it('renders the shipped Arabic copy on an Arabic page', async () => {
+      const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+      const arTripwire = watchConsole(arPage)
+      onTestFailed(() => saveFailureShot(arPage, 'web-e2e-sidebar-right-ar'))
       try {
-        await zhPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
-        await zhPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+        await arPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+        await arPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
         // A fresh page opens the workspace on a blank session's hero, which has
         // no session header and so no expand button. The settled session is the
         // second row of the tree; pick it the way a user would.
-        await zhPage.getByRole('treeitem', { name: /Show the right sidebar\./u }).first().click()
-        const column = zhPage.locator('[data-rightbar-col]')
-        await expandOf(zhPage).waitFor({ timeout: 20_000 })
-        await expandOf(zhPage).click()
-        await expect.poll(async () => await tabTitles(column)).toEqual(['开始'])
+        await arPage.getByRole('treeitem', { name: /Show the right sidebar\./u }).first().click()
+        const column = arPage.locator('[data-rightbar-col]')
+        await expandOf(arPage).waitFor({ timeout: 20_000 })
+        await expandOf(arPage).click()
+        await expect.poll(async () => await tabTitles(column)).toEqual(['بدء'])
         await column.locator('[data-sidebar-right-guide-entry="files"]').click()
-        await expect.poll(async () => await tabTitles(column)).toEqual(['文件'])
+        await expect.poll(async () => await tabTitles(column)).toEqual(['ملف'])
         await column.locator('[data-dockkit-add-tab]').click()
 
         const guide = column.locator('[data-sidebar-right-guide]')
@@ -1104,15 +1104,15 @@ describe('web e2e: shipped right Sidebar', () => {
         // the column has the width, and a screenshot taken mid-transition reads
         // as a layout defect that is not there.
         expect(await width(column)).toBeGreaterThan(300)
-        await expect.poll(async () => await tabTitles(column)).toEqual(['文件', '开始'])
+        await expect.poll(async () => await tabTitles(column)).toEqual(['ملف', 'بدء'])
         await expect.poll(async () => await guide.locator('[data-sidebar-right-guide-entry="files"]').innerText())
-          .toBe('工作区文件\n浏览会话工作区的文件')
-        await shot(zhPage, '05-guide-copy-zh')
+          .toBe('مساحة العمل ملف\nتصفح تصفح جلسة مساحة العمل ملف')
+        await shot(arPage, '05-guide-copy-ar')
 
-        expect(zhTripwire.pageErrors).toEqual([])
-        expect(zhTripwire.warnings).toEqual([])
+        expect(arTripwire.pageErrors).toEqual([])
+        expect(arTripwire.warnings).toEqual([])
       } finally {
-        await zhPage.close()
+        await arPage.close()
       }
     }, 120_000)
   })

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-23-locale-owned-client-ui-copy.zh.md)
+English | [العربية](2026-08-23-locale-owned-client-ui-copy.ar.md)
 
 ## Problem
 
@@ -14,7 +14,7 @@ Typed locale namespaces and bilingual dictionary parity proved that registered d
 
 Product-owned catalog descriptions follow the same rule. The client maps an exact built-in provider, model, and description to a locale key; a changed description or an external provider description remains provider data and renders verbatim.
 
-**Cordis-free primitives require complete localized copy props and own no language fallback.** `MarkdownText`, `JsonTree`, `TerminalBlock`, `DiffBlock`, `ReadBlock`, `SearchBlock`, `WebBlock`, `CodeBlock`, `JsonBlock`, `HoverCard`, and `ConnectionIndicator` receive their chrome from the feature render site. This preserves the primitive package's runtime independence while making omission a type error instead of silently selecting Chinese or English. Shared words live in the `common` namespace; feature-specific phrases stay with the feature that decides their meaning.
+**Cordis-free primitives require complete localized copy props and own no language fallback.** `MarkdownText`, `JsonTree`, `TerminalBlock`, `DiffBlock`, `ReadBlock`, `SearchBlock`, `WebBlock`, `CodeBlock`, `JsonBlock`, `HoverCard`, and `ConnectionIndicator` receive their chrome from the feature render site. This preserves the primitive package's runtime independence while making omission a type error instead of silently selecting Arabic or English. Shared words live in the `common` namespace; feature-specific phrases stay with the feature that decides their meaning.
 
 **Localized display text is never an identity.** Models and stores retain discriminants, stable ids, and non-display markers. Renderers translate after matching, and request maps carry stable group membership into the trajectory ledger. A client-synthesized error that must survive in a view model uses a stable marker and is translated only when displayed. Language switching therefore changes wording without changing selection, grouping, search identity, or lifecycle state.
 
@@ -24,7 +24,7 @@ The product-authored error and design-literal exclusions, primitive defaults, an
 
 ## Verification
 
-The AST check's own Vitest spec pins direct JSX, template branches, semantic copy props, label data, formatter returns, locale-key calls, structural attributes, and dictionary owners. Locale dictionary parity pins identical `zh`/`en` keys. Client suites exercise direct translated seats, locale-prop adapters, and built-in catalog-description localization without altering external descriptions. The assembled web replay plus the required real-server GIF demonstrate the shipped locale switch on the actual trajectory surface.
+The AST check's own Vitest spec pins direct JSX, template branches, semantic copy props, label data, formatter returns, locale-key calls, structural attributes, and dictionary owners. Locale dictionary parity pins identical `ar`/`en` keys. Client suites exercise direct translated seats, locale-prop adapters, and built-in catalog-description localization without altering external descriptions. The assembled web replay plus the required real-server GIF demonstrate the shipped locale switch on the actual trajectory surface.
 
 ## Alternatives considered
 

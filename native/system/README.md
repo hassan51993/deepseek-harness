@@ -4,7 +4,7 @@ kind: "package-library"
 ---
 # @deepseek-ai/node-addon-system
 
-English | [中文](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-12-separate-source-launch-from-build.md
-2026-08-12-separate-source-launch-from-build.md: 2d285407b23071237ea02098204b09da45e39728
-2026-08-12-separate-source-launch-from-build.zh.md: 69c035ce7e6d1717cad780524afee01be82ac7c5
+2026-08-12-separate-source-launch-from-build.md: 090bdb58b9ab1d531c63089efe42d894ab7e0b53
+2026-08-12-separate-source-launch-from-build.ar.md: d712bc9704c41deef2a0fd36f160eb49c0840fad

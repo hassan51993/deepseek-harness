@@ -106,7 +106,7 @@ describe('the roster a client reads', () => {
     roots.push(userRoot)
     await mkdir(join(userRoot, 'documented'), { recursive: true })
     await writeFile(join(userRoot, 'documented', COMPOSITION_FILE), VALID)
-    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: 我的模式\ndescription: 只做检索。\n')
+    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: أنا نمط\ndescription: فقط فعل فحص بحث.\n')
     const ctx = await harness({
       default: 'minimal',
       roots: [{ path: join(FIXTURES, 'system'), trust: 'system' }, { path: userRoot, trust: 'user' }],
@@ -121,7 +121,7 @@ describe('the roster a client reads', () => {
     expect(roster.presets).toEqual([
       { id: 'minimal', trust: 'system', isDefault: true },
       { id: 'standard', trust: 'system', isDefault: false },
-      { id: 'documented', trust: 'user', isDefault: false, name: '我的模式', description: '只做检索。' },
+      { id: 'documented', trust: 'user', isDefault: false, name: 'أنا نمط', description: 'فقط فعل فحص بحث.' },
     ])
     // No row carries the composition's location: a preset is addressed by id
     // everywhere off the Host.
@@ -186,7 +186,7 @@ describe('reading one composition', () => {
     roots.push(userRoot)
     await mkdir(join(userRoot, 'documented'), { recursive: true })
     await writeFile(join(userRoot, 'documented', COMPOSITION_FILE), VALID)
-    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: 我的模式\ndescription: 只做检索。\n')
+    await writeFile(join(userRoot, 'documented', METADATA_FILE), 'name: أنا نمط\ndescription: فقط فعل فحص بحث.\n')
     const ctx = await harness({
       default: 'documented',
       roots: [{ path: userRoot, trust: 'user' }],
@@ -202,8 +202,8 @@ describe('reading one composition', () => {
       agentPreset: 'documented',
       trust: 'user',
       content: VALID,
-      name: '我的模式',
-      description: '只做检索。',
+      name: 'أنا نمط',
+      description: 'فقط فعل فحص بحث.',
     })
   })
 
@@ -259,8 +259,8 @@ describe('authoring over Remote', () => {
       includeUserRoot: false,
     })
 
-    await ctx.agentPresets.remoteExportCopy('standard', 'mine', '我的模式')
-    expect((await ctx.agentPresets.resolve('mine')).name).toBe('我的模式')
+    await ctx.agentPresets.remoteExportCopy('standard', 'mine', 'أنا نمط')
+    expect((await ctx.agentPresets.resolve('mine')).name).toBe('أنا نمط')
 
     await ctx.agentPresets.remoteExportDelete('mine')
     await expect(ctx.agentPresets.resolve('mine')).rejects.toThrow(/not found/)

@@ -8,11 +8,11 @@ import type { RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-ui
 import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import { CHAT_DIFF_MAX_LINES, diffCardModel } from '../src/client/tool/models/diff-card-model.ts'
 import { GenericToolCard, type GenericToolCardProps } from '../src/client/tool/toolviews/GenericToolCard.tsx'
 import { FileMutationRow, fileMutationToolview } from '../src/client/tool/toolviews/file-mutation-row.tsx'
-import { zh } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
+import { ar } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -20,7 +20,7 @@ type FileMutationRowProps = Parameters<typeof FileMutationRow>[0]
 
 const SID = 's1' as SessionId
 
-const t = makeTranslate(zh, commonZh)
+const t = makeTranslate(ar, commonAr)
 
 const ARGS = '{"file_path":"notes/demo.txt","old_string":"hello","new_string":"hello fixture"}'
 
@@ -224,7 +224,7 @@ describe('FileMutationRow diff card', () => {
     toggleRow(view)
     expect(view.container.querySelector('[data-diff]')).not.toBeNull()
     expect(view.getByText('hello fixture')).toBeTruthy()
-    expect(view.getByText('复制')).toBeTruthy()
+    expect(view.getByText('نسخ')).toBeTruthy()
   })
 
   it('the summary is a path link that opens the tool path through the host', () => {
@@ -247,7 +247,7 @@ describe('FileMutationRow diff card', () => {
     expect(view.getByText('+1 -0')).toBeTruthy()
     // The footer counts live inside the collapsed diff card.
     toggleRow(view)
-    expect(view.getByText('└ +1 -0 · 1 个文件')).toBeTruthy()
+    expect(view.getByText('└ +1 -0 · 1 عدد ملف')).toBeTruthy()
   })
 
   it('reflects the run state on its leading slot', () => {
@@ -301,7 +301,7 @@ describe('FileMutationRow diff card', () => {
     expect(view.container.querySelector('[data-state="stopped"]')).not.toBeNull()
     // The amber StateDot is aria-hidden, so ToolRow carries the state to AT as
     // visually-hidden text; without it a stopped row is a colour-only signal.
-    expect(view.getByText('已停止')).toBeTruthy()
+    expect(view.getByText('قد إيقاف')).toBeTruthy()
   })
 
   it('renders a plain summary span when the call carries no file path', () => {

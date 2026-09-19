@@ -137,7 +137,7 @@
   width: 122px;
 }
 
-.eventColumn:where(:lang(zh)) {
+.eventColumn:where(:lang(ar)) {
   width: 84px;
 }
 
@@ -452,7 +452,7 @@
   width: 76px;
 }
 
-.kindSlot:where(:lang(zh)) {
+.kindSlot:where(:lang(ar)) {
   width: 44px;
 }
 

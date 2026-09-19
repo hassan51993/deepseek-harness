@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-04-drop-unconsumed-web-observation-surface.md: e63df08e486862b5bbb37db1e2c15b6d7e9d67e2
-2026-07-04-drop-unconsumed-web-observation-surface.zh.md: f9d1c09f90ec5065f25d4941dc319cff817caf97
+2026-07-04-drop-unconsumed-web-observation-surface.md: 7c65a0860978ac92902b7ef1958f8639631ad588
+2026-07-04-drop-unconsumed-web-observation-surface.ar.md: 1ed9d1da1890b26783a52278829da2009a272c2b

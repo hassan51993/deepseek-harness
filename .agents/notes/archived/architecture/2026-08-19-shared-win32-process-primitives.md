@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-19-shared-win32-process-primitives.zh.md)
+English | [العربية](2026-08-19-shared-win32-process-primitives.ar.md)
 
 ## Problem
 

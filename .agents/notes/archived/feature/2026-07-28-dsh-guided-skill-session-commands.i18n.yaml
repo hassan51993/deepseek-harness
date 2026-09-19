@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-28-dsh-guided-skill-session-commands.md
-2026-07-28-dsh-guided-skill-session-commands.md: 454d090a55db8987f8e4987aba67deff1b21b1a0
-2026-07-28-dsh-guided-skill-session-commands.zh.md: 64dad4e39c6fd3e3341313c3f8dd2b04947695cf
+2026-07-28-dsh-guided-skill-session-commands.md: 3970026d655637ac36f00536317a835bbc7ee126
+2026-07-28-dsh-guided-skill-session-commands.ar.md: c8170959084d8b5613b12dca50adacfdd7e57e9c

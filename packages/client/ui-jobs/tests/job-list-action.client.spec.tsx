@@ -6,7 +6,7 @@ import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/c
 import type { SessionJob as JobView } from '@deepseek-ai/dsh-api-session-controller/types'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { JobListAction, type JobListActionProps } from '../src/client/JobListAction.tsx'
-import { zh } from '../src/client/locales.ts'
+import { ar } from '../src/client/locales.ts'
 
 // Live rows render `now - startedAt`, so every assertion needs a pinned clock.
 beforeEach(() => {
@@ -22,7 +22,7 @@ afterEach(() => {
 
 const SESSION = 'session' as SessionId
 const START = 1_700_000_000_000
-const t: JobListActionProps['t'] = makeTranslate(zh)
+const t: JobListActionProps['t'] = makeTranslate(ar)
 
 function job(over: Partial<JobView> = {}): JobView {
   return {
@@ -55,7 +55,7 @@ function props(jobs: readonly JobView[] | undefined): JobListActionProps {
  * time rather than split out of a flattened string.
  */
 function rowCells(): string[][] {
-  return within(screen.getByRole('list', { name: zh['list.aria'] }))
+  return within(screen.getByRole('list', { name: ar['list.aria'] }))
     .getAllByRole('listitem')
     .map(row => [...row.children]
       .map(cell => cell.textContent ?? '')
@@ -70,16 +70,16 @@ describe('JobListAction visibility', () => {
 
   it('counts only live jobs, and falls back to the total when none are live', () => {
     const { rerender } = render(<JobListAction {...props([job(), job({ id: 'bash-2' as JobView['id'] })])} />)
-    expect(screen.getByRole('button', { name: '2 个后台任务运行中' })).toBeDefined()
+    expect(screen.getByRole('button', { name: '2 عدد خلفية مهمة تشغيل في' })).toBeDefined()
 
     rerender(<JobListAction {...props([job({ status: 'completed', finishedAt: START + 3_000 })])} />)
-    expect(screen.getByRole('button', { name: '1 个后台任务' })).toBeDefined()
+    expect(screen.getByRole('button', { name: '1 عدد خلفية مهمة' })).toBeDefined()
   })
 
   it('closes and unmounts when the last job disappears while the list is open', () => {
     const { container, rerender } = render(<JobListAction {...props([job()])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(screen.getByRole('list', { name: zh['list.aria'] })).toBeDefined()
+    expect(screen.getByRole('list', { name: ar['list.aria'] })).toBeDefined()
 
     rerender(<JobListAction {...props([])} />)
     expect(container.innerHTML).toBe('')
@@ -96,10 +96,10 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells()).toEqual([
-      ['bash', 'earlier live', '运行中', '0秒'],
-      ['bash', 'later live', '运行中', '0秒'],
-      ['bash', 'new done', '已失败', '9秒'],
-      ['bash', 'old done', '已完成', '1秒'],
+      ['bash', 'earlier live', 'تشغيل في', '0ثانية'],
+      ['bash', 'later live', 'تشغيل في', '0ثانية'],
+      ['bash', 'new done', 'قد فشل', '9ثانية'],
+      ['bash', 'old done', 'قد إتمام', '1ثانية'],
     ])
   })
 
@@ -130,7 +130,7 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     const words = rowCells().map(cells => cells[2])
-    expect(new Set(words)).toEqual(new Set(['运行中', '正在停止', '已完成', '已取消', '已失败']))
+    expect(new Set(words)).toEqual(new Set(['تشغيل في', 'صحيح في إيقاف', 'قد إتمام', 'قد إلغاء', 'قد فشل']))
   })
 })
 
@@ -142,12 +142,12 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-2' as JobView['id'], label: 'done', status: 'completed', finishedAt: START + 4_000 }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells()[0]).toContain('1秒')
-    expect(rowCells()[1]).toContain('4秒')
+    expect(rowCells()[0]).toContain('1ثانية')
+    expect(rowCells()[1]).toContain('4ثانية')
 
     act(() => { vi.advanceTimersByTime(2_000) })
-    expect(rowCells()[0]).toContain('3秒')
-    expect(rowCells()[1]).toContain('4秒')
+    expect(rowCells()[0]).toContain('3ثانية')
+    expect(rowCells()[1]).toContain('4ثانية')
   })
 
   it('widens to minutes and then hours, and never shows a negative figure', () => {
@@ -158,7 +158,7 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-3' as JobView['id'], label: 'skew', status: 'completed', startedAt: START + 5_000, finishedAt: START }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells().map(cells => cells[3])).toEqual(['2小时3分', '2分5秒', '0秒'])
+    expect(rowCells().map(cells => cells[3])).toEqual(['2صغير وقت3قسم', '2قسم5ثانية', '0ثانية'])
   })
 
   it('runs no clock while the list is closed', () => {
@@ -205,7 +205,7 @@ describe('JobListAction dismissal', () => {
     const trigger = screen.getByRole('button')
     fireEvent.click(trigger)
 
-    fireEvent.pointerDown(screen.getByRole('list', { name: zh['list.aria'] }))
+    fireEvent.pointerDown(screen.getByRole('list', { name: ar['list.aria'] }))
     expect(trigger.getAttribute('aria-expanded')).toBe('true')
 
     fireEvent.pointerDown(document.body)
@@ -223,8 +223,8 @@ describe('JobListAction wire tolerance', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     expect(rowCells().map(cells => [cells[1], cells[3]])).toEqual([
-      ['finished', '3秒'],
-      ['no finish', '0秒'],
+      ['finished', '3ثانية'],
+      ['no finish', '0ثانية'],
     ])
   })
 

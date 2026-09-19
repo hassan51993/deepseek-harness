@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/develop/practice/dynamic-cordis.md
-dynamic-cordis.md: c9065027f3449355aa7a19e16672fa5812cab633
-dynamic-cordis.zh.md: 21d0a410d8e27931786a76b9383230a3d30004e5
+dynamic-cordis.md: 5d1a5b3e88d1ad5f07ac8b6ddb5e14546c31a308
+dynamic-cordis.ar.md: 0721a414bf4c1b11a1489837e89aca231005b3fb

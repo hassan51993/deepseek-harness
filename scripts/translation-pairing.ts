@@ -107,18 +107,18 @@ export function parsePairMeta(content: string): Map<string, string> | undefined 
  * Render a `foo.i18n.yaml` consistency record.
  * @param source - Repo-relative English path.
  * @param sourceHash - Blob hash of the English side.
- * @param zh - Repo-relative Chinese path.
- * @param zhHash - Blob hash of the Chinese side.
+ * @param ar - Repo-relative Arabic path.
+ * @param arHash - Blob hash of the Arabic side.
  * @returns The exact sidecar file content.
  */
-export function renderPairMeta(source: string, sourceHash: string, zh: string, zhHash: string): string {
+export function renderPairMeta(source: string, sourceHash: string, ar: string, arHash: string): string {
   return [
     '# Bilingual-pair consistency record (docs/i18n/README.md): the git blob hash of each',
     '# side as of the last confirmed-consistent state. Both languages carry equal authority;',
     '# after editing either side, bring the other along and re-record with:',
     `#   pnpm run verify-translation-pairing --write ${source}`,
     `${basename(source)}: ${sourceHash}`,
-    `${basename(zh)}: ${zhHash}`,
+    `${basename(ar)}: ${arHash}`,
     '',
   ].join('\n')
 }
@@ -129,8 +129,8 @@ export interface TranslationPairingManifest {
   excluded: string[]
 }
 
-const README_ARTIFACT = /(?:^|\/)readme(?:\.md|\.zh\.md|\.i18n\.yaml)$/i
-const ROOT_PAIRED_DOCUMENT_ARTIFACT = /^(?:brand_guidelines|contributing|safety)(?:\.md|\.zh\.md|\.i18n\.yaml)$/i
+const README_ARTIFACT = /(?:^|\/)readme(?:\.md|\.ar\.md|\.i18n\.yaml)$/i
+const ROOT_PAIRED_DOCUMENT_ARTIFACT = /^(?:brand_guidelines|contributing|safety)(?:\.md|\.ar\.md|\.i18n\.yaml)$/i
 const NON_SOURCE_DIRECTORIES = new Set([
   'node_modules',
   'lib',
@@ -236,7 +236,7 @@ export function translationPairSourcePredicate(
 
 /**
  * Normalize one CLI pair argument to its English anchor path: any of the
- * pair's three files (`foo.md`, `foo.zh.md`, `foo.i18n.yaml`) or the bare
+ * pair's three files (`foo.md`, `foo.ar.md`, `foo.i18n.yaml`) or the bare
  * `foo` stem names the same pair, and platform separators are accepted.
  *
  * @param argument - Repo-relative path as passed on a command line.
@@ -244,7 +244,7 @@ export function translationPairSourcePredicate(
  */
 export function pairAnchorOfArgument(argument: string): string {
   const normalized = argument.split('\\').join('/').replace(/^\.\//, '')
-  if (normalized.endsWith('.zh.md')) return `${normalized.slice(0, -'.zh.md'.length)}.md`
+  if (normalized.endsWith('.ar.md')) return `${normalized.slice(0, -'.ar.md'.length)}.md`
   if (normalized.endsWith('.i18n.yaml')) return `${normalized.slice(0, -'.i18n.yaml'.length)}.md`
   if (normalized.endsWith('.md')) return normalized
   return `${normalized}.md`
@@ -419,21 +419,21 @@ function show(value: string | number | undefined): string {
 /** Return the first divergence for each structural field; empty means equal. */
 export function translationStructureDiff(
   source: TranslationStructureSignature,
-  zh: TranslationStructureSignature,
+  ar: TranslationStructureSignature,
 ): string[] {
   const out: string[] = []
   const fields: [string, (string | number)[], (string | number)[]][] = [
-    ['heading (depth)', source.headings, zh.headings],
-    ['code block', source.code, zh.code],
-    ['table (row x column count)', source.tables, zh.tables],
-    ['list (kind, start, item count)', source.lists, zh.lists],
-    ['link target', source.links, zh.links],
+    ['heading (depth)', source.headings, ar.headings],
+    ['code block', source.code, ar.code],
+    ['table (row x column count)', source.tables, ar.tables],
+    ['list (kind, start, item count)', source.lists, ar.lists],
+    ['link target', source.links, ar.links],
   ]
-  for (const [field, sourceValues, zhValues] of fields) {
-    const length = Math.max(sourceValues.length, zhValues.length)
+  for (const [field, sourceValues, arValues] of fields) {
+    const length = Math.max(sourceValues.length, arValues.length)
     for (let index = 0; index < length; index++) {
-      if (sourceValues[index] !== zhValues[index]) {
-        out.push(`${field} #${index + 1} diverges between the pair: ${show(sourceValues[index])} vs ${show(zhValues[index])}`)
+      if (sourceValues[index] !== arValues[index]) {
+        out.push(`${field} #${index + 1} diverges between the pair: ${show(sourceValues[index])} vs ${show(arValues[index])}`)
         break
       }
     }

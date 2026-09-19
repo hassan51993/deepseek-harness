@@ -1,10 +1,10 @@
-- dialog "选择要添加的模型":
-  - heading "选择要添加的模型" [level=2]
-  - button "关闭":
+- dialog "اختيار يلزم إضافة نموذج":
+  - heading "اختيار يلزم إضافة نموذج" [level=2]
+  - button "إغلاق":
     - img
-  - paragraph: 以下是模型提供方的可用模型，勾选要添加的模型。
-  - searchbox "搜索模型"
-  - button "取消全选"
+  - paragraph: التالي هو نموذج مزود متاح نموذج، ربط اختيار يلزم إضافة نموذج.
+  - searchbox "بحث نموذج"
+  - button "إلغاء كل اختيار"
   - list:
     - listitem:
       - checkbox "MiniMax-M2.7" [checked]
@@ -15,5 +15,5 @@
     - listitem:
       - checkbox "MiniMax-M3" [checked]
       - text: MiniMax-M3
-  - button "取消"
-  - button "添加所选"
+  - button "إلغاء"
+  - button "إضافة الذي اختيار"

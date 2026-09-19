@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-10-hosted-image-test-assumptions.zh.md)
+English | [العربية](2026-09-10-hosted-image-test-assumptions.ar.md)
 
 ## Problem
 

@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-17-web-sidebar-session-title-hover-scroll.zh.md)
+English | [العربية](2026-09-17-web-sidebar-session-title-hover-scroll.ar.md)
 
 ## Problem
 

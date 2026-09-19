@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-06-agent-event-payload-objects.md
-2026-08-06-agent-event-payload-objects.md: b171f2d67e3c065063775e7830b9085af7767c8f
-2026-08-06-agent-event-payload-objects.zh.md: 65ce0d608c6201d88a607943984349d9b997f8f3
+2026-08-06-agent-event-payload-objects.md: b6026f91d94b97bdbb0f93c1fe035810d901013f
+2026-08-06-agent-event-payload-objects.ar.md: 42c753fb6a3778f8d67e198c1128fb9f1b197f78

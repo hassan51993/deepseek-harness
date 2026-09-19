@@ -18,9 +18,9 @@ import {
   LOCALE_ID_PATTERN, LOCALE_IDS, LOCALE_PREFERENCE_FIELD, LOCALE_SETTINGS_NAMESPACE,
   type BuiltInLocaleId, type LocaleId, type LocaleSettings,
 } from '../locale-settings.ts'
-import { en, zh, type CommonKey } from '../locales/index.ts'
+import { en, ar, type CommonKey } from '../locales/index.ts'
 import {
-  en as settingsEn, zh as settingsZh, type SettingsLocaleKey,
+  en as settingsEn, ar as settingsAr, type SettingsLocaleKey,
 } from '../locales/settings.ts'
 import type { LanguageRowInjected } from './LanguageRow.tsx'
 import { LanguageRow } from './LanguageRow.tsx'
@@ -99,10 +99,10 @@ declare module '@deepseek-ai/cordis' {
  * English is both the locale the UI opens in when the browser names no registered
  * language (and for non-browser runs), and the dictionary consulted after the
  * active locale misses a key. One constant serves both because the shipped
- * `zh`/`en` dictionaries carry identical key sets, so neither direction can
+ * `ar`/`en` dictionaries carry identical key sets, so neither direction can
  * leave a key unresolved; the residual case points at English rather than
- * zh because a browser naming no registered language is the reader least
- * likely to read Chinese.
+ * ar because a browser naming no registered language is the reader least
+ * likely to read Arabic.
  */
 export const FALLBACK_LOCALE: BuiltInLocaleId = 'en'
 
@@ -114,7 +114,7 @@ export const SETTINGS_NS = 'settings.locale'
 
 /** The two locales and dictionaries shipped by this package. */
 const BUILT_IN_LOCALE_METADATA = {
-  zh: { label: '中文', fallback: 'en' },
+  ar: { label: 'العربية', fallback: 'en' },
   en: { label: 'English' },
 } as const satisfies Record<BuiltInLocaleId, Omit<LocaleDefinition, 'id'>>
 const BUILT_IN_LOCALES: readonly LocaleDefinition[] = Object.freeze(
@@ -146,7 +146,7 @@ function normalizeLanguage(input: LanguageRegistration): Readonly<LanguageRegist
 function syncDocumentLanguage(snapshot: LocaleSnapshot): void {
   // Non-browser runs (node boots of the client tree) have no document.
   if (typeof document === 'undefined') return
-  document.documentElement.lang = snapshot.active === 'zh' ? 'zh-CN' : snapshot.active
+  document.documentElement.lang = snapshot.active === 'ar' ? 'ar-SA' : snapshot.active
 }
 
 /**
@@ -539,8 +539,8 @@ export const inject = ['slots', 'remote', 'settingsScope']
 export function apply(ctx: ClientContext): void {
   const host = ctx.settingsScope.bind<LocaleSettings>({ namespace: LOCALE_SETTINGS_NAMESPACE })
   const locale = new LocaleRuntime(ctx, host)
-  locale.register(COMMON_NS, { zh, en })
-  locale.register(SETTINGS_NS, { zh: settingsZh, en: settingsEn })
+  locale.register(COMMON_NS, { ar, en })
+  locale.register(SETTINGS_NS, { ar: settingsAr, en: settingsEn })
   ctx.provide('locale', locale)
   // The service IS the LocaleFace (bind + getSnapshot/subscribe): install it
   // so the render machinery can synthesize the `t` standard seat.

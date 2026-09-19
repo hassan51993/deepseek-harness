@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [中文](2026-09-08-desktop-mandatory-update-api.zh.md)
+English | [العربية](2026-09-08-desktop-mandatory-update-api.ar.md)
 
 ## Problem
 
@@ -29,7 +29,7 @@ GET /api/v0/check_client_update?scenario=launch
 x-client-platform: desktop-win
 x-client-version: 0.1.3-rc.2
 x-client-bundle-id: com.deepseek.dsh
-x-client-locale: zh-CN
+x-client-locale: ar-SA
 x-client-arch: x64
 x-client-update-channel: nightly
 x-client-bundled-dsh-version: 0.1.3-rc.2
@@ -42,7 +42,7 @@ All listed headers are required for Desktop. Values describing installed softwar
 | `x-client-platform` | `desktop-win` or `desktop-mac` |
 | `x-client-version` | Full Desktop SemVer, retaining prerelease identifiers; initially equal to bundled dsh |
 | `x-client-bundle-id` | Application identity, for example `com.deepseek.dsh`; distinguishes Harness from Chat |
-| `x-client-locale` | UI locale, for example `zh-CN`; selects localized content, not region |
+| `x-client-locale` | UI locale, for example `ar-SA`; selects localized content, not region |
 | `x-client-arch` | Windows `x64`; macOS `x64` or `arm64` |
 | `x-client-update-channel` | Initially always `nightly`, independent of version suffix |
 | `x-client-bundled-dsh-version` | Full bundled dsh version from release metadata |
@@ -78,8 +78,8 @@ This means the current client does not require a mandatory update, not that its 
   "msg": "Client version too low",
   "data": {
     "show_content": {
-      "title": "请更新 DeepSeek Harness",
-      "detail": "当前版本已停止支持，请下载并安装新版本。"
+      "title": "طلب تحديث DeepSeek Harness",
+      "detail": "حالي إصدار قد إيقاف دعم حمل، طلب تحت تحميل و تثبيت جديد إصدار."
     },
     "desktop_app_link": "https://example.com/harness/download"
   }

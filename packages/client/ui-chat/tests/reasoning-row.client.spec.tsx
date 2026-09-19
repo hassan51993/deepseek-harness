@@ -2,15 +2,15 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { cleanup, fireEvent, render } from '@testing-library/react'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
-import { zh } from '../src/client/locale.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
+import { ar } from '../src/client/locale.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 
 afterEach(() => {
   cleanup()
 })
 
-const t = makeTranslate(zh, commonZh)
+const t = makeTranslate(ar, commonAr)
 const renderMessageImages: AssistantMarkdownProps['renderMessageImages'] = () => null
 
 describe('ReasoningRow', () => {
@@ -23,7 +23,7 @@ describe('ReasoningRow', () => {
       <AssistantMarkdown t={t} blocks={[reasoning]} streaming renderMessageImages={renderMessageImages} />,
     )
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     view.rerender(
       <AssistantMarkdown t={t} blocks={[reasoning, nextBlock]} streaming renderMessageImages={renderMessageImages} />,
     )
@@ -33,7 +33,7 @@ describe('ReasoningRow', () => {
     )
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('true')
     expect(view.getByText(/Check persistence/)).toBeTruthy()
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
   })
 
@@ -46,7 +46,7 @@ describe('ReasoningRow', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    expect(view.getByText('运行中')).toBeTruthy()
+    expect(view.getByText('تشغيل في')).toBeTruthy()
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
     expect(view.getByText('Newest reasoning tokens').parentElement?.getAttribute('data-follow-end'))
       .toBe('true')
@@ -72,7 +72,7 @@ describe('ReasoningRow', () => {
     )
     const settledSummary = view.getByText('Inspect the session')
     expect(view.getByRole('button').getAttribute('aria-expanded')).toBe('false')
-    expect(view.queryByText('运行中')).toBeNull()
+    expect(view.queryByText('تشغيل في')).toBeNull()
     expect(settledSummary.parentElement?.hasAttribute('data-follow-end')).toBe(false)
   })
 
@@ -91,7 +91,7 @@ describe('ReasoningRow', () => {
     expect(row.getAttribute('aria-expanded')).toBe('true')
     expect(view.getByText(/Check persistence/)).toBeTruthy()
 
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(row.getAttribute('aria-expanded')).toBe('false')
   })
 
@@ -119,7 +119,7 @@ describe('ReasoningRow', () => {
     expect(view.getByText('Comparing checkout and merge bases')).toBeTruthy()
     expect(view.queryByText('**Comparing checkout and merge bases**')).toBeNull()
 
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(view.getByText('Comparing checkout and merge bases').tagName).toBe('STRONG')
     expect(view.container.querySelector('[class*="thinkBody"]')?.textContent).not.toContain('**')
   })
@@ -145,7 +145,7 @@ describe('ReasoningRow', () => {
     expect(compact?.querySelectorAll('h1, h2, h3, h4, h5, h6')).toHaveLength(6)
     expect(compact?.querySelector('p')?.textContent).toBe('Reasoning body.')
 
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(view.getByText('# Section 1').tagName).toBe('SPAN')
     expect(view.queryByRole('heading')).toBeNull()
   })
@@ -160,7 +160,7 @@ describe('ReasoningRow', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     const heading = view.getByRole('heading', { name: 'Investigation' })
     const emphasis = view.getByText('Check persistence')
     const text = first + Array.from({ length: 8 }, (_, index) => `Paragraph ${index}.`).join('\n\n')
@@ -186,7 +186,7 @@ describe('ReasoningRow', () => {
         renderMessageImages={renderMessageImages}
       />,
     )
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(view.getAllByText(/Inspect the session/)).toHaveLength(1)
     expect(view.queryByText('IN')).toBeNull()
     expect(view.container.querySelector('[class*="ioCard"]')).toBeNull()
@@ -207,7 +207,7 @@ describe('ReasoningRow', () => {
     )
     // Collapsed: no `data-open`, so the sticky rule's gate never matches.
     expect(view.container.querySelector('[data-variant="think"] [data-open]')).toBeNull()
-    fireEvent.click(view.getByText('思考'))
+    fireEvent.click(view.getByText('تفكير اعتبار'))
     expect(
       view.container.querySelector(
         '[data-variant="think"][data-expanded] [data-open] [data-disclosure-row]',

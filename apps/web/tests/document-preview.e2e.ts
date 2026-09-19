@@ -615,7 +615,7 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
     try { await browser?.close() } finally { await scaffold?.close() }
   })
 
-  it('rejects renamed text and renders Chinese Office documents through the PDF worker', async () => {
+  it('rejects renamed text and renders Arabic Office documents through the PDF worker', async () => {
     scaffold = await launchWebScaffold({ replayFixture: FIXTURE, paceMs: 5, compareReplaySession: false,
       extraOverlayPath: fileURLToPath(new URL('../../../packages/client/ui-sidebar-documentpreview/tests/fixtures/office-cache.patch.yml', import.meta.url)),
     })
@@ -636,10 +636,10 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
     if (cwd === undefined) throw new Error('settled Session has no workspace cwd')
     await Promise.all([
       writeFile(join(cwd, 'renamed.docx'), 'This is plain text renamed to docx.'),
-      writeFile(join(cwd, 'chinese.docx'), realOfficeBytes('docx', 'DSH Missing Preview Font')),
-      writeFile(join(cwd, 'chinese.xlsx'), realOfficeBytes('xlsx')),
-      writeFile(join(cwd, 'chinese.pptx'), realOfficeBytes('pptx')),
-      ...(['doc', 'xls', 'ppt'] as const).map(extension => writeFile(join(cwd, `chinese.${extension}`), realOfficeBytes(extension))),
+      writeFile(join(cwd, 'arabic.docx'), realOfficeBytes('docx', 'DSH Missing Preview Font')),
+      writeFile(join(cwd, 'arabic.xlsx'), realOfficeBytes('xlsx')),
+      writeFile(join(cwd, 'arabic.pptx'), realOfficeBytes('pptx')),
+      ...(['doc', 'xls', 'ppt'] as const).map(extension => writeFile(join(cwd, `arabic.${extension}`), realOfficeBytes(extension))),
       ...['doc', 'xls', 'ppt'].map(extension => writeFile(join(cwd, `renamed.${extension}`), 'Plain text is not a binary Office document.')),
     ])
     const convert = vi.spyOn(scaffold.ctx.officeToPdf, 'convert')
@@ -651,7 +651,7 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
       await column.locator('[data-files-reload]').click()
       const filesTab = column.locator('[data-dockkit-tab]').filter({ has: page.getByText('Files', { exact: true }) })
       const preview = column.locator('[data-document-preview]')
-      await column.locator('[data-files-entry="file"]').getByRole('button', { name: 'chinese.docx', exact: true }).click()
+      await column.locator('[data-files-entry="file"]').getByRole('button', { name: 'arabic.docx', exact: true }).click()
       expect(await preview.locator('[data-document-viewer-menu]').count()).toBe(0)
       const canvas = preview.getByRole('img', { name: 'PDF page 1', exact: true })
       await canvas.waitFor({ state: 'visible', timeout: 60_000 })
@@ -669,8 +669,8 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
       expect(workerNames).toContain('dsh-pdf')
       expect(workerNames.some(name => /libreoffice|soffice/i.test(name))).toBe(false)
       await copyPdfText(page, preview, 'Office preview')
-      await copyPdfText(page, preview, '中文文档')
-      expect((await preview.locator('[data-pdf-text]').allTextContents()).join('')).toContain('中文文档')
+      await copyPdfText(page, preview, 'العربية وثيقة')
+      expect((await preview.locator('[data-pdf-text]').allTextContents()).join('')).toContain('العربية وثيقة')
       expect(convert).toHaveBeenCalledTimes(1)
       await preview.getByRole('button', { name: 'Read the file again', exact: true }).click()
       await canvas.waitFor({ state: 'visible' })
@@ -710,13 +710,13 @@ describe.skipIf(MODE === 'record')('web e2e: Host Office preview', () => {
       ].join('\n'), MODE)
       await successShot(page, 'office-docx')
       for (const extension of ['doc', 'xls', 'xlsx', 'ppt', 'pptx']) {
-        await openPreviewFile(column, filesTab, preview, `chinese.${extension}`)
+        await openPreviewFile(column, filesTab, preview, `arabic.${extension}`)
         await preview.getByRole('img', { name: 'PDF page 1', exact: true }).waitFor({ state: 'visible', timeout: 60_000 })
-        await expect.poll(async () => (await preview.locator('[data-pdf-text]').allTextContents()).join(''), { timeout: 30_000 }).toContain('中文文档')
+        await expect.poll(async () => (await preview.locator('[data-pdf-text]').allTextContents()).join(''), { timeout: 30_000 }).toContain('العربية وثيقة')
         await successShot(page, `office-${extension}`)
       }
       expect(convert).toHaveBeenCalledTimes(6)
-      await openPreviewFile(column, filesTab, preview, 'chinese.docx')
+      await openPreviewFile(column, filesTab, preview, 'arabic.docx')
       await preview.getByRole('img', { name: 'PDF page 1', exact: true }).waitFor({ state: 'visible' })
       await preview.getByRole('button', { name: 'Read the file again', exact: true }).click()
       await expect.poll(() => convert.mock.calls.length).toBe(7)

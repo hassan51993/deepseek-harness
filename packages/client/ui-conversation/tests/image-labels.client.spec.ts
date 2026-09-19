@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import { attachmentErrorText, imageSizeText } from '../src/client/image-labels.ts'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 
-const t = makeTranslate(zh, commonZh)
-const enT = makeTranslate(en, commonZh)
+const t = makeTranslate(ar, commonAr)
+const enT = makeTranslate(en, commonAr)
 
 describe('attachment rejection copy', () => {
   const limits = {
@@ -23,22 +23,22 @@ describe('attachment rejection copy', () => {
   })
 
   it('maps user-solvable reasons to limit-naming copy', () => {
-    expect(attachmentErrorText(t, 'MODEL_DOES_NOT_SUPPORT_IMAGES')).toBe('当前模型不支持图片，请切换支持图片的模型')
-    expect(attachmentErrorText(t, 'IMAGE_TOO_MANY_PIXELS')).toBe('图片分辨率过大，请压缩后重试')
-    expect(attachmentErrorText(t, 'INVALID_IMAGE')).toBe('仅支持 PNG、JPG、WebP、GIF 格式的图片')
-    expect(attachmentErrorText(t, 'IMAGE_TYPE_MISMATCH')).toBe('仅支持 PNG、JPG、WebP、GIF 格式的图片')
-    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES', limits)).toBe('一条消息最多添加 20 张图片')
-    expect(attachmentErrorText(t, 'IMAGE_TOO_LARGE', limits)).toBe('单张图片不能超过 5MB')
-    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE', limits)).toBe('图片总大小超过 100MB，请移除部分图片')
-    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE', limits)).toBe('图片宽高不能超过 2000px，请缩小后重试')
+    expect(attachmentErrorText(t, 'MODEL_DOES_NOT_SUPPORT_IMAGES')).toBe('حالي نموذج لا دعم حمل صورة، طلب تبديل دعم حمل صورة نموذج')
+    expect(attachmentErrorText(t, 'IMAGE_TOO_MANY_PIXELS')).toBe('صورة قسم تمييز معدل مرور كبير، طلب ضغط بعد إعادة محاولة')
+    expect(attachmentErrorText(t, 'INVALID_IMAGE')).toBe('فقط دعم حمل PNG،JPG،WebP،GIF صيغة صورة')
+    expect(attachmentErrorText(t, 'IMAGE_TYPE_MISMATCH')).toBe('فقط دعم حمل PNG،JPG،WebP،GIF صيغة صورة')
+    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES', limits)).toBe('واحد بند رسالة الأكثر كثير إضافة 20 ورقة صورة')
+    expect(attachmentErrorText(t, 'IMAGE_TOO_LARGE', limits)).toBe('مفرد ورقة صورة لا يستطيع تجاوز مرور 5MB')
+    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE', limits)).toBe('صورة مجموع كبير صغير تجاوز مرور 100MB، طلب إزالة جزء صورة')
+    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE', limits)).toBe('صورة عرض عال لا يستطيع تجاوز مرور 2000px، طلب تقليص صغير بعد إعادة محاولة')
     expect(attachmentErrorText(enT, 'TOO_MANY_IMAGES', limits)).toBe('A message can include up to 20 images')
   })
 
   it('folds unknown reasons and limit reasons without projected limits into the send-failed line', () => {
-    expect(attachmentErrorText(t, 'INVALID_IMAGE_BASE64')).toBe('图片发送失败（INVALID_IMAGE_BASE64），请重新添加图片后再试')
-    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES')).toBe('图片发送失败（TOO_MANY_IMAGES），请重新添加图片后再试')
-    expect(attachmentErrorText(t, 'IMAGE_TOO_LARGE')).toBe('图片发送失败（IMAGE_TOO_LARGE），请重新添加图片后再试')
-    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE')).toBe('图片发送失败（IMAGES_TOO_LARGE），请重新添加图片后再试')
-    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE')).toBe('图片发送失败（IMAGE_DIMENSION_TOO_LARGE），请重新添加图片后再试')
+    expect(attachmentErrorText(t, 'INVALID_IMAGE_BASE64')).toBe('صورة إرسال فشل (INVALID_IMAGE_BASE64) ، طلب إعادة إضافة صورة بعد مجددا تجربة')
+    expect(attachmentErrorText(t, 'TOO_MANY_IMAGES')).toBe('صورة إرسال فشل (TOO_MANY_IMAGES) ، طلب إعادة إضافة صورة بعد مجددا تجربة')
+    expect(attachmentErrorText(t, 'IMAGE_TOO_LARGE')).toBe('صورة إرسال فشل (IMAGE_TOO_LARGE) ، طلب إعادة إضافة صورة بعد مجددا تجربة')
+    expect(attachmentErrorText(t, 'IMAGES_TOO_LARGE')).toBe('صورة إرسال فشل (IMAGES_TOO_LARGE) ، طلب إعادة إضافة صورة بعد مجددا تجربة')
+    expect(attachmentErrorText(t, 'IMAGE_DIMENSION_TOO_LARGE')).toBe('صورة إرسال فشل (IMAGE_DIMENSION_TOO_LARGE) ، طلب إعادة إضافة صورة بعد مجددا تجربة')
   })
 })

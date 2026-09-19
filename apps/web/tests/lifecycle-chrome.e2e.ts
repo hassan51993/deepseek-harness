@@ -31,7 +31,7 @@ const FIXTURE = join(SNAPSHOT_DIR, 'session.v3.jsonl')
 const REPLAY_OVERRIDE = join(SNAPSHOT_DIR, 'replay.override.json')
 const HERO_EXPECTED = join(SNAPSHOT_DIR, 'hero.expected.md')
 const COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu.expected.md')
-const COMMAND_MENU_ZH_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-zh.expected.md')
+const COMMAND_MENU_ZH_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-ar.expected.md')
 const FUZZY_COMMAND_MENU_EXPECTED = join(SNAPSHOT_DIR, 'command-menu-fuzzy.expected.md')
 const PLAN_ACTIVE_EXPECTED = join(SNAPSHOT_DIR, 'plan-active.expected.md')
 const CONNECTION_ERROR_EXPECTED = join(SNAPSHOT_DIR, 'connection-error.expected.md')
@@ -113,31 +113,31 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
   })
 
   it.skipIf(MODE === 'record')('localizes slash-command descriptions from the browser language', async () => {
-    const zhPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
-    const zhTripwire = watchConsole(zhPage)
-    onTestFailed(() => saveFailureShot(zhPage, 'web-e2e-command-menu-zh'))
+    const arPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const arTripwire = watchConsole(arPage)
+    onTestFailed(() => saveFailureShot(arPage, 'web-e2e-command-menu-ar'))
     try {
-      await zhPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
-      await zhPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
-      const launcher = zhPage.getByRole('button', { name: '添加文件或调用指令' })
+      await arPage.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
+      await arPage.waitForSelector('[class*="frame"]', { timeout: 30_000 })
+      const launcher = arPage.getByRole('button', { name: 'إضافة ملف أو استدعاء إشارة أمر' })
       await launcher.click()
-      const menu = zhPage.getByRole('listbox', { name: '触发候选建议' })
+      const menu = arPage.getByRole('listbox', { name: 'إطلاق مرشح بناء اقتراح' })
       await menu.getByRole('option').first().waitFor({ timeout: 10_000 })
       await menu.getByRole('status').waitFor({ state: 'hidden', timeout: 10_000 })
-      const snapshot = await captureStableAria(zhPage, '[role="listbox"]', scaffold.workspaceCwd)
+      const snapshot = await captureStableAria(arPage, '[role="listbox"]', scaffold.workspaceCwd)
       await compareOrRefreshGolden(COMMAND_MENU_ZH_EXPECTED, snapshot, MODE)
-      expect(zhTripwire.pageErrors).toEqual([])
-      expect(zhTripwire.warnings).toEqual([])
+      expect(arTripwire.pageErrors).toEqual([])
+      expect(arTripwire.warnings).toEqual([])
     } finally {
-      await zhPage.close()
+      await arPage.close()
     }
   })
 
   it.skipIf(MODE === 'record').each([
     { locale: 'en-US', token: '/goal', row: 'Goal Set or view the goal for a long-running task', hint: 'describe the objective for a long-running task' },
     { locale: 'en-US', token: '/plan', row: 'Plan Enter or leave plan mode', hint: 'describe your task to generate plan' },
-    { locale: ZH_BROWSER_LOCALE, token: '/目标', row: '目标 goal 设置或查看长期任务目标', hint: '输入目标，智能体将持续执行' },
-    { locale: ZH_BROWSER_LOCALE, token: '/计划', row: '计划 plan 进入或退出计划模式', hint: '描述你的任务以生成计划' },
+    { locale: ZH_BROWSER_LOCALE, token: '/هدف', row: 'هدف goal ضبط أو فحص نظر طويل مدة مهمة هدف', hint: 'إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ' },
+    { locale: ZH_BROWSER_LOCALE, token: '/حساب تخطيط', row: 'حساب تخطيط plan دخول أو خروج حساب تخطيط نمط', hint: 'وصف أنت مهمة بـ توليد حساب تخطيط' },
   ])('keeps $token claimed across separator edits and hides hints during IME composition', async ({ locale, token, row, hint }) => {
     const inputPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale })
     const inputTripwire = watchConsole(inputPage)
@@ -150,8 +150,8 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
       await inputPage.getByRole('listbox').getByRole('option', { name: row, exact: true }).click()
       await expect.poll(() => input.textContent()).toBe(`${token} `)
       await input.press('End')
-      await inputPage.keyboard.insertText('这是任务')
-      await expect.poll(() => input.textContent()).toBe(`${token} 这是任务`)
+      await inputPage.keyboard.insertText('هذا هو مهمة')
+      await expect.poll(() => input.textContent()).toBe(`${token} هذا هو مهمة`)
       for (let i = 0; i < 5; i++) await input.press('Backspace')
       const tokenText = () => input.locator('[data-lexical-text][style*="warn-label"]').textContent()
       await expect.poll(() => input.textContent()).toBe(token)
@@ -166,10 +166,10 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
       const cdp = await inputPage.context().newCDPSession(inputPage)
       await cdp.send('Input.imeSetComposition', { text: 'z', selectionStart: 1, selectionEnd: 1 })
       await expect.poll(shownHint).toBe('none')
-      await cdp.send('Input.imeSetComposition', { text: 'zh', selectionStart: 2, selectionEnd: 2 })
+      await cdp.send('Input.imeSetComposition', { text: 'ar', selectionStart: 2, selectionEnd: 2 })
       await expect.poll(shownHint).toBe('none')
-      await cdp.send('Input.insertText', { text: '这' })
-      await expect.poll(() => input.textContent()).toBe(`${token} 这`)
+      await cdp.send('Input.insertText', { text: 'هذا' })
+      await expect.poll(() => input.textContent()).toBe(`${token} هذا`)
       await expect.poll(shownHint).toBe('none')
       await input.press('Backspace')
       await expect.poll(shownHint).toBe(JSON.stringify(hint))
@@ -563,7 +563,7 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
     expect(tripwire.warnings).toEqual([])
     await assertFixtureInventory(SNAPSHOT_DIR, [
       'session.v3.jsonl', 'replay.override.json', 'command-menu.expected.md',
-      'command-menu-fuzzy.expected.md', 'command-menu-zh.expected.md', 'connection-error.expected.md',
+      'command-menu-fuzzy.expected.md', 'command-menu-ar.expected.md', 'connection-error.expected.md',
       'hero.expected.md', 'plan-active.expected.md',
       'reloaded.expected.md', 'reloaded-expanded.expected.md',
     ])

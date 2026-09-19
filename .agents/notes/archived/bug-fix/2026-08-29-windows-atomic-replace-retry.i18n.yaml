@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-29-windows-atomic-replace-retry.md
-2026-08-29-windows-atomic-replace-retry.md: bad59309451b19e7e17e0600e382df9001cc57f9
-2026-08-29-windows-atomic-replace-retry.zh.md: 28f66669083f5e53d9cc4fe7a7e75dffa9813481
+2026-08-29-windows-atomic-replace-retry.md: f19f63d47bbfb647ddd0ad728b64d5e631b0a6d6
+2026-08-29-windows-atomic-replace-retry.ar.md: b2e7e5b19175f0259dfbbd30a93c3853b8ce83db

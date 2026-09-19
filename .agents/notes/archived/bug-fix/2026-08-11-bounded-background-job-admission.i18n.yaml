@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-11-bounded-background-job-admission.md
-2026-08-11-bounded-background-job-admission.md: 8eee8834523910a9f345cd9f11e325f1ca8d65ce
-2026-08-11-bounded-background-job-admission.zh.md: 1c08bbfc3c9ae4df81f1961dc6eb34b76e2ddf15
+2026-08-11-bounded-background-job-admission.md: 608cae8fc334ab2ae3541cb176ba4bb425d3b45c
+2026-08-11-bounded-background-job-admission.ar.md: 2b1f0255f524b04bb47af3fec477f9c582f75963

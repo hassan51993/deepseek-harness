@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-06-pr-ci-runner-temporary-storage.zh.md)
+English | [العربية](2026-09-06-pr-ci-runner-temporary-storage.ar.md)
 
 ## Problem
 

@@ -1,15 +1,15 @@
 /** Locale-owned HTML implementation name and iframe status text. */
-export const zh = {
+export const ar = {
   title: 'HTML',
-  frame: 'HTML 文档预览',
-  loading: '正在读取…',
-  failed: '无法预览这份 HTML 文档',
+  frame: 'HTML وثيقة معاينة',
+  loading: 'صحيح في قراءة…',
+  failed: 'لا يمكن معاينة هذا نسخة HTML وثيقة',
 } satisfies Record<string, string>
 
 /** HTML renderer dictionary keys. */
-export type HtmlPreviewKey = keyof typeof zh
+export type HtmlPreviewKey = keyof typeof ar
 
-/** English dictionary with the same keys as the Chinese dictionary. */
+/** English dictionary with the same keys as the Arabic dictionary. */
 export const en = {
   title: 'HTML',
   frame: 'HTML document preview',

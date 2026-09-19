@@ -23,9 +23,9 @@ import type { AgentPresetSeatInjected } from '../src/client/AgentPresetSeat.tsx'
 import { AgentPresetSeatController } from '../src/client/seat-store.ts'
 import { apply as hostApply } from '../src/index.ts'
 
-// These specs assert the shipped Chinese copy. The lane has no jsdom `window`,
+// These specs assert the shipped Arabic copy. The lane has no jsdom `window`,
 // so browser-language detection never runs and a fresh LocaleRuntime opens on
-// FALLBACK_LOCALE (en); each bench stages zh explicitly on the locale instead.
+// FALLBACK_LOCALE (en); each bench stages ar explicitly on the locale instead.
 
 const ROSTER_ONE = {
   ok: true as const,
@@ -82,7 +82,7 @@ async function bench(options: {
   const moveDefault = (): void => { ROSTER = ROSTER_MOVED }
   await ctx.plugin(SlotRegistry).await()
   const locale = new LocaleRuntime(ctx)
-  locale.setLocale('zh')
+  locale.setLocale('ar')
   ctx.provide('locale', locale)
   const calls: string[] = []
   let savedDefault = 'standard'
@@ -262,7 +262,7 @@ describe('ui-agent-preset apply', () => {
     expect(section.component).toBe(AgentPresetSection)
     expect(section.options).toMatchObject({ id: 'agent-presets', order: 20 })
     // The nav label is a locale-following thunk; owners resolve it at read time.
-    expect(resolveSlotLabel(section.options.label)).toBe('Agent 预设')
+    expect(resolveSlotLabel(section.options.label)).toBe('Agent مسبق ضبط')
   })
 
   it('registers into a declaration that arrives after apply', async () => {
@@ -301,7 +301,7 @@ describe('ui-agent-preset apply', () => {
     section.cancelCopy()
     section.beginCopy('standard')
     section.setCopyId('mine')
-    section.setCopyName('我的模式')
+    section.setCopyName('أنا نمط')
     await section.confirmCopy()
     await section.view('standard')
     section.closeView()
@@ -579,7 +579,7 @@ describe('ui-agent-preset apply', () => {
     await section.load()
     section.beginCopy('standard')
     section.setCopyId('mine')
-    section.setCopyName('我的模式')
+    section.setCopyName('أنا نمط')
     await section.confirmCopy()
 
     // Authoring copies a directory rather than writing a setting, so nothing

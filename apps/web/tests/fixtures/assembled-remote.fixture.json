@@ -84,7 +84,7 @@
             {
               "id": "deepseek-v4-flash",
               "name": "DeepSeek-V4-Flash",
-              "description": "快速响应",
+              "description": "سريع سرعة استجابة",
               "reasoning": {
                 "efforts": [
                   {
@@ -106,7 +106,7 @@
             {
               "id": "deepseek-v4-pro",
               "name": "DeepSeek-V4-Pro",
-              "description": "复杂任务",
+              "description": "تكرار مختلط مهمة",
               "reasoning": {
                 "efforts": [
                   {
@@ -191,11 +191,11 @@
     "value": [
       {
         "name": "compact",
-        "description": "fixture：压缩当前会话上下文"
+        "description": "fixture: ضغط حالي جلسة سياق"
       },
       {
         "name": "echo",
-        "description": "fixture：回显参数",
+        "description": "fixture: عودة إظهار معامل",
         "input": {
           "hint": "text to echo"
         }
@@ -279,22 +279,22 @@
               "lastUsed": null,
               "next": null
             },
-            "title": "Fixture 历史会话",
+            "title": "Fixture تاريخ جلسة",
             "todos": [
               {
-                "content": "梳理需求",
+                "content": "تمشيط إدارة يحتاج طلب",
                 "status": "completed"
               },
               {
-                "content": "实现 fixture 样本",
+                "content": "تنفيذ fixture مثال هذا",
                 "status": "in_progress"
               },
               {
-                "content": "跑后台构建",
+                "content": "ركض خلفية بناء",
                 "status": "in_progress"
               },
               {
-                "content": "浏览器验收",
+                "content": "متصفح تحقق استلام",
                 "status": "pending"
               }
             ],
@@ -506,7 +506,7 @@
       "agentId": "fx-alpha",
       "request": {
         "toolName": "dangerous_tool",
-        "reason": "fixture 常驻审批（可答：批准/拒绝后消失）"
+        "reason": "fixture معتاد إقامة مراجعة دفعة (يمكن جواب: دفعة دقيق/رفض بعد إزالة فقد)"
       }
     },
     {
@@ -518,53 +518,53 @@
         "questions": [
           {
             "id": "harness-profile",
-            "header": "偏好",
-            "question": "你现在更想招哪类 Agent/Harness 候选人？",
+            "header": "انحراف جيد",
+            "question": "أنت الآن أكثر تفكير استدعاء أي صنف Agent/Harness مرشح شخص؟",
             "options": [
               {
-                "label": "工程落地型 (Recommended)",
-                "description": "更看重能直接做 runtime、tool executor、sandbox、trace 和线上问题排查。"
+                "label": "عمل مسار سقوط أرض نوع (Recommended)",
+                "description": "أكثر نظر إعادة قدرة مباشر فعل runtime،tool executor،sandbox،trace و خط فوق مشكلة ترتيب فحص."
               },
               {
-                "label": "研究潜力型",
-                "description": "更看重 Agent 理解、训练评测思路和长期成长空间。"
+                "label": "بحث بحث كامن قوة نوع",
+                "description": "أكثر نظر إعادة Agent إدارة حل، تدريب تدريب تقييم قياس تفكير مسار و طويل مدة صار طويل فضاء."
               },
               {
-                "label": "均衡型",
-                "description": "同时要求工程能力和 Agent 认知，但可能筛选门槛更高。"
+                "label": "متساو توازن نوع",
+                "description": "معا اشتراط عمل مسار قدرة و Agent إقرار معرفة، لكن ممكن غربلة اختيار باب عتبة أكثر عال."
               }
             ]
           },
           {
             "id": "work-mode",
-            "header": "方式",
-            "question": "你希望候选人优先展示哪种工作方式？",
+            "header": "طريقة",
+            "question": "أنت أمل نظر مرشح شخص أولوية عرض أي نوع عمل طريقة؟",
             "options": [
               {
-                "label": "先做小型原型 (Recommended)",
-                "description": "用可运行结果尽快验证关键假设。"
+                "label": "أولا فعل صغير نوع أصل نوع (Recommended)",
+                "description": "استخدام يمكن تشغيل نتيجة كل سريع تحقق صلة مفتاح زائف ضبط."
               },
               {
-                "label": "先写完整设计",
-                "description": "先收敛边界、协议和风险，再开始实现。"
+                "label": "أولا كتابة كامل تصميم",
+                "description": "أولا استلام جمع حد، بروتوكول و ريح خطر، مجددا بدء تنفيذ."
               }
             ]
           },
           {
             "id": "signals",
-            "header": "信号",
-            "question": "哪些面试信号最重要？",
-            "detail": "按当前招聘目标选择；跳过则视为不设偏好。",
+            "header": "إشارة",
+            "question": "أي بعض وجه تجربة إشارة الأكثر إعادة يلزم؟",
+            "detail": "حسب حالي استدعاء تعيين هدف اختيار؛ قفز مرور فإن نظر لـ لا ضبط انحراف جيد.",
             "multiSelect": true,
             "options": [
               {
-                "label": "系统设计"
+                "label": "نظام تصميم"
               },
               {
-                "label": "代码质量"
+                "label": "شفرة جودة كمية"
               },
               {
-                "label": "Agent 产品判断"
+                "label": "Agent منتج حكم قطع"
               }
             ]
           }
@@ -605,7 +605,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 51：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 51:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -643,7 +643,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "回答 51：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 51: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -677,7 +677,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "回答 51：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 51: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -756,7 +756,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 52：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 52:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -794,11 +794,11 @@
               "content": [
                 {
                   "type": "reasoning",
-                  "text": "思考过程 52：这是一段可折叠的 reasoning 内容。"
+                  "text": "تفكير اعتبار مرور مسار 52: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                 },
                 {
                   "type": "text",
-                  "text": "回答 52：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 52: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 },
                 {
                   "type": "tool-call",
@@ -838,7 +838,7 @@
                   "index": 0,
                   "block": {
                     "type": "reasoning",
-                    "text": "思考过程 52：这是一段可折叠的 reasoning 内容。"
+                    "text": "تفكير اعتبار مرور مسار 52: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                   }
                 }
               },
@@ -859,7 +859,7 @@
                   "index": 1,
                   "block": {
                     "type": "text",
-                    "text": "回答 52：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 52: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1001,7 +1001,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "工具结果已消化（turn 52）。"
+                  "text": "أداة نتيجة قد إزالة تحويل (turn 52)."
                 }
               ],
               "source": {
@@ -1035,7 +1035,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "工具结果已消化（turn 52）。"
+                    "text": "أداة نتيجة قد إزالة تحويل (turn 52)."
                   }
                 }
               },
@@ -1114,7 +1114,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 53：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 53:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -1152,7 +1152,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "回答 53：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 53: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -1186,7 +1186,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "回答 53：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 53: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1265,7 +1265,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 54：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 54:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -1303,7 +1303,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "回答 54：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 54: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -1337,7 +1337,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "回答 54：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 54: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1416,7 +1416,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 55：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 55:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -1454,11 +1454,11 @@
               "content": [
                 {
                   "type": "reasoning",
-                  "text": "思考过程 55：这是一段可折叠的 reasoning 内容。"
+                  "text": "تفكير اعتبار مرور مسار 55: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                 },
                 {
                   "type": "text",
-                  "text": "回答 55：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 55: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -1492,7 +1492,7 @@
                   "index": 0,
                   "block": {
                     "type": "reasoning",
-                    "text": "思考过程 55：这是一段可折叠的 reasoning 内容。"
+                    "text": "تفكير اعتبار مرور مسار 55: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                   }
                 }
               },
@@ -1513,7 +1513,7 @@
                   "index": 1,
                   "block": {
                     "type": "text",
-                    "text": "回答 55：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 55: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1592,7 +1592,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 56：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 56:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -1630,7 +1630,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "回答 56：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 56: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -1664,7 +1664,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "回答 56：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 56: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1743,7 +1743,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 57：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 57:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -1781,7 +1781,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "回答 57：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 57: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 },
                 {
                   "type": "tool-call",
@@ -1821,7 +1821,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "回答 57：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 57: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -1963,7 +1963,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "工具结果已消化（turn 57）。"
+                  "text": "أداة نتيجة قد إزالة تحويل (turn 57)."
                 }
               ],
               "source": {
@@ -1997,7 +1997,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "工具结果已消化（turn 57）。"
+                    "text": "أداة نتيجة قد إزالة تحويل (turn 57)."
                   }
                 }
               },
@@ -2076,7 +2076,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 58：fixture 历史消息，用于翻页与渲染验收。"
+                "text": "مشكلة 58:fixture تاريخ رسالة، لأجل قلب صفحة و تصيير تحقق استلام."
               }
             ],
             "source": {
@@ -2098,7 +2098,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "[fixture] 上下文注入（turn 58）"
+                "text": "[fixture] سياق حقن (turn 58)"
               }
             ],
             "source": {
@@ -2137,11 +2137,11 @@
               "content": [
                 {
                   "type": "reasoning",
-                  "text": "思考过程 58：这是一段可折叠的 reasoning 内容。"
+                  "text": "تفكير اعتبار مرور مسار 58: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                 },
                 {
                   "type": "text",
-                  "text": "回答 58：这是 fixture 生成的历史回复正文。"
+                  "text": "عودة جواب 58: هذا هو fixture توليد تاريخ عودة تكرار متن."
                 }
               ],
               "source": {
@@ -2175,7 +2175,7 @@
                   "index": 0,
                   "block": {
                     "type": "reasoning",
-                    "text": "思考过程 58：这是一段可折叠的 reasoning 内容。"
+                    "text": "تفكير اعتبار مرور مسار 58: هذا هو واحد مقطع يمكن طي reasoning محتوى."
                   }
                 }
               },
@@ -2196,7 +2196,7 @@
                   "index": 1,
                   "block": {
                     "type": "text",
-                    "text": "回答 58：这是 fixture 生成的历史回复正文。"
+                    "text": "عودة جواب 58: هذا هو fixture توليد تاريخ عودة تكرار متن."
                   }
                 }
               },
@@ -2275,7 +2275,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "用户字面量：# 不渲染 `code` [link](https://example.com)"
+                "text": "مستخدم حرف وجه كمية:# لا تصيير `code` [link](https://example.com)"
               }
             ],
             "source": {
@@ -2426,7 +2426,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 60：bash 样本。"
+                "text": "مشكلة 60:bash مثال هذا."
               }
             ],
             "source": {
@@ -2466,7 +2466,7 @@
                   "type": "tool-call",
                   "id": "fx-call-60",
                   "name": "bash",
-                  "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture\"}"
+                  "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture\"}"
                 }
               ],
               "source": {
@@ -2502,7 +2502,7 @@
                     "type": "tool-call",
                     "id": "fx-call-60",
                     "name": "bash",
-                    "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture\"}"
+                    "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture\"}"
                   }
                 }
               },
@@ -2544,7 +2544,7 @@
             "step": 0,
             "callId": "fx-call-60",
             "name": "bash",
-            "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture\"}"
+            "arguments": "{\"command\":\"ls -la\\necho done\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture\"}"
           }
         }
       },
@@ -2630,7 +2630,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 61：write 样本。"
+                "text": "مشكلة 61:write مثال هذا."
               }
             ],
             "source": {
@@ -2843,7 +2843,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 62：edit 样本。"
+                "text": "مشكلة 62:edit مثال هذا."
               }
             ],
             "source": {
@@ -2987,7 +2987,7 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "已编辑"
+                      "text": "قد تحرير"
                     }
                   ],
                   "isError": false
@@ -3056,7 +3056,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 63：write 样本。"
+                "text": "مشكلة 63:write مثال هذا."
               }
             ],
             "source": {
@@ -3200,7 +3200,7 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "已写入"
+                      "text": "قد كتابة"
                     }
                   ],
                   "isError": false
@@ -3269,7 +3269,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 64：edit 样本。"
+                "text": "مشكلة 64:edit مثال هذا."
               }
             ],
             "source": {
@@ -3413,7 +3413,7 @@
                   "content": [
                     {
                       "type": "text",
-                      "text": "已编辑"
+                      "text": "قد تحرير"
                     }
                   ],
                   "isError": false
@@ -3487,7 +3487,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 65：run_code 样本。"
+                "text": "مشكلة 65:run_code مثال هذا."
               }
             ],
             "source": {
@@ -3816,7 +3816,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 66：bash 样本。"
+                "text": "مشكلة 66:bash مثال هذا."
               }
             ],
             "source": {
@@ -3856,7 +3856,7 @@
                   "type": "tool-call",
                   "id": "fx-call-66",
                   "name": "bash",
-                  "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
+                  "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
                 }
               ],
               "source": {
@@ -3892,7 +3892,7 @@
                     "type": "tool-call",
                     "id": "fx-call-66",
                     "name": "bash",
-                    "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
+                    "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
                   }
                 }
               },
@@ -3934,7 +3934,7 @@
             "step": 0,
             "callId": "fx-call-66",
             "name": "bash",
-            "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture 终端样本\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
+            "arguments": "{\"command\":\"pnpm run check\",\"description\":\"fixture طرفية مثال هذا\",\"workdir\":\"/tmp/fixture/deep/nested\"}"
           }
         }
       },
@@ -4020,7 +4020,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 67：grep 样本。"
+                "text": "مشكلة 67:grep مثال هذا."
               }
             ],
             "source": {
@@ -4282,7 +4282,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 68：glob 样本。"
+                "text": "مشكلة 68:glob مثال هذا."
               }
             ],
             "source": {
@@ -4498,7 +4498,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 69：read 样本。"
+                "text": "مشكلة 69:read مثال هذا."
               }
             ],
             "source": {
@@ -4754,7 +4754,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 70：web_search 样本。"
+                "text": "مشكلة 70:web_search مثال هذا."
               }
             ],
             "source": {
@@ -4979,7 +4979,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 71：web_fetch 样本。"
+                "text": "مشكلة 71:web_fetch مثال هذا."
               }
             ],
             "source": {
@@ -5188,7 +5188,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 72：请完整列出全部一百条条目。"
+                "text": "مشكلة 72: طلب كامل صف خروج الكل واحد مئة بند بند."
               }
             ],
             "source": {
@@ -5226,7 +5226,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "条目 1：第一条。条目 2：第二条。条目 3：这一条写到一半被"
+                  "text": "بند 1: رقم واحد بند. بند 2: ثاني بند. بند 3: هذا واحد بند كتابة إلى واحد نصف يتم"
                 }
               ],
               "source": {
@@ -5260,7 +5260,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "条目 1：第一条。条目 2：第二条。条目 3：这一条写到一半被"
+                    "text": "بند 1: رقم واحد بند. بند 2: ثاني بند. بند 3: هذا واحد بند كتابة إلى واحد نصف يتم"
                   }
                 }
               },
@@ -5350,7 +5350,7 @@
               },
               {
                 "type": "text",
-                "text": "历史用户图片"
+                "text": "تاريخ مستخدم صورة"
               }
             ],
             "source": {
@@ -5388,7 +5388,7 @@
               "content": [
                 {
                   "type": "text",
-                  "text": "结构化模型图片："
+                  "text": "بنية تحويل نموذج صورة:"
                 },
                 {
                   "type": "image",
@@ -5433,7 +5433,7 @@
                   "index": 0,
                   "block": {
                     "type": "text",
-                    "text": "结构化模型图片："
+                    "text": "بنية تحويل نموذج صورة:"
                   }
                 }
               },
@@ -5540,7 +5540,7 @@
             "content": [
               {
                 "type": "text",
-                "text": "问题 74：todo_write 样本。"
+                "text": "مشكلة 74:todo_write مثال هذا."
               }
             ],
             "source": {
@@ -5580,7 +5580,7 @@
                   "type": "tool-call",
                   "id": "fx-call-74",
                   "name": "todo_write",
-                  "arguments": "{\"todos\":[{\"content\":\"梳理需求\",\"status\":\"completed\"},{\"content\":\"实现 fixture 样本\",\"status\":\"in_progress\"},{\"content\":\"跑后台构建\",\"status\":\"in_progress\"},{\"content\":\"浏览器验收\",\"status\":\"pending\"}]}"
+                  "arguments": "{\"todos\":[{\"content\":\"تمشيط إدارة يحتاج طلب\",\"status\":\"completed\"},{\"content\":\"تنفيذ fixture مثال هذا\",\"status\":\"in_progress\"},{\"content\":\"ركض خلفية بناء\",\"status\":\"in_progress\"},{\"content\":\"متصفح تحقق استلام\",\"status\":\"pending\"}]}"
                 }
               ],
               "source": {
@@ -5616,7 +5616,7 @@
                     "type": "tool-call",
                     "id": "fx-call-74",
                     "name": "todo_write",
-                    "arguments": "{\"todos\":[{\"content\":\"梳理需求\",\"status\":\"completed\"},{\"content\":\"实现 fixture 样本\",\"status\":\"in_progress\"},{\"content\":\"跑后台构建\",\"status\":\"in_progress\"},{\"content\":\"浏览器验收\",\"status\":\"pending\"}]}"
+                    "arguments": "{\"todos\":[{\"content\":\"تمشيط إدارة يحتاج طلب\",\"status\":\"completed\"},{\"content\":\"تنفيذ fixture مثال هذا\",\"status\":\"in_progress\"},{\"content\":\"ركض خلفية بناء\",\"status\":\"in_progress\"},{\"content\":\"متصفح تحقق استلام\",\"status\":\"pending\"}]}"
                   }
                 }
               },
@@ -5658,7 +5658,7 @@
             "step": 0,
             "callId": "fx-call-74",
             "name": "todo_write",
-            "arguments": "{\"todos\":[{\"content\":\"梳理需求\",\"status\":\"completed\"},{\"content\":\"实现 fixture 样本\",\"status\":\"in_progress\"},{\"content\":\"跑后台构建\",\"status\":\"in_progress\"},{\"content\":\"浏览器验收\",\"status\":\"pending\"}]}"
+            "arguments": "{\"todos\":[{\"content\":\"تمشيط إدارة يحتاج طلب\",\"status\":\"completed\"},{\"content\":\"تنفيذ fixture مثال هذا\",\"status\":\"in_progress\"},{\"content\":\"ركض خلفية بناء\",\"status\":\"in_progress\"},{\"content\":\"متصفح تحقق استلام\",\"status\":\"pending\"}]}"
           }
         }
       },
@@ -5670,19 +5670,19 @@
           "data": {
             "todos": [
               {
-                "content": "梳理需求",
+                "content": "تمشيط إدارة يحتاج طلب",
                 "status": "completed"
               },
               {
-                "content": "实现 fixture 样本",
+                "content": "تنفيذ fixture مثال هذا",
                 "status": "in_progress"
               },
               {
-                "content": "跑后台构建",
+                "content": "ركض خلفية بناء",
                 "status": "in_progress"
               },
               {
-                "content": "浏览器验收",
+                "content": "متصفح تحقق استلام",
                 "status": "pending"
               }
             ]
@@ -5759,22 +5759,22 @@
           "lastUsed": null,
           "next": null
         },
-        "title": "Fixture 历史会话",
+        "title": "Fixture تاريخ جلسة",
         "todos": [
           {
-            "content": "梳理需求",
+            "content": "تمشيط إدارة يحتاج طلب",
             "status": "completed"
           },
           {
-            "content": "实现 fixture 样本",
+            "content": "تنفيذ fixture مثال هذا",
             "status": "in_progress"
           },
           {
-            "content": "跑后台构建",
+            "content": "ركض خلفية بناء",
             "status": "in_progress"
           },
           {
-            "content": "浏览器验收",
+            "content": "متصفح تحقق استلام",
             "status": "pending"
           }
         ],

@@ -13,7 +13,7 @@ import type { NS } from './locales.ts'
 import css from './Deliverables.module.css'
 
 function cardDescription(description: string | undefined, fallback: string): string {
-  const trimmed = description?.replace(/\s*(?:\([^()]*\)|（[^（）]*）)\s*$/u, '').trim()
+  const trimmed = description?.replace(/\s*(?:\([^()]*\)|([^()]*))\s*$/u, '').trim()
   return trimmed === undefined || trimmed === '' ? fallback : trimmed
 }
 

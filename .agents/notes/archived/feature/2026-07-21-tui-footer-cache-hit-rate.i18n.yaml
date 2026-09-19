@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-21-tui-footer-cache-hit-rate.md: 9e6ec734030088f063c049312ea345dc07303554
-2026-07-21-tui-footer-cache-hit-rate.zh.md: ec761df2cb9cad1dd922082f4ff1a8bb25cbdd69
+2026-07-21-tui-footer-cache-hit-rate.md: 0330db7f0ad9ee7974cc9779f1785258bcc06820
+2026-07-21-tui-footer-cache-hit-rate.ar.md: 0f64d5b1672028893db8a74298eae6c148693094

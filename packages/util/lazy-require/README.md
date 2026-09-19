@@ -5,7 +5,7 @@ kind: "package-library"
 
 # @deepseek-ai/dsh-lazy-require
 
-English | [中文](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 

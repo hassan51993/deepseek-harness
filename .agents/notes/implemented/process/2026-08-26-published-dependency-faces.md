@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-26-published-dependency-faces.zh.md)
+English | [العربية](2026-08-26-published-dependency-faces.ar.md)
 
 ## Problem
 
@@ -48,7 +48,7 @@ Generate the managed manifests and every directly derived artifact with one comm
 
 ```sh
 pnpm run verify-package-dependencies -- --fix
-git diff -- packages pnpm-lock.yaml docs/module-graph.md docs/module-graph.zh.md docs/module-graph.i18n.yaml
+git diff -- packages pnpm-lock.yaml docs/module-graph.md docs/module-graph.ar.md docs/module-graph.i18n.yaml
 ```
 
 Measure the working-tree graph and a Git ref through the local metadata-only registry. Each run creates a fresh consumer and npm cache, replaces inherited npm configuration with explicit peer, hoisting, and registry settings, executes `npm install --package-lock-only`, rejects archive downloads, and leaves the repository unchanged. `--runs` controls repetitions, `--timeout-ms` terminates the npm process tree after its deadline, and optional `--max-ms` makes the command fail when the slowest run exceeds a threshold.

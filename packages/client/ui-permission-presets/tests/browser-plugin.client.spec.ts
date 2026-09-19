@@ -27,7 +27,7 @@ import {
 import { PermissionSelect } from '../src/client/PermissionSelect.tsx'
 import type { PermissionSelectInjected } from '../src/client/PermissionSelect.tsx'
 import { apply, inject } from '../src/client/index.ts'
-import { accessEn, accessZh } from '../src/client/locales.ts'
+import { accessEn, accessAr } from '../src/client/locales.ts'
 
 const sid = (k: string): SessionId => k as SessionId
 
@@ -222,15 +222,15 @@ describe('ui-permission browser plugin', () => {
         confirmLabel: 'Enable Auto review',
       },
     })
-    b.locale.setLocale('zh')
+    b.locale.setLocale('ar')
     const localized = await b.popup().options(proj, new AbortController().signal)
-    expect(localized.map(option => option.label)).toEqual(['仅可查看', '工作区内修改', '完全权限', 'Auto review'])
+    expect(localized.map(option => option.label)).toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review'])
     expect(localized.find(option => option.id === 'danger-full-access')?.confirmation).toEqual({
-      title: '确认启用完全权限？',
-      description: accessZh['confirm.description'],
-      acknowledgeLabel: '我已了解风险，并愿意继续',
-      cancelLabel: '取消',
-      confirmLabel: '启用完全权限',
+      title: 'تأكيد تفعيل تماما إذن؟',
+      description: accessAr['confirm.description'],
+      acknowledgeLabel: 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
+      cancelLabel: 'إلغاء',
+      confirmLabel: 'تفعيل تماما إذن',
     })
     b.setCatalog({ options: [
       { value: 'workspace-write', name: 'Project Files' },
@@ -303,12 +303,12 @@ describe('ui-permission browser plugin', () => {
 
   it('localizes the Auto description instead of displaying host English copy', async () => {
     const b = await bench()
-    b.ctx.locale.setLocale('zh')
+    b.ctx.locale.setLocale('ar')
     const proj = { sessionId: sid('s1') }
     b.values.set(sid('s1'), { currentValue: 'workspace-write' })
     const options = await b.popup().options(proj, new AbortController().signal)
     expect(options.find(option => option.id === 'auto')?.detail)
-      .toBe('无沙箱运行；每次原生工具调用和 PTC 内层调用前由同一模型进行实验性审查。')
+      .toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
   })
 
   it('a pick submits the /permission line; rejection and unmatched throw', async () => {

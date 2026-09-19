@@ -59,12 +59,12 @@ describe('renderModuleGraph', () => {
     ]
 
     const english = renderModuleGraph(packages, 'en')
-    const chinese = renderModuleGraph(packages, 'zh')
+    const arabic = renderModuleGraph(packages, 'ar')
 
     expect(english).toContain('# Shared-instance dependency graph')
-    expect(chinese).toContain('# 共享实例依赖关系图')
-    expect(chinese).toContain('[English](module-graph.md) | 中文')
-    for (const output of [english, chinese]) {
+    expect(arabic).toContain('# مشترك نسخة اعتماد علاقة رسم')
+    expect(arabic).toContain('[English](module-graph.md) | العربية')
+    for (const output of [english, arabic]) {
       expect(output).toContain('pkg_consumer --> pkg_provider')
       expect(output).toContain('| [`consumer`](../packages/core/consumer) | `core` | [`provider`](../packages/core/provider) |')
     }

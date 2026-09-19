@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-11
 
-English | [中文](2026-09-10-local-office-preview.zh.md)
+English | [العربية](2026-09-10-local-office-preview.ar.md)
 
 ## Problem
 

@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-08-22
 
-English | [中文](2026-08-11-cmdline-program-action.zh.md)
+English | [العربية](2026-08-11-cmdline-program-action.ar.md)
 
 ## Problem
 

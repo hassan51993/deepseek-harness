@@ -53,8 +53,8 @@ function providePresentation(ctx: Context): PresentationCapture {
       capture.dictionaries.push({ namespace, dictionaries })
       return () => { capture.localeDisposed = true }
     },
-    // Minimal bound-translate fake: zh dictionary lookup, key passthrough on miss.
-    bind: () => (key: string) => key === 'menu.userOnly' ? '仅用户' : key,
+    // Minimal bound-translate fake: ar dictionary lookup, key passthrough on miss.
+    bind: () => (key: string) => key === 'menu.userOnly' ? 'فقط مستخدم' : key,
   })
   return capture
 }
@@ -124,14 +124,14 @@ describe('apply', () => {
     expect(entry?.component).toBe(SkillToolRow)
     expect(presentation.dictionaries).toEqual([{
       namespace: 'skill', dictionaries: {
-        zh: {
+        ar: {
           'row.title': 'Skill',
-          'row.running': '正在加载 skill',
-          'row.failed': 'skill 加载失败',
-          'row.stopped': 'skill 加载已中止',
-          'row.instructions': '说明',
-          'row.inspect': '查看',
-          'menu.userOnly': '仅用户',
+          'row.running': 'صحيح في تحميل skill',
+          'row.failed': 'skill تحميل فشل',
+          'row.stopped': 'skill تحميل قد في توقف',
+          'row.instructions': 'شرح',
+          'row.inspect': 'فحص نظر',
+          'menu.userOnly': 'فقط مستخدم',
         },
         en: {
           'row.title': 'Skill',
@@ -386,7 +386,7 @@ describe('user-only marking', () => {
     const candidates = await source.candidates(proj('s1'), req(''))
     expect(candidates).toEqual([
       { name: 'shared-skill', description: 'both surfaces' },
-      { name: 'user-only-skill', description: '仅用户 · user surface only' },
+      { name: 'user-only-skill', description: 'فقط مستخدم · user surface only' },
     ])
   })
 })

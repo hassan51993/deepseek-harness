@@ -4,23 +4,23 @@
  * raw name), the pending row, and the listbox and header aria labels.
  */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
-  'command': '指令',
-  'skill': '技能',
-  'subagent': '子智能体',
-  'loading': '正在加载…',
-  'drill.aria': '进入目录',
-  'drill.hint': '进入目录',
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
+  'command': 'إشارة أمر',
+  'skill': 'تقنية قدرة',
+  'subagent': 'فرعي ذكي جسم',
+  'loading': 'صحيح في تحميل…',
+  'drill.aria': 'دخول دليل',
+  'drill.hint': 'دخول دليل',
   'drill.key': 'Tab',
-  'crumbs.aria': '目录导航',
-  'suggestions.aria': '触发候选建议',
+  'crumbs.aria': 'دليل تنقل',
+  'suggestions.aria': 'إطلاق مرشح بناء اقتراح',
 } satisfies Record<string, string>
 
 /** The slash.menu namespace key union. */
-export type MenuKey = keyof typeof zh
+export type MenuKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'command': 'Commands',
   'skill': 'Skills',

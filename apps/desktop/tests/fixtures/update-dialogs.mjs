@@ -19,7 +19,7 @@ async function rendered(window) {
 
 /** Exercise cancellation and explicit installation through the production preload and renderer. */
 export async function qualifyUpdateDialogs(root, fixture) {
-  const locale = resolveDesktopLocale('zh-CN')
+  const locale = resolveDesktopLocale('ar-SA')
   const messages = locale.messages
   const screenshots = []
   protocol.handle('dsh-app', async request => {

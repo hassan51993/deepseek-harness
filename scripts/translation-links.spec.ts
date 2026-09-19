@@ -24,14 +24,14 @@ function fixture(): string {
   mkdirSync(join(root, 'docs/section'), { recursive: true })
   mkdirSync(join(root, 'packages'), { recursive: true })
   writeFileSync(join(root, 'docs/guide.md'), '# Guide\n')
-  writeFileSync(join(root, 'docs/guide.zh.md'), '# 指南\n')
+  writeFileSync(join(root, 'docs/guide.ar.md'), '# إشارة جنوب\n')
   writeFileSync(join(root, 'docs/reference.md'), '# Overview\n')
-  writeFileSync(join(root, 'docs/reference.zh.md'), '# 概览\n')
+  writeFileSync(join(root, 'docs/reference.ar.md'), '# عام تصفح\n')
   writeFileSync(join(root, 'docs/unpaired.md'), '# Only\n')
   writeFileSync(join(root, 'docs/section/index.md'), '# Section\n')
-  writeFileSync(join(root, 'docs/section/index.zh.md'), '# 章节\n')
+  writeFileSync(join(root, 'docs/section/index.ar.md'), '# فصل عقدة\n')
   writeFileSync(join(root, 'packages/outside.md'), '# Outside\n')
-  writeFileSync(join(root, 'packages/outside.zh.md'), '# 范围外\n')
+  writeFileSync(join(root, 'packages/outside.ar.md'), '# نطاق خارج\n')
   return root
 }
 
@@ -56,44 +56,44 @@ function expectUnchangedLinkInput(root: string, input: string): void {
 }
 
 describe('translation link locale validation', () => {
-  it('rejects a Chinese link to the English sibling with an exact diagnostic', () => {
+  it('rejects an Arabic link to the English sibling with an exact diagnostic', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
-      '# 指南\n\n正文。\n\n[概览](reference.md?view=full#overview)\n',
-      linkContext(root, 'docs/guide.zh.md'),
+      '# إشارة جنوب\n\nمتن.\n\n[عام تصفح](reference.md?view=full#overview)\n',
+      linkContext(root, 'docs/guide.ar.md'),
     )).toEqual([{
-      sourcePath: 'docs/guide.zh.md',
+      sourcePath: 'docs/guide.ar.md',
       line: 5,
       url: 'reference.md?view=full#overview',
-      expectedUrl: 'reference.zh.md?view=full#overview',
+      expectedUrl: 'reference.ar.md?view=full#overview',
     }])
   })
 
   it('rewrites an encoded exact filename without changing its query or fragment suffix', () => {
     const root = fixture()
-    const input = '[概览](reference%2Emd?view=full&amp;mode=all#overview)\n'
+    const input = '[عام تصفح](reference%2Emd?view=full&amp;mode=all#overview)\n'
     expect(translationLinkLocaleViolations(
       input,
-      linkContext(root, 'docs/guide.zh.md'),
+      linkContext(root, 'docs/guide.ar.md'),
     )[0]).toMatchObject({
       url: 'reference%2Emd?view=full&amp;mode=all#overview',
-      expectedUrl: 'reference.zh.md?view=full&amp;mode=all#overview',
+      expectedUrl: 'reference.ar.md?view=full&amp;mode=all#overview',
     })
-    expect(rewriteTranslationLinkLocales(input, linkContext(root, 'docs/guide.zh.md'))).toEqual({
-      content: '[概览](reference.zh.md?view=full&amp;mode=all#overview)\n',
+    expect(rewriteTranslationLinkLocales(input, linkContext(root, 'docs/guide.ar.md'))).toEqual({
+      content: '[عام تصفح](reference.ar.md?view=full&amp;mode=all#overview)\n',
       rewritten: 1,
     })
   })
 
   it('encodes each exact path segment with only RFC 3986 unreserved characters', () => {
     const root = fixture()
-    const input = '[保留](a%29%23%3Fb%2Emd?view=full#section)\n'
-    const repositoryFiles = new Set(['docs/a)#?b.md', 'docs/a)#?b.zh.md'])
+    const input = '[إبقاء](a%29%23%3Fb%2Emd?view=full#section)\n'
+    const repositoryFiles = new Set(['docs/a)#?b.md', 'docs/a)#?b.ar.md'])
     expect(rewriteTranslationLinkLocales(
       input,
-      linkContext(root, 'docs/guide.zh.md', path => repositoryFiles.has(path)),
+      linkContext(root, 'docs/guide.ar.md', path => repositoryFiles.has(path)),
     )).toEqual({
-      content: '[保留](a%29%23%3Fb.zh.md?view=full#section)\n',
+      content: '[إبقاء](a%29%23%3Fb.ar.md?view=full#section)\n',
       rewritten: 1,
     })
   })
@@ -101,8 +101,8 @@ describe('translation link locale validation', () => {
   it('accepts the target-locale sibling and an out-of-scope target with its own sibling', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
-      '[paired](reference.zh.md) [outside](../packages/outside.md)\n',
-      linkContext(root, 'docs/guide.zh.md'),
+      '[paired](reference.ar.md) [outside](../packages/outside.md)\n',
+      linkContext(root, 'docs/guide.ar.md'),
     )).toEqual([])
   })
 
@@ -110,17 +110,17 @@ describe('translation link locale validation', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
       '[missing](unpaired.md)\n',
-      linkContext(root, 'docs/guide.zh.md'),
-    )[0]).toMatchObject({ expectedUrl: 'unpaired.zh.md' })
+      linkContext(root, 'docs/guide.ar.md'),
+    )[0]).toMatchObject({ expectedUrl: 'unpaired.ar.md' })
   })
 
   it('requires English sources to use the English sibling', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
-      '[Reference](reference.zh.md)\n',
+      '[Reference](reference.ar.md)\n',
       linkContext(root, 'docs/guide.md'),
     )[0]).toMatchObject({
-      url: 'reference.zh.md',
+      url: 'reference.ar.md',
       expectedUrl: 'reference.md',
     })
   })
@@ -128,56 +128,56 @@ describe('translation link locale validation', () => {
   it('does not infer an index page from a directory target', () => {
     const root = fixture()
     const input = '[Section](section/)\n'
-    expect(translationLinkLocaleViolations(input, linkContext(root, 'docs/guide.zh.md'))).toEqual([])
-    expect(rewriteTranslationLinkLocales(input, linkContext(root, 'docs/guide.zh.md')))
+    expect(translationLinkLocaleViolations(input, linkContext(root, 'docs/guide.ar.md'))).toEqual([])
+    expect(rewriteTranslationLinkLocales(input, linkContext(root, 'docs/guide.ar.md')))
       .toEqual({ content: input, rewritten: 0 })
   })
 
   it('exempts the language switcher target explicitly', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
-      '# 指南\n\n[English](guide.md) | 中文\n',
-      linkContext(root, 'docs/guide.zh.md'),
+      '# إشارة جنوب\n\n[English](guide.md) | العربية\n',
+      linkContext(root, 'docs/guide.ar.md'),
       ['guide.md'],
     )).toEqual([])
   })
 
   it('does not exempt an ordinary body link to the counterpart', () => {
     const root = fixture()
-    const markdown = '# 指南\n\n[English](guide.md) | 中文\n\n[正文](guide.md)\n'
+    const markdown = '# إشارة جنوب\n\n[English](guide.md) | العربية\n\n[متن](guide.md)\n'
     expect(translationLinkLocaleViolations(
       markdown,
-      linkContext(root, 'docs/guide.zh.md'),
+      linkContext(root, 'docs/guide.ar.md'),
       ['guide.md'],
     )).toEqual([{
-      sourcePath: 'docs/guide.zh.md',
+      sourcePath: 'docs/guide.ar.md',
       line: 5,
       url: 'guide.md',
-      expectedUrl: 'guide.zh.md',
+      expectedUrl: 'guide.ar.md',
     }])
     expect(rewriteTranslationLinkLocales(
       markdown,
-      linkContext(root, 'docs/guide.zh.md'),
+      linkContext(root, 'docs/guide.ar.md'),
       ['guide.md'],
-    ).content).toBe('# 指南\n\n[English](guide.md) | 中文\n\n[正文](guide.zh.md)\n')
+    ).content).toBe('# إشارة جنوب\n\n[English](guide.md) | العربية\n\n[متن](guide.ar.md)\n')
   })
 
   it('uses the selected content plane for target existence without deriving scope from siblings', () => {
     const root = fixture()
-    const staged = new Set(['docs/reference.md', 'docs/reference.zh.md'])
+    const staged = new Set(['docs/reference.md', 'docs/reference.ar.md'])
     expect(translationLinkLocaleViolations(
-      '[概览](reference.md)\n',
-      linkContext(root, 'docs/guide.zh.md', path => staged.has(path)),
+      '[عام تصفح](reference.md)\n',
+      linkContext(root, 'docs/guide.ar.md', path => staged.has(path)),
     )).toHaveLength(1)
-    staged.delete('docs/reference.zh.md')
+    staged.delete('docs/reference.ar.md')
     expect(translationLinkLocaleViolations(
-      '[概览](reference.md)\n',
-      linkContext(root, 'docs/guide.zh.md', path => staged.has(path)),
+      '[عام تصفح](reference.md)\n',
+      linkContext(root, 'docs/guide.ar.md', path => staged.has(path)),
     )).toHaveLength(1)
     staged.delete('docs/reference.md')
     expect(translationLinkLocaleViolations(
-      '[概览](reference.md)\n',
-      linkContext(root, 'docs/guide.zh.md', path => staged.has(path)),
+      '[عام تصفح](reference.md)\n',
+      linkContext(root, 'docs/guide.ar.md', path => staged.has(path)),
     )).toEqual([])
   })
 })
@@ -185,12 +185,12 @@ describe('translation link locale validation', () => {
 describe('translation link rewriting and normalization', () => {
   it('rewrites only the destination while preserving the suffix and title', () => {
     const root = fixture()
-    const input = '[概览](reference.md?view=full&amp;mode=all#overview "reference.md title")\n'
+    const input = '[عام تصفح](reference.md?view=full&amp;mode=all#overview "reference.md title")\n'
     expect(rewriteTranslationLinkLocales(
       input,
-      linkContext(root, 'docs/guide.zh.md'),
+      linkContext(root, 'docs/guide.ar.md'),
     )).toEqual({
-      content: '[概览](reference.zh.md?view=full&amp;mode=all#overview "reference.md title")\n',
+      content: '[عام تصفح](reference.ar.md?view=full&amp;mode=all#overview "reference.md title")\n',
       rewritten: 1,
     })
   })
@@ -198,22 +198,22 @@ describe('translation link rewriting and normalization', () => {
   it('rewrites link definitions without changing their labels', () => {
     const root = fixture()
     expect(rewriteTranslationLinkLocales(
-      '[概览][ref]\n\n[ref]: <reference.md#overview> "title"\n',
-      linkContext(root, 'docs/guide.zh.md'),
-    ).content).toBe('[概览][ref]\n\n[ref]: <reference.zh.md#overview> "title"\n')
+      '[عام تصفح][ref]\n\n[ref]: <reference.md#overview> "title"\n',
+      linkContext(root, 'docs/guide.ar.md'),
+    ).content).toBe('[عام تصفح][ref]\n\n[ref]: <reference.ar.md#overview> "title"\n')
   })
 
   it('uses only the first duplicate reference definition', () => {
     const root = fixture()
     expect(translationLinkLocaleViolations(
-      '[概览][ref]\n\n[ref]: reference.zh.md\n[ref]: reference.md\n',
-      linkContext(root, 'docs/guide.zh.md'),
+      '[عام تصفح][ref]\n\n[ref]: reference.ar.md\n[ref]: reference.md\n',
+      linkContext(root, 'docs/guide.ar.md'),
     )).toEqual([])
   })
 
   it('does not treat an image-only definition as a document link', () => {
     const root = fixture()
-    const input = '![preview][asset]\n\n[asset]: reference.zh.md#overview\n'
+    const input = '![preview][asset]\n\n[asset]: reference.ar.md#overview\n'
     expectUnchangedLinkInput(root, input)
   })
 
@@ -228,26 +228,26 @@ describe('translation link rewriting and normalization', () => {
   it('normalizes only paired locale paths and retains other bytes', () => {
     const root = fixture()
     const english = '[Reference](reference.md#overview) [Outside](../packages/outside.md)\n'
-    const chinese = '[Reference](reference.zh.md#overview) [Outside](../packages/outside.md)\n'
+    const arabic = '[Reference](reference.ar.md#overview) [Outside](../packages/outside.md)\n'
     expect(normalizeTranslationMarkdownLinks(
       english,
       linkContext(root, 'docs/guide.md'),
     )).toBe(normalizeTranslationMarkdownLinks(
-      chinese,
-      linkContext(root, 'docs/guide.zh.md'),
+      arabic,
+      linkContext(root, 'docs/guide.ar.md'),
     ))
   })
 
   it('retains authored query bytes during normalization', () => {
     const root = fixture()
     const escaped = '[Reference](reference.md?x=1&amp;y=2#overview)\n'
-    const literal = '[Reference](reference.zh.md?x=1&y=2#overview)\n'
+    const literal = '[Reference](reference.ar.md?x=1&y=2#overview)\n'
     expect(normalizeTranslationMarkdownLinks(
       escaped,
       linkContext(root, 'docs/guide.md'),
     )).not.toBe(normalizeTranslationMarkdownLinks(
       literal,
-      linkContext(root, 'docs/guide.zh.md'),
+      linkContext(root, 'docs/guide.ar.md'),
     ))
   })
 })

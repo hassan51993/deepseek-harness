@@ -65,7 +65,7 @@ function typeLinks(payload: string, locale: PersistenceCatalogLocale): string {
   if (seen.size === 0) return ''
   const links = Object.entries(LINK_MAP).filter(([name]) => seen.has(name)).sort(([left], [right]) => left.localeCompare(right))
     .map(([name, path]) => {
-      return `[${name}](${locale === 'zh' ? path.replace(/\.md$/u, '.zh.md') : path})`
+      return `[${name}](${locale === 'ar' ? path.replace(/\.md$/u, '.ar.md') : path})`
     })
   return `${persistenceCatalogText[locale].types}${links.join(' · ')}`
 }
@@ -95,7 +95,7 @@ export function render(
     '',
     `# ${text.title}`,
     '',
-    ...(locale === 'zh' ? ['[English](persistence-catalog.md) | 中文', ''] : []),
+    ...(locale === 'ar' ? ['[English](persistence-catalog.md) | العربية', ''] : []),
     text.intro,
     '',
     text.generation,
@@ -176,7 +176,7 @@ export function persistenceCatalogArtifacts(scanRoot: string, schema: Persistenc
   const events = annotateSurface(collectLogEvents(scanRoot), collectSurfaceEventTypes(scanRoot))
   const envelope = collectEventEnvelopeTypes(scanRoot)
   return [
-    ...renderPersistencePair(scanRoot, OUT, render(events, envelope, schema), render(events, envelope, schema, 'zh')),
+    ...renderPersistencePair(scanRoot, OUT, render(events, envelope, schema), render(events, envelope, schema, 'ar')),
     { path: OUT_RUNTIME_TYPES, content: renderKnownEventTypes(events) },
     { path: OUT_SCHEMA, content: `${JSON.stringify(schema, null, 2)}\n` },
   ]

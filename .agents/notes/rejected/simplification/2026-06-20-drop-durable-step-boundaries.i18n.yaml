@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/simplification/2026-06-20-drop-durable-step-boundaries.md
-2026-06-20-drop-durable-step-boundaries.md: c5c4f269a378e334c4dc509d1288146d77d9a520
-2026-06-20-drop-durable-step-boundaries.zh.md: 2ee8abb3a57ed1a702530e9952d2d776c90554a4
+2026-06-20-drop-durable-step-boundaries.md: 58b502f847e0a4d4d8e48603474bc23aeb4fbba5
+2026-06-20-drop-durable-step-boundaries.ar.md: 3caa2413e12487c6201e4232f65bb78b1e474243

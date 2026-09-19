@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-30-retain-ignorable-external-session-events.zh.md)
+English | [العربية](2026-08-30-retain-ignorable-external-session-events.ar.md)
 
 ## Problem
 

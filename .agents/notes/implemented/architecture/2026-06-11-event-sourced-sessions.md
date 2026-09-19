@@ -2,11 +2,11 @@
 
 Status: implemented
 
-English | [中文](2026-06-11-event-sourced-sessions.zh.md)
+English | [العربية](2026-06-11-event-sourced-sessions.ar.md)
 
 ## Problem
 
-The MVP requires strict event-based tracing with fully replayable sessions (严格的基于事件的trace、logging系统，session完全可回放).
+The MVP requires strict event-based tracing with fully replayable sessions (صارم إطار أساس في حدثtrace،loggingنظام،sessionتماما يمكن إعادة تشغيل).
 
 ## Decision
 

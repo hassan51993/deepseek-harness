@@ -1,42 +1,42 @@
 /** Shell chrome and General-nav dictionaries; feature rows own their copy. */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
-  'trigger': '设置',
-  'desktop.update.available': '新版本',
-  'desktop.update.checking': '正在检查更新…',
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
+  'trigger': 'ضبط',
+  'desktop.update.available': 'جديد إصدار',
+  'desktop.update.checking': 'صحيح في فحص تحديث…',
   'desktop.update.progress': '{percent}%…',
-  'desktop.update.verifying': '正在校验更新文件…',
-  'desktop.update.installing': '正在准备重启…',
-  'desktop.update.ready': '安装并重启',
-  'desktop.update.retry': '重试更新',
+  'desktop.update.verifying': 'صحيح في تحقق تحديث ملف…',
+  'desktop.update.installing': 'صحيح في دقيق تجهيز إعادة بدء…',
+  'desktop.update.ready': 'تثبيت و إعادة بدء',
+  'desktop.update.retry': 'إعادة محاولة تحديث',
   'desktop.update.versionDetail': '{label} — V{version}',
-  'desktop.update.downloadDetail': '正在下载更新：{percent}%\n目标版本：V{version}',
-  'desktop.update.checkFailed': '检查更新失败，请稍后重试。',
-  'desktop.update.downloadFailed': '下载更新失败，请重试。',
-  'desktop.update.installFailed': '安装更新失败，请稍后重试。',
-  'desktop.update.checkNetworkFailed': '检查更新失败，请稍后重试。网络连接异常，请检查网络后重试。',
-  'desktop.update.downloadNetworkFailed': '下载更新失败，请重试。网络连接异常，请检查网络后重试。',
-  'desktop.update.installNetworkFailed': '安装更新失败，请稍后重试。网络连接异常，请检查网络后重试。',
-  'desktop.update.stopFailed': '未能安全停止任务，更新未安装。请稍后重试。',
-  'desktop.update.tasksChanged': '有新任务开始，请重新确认更新。',
-  'desktop.update.tasksUnavailable': '无法确认任务状态，请在工作区就绪后重试更新。',
-  'title': '设置',
-  'close': '关闭',
-  'openDocument': '打开配置文件',
-  'openDocument.error': '无法打开配置文件',
-  'general.nav': '通用设置',
-  'connection.error': '连接异常，刷新重试',
-  'connection.connecting': '重新连接中',
-  'connection.connected': '连接成功',
-  'connection.reconnect': '连接异常，点击立即重连',
-  'connection.restart': '连接中断，正在重试，点击立即重连',
+  'desktop.update.downloadDetail': 'صحيح في تحت تحميل تحديث:{percent}%\nهدف إصدار:V{version}',
+  'desktop.update.checkFailed': 'فحص تحديث فشل، طلب قليلا بعد إعادة محاولة.',
+  'desktop.update.downloadFailed': 'تحت تحميل تحديث فشل، طلب إعادة محاولة.',
+  'desktop.update.installFailed': 'تثبيت تحديث فشل، طلب قليلا بعد إعادة محاولة.',
+  'desktop.update.checkNetworkFailed': 'فحص تحديث فشل، طلب قليلا بعد إعادة محاولة. شبكة شبكة اتصال استثناء، طلب فحص شبكة شبكة بعد إعادة محاولة.',
+  'desktop.update.downloadNetworkFailed': 'تحت تحميل تحديث فشل، طلب إعادة محاولة. شبكة شبكة اتصال استثناء، طلب فحص شبكة شبكة بعد إعادة محاولة.',
+  'desktop.update.installNetworkFailed': 'تثبيت تحديث فشل، طلب قليلا بعد إعادة محاولة. شبكة شبكة اتصال استثناء، طلب فحص شبكة شبكة بعد إعادة محاولة.',
+  'desktop.update.stopFailed': 'لم قدرة أمان إيقاف مهمة، تحديث لم تثبيت. طلب قليلا بعد إعادة محاولة.',
+  'desktop.update.tasksChanged': 'لديه جديد مهمة بدء، طلب إعادة تأكيد تحديث.',
+  'desktop.update.tasksUnavailable': 'لا يمكن تأكيد مهمة حالة، طلب في مساحة العمل حينئذ خيط بعد إعادة محاولة تحديث.',
+  'title': 'ضبط',
+  'close': 'إغلاق',
+  'openDocument': 'فتح ملف إعداد',
+  'openDocument.error': 'لا يمكن فتح ملف إعداد',
+  'general.nav': 'عام ضبط',
+  'connection.error': 'اتصال استثناء، تحديث جديد إعادة محاولة',
+  'connection.connecting': 'إعادة اتصال في',
+  'connection.connected': 'اتصال نجاح',
+  'connection.reconnect': 'اتصال استثناء، نقر قيام أي إعادة وصل',
+  'connection.restart': 'اتصال في قطع، صحيح في إعادة محاولة، نقر قيام أي إعادة وصل',
 } satisfies Record<string, string>
 
 /** The settings namespace key union. */
-export type SettingsKey = keyof typeof zh
+export type SettingsKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'trigger': 'Settings',
   'desktop.update.available': 'Update',

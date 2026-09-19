@@ -12,7 +12,7 @@ import { Config } from '../src/config.ts'
 import { OfficeBody, type OfficeBodyInjected } from '../src/client/office/OfficeBody.tsx'
 import type { OfficeStore } from '../src/client/office/store.ts'
 import type { TabId } from '@deepseek-ai/dsh-client-ui-dockkit'
-import { en, zh } from '../src/client/office/locales.ts'
+import { en, ar } from '../src/client/office/locales.ts'
 import { en as documentEn } from '../src/client/locales.ts'
 
 const file = { sessionId: 's1' as SessionId, path: 'report.DOCX' }
@@ -84,7 +84,7 @@ async function harness(config: Partial<Config['office']> = {}, missing?: 'remote
 it.each(['remote', 'render', 'files'] as const)('keeps Office registration and guidance when %s is absent', async (missing) => {
   const h = await harness(undefined, missing)
   try {
-    expect(h.locale.register).toHaveBeenCalledWith('sidebarOffice', { zh, en })
+    expect(h.locale.register).toHaveBeenCalledWith('sidebarOffice', { ar, en })
     for (const path of ['a.DOC', 'b.DOCX', 'c.XLS', 'd.xlsx', 'e.PPT', 'f.pptx']) {
       expect(h.registry.candidates(path)[0]!.binaryExtensions).toEqual(['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'])
       expect(h.registry.candidates(path)[0]!.title()).toBe(en.title)

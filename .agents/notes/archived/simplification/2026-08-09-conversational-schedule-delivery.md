@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-09-conversational-schedule-delivery.zh.md)
+English | [العربية](2026-08-09-conversational-schedule-delivery.ar.md)
 
 ## Problem
 

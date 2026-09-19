@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-16-windows-subprocess-console-visibility.md
-2026-09-16-windows-subprocess-console-visibility.md: 281525e960b049d5871cde9f5da5c8f928654440
-2026-09-16-windows-subprocess-console-visibility.zh.md: 04abf7154b4b384ca521b9d232c7dfb398f5ed99
+2026-09-16-windows-subprocess-console-visibility.md: ef6f3bb4f2d98b71c5f5cf2aa0183a9b879c6496
+2026-09-16-windows-subprocess-console-visibility.ar.md: e9bf2e7d5f753867bf717308de9357f831dc4597

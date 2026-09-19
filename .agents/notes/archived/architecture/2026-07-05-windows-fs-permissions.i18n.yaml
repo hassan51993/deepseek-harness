@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-05-windows-fs-permissions.md: da3aabd872156d04e27b8b5521486e1190ac1173
-2026-07-05-windows-fs-permissions.zh.md: 8cb3e90922894f1755e8861411a36463d1ec7367
+2026-07-05-windows-fs-permissions.md: afbfa8b2e44c6bf801fa79b1df4205a02502e6ad
+2026-07-05-windows-fs-permissions.ar.md: b108830194f323823c018e91576dc0a486213847

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-07-27-wine-windows-gates-experiment.md
-2026-07-27-wine-windows-gates-experiment.md: ce2ad1ad4506f59083de5731677d052161849e3d
-2026-07-27-wine-windows-gates-experiment.zh.md: a0a5e8e7cce078adf2c961fe4d8cc50edc28355c
+2026-07-27-wine-windows-gates-experiment.md: 56a40f94452d00846a40b45cab98e3a8982ff332
+2026-07-27-wine-windows-gates-experiment.ar.md: c418564df62a40bd5d3050f8254f35edcfe753da

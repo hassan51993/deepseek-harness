@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/testing/2026-08-28-ci-test-reliability-skill.md
-2026-08-28-ci-test-reliability-skill.md: c48cd48cab5d3fcedd55c1f47f45278ffad6e998
-2026-08-28-ci-test-reliability-skill.zh.md: 7251b38298adb95d2f1610bed757ac3feb971564
+2026-08-28-ci-test-reliability-skill.md: 8d31f7e4162d003b891c7af8be71f7a05cb2be1c
+2026-08-28-ci-test-reliability-skill.ar.md: 9c110d6baa3f7445a85df6d4d3b0e9deaf208b80

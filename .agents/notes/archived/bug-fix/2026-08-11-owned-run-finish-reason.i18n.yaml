@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-11-owned-run-finish-reason.md
-2026-08-11-owned-run-finish-reason.md: cfa1ec02b65f8eca7720ae242a030122833dc66f
-2026-08-11-owned-run-finish-reason.zh.md: cc169caa1e3b1944a0fa9bff67f4e81b840c3ee2
+2026-08-11-owned-run-finish-reason.md: 8e15a152ba7f462f2600f7917d9ad5b16e7a2bd9
+2026-08-11-owned-run-finish-reason.ar.md: 93c75bfe7f13770e9b8ebaa6d31393d78eb251c2

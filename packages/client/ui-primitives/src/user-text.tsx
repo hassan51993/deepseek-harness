@@ -12,7 +12,7 @@
  * stray `/word` stays plain text. A `/name` token is whitespace-bounded like
  * the host skill gesture (`dsh-tool-skill`): it ends at whitespace or the
  * text end, so slash paths (`/nfs-hg/xxx`, `/plan.md`) and punctuation-glued
- * tokens (`/plan。`) stay plain even for a loaded name.
+ * tokens (`/plan.`) stay plain even for a loaded name.
  */
 import type { ReactNode } from 'react'
 import clsx from 'clsx'
@@ -24,7 +24,7 @@ import markdownCss from './markdown/MarkdownText.module.css'
 const SESSION_WIRE_RE = /@\[([^\]\n]+)\]\(dsh-session:[^)\s]+\)/gu
 
 /** Sentence punctuation a bare `@name` token may carry without being part of the reference. */
-const TRAILING_PUNCTUATION_RE = /[.,;:!?，。；：！？]+$/u
+const TRAILING_PUNCTUATION_RE = /[.,;:!?،. ؛:! ؟]+$/u
 
 interface DecorationRange {
   readonly start: number

@@ -13,7 +13,7 @@ window.__ModuleLoader__.load({
         const counters = document.documentElement.dataset
         counters.liveMounts = String(Number(counters.liveMounts ?? 0) + 1)
         ctx.effect(() => ctx.locale.register('fixtureLive', {
-          zh: { active: '动态插件已启用', configSummary: '示例配置项', configForm: '动态插件配置', configField: '问候语', configSave: '保存' },
+          ar: { active: 'حركة حالة إضافة قد تفعيل', configSummary: 'عرض مثال بند إعداد', configForm: 'حركة حالة إضافة إعداد', configField: 'سؤال انتظار لغة', configSave: 'حفظ' },
           en: { active: 'Live plugin enabled', configSummary: 'An example setting', configForm: 'Live plugin configuration', configField: 'Greeting', configSave: 'Save' },
         }))
         ctx.slots.inject('shell.overlay', () => ctx.slots.register({

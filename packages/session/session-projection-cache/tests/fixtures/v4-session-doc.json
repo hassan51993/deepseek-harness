@@ -9,7 +9,7 @@
       "title": {
         "ver": 1,
         "seq": 68,
-        "val": "验收标题-alpha3"
+        "val": "تحقق استلام عنوان-alpha3"
       },
       "titleInput": {
         "ver": 3,
@@ -17,7 +17,7 @@
         "val": {
           "first": {
             "seq": 7,
-            "text": "请只回复一个词：pong"
+            "text": "طلب فقط عودة تكرار واحد كلمة:pong"
           },
           "count": 2,
           "lastSeq": 58
@@ -121,13 +121,13 @@
             {
               "turn": 1,
               "seq": 4,
-              "prompt": "请只回复一个词：pong",
+              "prompt": "طلب فقط عودة تكرار واحد كلمة:pong",
               "response": "pong"
             },
             {
               "turn": 2,
               "seq": 55,
-              "prompt": "请只回复一个词：pong2",
+              "prompt": "طلب فقط عودة تكرار واحد كلمة:pong2",
               "response": "pong2"
             }
           ],

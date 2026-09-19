@@ -52,7 +52,7 @@ function revealClippedTitle(title: HTMLSpanElement | null, revealed: boolean): v
   else title.scrollLeft = 0
 }
 
-/** Localized compact relative time ("刚刚"/"5分钟" in zh, "now"/"5min" in en). */
+/** Localized compact relative time ("للتو للتو"/"5قسم ساعة" in ar, "now"/"5min" in en). */
 function timeLabel(updatedAt: number, now: number, t: RowTranslate): string {
   const { unit, n } = relativeTime(updatedAt, now)
   return unit === 'now' ? t('time.now') : t(`time.${unit}`, { n })

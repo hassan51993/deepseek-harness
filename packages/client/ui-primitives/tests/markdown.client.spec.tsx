@@ -55,7 +55,7 @@ describe('MarkdownText', () => {
     // The ts fence routed through the shared CodeBlock: shiki token spans + banner.
     expect(container.querySelector('pre.shiki')).not.toBeNull()
     expect(screen.getByText('ts')).toBeTruthy()
-    expect(screen.getByRole('button', { name: '复制' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
     expect(container.querySelector('br')).not.toBeNull()
     expect(screen.getByRole('link', { name: 'safe' }).getAttribute('target')).toBe('_blank')
     expect(screen.getByRole('link', { name: 'https://deepseek.com' })).toBeTruthy()
@@ -63,14 +63,14 @@ describe('MarkdownText', () => {
 
   it('closes punctuation-terminated strong emphasis before adjacent CJK text', () => {
     const cases = [
-      ['**注意：**内容', '注意：'],
-      ['**Notice:**内容', 'Notice:'],
-      ['**事件中间件（waterfall）**实现', '事件中间件（waterfall）'],
-      ['**事件中间件(waterfall)**实现', '事件中间件(waterfall)'],
-      ['**句号。**后续', '句号。'],
-      ['**Period.**后续', 'Period.'],
-      ['**提醒！**继续', '提醒！'],
-      ['**Warning!**继续', 'Warning!'],
+      ['**ملاحظة معنى:**محتوى', 'ملاحظة معنى:'],
+      ['**Notice:**محتوى', 'Notice:'],
+      ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)'],
+      ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)'],
+      ['**جملة رقم.**لاحق', 'جملة رقم.'],
+      ['**Period.**لاحق', 'Period.'],
+      ['**رفع تنبيه!**متابعة', 'رفع تنبيه!'],
+      ['**Warning!**متابعة', 'Warning!'],
     ] as const
     const source = cases.map(([markdown]) => markdown).join('\n\n')
 
@@ -84,27 +84,27 @@ describe('MarkdownText', () => {
 
   it('keeps the CJK strong extension out of escaped, code, math, and ASCII contexts', () => {
     const source = [
-      String.raw`\**注意：**内容`,
-      '`**注意：**内容`',
+      String.raw`\**ملاحظة معنى:**محتوى`,
+      '`**ملاحظة معنى:**محتوى`',
       '**Notice:**text',
-      '*提醒！*继续',
-      '$**注意：**内容$',
+      '*رفع تنبيه!*متابعة',
+      '$**ملاحظة معنى:**محتوى$',
       '```md',
-      '**注意：**内容',
+      '**ملاحظة معنى:**محتوى',
       '```',
-      '**普通**内容',
-      '*普通*内容',
+      '**عادي**محتوى',
+      '*عادي*محتوى',
     ].join('\n\n')
     const { container } = render(<MarkdownText text={source} />)
 
-    expect([...container.querySelectorAll('strong')].map(node => node.textContent)).toEqual(['普通'])
-    expect([...container.querySelectorAll('em')].map(node => node.textContent)).toEqual(['普通'])
-    expect(container.querySelector('code')?.textContent).toBe('**注意：**内容')
-    expect(container.querySelector('.katex annotation')?.textContent).toBe('**注意：**内容')
-    expect(container.querySelector('pre code')?.textContent).toContain('**注意：**内容')
+    expect([...container.querySelectorAll('strong')].map(node => node.textContent)).toEqual(['عادي'])
+    expect([...container.querySelectorAll('em')].map(node => node.textContent)).toEqual(['عادي'])
+    expect(container.querySelector('code')?.textContent).toBe('**ملاحظة معنى:**محتوى')
+    expect(container.querySelector('.katex annotation')?.textContent).toBe('**ملاحظة معنى:**محتوى')
+    expect(container.querySelector('pre code')?.textContent).toContain('**ملاحظة معنى:**محتوى')
     expect(container.textContent).toContain('**Notice:**text')
-    expect(container.textContent).toContain('*提醒！*继续')
-    expect(container.textContent).toContain('**注意：**内容')
+    expect(container.textContent).toContain('*رفع تنبيه!*متابعة')
+    expect(container.textContent).toContain('**ملاحظة معنى:**محتوى')
   })
 
   it('links complete HTTP(S) inline code without promoting commands, unsafe schemes, or fences', () => {
@@ -597,6 +597,6 @@ describe('JsonBlock', () => {
     const { container } = render(<JsonBlock label="x" payload={big} defaultOpen />)
     const body = container.querySelector('pre')!.textContent
     expect(body.length).toBeLessThan(30_000)
-    expect(body).toContain('截断')
+    expect(body).toContain('قطع قطع')
   })
 })

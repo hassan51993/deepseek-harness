@@ -1,29 +1,29 @@
-- button "返回插件列表":
+- button "إرجاع إضافة قائمة":
   - img
-  - text: 插件列表
+  - text: إضافة قائمة
 - heading "Subagent" [level=3]
-- paragraph: 设置 Subagent 的递归层级、数量和模型。
-- region "运行限制":
-  - heading "运行限制" [level=3]
-  - text: 最大递归深度
-  - button "最大递归深度说明":
+- paragraph: ضبط Subagent تمرير عودة طبقة درجة، عدد كمية و نموذج.
+- region "تشغيل حد":
+  - heading "تشغيل حد" [level=3]
+  - text: الأكثر كبير تمرير عودة عميق درجة
+  - button "الأكثر كبير تمرير عودة عميق درجة شرح":
     - img
-  - text: 已覆盖
-  - button "恢复默认"
-  - textbox "最大递归深度":
+  - text: قد تغطية
+  - button "استعادة افتراضي"
+  - textbox "الأكثر كبير تمرير عودة عميق درجة":
     - /placeholder: ""
     - text: "2"
-  - text: Subagent 并行数量上限
-  - button "Subagent 并行数量上限说明":
+  - text: Subagent و سطر عدد كمية حد أعلى
+  - button "Subagent و سطر عدد كمية حد أعلى شرح":
     - img
-  - text: 已覆盖
-  - button "恢复默认"
-  - textbox "Subagent 并行数量上限":
+  - text: قد تغطية
+  - button "استعادة افتراضي"
+  - textbox "Subagent و سطر عدد كمية حد أعلى":
     - /placeholder: ""
     - text: "12"
-- region "模型选择":
-  - heading "模型选择" [level=3]
-  - text: 允许 Agent 为 Subagent 选择模型
-  - switch "允许 Agent 为 Subagent 选择模型"
-  - paragraph: 关闭后，Subagent 使用配置的默认模型或继承父 Agent 的模型；已选模型会保留。
-- button "保存" [disabled]
+- region "نموذج اختيار":
+  - heading "نموذج اختيار" [level=3]
+  - text: سماح Agent لـ Subagent اختيار نموذج
+  - switch "سماح Agent لـ Subagent اختيار نموذج"
+  - paragraph: إغلاق بعد،Subagent استخدام إعداد افتراضي نموذج أو وراثة أب Agent نموذج؛ قد اختيار نموذج سوف إبقاء.
+- button "حفظ" [disabled]

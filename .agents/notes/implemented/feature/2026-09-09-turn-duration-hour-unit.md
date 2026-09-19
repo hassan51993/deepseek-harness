@@ -2,15 +2,15 @@
 
 Status: implemented
 
-English | [中文](2026-09-09-turn-duration-hour-unit.zh.md)
+English | [العربية](2026-09-09-turn-duration-hour-unit.ar.md)
 
 ## Problem
 
-The Web chat's turn duration labels counted minutes without bound. `formatRunDuration` in [message-chrome.ts](../../../../packages/client/ui-chat/src/client/chat/message-chrome.ts) split elapsed milliseconds into seconds and minutes only, so a turn that ran for 90 minutes read `90分05秒` / `90m 05s` in all three places sharing the formatter: the `Deep diving...` running clock, the settled `Ran for {duration}` footer, and the turn-time dialog's total. The archived [turn run time decision](../../archived/feature/2026-08-03-web-turn-run-time.md) fixed the clock's anchor and the shared whole-second floor; it left the formatter at two units, which stops reading correctly once a turn crosses an hour.
+The Web chat's turn duration labels counted minutes without bound. `formatRunDuration` in [message-chrome.ts](../../../../packages/client/ui-chat/src/client/chat/message-chrome.ts) split elapsed milliseconds into seconds and minutes only, so a turn that ran for 90 minutes read `90قسم05ثانية` / `90m 05s` in all three places sharing the formatter: the `Deep diving...` running clock, the settled `Ran for {duration}` footer, and the turn-time dialog's total. The archived [turn run time decision](../../archived/feature/2026-08-03-web-turn-run-time.md) fixed the clock's anchor and the shared whole-second floor; it left the formatter at two units, which stops reading correctly once a turn crosses an hour.
 
 ## Decision
 
-`formatRunDuration` carries an hour branch: elapsed time at or above 3600 seconds renders through `duration.hours` with zero-padded minutes and seconds — `1小时05分03秒` / `1h 05m 03s` — while everything below an hour keeps the existing second and minute branches unchanged. Hours appear only at or above 3600 seconds, so 3599 seconds still reads `59分59秒` and `60分00秒` never appears. Seconds are retained rather than dropped once hours appear, because the running clock ticks every second and a `1小时05分` label would sit still for a minute at a time. Negatives still clamp to zero and partial seconds still floor. `duration.hours` joins both dictionaries in [locale.ts](../../../../packages/client/ui-chat/src/client/locale.ts), and `RunDurationTranslate` widens to three keys.
+`formatRunDuration` carries an hour branch: elapsed time at or above 3600 seconds renders through `duration.hours` with zero-padded minutes and seconds — `1صغير وقت05قسم03ثانية` / `1h 05m 03s` — while everything below an hour keeps the existing second and minute branches unchanged. Hours appear only at or above 3600 seconds, so 3599 seconds still reads `59قسم59ثانية` and `60قسم00ثانية` never appears. Seconds are retained rather than dropped once hours appear, because the running clock ticks every second and a `1صغير وقت05قسم` label would sit still for a minute at a time. Negatives still clamp to zero and partial seconds still floor. `duration.hours` joins both dictionaries in [locale.ts](../../../../packages/client/ui-chat/src/client/locale.ts), and `RunDurationTranslate` widens to three keys.
 
 The change is confined to the turn formatter. `StatsPills.formatDuration` — the session-wide aggregate pill reading `45.2s` / `2m42s` — keeps its own two-unit format.
 
@@ -22,7 +22,7 @@ The change is confined to the turn formatter. `StatsPills.formatDuration` — th
 
 **Change the aggregate pill in the same change.** `StatsPills.formatDuration` measures session-wide aggregates — LLM time, tool time, and average TTFT — from projections rather than one turn's boundaries. It can exceed an hour too, but folding it in would mix two independent formatters and their tests into one change.
 
-**Leave minutes unbounded.** `90分05秒` is technically correct and costs nothing to keep, but it is the reading that prompted this change and grows harder to parse the longer a turn runs.
+**Leave minutes unbounded.** `90قسم05ثانية` is technically correct and costs nothing to keep, but it is the reading that prompted this change and grows harder to parse the longer a turn runs.
 
 ## Consequences
 

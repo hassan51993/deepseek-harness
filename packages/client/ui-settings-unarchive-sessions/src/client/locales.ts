@@ -1,28 +1,28 @@
 /** Copy dictionaries for the archived-session Settings page. */
 
-/** Simplified Chinese dictionary and key source of truth. */
-export const zh = {
-  nav: '已归档会话',
-  search: '搜索已归档会话',
-  loading: '正在读取会话…',
-  empty: '暂无已归档会话。',
-  unavailable: '这里没有可恢复的已归档会话。',
-  emptySearch: '没有匹配的会话。',
-  unarchive: '取消归档',
-  unarchiveNamed: '取消归档 {title}',
-  ungrouped: '未分组',
-  'time.now': '刚刚',
-  'time.minutes': '{n}分钟',
-  'time.hours': '{n}小时',
-  'time.days': '{n}天',
-  'time.months': '{n}个月',
-  'time.years': '{n}年',
+/** Arabic dictionary and key source of truth. */
+export const ar = {
+  nav: 'قد عودة ملف جلسة',
+  search: 'بحث قد عودة ملف جلسة',
+  loading: 'صحيح في قراءة جلسة…',
+  empty: 'مؤقت بلا قد عودة ملف جلسة.',
+  unavailable: 'هذا داخل لا يوجد يمكن استعادة قد عودة ملف جلسة.',
+  emptySearch: 'لا يوجد مطابقة جلسة.',
+  unarchive: 'إلغاء عودة ملف',
+  unarchiveNamed: 'إلغاء عودة ملف {title}',
+  ungrouped: 'لم قسم مجموعة',
+  'time.now': 'للتو للتو',
+  'time.minutes': '{n}قسم ساعة',
+  'time.hours': '{n}صغير وقت',
+  'time.days': '{n}يوم',
+  'time.months': '{n}عدد شهر',
+  'time.years': '{n}سنة',
 } satisfies Record<string, string>
 
 /** Archived-session page locale key union. */
-export type ArchivedSessionsLocaleKey = keyof typeof zh
+export type ArchivedSessionsLocaleKey = keyof typeof ar
 
-/** English dictionary checked against the Chinese key set. */
+/** English dictionary checked against the Arabic key set. */
 export const en = {
   nav: 'Archived sessions',
   search: 'Search archived sessions',

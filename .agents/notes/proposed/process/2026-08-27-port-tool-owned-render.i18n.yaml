@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/process/2026-08-27-port-tool-owned-render.md
-2026-08-27-port-tool-owned-render.md: 4ab27142fdc2d13d7d152c21c2f246e340fb4711
-2026-08-27-port-tool-owned-render.zh.md: fe8a018235db59b6f3bf80eae45d3a25181f37ec
+2026-08-27-port-tool-owned-render.md: 203341af5c8e372f4107052eb19ee0b1d9208a96
+2026-08-27-port-tool-owned-render.ar.md: 082ca9ef04a91e10ea6f3c28ba348f91a4c29566

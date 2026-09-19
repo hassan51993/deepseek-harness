@@ -4,7 +4,7 @@ description: "Generate, acknowledge, and verify Session persistence-type changes
 
 # Cookbook: reviewing persistence-type changes
 
-English | [中文](reviewing-persistence-type-changes.zh.md)
+English | [العربية](reviewing-persistence-type-changes.ar.md)
 
 ## Summary
 
@@ -36,7 +36,7 @@ Read the reported root, path, change kind, and version requirement. A referenced
 <a id="acknowledge"></a>
 ## 1. Record the change
 
-Write a local JSON file containing `en` and `zh`, each with `summary`, `compatibility`, and `verification` strings. The following input describes an exercised required-to-optional hook audit field change. Replace the explanation and test evidence with facts about your change; the CLI does not establish these claims.
+Write a local JSON file containing `en` and `ar`, each with `summary`, `compatibility`, and `verification` strings. The following input describes an exercised required-to-optional hook audit field change. Replace the explanation and test evidence with facts about your change; the CLI does not establish these claims.
 
 Save the input as `.artifacts/persistence-change.prose.json`, creating the ignored directory if needed:
 
@@ -47,10 +47,10 @@ Save the input as `.artifacts/persistence-change.prose.json`, creating the ignor
     "compatibility": "Existing records remain valid. Hook execution consumes HookOutput instead of replaying this audit field. Producers still write decisions, and absence does not imply pass.",
     "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts: 10 tests passed."
   },
-  "zh": {
-    "summary": "将持久化的钩子审计决策改为可选。",
-    "compatibility": "已有记录仍然有效。钩子执行消费 HookOutput，不回放此审计字段。写入方仍然记录决策，缺失不代表 pass。",
-    "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts：10 个测试通过。"
+  "ar": {
+    "summary": "سوف حفظ دائم خطاف مراجعة حساب قرار تعديل لـ اختياري.",
+    "compatibility": "قد لديه سجل ما زال صالح. خطاف تنفيذ إزالة استهلاك HookOutput، لا إعادة تشغيل هذا مراجعة حساب حقل. كتابة جهة ما زال سجل قرار، ناقص لا بديل جدول pass.",
+    "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts:10 عدد اختبار عبر."
   }
 }
 ```

@@ -1,32 +1,32 @@
 /** `plan` namespace dictionaries (the composer plan chip's copy). */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
   'chip.label': 'Plan',
-  'preview.title': '计划',
-  'preview.document': '计划 · Markdown',
-  'preview.action': '打开',
-  'preview.open': '在侧边栏打开计划',
-  'preview.full': '查看全文',
-  'preview.openNamed': '打开计划：{title}',
-  'preview.loading': '正在读取计划…',
-  'preview.failed': '无法读取计划',
-  'preview.invalidAddress': '计划地址无效',
-  'preview.historyUnavailable': '无法读取会话历史',
-  'preview.notFound': '未找到这份计划',
-  'preview.unavailable': '计划预览不可用',
-  'preview.expired': '临时计划预览已失效，请从仍在等待审批的卡片重新打开。',
-  'chip.on.aria': 'plan mode 已开启，按下关闭',
-  'chip.on.title': 'plan mode 已开启 — 点击关闭（/plan off）',
-  'chip.off.aria': 'plan mode 已关闭，按下开启',
-  'chip.off.title': 'plan mode 已关闭 — 点击开启（/plan）',
-  'chip.exitFailed': '退出 plan mode 失败',
+  'preview.title': 'حساب تخطيط',
+  'preview.document': 'حساب تخطيط · Markdown',
+  'preview.action': 'فتح',
+  'preview.open': 'في جانب حافة شريط فتح حساب تخطيط',
+  'preview.full': 'فحص نظر كل نص',
+  'preview.openNamed': 'فتح حساب تخطيط:{title}',
+  'preview.loading': 'صحيح في قراءة حساب تخطيط…',
+  'preview.failed': 'لا يمكن قراءة حساب تخطيط',
+  'preview.invalidAddress': 'حساب تخطيط عنوان بلا فاعلية',
+  'preview.historyUnavailable': 'لا يمكن قراءة جلسة تاريخ',
+  'preview.notFound': 'لم بحث إلى هذا نسخة حساب تخطيط',
+  'preview.unavailable': 'حساب تخطيط معاينة غير ممكن استخدام',
+  'preview.expired': 'مؤقت حساب تخطيط معاينة قد بطلان، طلب من ما زال في انتظار مراجعة دفعة بطاقة إعادة فتح.',
+  'chip.on.aria': 'plan mode قد فتح بدء، حسب تحت إغلاق',
+  'chip.on.title': 'plan mode قد فتح بدء — نقر إغلاق (/plan off)',
+  'chip.off.aria': 'plan mode قد إغلاق، حسب تحت فتح بدء',
+  'chip.off.title': 'plan mode قد إغلاق — نقر فتح بدء (/plan)',
+  'chip.exitFailed': 'خروج plan mode فشل',
 } satisfies Record<string, string>
 
 /** The plan namespace key union. */
-export type PlanKey = keyof typeof zh
+export type PlanKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'chip.label': 'Plan',
   'preview.title': 'Plan',

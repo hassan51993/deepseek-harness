@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-09-parallel-macos-notarization.zh.md)
+English | [العربية](2026-09-09-parallel-macos-notarization.ar.md)
 
 ## Problem
 

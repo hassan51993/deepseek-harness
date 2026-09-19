@@ -7,10 +7,10 @@ const messages = {
     zoomIn: 'Zoom in', zoomOut: 'Zoom out', fit: 'Fit view', close: 'Close', helpLabel: 'Viewer help',
     help: 'Scroll or pinch to zoom · Drag or use arrow keys to pan · Esc to close',
   },
-  zh: {
-    open: '全屏查看图表', title: '图表查看器',
-    zoomIn: '放大', zoomOut: '缩小', fit: '适应窗口', close: '关闭', helpLabel: '查看器帮助',
-    help: '滚轮或双指缩放 · 拖动或方向键平移 · Esc 关闭',
+  ar: {
+    open: 'كل شاشة فحص نظر رسم جدول', title: 'رسم جدول فحص نظر جهاز',
+    zoomIn: 'وضع كبير', zoomOut: 'تقليص صغير', fit: 'ملائم ينبغي نافذة', close: 'إغلاق', helpLabel: 'فحص نظر جهاز مساعدة مساعدة',
+    help: 'تدحرج جولة أو مزدوج إشارة تقليص وضع · سحب حركة أو جهة نحو مفتاح مستو نقل · Esc إغلاق',
   },
 } satisfies Record<string, Record<string, string>>
 
@@ -209,7 +209,7 @@ export function installMermaidViewer(doc: Document, language: () => string): Mer
     active = undefined
   }
   const scan = (): void => {
-    const copy = language().startsWith('zh') ? messages.zh : messages.en
+    const copy = language().startsWith('ar') ? messages.ar : messages.en
     const containers = new Set(doc.querySelectorAll('.vp-doc .mermaid'))
     for (const [container, entry] of entries) {
       if (!containers.has(container) || container.querySelector('svg:not(.dsh-diagram-icon)') !== entry.svg || !entry.button.isConnected) {
@@ -231,7 +231,7 @@ export function installMermaidViewer(doc: Document, language: () => string): Mer
       trigger.setAttribute('aria-haspopup', 'dialog')
       trigger.addEventListener('click', () => {
         closeActive()
-        close = openDiagram(svg, trigger, language().startsWith('zh') ? messages.zh : messages.en, () => {
+        close = openDiagram(svg, trigger, language().startsWith('ar') ? messages.ar : messages.en, () => {
           close = undefined
           active = undefined
         })

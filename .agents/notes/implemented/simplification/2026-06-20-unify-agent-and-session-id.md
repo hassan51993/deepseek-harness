@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-06-20-unify-agent-and-session-id.zh.md)
+English | [العربية](2026-06-20-unify-agent-and-session-id.ar.md)
 
 ## Problem
 

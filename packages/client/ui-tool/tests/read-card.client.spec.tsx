@@ -5,13 +5,13 @@ import { cleanup, fireEvent, render } from '@testing-library/react'
 import { Context } from '@deepseek-ai/cordis'
 import { bindSnapshotSelector, makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import { createSnapshotStore } from '@deepseek-ai/dsh-client-store'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import type { RunningToolCall, ToolResultNode } from '@deepseek-ai/dsh-client-ui-chat/client'
 import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import { CHAT_READ_MAX_LINES, readCallLine, readCardModel } from '../src/client/tool/models/read-card-model.ts'
 import { GenericToolCard, type GenericToolCardProps } from '../src/client/tool/toolviews/GenericToolCard.tsx'
-import { zh } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
+import { ar } from '@deepseek-ai/dsh-client-ui-conversation/src/client/locales.ts'
 import { ReadRow, readToolview } from '../src/client/tool/toolviews/read-row.tsx'
 
 afterEach(cleanup)
@@ -19,7 +19,7 @@ afterEach(cleanup)
 const SID = 's1' as SessionId
 
 /** The chat-view locale seat: this package's namespace over the common fallback. */
-const t: GenericToolCardProps['t'] = makeTranslate(zh, commonZh)
+const t: GenericToolCardProps['t'] = makeTranslate(ar, commonAr)
 
 // The read tool's real schema key is `file_path`; the top-level read samples
 // use it so the row exercises a production-shaped call. `web_fetch` (below) has
@@ -222,7 +222,7 @@ describe('ReadRow keyed toolview', () => {
 
   it('collapses to the path summary; the whole row toggles the read card', () => {
     const view = render(<ReadRow {...rowProps(settled())} />)
-    expect(view.getByText('读取')).toBeTruthy()
+    expect(view.getByText('قراءة')).toBeTruthy()
     // Collapsed: the path is the summary link alone, and the card is absent.
     expect(view.getAllByText('src/a.ts').length).toBe(1)
     expect(view.container.querySelector('[data-read]')).toBeNull()
@@ -232,7 +232,7 @@ describe('ReadRow keyed toolview', () => {
     expect(view.getAllByText('src/a.ts').length).toBe(2)
     expect(view.container.querySelector('[data-read]')).not.toBeNull()
     expect(contentTexts(view.container)).toContain('export const a = 1')
-    expect(view.getByText('显示 3 / 180 行')).toBeTruthy()
+    expect(view.getByText('عرض 3 / 180 سطر')).toBeTruthy()
     // Collapse back in place: the card unmounts, the summary link returns.
     toggleRow(view)
     expect(view.container.querySelector('[data-read]')).toBeNull()

@@ -12,12 +12,12 @@ import {
   fixtureUserPrompts, launchWebScaffold, recordFixture, watchConsole,
   webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceZh, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, ZH_BROWSER_LOCALE } from './support.ts'
 
 const DIR = fileURLToPath(new URL('../../../snapshots/web/present-svg', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
 const MODE = webSnapshotMode()
-const PROMPT = '简单画一个 SVG 表示冯诺依曼架构, 保存为 von-neumann.svg'
+const PROMPT = 'بسيط مفرد رسم واحد SVG يمثل فنغ وعد اعتماد مان هيكل بنية, حفظ لـ von-neumann.svg'
 const FILE = 'von-neumann.svg'
 
 describe('web e2e: requested SVG is explicitly delivered', () => {
@@ -50,7 +50,7 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]')
-    await connectFreshWorkspaceZh(page, scaffold.workspaceCwd)
+    await connectFreshWorkspaceAr(page, scaffold.workspaceCwd)
   })
 
   afterAll(async () => {
@@ -105,16 +105,16 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
     const card = page.locator('[data-presented-file]').filter({ hasText: FILE })
     await card.waitFor({ state: 'visible' })
     expect(await card.count()).toBe(1)
-    expect(await page.getByText('产物', { exact: true }).count()).toBe(0)
+    expect(await page.getByText('ناتج', { exact: true }).count()).toBe(0)
     // The scaffold workspace is not a git repository, so the changed-files card lists the written SVG from the write call alone.
     expect(await page.locator('[data-changed-files]').count()).toBe(1)
     expect(tripwire.pageErrors).toEqual([])
     expect(tripwire.warnings).toEqual([])
   })
 
-  it.skipIf(MODE === 'record')('replays the delivered file and Chinese conversation', async () => {
+  it.skipIf(MODE === 'record')('replays the delivered file and Arabic conversation', async () => {
     await assertFinalWorkspaceSnapshot(DIR, cwd)
-    await expect.poll(() => page.getByRole('button', { name: `${FILE} 的更多文件操作`, exact: true }).isDisabled()).toBe(true)
+    await expect.poll(() => page.getByRole('button', { name: `${FILE} أكثر كثير ملف عملية`, exact: true }).isDisabled()).toBe(true)
     // Delivery owns the transcript; navigation and composer chrome have separate scenarios.
     const aria = await captureExpandedTurnProcessAria(page, '[data-chat-flow]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(join(DIR, 'ui.expected.md'), aria, MODE)

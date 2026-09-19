@@ -5800,14 +5800,14 @@ describe('PythonPtcRuntime — hostile peer', () => {
     const result = await runtime.run(runtime.resolve({
       program: [
         'import os, json',
-        'os.write(3, json.dumps({"type":"done","error":{"kind":"exception","message":"中文中文中文"}}).encode() + b"\\n")',
+        'os.write(3, json.dumps({"type":"done","error":{"kind":"exception","message":"العربية العربية العربية"}}).encode() + b"\\n")',
         'import time',
         'time.sleep(5)',
       ].join('\n'),
       bindings: [],
     }))
     expect(result.error?.kind).toBe('exception')
-    expect(result.error?.message).toBe('中文中文中文')
+    expect(result.error?.message).toBe('العربية العربية العربية')
   }, 8000)
 
   it('re-caps a forged done error.message host-side on a UTF-8 boundary', async () => {

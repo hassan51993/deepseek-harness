@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-07-06-export-jsdoc-gate.md
-2026-07-06-export-jsdoc-gate.md: 309236a03b11c3a02ff40494ec799a2e11c2eae1
-2026-07-06-export-jsdoc-gate.zh.md: 4d69037c5d31d842bdce63df048a55e1f3e89d8c
+2026-07-06-export-jsdoc-gate.md: 2cf54dc2b0821601cfb0d2f578a5ef05a16ba9bb
+2026-07-06-export-jsdoc-gate.ar.md: 5a2c8163e99012378ca76b2a388899b1ba6413d0

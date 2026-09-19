@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-08-18-localized-bilingual-links.md
-2026-08-18-localized-bilingual-links.md: 44283f59b1139dbbcbe761ecfbd04732d51fcbd8
-2026-08-18-localized-bilingual-links.zh.md: bb45bf3f5e3f47027131d35eda394aea4c3e7823
+2026-08-18-localized-bilingual-links.md: 412caa8d924c614b6677cad5ece805e88dba1155
+2026-08-18-localized-bilingual-links.ar.md: 099cec9819f7caabb4593807b448a0ede7f73f94

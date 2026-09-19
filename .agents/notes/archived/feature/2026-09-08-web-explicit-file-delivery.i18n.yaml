@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-08-web-explicit-file-delivery.md
-2026-09-08-web-explicit-file-delivery.md: ff2ddeb59ded05b70006dce217df2966eab9d4f2
-2026-09-08-web-explicit-file-delivery.zh.md: 85b09ac82c83365b1c198168b78aa7ac84ef216f
+2026-09-08-web-explicit-file-delivery.md: 9d07e66a16f79d99179453ec91954dffe5cf04aa
+2026-09-08-web-explicit-file-delivery.ar.md: 9432b568021cb07d85ae525b640b522ceaaa33f8

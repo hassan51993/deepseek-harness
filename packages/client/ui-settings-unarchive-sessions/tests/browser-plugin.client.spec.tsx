@@ -12,7 +12,7 @@ import { ArchivedSessionsSection } from '../src/client/ArchivedSessionsSection.t
 import type { ArchivedSessionsSectionInjected } from '../src/client/ArchivedSessionsSection.tsx'
 import { apply as hostApply } from '../src/index.ts'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 afterEach(cleanup)
 
 async function bench() {
@@ -50,7 +50,7 @@ describe('ui-settings-unarchive-sessions browser plugin', () => {
     expect(entry.component).toBe(ArchivedSessionsSection)
     expect(entry.options).toMatchObject({ id: 'archived-sessions', order: 25 })
     expect(entry.locale).toBe('settings.archivedSessions')
-    expect(resolveSlotLabel(entry.options.label)).toBe('已归档会话')
+    expect(resolveSlotLabel(entry.options.label)).toBe('قد عودة ملف جلسة')
 
     b.locale.setLocale('en')
     expect(resolveSlotLabel(b.slots.entries('settings.section')[0]!.options.label)).toBe('Archived sessions')
@@ -79,7 +79,7 @@ describe('ui-settings-unarchive-sessions browser plugin', () => {
 
     await fiber.dispose()
     expect(b.slots.entries('settings.section')).toHaveLength(0)
-    expect(() => b.locale.register('settings.archivedSessions', 'zh', {})).not.toThrow()
+    expect(() => b.locale.register('settings.archivedSessions', 'ar', {})).not.toThrow()
     await b.ctx.fiber.dispose()
   })
 })

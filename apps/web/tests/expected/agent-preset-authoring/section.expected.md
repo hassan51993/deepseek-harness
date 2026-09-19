@@ -1,73 +1,73 @@
-- dialog "设置":
+- dialog "ضبط":
   - navigation:
-    - text: 设置
-    - button "通用设置":
+    - text: ضبط
+    - button "عام ضبط":
       - img
-      - text: 通用设置
-    - button "模型":
+      - text: عام ضبط
+    - button "نموذج":
       - img
-      - text: 模型
-    - button "内置插件":
+      - text: نموذج
+    - button "داخل وضع إضافة":
       - img
-      - text: 内置插件
-    - button "Agent 预设":
+      - text: داخل وضع إضافة
+    - button "Agent مسبق ضبط":
       - img
-      - text: Agent 预设
-    - button "已归档会话":
+      - text: Agent مسبق ضبط
+    - button "قد عودة ملف جلسة":
       - img
-      - text: 已归档会话
-  - button "打开配置文件"
-  - button "关闭":
+      - text: قد عودة ملف جلسة
+  - button "فتح ملف إعداد"
+  - button "إغلاق":
     - img
-    - text: 关闭
-  - heading "Agent 预设" [level=2]
-  - paragraph: 预设即一个会话的 Agent 所运行的插件组装 —— 它的工具、提示词与能力。复制一份既有预设改成自己的，或用「创造模式」让 Agent 帮你创建。
-  - text: 允许切换agent模式 beta
-  - paragraph: 开启后，新任务可选择标准、PTC、创造、极简及自定义模式；关闭后统一使用默认模式（默认为标准模式，可自定义）。仅影响新任务。
-  - switch "允许切换agent模式" [checked]
-  - heading "内置" [level=3]
+    - text: إغلاق
+  - heading "Agent مسبق ضبط" [level=2]
+  - paragraph: مسبق ضبط أي واحد جلسة Agent الذي تشغيل إضافة تجميع —— هو أداة، نص التوجيه و قدرة. نسخ واحد نسخة قائم مسبق ضبط تعديل صار ذاتي ذات، أو استخدام «إنشاء صنع نمط» يجعل Agent مساعدة أنت إنشاء.
+  - text: سماح تبديلagentنمط beta
+  - paragraph: فتح بدء بعد، جديد مهمة اختياري اختيار معيار،PTC، إنشاء صنع، أقصى بسيط و ذاتي تعريف نمط؛ إغلاق بعد موحد واحد استخدام افتراضي نمط (افتراضي لـ معيار نمط، يمكن ذاتي تعريف). فقط أثر جديد مهمة.
+  - switch "سماح تبديلagentنمط" [checked]
+  - heading "داخل وضع" [level=3]
   - list:
     - listitem:
-      - 'button "新任务默认: 标准模式" [disabled] [pressed]':
-        - text: 标准模式 内置 新任务默认 功能完整的编码 Agent，支持文件编辑、Shell、文件与网页检索、Skills、计划、目标、子代理和工作流。
+      - 'button "جديد مهمة افتراضي: معيار نمط" [disabled] [pressed]':
+        - text: معيار نمط داخل وضع جديد مهمة افتراضي وظيفة كامل تحرير رمز Agent، دعم حمل ملف تحرير،Shell، ملف و شبكة صفحة فحص بحث،Skills، حساب تخطيط، هدف، فرعي بديل إدارة و سير العمل.
         - code: standard
-      - 'button "查看: 标准模式"':
+      - 'button "فحص نظر: معيار نمط"':
         - img
-        - text: 查看
-      - 'button "复制: 标准模式"':
+        - text: فحص نظر
+      - 'button "نسخ: معيار نمط"':
         - img
-        - text: 复制
+        - text: نسخ
     - listitem:
-      - 'button "设为默认: PTC 模式"':
-        - text: PTC 模式 内置 功能完整的编码 Agent，但默认不提供 workflow 工具；其他工具通过 PTC 模式 SDK 呈现，让模型用一个 TypeScript 程序组合多步操作。
+      - 'button "ضبط لـ افتراضي: PTC نمط"':
+        - text: PTC نمط داخل وضع وظيفة كامل تحرير رمز Agent، لكن افتراضي لا توفير workflow أداة؛ أخرى أداة عبر PTC نمط SDK عرض، يجعل نموذج استخدام واحد TypeScript برنامج تركيب كثير خطوة عملية.
         - code: ptc
-      - 'button "查看: PTC 模式"':
+      - 'button "فحص نظر: PTC نمط"':
         - img
-        - text: 查看
-      - 'button "复制: PTC 模式"':
+        - text: فحص نظر
+      - 'button "نسخ: PTC نمط"':
         - img
-        - text: 复制
+        - text: نسخ
     - listitem:
-      - 'button "设为默认: 极简模式"':
-        - text: 极简模式 内置 仅提供持久 shell 的单工具编码 Agent。
+      - 'button "ضبط لـ افتراضي: أقصى بسيط نمط"':
+        - text: أقصى بسيط نمط داخل وضع فقط توفير حمل دائم shell مفرد أداة تحرير رمز Agent.
         - code: minimal
-      - 'button "查看: 极简模式"':
+      - 'button "فحص نظر: أقصى بسيط نمط"':
         - img
-        - text: 查看
-      - 'button "复制: 极简模式"':
+        - text: فحص نظر
+      - 'button "نسخ: أقصى بسيط نمط"':
         - img
-        - text: 复制
+        - text: نسخ
     - listitem:
-      - 'button "设为默认: 创造模式"':
-        - text: 创造模式 内置 用于创建自定义 Agent preset：具备标准模式的全部能力，并提供运行时检查、持久化插件管理和 preset 创作指导。
+      - 'button "ضبط لـ افتراضي: إنشاء صنع نمط"':
+        - text: إنشاء صنع نمط داخل وضع لأجل إنشاء ذاتي تعريف Agent preset: أداة تجهيز معيار نمط الكل قدرة، و توفير وقت التشغيل فحص، حفظ دائم إضافة إدارة و preset إنشاء عمل إشارة توجيه.
         - code: cordis
-      - 'button "查看: 创造模式"':
+      - 'button "فحص نظر: إنشاء صنع نمط"':
         - img
-        - text: 查看
-      - 'button "复制: 创造模式"':
+        - text: فحص نظر
+      - 'button "نسخ: إنشاء صنع نمط"':
         - img
-        - text: 复制
-  - heading "自定义" [level=3]
-  - button "用「创造模式」创作自定义预设":
+        - text: نسخ
+  - heading "ذاتي تعريف" [level=3]
+  - button "استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط":
     - img
-    - text: 用「创造模式」创作自定义预设
+    - text: استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط

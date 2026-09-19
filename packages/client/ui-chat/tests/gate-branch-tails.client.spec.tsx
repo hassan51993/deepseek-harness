@@ -3,13 +3,13 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { cleanup, render } from '@testing-library/react'
 import { bindSnapshotSelector, makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
-import { zh as commonZh } from '@deepseek-ai/dsh-client-locale/src/locales/zh.ts'
+import { ar as commonAr } from '@deepseek-ai/dsh-client-locale/src/locales/ar.ts'
 import { AssistantMarkdown, type AssistantMarkdownProps } from '../src/client/chat/AssistantMarkdown.tsx'
 import { StatsPills } from '../src/client/chat/StatsPills.tsx'
-import { zh } from '../src/client/locale.ts'
+import { ar } from '../src/client/locale.ts'
 import { chatSnapshotFixture } from './chat-snapshot-fixture.client.ts'
 
-const t: AssistantMarkdownProps['t'] = makeTranslate(zh, commonZh)
+const t: AssistantMarkdownProps['t'] = makeTranslate(ar, commonAr)
 const renderMessageImages: AssistantMarkdownProps['renderMessageImages'] = () => null
 
 afterEach(() => {
@@ -51,7 +51,7 @@ describe('render branch tails', () => {
         useProjection={() => undefined}
       />,
     )
-    expect(view.container.textContent).toBe('2 轮 3 步')
+    expect(view.container.textContent).toBe('2 جولة 3 خطوة')
     // Window-fold counts carry no timed figure, so the pill is a static reading.
     expect(view.queryAllByRole('button')).toHaveLength(0)
   })

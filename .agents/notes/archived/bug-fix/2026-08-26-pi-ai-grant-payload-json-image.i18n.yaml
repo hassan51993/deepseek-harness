@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-26-pi-ai-grant-payload-json-image.md
-2026-08-26-pi-ai-grant-payload-json-image.md: ae4ca621843837df02bfefd7c40eb3634612682d
-2026-08-26-pi-ai-grant-payload-json-image.zh.md: 0275fe4a41156bf17fe9008bbb84bd5b6aa0e583
+2026-08-26-pi-ai-grant-payload-json-image.md: bc704df174826974fd4995d905299e15972b80a4
+2026-08-26-pi-ai-grant-payload-json-image.ar.md: 5cb49f68c913f6ab23c1064a1cf5edf2398aafd4

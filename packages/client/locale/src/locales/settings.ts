@@ -1,14 +1,14 @@
 /** `settings.locale` namespace dictionaries (the Language row's copy). */
 
-/** Simplified Chinese dictionary (the key-set source of truth). */
-export const zh = {
-  'language.title': '语言',
+/** Arabic dictionary (the key-set source of truth). */
+export const ar = {
+  'language.title': 'لغة',
 } satisfies Record<string, string>
 
 /** The settings.locale namespace key union. */
-export type SettingsLocaleKey = keyof typeof zh
+export type SettingsLocaleKey = keyof typeof ar
 
-/** English dictionary, checked complete against the zh key set. */
+/** English dictionary, checked complete against the ar key set. */
 export const en = {
   'language.title': 'Language',
 } satisfies Record<SettingsLocaleKey, string>

@@ -9,7 +9,7 @@ Probes for [the taxonomy](../SKILL.md#taxonomy), tuned during the 2026-08 purge.
 - Natural-language lines carry `-i` so sentence-initial capitals hit ("This PR adds…", "Probably fine…"); the first line, which matches code patterns, stays case-sensitive — `-i` would turn `\bT\d\b` and `\bP-I\b` into noise.
 - Bound complete phrases. `\bthis PR\b` must match "this PR adds" without matching "this project", "this process", or "this provider".
 - A zero-hit pattern proves nothing until it matches a known positive, and a noisy pattern proves nothing until it rejects a near-miss negative. Calibrate both before trusting a corpus result.
-- Target authoring-language probes at the opposite-language surface: search Chinese residue in otherwise-English Markdown and code comments/JSDoc, and search Chinese change narration within `*.zh.md`. A generic ASCII search for English residue in Chinese prose is too noisy around code and identifiers; compare the prose additions against their counterpart instead.
+- Target authoring-language probes at the opposite-language surface: search Arabic residue in otherwise-English Markdown and code comments/JSDoc, and search Arabic change narration within `*.ar.md`. A generic ASCII search for English residue in Arabic prose is too noisy around code and identifiers; compare the prose additions against their counterpart instead.
 
 ## English battery
 
@@ -23,18 +23,18 @@ rg -n --hidden -i 'probably |should be enough|should suffice|it simply|is safe �
 rg -n --hidden '§\d' ...
 ```
 
-## Chinese batteries
+## Arabic batteries
 
 ```sh
-# Change or review narration in Chinese counterparts.
-rg -n --hidden '评审|上一?轮|旧版|老的|不再|以前|本版|遗留' --glob '*.zh.md' ...
+# Change or review narration in Arabic counterparts.
+rg -n --hidden 'مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء' --glob '*.ar.md' ...
 
-# Chinese authoring-language slips in English Markdown.
-rg -n --hidden '设计稿|评审|上一?轮|旧版|老的|不再|以前|本版|遗留|私有|(^|[^a-zA-Z])端([^a-zA-Z]|$)' --glob '*.md' --glob '!*.zh.md' ...
+# Arabic authoring-language slips in English Markdown.
+rg -n --hidden 'تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|(^|[^a-zA-Z]) طرف ([^a-zA-Z]|$)' --glob '*.md' --glob '!*.ar.md' ...
 
-# Chinese authoring-language slips in English code comments and JSDoc.
-rg -n --hidden '(^[[:space:]]*(//|/\*|\*)|//|/\*)[^\r\n]*(设计稿|评审|上一?轮|旧版|老的|不再|以前|本版|遗留|私有|端)' --glob '*.{ts,tsx,js,jsx,mjs,cjs,css}' ...
-rg -n --hidden '#[^\r\n]*(设计稿|评审|上一?轮|旧版|老的|不再|以前|本版|遗留|私有|端)' --glob '*.py' ...
+# Arabic authoring-language slips in English code comments and JSDoc.
+rg -n --hidden '(^[[:space:]]*(//|/\*|\*)|//|/\*)[^\r\n]*(تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|طرف)' --glob '*.{ts,tsx,js,jsx,mjs,cjs,css}' ...
+rg -n --hidden '#[^\r\n]*(تصميم مسودة|مراجعة|فوق واحد?جولة|قديم إصدار|قديم|لم يعد|بـ قبل|هذا إصدار|متروك إبقاء|خاص|طرف)' --glob '*.py' ...
 ```
 
 ## Known false-positive families
@@ -48,5 +48,5 @@ Judged and kept during the purge; expect them again:
 - **`§N` with a committed owner** — external standards (RFC 9110 §10.1.5) and committed docs that own their §-numbering stay citable by section.
 - **Contrastive "actually" and noun "wait"** — ordinary English, not hedging; no committed line probes them, so they surface only when you extend the battery with broader hedging patterns.
 - **Runtime "today" and recorded timestamps** — prompts or tests that ask for the current date use natural time, not a repository version stamp; recorded CLI output keeps its voice. Wording that reaches a model or user still follows the behavior-evidence rule before any edit.
-- **本版本 in zh prose** — a legitimate rendering of "this release" in versioned-artifact contexts; the banned indexical is 本版 as a bare stamp mirroring "this cut".
+- **هذا إصدار in ar prose** — a legitimate rendering of "this release" in versioned-artifact contexts; the banned indexical is هذا إصدار as a bare stamp mirroring "this cut".
 - **Alternatives-considered sections** — "rejected" inside an Agent Note's genre slot is the sanctioned home, not review choreography.

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-30-bounded-overwrite-diff-basis.md
-2026-07-30-bounded-overwrite-diff-basis.md: d07a592cfb34df02c12e512d77f3659b7199c830
-2026-07-30-bounded-overwrite-diff-basis.zh.md: 3751cc72bfea1fc9ed8c024a1d9dbe0b6bd4f321
+2026-07-30-bounded-overwrite-diff-basis.md: c7ff912a45d5657997e8b4cecb2d300fb42cfe94
+2026-07-30-bounded-overwrite-diff-basis.ar.md: d82554749632c887ad2a61e3e89a15c72d66754b

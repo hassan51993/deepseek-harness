@@ -4,7 +4,7 @@ description: "Browse Session persistence-type changes across every captured DSH 
 
 # Persistence changes across DSH prereleases
 
-English | [中文](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 
@@ -61,7 +61,7 @@ The [manifest](manifest.json) records every DSH alpha/RC tag captured on 2026-09
 <a id="files"></a>
 ## Files and scope
 
-Each tag has an English/Chinese record with `kind: persistence-release`, a pairing sidecar, and `.schema.json`. Its machine declaration contains the tag, immediate predecessor, observed writer version, and each changed root’s before/after digest. The first snapshot contains every root; later snapshots retain only changed roots that remain present and all their reachable types. Deletions use a null after value; unchanged releases retain empty changes and snapshots.
+Each tag has an English/Arabic record with `kind: persistence-release`, a pairing sidecar, and `.schema.json`. Its machine declaration contains the tag, immediate predecessor, observed writer version, and each changed root’s before/after digest. The first snapshot contains every root; later snapshots retain only changed roots that remain present and all their reachable types. Deletions use a null after value; unchanged releases retain empty changes and snapshots.
 
 Snapshots cover the logical Session header, physical JSONL header, event envelope, and every first-party event and transitive reference at that tag. Type counts include only definitions reachable after normalization. Historical source references retain file paths without line numbers.
 

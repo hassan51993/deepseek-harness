@@ -5,7 +5,7 @@ kind: "package-reference"
 
 # @deepseek-ai/dsh-client-ui-settings-unarchive-sessions
 
-English | [中文](README.zh.md)
+English | [العربية](README.ar.md)
 
 ## Summary
 
@@ -60,7 +60,7 @@ Rows are derived from the archive set joined with the loaded summaries: a member
 | [`src/index.ts`](src/index.ts) | Host loader entry: the page is browser-only, so the plugin body is empty |
 | [`src/client/index.ts`](src/client/index.ts) | Browser plugin: locale namespace, section registration, injected Unarchive operation |
 | [`src/client/ArchivedSessionsSection.tsx`](src/client/ArchivedSessionsSection.tsx) | The page component: row derivation, search, per-row Unarchive |
-| [`src/client/locales.ts`](src/client/locales.ts) | Chinese and English dictionaries for every visible and accessible string |
+| [`src/client/locales.ts`](src/client/locales.ts) | Arabic and English dictionaries for every visible and accessible string |
 | [`src/client/ArchivedSessionsSection.module.css`](src/client/ArchivedSessionsSection.module.css) | Page styles |
 
 </details>

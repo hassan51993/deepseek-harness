@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-05-slot-declaration-injection.md
-2026-08-05-slot-declaration-injection.md: a23e277715cca1074dc3c3c925b126a80734f990
-2026-08-05-slot-declaration-injection.zh.md: 21910c5d82ac0f8433ce02532c82c6d7c01b1089
+2026-08-05-slot-declaration-injection.md: fe5ab678b030e6cf83ddb9a081136caeec97dd47
+2026-08-05-slot-declaration-injection.ar.md: 8cef28d1b75b16c842d61662d5aeea07f898ea96

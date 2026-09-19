@@ -82,10 +82,10 @@ async function bench() {
   Object.assign(new TestRemote(ctx), { directoryPicker })
   ctx.provide('remote.directoryPicker', directoryPicker as never)
   const locale = new LocaleRuntime(ctx)
-  // These specs assert the shipped Chinese copy. There is no jsdom `window`
+  // These specs assert the shipped Arabic copy. There is no jsdom `window`
   // in this lane, so browser-language detection never runs and the locale
   // comes from FALLBACK_LOCALE (en): state the asserted locale explicitly.
-  locale.setLocale('zh')
+  locale.setLocale('ar')
   ctx.provide('locale', locale)
   return {
     ctx, slots: ctx.get('slots') as SlotRegistry, locale, create, rename,
@@ -120,7 +120,7 @@ describe('ui-workspace apply', () => {
     // Copy rides the standard locale seat: the entry declares the namespace
     // and apply registered both dictionaries.
     expect(before.slots.entries('sidebar.workspaces')[0]!.locale).toBe('workspace')
-    expect(before.locale.bind('workspace')('session.new')).toBe('新会话')
+    expect(before.locale.bind('workspace')('session.new')).toBe('جديد جلسة')
 
     const after = await bench()
     await after.ctx.plugin({ inject: [...inject], apply }).await()

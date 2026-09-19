@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-10-command-identities-and-composer-file-action.zh.md)
+English | [العربية](2026-09-10-command-identities-and-composer-file-action.ar.md)
 
 ## Problem
 
@@ -12,7 +12,7 @@ Matching a command's English description to a client dictionary makes punctuatio
 
 The command registry preserves an optional branded `CommandDefinitionId` as `definitionId` on the effective definition and descriptor. First-party producers choose their package name as the stable identity. Scoped shadowing selects the complete descriptor and never inherits the shadowed definition's identity. The identifier is discovery metadata, not an authorization claim, and does not enter command lifecycle events.
 
-The client command directory resolves input through its private `resolution.ts`. Exact registered names take priority; Chinese and English aliases select only the corresponding first-party definition in the effective Session catalog. Menu claims use the current locale's spelling; typed claims retain the supplied spelling; submissions use the resolved registered name. `presentation.ts` owns only sections, labels, descriptions, and icons. Resolution helpers and section constants are not exported from the plugin entrypoint.
+The client command directory resolves input through its private `resolution.ts`. Exact registered names take priority; Arabic and English aliases select only the corresponding first-party definition in the effective Session catalog. Menu claims use the current locale's spelling; typed claims retain the supplied spelling; submissions use the resolved registered name. `presentation.ts` owns only sections, labels, descriptions, and icons. Resolution helpers and section constants are not exported from the plugin entrypoint.
 
 Conversation registers the File action through the injected command service and owns its localized label. The mounted input binds its file-dialog opener and one live availability query. Both menu filtering and invocation use that query, so lock, unmount, subagent, and submission state apply consistently. The binding and dispatch remain package-internal callbacks; no cross-plugin pick-files event is needed. The assembly uses a narrow structural action-registration face because command UI consumes Conversation's input types; a reverse compiler-project dependency would form a cycle. Its registration test checks against the command plugin's contribution type.
 

@@ -2,7 +2,7 @@
 
 Status: rejected — Direct runtime skill registration is an intentional extension path for third-party plugins.
 
-English | [中文](2026-07-12-prune-unused-skill-registry-api.zh.md)
+English | [العربية](2026-07-12-prune-unused-skill-registry-api.ar.md)
 
 ## Problem
 

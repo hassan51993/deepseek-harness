@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-31-win32-picker-path-string-read.md
-2026-08-31-win32-picker-path-string-read.md: 63b2a2ea5ee88b5fa3ac79aca98350f58067fd1e
-2026-08-31-win32-picker-path-string-read.zh.md: 8afc6610a0cf1c7c8649f9e1c62c26b3d89f5a03
+2026-08-31-win32-picker-path-string-read.md: 881f72183b46ca8754d05c60b14a7bed45a8f2e5
+2026-08-31-win32-picker-path-string-read.ar.md: 0825e3c677152786f6a87b8bdd73b23b083f9990

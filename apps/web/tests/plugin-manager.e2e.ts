@@ -44,18 +44,18 @@ describe('web e2e: plugin manager', () => {
 
   /** Close any open settings dialog, so the sidebar and the main column are clickable. */
   async function closeSettings() {
-    if (await page.getByRole('dialog', { name: '设置' }).count() > 0) {
+    if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) {
       await page.keyboard.press('Escape')
-      await expect.poll(() => page.getByRole('dialog', { name: '设置' }).count(), { timeout: 5_000 }).toBe(0)
+      await expect.poll(() => page.getByRole('dialog', { name: 'ضبط' }).count(), { timeout: 5_000 }).toBe(0)
     }
   }
 
   /** Select the sidebar's Plugins entry and wait for the management page in the main column. */
   async function openPluginsPanel() {
     await closeSettings()
-    await page.getByRole('navigation', { name: '全局面板' }).getByRole('button', { name: '插件', exact: true }).click()
+    await page.getByRole('navigation', { name: 'عام وجه لوح' }).getByRole('button', { name: 'إضافة', exact: true }).click()
     const panel = page.locator('[data-plugin-panel]')
-    await panel.getByRole('heading', { name: '插件', exact: true }).waitFor({ timeout: 10_000 })
+    await panel.getByRole('heading', { name: 'إضافة', exact: true }).waitFor({ timeout: 10_000 })
     return panel
   }
 
@@ -69,7 +69,7 @@ describe('web e2e: plugin manager', () => {
     const panel = await openPluginsPanel()
 
     await panel.getByText('bundle', { exact: true }).waitFor({ timeout: 20_000 })
-    const toggle = panel.getByRole('switch', { name: '启用 bundle' })
+    const toggle = panel.getByRole('switch', { name: 'تفعيل bundle' })
     expect(await toggle.getAttribute('aria-checked')).toBe('false')
     // The profile's own group holds its one bundle; the installation's optional bundles open the Official
     // group, followed by the official plugins that registered their configuration, and its other bundles
@@ -79,12 +79,12 @@ describe('web e2e: plugin manager', () => {
     expect(await panel.locator('[data-plugin-group="official"] [data-plugin-item]').count()).toBe(4)
     expect(await panel.getByText('Beta', { exact: true }).count()).toBe(2)
     // A bundle that is off still shows the rows its patch declares, without switches.
-    await panel.getByRole('button', { name: '查看 bundle' }).click()
+    await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
     await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
-    expect(await panel.getByRole('switch', { name: '启用组件 fixture-row' }).count()).toBe(0)
-    await panel.getByRole('button', { name: '卸载 bundle' }).waitFor({ timeout: 5_000 })
-    await panel.getByRole('button', { name: '返回插件列表' }).click()
-    await expect.poll(() => panel.getByRole('button', { name: '卸载 bundle' }).count(), { timeout: 5_000 }).toBe(0)
+    expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).count()).toBe(0)
+    await panel.getByRole('button', { name: 'إزالة bundle' }).waitFor({ timeout: 5_000 })
+    await panel.getByRole('button', { name: 'إرجاع إضافة قائمة' }).click()
+    await expect.poll(() => panel.getByRole('button', { name: 'إزالة bundle' }).count(), { timeout: 5_000 }).toBe(0)
 
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(MANAGER_EXPECTED, snapshot, MODE)
@@ -94,13 +94,13 @@ describe('web e2e: plugin manager', () => {
   it('updates built-in names and descriptions when the UI language changes', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-locale'))
     const panel = await openPluginsPanel()
-    await panel.getByRole('button', { name: '查看 智能体团队', exact: true }).click()
+    await panel.getByRole('button', { name: 'فحص نظر ذكي جسم مجموعة طابور', exact: true }).click()
     const packageName = panel.locator('[data-plugin-name]')
     expect(await packageName.textContent()).toBe('@deepseek-ai/dsh-experimental-agent-team-profile')
-    expect(await panel.getByText('启用智能体团队协作与团队工具。').count()).toBe(1)
+    expect(await panel.getByText('تفعيل ذكي جسم مجموعة طابور تنسيق عمل و مجموعة طابور أداة.').count()).toBe(1)
     try {
-      await page.getByRole('button', { name: '设置', exact: true }).click()
-      await page.getByRole('dialog', { name: '设置' }).getByRole('button', { name: '中文' }).click()
+      await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+      await page.getByRole('dialog', { name: 'ضبط' }).getByRole('button', { name: 'العربية' }).click()
       await page.getByRole('menuitem', { name: 'English' }).click()
       await page.getByRole('dialog', { name: 'Settings' }).waitFor()
       await page.keyboard.press('Escape')
@@ -123,47 +123,47 @@ describe('web e2e: plugin manager', () => {
           await page.getByRole('button', { name: 'Settings', exact: true }).click()
         }
         await page.getByRole('dialog', { name: 'Settings' }).getByRole('button', { name: 'English' }).click()
-        await page.getByRole('menuitem', { name: '中文' }).click()
-        await page.getByRole('dialog', { name: '设置' }).waitFor()
+        await page.getByRole('menuitem', { name: 'العربية' }).click()
+        await page.getByRole('dialog', { name: 'ضبط' }).waitFor()
       }
       await closeSettings()
     }
-    await panel.getByRole('button', { name: '查看 智能体团队', exact: true }).waitFor()
+    await panel.getByRole('button', { name: 'فحص نظر ذكي جسم مجموعة طابور', exact: true }).waitFor()
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('checks a spec before installing it and words what the check refused', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-install'))
     const panel = await openPluginsPanel()
-    await panel.getByRole('button', { name: '添加插件', exact: true }).click()
-    const dialog = page.getByRole('dialog', { name: '添加插件' })
+    await panel.getByRole('button', { name: 'إضافة إضافة', exact: true }).click()
+    const dialog = page.getByRole('dialog', { name: 'إضافة إضافة' })
     await dialog.waitFor({ timeout: 10_000 })
-    const field = dialog.getByRole('textbox', { name: '包名或地址' })
-    const install = dialog.getByRole('button', { name: '安装', exact: true })
+    const field = dialog.getByRole('textbox', { name: 'حزمة اسم أو عنوان' })
+    const install = dialog.getByRole('button', { name: 'تثبيت', exact: true })
     expect(await install.isDisabled()).toBe(true)
     // A name the list already shows is refused without asking the Host.
     await field.fill('@fixture/bundle')
     await install.click()
     await dialog.getByRole('alert').waitFor({ timeout: 5_000 })
-    expect(await dialog.getByRole('alert').textContent()).toBe('该插件已安装')
+    expect(await dialog.getByRole('alert').textContent()).toBe('هذا إضافة قد تثبيت')
     // A path the Host cannot read as a package is refused with its reason, and the spec stays editable.
     await field.fill(join(scaffold.harnessHome, 'no-such-plugin'))
     await install.click()
-    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toBe('该路径不存在或不是有效的插件包')
+    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toBe('هذا مسار لا وجود أو لا هو صالح إضافة حزمة')
     expect(await field.isDisabled()).toBe(false)
     // A name the registry would refuse never reaches it.
     await field.fill('Not A Package')
     await install.click()
-    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toContain('无法识别这个包名或地址')
-    await dialog.getByRole('button', { name: '关闭' }).click()
-    await expect.poll(() => page.getByRole('dialog', { name: '添加插件' }).count(), { timeout: 5_000 }).toBe(0)
+    await expect.poll(() => dialog.getByRole('alert').textContent(), { timeout: 10_000 }).toContain('لا يمكن تعرف آخر هذا عدد حزمة اسم أو عنوان')
+    await dialog.getByRole('button', { name: 'إغلاق' }).click()
+    await expect.poll(() => page.getByRole('dialog', { name: 'إضافة إضافة' }).count(), { timeout: 5_000 }).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('enables a bundle into the profile manifest, mounts its rows live, and switches one of them', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-enable'))
     const panel = await openPluginsPanel()
-    const toggle = panel.getByRole('switch', { name: '启用 bundle' })
+    const toggle = panel.getByRole('switch', { name: 'تفعيل bundle' })
     await toggle.waitFor({ timeout: 20_000 })
     const mounted = () => [...scaffold.ctx.loader.entries()].find(entry => entry.options.id === 'fixture-row')
     expect(mounted()?.fiber?.state).toBeUndefined()
@@ -177,12 +177,12 @@ describe('web e2e: plugin manager', () => {
     // A live profile: the row mounts once the whole tree recomposed, the switch is on, and nothing waits for a restart.
     await expect.poll(() => mounted()?.fiber?.state, { timeout: 20_000 }).toBe(2)
     await expect.poll(() => toggle.getAttribute('aria-checked'), { timeout: 10_000 }).toBe('true')
-    expect(await panel.getByText(/下次启动生效/).count()).toBe(0)
+    expect(await panel.getByText(/تحت مرة بدء توليد فاعلية/).count()).toBe(0)
     const snapshot = await captureStableAria(page, '[data-plugin-panel]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(LIVE_EXPECTED, snapshot, MODE)
     // The pack's page lists its rows as the Host runs them, each with a switch that writes the profile patch.
-    await panel.getByRole('button', { name: '查看 bundle' }).click()
-    const rowSwitch = panel.getByRole('switch', { name: '启用组件 fixture-row' })
+    await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
+    const rowSwitch = panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' })
     await rowSwitch.waitFor({ timeout: 10_000 })
     expect(await rowSwitch.getAttribute('aria-checked')).toBe('true')
     await rowSwitch.click()
@@ -192,7 +192,7 @@ describe('web e2e: plugin manager', () => {
     await expect.poll(() => mounted()?.fiber?.state, { timeout: 20_000 }).not.toBe(2)
     await rowSwitch.click()
     await expect.poll(() => mounted()?.fiber?.state, { timeout: 20_000 }).toBe(2)
-    await panel.getByRole('button', { name: '返回插件列表' }).click()
+    await panel.getByRole('button', { name: 'إرجاع إضافة قائمة' }).click()
 
     await toggle.click()
     await expect.poll(() => mounted()?.fiber?.state, { timeout: 20_000 }).not.toBe(2)
@@ -219,9 +219,9 @@ describe('web e2e: startup-applied plugin management', () => {
       const tripwire = watchConsole(page)
       onTestFailed(() => saveFailureShot(page, 'web-e2e-plugin-manager-live'))
       await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
-      await page.getByRole('navigation', { name: '全局面板' }).getByRole('button', { name: '插件', exact: true }).click()
+      await page.getByRole('navigation', { name: 'عام وجه لوح' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
-      const toggle = panel.getByRole('switch', { name: '启用 bundle' })
+      const toggle = panel.getByRole('switch', { name: 'تفعيل bundle' })
       await toggle.waitFor({ timeout: 20_000 })
       const mounted = () => [...scaffold.ctx.loader.entries()].find(entry => entry.options.id === 'fixture-row')
       const bundles = async () => {
@@ -233,13 +233,13 @@ describe('web e2e: startup-applied plugin management', () => {
       // The selection is saved and the switch turns on, but nothing mounts before the next start; a toast says so.
       await expect.poll(bundles).toEqual(['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app', '@fixture/bundle'])
       await expect.poll(() => toggle.getAttribute('aria-checked')).toBe('true')
-      await page.getByText('更改将在下次启动生效', { exact: true }).waitFor({ timeout: 10_000 })
+      await page.getByText('أكثر تعديل سوف في تحت مرة بدء توليد فاعلية', { exact: true }).waitFor({ timeout: 10_000 })
       expect(mounted()?.fiber?.state).toBeUndefined()
       // The pack's page lists its rows from their declarations, with no live entry to switch.
-      await panel.getByRole('button', { name: '查看 bundle' }).click()
+      await panel.getByRole('button', { name: 'فحص نظر bundle' }).click()
       await panel.locator('[data-plugin-row]', { hasText: 'fixture-row' }).waitFor({ timeout: 10_000 })
-      expect(await panel.getByRole('switch', { name: '启用组件 fixture-row' }).isDisabled()).toBe(true)
-      await panel.getByRole('button', { name: '返回插件列表' }).click()
+      expect(await panel.getByRole('switch', { name: 'تفعيل مكون fixture-row' }).isDisabled()).toBe(true)
+      await panel.getByRole('button', { name: 'إرجاع إضافة قائمة' }).click()
 
       await toggle.click()
       await expect.poll(bundles).toEqual(['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-web-app'])

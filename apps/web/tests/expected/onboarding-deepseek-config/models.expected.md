@@ -1,75 +1,75 @@
-- dialog "设置":
+- dialog "ضبط":
   - navigation:
-    - text: 设置
-    - button "通用设置":
+    - text: ضبط
+    - button "عام ضبط":
       - img
-      - text: 通用设置
-    - button "模型":
+      - text: عام ضبط
+    - button "نموذج":
       - img
-      - text: 模型
-    - button "内置插件":
+      - text: نموذج
+    - button "داخل وضع إضافة":
       - img
-      - text: 内置插件
-    - button "Agent 预设":
+      - text: داخل وضع إضافة
+    - button "Agent مسبق ضبط":
       - img
-      - text: Agent 预设
-    - button "已归档会话":
+      - text: Agent مسبق ضبط
+    - button "قد عودة ملف جلسة":
       - img
-      - text: 已归档会话
-  - button "打开配置文件"
-  - button "关闭":
+      - text: قد عودة ملف جلسة
+  - button "فتح ملف إعداد"
+  - button "إغلاق":
     - img
-    - text: 关闭
-  - heading "模型" [level=2]
-  - paragraph: 填入各提供方的 API 密钥即可使用其模型。
+    - text: إغلاق
+  - heading "نموذج" [level=2]
+  - paragraph: ملء دخول كل مزود API مفتاح يكفي استخدام ذلك نموذج.
   - list:
     - listitem:
       - text: DeepSeek
-      - img "API 密钥已配置"
-      - button "编辑 DeepSeek (deepseek-official)": 编辑
-      - text: DeepSeek deepseek-official API 密钥
-      - textbox "API 密钥":
-        - /placeholder: 已配置——输入新值可替换
+      - img "API مفتاح قد إعداد"
+      - button "تحرير DeepSeek (deepseek-official)": تحرير
+      - text: DeepSeek deepseek-official API مفتاح
+      - textbox "API مفتاح":
+        - /placeholder: قد إعداد——إدخال جديد قيمة يمكن استبدال
       - group:
-        - text: 自定义设置 API 地址
-        - textbox "API 地址":
+        - text: ذاتي تعريف ضبط API عنوان
+        - textbox "API عنوان":
           - /placeholder: https://api.deepseek.com/anthropic
-        - text: 请填写与当前连接配置兼容的 API 地址。
-        - region "模型目录":
-          - text: 模型目录 已自定义模型目录
-          - button "恢复默认模型"
-          - textbox "模型 ID 1":
-            - /placeholder: 模型 ID
+        - text: طلب ملء كتابة و حالي اتصال إعداد توافق API عنوان.
+        - region "نموذج دليل":
+          - text: نموذج دليل قد ذاتي تعريف نموذج دليل
+          - button "استعادة افتراضي نموذج"
+          - textbox "نموذج ID 1":
+            - /placeholder: نموذج ID
             - text: private-preview
-          - textbox "显示名称 1":
-            - /placeholder: 显示名称
+          - textbox "عرض اسم 1":
+            - /placeholder: عرض اسم
             - text: Private Preview
-          - button "模型选项 1" [expanded]:
+          - button "نموذج خيار 1" [expanded]:
             - img
-          - button "删除模型 1":
+          - button "حذف نموذج 1":
             - img
-          - text: 上下文窗口
-          - textbox "上下文窗口 1":
+          - text: سياق نافذة
+          - textbox "سياق نافذة 1":
             - /placeholder: 1M
             - text: "131072"
-          - text: 最大输出 token 数
-          - textbox "最大输出 token 数 1":
+          - text: الأكثر كبير إخراج token عدد
+          - textbox "الأكثر كبير إخراج token عدد 1":
             - /placeholder: 256K
             - text: 64K
-          - group "输入类型 1":
-            - text: 输入类型
-            - checkbox "文本" [checked]
-            - text: 文本
-            - checkbox "图片" [checked]
-            - text: 图片
-          - button "添加模型":
+          - group "إدخال نوع 1":
+            - text: إدخال نوع
+            - checkbox "نص" [checked]
+            - text: نص
+            - checkbox "صورة" [checked]
+            - text: صورة
+          - button "إضافة نموذج":
             - img
-            - text: 添加模型
-      - button "取消"
-      - button "保存"
-  - button "添加提供方":
+            - text: إضافة نموذج
+      - button "إلغاء"
+      - button "حفظ"
+  - button "إضافة مزود":
     - img
-    - text: 添加提供方
-  - button "添加自定义提供方":
+    - text: إضافة مزود
+  - button "إضافة ذاتي تعريف مزود":
     - img
-    - text: 添加自定义提供方
+    - text: إضافة ذاتي تعريف مزود

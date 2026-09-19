@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/testing/2026-08-13-python-minimal-model-visible-snapshot.md
-2026-08-13-python-minimal-model-visible-snapshot.md: c97e92237c16a25d3b52a4af10c26fb6e48bb370
-2026-08-13-python-minimal-model-visible-snapshot.zh.md: 0baed199b6edf33ca2e72d4643718b4e46098cf3
+2026-08-13-python-minimal-model-visible-snapshot.md: dfffff9a450eb8f03a9379855350169e87829ce1
+2026-08-13-python-minimal-model-visible-snapshot.ar.md: 61d538fb9509d7f27d627c6f1acf179b427903e5

@@ -13,29 +13,29 @@
   - img
 - heading "CJK strong emphasis" [level=2]
 - paragraph:
-  - strong: 注意：
-  - text: 内容
+  - strong: ملاحظة معنى:
+  - text: محتوى
 - paragraph:
   - strong: "Notice:"
-  - text: 内容
+  - text: محتوى
 - paragraph:
-  - strong: 事件中间件（waterfall）
-  - text: 实现
+  - strong: حدث في بين عنصر (waterfall)
+  - text: تنفيذ
 - paragraph:
-  - strong: 事件中间件(waterfall)
-  - text: 实现
+  - strong: حدث في بين عنصر (waterfall)
+  - text: تنفيذ
 - paragraph:
-  - strong: 句号。
-  - text: 后续
+  - strong: جملة رقم.
+  - text: لاحق
 - paragraph:
   - strong: Period.
-  - text: 后续
+  - text: لاحق
 - paragraph:
-  - strong: 提醒！
-  - text: 继续
+  - strong: رفع تنبيه!
+  - text: متابعة
 - paragraph:
   - strong: Warning!
-  - text: 继续
+  - text: متابعة
 - paragraph: CJK_STRONG_DONE
 - button "Copy":
   - img

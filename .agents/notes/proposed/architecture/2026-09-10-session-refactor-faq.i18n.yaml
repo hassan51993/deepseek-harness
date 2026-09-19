@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-09-10-session-refactor-faq.md
-2026-09-10-session-refactor-faq.md: cae6dbaaf0354836c34d1414da16f7b274da382e
-2026-09-10-session-refactor-faq.zh.md: b0d5099250d439a133ca80b6f555d78541906367
+2026-09-10-session-refactor-faq.md: 540af69b639019da1d4753bb5ba3ab9c39da49b3
+2026-09-10-session-refactor-faq.ar.md: 443f44e4fb08b452b296df6c7c9af68c83045fc7

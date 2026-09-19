@@ -28,16 +28,16 @@ try {
   // churn the prompt snapshot. Each pair mirrors the other side's structure and uses
   // terminology-table forms.
   const examplePaths = [
-    ['scripts/fixtures/translation-prompt/examples/product.md', 'scripts/fixtures/translation-prompt/examples/product.zh.md'],
-    ['scripts/fixtures/translation-prompt/examples/rules.md', 'scripts/fixtures/translation-prompt/examples/rules.zh.md'],
+    ['scripts/fixtures/translation-prompt/examples/product.md', 'scripts/fixtures/translation-prompt/examples/product.ar.md'],
+    ['scripts/fixtures/translation-prompt/examples/rules.md', 'scripts/fixtures/translation-prompt/examples/rules.ar.md'],
     [
       'scripts/fixtures/translation-prompt/examples/agent-note.md',
-      'scripts/fixtures/translation-prompt/examples/agent-note.zh.md',
+      'scripts/fixtures/translation-prompt/examples/agent-note.ar.md',
     ],
   ] as const
-  const examples: TranslationExample[] = examplePaths.map(([english, chinese]) => ({
+  const examples: TranslationExample[] = examplePaths.map(([english, arabic]) => ({
     english: read(english),
-    chinese: read(chinese),
+    arabic: read(arabic),
   }))
   const sourceDocument = read('scripts/fixtures/translation-prompt/snapshot-note.md')
   const recordedResponse = read('scripts/fixtures/translation-prompt/response.txt')
@@ -48,25 +48,25 @@ try {
 
   const englishInput = { sourceLanguage: 'English' as const, sourceFilename: 'snapshot-note.md', terminology }
   const englishSource = renderTranslationPrompt(document, englishInput)
-  const chineseSource = renderTranslationPrompt(document, {
-    sourceLanguage: 'Chinese',
-    sourceFilename: 'snapshot-note.zh.md',
+  const arabicSource = renderTranslationPrompt(document, {
+    sourceLanguage: 'Arabic',
+    sourceFilename: 'snapshot-note.ar.md',
     terminology,
   })
-  if (englishSource.includes('{{') || chineseSource.includes('{{')) throw new Error('rendered prompt contains an unresolved placeholder')
-  if (!englishSource.includes('from English to Chinese')) throw new Error('English-source render does not translate into Chinese')
-  if (!chineseSource.includes('from Chinese to English')) throw new Error('Chinese-source render does not translate into English')
+  if (englishSource.includes('{{') || arabicSource.includes('{{')) throw new Error('rendered prompt contains an unresolved placeholder')
+  if (!englishSource.includes('from English to Arabic')) throw new Error('English-source render does not translate into Arabic')
+  if (!arabicSource.includes('from Arabic to English')) throw new Error('Arabic-source render does not translate into English')
 
   const example = /```xml\n([\s\S]*?)\n```/.exec(englishSource)?.[1]
   if (example === undefined) throw new Error('rendered prompt has no three-section response example')
   parseTranslationResponse(example)
 
-  const roundTrip = { translation: 'first pass\n\nwith **markdown**', review: '- 无修正', final: 'final text' }
+  const roundTrip = { translation: 'first pass\n\nwith **markdown**', review: '- بلا إصلاح صحيح', final: 'final text' }
   const parsed = parseTranslationResponse(renderTranslationResponse(roundTrip))
   if (JSON.stringify(parsed) !== JSON.stringify(roundTrip)) throw new Error('three-section response does not round-trip')
 
   const request = renderTranslationRequest(document, { ...englishInput, sourceDocument, examples })
-  if (request.targetFilename !== 'snapshot-note.zh.md') throw new Error('English request resolves the wrong target filename')
+  if (request.targetFilename !== 'snapshot-note.ar.md') throw new Error('English request resolves the wrong target filename')
   const expectedRoles = ['system', ...examples.flatMap(() => ['user', 'assistant']), 'user']
   if (request.messages.map(message => message.role).join('\n') !== expectedRoles.join('\n')) {
     throw new Error('reviewed examples are not assembled as system, example pairs, then source')
@@ -77,9 +77,9 @@ try {
     'layout: doc',
     '---',
     '',
-    '# 快照说明',
+    '# لقطة شرح',
     '',
-    '[English](snapshot-note.md) | 中文',
+    '[English](snapshot-note.md) | العربية',
     '',
   ].join('\n')
   if (!consumed.final.startsWith(expectedFinalPrefix)) {

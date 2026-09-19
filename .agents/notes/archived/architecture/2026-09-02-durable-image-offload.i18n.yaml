@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-09-02-durable-image-offload.md
-2026-09-02-durable-image-offload.md: db03e9f52499c1790b3a0c03853f3aea23315bec
-2026-09-02-durable-image-offload.zh.md: 2b6d0a4aa65f9a39b88888506f7e85b4cfff48cf
+2026-09-02-durable-image-offload.md: bde5be2a5edc92808b3357941aaa49e03b4b81e8
+2026-09-02-durable-image-offload.ar.md: 77a6ece106212b94529b934f933c3b5443b65412

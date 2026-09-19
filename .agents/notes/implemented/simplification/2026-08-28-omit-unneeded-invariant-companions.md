@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-08-28-omit-unneeded-invariant-companions.zh.md)
+English | [العربية](2026-08-28-omit-unneeded-invariant-companions.ar.md)
 
 ## Problem
 
@@ -22,7 +22,7 @@ The `dsh-time-context` companion remains published. Its check compares the plugi
 
 ### Omission is explicit in the package README
 
-A package without a qualifying relationship omits `src/invariant.ts`, the `./invariant` export, `lib/invariant.js` publication, invariant-only dependencies and TypeScript references, build entries, and companion-only tests. Its English and Chinese package READMEs state that no companion is published and give the package-specific reason. Empty installers are rejected because source absence plus the README explanation now expresses the decision directly.
+A package without a qualifying relationship omits `src/invariant.ts`, the `./invariant` export, `lib/invariant.js` publication, invariant-only dependencies and TypeScript references, build entries, and companion-only tests. Its English and Arabic package READMEs state that no companion is published and give the package-specific reason. Empty installers are rejected because source absence plus the README explanation now expresses the decision directly.
 
 `verify-package-invariants` scans every package. It requires a package-specific omission reason in the English README, rejects partial export, publication, or companion build wiring, rejects empty installers, and applies the registration, Loader namespace, reporter-use, dependency, reference, and build checks to every published companion. The Vitest host mounts the current package companion only when one exists, while topology and built-artifact checks enumerate the published set.
 

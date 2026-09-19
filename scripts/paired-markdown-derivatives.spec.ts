@@ -14,21 +14,21 @@ const partition = (blocks: Block[]) => partitionPairedMarkdownDerivatives(
 )
 
 describe('partitionPairedMarkdownDerivatives', () => {
-  it('treats a complete byte-identical Chinese sequence as derivative', () => {
+  it('treats a complete byte-identical Arabic sequence as derivative', () => {
     const english = [
       { doc: 'docs/example.md', kind: 'ts', code: 'const one = 1' },
       { doc: 'docs/example.md', kind: 'type-equiv', code: 'interface Example {}' },
     ]
-    const chinese = english.map(block => ({ ...block, doc: 'docs/example.zh.md' }))
+    const arabic = english.map(block => ({ ...block, doc: 'docs/example.ar.md' }))
     const unrelated = { doc: 'docs/other.md', kind: 'ts', code: 'const other = 2' }
 
-    expect(partition([...english, ...chinese, unrelated])).toEqual({
+    expect(partition([...english, ...arabic, unrelated])).toEqual({
       primary: [...english, unrelated],
-      derivatives: chinese,
+      derivatives: arabic,
     })
   })
 
-  it('keeps reordered, changed, partial, and orphan Chinese sequences primary', () => {
+  it('keeps reordered, changed, partial, and orphan Arabic sequences primary', () => {
     const sequence = (doc: string) => [
       { doc, kind: 'ts', code: 'const one = 1' },
       { doc, kind: 'ts', code: 'const two = 2' },
@@ -36,14 +36,14 @@ describe('partitionPairedMarkdownDerivatives', () => {
     const english = sequence('docs/example.md')
     const changed = english.map((block, index) => ({
       ...block,
-      doc: 'docs/example.zh.md',
+      doc: 'docs/example.ar.md',
       code: index === 0 ? 'const one = 0' : block.code,
     }))
     const reorderedEnglish = sequence('docs/reordered.md')
-    const reordered = [...reorderedEnglish].reverse().map(block => ({ ...block, doc: 'docs/reordered.zh.md' }))
+    const reordered = [...reorderedEnglish].reverse().map(block => ({ ...block, doc: 'docs/reordered.ar.md' }))
     const partialEnglish = sequence('docs/partial.md')
-    const partial = [{ ...partialEnglish[0]!, doc: 'docs/partial.zh.md' }]
-    const orphan = [{ doc: 'docs/orphan.zh.md', kind: 'ts', code: 'const orphan = true' }]
+    const partial = [{ ...partialEnglish[0]!, doc: 'docs/partial.ar.md' }]
+    const orphan = [{ doc: 'docs/orphan.ar.md', kind: 'ts', code: 'const orphan = true' }]
     const blocks = [
       ...english,
       ...changed,
@@ -59,8 +59,8 @@ describe('partitionPairedMarkdownDerivatives', () => {
 
   it('requires the fence kind to match as well as the body', () => {
     const english = { doc: 'docs/example.md', kind: 'type-equiv', code: 'interface Example {}' }
-    const chinese = { ...english, doc: 'docs/example.zh.md', kind: 'public-api' }
+    const arabic = { ...english, doc: 'docs/example.ar.md', kind: 'public-api' }
 
-    expect(partition([english, chinese])).toEqual({ primary: [english, chinese], derivatives: [] })
+    expect(partition([english, arabic])).toEqual({ primary: [english, arabic], derivatives: [] })
   })
 })

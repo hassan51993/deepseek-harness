@@ -17,20 +17,20 @@ const messages = {
     requestFailed: 'Could not load Markdown. Open the page actions menu and choose View as Markdown to copy it manually.',
     clipboardFailed: 'Could not copy. Open the page actions menu and choose View as Markdown to copy it manually.',
   },
-  zh: {
-    copy: '复制页面',
-    copyDescription: '将页面以 Markdown 格式复制给 LLMs',
-    view: '以 Markdown 格式查看',
-    viewDescription: '以纯文本查看此页面',
-    newTab: '以 Markdown 格式查看（在新标签页打开）',
-    menu: '页面操作',
-    more: '更多页面操作',
-    copying: '正在复制…',
-    copied: '已复制 Markdown。',
-    requestFailed: '无法加载 Markdown，请打开页面操作菜单，选择“以 Markdown 格式查看”后手动复制。',
-    clipboardFailed: '复制失败，请打开页面操作菜单，选择“以 Markdown 格式查看”后手动复制。',
+  ar: {
+    copy: 'نسخ صفحة',
+    copyDescription: 'سوف صفحة بـ Markdown صيغة نسخ إعطاء LLMs',
+    view: 'بـ Markdown صيغة فحص نظر',
+    viewDescription: 'بـ صاف نص فحص نظر هذا صفحة',
+    newTab: 'بـ Markdown صيغة فحص نظر (في جديد وسم صفحة فتح)',
+    menu: 'صفحة عملية',
+    more: 'أكثر كثير صفحة عملية',
+    copying: 'صحيح في نسخ…',
+    copied: 'قد نسخ Markdown.',
+    requestFailed: 'لا يمكن تحميل Markdown، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
+    clipboardFailed: 'نسخ فشل، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
   },
-} satisfies Record<'en' | 'zh', Record<Exclude<CopyState, 'idle'> | 'copy' | 'copyDescription' | 'view' | 'viewDescription' | 'newTab' | 'menu' | 'more', string>>
+} satisfies Record<'en' | 'ar', Record<Exclude<CopyState, 'idle'> | 'copy' | 'copyDescription' | 'view' | 'viewDescription' | 'newTab' | 'menu' | 'more', string>>
 
 const icons = {
   copy: 'M9 8h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2ZM16 4V3a1 1 0 0 0-1-1H5a2 2 0 0 0-2 2v11',
@@ -151,7 +151,7 @@ export const PageMarkdownActions = defineComponent({
     }
 
     return () => {
-      const text = messages[props.lang.startsWith('zh') ? 'zh' : 'en']
+      const text = messages[props.lang.startsWith('ar') ? 'ar' : 'en']
       if (!interactive.value) {
         return h('div', { class: 'page-markdown-actions' }, [
           h('a', { class: 'page-markdown-static', href: props.path, target: '_blank', rel: 'noopener', 'aria-label': text.newTab },

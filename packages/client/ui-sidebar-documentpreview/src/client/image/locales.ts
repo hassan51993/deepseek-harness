@@ -1,16 +1,16 @@
 /** Locale-owned image renderer labels and status text. */
-export const zh = {
-  title: '图片',
-  preview: '图片预览：{name}',
-  loading: '正在读取…',
-  failed: '无法显示这张图片',
-  unsupported: '图片预览需要完整文件内容',
+export const ar = {
+  title: 'صورة',
+  preview: 'صورة معاينة:{name}',
+  loading: 'صحيح في قراءة…',
+  failed: 'لا يمكن عرض هذا ورقة صورة',
+  unsupported: 'صورة معاينة حاجة كامل ملف محتوى',
 } satisfies Record<string, string>
 
 /** Image renderer dictionary keys. */
-export type ImagePreviewKey = keyof typeof zh
+export type ImagePreviewKey = keyof typeof ar
 
-/** English dictionary with the same keys as the Chinese dictionary. */
+/** English dictionary with the same keys as the Arabic dictionary. */
 export const en = {
   title: 'Image',
   preview: 'Image preview: {name}',

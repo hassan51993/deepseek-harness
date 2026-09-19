@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-26
 
-English | [中文](2026-07-05-windows-fs-permissions.zh.md)
+English | [العربية](2026-07-05-windows-fs-permissions.ar.md)
 
 The replacement-file decision in this record is superseded by [Windows DACL preservation](../bug-fix/2026-07-19-windows-atomic-write-dacl-preservation.md).
 

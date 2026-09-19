@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-06-11-runtime-arg-validation.md
-2026-06-11-runtime-arg-validation.md: 22283c76719a26f733a8125bf263810d53a92c3c
-2026-06-11-runtime-arg-validation.zh.md: f748b7e01b233edb8b3303898cc339dfacd16967
+2026-06-11-runtime-arg-validation.md: e5a30d5d802f82abd4ac9c96b4e9995c068d1649
+2026-06-11-runtime-arg-validation.ar.md: b3cc546927504b20997b7e439fe1e96b85bffd1f

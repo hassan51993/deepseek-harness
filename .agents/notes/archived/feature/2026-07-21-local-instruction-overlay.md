@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-07-21-local-instruction-overlay.zh.md)
+English | [العربية](2026-07-21-local-instruction-overlay.ar.md)
 
 ## Problem
 

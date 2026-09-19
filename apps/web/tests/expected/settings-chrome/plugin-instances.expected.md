@@ -1,37 +1,37 @@
 - list:
   - listitem:
-    - button "tool-subagent-control, tool-subagent-control, 已启用":
+    - button "tool-subagent-control, tool-subagent-control, قد تفعيل":
       - strong: tool-subagent-control
-      - text: 已启用
+      - text: قد تفعيل
       - img
       - code: tool-subagent-control
   - listitem:
-    - button "tool-subagent-control/list-agents, tool-subagent-list-agents, 已启用":
+    - button "tool-subagent-control/list-agents, tool-subagent-list-agents, قد تفعيل":
       - strong: tool-subagent-control/list-agents
-      - text: 已启用
+      - text: قد تفعيل
       - img
       - code: tool-subagent-list-agents
   - listitem:
-    - button "tool-subagent, tool-subagent, 已启用":
+    - button "tool-subagent, tool-subagent, قد تفعيل":
       - strong: tool-subagent
-      - text: 已启用
+      - text: قد تفعيل
       - img
       - code: tool-subagent
   - listitem:
-    - button "tool-subagent, tool-subagent-fork, 已启用":
+    - button "tool-subagent, tool-subagent-fork, قد تفعيل":
       - strong: tool-subagent
-      - text: 已启用
+      - text: قد تفعيل
       - img
       - code: tool-subagent-fork
   - listitem:
-    - button "tool-subagent, tool-subagent-codex, 已停用":
+    - button "tool-subagent, tool-subagent-codex, قد توقف استخدام":
       - strong: tool-subagent
-      - text: 已停用
+      - text: قد توقف استخدام
       - img
       - code: tool-subagent-codex
   - listitem:
-    - button "tool-subagent, tool-subagent-claude-code, 已停用":
+    - button "tool-subagent, tool-subagent-claude-code, قد توقف استخدام":
       - strong: tool-subagent
-      - text: 已停用
+      - text: قد توقف استخدام
       - img
       - code: tool-subagent-claude-code

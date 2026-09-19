@@ -71,7 +71,7 @@ describe('direct Messages HTTP', () => {
     const http = await endpoint()
     const llm = adapter({ baseURL: http.url })
     const response = await assemble(llm.stream(options({ model: 'deepseek-flash', sessionId: SessionId('session-test'), purpose: 'compaction' })), 'deepseek-flash')
-    expect(response.message.content).toEqual([{ type: 'text', text: 'Hello 世界' }])
+    expect(response.message.content).toEqual([{ type: 'text', text: 'Hello عالم حد' }])
     expect(response.message.source).toMatchObject({
       model: 'deepseek-flash', replayState: { response: { model: 'deepseek-flash' } },
     })

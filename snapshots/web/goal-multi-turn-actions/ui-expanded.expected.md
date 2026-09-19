@@ -13,11 +13,11 @@
 - navigation "Turn navigation":
   - button "Jump to turn 1"
   - button "Jump to turn 2"
-- group "Command input": /goal 做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的
-- 'button "goal Goal created Status: active Objective: 做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的 Rounds: 0/256 Activation: armed Commands: /goal edit <objective>, /goal pause, /goal clear"':
+- group "Command input": /goal فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه
+- 'button "goal Goal created Status: active Objective: فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه Rounds: 0/256 Activation: armed Commands: /goal edit <objective>, /goal pause, /goal clear"':
   - img
   - img
-  - text: "goal Goal created Status: active Objective: 做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的 Rounds: 0/256 Activation: armed Commands: /goal edit <objective>, /goal pause, /goal clear"
+  - text: "goal Goal created Status: active Objective: فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه Rounds: 0/256 Activation: armed Commands: /goal edit <objective>, /goal pause, /goal clear"
 - button "System prompt":
   - img
   - img
@@ -33,10 +33,10 @@
   - img
   - img
   - text: Context injection @deepseek-ai/dsh-system-prompt
-- 'button "Think The user''s goal is: \"做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的\" — which translates to: \"Do two turns, each turn output the file structure of a random package. Note that after you finish one turn, directly output the content and stop; our system will help you open another turn, and you just do something similar.\""':
+- 'button "Think The user''s goal is: \"فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه\" — which translates to: \"Do two turns, each turn output the file structure of a random package. Note that after you finish one turn, directly output the content and stop; our system will help you open another turn, and you just do something similar.\""':
   - img
   - img
-  - text: "Think The user's goal is: \"做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的\" — which translates to: \"Do two turns, each turn output the file structure of a random package. Note that after you finish one turn, directly output the content and stop; our system will help you open another turn, and you just do something similar.\""
+  - text: "Think The user's goal is: \"فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه\" — which translates to: \"Do two turns, each turn output the file structure of a random package. Note that after you finish one turn, directly output the content and stop; our system will help you open another turn, and you just do something similar.\""
 - button "Bash List package directories deterministically":
   - img
   - img
@@ -76,20 +76,20 @@
   - img
   - img
   - text: Bash List all files in session-reference package
-- 'button "Think Turn 1 is done. Per the objective: \"你做完一个turn之后，直接输出内容，停止\" — after finishing a turn, directly output the content and stop. The system will open another turn."':
+- 'button "Think Turn 1 is done. Per the objective: \"أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف\" — after finishing a turn, directly output the content and stop. The system will open another turn."':
   - img
   - img
-  - text: "Think Turn 1 is done. Per the objective: \"你做完一个turn之后，直接输出内容，停止\" — after finishing a turn, directly output the content and stop. The system will open another turn."
+  - text: "Think Turn 1 is done. Per the objective: \"أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف\" — after finishing a turn, directly output the content and stop. The system will open another turn."
 - paragraph:
   - strong: Turn 1 / 2
-  - text: — 随机选中的包：
+  - text: — مع آلة اختيار في حزمة:
   - code: packages/context/session-reference
   - text: 📦
 - button "Copy"
 - code: session-reference ├── README.md ├── package.json ├── src │ ├── index.ts │ └── uri.ts └── tests └── session-reference.spec.ts
 - button "Copy"
-- code: "session-reference/ ├── README.md # 包说明文档 ├── package.json # 包元数据与依赖声明 ├── src/ │ ├── index.ts # 入口，导出公共 API │ └── uri.ts # 会话引用 URI 相关实现 └── tests/ └── session-reference.spec.ts # 单元测试"
-- paragraph: 这是一个很典型的轻量 TypeScript 包结构：入口 + 实现 + 测试。这一轮到此结束，等系统开启下一个 turn。
+- code: "session-reference/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ ├── index.ts # مدخل، توجيه خروج عام مشترك API │ └── uri.ts # جلسة مرجع URI متبادل صلة تنفيذ └── tests/ └── session-reference.spec.ts # اختبار وحدة"
+- paragraph: هذا هو واحد جدا قاموس نوع خفيف كمية TypeScript حزمة بنية: مدخل + تنفيذ + اختبار. هذا واحد جولة إلى هذا انتهاء، انتظار نظام فتح بدء تحت واحد turn.
 - button "Copy":
   - img
 - button "Good response":
@@ -139,80 +139,80 @@
   - text: "Think This is turn 2 of 2. I've output the file structure for `packages/llm/token-meter`. Both turns are done. I should output the content, stop, and then mark the goal as complete since both turns are finished."
 - paragraph:
   - strong: Turn 2 / 2
-  - text: — 随机选中的包：
+  - text: — مع آلة اختيار في حزمة:
   - code: packages/llm/token-meter
   - text: 📦
 - button "Copy"
 - code: token-meter ├── README.md ├── package.json ├── src │ └── index.ts └── tests └── token-meter.spec.ts
 - button "Copy"
-- code: "token-meter/ ├── README.md # 包说明文档 ├── package.json # 包元数据与依赖声明 ├── src/ │ └── index.ts # 入口，导出公共 API（token 计量逻辑） └── tests/ └── token-meter.spec.ts # 单元测试"
+- code: "token-meter/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ └── index.ts # مدخل، توجيه خروج عام مشترك API(token حساب كمية منطق) └── tests/ └── token-meter.spec.ts # اختبار وحدة"
 - paragraph:
-  - text: 两个 turn 都完成了（turn 1：
+  - text: اثنان عدد turn كل إتمام (turn 1:
   - code: session-reference
-  - text: ，turn 2：
+  - text: ،turn 2:
   - code: token-meter
-  - text: ）。这一轮到此结束。
+  - text: ). هذا واحد جولة إلى هذا انتهاء.
 - 'button "Tool call get_goal · {}"':
   - img
   - img
   - text: "Tool call get_goal · {}"
-- paragraph: 两个 turn 均已完成，目标达成，标记 goal 为完成。
+- paragraph: اثنان عدد turn متساو قد إتمام، هدف بلوغ صار، علامة goal لـ إتمام.
 - button "Tool call update_goal · goal-{{uuid}}":
   - img
   - img
   - text: Tool call update_goal · goal-{{uuid}}
-- 'button "Context injection tool-goal complete: 做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的"':
+- 'button "Context injection tool-goal complete: فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه"':
   - img
   - img
-  - text: "Context injection tool-goal complete: 做两个turn，每个turn输出随机一个包的文件结构。注意你做完一个turn之后，直接输出内容，停止，我们的系统会帮你再开一个turn，你看着做一个类似的"
-- paragraph: 两个 turn 都完成了 ✅
+  - text: "Context injection tool-goal complete: فعل اثنان عددturn، كلturnإخراج مع آلة واحد حزمة ملف بنية. ملاحظة معنى أنت فعل تمام واحدturnبعد، مباشر إخراج محتوى، إيقاف، أنا جمع نظام سوف مساعدة أنت مجددا فتح واحدturn، أنت نظر حال فعل واحد صنف يشبه"
+- paragraph: اثنان عدد turn كل إتمام ✅
 - paragraph:
-  - strong: 总结：
+  - strong: مجموع ربط:
 - list:
   - listitem:
     - strong: Turn 1
-    - text: — 随机选中
+    - text: — مع آلة اختيار في
     - code: packages/context/session-reference
-    - text: ，输出了文件结构：
+    - text: ، إخراج ملف بنية:
     - button "Copy"
     - code: session-reference/ ├── README.md ├── package.json ├── src/ │ ├── index.ts │ └── uri.ts └── tests/ └── session-reference.spec.ts
   - listitem:
     - strong: Turn 2
-    - text: — 随机选中
+    - text: — مع آلة اختيار في
     - code: packages/llm/token-meter
-    - text: ，输出了文件结构：
+    - text: ، إخراج ملف بنية:
     - button "Copy"
     - code: token-meter/ ├── README.md ├── package.json ├── src/ │ └── index.ts └── tests/ └── token-meter.spec.ts
 - paragraph:
-  - strong: 验证方式：
-  - text: 两个包的随机选择都通过
+  - strong: تحقق طريقة:
+  - text: اثنان عدد حزمة مع آلة اختيار كل عبر
   - code: python3 random.choice
-  - text: 从工作区的
+  - text: من مساحة العمل
   - code: packages/
-  - text: 目录下实际枚举的 4 个候选包中抽取（
+  - text: دليل تحت فعلي قطعة رفع 4 عدد مرشح حزمة في سحب أخذ (
   - code: ui-conversation
-  - text: 、
+  - text: ،
   - code: session-reference
-  - text: 、
+  - text: ،
   - code: token-meter
-  - text: 、
+  - text: ،
   - code: skill-filesystem
-  - text: ），文件结构则用
+  - text: ) ، ملف بنية فإن استخدام
   - code: find
-  - text: 实际列出文件后整理输出，均已排除
+  - text: فعلي صف خروج ملف بعد كامل إدارة إخراج، متساو قد ترتيب حذف
   - code: node_modules
-  - text: 和
+  - text: و
   - code: .git
-  - text: 。第二次随机抽到了与 turn 1 相同的包，为避免重复换抽了另一个。
+  - text: . ثاني مرة مع آلة سحب إلى و turn 1 نفسه حزمة، لـ تجنب تجنب تكرار تبديل سحب آخر عدد.
 - paragraph:
-  - strong: 说明：
-  - text: 本轮没有产生任何文件修改或提交——任务本身就是"输出文件结构"，所有产物都在上面的消息文本里。
+  - strong: شرح:
+  - text: هذا جولة لا يوجد إنتاج أي ملف تعديل أو إيداع——مهمة ذاته حينئذ هو"إخراج ملف بنية"، كل ناتج كل في فوق وجه رسالة نص داخل.
 - paragraph:
-  - text: 如果你还想看剩下两个包（
+  - text: إذا أنت أيضا تفكير نظر باق تحت اثنان عدد حزمة (
   - code: ui-conversation
-  - text: 、
+  - text: ،
   - code: skill-filesystem
-  - text: ）的结构，或者其他格式的输出（比如带文件大小的树形图），随时告诉我。
+  - text: ) بنية، أو من أخرى صيغة إخراج (مقارنة مثل حمل ملف كبير صغير شجرة شكل رسم) ، مع وقت إبلاغ إبلاغ أنا.
 - button "Copy":
   - img
 - button "Good response":

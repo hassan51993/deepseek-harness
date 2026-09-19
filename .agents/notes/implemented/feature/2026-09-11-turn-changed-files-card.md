@@ -2,7 +2,7 @@
 
 Status: implemented
 
-English | [中文](2026-09-11-turn-changed-files-card.zh.md)
+English | [العربية](2026-09-11-turn-changed-files-card.ar.md)
 
 ## Problem
 
@@ -48,6 +48,6 @@ The log deliberately carries nothing but the turn number. Summaries, snapshot tr
 
 Every turn with tool results costs two snapshots and one diff on the Host, and writes blob and tree objects for the changed files into the Session's temporary directory, which disposal removes. Edits the user makes during a turn are attributed to it. Every file-tool edit also copies its whole file into that directory once per turn.
 
-The Web bundle alone mounts the recorder, so headless, SDK, and ACP logs are unchanged; recorded Web scenarios gain the event and the card whenever a turn changes a file; one dedicated scenario seeds a git repository so the card also carries a shell edit, while the others list their file-tool writes alone. The card replaces the Chinese and English "Files changed" row; prose file mentions still resolve against mutation-call paths and deliveries.
+The Web bundle alone mounts the recorder, so headless, SDK, and ACP logs are unchanged; recorded Web scenarios gain the event and the card whenever a turn changes a file; one dedicated scenario seeds a git repository so the card also carries a shell edit, while the others list their file-tool writes alone. The card replaces the Arabic and English "Files changed" row; prose file mentions still resolve against mutation-call paths and deliveries.
 
 Focused tests cover repositories with real git, directories outside any repository, coverage classification of captured paths, an interrupted turn overlapped by the next, ordering, caps, disposal, the macOS stub, the changed-file route, the card's fold and gesture states, and a Loader composition. The keyless Web scenario replays the recorder end to end, including a created file the repository ignores.

@@ -53,6 +53,7 @@ Keep this log exhaustive — every divergence from upstream must be listed.
 20. **`loader/src/config/entry.ts` fiber identity**: stores the original fiber from the registry result’s context instead of its PromiseLike wrapper. Configuration updates and service notifications therefore mutate the same lifecycle state; updating a provider and consumer together cannot strand the consumer in `PENDING`. Covered by `packages/boot/hmr/tests/modules.spec.ts` and the built profile reload regression in `apps/cli/tests/built-bin.e2e.ts`.
 
 21. **`cordis/src/logger.ts` exporter disposal**: each disposer retains its registration id, so removing an earlier exporter cannot delete a later console or telemetry exporter. Covered by startup collector cleanup in `packages/boot/app-boot/tests/app-boot.spec.ts` and disabled-feedback output in `packages/session/session-telemetry-otel/tests/loader-composition.e2e.ts`.
+22. **`hmr/package.json` localized description**: replaced the upstream `zh` description key with an `ar` key carrying the Arabic wording, so the vendored manifest matches this repository's Arabic localization. Text-only. The upstream `zh-CN` locale filenames quoted in entry 1 and in `hmr/src/index.ts` are upstream identifiers and keep their spelling. Retire this entry if upstream ships an Arabic description.
 
 ## Sync procedure
 

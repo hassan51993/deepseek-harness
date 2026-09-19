@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-18-settings-font-size-control.md
-2026-08-18-settings-font-size-control.md: d0b2ae847aeea8ed249ad452342b5d3e3c5a6766
-2026-08-18-settings-font-size-control.zh.md: 11624f5317053c333491d4808ba5f497cf6a579a
+2026-08-18-settings-font-size-control.md: dec8ddfc907609273365056d2850a3871528d1d2
+2026-08-18-settings-font-size-control.ar.md: 5a6f3ee20b2cad384595fe7214147f85b04225b2

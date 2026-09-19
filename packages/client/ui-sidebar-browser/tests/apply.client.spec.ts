@@ -7,7 +7,7 @@ import { BrowserTitle } from '../src/client/view/BrowserTitle.tsx'
 import type { BrowserInjected } from '../src/client/browser/BrowserController.ts'
 import { BROWSER_ID, BROWSER_KIND } from '../src/client/definition.tsx'
 import { apply, inject } from '../src/client/index.ts'
-import { en, zh } from '../src/client/locales.ts'
+import { en, ar } from '../src/client/locales.ts'
 import { apply as hostApply } from '../src/index.ts'
 
 interface Recorded {
@@ -59,7 +59,7 @@ describe('ui-sidebar-browser apply', () => {
     expect(definition?.title('sidebar://browser')).toBe('type.label')
     expect(definition?.guide?.map(entry => [entry.order, entry.title(), entry.description?.()]))
       .toEqual([[30, 'guide.title', 'guide.description']])
-    expect(dictionaries.get('sidebarBrowser')).toEqual({ zh, en })
+    expect(dictionaries.get('sidebarBrowser')).toEqual({ ar, en })
     expect(registered.map(entry => [entry.name, entry.key, entry.locale, entry.component])).toEqual([
       ['sidebar.right.pane.tab', BROWSER_ID, 'sidebarBrowser', BrowserBody],
       ['sidebar.right.pane.tab.title', BROWSER_ID, undefined, BrowserTitle],

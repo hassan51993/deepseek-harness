@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-07-27
 
-English | [中文](2026-07-22-cordis-tutorial-docs.zh.md)
+English | [العربية](2026-07-22-cordis-tutorial-docs.ar.md)
 
 ## Problem
 
@@ -15,12 +15,12 @@ The repo documents Cordis at two levels: the condensed [cordis-primer](../../../
 
 - **Every transcript is real.** Each chapter's files run in the gitignored `tmp/cordis-tutorial/` scratch directory via `node --import tsx ../../vendor/cordis/bin.js`, and the shown output is what those commands print. The chapter that uses harness packages (`@deepseek-ai/dsh-tools` and `@deepseek-ai/dsh-llm`) runs keylessly.
 - **dsh-flavored, not pure Cordis**: later chapters use real harness services and events (`ctx.tools`, `tools/result`) so the tutorial lands the reader inside this repo's actual composition model, per the requesting user's choice.
-- **English-only, published to both website locales** through `mirroredPages()` in [website/docs.ts](../../../../website/docs.ts) under a `Cordis 教程` / `Cordis tutorial` section of the develop sidebar — the same pattern as the reference pages, so a Chinese pair can ratchet in later without route changes.
+- **English-only, published to both website locales** through `mirroredPages()` in [website/docs.ts](../../../../website/docs.ts) under a `Cordis تعليم مسار` / `Cordis tutorial` section of the develop sidebar — the same pattern as the reference pages, so a Chinese pair can ratchet in later without route changes.
 - Code fences compile under `doc-typecheck` except the two fences that import scratch-relative files (`./stats.ts`) or intentionally throw, which carry `ignore-check`.
 
 ## Alternatives considered
 
-**Under `docs/user/develop/` as paired product docs.** That tier requires en+zh+i18n records in the same PR, roughly doubling the change and coupling every future tutorial edit to a translation. Rejected for the first landing; the mirrored projection keeps the same public visibility.
+**Under `docs/user/develop/` as paired product docs.** That tier requires en+ar+i18n records in the same PR, roughly doubling the change and coupling every future tutorial edit to a translation. Rejected for the first landing; the mirrored projection keeps the same public visibility.
 
 **Pure-Cordis tutorial with no harness packages.** Cleaner as framework documentation, but the audience is agent developers extending this harness; ending at `ctx.tools.execute` and `tools/result` teaches the composition they will actually work in. The user chose this explicitly.
 

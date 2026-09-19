@@ -2,7 +2,7 @@
 
 Status: proposed
 
-English | [中文](2026-09-08-desktop-uninstall-preserve-dsh-home.zh.md)
+English | [العربية](2026-09-08-desktop-uninstall-preserve-dsh-home.ar.md)
 
 ## Problem
 
@@ -67,7 +67,7 @@ Add focused tests for target ownership, protected-home overlap, link/reparse-poi
 
 Run installed-artifact e2e checks on Windows and both shipped macOS architectures. Cover first installation without updates, one downloaded/installed update, failed update, per-user/shared installation, relocated application, and standalone macOS cleanup after drag deletion. Compare filesystem/registration inventories independently of the uninstaller's success response. Hash retained `.dsh` content after the app and CLI are quiescent and before removal; require identical content, paths, and link entries afterward. Do not require preserved runtime links to resolve after their application target is removed.
 
-Add owner-local expected output for uninstall UI and failure results. Add a keyless recorded-session scenario proving an existing conversation survives uninstall/reinstall; keep purely installer/UI expectations outside the top-level Session tree. Record the required real-server/model GUI GIF for the implementation PR. Update the [Desktop README](../../../../apps/desktop/README.md), its Chinese counterpart, user instructions, locale dictionaries, JSDoc, and this proposal's lifecycle when implementation ships. Select focused checks through [dsh-pre-push-checks](../../../skills/dsh-pre-push-checks/SKILL.md); signed packaging and real OS uninstall evidence are required, not replaceable by unit tests.
+Add owner-local expected output for uninstall UI and failure results. Add a keyless recorded-session scenario proving an existing conversation survives uninstall/reinstall; keep purely installer/UI expectations outside the top-level Session tree. Record the required real-server/model GUI GIF for the implementation PR. Update the [Desktop README](../../../../apps/desktop/README.md), its Arabic counterpart, user instructions, locale dictionaries, JSDoc, and this proposal's lifecycle when implementation ships. Select focused checks through [dsh-pre-push-checks](../../../skills/dsh-pre-push-checks/SKILL.md); signed packaging and real OS uninstall evidence are required, not replaceable by unit tests.
 
 ## Alternatives considered
 

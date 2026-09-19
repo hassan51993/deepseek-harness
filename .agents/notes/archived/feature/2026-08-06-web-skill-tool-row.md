@@ -3,7 +3,7 @@
 Status: implemented
 Archived: 2026-09-04
 
-English | [中文](2026-08-06-web-skill-tool-row.zh.md)
+English | [العربية](2026-08-06-web-skill-tool-row.ar.md)
 
 ## Problem
 

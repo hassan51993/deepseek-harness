@@ -8,7 +8,7 @@ import {
   captureStableAria, compareOrRefreshGolden, launchWebScaffold,
   watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceZh, saveFailureShot, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, saveFailureShot, ZH_BROWSER_LOCALE } from './support.ts'
 
 const EXPECTED = fileURLToPath(new URL('./expected/deepseek-messages-settings/', import.meta.url))
 
@@ -39,28 +39,28 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     expect(scaffold.ctx.llm.listProviders()).toContainEqual({ id: 'deepseek-official', name: 'DeepSeek' })
     expect(scaffold.ctx.llm.listProviders().filter(provider => provider.id === 'deepseek-official')).toHaveLength(1)
     expect(scaffold.ctx.agentDefaultModel.currentSelection()).toEqual({ provider: 'deepseek-official', model: 'deepseek-flash' })
-    const onboarding = page.getByRole('dialog', { name: '添加一个 API Key 开始使用' })
-    await onboarding.getByLabel('API 密钥', { exact: true }).fill('sk-messages-onboarding')
-    await onboarding.getByRole('button', { name: '保存并继续' }).click()
+    const onboarding = page.getByRole('dialog', { name: 'إضافة واحد API Key بدء استخدام' })
+    await onboarding.getByLabel('API مفتاح', { exact: true }).fill('sk-messages-onboarding')
+    await onboarding.getByRole('button', { name: 'حفظ و متابعة' }).click()
     await onboarding.waitFor({ state: 'detached' })
-    await page.getByRole('button', { name: '设置', exact: true }).click()
-    const dialog = page.getByRole('dialog', { name: '设置', exact: true })
-    await dialog.getByRole('button', { name: '模型', exact: true }).click()
+    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    const dialog = page.getByRole('dialog', { name: 'ضبط', exact: true })
+    await dialog.getByRole('button', { name: 'نموذج', exact: true }).click()
     await dialog.getByText('DeepSeek', { exact: true }).waitFor()
     expect(await dialog.getByText('DeepSeek', { exact: true }).count()).toBe(1)
-    await dialog.getByText('DeepSeek', { exact: true }).locator('xpath=ancestor::li').getByRole('button', { name: '编辑' }).click()
+    await dialog.getByText('DeepSeek', { exact: true }).locator('xpath=ancestor::li').getByRole('button', { name: 'تحرير' }).click()
     const messages = dialog
-    await messages.getByText('自定义设置', { exact: true }).click()
-    expect(await messages.getByLabel('API 地址', { exact: true }).getAttribute('placeholder'))
+    await messages.getByText('ذاتي تعريف ضبط', { exact: true }).click()
+    expect(await messages.getByLabel('API عنوان', { exact: true }).getAttribute('placeholder'))
       .toBe('https://api.deepseek.com/anthropic')
     await compareOrRefreshGolden(join(EXPECTED, 'cards.expected.md'),
       await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd), webSnapshotMode())
-    await messages.getByLabel('API 密钥', { exact: true }).fill('sk-e2e-messages')
-    await messages.getByLabel('API 地址', { exact: true }).fill('https://messages.example/anthropic')
-    expect(await messages.getByLabel('模型 ID 1').inputValue()).toBe('deepseek-flash')
-    await messages.getByLabel('显示名称 1', { exact: true }).fill('Messages Flash')
-    await messages.getByRole('button', { name: '保存', exact: true }).click()
-    await dialog.getByText('已保存 DeepSeek (deepseek-official)。', { exact: true }).waitFor()
+    await messages.getByLabel('API مفتاح', { exact: true }).fill('sk-e2e-messages')
+    await messages.getByLabel('API عنوان', { exact: true }).fill('https://messages.example/anthropic')
+    expect(await messages.getByLabel('نموذج ID 1').inputValue()).toBe('deepseek-flash')
+    await messages.getByLabel('عرض اسم 1', { exact: true }).fill('Messages Flash')
+    await messages.getByRole('button', { name: 'حفظ', exact: true }).click()
+    await dialog.getByText('قد حفظ DeepSeek (deepseek-official).', { exact: true }).waitFor()
 
     const settings = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
     expect(settings).toContain('https://messages.example/anthropic')
@@ -75,9 +75,9 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     expect(credentials).not.toContain('DEEPSEEK_MESSAGES_API_KEY')
     expect(await page.locator('body').innerText()).not.toContain('sk-e2e-')
     await page.keyboard.press('Escape')
-    await connectFreshWorkspaceZh(page, scaffold.workspaceCwd, 'messages-settings-e2e')
-    await page.getByRole('button', { name: /^选择模型/ }).click()
-    await page.getByRole('menuitem', { name: /模型/ }).click()
+    await connectFreshWorkspaceAr(page, scaffold.workspaceCwd, 'messages-settings-e2e')
+    await page.getByRole('button', { name: /^اختيار نموذج/ }).click()
+    await page.getByRole('menuitem', { name: /نموذج/ }).click()
     await page.getByRole('menuitemradio', { name: 'Messages Flash', exact: true }).waitFor()
     await compareOrRefreshGolden(join(EXPECTED, 'picker.expected.md'),
       await captureStableAria(page, '[role="menu"]', scaffold.workspaceCwd), webSnapshotMode())
@@ -91,8 +91,8 @@ describe.skipIf(webSnapshotMode() === 'record')('web e2e: DeepSeek Messages opt-
     await page.reload({ waitUntil: 'load' })
     const input = page.locator('[data-composer-input]').first()
     await expect.poll(() => input.isEnabled()).toBe(true)
-    await page.getByRole('button', { name: /^选择模型/ }).click()
-    await page.getByRole('menuitem', { name: /模型/ }).click()
+    await page.getByRole('button', { name: /^اختيار نموذج/ }).click()
+    await page.getByRole('menuitem', { name: /نموذج/ }).click()
     await page.getByRole('menuitemradio', { name: 'Messages Flash', exact: true }).click()
     await expect.poll(() => input.isEnabled()).toBe(true)
     await expect.poll(() => scaffold.ctx.agentDefaultModel.currentSelection().provider).toBe('deepseek-official')

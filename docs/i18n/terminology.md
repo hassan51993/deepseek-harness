@@ -1,214 +1,214 @@
 # Terminology
 
-本表约定本仓库的中英术语统一译法。
+هذا جدول اتفاق هذا مستودع في إنجليزي فن لغة موحد واحد ترجمة قاعدة.
 
-**通用规则：**
-- "中文"列为中文译文的正文默认用词。若该列为英文，则中文译文的正文中保留英文不翻译。
-- 首次出现按"首次出现"列书写（带括号注释）；后续出现只写括号前的部分（可能为中文，也可能为英文），不出现括号内的注释。
-- "不要译作"列为严格禁止的译法。
-- 如果某术语已经作为另一个术语的组成部分被括注过（如 `agent loop（智能体循环）` 中已包含 `agent` 的括注），则该术语后续单独出现时无需再次括注。
+**عام قاعدة:**
+- "العربية"صف لـ العربية ترجمة نص متن افتراضي استخدام كلمة. إذا هذا صف لـ إنجليزي نص، فإن العربية ترجمة نص متن في إبقاء إنجليزي نص لا قلب ترجمة.
+- أول مرة ظهور حسب"أول مرة ظهور"صف كتاب كتابة (حمل تضمين رقم ملاحظة تفسير) ؛ لاحق ظهور فقط كتابة تضمين رقم قبل جزء (ممكن لـ العربية، أيضا ممكن لـ إنجليزي نص) ، لا ظهور تضمين رقم داخل ملاحظة تفسير.
+- "لا يلزم ترجمة عمل"صف لـ صارم إطار منع توقف ترجمة قاعدة.
+- إذا بعض فن لغة قد بصفة آخر عدد فن لغة مجموعة صار جزء يتم تضمين ملاحظة مرور (مثل `agent loop(ذكي جسم حلقة)` في قد يتضمن `agent` تضمين ملاحظة) ، فإن هذا فن لغة لاحق مفرد وحيد ظهور وقت بلا حاجة مجددا مرة تضمين ملاحظة.
 
-## 缩写类（中英文文本中均使用缩写）
+## تقليص كتابة صنف (في إنجليزي نص نص في متساو استخدام تقليص كتابة)
 
-| English | 中文 | 首次出现 | 不要译作 | 备注 |
+| English | العربية | أول مرة ظهور | لا يلزم ترجمة عمل | ملاحظة |
 |---|---|---|---|---|
-| ACP | ACP | ACP（Agent Client Protocol） | | |
-| AI | AI | AI（人工智能） | | |
+| ACP | ACP | ACP(Agent Client Protocol) | | |
+| AI | AI | AI(شخص عمل ذكي) | | |
 | API | API | | | |
 | CI | CI | | | |
-| CLI | CLI | CLI（命令行界面） | | |
+| CLI | CLI | CLI(أمر سطر واجهة) | | |
 | e2e | e2e | | | |
-| HMR | HMR | HMR（热模块替换） | | |
+| HMR | HMR | HMR(حار وحدة استبدال) | | |
 | JSON Schema | JSON Schema | | | |
 | JSONL | JSONL | | | |
-| LLM | LLM | LLM（大语言模型） | | |
+| LLM | LLM | LLM(كبير لغة نموذج) | | |
 | MCP | MCP | | | |
-| PR | PR | PR（Pull Request） | | |
-| RAG | RAG | RAG（检索增强生成） | | |
-| SDK | SDK | | | 只指受支持的 Python 与 TypeScript SDK 所使用的 JSON-RPC 客户端／服务器协议；DeepSeek Harness 项目本身不是 SDK |
-| SSE | SSE | SSE（Server-Sent Events） | | |
+| PR | PR | PR(Pull Request) | | |
+| RAG | RAG | RAG(فحص بحث زيادة قوي توليد) | | |
+| SDK | SDK | | | فقط إشارة تلقي دعم حمل Python و TypeScript SDK الذي استخدام JSON-RPC عميل/خادم بروتوكول؛DeepSeek Harness مشروع ذاته لا هو SDK |
+| SSE | SSE | SSE(Server-Sent Events) | | |
 
-## 英文类（中英文文本中均使用英文）
+## إنجليزي نص صنف (في إنجليزي نص نص في متساو استخدام إنجليزي نص)
 
-| English | 中文 | 首次出现 | 不要译作 | 备注 |
+| English | العربية | أول مرة ظهور | لا يلزم ترجمة عمل | ملاحظة |
 |---|---|---|---|---|
-| agent | agent | agent（智能体） | | |
-| Agent Note | Agent Note | | 智能体注记、智能体笔记 | 仓库定义的文档类型，涵盖提案、已实现决策和被否决提案；中文对侧 H1 保持固定前缀 `# Agent Note: `，标题中不加术语括注 |
-| agent harness | agent harness | agent harness（智能体框架） | | agent 组合词（agent harness/workflow/loop/skill 等）整体保留英文；未括注过 agent 时首现按对应组合词或 agent 行处理 |
-| agent loop | agent loop | agent loop（智能体循环） | | |
-| blob hash | blob hash | | | `git hash-object` 的结果 |
-| coding agent | coding agent | coding agent（编程智能体） | | agent 组合词，正文保留英文 |
+| agent | agent | agent(ذكي جسم) | | |
+| Agent Note | Agent Note | | ذكي جسم ملاحظة تسجيل، ذكي جسم قلم تسجيل | مستودع تعريف وثيقة نوع، شمول غطاء رفع سجل، قد تنفيذ قرار و يتم مرفوض رفع سجل؛ العربية مقابل جانب H1 إبقاء ثابت بادئة `# Agent Note: `، عنوان في لا إضافة فن لغة تضمين ملاحظة |
+| agent harness | agent harness | agent harness(ذكي جسم إطار هيكل) | | agent تركيب كلمة (agent harness/workflow/loop/skill انتظار) كامل جسم إبقاء إنجليزي نص؛ لم تضمين ملاحظة مرور agent وقت أول الآن حسب مقابل تركيب كلمة أو agent سطر معالجة |
+| agent loop | agent loop | agent loop(ذكي جسم حلقة) | | |
+| blob hash | blob hash | | | `git hash-object` نتيجة |
+| coding agent | coding agent | coding agent(تحرير مسار ذكي جسم) | | agent تركيب كلمة، متن إبقاء إنجليزي نص |
 | Cordis | Cordis | | | |
-| dispose | dispose | dispose（资源释放） | | |
-| doc-sync | doc-sync | doc-sync（文档同步门禁） | | |
+| dispose | dispose | dispose(مورد تحرير) | | |
+| doc-sync | doc-sync | doc-sync(وثيقة تزامن بوابة) | | |
 | fiber | fiber | | | |
-| fixture | fixture | fixture（测试前置数据） | | |
+| fixture | fixture | fixture(اختبار قبل وضع بيانات) | | |
 | fork | fork | | | |
-| Function Calling | Function Calling | Function Calling（函数调用） | | |
+| Function Calling | Function Calling | Function Calling(دالة استدعاء) | | |
 | harness | harness | | | |
 | harness engineering | harness engineering | | | |
-| KV Cache | KV Cache | | | 专有技术名称，保持大小写与空格 |
+| KV Cache | KV Cache | | | مخصص لديه تقنية فن اسم، إبقاء كبير صغير كتابة و فارغ إطار |
 | lint | lint | | | |
-| mock | mock | | | 保留英文；指测试替身 |
+| mock | mock | | | إبقاء إنجليزي نص؛ إشارة اختبار بديل ذات |
 | loader | loader | | | |
-| manifest | manifest | manifest（元数据清单） | | |
+| manifest | manifest | manifest(بيانات وصفية بيان) | | |
 | monorepo | monorepo | | | |
-| Round | Round | | 回合、目标回合、Ralph 回合 | 外层策略使用 Round 时，领域层级为 Session > Round > Turn（轮次） > Step（步骤）；Round 是可选的外层策略迭代，并非每个会话轮次都具有的通用层级。Goal Round 与 Ralph Round 均保留英文。一个 Round 承载一个轮次，步骤隶属于该轮次；明确的零步骤轮次仍保持原义。 |
+| Round | Round | | عودة دمج، هدف عودة دمج،Ralph عودة دمج | خارج طبقة سياسة استخدام Round وقت، مجال طبقة درجة لـ Session > Round > Turn(جولة) > Step(خطوة) ؛Round هو اختياري خارج طبقة سياسة تكرار بديل، و غير كل جلسة جولة كل أداة لديه عام طبقة درجة.Goal Round و Ralph Round متساو إبقاء إنجليزي نص. واحد Round تحمل تحميل واحد جولة، خطوة تابع يخص هذا جولة؛ واضح صفر خطوة جولة ما زال إبقاء أصل معنى. |
 | schema | schema | | | |
 | schema DSL | schema DSL | | | |
-| seam | seam | | 接缝 | 一个可替换能力的整体，包含 Service Definition / Service Provider / Consumer 三种角色；角色需要独立演化时才拆包，也可由同一包承担多个角色。以 `packages/shell` 为范例；Service Definition 是 Cordis `Service`（抽象类或具体 registry 服务），不是 TypeScript interface。任何单一角色、普通边界或扩展点都不能称为 seam。本仓库正文保留英文；与 `extension point` 是不同概念 |
-| Service Provider | Service Provider | | Service provider | 能力 seam 的命名角色；单数固定写作 Service Provider，复数写作 Service Providers。泛指提供服务的 provider 不适用本词条 |
-| skill | skill | skill（技能） | | |
-| slot | slot | | 坑位、孔位 | 客户端架构中的具名可注册位置，保留英文 |
-| spill | spill | | | 工具输出超限落盘机制；组合词写 `spill 文件`、`spill 路径` |
+| seam | seam | | وصل شق | واحد يمكن استبدال قدرة كامل جسم، يتضمن Service Definition / Service Provider / Consumer ثلاثة نوع زاوية لون؛ زاوية لون حاجة مستقل عرض تحويل وقت عندئذ تفكيك حزمة، أيضا يمكن من نفس حزمة تحمل تحمل كثير عدد زاوية لون. بـ `packages/shell` لـ نطاق مثال؛Service Definition هو Cordis `Service`(سحب كائن صنف أو أداة جسم registry خدمة) ، لا هو TypeScript interface. أي مفرد واحد زاوية لون، عادي حد أو نقطة توسيع كل لا يستطيع تسمية لـ seam. هذا مستودع متن إبقاء إنجليزي نص؛ و `extension point` هو مختلف عام فكرة |
+| Service Provider | Service Provider | | Service provider | قدرة seam تسمية زاوية لون؛ مفرد عدد ثابت كتابة عمل Service Provider، تكرار عدد كتابة عمل Service Providers. عام إشارة توفير خدمة provider لا ملائم استخدام هذا كلمة بند |
+| skill | skill | skill(تقنية قدرة) | | |
+| slot | slot | | حفرة موضع، ثقب موضع | عميل هيكل بنية في أداة اسم يمكن تسجيل موضع، إبقاء إنجليزي نص |
+| spill | spill | | | أداة إخراج تجاوز حد سقوط قرص آلية؛ تركيب كلمة كتابة `spill ملف`،`spill مسار` |
 | spawn | spawn | | | |
-| steering | steering | steering（中途引导） | | |
-| job id | job id | | 任务 id | 保留英文 |
+| steering | steering | steering(في طريق جذب توجيه) | | |
+| job id | job id | | مهمة id | إبقاء إنجليزي نص |
 | subagent | subagent | | | |
-| transcript | transcript | transcript（文本记录） | | 指会话渲染给用户或编辑器的完整文本，区别于事件日志 |
-| Typert | Typert | | TypeRT、typeRT、Type RT | DeepSeek Harness 类型图、生成器、loader 与运行时 registry 的产品拼写 |
-| waterfall | waterfall | waterfall（瀑布式事件） | | |
-| wheel | wheel 包 | | | Python 打包格式 |
-| worktree | worktree | | | git 工作区概念 |
+| transcript | transcript | transcript(نص سجل) | | إشارة جلسة تصيير إعطاء مستخدم أو تحرير جهاز كامل نص، منطقة آخر في حدث سجل |
+| Typert | Typert | | TypeRT،typeRT،Type RT | DeepSeek Harness نوع رسم، توليد جهاز،loader و وقت التشغيل registry منتج تجميع كتابة |
+| waterfall | waterfall | waterfall(شلال نشر صيغة حدث) | | |
+| wheel | wheel حزمة | | | Python تحزيم صيغة |
+| worktree | worktree | | | git مساحة العمل عام فكرة |
 | Zstandard | Zstandard | | | RFC 8878 compression format; `zstd` remains a code value. |
 
-## 双语类（中英文文本各自使用中英文）
+## مزدوج لغة صنف (في إنجليزي نص نص كل منها استخدام في إنجليزي نص)
 
-| English | 中文 | 首次出现 | 不要译作 | 备注 |
+| English | العربية | أول مرة ظهور | لا يلزم ترجمة عمل | ملاحظة |
 |---|---|---|---|---|
-| adapter | 适配器 | | | |
-| adapter contract | 适配器约定 | 适配器约定（adapter contract） | | |
-| append-only | 仅追加 | | | |
-| artifact | 产物 | | 制品 | |
-| backend | 后端 | | | |
-| binder | 绑定器 | | | 命名角色：把已声明接口绑定到调用方 context 或生命周期 |
-| config | 配置 | | | 命名角色：一个已解析配置值或边界严格的配置记录 |
-| controller | 控制器 | | | 命名角色：接受意图并改变一项既有领域或展示状态 |
-| directory | 目录 | | | 命名角色：暴露供发现或选择的条目及元数据 |
-| engine | 引擎 | | | 命名角色：实现领域算法或有状态执行模型 |
-| gateway | 网关 | | | 命名角色：适配进程、网络、RPC 或 API 边界 |
-| handle | 句柄 | | | 命名角色：引用并控制或观察一个实时资源 |
-| policy | 策略 | | | 命名角色：决定允许、选择、限制或观察什么 |
-| presenter | 展示转换器 | | | 命名角色：把领域值纯转换为渲染意图 |
-| resolver | 解析器 | | | 命名角色：根据输入计算或定位一个答案 |
-| store | 存储 | | | 命名角色：拥有一组数据并主要提供数据操作 |
-| background job | 后台任务 | | | |
-| block | 块 | | | |
-| build target | 构建目标 | | | |
-| cancel | 取消 | | | |
-| canary test | canary 测试 | | 金丝雀测试 | 本仓库保留 `canary` |
-| capability | 能力 | | | 必须与 `feature` → `功能` 区分 |
-| capability seam | 能力 seam | | 功能 seam、能力接缝 | 本仓库 Service Definition、Service Provider 与 Consumer 三种角色组成完整可替换能力的命名架构概念；普通 `seam` 仍按其词条处理 |
-| feature | 功能 | | 能力 | SDK 产品与工程模型中的可管理产品单元 |
-| feature option | 功能选项 | | variant | 一项 SDK 功能内有限、可选择的实现或配置 |
-| checkpoint | 检查点 | | | |
-| chunk | 分片 | | | |
-| compaction | 压缩 | 压缩（compaction） | | |
-| companion tool | 配套工具 | | | |
-| composition bundle | 组合包 | | | 只约束应用或插件的组合语境，不约束所有 `bundle` |
-| Cordis plugin config | Cordis 插件配置 | | | Cordis 插件公开的 `Config` 对象或配置结构 |
-| config key | 配置键 | | | Cordis 插件配置中的单个字段 |
-| consumer | 消费方 | | 消费者 | |
-| content block | 内容块 | | | |
-| Cookbook | 实操手册 | | | 文档标题用语 |
-| context | 上下文 | | | |
-| counterpart | 对侧文件 | | 对应物、配对物 | 双语配对语境；泛指"另一侧"时可写「另一侧」 |
-| configurable-provider directory | 可配置提供方目录 | | | llm seam 中 `registerConfigurableProviders()` 维护的目录；沿用 Service Catalog →「服务目录」先例 |
-| context compaction | 上下文压缩 | 上下文压缩（context compaction） | | |
-| contract | 约定 | | | 如：`pairing contract` →`配对约定` |
-| Cordis config entry | Cordis 配置项 | | | 指 `cordis.yml` 插件列表中的一项；插件实现本身写`Cordis 插件` |
-| Cordis plugin | Cordis 插件 | | | Cordis 加载的插件实现，不指 `cordis.yml` 中的一项配置 |
-| crash recovery | 崩溃恢复 | | | |
-| deploy root | 部署根目录 | | | |
-| dormant | 休眠 | | 睡眠、蛰伏 | 指已声明可配置但当前未注册路由的提供方 |
-| durability | 持久性 | | | |
-| feature requirement | 功能依赖 | | | 功能或功能选项通过 `requires` 声明的关系 |
-| event | 事件 | | | |
-| event log | 事件日志 | | | |
-| event stream | 事件流 | | | |
-| event-sourced | 事件溯源 | | | 沿用 DDD 社区通行译法 |
-| Executive summary | 摘要 | | | 事故复盘标题用语 |
-| executor | 执行器 | | | |
-| expected output | 预期输出 | | 金标 | 指 snapshot 比较产物；翻译语料的人工校准样例不在此列 |
-| extension | 扩展 | | | |
-| extension point | 扩展点 | | | 注意与 `seam` 区分 |
-| fail-fast | 快速失败 | | | |
-| fenced code block | 围栏代码块 | | | 沿用 MDN 中文翻译 |
-| fingerprint | 指纹 | | | 通用内容指纹；双语配对机制使用 sidecar record 记录两侧 blob hash |
-| finish reason | 结束原因 | | | |
-| fold | 折叠区 | | | 配置界面语境：默认收起的字段分区（collapsed →「收起」）|
-| foreground run | 前台运行 | | | |
-| freshness | 新鲜度 | | | 沿用 MDN 中文翻译；在本项目中指译文相对源文的同步状态 |
-| hook | 钩子 | | | |
-| implementation | 实现 | | | |
-| inference | 推理 | 推理（inference） | | 需要和 `reasoning` 区分时保留英文括注 |
-| info string | 信息字符串 | | | 沿用 CommonMark 中文翻译；指代码围栏 ``` 之后的语言标注 |
-| injection | 注入 | | | |
-| integration | 集成 | | | |
-| interface | 接口 | | | |
-| language switcher | 语言切换行 | | | i18n 配对机制用语：双语配对文件顶部的互链行 |
-| merge | 合并 | | | |
-| message | 消息 | | | |
-| mod | 模组 | | | |
-| model provider | 模型提供方 | | | |
-| model selection | 模型选择 | | 模型目标 | 面向 Agent 的提供方、模型和可选推理强度选择。 |
-| module | 模块 | | | |
-| non-escalation | 非升权 | | 非升级、不可升级 | 仅用于安全与权限语境，指主体不得获得超出既有授权的权限；普通升级不适用此行 |
-| npm dependency | NPM 依赖 | | | `package.json` 中的包关系；`dependencies`、`devDependencies` 等字段保持原样 |
-| opt-out ratio | opt-out 比例 | | 退出检查比例 | |
-| orphan | 遗留 | | 孤儿、孤立 | 指英文源已不存在的 `.zh.md`（如「遗留译文」）；进程语境按 OS 惯用语译「孤儿进程」 |
-| orphan branch | 孤立分支 | | 孤儿分支 | 沿用 git 官方中文翻译 |
-| package | 包 | | | 指 npm 包（`@deepseek-ai/dsh-*`）；`package.json` 等代码标识保持原样 |
-| pairing | 配对 | | | |
-| parent-subset grants | 父级子集授权 | | 父集合授权 | 指授权范围仅限于父级所持授权的子集 |
-| peer dependency | 对等依赖 | 对等依赖（peer dependency） | | |
-| permission | 权限 | | | |
-| persistence | 持久化 | | | |
-| pipeline | 流水线 | | | |
-| plugin | 插件 | | | |
-| postmortem | 事故复盘 | 事故复盘（postmortem） | 事后分析、事故记录 | 事故记录与分析文档；目录或路径中的 `postmortem` 保持代码形式 |
-| prompt | 提示词 | | | |
-| provider | 提供方 | | | |
-| provider-neutral | 提供方无关 | | 提供方中立 | |
-| quality gate | 质量门禁 | | | |
-| quiescence | 完全停稳 | | 静默、静止状态 | 指生命周期工作全部结算后的状态 |
-| reasoning | 推理 | 推理（reasoning） | | 需要和 `inference` 区分时保留英文括注 |
-| reasoning_content | 思考内容 | | | |
-| registry | 注册表 | | | |
-| replay | 回放 | | | |
-| resume | 恢复 | | | |
-| runtime | 运行时 | | | |
-| same-world subprocess | 与宿主共享文件系统和内核的子进程 | | 同世界子进程 | |
-| sandbox | 沙箱 | | | |
-| service | 服务 | | | |
-| serving interface | 对外服务接口 | | | |
-| session | 会话 | | | |
-| session event | 会话事件 | | | |
-| setup card | 设置卡片 | | | 首次运行时代替行卡直接展开的配置卡 |
-| sidecar file | 伴随文件 | | | 指与文档同目录的普通伴随文件 |
-| sidecar record | 伴随记录 | | 旁挂记录 | 指与文档同目录的伴随记录文件 |
-| smoke test | 冒烟测试 | | | |
-| snapshot | 快照 | | | |
-| source of truth | 真源 | | 事实来源、唯一来源 | |
-| spine | 主干 | | | |
-| stale | 陈旧 | | 过期 | 与 `fresh`（`新鲜`）成对；门禁输出中保留英文 `stale` 不翻译；`expired` 才译为`过期` |
-| step | 步骤 | | | |
-| stream | 流 | | | |
-| structural signature | 结构签名 | | | i18n 配对机制用语：门禁比对两侧文件时提取的有序结构序列（标题层级、代码块、列表等） |
-| Summary | 概述 | | | 事故复盘标题用语 |
-| system prompt | 系统提示词 | | | |
-| taxonomy | 分类体系 | | | |
-| token usage | token 用量 | | | |
-| tool | 工具 | | | |
-| tool call | 工具调用 | | | |
-| tool result | 工具结果 | | | |
-| tool schema | 工具 schema | | | |
-| toolkit | 工具包 | | | |
-| turn | 轮次 | | | |
-| VFS | VFS | 虚拟文件系统（VFS） | | |
-| typecheck | 类型检查 | | | |
-| vocabulary | 词汇 | | | |
-| wire format | 协议格式 | 协议格式（wire format） | | |
-| workflow | 工作流 | | | |
-| wrapper | 包装层 | | | 软件层或 SDK 包装层 |
-| wrapper script | 包装脚本 | | | 可执行脚本包装层 |
+| adapter | مهايئ | | | |
+| adapter contract | مهايئ اتفاق | مهايئ اتفاق (adapter contract) | | |
+| append-only | فقط إلحاق | | | |
+| artifact | ناتج | | صنع صنف | |
+| backend | خلفية | | | |
+| binder | ربط جهاز | | | تسمية زاوية لون: يأخذ قد إعلان واجهة ربط إلى استدعاء جهة context أو دورة الحياة |
+| config | إعداد | | | تسمية زاوية لون: واحد قد تحليل إعداد قيمة أو حد صارم إطار إعداد سجل |
+| controller | تحكم جهاز | | | تسمية زاوية لون: قبول معنى رسم و تغيير واحد بند قائم مجال أو عرض حالة |
+| directory | دليل | | | تسمية زاوية لون: كشف توفير اكتشاف أو اختيار بند و بيانات وصفية |
+| engine | جذب محرك | | | تسمية زاوية لون: تنفيذ مجال حساب قاعدة أو لديه حالة تنفيذ نموذج |
+| gateway | شبكة صلة | | | تسمية زاوية لون: ملائم إعداد عملية، شبكة شبكة،RPC أو API حد |
+| handle | جملة مقبض | | | تسمية زاوية لون: مرجع و تحكم أو مراقبة واحد فوري مورد |
+| policy | سياسة | | | تسمية زاوية لون: قرار سماح، اختيار، حد أو مراقبة ماذا |
+| presenter | عرض تحويل جهاز | | | تسمية زاوية لون: يأخذ مجال قيمة صاف تحويل لـ تصيير معنى رسم |
+| resolver | محلل | | | تسمية زاوية لون: أصل حسب إدخال حساب حساب أو تحديد موضع واحد جواب سجل |
+| store | تخزين | | | تسمية زاوية لون: يملك واحد مجموعة بيانات و رئيسي يلزم توفير بيانات عملية |
+| background job | خلفية مهمة | | | |
+| block | كتلة | | | |
+| build target | بناء هدف | | | |
+| cancel | إلغاء | | | |
+| canary test | canary اختبار | | ذهب خيط عصفور اختبار | هذا مستودع إبقاء `canary` |
+| capability | قدرة | | | يجب و `feature` → `وظيفة` منطقة قسم |
+| capability seam | قدرة seam | | وظيفة seam، قدرة وصل شق | هذا مستودع Service Definition،Service Provider و Consumer ثلاثة نوع زاوية لون مجموعة صار كامل يمكن استبدال قدرة تسمية هيكل بنية عام فكرة؛ عادي `seam` ما زال حسب ذلك كلمة بند معالجة |
+| feature | وظيفة | | قدرة | SDK منتج و عمل مسار نموذج في يمكن إدارة منتج وحدة |
+| feature option | وظيفة خيار | | variant | واحد بند SDK وظيفة داخل لديه حد، اختياري اختيار تنفيذ أو إعداد |
+| checkpoint | فحص نقطة | | | |
+| chunk | قسم قطعة | | | |
+| compaction | ضغط | ضغط (compaction) | | |
+| companion tool | إعداد طقم أداة | | | |
+| composition bundle | تركيب حزمة | | | فقط قيد تطبيق أو إضافة تركيب لغة بيئة، لا قيد كل `bundle` |
+| Cordis plugin config | Cordis إضافة إعداد | | | Cordis إضافة عام `Config` كائن أو إعداد بنية |
+| config key | إعداد مفتاح | | | Cordis إضافة إعداد في مفرد عدد حقل |
+| consumer | مستهلك | | إزالة استهلاك من | |
+| content block | محتوى كتلة | | | |
+| Cookbook | فعلي تشغيل يد سجل | | | وثيقة عنوان استخدام لغة |
+| context | سياق | | | |
+| counterpart | مقابل جانب ملف | | مقابل شيء، إعداد مقابل شيء | مزدوج لغة إعداد مقابل لغة بيئة؛ عام إشارة"آخر جانب"وقت يمكن كتابة «آخر جانب» |
+| configurable-provider directory | يمكن إعداد مزود دليل | | | llm seam في `registerConfigurableProviders()` صيانة دليل؛ امتداد استخدام Service Catalog →«خدمة دليل» أولا مثال |
+| context compaction | سياق ضغط | سياق ضغط (context compaction) | | |
+| contract | اتفاق | | | مثل:`pairing contract` →`إعداد مقابل اتفاق` |
+| Cordis config entry | Cordis بند إعداد | | | إشارة `cordis.yml` إضافة قائمة في واحد بند؛ إضافة تنفيذ ذاته كتابة`Cordis إضافة` |
+| Cordis plugin | Cordis إضافة | | | Cordis تحميل إضافة تنفيذ، لا إشارة `cordis.yml` في واحد بند إعداد |
+| crash recovery | انهيار انهيار استعادة | | | |
+| deploy root | نشر أصل دليل | | | |
+| dormant | راحة نوم | | نوم نوم، كامن كمون | إشارة قد إعلان يمكن إعداد لكن حالي لم تسجيل توجيه مزود |
+| durability | حمل دائم صفة | | | |
+| feature requirement | وظيفة اعتماد | | | وظيفة أو وظيفة خيار عبر `requires` إعلان علاقة |
+| event | حدث | | | |
+| event log | حدث سجل | | | |
+| event stream | حدث تدفق | | | |
+| event-sourced | حدث تتبع مصدر | | | امتداد استخدام DDD مجتمع منطقة عبر سطر ترجمة قاعدة |
+| Executive summary | ملخص | | | أمر لذا تكرار قرص عنوان استخدام لغة |
+| executor | منفذ | | | |
+| expected output | مسبق مدة إخراج | | ذهب علامة | إشارة snapshot مقارنة مقارنة ناتج؛ قلب ترجمة لغة مادة شخص عمل تدقيق دقيق مثال مثال لا في هذا صف |
+| extension | توسيع | | | |
+| extension point | نقطة توسيع | | | ملاحظة معنى و `seam` منطقة قسم |
+| fail-fast | سريع سرعة فشل | | | |
+| fenced code block | محيط شريط شفرة كتلة | | | امتداد استخدام MDN العربية قلب ترجمة |
+| fingerprint | إشارة نقش | | | عام محتوى إشارة نقش؛ مزدوج لغة إعداد مقابل آلية استخدام sidecar record سجل اثنان جانب blob hash |
+| finish reason | انتهاء سبب | | | |
+| fold | طي منطقة | | | إعداد واجهة لغة بيئة: افتراضي استلام بدء حقل قسم منطقة (collapsed →«استلام بدء»)|
+| foreground run | قبل منصة تشغيل | | | |
+| freshness | جديد طازج درجة | | | امتداد استخدام MDN العربية قلب ترجمة؛ في هذا مشروع في إشارة ترجمة نص متبادل مقابل مصدر نص تزامن حالة |
+| hook | خطاف | | | |
+| implementation | تنفيذ | | | |
+| inference | دفع إدارة | دفع إدارة (inference) | | حاجة و `reasoning` منطقة قسم وقت إبقاء إنجليزي نص تضمين ملاحظة |
+| info string | معلومة نص | | | امتداد استخدام CommonMark العربية قلب ترجمة؛ إشارة شفرة محيط شريط ``` بعد لغة علامة ملاحظة |
+| injection | حقن | | | |
+| integration | تجميع صار | | | |
+| interface | واجهة | | | |
+| language switcher | لغة تبديل سطر | | | i18n إعداد مقابل آلية استخدام لغة: مزدوج لغة إعداد مقابل ملف قمة جزء متبادل سلسلة سطر |
+| merge | دمج | | | |
+| message | رسالة | | | |
+| mod | نموذج مجموعة | | | |
+| model provider | نموذج مزود | | | |
+| model selection | نموذج اختيار | | نموذج هدف | موجه إلى Agent مزود، نموذج و اختياري دفع إدارة قوي درجة اختيار. |
+| module | وحدة | | | |
+| non-escalation | غير رفع حق | | غير ترقية، غير ممكن ترقية | فقط لأجل أمان و إذن لغة بيئة، إشارة رئيسي جسم لا نيل نيل نيل تجاوز خروج قائم تخويل إذن؛ عادي ترقية لا ملائم استخدام هذا سطر |
+| npm dependency | NPM اعتماد | | | `package.json` في حزمة علاقة؛`dependencies`،`devDependencies` انتظار حقل إبقاء أصل مثال |
+| opt-out ratio | opt-out مقارنة مثال | | خروج فحص مقارنة مثال | |
+| orphan | متروك إبقاء | | منعزل طفل، منعزل قيام | إشارة إنجليزي نص مصدر قد لا وجود `.ar.md`(مثل «متروك إبقاء ترجمة نص») ؛ عملية لغة بيئة حسب OS معتاد استخدام لغة ترجمة «منعزل طفل عملية» |
+| orphan branch | منعزل قيام فرع | | منعزل طفل فرع | امتداد استخدام git رسمي جهة العربية قلب ترجمة |
+| package | حزمة | | | إشارة npm حزمة (`@deepseek-ai/dsh-*`) ؛`package.json` انتظار شفرة معرف إبقاء أصل مثال |
+| pairing | إعداد مقابل | | | |
+| parent-subset grants | أب درجة فرعي تجميع تخويل | | أب تجميع دمج تخويل | إشارة تخويل نطاق فقط حد في أب درجة الذي حمل تخويل فرعي تجميع |
+| peer dependency | مقابل انتظار اعتماد | مقابل انتظار اعتماد (peer dependency) | | |
+| permission | إذن | | | |
+| persistence | حفظ دائم | | | |
+| pipeline | خط الإنتاج | | | |
+| plugin | إضافة | | | |
+| postmortem | أمر لذا تكرار قرص | أمر لذا تكرار قرص (postmortem) | أمر بعد قسم تحليل، أمر لذا سجل | أمر لذا سجل و قسم تحليل وثيقة؛ دليل أو مسار في `postmortem` إبقاء شفرة شكل صيغة |
+| prompt | نص التوجيه | | | |
+| provider | مزود | | | |
+| provider-neutral | مزود غير متصل | | مزود في قيام | |
+| quality gate | جودة كمية بوابة | | | |
+| quiescence | تماما توقف مستقر | | ساكن صامت، ساكن توقف حالة | إشارة دورة الحياة عمل الكل تسوية بعد حالة |
+| reasoning | دفع إدارة | دفع إدارة (reasoning) | | حاجة و `inference` منطقة قسم وقت إبقاء إنجليزي نص تضمين ملاحظة |
+| reasoning_content | تفكير اعتبار محتوى | | | |
+| registry | سجل التسجيل | | | |
+| replay | إعادة تشغيل | | | |
+| resume | استعادة | | | |
+| runtime | وقت التشغيل | | | |
+| same-world subprocess | و مضيف مشترك نظام الملفات و داخل نواة عملية فرعية | | نفس عالم حد عملية فرعية | |
+| sandbox | صندوق رملي | | | |
+| service | خدمة | | | |
+| serving interface | مقابل خارج خدمة واجهة | | | |
+| session | جلسة | | | |
+| session event | جلسة حدث | | | |
+| setup card | ضبط بطاقة | | | أول مرة وقت التشغيل بديل بديل سطر بطاقة مباشر توسيع إعداد بطاقة |
+| sidecar file | مرافق مع ملف | | | إشارة و وثيقة نفس دليل عادي مرافق مع ملف |
+| sidecar record | مرافق مع سجل | | جانب تعليق سجل | إشارة و وثيقة نفس دليل مرافق مع سجل ملف |
+| smoke test | خطر دخان اختبار | | | |
+| snapshot | لقطة | | | |
+| source of truth | حق مصدر | | واقع مصدر، وحيد مصدر | |
+| spine | رئيسي جاف | | | |
+| stale | قديم قديم | | مرور مدة | و `fresh`(`جديد طازج`) صار مقابل؛ بوابة إخراج في إبقاء إنجليزي نص `stale` لا قلب ترجمة؛`expired` عندئذ ترجمة لـ`مرور مدة` |
+| step | خطوة | | | |
+| stream | تدفق | | | |
+| structural signature | بنية توقيع | | | i18n إعداد مقابل آلية استخدام لغة: بوابة مقارنة مقابل اثنان جانب ملف وقت رفع أخذ لديه ترتيب بنية تسلسل (عنوان طبقة درجة، شفرة كتلة، قائمة انتظار) |
+| Summary | عام وصف | | | أمر لذا تكرار قرص عنوان استخدام لغة |
+| system prompt | توجيه النظام | | | |
+| taxonomy | تصنيف جسم نظام | | | |
+| token usage | token استخدام كمية | | | |
+| tool | أداة | | | |
+| tool call | أداة استدعاء | | | |
+| tool result | أداة نتيجة | | | |
+| tool schema | أداة schema | | | |
+| toolkit | أداة حزمة | | | |
+| turn | جولة | | | |
+| VFS | VFS | وهمي محاكاة نظام الملفات (VFS) | | |
+| typecheck | نوع فحص | | | |
+| vocabulary | مفردات | | | |
+| wire format | بروتوكول صيغة | بروتوكول صيغة (wire format) | | |
+| workflow | سير العمل | | | |
+| wrapper | حزمة تركيب طبقة | | | لين عنصر طبقة أو SDK حزمة تركيب طبقة |
+| wrapper script | حزمة تركيب نص برمجي | | | يمكن تنفيذ نص برمجي حزمة تركيب طبقة |

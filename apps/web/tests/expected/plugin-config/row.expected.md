@@ -1,11 +1,11 @@
-- button "返回 live-client":
+- button "إرجاع live-client":
   - img
   - text: live-client
 - heading "fixture-live-client" [level=3]
 - paragraph:
   - code: "@fixture/live-client"
-- paragraph: 示例配置项
-- form "动态插件配置":
-  - text: 问候语
-  - textbox "问候语": 你好
-  - button "保存"
+- paragraph: عرض مثال بند إعداد
+- form "حركة حالة إضافة إعداد":
+  - text: سؤال انتظار لغة
+  - textbox "سؤال انتظار لغة": أنت جيد
+  - button "حفظ"

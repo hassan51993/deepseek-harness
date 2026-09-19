@@ -12,7 +12,7 @@ import { PluginsPanelIcon } from '../src/client/PluginsPanelIcon.tsx'
 import type { PluginManagerFace } from '../src/client/manager-store.ts'
 import { apply as hostApply } from '../src/index.ts'
 
-usePinnedBrowserLanguages('zh-CN')
+usePinnedBrowserLanguages('ar-SA')
 afterEach(cleanup)
 
 async function bench() {
@@ -76,7 +76,7 @@ describe('ui-plugin-manager browser plugin', () => {
     expect(glyph.container.querySelector('svg')?.getAttribute('width')).toBe('18')
     expect(icon.options).toMatchObject({ id: PANEL_ID, order: 0 })
     expect(icon.locale).toBe(NS)
-    expect(resolveSlotLabel(icon.options.label)).toBe('插件')
+    expect(resolveSlotLabel(icon.options.label)).toBe('إضافة')
     // The page declares the slots a plugin's configuration arrives through, and binds their projection beside its state.
     expect(b.slots.spec('plugins.item')).toMatchObject({ kind: 'list', scope: 'root' })
     expect(b.slots.spec('plugins.bundle.config')).toMatchObject({ kind: 'keyed', scope: 'root' })

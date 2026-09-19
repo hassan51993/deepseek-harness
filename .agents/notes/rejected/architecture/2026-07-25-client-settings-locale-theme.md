@@ -2,7 +2,7 @@
 
 Status: rejected — closed as a proposal: the shipped ui-settings, locale, and ui-theme packages and their READMEs own the design
 
-English | [中文](2026-07-25-client-settings-locale-theme.zh.md)
+English | [العربية](2026-07-25-client-settings-locale-theme.ar.md)
 
 ## Problem
 
@@ -30,7 +30,7 @@ The theme service never touches the DOM. `ui-layout` reads the Theme getter init
 |---|---|---|
 | chrome content (trigger/header/close) | `ui-settings-general` | Settings entry-row icon and copy, panel title, close hidden text |
 | General section (order 0) | `ui-settings-general` | Permission and Tool Call visual skeletons (no write operations) plus the `settings.general.item` slot declaration |
-| Language row (item order 0) | `locale` | Selector dropdown; 中文/English genuinely switch |
+| Language row (item order 0) | `locale` | Selector dropdown; العربية/English genuinely switch |
 | Appearance row (item order 10) | `ui-theme` | Light/Dark/System three cubes genuinely switch (the selected state reflects preference) |
 | Models section (order 10) | `ui-settings-models` | Navigation item only, with an empty content area; later model-management features land in that package |
 | Plugin | none | Not built this phase, and the navigation does not show the item (once a later plugin feature package registers the section it appears automatically) |
@@ -43,16 +43,16 @@ The first phase localizes only the copy inside the Settings overlay; dictionarie
 root
 └─ sidebar
    └─ sidebar.settings                   single/root
-      └─ ui-settings（壳，零文案）
-         ├─ settings.trigger             single/root  ui-settings-general 注册
-         ├─ settings.header              single/root  ui-settings-general 注册
-         ├─ settings.close               single/root  ui-settings-general 注册
+      └─ ui-settings(قشرة، صفر نص سجل)
+         ├─ settings.trigger single/root ui-settings-general تسجيل
+         ├─ settings.header single/root ui-settings-general تسجيل
+         ├─ settings.close single/root ui-settings-general تسجيل
          └─ settings.section             list/root
-            ├─ general (order 0)         ui-settings-general 注册
+            ├─ general (order 0) ui-settings-general تسجيل
             │  └─ settings.general.item  list/root
-            │     ├─ language (0)        locale 注册
-            │     └─ appearance (10)     ui-theme 注册
-            └─ models (order 10)         ui-settings-models 注册
+            │ ├─ language (0) locale تسجيل
+            │ └─ appearance (10) ui-theme تسجيل
+            └─ models (order 10) ui-settings-models تسجيل
 ```
 
 Section and item contributions use `ctx.slots.inject()` and do not depend on the client manifest's apply order; localized labels ride the label thunk from the [full-rollout note](../../archived/architecture/2026-07-30-client-locale-full-rollout.md). The SlotMap types split homes: trigger/header/close/section have their canonical home in the ui-settings contract (the consumers, general and models, both depend on the shell — no cycle); `settings.general.item`'s canonical home is the locale package — it is the lowest common dependency of all item registrants (a settings row always carries copy), while the declarer general's contract is unreachable from locale/ui-theme (it would form a cycle); ui-theme consumes it through a re-export outlet.
@@ -74,18 +74,18 @@ export interface ThemeDefinition {
 
 export interface ThemeSnapshot {
   preference: ThemePreference
-  active: ThemeDefinition            // system 已解析为具体 light/dark 定义
+  active: ThemeDefinition // system قد تحليل لـ أداة جسم light/dark تعريف
   themes: readonly ThemeDefinition[]
   revision: number
 }
 
 export interface LocaleDefinition {
-  id: 'zh' | 'en'
+  id: 'ar' | 'en'
   label: string
 }
 
 export interface LocaleSnapshot {
-  active: 'zh' | 'en'
+  active: 'ar' | 'en'
   locales: readonly LocaleDefinition[]
   revision: number
 }
@@ -98,7 +98,7 @@ export interface Events {
 }
 ```
 
-Locale ships with 中文 and English built in; `setLocale`/`setTheme` are the only write entry points, and an unknown id fails.
+Locale ships with العربية and English built in; `setLocale`/`setTheme` are the only write entry points, and an unknown id fails.
 
 ## Alternatives considered
 
@@ -121,7 +121,7 @@ Locale ships with 中文 and English built in; `setLocale`/`setTheme` are the on
 - Locale and Theme writes go only through the setters; ongoing synchronization goes only through the change events.
 - Each feature row's store initializes from the getter and is thereafter updated by its own change event with local re-renders.
 - Layout applies the theme snapshot on its own and the theme service never accesses the DOM; no system branch appears in the presenter.
-- 中文/English and Light/Dark/System switch and are restored after a refresh; with the preference on system, a system color-scheme change takes effect immediately.
+- العربية/English and Light/Dark/System switch and are restored after a refresh; with the preference on system, a system color-scheme change takes effect immediately.
 - Models has only a navigation item and an empty content area; the Permission and Tool Call skeletons perform no writes.
 - The overlay closes via the close button, a mask click, and ESC.
 
