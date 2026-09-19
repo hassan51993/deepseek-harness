@@ -9,7 +9,7 @@ export const ar = {
   'command': 'إشارة أمر',
   'skill': 'تقنية قدرة',
   'subagent': 'فرعي ذكي جسم',
-  'loading': 'صحيح في تحميل…',
+  'loading': 'جارٍ تحميل…',
   'drill.aria': 'دخول دليل',
   'drill.hint': 'دخول دليل',
   'drill.key': 'Tab',

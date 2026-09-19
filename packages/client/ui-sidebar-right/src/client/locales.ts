@@ -8,19 +8,19 @@
 
 /** Arabic dictionary and key-set source of truth. */
 export const ar = {
-  'chrome.expand': 'فتح جانب حافة شريط',
-  'chrome.expandAria': 'فتح يمين جانب حافة شريط',
-  'chrome.collapse': 'استلام بدء جانب حافة شريط',
-  'chrome.collapseAria': 'استلام بدء يمين جانب حافة شريط',
+  'chrome.expand': 'فتح الشريط الجانبي',
+  'chrome.expandAria': 'فتح يمين الشريط الجانبي',
+  'chrome.collapse': 'طي الشريط الجانبي',
+  'chrome.collapseAria': 'طي يمين الشريط الجانبي',
   'chrome.toFullscreen': 'كل شاشة',
   'chrome.exitFullscreen': 'خروج كل شاشة',
   'dock.emptyPane': 'فارغ وجه لوح',
   'dock.splitPane': 'قسم شريط',
   'dock.splitPaneDisabled': 'قد بلوغ اثنان إطار حد أعلى',
-  'dock.splitPaneNarrow': 'شريط عرض لا كاف، سحب عرض جانب حافة شريط بعد مجددا قسم شريط',
+  'dock.splitPaneNarrow': 'شريط عرض لا كاف، سحب عرض الشريط الجانبي بعد مجددا قسم شريط',
   'dock.closeTab': 'إغلاق',
   'dock.addTab': 'جديد وسم صفحة',
-  'dock.dockFloat': 'استلام عودة إلى جانب حافة شريط',
+  'dock.dockFloat': 'استلام عودة إلى الشريط الجانبي',
   'dock.closeFloat': 'إغلاق',
   'dock.drop.center': 'نقل إلى هذا داخل',
   'dock.drop.left': 'يسار قسم شريط',
@@ -28,7 +28,7 @@ export const ar = {
   'dock.drop.top': 'فوق قسم شريط',
   'dock.drop.bottom': 'تحت قسم شريط',
   'tab.guide.title': 'بدء',
-  'tab.unavailable': 'هذا صنف محتوى أيضا لا يوجد متاح فحص نظر طريقة.',
+  'tab.unavailable': 'هذا صنف محتوى أيضا لا يوجد متاح عرض طريقة.',
 } satisfies Record<string, string>
 
 /** Right-Sidebar dictionary key union. */

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-20-unified-image-request-pipeline.md
 2026-08-20-unified-image-request-pipeline.md: c20bdf14309e1369eac6a8bed2ec9f633520571b
-2026-08-20-unified-image-request-pipeline.ar.md: e43f3d3fc8801c7ba6504c978353e671ae69806b
+2026-08-20-unified-image-request-pipeline.ar.md: 5eb4f8c45b0913a9183b37f5f9d432a969f8b0cd

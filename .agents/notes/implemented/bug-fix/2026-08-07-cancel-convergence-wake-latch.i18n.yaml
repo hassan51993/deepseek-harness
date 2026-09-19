@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-07-cancel-convergence-wake-latch.md
 2026-08-07-cancel-convergence-wake-latch.md: 7e1a035b276d3b639fdac28b56ab95e43539a640
-2026-08-07-cancel-convergence-wake-latch.ar.md: 04674829fde041a416b4bfb188ebd126d4bd35f1
+2026-08-07-cancel-convergence-wake-latch.ar.md: fbdd8aeb07af3c907578b76fdaf64918e73b82be

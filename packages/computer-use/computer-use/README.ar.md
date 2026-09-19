@@ -31,9 +31,9 @@ kind: "package-reference"
 - name: '@deepseek-ai/dsh-computer-use'
 ```
 
-خدمة لا يوجد بند إعداد. مزود إضافة حقن `computerUse` و استدعاء `ctx.computerUse.register(ComputerUseProviderName(name))`؛ هذا صنف لوحة نوع من `@deepseek-ai/dsh-computer-use/brand` توجيه خروج. إرجاع effect تنظيف دالة تحرير هذا مرة تسجيل.
+خدمة لا يوجد بند إعداد. مزود إضافة حقن `computerUse` و استدعاء `ctx.computerUse.register(ComputerUseProviderName(name))`؛ هذا صنف لوحة نوع من `@deepseek-ai/dsh-computer-use/brand` تصدير. إرجاع effect تنظيف دالة تحرير هذا مرة تسجيل.
 
-مزود أولا إيقاف استقبال أداة استدعاء، إغلاق مورد و انتظار ذاتي لديه عمل انتهاء، مجددا تحرير تسجيل. تحرير قبل،`ctx.computerUse.providerName` بداية نهاية تقرير إبلاغ قد تسجيل اسم.
+مزود أولا إيقاف استقبال استدعاء الأداة، إغلاق مورد و انتظار ذاتي لديه عمل انتهاء، مجددا تحرير تسجيل. تحرير قبل،`ctx.computerUse.providerName` بداية نهاية تقرير إبلاغ قد تسجيل اسم.
 
 -----
 

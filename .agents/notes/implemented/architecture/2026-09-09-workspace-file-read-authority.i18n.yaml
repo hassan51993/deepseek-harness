@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-09-workspace-file-read-authority.md
 2026-09-09-workspace-file-read-authority.md: 8fb850d62d971be009ebb9dc9125b2fef2878bf6
-2026-09-09-workspace-file-read-authority.ar.md: 56a85fe858fc5c12ced029fdd4fd1f622a839122
+2026-09-09-workspace-file-read-authority.ar.md: a58f9dfbcf81570ce5e128f1b731c0ffd7ab0b7d

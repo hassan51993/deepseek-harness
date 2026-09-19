@@ -1268,10 +1268,10 @@ describe('running and lock semantics', () => {
 
   it('the plan projection swaps the placeholder while its effective target is plan mode', () => {
     const active = bench({ plan: { active: true, pending: false } })
-    expect(active.placeholder).toBe('وصف أنت مهمة بـ توليد حساب تخطيط')
+    expect(active.placeholder).toBe('وصف أنت مهمة بـ توليد خطة')
     // /plan just ran: pending entry already reads as the plan target.
     const entering = bench({ plan: { active: false, pending: true } })
-    expect(entering.placeholder).toBe('وصف أنت مهمة بـ توليد حساب تخطيط')
+    expect(entering.placeholder).toBe('وصف أنت مهمة بـ توليد خطة')
     // Pending exit: target is default again.
     const leaving = bench({ plan: { active: true, pending: true } })
     expect(leaving.placeholder).toBe('إرسال رسالة أو إنشاء مهمة, / استدعاء إشارة أمر, @ ملف أو محادثة')
@@ -1388,22 +1388,22 @@ describe('decorations', () => {
   it('an inserted reference renders a real chip capsule with its icon and label', () => {
     const { view, shell } = bench()
     const reference = {
-      source: 'reference', ref: 'w1', label: 'جلسة واحد', appearance: 'session' as const, clipboardText: '@w1',
+      source: 'reference', ref: 'w1', label: '会话一', appearance: 'session' as const, clipboardText: '@w1',
     }
     act(() => {
-      shell.setDraft('مشاركة اعتبار @w1 محتوى')
+      shell.setDraft('参考 @w1 内容')
       shell.insertReference(
         reference,
         { start: 3, end: 6, draftRev: shell.snapshot.draftRev },
       )
     })
     const chip = view.container.querySelector('[data-composer-chip]')
-    expect(chip?.textContent).toBe('جلسة واحد')
+    expect(chip?.textContent).toBe('会话一')
     expect(chip?.querySelector('svg')).not.toBeNull()
     expect(chip?.getAttribute('contenteditable')).toBe('false')
     expect(shell.snapshot.occurrences).toHaveLength(1)
     // The draft IS the clipboard projection; the label lives in the chip DOM.
-    expect(shell.snapshot.draft).toBe('مشاركة اعتبار @w1 محتوى')
+    expect(shell.snapshot.draft).toBe('参考 @w1 内容')
     expect(shell.snapshot.occurrences[0]).toMatchObject({ offset: 3, length: 3 })
   })
 
@@ -1412,7 +1412,7 @@ describe('decorations', () => {
     act(() => {
       shell.setDraft('@w1')
       shell.insertReference({
-        source: 'reference', ref: 'w1', label: 'جلسة واحد', appearance: 'session', clipboardText: '@w1',
+        source: 'reference', ref: 'w1', label: '会话一', appearance: 'session', clipboardText: '@w1',
       }, { start: 0, end: 3, draftRev: shell.snapshot.draftRev })
     })
     const chip = view.container.querySelector('[data-composer-chip]')
@@ -1429,9 +1429,9 @@ describe('decorations', () => {
     // removes the whole occurrence — is checkable here.
     const { shell } = bench()
     act(() => {
-      shell.setDraft('قبل @w1 بعد')
+      shell.setDraft('前 @w1 后')
       shell.insertReference({
-        source: 'reference', ref: 'w1', label: 'جلسة واحد', appearance: 'session', clipboardText: '@w1',
+        source: 'reference', ref: 'w1', label: '会话一', appearance: 'session', clipboardText: '@w1',
       }, { start: 2, end: 5, draftRev: shell.snapshot.draftRev })
     })
     expect(shell.snapshot.occurrences).toHaveLength(1)
@@ -1440,15 +1440,15 @@ describe('decorations', () => {
         expect($replaceDetectSpanWithText({ start: 2, end: 3 }, '')).toBe(true)
       }, { discrete: true })
     })
-    expect(shell.snapshot).toMatchObject({ draft: 'قبل  بعد', occurrences: [] })
+    expect(shell.snapshot).toMatchObject({ draft: '前  后', occurrences: [] })
   })
 
   it('copy and cut expand a selected chip to its clipboard projection natively', async () => {
     const { shell, textarea } = bench()
     act(() => {
-      shell.setDraft('قبل @w1 بعد')
+      shell.setDraft('前 @w1 后')
       shell.insertReference({
-        source: 'reference', ref: 'w1', label: 'جلسة واحد', appearance: 'session', clipboardText: '@w1',
+        source: 'reference', ref: 'w1', label: '会话一', appearance: 'session', clipboardText: '@w1',
       }, { start: 2, end: 5, draftRev: shell.snapshot.draftRev })
       // Select the chip plus its flanking spaces: detect [1, 4).
       shell.editor.update(() => { $selectDetectSpan({ start: 1, end: 4 }) }, { discrete: true })
@@ -1456,14 +1456,14 @@ describe('decorations', () => {
     const setData = vi.fn()
     fireEvent.copy(textarea, { clipboardData: { setData, getData: () => '' } })
     expect(setData).toHaveBeenCalledWith('text/plain', ' @w1 ')
-    expect(shell.snapshot.draft).toBe('قبل @w1 بعد')
+    expect(shell.snapshot.draft).toBe('前 @w1 后')
 
     act(() => {
       shell.editor.update(() => { $selectDetectSpan({ start: 1, end: 4 }) }, { discrete: true })
     })
     fireEvent.cut(textarea, { clipboardData: { setData, getData: () => '' } })
     await vi.waitFor(() => {
-      expect(shell.snapshot).toMatchObject({ draft: 'قبل بعد', occurrences: [] })
+      expect(shell.snapshot).toMatchObject({ draft: '前后', occurrences: [] })
     })
     expect(setData).toHaveBeenLastCalledWith('text/plain', ' @w1 ')
   })

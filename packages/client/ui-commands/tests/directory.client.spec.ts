@@ -66,7 +66,7 @@ describe('status and resolve (per key)', () => {
     await refreshed
     expect(dir.resolve(S1, 'هدف')).toEqual(goal)
     expect(dir.resolve(S1, 'goal')).toEqual(goal)
-    expect(dir.resolve(S1, 'حساب تخطيط')).toBeUndefined()
+    expect(dir.resolve(S1, 'خطة')).toBeUndefined()
     expect(dir.resolve(S1, 'unregistered')).toBeUndefined()
     const next = dir.refresh(S1)
     pull(S1, 1).resolve([goal, exact])

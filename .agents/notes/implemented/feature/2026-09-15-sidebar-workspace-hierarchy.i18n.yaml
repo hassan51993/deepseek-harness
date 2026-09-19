@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-15-sidebar-workspace-hierarchy.md
 2026-09-15-sidebar-workspace-hierarchy.md: ce6a00646bfe403dacd027df7f7f364ebc00860d
-2026-09-15-sidebar-workspace-hierarchy.ar.md: 39157f1b64a5222af190dc0e6f42c8a14b954ec9
+2026-09-15-sidebar-workspace-hierarchy.ar.md: 3d64a0aae1a788bf49cf68087cd723af90c18c6c

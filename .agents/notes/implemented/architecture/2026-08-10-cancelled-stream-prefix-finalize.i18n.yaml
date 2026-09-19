@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-10-cancelled-stream-prefix-finalize.md
 2026-08-10-cancelled-stream-prefix-finalize.md: c27bf6d2d7bf52b51aab11ebd6045dee2d778280
-2026-08-10-cancelled-stream-prefix-finalize.ar.md: a90d859d0e4e26c74d1063686c3158e6a0b7bd76
+2026-08-10-cancelled-stream-prefix-finalize.ar.md: 3008be3cc3cb2dd49f54a22a597b1d7b00622a4e

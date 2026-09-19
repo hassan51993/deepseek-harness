@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-06-frontend-performance-budgets.md
 2026-09-06-frontend-performance-budgets.md: 47cd91a85c113a4788191a54937bac355cba0e98
-2026-09-06-frontend-performance-budgets.ar.md: dd01f2f588611fe6e5de42cae157d6fa05005335
+2026-09-06-frontend-performance-budgets.ar.md: e09637641acd544888bd1a63693ec1be9147cffe

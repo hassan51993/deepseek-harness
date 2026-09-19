@@ -82,8 +82,8 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     // Shipped preset names resolve over the agent-preset dictionaries the
     // real plugin registers; user-authored metadata stays untranslated.
-    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'معيار نمط' } as never)
-    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('معيار نمط')
+    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'النمط المعياري' } as never)
+    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('النمط المعياري')
     expect(injected.presetName({ id: 'mine', trust: 'user', name: 'أنا ذاتي ذات', isDefault: false, rows: [] })).toBe('أنا ذاتي ذات')
     await b.ctx.fiber.dispose()
   })

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-workspace-files-service.md
 2026-09-05-workspace-files-service.md: 47e4aacfa9b7d2cbdef2573bf54f7c3327c2562a
-2026-09-05-workspace-files-service.ar.md: e26f8f487548417bd5de82a471e7bf80bbf4e961
+2026-09-05-workspace-files-service.ar.md: 0798608be8ba4c589f9bb1ec66797dcbee9b217f

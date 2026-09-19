@@ -6,7 +6,7 @@
 
 ## تعريف Config نوع
 
-في إضافة في توجيه خروج واحد `Config` نوع و نفس اسم Schemastery schema؛ قيمة افتراضية مباشر كتابة في schema في:
+في إضافة في تصدير واحد `Config` نوع و نفس اسم Schemastery schema؛ قيمة افتراضية مباشر كتابة في schema في:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -42,7 +42,7 @@ export function apply(ctx: Context, config: Config) {
         maxRetries: 5
 ```
 
-إضافة تحميل وقت،Cordis سوف عبر توجيه خروج schema تحقق إعداد، و ملء ملء لم توفير حقل قيمة افتراضية. لا يلزم توجيه خروج عادي كائن بصفة `Config`، لأن هو لا ممتلئ كاف Cordis اشتراط Standard Schema واجهة.
+إضافة تحميل وقت،Cordis سوف عبر تصدير schema تحقق إعداد، و ملء ملء لم توفير حقل قيمة افتراضية. لا يلزم تصدير عادي كائن بصفة `Config`، لأن هو لا ممتلئ كاف Cordis اشتراط Standard Schema واجهة.
 
 ## Schema تحقق
 

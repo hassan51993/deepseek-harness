@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-06-python-runtime-windows-hosted.md
 2026-09-06-python-runtime-windows-hosted.md: d8cda721ab93f8b9363a3ba824dbee7984dbdfed
-2026-09-06-python-runtime-windows-hosted.ar.md: 7a72811917a394a2dcd9ce768b3d737194d4ed1c
+2026-09-06-python-runtime-windows-hosted.ar.md: 00fb5005d3890e2bd2799176eb52f9f384eb8dd4

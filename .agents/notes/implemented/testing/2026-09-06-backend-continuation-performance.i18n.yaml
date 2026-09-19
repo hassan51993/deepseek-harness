@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-06-backend-continuation-performance.md
 2026-09-06-backend-continuation-performance.md: 8e136657030a42fa2b93d9df36c9bc63940b2691
-2026-09-06-backend-continuation-performance.ar.md: 96620252b46f137903f315c898ad179a89d1cb08
+2026-09-06-backend-continuation-performance.ar.md: e2a50cf44ca030c0c003a95a3d1a7bea15e05d94

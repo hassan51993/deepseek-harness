@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-07-win32-picker-foreground-alt-key.md
 2026-09-07-win32-picker-foreground-alt-key.md: ac50b5f07320ce0528f0fda8b4dc082ddb3554b6
-2026-09-07-win32-picker-foreground-alt-key.ar.md: d2df515f6041ea9939e4490cb032167b91904bb6
+2026-09-07-win32-picker-foreground-alt-key.ar.md: 3a8ff6aa37cdafddfdd08ad59bbbf617e3d3d9ff

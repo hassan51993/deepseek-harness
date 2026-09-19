@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-10-parallel-tool-call-execution.md
 2026-07-10-parallel-tool-call-execution.md: bc96ac805af1a529601a9d034ea6eb4b8c971445
-2026-07-10-parallel-tool-call-execution.ar.md: 38aa65bf1e8c26b42ae9a9d37432f57548cfc7dd
+2026-07-10-parallel-tool-call-execution.ar.md: d4ba0e73494dd8f62e00054ce0f47461b3b7121a

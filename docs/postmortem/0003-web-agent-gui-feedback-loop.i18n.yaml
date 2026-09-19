@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/postmortem/0003-web-agent-gui-feedback-loop.md
 0003-web-agent-gui-feedback-loop.md: 0a1bda0dd6bd89ae4e97409062dc3621e3d4288d
-0003-web-agent-gui-feedback-loop.ar.md: 32ea762e02b6c76204a47f41e063674ef68fb403
+0003-web-agent-gui-feedback-loop.ar.md: 13785ad7354c96a8da2dcaddd2f052295cb9d430

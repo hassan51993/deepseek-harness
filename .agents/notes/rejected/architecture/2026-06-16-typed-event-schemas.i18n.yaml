@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/architecture/2026-06-16-typed-event-schemas.md
 2026-06-16-typed-event-schemas.md: 020cb4d8a64cebb879a25d5ec28ca1ab153dad45
-2026-06-16-typed-event-schemas.ar.md: 3c9ec426d47e49efbb25b9dd652edacb39cab465
+2026-06-16-typed-event-schemas.ar.md: 53cda3260126fcc123437ad6c2b3ce421d7d6161

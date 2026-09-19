@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-14-sidebar-layout-provider-recovery.md
 2026-09-14-sidebar-layout-provider-recovery.md: e6982ee9b7672b2c670ec4dbd89703e953356b30
-2026-09-14-sidebar-layout-provider-recovery.ar.md: 5a4bbb167c23b199f494f32e4b61f7332431c338
+2026-09-14-sidebar-layout-provider-recovery.ar.md: 02bba94b4600201d9a74a61350a0dd9e4149966d

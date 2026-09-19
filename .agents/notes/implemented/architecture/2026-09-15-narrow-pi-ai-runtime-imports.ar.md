@@ -6,7 +6,7 @@ Status: implemented
 
 ## مشكلة
 
-أساس أساس bundle سوف في لا يوجد إعداد توجيه وقت تركيب `dsh-llm-pi-ai`، يجعل Models ضبط صفحة قدرة كاف توفير pi-ai provider. لـ model helper بينما import pi-ai تجمع دمج مدخل أيضا سوف طلب قيمة ذلك توجيه خروج TypeBox namespace، أي جعل كل Session كل استخدام `dsh-llm-deepseek`، كل مرة تطبيق بدء أيضا سوف مقدار خارج تحميل عدد مئة عدد وحدة.
+أساس أساس bundle سوف في لا يوجد إعداد توجيه وقت تركيب `dsh-llm-pi-ai`، يجعل Models ضبط صفحة قدرة كاف توفير pi-ai provider. لـ model helper بينما import pi-ai تجمع دمج مدخل أيضا سوف طلب قيمة ذلك تصدير TypeBox namespace، أي جعل كل Session كل استخدام `dsh-llm-deepseek`، كل مرة تطبيق بدء أيضا سوف مقدار خارج تحميل عدد مئة عدد وحدة.
 
 ## قرار
 

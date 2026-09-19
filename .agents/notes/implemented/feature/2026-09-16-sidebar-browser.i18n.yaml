@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-16-sidebar-browser.md
 2026-09-16-sidebar-browser.md: d2b509d282a004533fc6b9904117a3c8d2a0fd03
-2026-09-16-sidebar-browser.ar.md: b325b77547306ba161508d3bb1416c2c88ddc9e5
+2026-09-16-sidebar-browser.ar.md: 2007ebbb56a50bd8b0b6339c7fa37b296df51e77

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-15-desktop-native-fatal-recovery.md
 2026-09-15-desktop-native-fatal-recovery.md: b59d0590ab13922f7ce88805f616fecc9dbb62e9
-2026-09-15-desktop-native-fatal-recovery.ar.md: 49cf025ac20ab24ea86d06ba4019ded4f75c187b
+2026-09-15-desktop-native-fatal-recovery.ar.md: 8e66ce7d9c6fa87d5c3e41334fab6e0ecf8052e7

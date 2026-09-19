@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/web-server.md
 web-server.md: 4877d3fe84c82d66fb76752d14ef813c219a4196
-web-server.ar.md: 803fde92d2952f6a326c8202dbc298e86a52f5e5
+web-server.ar.md: 7a53622feb44f2f8003d93896469ea3bdc131290

@@ -22,8 +22,8 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 export const ar = {
   'type.label': 'ملف',
   'guide.title': 'مساحة العمل ملف',
-  'guide.description': 'تصفح تصفح جلسة مساحة العمل ملف',
-  loading: 'صحيح في قراءة…',
+  'guide.description': 'تصفح جلسة مساحة العمل ملف',
+  loading: 'جارٍ قراءة…',
   empty: 'فارغ دليل',
   truncated: 'بند جدا كثير، فقط عرض واحد جزء.',
   noWorkspace: 'هذا عدد جلسة لا يوجد مساحة العمل دليل.',

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-04-session-open-performance-gate.md
 2026-09-04-session-open-performance-gate.md: 5a0d18d046355aad45e1c9d748d915b18699cc72
-2026-09-04-session-open-performance-gate.ar.md: 6685201d025f95c8935b76384bc1923bad5859ad
+2026-09-04-session-open-performance-gate.ar.md: 3b6ab801bd23ba02619e846d7b36b4b6a2593b16

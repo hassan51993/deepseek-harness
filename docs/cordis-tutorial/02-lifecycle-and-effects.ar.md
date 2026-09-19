@@ -75,9 +75,9 @@ PENDING → LOADING → ACTIVE → UNLOADING → DISPOSED
 ```
 
 - **PENDING**: قد إعلان، لكن الذي يحتاج خدمة (رقم 3 فصل) بعد غير ممكن استخدام.
-- **LOADING / ACTIVE**:`apply` صحيح في تشغيل/قد إتمام.
+- **LOADING / ACTIVE**:`apply` جارٍ تشغيل/اكتمل.
 - **FAILED**:`apply` أو إعداد تحقق رمي خروج استثناء.
-- **UNLOADING / DISPOSED**:disposer صحيح في تشغيل/واحد قطع متساو قد تفكيك حذف.
+- **UNLOADING / DISPOSED**:disposer جارٍ تشغيل/واحد قطع متساو قد تفكيك حذف.
 
 أنت سوف في[رقم 6 فصل](06-composition-and-hmr.ar.md) مجددا مرة لقاء إلى PENDING، هو عبر معتاد حينئذ هو «لـ ماذا أنا إضافة لا يوجد إخراج» جواب سجل.
 

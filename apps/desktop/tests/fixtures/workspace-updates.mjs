@@ -224,10 +224,10 @@ async function qualify() {
     await clickText(downloadError, messages.updateAcknowledge)
     await documentReady(mainWindow, `document.querySelector('button[data-error="true"]')`)
     await screenshot(mainWindow, 'retry.png')
-    await press(mainWindow, `document.querySelector('button[aria-label="استلام بدء جانب حافة شريط"]')`)
-    await documentReady(mainWindow, `document.querySelector('button[aria-label="فتح جانب حافة شريط"] [role="img"][data-error="true"]')`)
+    await press(mainWindow, `document.querySelector('button[aria-label="طي الشريط الجانبي"]')`)
+    await documentReady(mainWindow, `document.querySelector('button[aria-label="فتح الشريط الجانبي"] [role="img"][data-error="true"]')`)
     await screenshot(mainWindow, 'collapsed-error.png')
-    await press(mainWindow, `document.querySelector('button[aria-label="فتح جانب حافة شريط"]')`)
+    await press(mainWindow, `document.querySelector('button[aria-label="فتح الشريط الجانبي"]')`)
     await documentReady(mainWindow, `document.querySelector('button[data-error="true"]')`)
     cases.push('download-integrity-error-and-persistent-retry')
 

@@ -136,8 +136,8 @@ describe('web e2e: lifecycle & chrome (workspace flow / reload / dark mode)', ()
   it.skipIf(MODE === 'record').each([
     { locale: 'en-US', token: '/goal', row: 'Goal Set or view the goal for a long-running task', hint: 'describe the objective for a long-running task' },
     { locale: 'en-US', token: '/plan', row: 'Plan Enter or leave plan mode', hint: 'describe your task to generate plan' },
-    { locale: ZH_BROWSER_LOCALE, token: '/هدف', row: 'هدف goal ضبط أو فحص نظر طويل مدة مهمة هدف', hint: 'إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ' },
-    { locale: ZH_BROWSER_LOCALE, token: '/حساب تخطيط', row: 'حساب تخطيط plan دخول أو خروج حساب تخطيط نمط', hint: 'وصف أنت مهمة بـ توليد حساب تخطيط' },
+    { locale: ZH_BROWSER_LOCALE, token: '/هدف', row: 'هدف goal ضبط أو عرض طويل مدة مهمة هدف', hint: 'إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ' },
+    { locale: ZH_BROWSER_LOCALE, token: '/خطة', row: 'خطة plan دخول أو خروج خطة نمط', hint: 'وصف أنت مهمة بـ توليد خطة' },
   ])('keeps $token claimed across separator edits and hides hints during IME composition', async ({ locale, token, row, hint }) => {
     const inputPage = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale })
     const inputTripwire = watchConsole(inputPage)

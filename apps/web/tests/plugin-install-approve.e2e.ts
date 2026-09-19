@@ -49,7 +49,7 @@ it('offers approval for blocked install scripts and installs once they are allow
       if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) await page.keyboard.press('Escape')
       await page.getByRole('navigation', { name: 'عام وجه لوح' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
-      await panel.getByRole('button', { name: 'إضافة إضافة', exact: true }).click()
+      await panel.getByRole('button', { name: 'إضافة', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await dialog.getByRole('textbox').fill('native-package')
       await dialog.getByRole('button', { name: 'تثبيت', exact: true }).click()

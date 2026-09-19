@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-07-19-required-cancellation-through-tool-capability-seams.md
 2026-07-19-required-cancellation-through-tool-capability-seams.md: 2b5b128a38aa92dddf3357bdcb8064a55d2b6908
-2026-07-19-required-cancellation-through-tool-capability-seams.ar.md: bfdecee183a59bfd151c2bffe4967a1cd02094b7
+2026-07-19-required-cancellation-through-tool-capability-seams.ar.md: f7d5546f41fd76addfb81fbcd52097efb4639a04

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-16-known-site-link-marks.md
 2026-09-16-known-site-link-marks.md: 707bfcdf9ef7a137e181ca4733c526961b23bbca
-2026-09-16-known-site-link-marks.ar.md: 90de655f35c56806215c5445d7dbe3e0a7edf882
+2026-09-16-known-site-link-marks.ar.md: b019ae99fea61e2ee3d8a8fa368fbec4c598b300

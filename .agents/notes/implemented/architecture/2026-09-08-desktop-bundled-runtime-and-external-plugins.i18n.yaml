@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-08-desktop-bundled-runtime-and-external-plugins.md
 2026-09-08-desktop-bundled-runtime-and-external-plugins.md: e074f5453475922291af20b5b00b423dd72b270b
-2026-09-08-desktop-bundled-runtime-and-external-plugins.ar.md: 4e3b91a50468fd538b71d50ed2f102b890c0747b
+2026-09-08-desktop-bundled-runtime-and-external-plugins.ar.md: 7442333e8c3afe2471d5f4ec117997217a3dfa1c

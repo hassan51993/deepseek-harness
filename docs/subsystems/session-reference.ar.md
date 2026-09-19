@@ -8,7 +8,7 @@
 
 ## ملف مرشح بند
 
-`FileReferenceCandidate` هو فقط يحتوي مسار اكتشاف نتيجة. يتم بحث عنوان agent توفير عمل دليل نطاق؛ مزود مسؤول ترتيب ترتيب و نطاق الأسماء وصول، لكن لن قراءة ملف محتوى.
+`FileReferenceCandidate` هو فقط يحتوي مسار اكتشاف نتيجة. يتم بحث عنوان agent توفير عمل دليل نطاق؛ مزود مسؤول ترتيب و نطاق الأسماء وصول، لكن لن قراءة ملف محتوى.
 
 ```ts type-equiv
 /** One path-only completion candidate inside the target session cwd. */

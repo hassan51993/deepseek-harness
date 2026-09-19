@@ -33,7 +33,7 @@ package.json ثابت صيغة (من `pnpm run constraints` / `scripts/check-wor
 | `tsconfig.base.json` | قد لديه قسم مجموعة بلا حاجة تحرير؛ جديد قسم مجموعة يحتاج لـ `@deepseek-ai/dsh-*` عبر إعداد رمز إضافة `./packages/<group>/*/src` مرشح مسار |
 | `tsconfig.host.json`(Host حزمة) أو `tsconfig.client.json`(Client حزمة) | في `references` في إضافة `{ "path": "./packages/<group>/<pkg>" }`——عادي حزمة تماما جيد يخص واحد aggregate، أبدا اثنان عدد كل إضافة.`api/remotes` بسبب Host توليد اتفاق و Client إزالة استهلاك اتفاق بين وجود ترتيب اعتماد بينما استخدام مستودع مخصص تابع تفكيك قسم، إضافة جديدة حزمة لا نيل محاكاة وفق ([تخطيط](../development.ar.md#typescript-project-layout)) |
 
-`packages/client/*` حزمة تعديل لـ extends `tsconfig.base.client.json`(بينما غير `tsconfig.base.json`) ؛client إضافة حزمة أيضا يحتاج في package.json إعلان `dsh.client`، توجيه خروج `./client`، استدعاء مشترك tsdown preset(`packages/client/tsdown.client.ts`)——client جانب رؤية [packages/client/AGENTS.md](../../packages/client/AGENTS.md).
+`packages/client/*` حزمة تعديل لـ extends `tsconfig.base.client.json`(بينما غير `tsconfig.base.json`) ؛client إضافة حزمة أيضا يحتاج في package.json إعلان `dsh.client`، تصدير `./client`، استدعاء مشترك tsdown preset(`packages/client/tsdown.client.ts`)——client جانب رؤية [packages/client/AGENTS.md](../../packages/client/AGENTS.md).
 
 التالي محتوى من glob أو حزمة manifest(بيانات وصفية بيان) اكتشاف آلية تلقائي تغطية، بلا حاجة يد حركة تحرير: أصل `package.json` workspaces،`scripts/publint-all.ts`،`tsdown.config.ts`،`.oxlintrc.json`،`scripts/check-workspace-constraints.ts`.
 
@@ -60,7 +60,7 @@ package.json ثابت صيغة (من `pnpm run constraints` / `scripts/check-wor
 | `Engine` | تنفيذ مجال حساب قاعدة أو لديه حالة تنفيذ نموذج. | فقط اختيار provider أو عبر بروتوكول حد تحويل إرسال طلب. |
 | `Policy` | قرار سماح، اختيار، حد أو مراقبة ماذا. | تنفيذ هذا قرار الذي سماح آلية. |
 | `Executor` | في واحد بند قدرة في تشغيل واحد واضح طلب أو قد تحليل spec. | يملك واسع عام تطبيق دورة الحياة أو provider دليل. |
-| `Gateway` | ملائم إعداد عملية، شبكة شبكة،RPC أو API حد. | فقط تسجيل نفس عملية خدمة أو تخزين بيانات وصفية. |
+| `Gateway` | ملائم إعداد عملية، شبكة،RPC أو API حد. | فقط تسجيل نفس عملية خدمة أو تخزين بيانات وصفية. |
 | `Provider` | توفير واحد بند قدرة تعريف واحد تنفيذ. وجود كثير عدد تنفيذ وقت، إضافة فوق آلية أو مصنع تجارة حد تحديد كلمة. | يمثل قدرة تعريف،provider registry أو مستهلك runtime. |
 | `Backend` | في قد تعريف واجهة بعد تنفيذ يمكن استبدال قاع طبقة حفظ دائم، نقل أو تنفيذ. | يمثل موجه إلى مستخدم خدمة أو واحد قد إرجاع فوري مورد مرجع. |
 | `Handle` | مرجع واحد فوري مورد، و تحكم أو مراقبة هذا مورد. | إنشاء و إدارة كامل مورد حوض. |

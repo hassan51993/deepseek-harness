@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-15-shipped-optional-bundles.md
 2026-09-15-shipped-optional-bundles.md: 8ba9507790cce35a1f9fae190b2e6673df8e5923
-2026-09-15-shipped-optional-bundles.ar.md: acba22c93bb3ddc27a82d1d672f36baa75b3eea7
+2026-09-15-shipped-optional-bundles.ar.md: 8c498f8946c47f034d91970b438c1bf63447d5de

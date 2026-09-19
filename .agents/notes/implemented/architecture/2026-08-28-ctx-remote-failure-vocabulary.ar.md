@@ -16,7 +16,7 @@ Host ثابت واقع نفس مثال التفاف مرور `ctx.remote`:Host h
 
 ## Decision
 
-`@deepseek-ai/dsh-typert-protocol` توجيه خروج وحيد فشل صنف `RemoteError<Code>`: واحد حق `Error`، حمل فقط قراءة `code` و `details`، بنية علامة `isDSHRemoteError`، و معيار `ErrorOptions`(`cause` فقط في عملية داخل صالح). رمز و details مقابل علاقة استلام دخول واحد ورقة merge-extensible `RemoteErrorDetailsMap`؛`RemoteFailure` هو حسب رمز قسم نشر نسخة union،`RemoteResult<T>` شكل حالة ثابت.
+`@deepseek-ai/dsh-typert-protocol` تصدير وحيد فشل صنف `RemoteError<Code>`: واحد حق `Error`، حمل فقط قراءة `code` و `details`، بنية علامة `isDSHRemoteError`، و معيار `ErrorOptions`(`cause` فقط في عملية داخل صالح). رمز و details مقابل علاقة استلام دخول واحد ورقة merge-extensible `RemoteErrorDetailsMap`؛`RemoteFailure` هو حسب رمز قسم نشر نسخة union،`RemoteResult<T>` شكل حالة ثابت.
 
 ```text
 export class RemoteError<Code extends RemoteErrorCode = RemoteErrorCode> extends Error {
@@ -28,7 +28,7 @@ export type RemoteFailure = { [C in RemoteErrorCode]: RemoteError<C> }[RemoteErr
 export type RemoteResult<T> = { ok: true; value: T } | { ok: false; error: RemoteFailure }
 ```
 
-فشل نقطة مباشر `throw new RemoteError(code, message, details)`. مجال داخل لم يعد بناء خطأ صنف بيت عائلة، أيضا لم يعد كتابة خروج فتحة خريطة دالة؛ فقط لديه «يأخذ مهمة معنى provider استثناء عودة صنف» هذا واحد نوع مشهد إبقاء واحد `catch`، و في منها `throw new RemoteError(code, messageOf(error), details, { cause: error })`. عملية داخل ما زال يحتاج إزالة استهلاك قائم استثناء صنف (`ApiSessionCwdConflict` انتظار) إبقاء لـ لا توجيه خروج خاص صنف، في خروج فتحة واحد سطر تحويل صار `RemoteError`.
+فشل نقطة مباشر `throw new RemoteError(code, message, details)`. مجال داخل لم يعد بناء خطأ صنف بيت عائلة، أيضا لم يعد كتابة خروج فتحة خريطة دالة؛ فقط لديه «يأخذ مهمة معنى provider استثناء عودة صنف» هذا واحد نوع مشهد إبقاء واحد `catch`، و في منها `throw new RemoteError(code, messageOf(error), details, { cause: error })`. عملية داخل ما زال يحتاج إزالة استهلاك قائم استثناء صنف (`ApiSessionCwdConflict` انتظار) إبقاء لـ لا تصدير خاص صنف، في خروج فتحة واحد سطر تحويل صار `RemoteError`.
 
 رمز هو `<دلالة مجال>/<إدارة من>` شكل صيغة نص:`session/not-found`،`gateway/cancelled`،`workspace/invalid-path`،`agent-preset/locked`. بادئة و wire namespace نفس ريح إطار، قراءة من من رمز ذاته حينئذ قدرة نظر خروج هو يخص من، عبر مجال تحويل وصف وقت أيضا لم يعد حاجة واحد آخر لي بلا بادئة اسم.
 
@@ -45,7 +45,7 @@ export type RemoteResult<T> = { ok: true; value: T } | { ok: false; error: Remot
 
 ## Discrimination by code
 
-حكم آخر واحد قاعدة قراءة `code`، من لا استخدام `instanceof`.Client و Host هو اثنان عدد مستقل تحزيم program،worker نقل أيضا سوف يأخذ صفحة جانب مجددا قسم مرة حزمة، لذلك نفس عدد صنف سوف وجود كثير نسخة فرعي هذا، عبر فرعي هذا أصل نوع سلسلة هوية لا صار قيام. آلية طبقة استخدام protocol `remoteErrorOf(value)` قراءة بنية علامة إضافة واحد نص `code`،Gateway client face آخر خارج توجيه خروج `isRemoteFailure(error)` توفير مستهلك في catch داخل حكم آخر؛ اثنان من كل فقط نظر هذا اثنان عدد حقل، لا نظر صنف——وصل `instanceof Error` كل لا اشتراط، لأن آخر عدد realm رمي خروج Error نفس مثال عبر لا مرور هو.
+حكم آخر واحد قاعدة قراءة `code`، من لا استخدام `instanceof`.Client و Host هو اثنان عدد مستقل تحزيم program،worker نقل أيضا سوف يأخذ صفحة جانب مجددا قسم مرة حزمة، لذلك نفس عدد صنف سوف وجود كثير نسخة فرعي هذا، عبر فرعي هذا أصل نوع سلسلة هوية لا صار قيام. آلية طبقة استخدام protocol `remoteErrorOf(value)` قراءة بنية علامة إضافة واحد نص `code`،Gateway client face آخر خارج تصدير `isRemoteFailure(error)` توفير مستهلك في catch داخل حكم آخر؛ اثنان من كل فقط نظر هذا اثنان عدد حقل، لا نظر صنف——وصل `instanceof Error` كل لا اشتراط، لأن آخر عدد realm رمي خروج Error نفس مثال عبر لا مرور هو.
 
 عمل خدمة شفرة عبر معتاد وصل هذا اثنان عدد دالة كل لا حاجة:`RemoteResult` `ok: false` فرع قد هو نوع تحويل `RemoteFailure`،`if (result.error.code === 'session/not-found')` حينئذ يأخذ `details` ضيق تحويل إلى هذا رمز شكل حالة، بلا حاجة cast. حاجة نحو فوق رمي محطة نقطة مباشر `throw result.error`——هو هو حق `Error`، مكدس و `message` كل صار قيام.
 
@@ -67,7 +67,7 @@ envelope ثابت:wire فوق ما زال هو `{ code, message, details }` بي
 
 ## Alternatives considered
 
-**كل مجال واحد طقم `RemoteFault` خطأ صنف بيت عائلة.** يجعل كل مجال (أو كل رمز) لديه ذاتي ذات `Error` فرعي صنف، نظر بدء قدوم أكثر OO، لكن هو يأخذ «رمز» هذا واحد بند معلومة تفكيك صار صنف هوية إضافة حقل اثنان موضع، عبر realm أيضا فقط قدرة تراجع عودة حكم حقل——في هو صنف هوية يصبح صاف خالص سالب تحمل: كل مجال يلزم صيانة فرعي صنف، توجيه خروج هو، في وثيقة داخل حل تفسير هو، بينما مستهلك ما زال فقط قدرة حكم code. مفرد صنف إضافة واحد ورقة رمز جدول يأخذ هذا نسخة إعادة كمية تبديل صار واحد سطر إعلان.
+**كل مجال واحد طقم `RemoteFault` خطأ صنف بيت عائلة.** يجعل كل مجال (أو كل رمز) لديه ذاتي ذات `Error` فرعي صنف، نظر بدء قدوم أكثر OO، لكن هو يأخذ «رمز» هذا واحد بند معلومة تفكيك صار صنف هوية إضافة حقل اثنان موضع، عبر realm أيضا فقط قدرة تراجع عودة حكم حقل——في هو صنف هوية يصبح صاف خالص سالب تحمل: كل مجال يلزم صيانة فرعي صنف، تصدير هو، في وثيقة داخل حل تفسير هو، بينما مستهلك ما زال فقط قدرة حكم code. مفرد صنف إضافة واحد ورقة رمز جدول يأخذ هذا نسخة إعادة كمية تبديل صار واحد سطر إعلان.
 
 **في استدعاء نقطة إضافة `attempt` / `unwrap` / `remoteFailureOf` حزمة تركيب دالة.** حزمة تركيب قدرة يجعل استدعاء نقطة قليل كتابة واحد `if`، لكن هو يأخذ `RemoteResult` هذا عدد canonical شكل حالة تغيير صار «أولا مرور واحد طبقة مكتبة دالة» ، اثنان نوع ريح إطار سوف طويل مدة و تخزين؛`unwrap` أيضا سوف يأخذ «فشل هو صحيح معتاد نتيجة» إعادة تغيير صار استثناء تدفق، و Remote وجه لا reject عقد نحو خلف طريق بينما انطلاق. يتم إبقاء `remoteErrorOf` فقط خدمة آلية طبقة و اختبار تأكيد، عمل خدمة شفرة أخذ إلى يلزم ما هو قد نوع تحويل `result.error`، يلزم ما هو ذاتي ذات رمي، لا حاجة هو.
 

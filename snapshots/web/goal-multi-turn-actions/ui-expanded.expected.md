@@ -88,7 +88,7 @@
 - button "Copy"
 - code: session-reference ├── README.md ├── package.json ├── src │ ├── index.ts │ └── uri.ts └── tests └── session-reference.spec.ts
 - button "Copy"
-- code: "session-reference/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ ├── index.ts # مدخل، توجيه خروج عام مشترك API │ └── uri.ts # جلسة مرجع URI متبادل صلة تنفيذ └── tests/ └── session-reference.spec.ts # اختبار وحدة"
+- code: "session-reference/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ ├── index.ts # مدخل، تصدير عام مشترك API │ └── uri.ts # جلسة مرجع URI متبادل صلة تنفيذ └── tests/ └── session-reference.spec.ts # اختبار وحدة"
 - paragraph: هذا هو واحد جدا قاموس نوع خفيف كمية TypeScript حزمة بنية: مدخل + تنفيذ + اختبار. هذا واحد جولة إلى هذا انتهاء، انتظار نظام فتح بدء تحت واحد turn.
 - button "Copy":
   - img
@@ -145,7 +145,7 @@
 - button "Copy"
 - code: token-meter ├── README.md ├── package.json ├── src │ └── index.ts └── tests └── token-meter.spec.ts
 - button "Copy"
-- code: "token-meter/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ └── index.ts # مدخل، توجيه خروج عام مشترك API(token حساب كمية منطق) └── tests/ └── token-meter.spec.ts # اختبار وحدة"
+- code: "token-meter/ ├── README.md # حزمة شرح وثيقة ├── package.json # حزمة بيانات وصفية و اعتماد إعلان ├── src/ │ └── index.ts # مدخل، تصدير عام مشترك API(token حساب كمية منطق) └── tests/ └── token-meter.spec.ts # اختبار وحدة"
 - paragraph:
   - text: اثنان عدد turn كل إتمام (turn 1:
   - code: session-reference
@@ -156,7 +156,7 @@
   - img
   - img
   - text: "Tool call get_goal · {}"
-- paragraph: اثنان عدد turn متساو قد إتمام، هدف بلوغ صار، علامة goal لـ إتمام.
+- paragraph: اثنان عدد turn متساو اكتمل، هدف بلوغ صار، علامة goal لـ إتمام.
 - button "Tool call update_goal · goal-{{uuid}}":
   - img
   - img

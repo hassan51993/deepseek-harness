@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/document/office-to-pdf/README.md
 README.md: 7d457b393f536fb2174a6ba632eb325ce137ab27
-README.ar.md: 2d64f0612e24bf55901e41ef3101292ecf879fba
+README.ar.md: 91636323db92cdaf19fea1e2ff2991301ef53683

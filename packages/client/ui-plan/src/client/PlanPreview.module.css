@@ -16,7 +16,7 @@
   background: var(--plan-card-fill);
   color: var(--dsw-alias-label-primary);
   font: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   transition: background-color 120ms ease;
 }

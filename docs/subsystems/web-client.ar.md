@@ -57,7 +57,7 @@ Connection يملك request correlation،`/api` carrier،trust check، دقيق 
 
 `ui-conversation` مقابل كل `SessionBinding.eventSource` فقط ربط مرة. هو event registry يأخذ حمل دائم Session event و Client-only `assistant/live-chunk` update صلة ربط صار مستقر عمل خدمة Context،view registry فإن materialize target snapshot.Chat Assistant،Trajectory Assistant و Turn Tail معا حل تفسير live chunk و حمل دائم settlement في تضمين دخول ضيق تجميع stream، لذلك إعادة وصل و قسم صفحة تاريخ بلا حاجة حمل دائم token سطر يكفي تكرار الآن نفسه Assistant حالة.`ui-chat` و `ui-trajectory` قسم آخر تسجيل ذاتي ذات Definition و builder: هو جمع يمكن حل تفسير نفس event family، لكن لن استيراد أو مشترك ذاك هذا نهائي display model.Shell اختيار واحد قد تسجيل view، مجددا عبر معيار hook و Slot تسليم ذلك snapshot.[Conversation](conversation.ar.md) تعريف Context identity،replay،Location data،target builder و keyed renderer.
 
-`ui-slots` توفير نوع تحويل registry و lifecycle ledger؛`ui-renderer` هو وحيد عبر `useSyncExternalStore` ربط عار observable، يملك React context و تصيير root tree حزمة. وظيفة component عبر دفع توجيه خروج props استقبال framework hook،owner prop،store action و صريح injection.[Web Client Slots](slots.ar.md) صف خروج هذه إدخال، توسيع API و حالي Slot طبقة درجة.
+`ui-slots` توفير نوع تحويل registry و lifecycle ledger؛`ui-renderer` هو وحيد عبر `useSyncExternalStore` ربط عار observable، يملك React context و تصيير root tree حزمة. وظيفة component عبر دفع تصدير props استقبال framework hook،owner prop،store action و صريح injection.[Web Client Slots](slots.ar.md) صف خروج هذه إدخال، توسيع API و حالي Slot طبقة درجة.
 
 ## بيانات عبر مسار
 

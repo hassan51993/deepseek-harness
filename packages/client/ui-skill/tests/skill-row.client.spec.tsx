@@ -62,7 +62,7 @@ describe('SkillRow', () => {
     const card = screen.getByLabelText('شرح')
     expect(card.textContent).toBe('شرحFollow the issue workflow.\nKeep project fields in sync.')
     expect(view.container.textContent).not.toContain('{"name":"dsh-manage-issues"}')
-    fireEvent.click(screen.getByRole('button', { name: 'فحص نظر' }))
+    fireEvent.click(screen.getByRole('button', { name: 'عرض' }))
     expect(inspect).toHaveBeenCalledTimes(1)
 
     fireEvent.click(row)
@@ -84,7 +84,7 @@ describe('SkillRow', () => {
     const view = render(<SkillRow {...props(running())} />)
     const row = view.container.querySelector('[data-tool="skill"] > div')!
     expect(row.getAttribute('role')).toBeNull()
-    expect(view.container.textContent).toContain('صحيح في تحميل skill')
+    expect(view.container.textContent).toContain('جارٍ تحميل skill')
     expect(view.container.textContent).toContain('dsh-manage-issues')
     expect(view.container.querySelector('svg [fill="currentColor"]')).not.toBeNull()
   })
@@ -145,6 +145,6 @@ describe('SkillRow', () => {
     const blank = render(<SkillRow {...props(settled({ call: null, content: [] }))} />)
     expect(blank.container.textContent).toContain('call-skill')
     expect(blank.container.querySelector('[role="button"]')).toBeNull()
-    expect(blank.container.textContent).not.toContain('صحيح في تحميل skill')
+    expect(blank.container.textContent).not.toContain('جارٍ تحميل skill')
   })
 })

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-read-only-session-migration-preparation.md
 2026-09-05-read-only-session-migration-preparation.md: d9fea4c72ce9e0eeb29d09456cc5f04d720c346f
-2026-09-05-read-only-session-migration-preparation.ar.md: c1d632316e12f3b713310d2ee37f4cf677878db4
+2026-09-05-read-only-session-migration-preparation.ar.md: 7f757cbde35fb32fb8d506fd8bfa8b303715616f

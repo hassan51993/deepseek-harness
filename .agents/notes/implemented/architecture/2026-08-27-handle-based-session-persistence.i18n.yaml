@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.md
 2026-08-27-handle-based-session-persistence.md: cdc90637f62280b560a16d1c47b55af600b890d3
-2026-08-27-handle-based-session-persistence.ar.md: 310630df6c63c5e8a7a3bd51228c1783c32c20c6
+2026-08-27-handle-based-session-persistence.ar.md: b4a5c55c7d5c52ec3f748fde1bef02d060b0683c

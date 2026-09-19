@@ -16,7 +16,7 @@ SQLite كل نص Session-query provider لا هو آخر نوع مرجعي store
 
 مستودع لم يعد يتضمن `@deepseek-ai/dsh-session-persistence-sqlite` package، ذلك schema resource، خلفية مخصص استخدام اختبار، إعداد واجهة و Windows differential lane. عبر package حفظ دائم اختبار استخدام حقيقي JSONL provider أو owner-local fake.`@deepseek-ai/dsh-session-query-sqlite` متابعة بصفة اختياري FTS5 query provider استخدام مستقل، يمكن إعادة بناء قاعدة بيانات،`@deepseek-ai/dsh-storage-sqlite` متابعة بصفة عام domain-KV provider.
 
-حالي build لا فتح أو ترحيل قد حذف provider كتابة خروج قائم قاعدة بيانات. حاجة منها محتوى operator يجب أولا استخدام ما زال يتضمن هذا provider build توجيه خروج منطق Session، مجددا تنفيذ ترقية.
+حالي build لا فتح أو ترحيل قد حذف provider كتابة خروج قائم قاعدة بيانات. حاجة منها محتوى operator يجب أولا استخدام ما زال يتضمن هذا provider build تصدير منطق Session، مجددا تنفيذ ترقية.
 
 ## Alternatives considered
 

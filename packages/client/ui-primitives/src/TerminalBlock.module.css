@@ -16,7 +16,7 @@
      cancelled the reservation and let the dot fall outside the card into a
      container that clips it. Owning the reservation here keeps the invariant
      with the component that depends on it. */
-  padding-left: var(--dsl-terminal-gutter);
+  padding-inline-start: var(--dsl-terminal-gutter);
   color: var(--dsw-alias-label-primary);
   background: var(--dsw-alias-markdown-code-block);
   border-radius: var(--dsl-terminal-radius);
@@ -37,7 +37,7 @@
      surface, then re-inset by the same amount so the prompt text and the dot
      keep their positions. The banner shares the card's own surface (no banner
      token): the l2 divider below is the section boundary. */
-  margin-left: calc(-1 * var(--dsl-terminal-gutter));
+  margin-inline-start: calc(-1 * var(--dsl-terminal-gutter));
   padding: 9px 14px 9px var(--dsl-terminal-gutter);
   border-top-left-radius: var(--dsl-terminal-radius);
   border-top-right-radius: var(--dsl-terminal-radius);
@@ -90,7 +90,7 @@
    Centered against the row's line box, not the code font's baseline. */
 .runState {
   position: absolute;
-  left: calc(-1 * var(--dsl-terminal-gutter) + 8px);
+  inset-inline-start: calc(-1 * var(--dsl-terminal-gutter) + 8px);
   top: 50%;
   transform: translateY(-50%);
 }
@@ -191,7 +191,7 @@
   color: var(--dsw-alias-label-tertiary);
   cursor: pointer;
   font: inherit;
-  text-align: left;
+  text-align: start;
 }
 
 .expand:hover {

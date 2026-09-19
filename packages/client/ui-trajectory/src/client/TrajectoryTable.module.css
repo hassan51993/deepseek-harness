@@ -158,15 +158,15 @@
   background: var(--dsw-specific-sidebar-fill);
   font: var(--dsw-font-xxs-12);
   font-weight: 500;
-  text-align: left;
+  text-align: start;
   text-overflow: ellipsis;
   user-select: none;
   white-space: nowrap;
 }
 
 .eventHeader {
-  padding-right: 4px !important;
-  text-align: right !important;
+  padding-inline-end: 4px !important;
+  text-align: end !important;
 }
 
 .table td {
@@ -240,7 +240,7 @@
   position: absolute;
   z-index: 6;
   top: -8px;
-  left: calc(var(--request-boundary-base-left) + var(--request-boundary-offset, 0px));
+  inset-inline-start: calc(var(--request-boundary-base-left) + var(--request-boundary-offset, 0px));
   width: 16px;
   height: 16px;
   padding: 0;
@@ -252,7 +252,7 @@
 .requestBoundaryControl::before {
   position: absolute;
   top: 5.5px;
-  left: 5.5px;
+  inset-inline-start: 5.5px;
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -270,7 +270,7 @@
 .requestBoundaryControl::after {
   position: absolute;
   top: 2px;
-  left: 17px;
+  inset-inline-start: 17px;
   width: max-content;
   padding: 0 4px;
   border: 0.5px solid var(--dsw-alias-border-l1);
@@ -333,7 +333,7 @@
 .turnRail,
 .selectionRail {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
   background: var(--dsw-alias-brand-primary-new-colorprimary-new-color);
   pointer-events: none;
 }
@@ -378,8 +378,8 @@
   position: absolute;
   z-index: 1;
   top: 0;
-  right: 0;
-  left: 0;
+  inset-inline-end: 0;
+  inset-inline-start: 0;
   height: 2px;
   background: var(--dsw-alias-border-l1);
   content: '';
@@ -389,15 +389,15 @@
 
 .event {
   overflow: visible !important;
-  padding-right: 4px !important;
-  padding-left: 36px !important;
+  padding-inline-end: 4px !important;
+  padding-inline-start: 36px !important;
 }
 
 .turnLabel {
   position: absolute;
   z-index: 3;
   top: 0;
-  left: 0;
+  inset-inline-start: 0;
   display: inline-grid;
   flex: none;
   align-items: center;
@@ -464,7 +464,7 @@
 }
 
 .content {
-  padding-left: 4px !important;
+  padding-inline-start: 4px !important;
   color: var(--dsw-alias-label-primary);
 }
 
@@ -515,8 +515,8 @@
   }
 
   .event {
-    padding-right: 3px !important;
-    padding-left: 28px !important;
+    padding-inline-end: 3px !important;
+    padding-inline-start: 28px !important;
   }
 
   .requestBoundaryControl {
@@ -531,8 +531,8 @@
   .table .kindSlot .message {
     justify-content: center;
     width: 19px;
-    padding-right: 0;
-    padding-left: 0;
+    padding-inline-end: 0;
+    padding-inline-start: 0;
   }
 
   .kindTagIcon {
@@ -577,15 +577,15 @@
   }
 
   .event {
-    transition-property: padding-right, padding-left;
+    transition-property: padding-inline-end, padding-inline-start;
   }
 
   .requestBoundaryControl {
-    transition-property: left;
+    transition-property: inset-inline-start;
   }
 
   .kindTag {
-    transition-property: padding-right, padding-left;
+    transition-property: padding-inline-end, padding-inline-start;
   }
 
   .kindTagIcon {
@@ -769,7 +769,7 @@
 
 .collapsedTurnEllipsis {
   flex: none;
-  margin-right: 6px;
+  margin-inline-end: 6px;
   color: var(--dsw-alias-label-tertiary);
   font-weight: 600;
   user-select: none;
@@ -811,7 +811,7 @@
 }
 
 .toolCallPayload {
-  margin-left: 7px;
+  margin-inline-start: 7px;
   color: var(--dsw-alias-label-secondary);
   font: 400 12px/18px var(--ds-font-family-code);
 }
@@ -825,7 +825,7 @@
 }
 
 .table tbody tr[data-kind='subtool'] .content {
-  padding-left: 26px;
+  padding-inline-start: 26px;
 }
 
 .inlineResult {
@@ -841,7 +841,7 @@
 
 .arrow {
   flex: none;
-  margin-right: 8px;
+  margin-inline-end: 8px;
   color: var(--dsw-alias-label-caption);
 }
 
@@ -880,7 +880,7 @@
   max-width: calc(100% - 280px);
   min-width: 0;
   min-height: 0;
-  border-left: 0.5px solid var(--dsw-alias-border-l2);
+  border-inline-start: 0.5px solid var(--dsw-alias-border-l2);
   background: var(--dsw-alias-bg-layer-1);
 }
 
@@ -889,7 +889,7 @@
   z-index: 6;
   top: 0;
   bottom: 0;
-  left: -4px;
+  inset-inline-start: -4px;
   width: 8px;
   padding: 0;
   border: 0;
@@ -1011,9 +1011,9 @@
 
 .detailTabActive::after {
   position: absolute;
-  right: 9px;
+  inset-inline-end: 9px;
   bottom: 0;
-  left: 9px;
+  inset-inline-start: 9px;
   height: 2px;
   border-radius: 1px 1px 0 0;
   background: var(--dsw-alias-state-business-primary);
@@ -1069,7 +1069,7 @@
 }
 
 .compactedSummary .markdownPayload {
-  padding-right: 18px;
+  padding-inline-end: 18px;
 }
 
 .overview {
@@ -1123,7 +1123,7 @@
 }
 
 .overview > .requestTokenDetail dt {
-  padding-left: 12px;
+  padding-inline-start: 12px;
 }
 
 .usagePanel {
@@ -1272,12 +1272,12 @@
 }
 
 .programIcon {
-  margin-right: 4px;
+  margin-inline-end: 4px;
   vertical-align: -2px;
 }
 
 .programSummary {
-  margin-left: 5px;
+  margin-inline-start: 5px;
   font-family: var(--dsw-font-family);
 }
 
@@ -1300,12 +1300,12 @@
   height: 16px;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
-  padding-right: 14px;
+  margin-inline-start: auto;
+  padding-inline-end: 14px;
 }
 
 .programLanguage {
-  padding-right: 4px;
+  padding-inline-end: 4px;
   color: var(--dsw-alias-label-tertiary);
   font: 11px/16px var(--ds-font-family-code);
 }
@@ -1499,8 +1499,8 @@
   --dsh-content-font-size-secondary: 13px;
   --dsh-content-font-delta-secondary: 0px;
   margin: 6px 14px 0 12px;
-  padding-left: 6px;
-  border-left: 2px solid var(--dsw-alias-markdown-citation);
+  padding-inline-start: 6px;
+  border-inline-start: 2px solid var(--dsw-alias-markdown-citation);
   color: var(--dsw-alias-label-secondary);
   background: transparent;
 }
@@ -1819,7 +1819,7 @@
   min-width: 0;
   height: 19px;
   align-items: center;
-  margin-left: -4px;
+  margin-inline-start: -4px;
   padding: 0 4px;
   border-radius: 3px;
   cursor: pointer;
@@ -1837,7 +1837,7 @@
 
 .assistantToolCallIcon {
   flex: none;
-  margin-right: 5px;
+  margin-inline-end: 5px;
   color: var(--dsw-alias-label-caption);
 }
 
@@ -1856,7 +1856,7 @@
 
 .assistantToolCallName {
   flex: none;
-  margin-right: 5px;
+  margin-inline-end: 5px;
   color: var(--dsw-alias-label-secondary);
   font-weight: 500;
 }
@@ -1950,8 +1950,8 @@
 }
 
 .toolCatalogTree {
-  margin-left: -14px;
-  margin-right: 6px;
+  margin-inline-start: -14px;
+  margin-inline-end: 6px;
 }
 
 .resultBlocks {
@@ -1995,11 +1995,11 @@
     position: absolute;
     z-index: 5;
     top: 0;
-    right: 0;
+    inset-inline-end: 0;
     bottom: 0;
     width: min(92%, 420px);
     max-width: 92%;
-    border-left-color: var(--dsw-alias-border-l3);
+    border-inline-start-color: var(--dsw-alias-border-l3);
     box-shadow: -12px 0 32px rgba(0, 0, 0, 0.14);
   }
 }

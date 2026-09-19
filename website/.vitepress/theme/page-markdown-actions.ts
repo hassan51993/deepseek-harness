@@ -20,15 +20,15 @@ const messages = {
   ar: {
     copy: 'نسخ صفحة',
     copyDescription: 'سوف صفحة بـ Markdown صيغة نسخ إعطاء LLMs',
-    view: 'بـ Markdown صيغة فحص نظر',
-    viewDescription: 'بـ صاف نص فحص نظر هذا صفحة',
-    newTab: 'بـ Markdown صيغة فحص نظر (في جديد وسم صفحة فتح)',
+    view: 'بـ Markdown صيغة عرض',
+    viewDescription: 'بـ صاف نص عرض هذا صفحة',
+    newTab: 'بـ Markdown صيغة عرض (في جديد وسم صفحة فتح)',
     menu: 'صفحة عملية',
     more: 'أكثر كثير صفحة عملية',
-    copying: 'صحيح في نسخ…',
+    copying: 'جارٍ نسخ…',
     copied: 'قد نسخ Markdown.',
-    requestFailed: 'لا يمكن تحميل Markdown، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
-    clipboardFailed: 'نسخ فشل، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة فحص نظر” بعد يد حركة نسخ.',
+    requestFailed: 'لا يمكن تحميل Markdown، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة عرض” بعد يد حركة نسخ.',
+    clipboardFailed: 'نسخ فشل، طلب فتح صفحة عملية قائمة مفرد، اختيار “بـ Markdown صيغة عرض” بعد يد حركة نسخ.',
   },
 } satisfies Record<'en' | 'ar', Record<Exclude<CopyState, 'idle'> | 'copy' | 'copyDescription' | 'view' | 'viewDescription' | 'newTab' | 'menu' | 'more', string>>
 

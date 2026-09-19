@@ -1,36 +1,36 @@
 - heading "إضافة" [level=1]
 - paragraph: إضافة و إدارة إضافة
 - button "تحديث جديد"
-- button "إضافة إضافة":
+- button "إضافة":
   - img
-  - text: إضافة إضافة
+  - text: إضافة
 - heading "رسمي جهة" [level=3]
 - text: "6"
 - list:
   - listitem:
-    - button "فحص نظر ذكي جسم مجموعة طابور": ذكي جسم مجموعة طابور
+    - button "عرض ذكي جسم مجموعة طابور": ذكي جسم مجموعة طابور
     - text: Beta تفعيل ذكي جسم مجموعة طابور تنسيق عمل و مجموعة طابور أداة.
     - switch "تفعيل ذكي جسم مجموعة طابور"
   - listitem:
-    - button "فحص نظر ذكي جسم مجموعة طابور Web واجهة": ذكي جسم مجموعة طابور Web واجهة
-    - text: Beta في متصفح في فحص نظر مجموعة طابور عضو، مهمة نظر لوح و عضو جلسة.
+    - button "عرض ذكي جسم مجموعة طابور Web واجهة": ذكي جسم مجموعة طابور Web واجهة
+    - text: Beta في متصفح في عرض مجموعة طابور عضو، مهمة نظر لوح و عضو جلسة.
     - switch "تفعيل ذكي جسم مجموعة طابور Web واجهة"
   - listitem:
-    - button "فحص نظر طرفية": طرفية
+    - button "عرض طرفية": طرفية
     - text: حد agent تشغيل كل واحد بند أمر.
   - listitem:
-    - button "فحص نظر Agent حلقة": Agent حلقة
-    - text: Agent مثل أي إرسال إرسال أداة استدعاء.
+    - button "عرض Agent حلقة": Agent حلقة
+    - text: Agent مثل أي إرسال إرسال استدعاء الأداة.
   - listitem:
-    - button "فحص نظر Subagent": Subagent
+    - button "عرض Subagent": Subagent
     - text: ضبط Subagent تمرير عودة طبقة درجة، عدد كمية و نموذج.
   - listitem:
-    - button "فحص نظر شبكة صفحة بحث": شبكة صفحة بحث
+    - button "عرض شبكة صفحة بحث": شبكة صفحة بحث
     - text: DeepSeek بحث مزود.
 - heading "قد تثبيت" [level=3]
 - text: "1"
 - list:
   - listitem:
-    - button "فحص نظر bundle": bundle
+    - button "عرض bundle": bundle
     - text: "Web e2e fixture: a bundle whose one row is an inert plugin."
     - switch "تفعيل bundle"

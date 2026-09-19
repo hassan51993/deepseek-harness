@@ -44,7 +44,7 @@ kind: "package-reference"
 | `path` | `<harness home>/settings.yaml` | ضبط وثيقة مسار؛ توسيع اسم قرار صيغة (`.yaml`،`.yml` أو `.json`) |
 | `dshHome` | `$DSH_HOME` أو `~/.dsh` | `path` حذف وقت استخدام harness home |
 | `watch` | `true` | استماع وثيقة و حار إصدار خارجي تحرير |
-| `debounceMs` | `100` | watcher كتابة مستقر نافذة (جزء ثانية) |
+| `debounceMs` | `100` | watcher كتابة مستقر نافذة (مللي ثانية) |
 
 توليد[إعداد دليل](../../../docs/config-catalog.ar.md#deepseek-aidsh-settings-file) هو كل تلقي دعم حمل حقل و ذلك JSDoc نفاد كل صيغة حق مصدر.
 

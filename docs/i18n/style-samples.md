@@ -30,7 +30,7 @@
 
 > **Async state is not synchronous state** — `agent.followup()` does not flip status before returning; a background job's completion races turn boundaries; `reader.close()` fires for both EOF and disposal. Never gate control flow on a status you only just requested — drive lifecycle off the events/promises that actually fire (`agent/status`, `task.done`), and observe the transition (saw `running` THEN `idle`) instead of treating status as a per-follow-up result: several queued follow-ups run as consecutive turns under one `running` interval, while cancellation or disposal can discard unstarted items.
 
-**مختلف خطوة حالة لا انتظار نفس في تزامن لحظة وقت حالة**: استدعاء `agent.followup()` لن في إرجاع قبل تزامن تحديث حالة؛ خلفية مهمة إتمام وقت و جولة حد وجود تنافس حالة؛`reader.close()` حيث سوف في قراءة إلى ملف نهاية ذيل وقت إطلاق، أيضا سوف في مورد تحرير وقت إطلاق. قطع لا يأخذ للتو للتو إرسال بدء حالة تغيير عند صار قد توليد فاعلية، حسب هذا تحكم مسار؛ دورة الحياة منطق ينبغي بـ فعلي إطلاق حدث و قد إتمام promise(`agent/status`،`task.done`) لـ دقيق، و مراقبة كامل حالة تغير (أولا `running`، مجددا `idle`) ، لا يلزم يأخذ حالة عند عمل تدريجي مرة `followup()` نتيجة: كثير مرة ترتيب طابور `followup()` سوف بصفة وصل متابعة جولة تشغيل، لكن ممكن مشترك استخدام واحد `running` منطقة بين؛ إلغاء أو مورد تحرير أيضا ممكن إسقاط بعد لم بدء طابور صف بند.
+**مختلف خطوة حالة لا انتظار نفس في تزامن لحظة وقت حالة**: استدعاء `agent.followup()` لن في إرجاع قبل تزامن تحديث حالة؛ خلفية مهمة إتمام وقت و جولة حد وجود تنافس حالة؛`reader.close()` حيث سوف في قراءة إلى ملف نهاية ذيل وقت إطلاق، أيضا سوف في مورد تحرير وقت إطلاق. قطع لا يأخذ للتو إرسال بدء حالة تغيير عند صار قد توليد فاعلية، حسب هذا تحكم مسار؛ دورة الحياة منطق ينبغي بـ فعلي إطلاق حدث و اكتمل promise(`agent/status`،`task.done`) لـ دقيق، و مراقبة كامل حالة تغير (أولا `running`، مجددا `idle`) ، لا يلزم يأخذ حالة عند عمل تدريجي مرة `followup()` نتيجة: كثير مرة ترتيب طابور `followup()` سوف بصفة وصل متابعة جولة تشغيل، لكن ممكن مشترك استخدام واحد `running` منطقة بين؛ إلغاء أو مورد تحرير أيضا ممكن إسقاط بعد لم بدء طابور صف بند.
 
 ## ③ اختبار سياسة سياسة بيان
 
@@ -40,7 +40,7 @@
 
 > We are DeepSeek — do not ration real-API tests. A no-key test proves the plumbing; only a with-key run proves the agent works against a real model. Write many: real prompts that write files, multi-turn conversations, tool use, cancellation mid-stream. Cheapest and highest-value are **smoke tests** that boot the real example, send one real prompt, and check the world — they catch the "green unit tests, broken product" class that mocks structurally cannot. The self-skip exists only so secretless CI and keyless contributors aren't blocked; it is not a cost signal.
 
-أنا جمع هو DeepSeek: حقيقي واجهة متبادل صلة اختبار لا نيل لحظة معنى تقليص نقص حالة استخدام عدد كمية. بلا مفتاح اختبار فقط قدرة تحقق قاع طبقة عبر مسار؛ فقط لديه يحمل صالح مفتاح تنفيذ حالة استخدام، عندئذ قدرة تأكيد agent(ذكي جسم) يمكن صحيح معتاد مقابل وصل حقيقي نموذج. طلب كبير كمية تحرير كتابة هذا صنف اختبار: يتضمن ملف كتابة صنف حقيقي نص التوجيه، كثير جولة محادثة، أداة استدعاء، تدفق صيغة في طريق إلغاء انتظار مشهد.
+أنا جمع هو DeepSeek: حقيقي واجهة متبادل صلة اختبار لا نيل لحظة معنى تقليص نقص حالة استخدام عدد كمية. بلا مفتاح اختبار فقط قدرة تحقق قاع طبقة عبر مسار؛ فقط لديه يحمل صالح مفتاح تنفيذ حالة استخدام، عندئذ قدرة تأكيد agent(ذكي جسم) يمكن صحيح معتاد مقابل وصل حقيقي نموذج. طلب كبير كمية تحرير كتابة هذا صنف اختبار: يتضمن ملف كتابة صنف حقيقي نص التوجيه، كثير جولة محادثة، استدعاء الأداة، تدفق صيغة في طريق إلغاء انتظار مشهد.
 
 صار هذا الأكثر منخفض، استلام فائدة الأكثر عال هو**خطر دخان اختبار**: سحب بدء كامل حقيقي عرض مثال، إرسال واحد بند حقيقي تلميح، و فحص ملف، عملية انتظار خارجي يمكن مراقبة نتيجة. هذا صنف حالة استخدام قدرة التقاط واحد صنف مشكلة——اختبار وحدة الكل أخضر مصباح، لكن منتج فعلي تشغيل لذا عائق، مفرد اعتماد mock تماما لا يمكن اكتشاف هذا صنف نقص وقوع.
 
@@ -48,7 +48,7 @@
 
 > **Prefer the real implementation over a mock** — Mock only genuinely expensive or non-deterministic dependencies (the LLM adapter, the network, the clock); keep everything downstream real. A hand-rolled stand-in proves the bridge moves bytes, not that the shipping tool behaves as asserted — the two drift while the test stays green.
 
-**أولوية استخدام حقيقي تنفيذ، بينما غير mock بديل ذات**——فقط مقابل فتح إلغاء أقصى كبير، نتيجة لا تحديد اعتماد فعل mock(LLM(كبير لغة نموذج) مهايئ، شبكة شبكة، وقت ساعة) ، ذلك بقية تحت تنقل مكون الكل استخدام حقيقي تنفيذ. يد كتابة mock بديل ذات فقط قدرة تحقق بيانات عبر مسار قدرة نقل بايت، لا يمكن حفظ إثبات خط فوق أداة رمز دمج مسبق مدة منطق؛ طويل مدة تحت قدوم عمل خدمة منطق و mock تنفيذ سوف ظهور انحراف فرق، لكن اختبار ما زال سوف عرض عبر.
+**أولوية استخدام حقيقي تنفيذ، بينما غير mock بديل ذات**——فقط مقابل فتح إلغاء أقصى كبير، نتيجة لا تحديد اعتماد فعل mock(LLM(كبير لغة نموذج) مهايئ، شبكة، وقت ساعة) ، ذلك بقية تحت تنقل مكون الكل استخدام حقيقي تنفيذ. يد كتابة mock بديل ذات فقط قدرة تحقق بيانات عبر مسار قدرة نقل بايت، لا يمكن حفظ إثبات خط فوق أداة رمز دمج مسبق مدة منطق؛ طويل مدة تحت قدوم عمل خدمة منطق و mock تنفيذ سوف ظهور انحراف فرق، لكن اختبار ما زال سوف عرض عبر.
 
 ## ④ آلية وصف
 

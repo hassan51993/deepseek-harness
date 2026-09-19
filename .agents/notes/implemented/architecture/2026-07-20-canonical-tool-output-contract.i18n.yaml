@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-20-canonical-tool-output-contract.md
 2026-07-20-canonical-tool-output-contract.md: 8bd690101bcbeb647b36176ee03e13eaa79872c9
-2026-07-20-canonical-tool-output-contract.ar.md: 028bb98bf1fe8e87cf4ce43910391b0fe8f8046c
+2026-07-20-canonical-tool-output-contract.ar.md: 12fe7b6f21aa290c5c2d913de2a6bbfdd751f3a5

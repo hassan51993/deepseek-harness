@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-17-durable-web-queue-recovery.md
 2026-08-17-durable-web-queue-recovery.md: 3588849c4dd930284823a98205b3761ef20c2fef
-2026-08-17-durable-web-queue-recovery.ar.md: e3695e04cd1adfc3a9be363f5bc67c12fd4af595
+2026-08-17-durable-web-queue-recovery.ar.md: 32f11df1c59a2cb6b9bc7497b473f734d11c241d

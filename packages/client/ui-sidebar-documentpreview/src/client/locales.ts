@@ -8,7 +8,7 @@
 
 /** Arabic dictionary and key-set source of truth. */
 export const ar = {
-  loading: 'صحيح في قراءة…',
+  loading: 'جارٍ قراءة…',
   loadMore: 'تحميل أكثر كثير',
   changed: 'ملف قد تحديث، حالي عرض لـ قديم محتوى',
   reloadNow: 'إعادة تحميل دخول',

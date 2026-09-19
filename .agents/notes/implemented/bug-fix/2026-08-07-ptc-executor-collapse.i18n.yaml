@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-07-ptc-executor-collapse.md
 2026-08-07-ptc-executor-collapse.md: 8d7a9b26277914b9d50a50d63c7bbb3eeb1b1cd7
-2026-08-07-ptc-executor-collapse.ar.md: 8f5db51664ca215a9c721e2c88f9b0d1bb3ecc14
+2026-08-07-ptc-executor-collapse.ar.md: a6919b7c72771a1d35df0f6ad8b46531fef41b6e

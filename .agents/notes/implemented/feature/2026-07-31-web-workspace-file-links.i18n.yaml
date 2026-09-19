@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-31-web-workspace-file-links.md
 2026-07-31-web-workspace-file-links.md: 4018a2ff78be46c2301d83681144214e53751638
-2026-07-31-web-workspace-file-links.ar.md: f4eb4ed1b1545ff341268dd958609cc0cb60078d
+2026-07-31-web-workspace-file-links.ar.md: 3ca07a6bbf1d2c0448feb5851b196c4de7dea453

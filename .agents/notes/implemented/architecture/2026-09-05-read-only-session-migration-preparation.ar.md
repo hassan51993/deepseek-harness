@@ -59,7 +59,7 @@ interface MigrationPreparation {
 }
 ```
 
-جديد read/write open فقط لديه في source path و revision ما زال مطابقة وقت عندئذ إضافة دخول قد لديه entry.`waitWithAbort()` يجعل كل caller AbortSignal و shared Promise تنافس تنازع، لكن لن يأخذ caller signal نقل إعطاء مشترك عمل. فقط لديه الأكثر بعد واحد waiter في preparation ما زال وقت التشغيل مغادرة فتح،backend-owned controller عندئذ سوف abort. إلغاء اختبار مؤقت توقف شيء إدارة قراءة، و في إلغاء واحد caller قبل مراقبة إلى اثنان عدد قد تسجيل waiter؛ فقط يجعل خروج مرة حدث حلقة لا يستطيع إثبات مختلف خطوة مسار و revision فحص بحث بعد إضافة دخول قد إتمام.
+جديد read/write open فقط لديه في source path و revision ما زال مطابقة وقت عندئذ إضافة دخول قد لديه entry.`waitWithAbort()` يجعل كل caller AbortSignal و shared Promise تنافس تنازع، لكن لن يأخذ caller signal نقل إعطاء مشترك عمل. فقط لديه الأكثر بعد واحد waiter في preparation ما زال وقت التشغيل مغادرة فتح،backend-owned controller عندئذ سوف abort. إلغاء اختبار مؤقت توقف شيء إدارة قراءة، و في إلغاء واحد caller قبل مراقبة إلى اثنان عدد قد تسجيل waiter؛ فقط يجعل خروج مرة حدث حلقة لا يستطيع إثبات مختلف خطوة مسار و revision فحص بحث بعد إضافة دخول اكتمل.
 
 إتمام نتيجة دخول قائم bounded `coldLogMemo`.`StoredLog` حكم آخر حقل يأخذ قد إصدار current state و `PreparedStoredLog` قسم فتح، بعد من `publication` حقل يأخذ current logical events و مطابقة publication operation ربط، جعل query بعد ضيق وصل Agent resume إعادة استخدام نفس مرة Decode و migration.In-flight map فقط يملك تشغيل في عمل، لا هو ثاني عدد completed-result cache.
 

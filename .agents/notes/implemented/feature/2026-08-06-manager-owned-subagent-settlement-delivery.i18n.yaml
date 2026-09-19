@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-06-manager-owned-subagent-settlement-delivery.md
 2026-08-06-manager-owned-subagent-settlement-delivery.md: a2bfb11a2f2a71b8428579fbe5a188dfd90b59b5
-2026-08-06-manager-owned-subagent-settlement-delivery.ar.md: 2ed528177d1e4903f25600bc65ed5e53d1ab4825
+2026-08-06-manager-owned-subagent-settlement-delivery.ar.md: 72393e3f510f87275477fded4eb9692b77f7a954

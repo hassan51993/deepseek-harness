@@ -26,7 +26,7 @@ Host presenter و Client keyed renderer قسم تحمل عرض سوف شكل ص�
 
 Session Remote journal فقط تحت إرسال أصلي، قد تحقق، يمكن حفظ دائم Session event.`session.page` و `session.follow` لا تحليل أداة معامل، لا استعلام Tools registry، لا استعادة presenter scope، لا تنفيذ `presentCall`/`presentResult`، أيضا لا بنية صنع أو تغلب ضخم أي tool view.
 
-Client Conversation طبقة متابعة مسؤول أداة استدعاء و نتيجة identity، إعداد مقابل، دورة الحياة،PTC dispatch توسيع اندفاع و مستقر Chat Node. هو لا حل تفسير أداة جسم أداة اسم، أيضا لا توليد terminal،diff،read،search أو web مكون props.
+Client Conversation طبقة متابعة مسؤول استدعاء الأداة و نتيجة identity، إعداد مقابل، دورة الحياة،PTC dispatch توسيع اندفاع و مستقر Chat Node. هو لا حل تفسير أداة جسم أداة اسم، أيضا لا توليد terminal،diff،read،search أو web مكون props.
 
 Client `ui-tool` متابعة مسؤول card model و أداة جسم renderer. كل card model تعديل لـ مباشر قراءة `ToolCallBlock` في أداة اسم، أصلي معامل، نتيجة محتوى، خطأ، حمل دائم metadata،Session cwd و Host home، و توليد و قائم صفحة نفسه مكون props.
 
@@ -187,9 +187,9 @@ Client connection لم يعد من `dsh-tools/presentation` تحويل خروج 
 
 - read path،offset،lines،totalLines و lang؛
 - write/edit applied contextual hunks؛
-- grep/glob قسم مجموعة نتيجة، قطع قطع علامة سجل و مجموع عدد؛
+- grep/glob قسم مجموعة نتيجة، مقتطع علامة سجل و مجموع عدد؛
 - web_search مصدر حقل و provider answer؛
-- web_fetch نهائي URL،HTTP status و صالح قطع قطع علامة سجل.
+- web_fetch نهائي URL،HTTP status و صالح مقتطع علامة سجل.
 
 Client مقابل `meta` فعل نطاق جزء وقت التشغيل استلام ضيق. هل يأخذ `presentationMeta` تعديل اسم لـ أكثر في صفة result metadata لا يخص هذا قرار.
 
@@ -284,7 +284,7 @@ Chat و Details عبر صاف helper إعادة استخدام نفس block تح
 
 - `search`،`read`،`bash`،`write`،`edit`،`code` و `others` تصنيف؛
 - قائم عنوان و أداة مخصص استخدام عنوان؛
-- summary حقل أولوية درجة و مفرد سطر قطع قطع؛
+- summary حقل أولوية درجة و مفرد سطر مقتطع؛
 - كثير query فاصلة رقم تجميع وصل؛
 - cwd متبادل مقابل تحويل و home تقليص كتابة؛
 - file path نقر؛
@@ -349,7 +349,7 @@ running `grep`/`glob` متابعة فقط لديه معامل ملخص. نجاح
 
 Client تحقق path،lineNumber،line،truncated و total. فارغ matches/paths هو صالح بطاقة؛ ناقص/شاذ شكل meta، لم معرفة shape،error، ناقص call head و PTC dispatch child مشي Generic.
 
-`truncated:true` وقت متابعة من أصلي result content عرض recovery locator؛ لم قطع قطع وقت لا عرض.Chat 8 سطر حد أعلى،Details كل عال عرض و توسيع سلوك ثابت.
+`truncated:true` وقت متابعة من أصلي result content عرض recovery locator؛ لم مقتطع وقت لا عرض.Chat 8 سطر حد أعلى،Details كل عال عرض و توسيع سلوك ثابت.
 
 ### Web بطاقة
 
@@ -357,7 +357,7 @@ running `web_search`/`web_fetch` متابعة فقط لديه ملخص سطر. �
 
 Client تحقق كل source url،title،snippet و publishedAt، و متابعة فقط يأخذ http/https URL تصيير لـ رابط.meta ناقص أو شاذ شكل،error، ناقص call head و PTC dispatch child مشي Generic.
 
-search answer، مصدر ترتيب،label fallback و قطع قطع تلميح ثابت؛fetch نهائي URL، حالة، قطع قطع تلميح و Details تحت جهة أصلي متن ثابت.
+search answer، مصدر ترتيب،label fallback و مقتطع تلميح ثابت؛fetch نهائي URL، حالة، مقتطع تلميح و Details تحت جهة أصلي متن ثابت.
 
 ### قد مباشر استخدام raw block renderer
 
@@ -398,7 +398,7 @@ Deliverables Definition حسب callId مراقبة root `tool/call` و نجاح 
 | web | result meta sources/answer أو url/statusCode/truncated |
 | generic/custom | name،argsRaw،content،error |
 
-هذا مشهد لا استيراد Host أداة حزمة قدوم حساب حساب صفحة عرض، أيضا لا إبقاء presenter مرآة مثل. نفس raw مشهد في jsdom تحت قيادة built Web snapshot؛ حقيقي Host متصفح حالة استخدام مستقل تغطية شبكة شبكة مسار.
+هذا مشهد لا استيراد Host أداة حزمة قدوم حساب حساب صفحة عرض، أيضا لا إبقاء presenter مرآة مثل. نفس raw مشهد في jsdom تحت قيادة built Web snapshot؛ حقيقي Host متصفح حالة استخدام مستقل تغطية شبكة مسار.
 
 ## عرض انتظار قيمة مستطيل دفعة
 
@@ -417,7 +417,7 @@ Deliverables Definition حسب callId مراقبة root `tool/call` و نجاح 
 | terminal_send | حالي قبل منصة terminal، خلفية/error Generic |
 | write/edit | حالي intended/applied diff و error fallback |
 | read | حالي running ملخص،settled ReadBlock و error fallback |
-| grep/glob | حالي grouped/path card، قطع قطع و recovery |
+| grep/glob | حالي grouped/path card، مقتطع و recovery |
 | web_search/web_fetch | حالي مصدر/ملخص card و أصلي متن |
 | Todo/Question/Skill/Cordis | حالي مخصص استخدام سطر |
 | PTC dispatch subcall | ممتلئ كاف شرط وقت عرض terminal بطاقة؛diff/read/search/web إبقاء Generic/flattened |
@@ -587,7 +587,7 @@ Host registry سماح مختلف scope لـ نفس tool name توفير مخت�
 - خمسة صنف بنية تحويل card model فقط قراءة raw block و Session path facts؛ فقط لديه diff،read،search و web استخدام `parentCallId` رفض فرعي استدعاء.
 - Generic،Todo،Question،Skill و Cordis سطر سلوك ثابت.
 - Deliverables لا اعتماد render intent كما إبقاء حالي paths.
-- كل رقم واحد جهة قمة طبقة أداة نص، مكون، توسيع محتوى، حالة، رابط و ترتيب ترتيب ثابت.
+- كل رقم واحد جهة قمة طبقة أداة نص، مكون، توسيع محتوى، حالة، رابط و ترتيب ثابت.
 - malformed،missing-meta،error،orphan و unknown-tool متابعة أمان fallback.
 - PTC dispatch diff،read،search و web فرعي استدعاء إبقاء Generic/flattened؛terminal فرعي استدعاء التزام دوران أصل استدعاء ملائم استخدام قاعدة.
 - Chat،Details و Trajectory سلوك ثابت.
@@ -630,7 +630,7 @@ read سطر بنية،applied diff،search قسم مجموعة،web sources و �
 
 ### حسب نتيجة نحو Host استعلام presentation
 
-حسب يحتاج RPC سوف يأخذ واحد صفحة قراءة تغيير صار N مرة شبكة شبكة استدعاء، ما زال يحتاج Host lookup،scope،callId فحص بحث و خطأ تنسيق ضبط، لذلك رفض.
+حسب يحتاج RPC سوف يأخذ واحد صفحة قراءة تغيير صار N مرة شبكة استدعاء، ما زال يحتاج Host lookup،scope،callId فحص بحث و خطأ تنسيق ضبط، لذلك رفض.
 
 ### سماح عرض زيادة قوي
 

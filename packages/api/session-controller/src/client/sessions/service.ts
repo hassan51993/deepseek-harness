@@ -128,19 +128,15 @@ function displayTitleOf(title: string | undefined, cwd: string | undefined, id: 
 }
 
 /**
- * Increment a trailing fork number while preserving its half-width or
- * full-width parentheses; an unnumbered title starts with ` (1)`.
+ * Increment a trailing parenthesized fork number; an unnumbered title
+ * starts with ` (1)`.
  * @param title - source session's durable title.
  * @returns the title assigned to the fork child.
  */
 function increasedForkTitle(title: string): string {
-  const ascii = /^(.*?)\((\d+)\)$/u.exec(title)
-  if (ascii?.[1] !== undefined && ascii[2] !== undefined) {
-    return `${ascii[1]}(${BigInt(ascii[2]) + 1n})`
-  }
-  const fullWidth = /^(.*?)((\d+))$/u.exec(title)
-  if (fullWidth?.[1] !== undefined && fullWidth[2] !== undefined) {
-    return `${fullWidth[1]}(${BigInt(fullWidth[2]) + 1n})`
+  const numbered = /^(.*?)\((\d+)\)$/u.exec(title)
+  if (numbered?.[1] !== undefined && numbered[2] !== undefined) {
+    return `${numbered[1]}(${BigInt(numbered[2]) + 1n})`
   }
   return `${title} (1)`
 }

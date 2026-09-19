@@ -446,12 +446,12 @@ describe('candidates', () => {
       const { source, mint, warm, executeCalls } = await bench({ commands: () => Promise.resolve({ commands: SHIPPED }) })
       mint('s1')
       await warm(proj('s1'))
-      const space = source.matchSpace!(proj('s1'), '/حساب تخطيط')
+      const space = source.matchSpace!(proj('s1'), '/خطة')
       if (space === undefined || space === 'handled' || !('claim' in space)) throw new Error('expected the plan claim')
       expect(space.claim.hint).toBe('[off|message]')
       // The claim keeps the typed spelling (the draft carries it and the
       // arguments are read after it); the submission sends the catalog name.
-      expect(space.claim.token).toBe('/حساب تخطيط ')
+      expect(space.claim.token).toBe('/خطة ')
       expect(space.claim.name).toBe('plan')
       const enter = await source.matchEnter!(proj('s1'), '/هدف ship it', new AbortController().signal, { attachments: 0 })
       if (enter === undefined || enter === 'handled' || !('claim' in enter)) throw new Error('expected the goal claim')

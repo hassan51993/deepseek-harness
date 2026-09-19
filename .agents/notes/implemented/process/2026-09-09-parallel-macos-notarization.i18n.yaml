@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-09-parallel-macos-notarization.md
 2026-09-09-parallel-macos-notarization.md: 8ab4c5405ba51ca5ebbe42d9098ca52812d61745
-2026-09-09-parallel-macos-notarization.ar.md: 9ff71b9371ada2b37ded3766e5d6ec6ef2c42af9
+2026-09-09-parallel-macos-notarization.ar.md: db854f6c8a1f212c891d3bfc47378fabe4d297a2

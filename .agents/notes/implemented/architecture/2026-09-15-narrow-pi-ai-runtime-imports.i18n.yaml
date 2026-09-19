@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-15-narrow-pi-ai-runtime-imports.md
 2026-09-15-narrow-pi-ai-runtime-imports.md: f6e4c969afa5e450f0585975edf13ff6e10bb80e
-2026-09-15-narrow-pi-ai-runtime-imports.ar.md: f948e2abab32b6b4fc2416e931af13b9af7c1e1d
+2026-09-15-narrow-pi-ai-runtime-imports.ar.md: ba9ac18c2457f8fd309decb5af492c5a60e95812

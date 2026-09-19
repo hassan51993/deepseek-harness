@@ -110,7 +110,7 @@ describe('MenuView', () => {
     // The icon token renders as an SVG glyph, not text.
     expect(options[0]?.querySelector('svg')).not.toBeNull()
     expect(options[1]?.querySelector('svg')).toBeNull()
-    const status = screen.getByRole('status', { name: 'صحيح في تحميل…' })
+    const status = screen.getByRole('status', { name: 'جارٍ تحميل…' })
     expect(status.children).toHaveLength(2)
   })
 
@@ -121,13 +121,13 @@ describe('MenuView', () => {
         source: 'command',
         status: 'ready',
         items: [
-          { name: 'plan', label: 'حساب تخطيط', description: 'دخول أو خروج حساب تخطيط نمط', icon: Glyph, section: 'إضافة' },
+          { name: 'plan', label: 'خطة', description: 'دخول أو خروج خطة نمط', icon: Glyph, section: 'إضافة' },
           { name: 'file', label: 'File', section: 'إضافة' },
         ],
       }],
     }))
     const options = screen.getAllByRole('option')
-    expect(options.map(o => o.textContent)).toEqual(['حساب تخطيطplanدخول أو خروج حساب تخطيط نمط', 'File'])
+    expect(options.map(o => o.textContent)).toEqual(['خطةplanدخول أو خروج خطة نمط', 'File'])
     expect(options[0]?.querySelector('[data-glyph="plan"]')?.getAttribute('width')).toBe('16')
     // A label that is the name in another letter case renders no alias.
     expect(options[1]?.querySelectorAll('span')).toHaveLength(1)
@@ -140,7 +140,7 @@ describe('MenuView', () => {
       highlight: null,
     }))
     expect(screen.queryByText('reference')).toBeNull()
-    expect(screen.getByRole('status', { name: 'صحيح في تحميل…' })).toBeTruthy()
+    expect(screen.getByRole('status', { name: 'جارٍ تحميل…' })).toBeTruthy()
   })
 
   it('renders retained items instead of skeletons while a refinement is pending', () => {

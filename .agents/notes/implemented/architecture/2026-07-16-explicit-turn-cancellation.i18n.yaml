@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-16-explicit-turn-cancellation.md
 2026-07-16-explicit-turn-cancellation.md: 477c8d057408223f6c075be93a660967770b1f84
-2026-07-16-explicit-turn-cancellation.ar.md: 9efcd3481e990134a21b04f51502de5a1f41631f
+2026-07-16-explicit-turn-cancellation.ar.md: e35fa742212c1645f2ec12fba1a0b12bcb52e886

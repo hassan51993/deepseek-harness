@@ -45,7 +45,7 @@ kind: "package-group"
 | [`ui-sidebar/`](ui-sidebar/README.ar.md) | عرض مساحة العمل و جلسة تنقل | — |
 | [`ui-sidebar-right/`](ui-sidebar-right/README.ar.md) | إدارة يمين جانب Sidebar و ذلك tab نوع | `ctx.sidebarRight`, `ctx.sidebarRightTabs` |
 | [`ui-sidebar-documentpreview/`](ui-sidebar-documentpreview/README.ar.md) | في يمين جانب Sidebar tab في عرض وثيقة | `ctx.documentPreviews` |
-| [`ui-sidebar-browser/`](ui-sidebar-browser/README.ar.md) | في يمين جانب Sidebar tab في تصفح تصفح sandboxed HTTP(S) صفحة، يشمل loopback خدمة | — |
+| [`ui-sidebar-browser/`](ui-sidebar-browser/README.ar.md) | في يمين جانب Sidebar tab في تصفح sandboxed HTTP(S) صفحة، يشمل loopback خدمة | — |
 | [`resources/`](resources/README.ar.md) | موحد واحد مورد نموذج:`useResource` جلسة معيار خطاف خلف بعد بروتوكول مزود | `ctx.resources` |
 | [`ui-sidebar-files/`](ui-sidebar-files/README.ar.md) | يمين جانب Sidebar مساحة العمل ملف شجرة tab نوع | — |
 | [`ui-brand-official/`](ui-brand-official/README.ar.md) | استخدام رسمي جهة اسم و علامة ملء ملء عام متصفح صنف لوحة slot | — |
@@ -53,7 +53,7 @@ kind: "package-group"
 | [`ui-conversation/`](ui-conversation/README.ar.md) | عرض حالي محادثة و ذلك إدخال واجهة | — |
 | [`ui-chat/`](ui-chat/README.ar.md) | إسقاط و تصيير Chat محادثة target | — |
 | [`ui-approval/`](ui-approval/README.ar.md) | عرض دفعة دقيق طلب و إرجاع مستخدم قرار | — |
-| [`ui-tool/`](ui-tool/README.ar.md) | تحرير ترتيب أداة استدعاء شجرة و حسب أداة مفتاح تحكم عرض | — |
+| [`ui-tool/`](ui-tool/README.ar.md) | تحرير ترتيب استدعاء الأداة شجرة و حسب أداة مفتاح تحكم عرض | — |
 | [`ui-workflow-run/`](ui-workflow-run/README.ar.md) | يأخذ حمل دائم سير العمل تشغيل إعادة تشغيل لـ تضمين طقم محادثة طي بند | — |
 | [`ui-goal/`](ui-goal/README.ar.md) | عرض و إدارة حالي هدف | — |
 | [`ui-trajectory/`](ui-trajectory/README.ar.md) | توفير agent(ذكي جسم) نشط حركة أخرى عرض | — |
@@ -76,8 +76,8 @@ kind: "package-group"
 | [`ui-plugin-manager/`](ui-plugin-manager/README.ar.md) | مساهمة جانب شريط “إضافة” وجه لوح: تثبيت، تفعيل، توقف استخدام، إعادة محاولة و تركيب قد تثبيت حزمة | — |
 | [`ui-settings-plugin-inventory/`](ui-settings-plugin-inventory/README.ar.md) | نحو «إضافة» ضبط مساهمة فقط قراءة Host Loader بيان وسم صفحة | — |
 | [`ui-deliverables/`](ui-deliverables/README.ar.md) | توليد تعديل ملف بطاقة و ذلك مقابل مقارنة tab، تسليم ملف بطاقة و يمكن نقر نهائي استجابة ملف مرجع | — |
-| [`ui-message-feedback/`](ui-message-feedback/README.ar.md) | عكس تغذية واجهة: مساعدة يد رسالة عملية بند في تدريجي رسالة مدح دوس، و نقطة مدح، نقطة دوس و `/feedback` خلف بعد عكس تغذية نابض نافذة | — |
-| [`ui-directory-picker-browse/`](ui-directory-picker-browse/README.ar.md) | موجه إلى مساحة العمل دليل مسار تطبيق داخل دليل تصفح تصفح واجهة | — |
+| [`ui-message-feedback/`](ui-message-feedback/README.ar.md) | ملاحظات واجهة: مساعدة يد رسالة عملية بند في تدريجي رسالة مدح دوس، و نقطة مدح، نقطة دوس و `/feedback` خلف بعد ملاحظات نابض نافذة | — |
+| [`ui-directory-picker-browse/`](ui-directory-picker-browse/README.ar.md) | موجه إلى مساحة العمل دليل مسار تطبيق داخل دليل تصفح واجهة | — |
 | [`ui-directory-picker-native/`](ui-directory-picker-native/README.ar.md) | قيادة محلي Desktop أو Host OS اختيار جهاز أصلي دليل اختيار واجهة | — |
 | [`ui-open-in-app/`](ui-open-in-app/README.ar.md) | في قد تثبيت تطبيق في فتح مساحة العمل دليل جلسة عنوان شريط تفكيك قسم حسب زر | — |
 

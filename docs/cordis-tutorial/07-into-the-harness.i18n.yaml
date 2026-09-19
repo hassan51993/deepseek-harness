@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-tutorial/07-into-the-harness.md
 07-into-the-harness.md: bfd52c4e852363ffc611c1d0458d2a209c31f69e
-07-into-the-harness.ar.md: cab28b869f76f51061d2d5fd2e49ceae5f5d71e2
+07-into-the-harness.ar.md: 932923e01b4f541ef9513f1499356c762bf13c3a

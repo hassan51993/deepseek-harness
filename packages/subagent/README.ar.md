@@ -9,7 +9,7 @@ kind: "package-group"
 
 ## عام وصف
 
-subagent حزمة بيت عائلة يجعل agent(ذكي جسم) سوف مهمة تفويض إرسال إعطاء فرعي agent، متابعة ذلك عمل، تزامن الآن ذاتي ذات إنشاء كل فرعي درجة. عزل عمل اختياري اختيار كل جديد عملية داخل فرعي درجة؛ حاجة قائم محادثة وقت اختياري اختيار حمل أب درجة تاريخ عملية داخل فرعي درجة؛ أيضا اختياري اختيار من ACP(Agent Client Protocol) ،Codex،Claude Code أو آخر Harness وقت التشغيل دعم حمل عملية خارج فرعي درجة. موجه إلى نموذج أداة أيضا يجعل agent قدرة كاف نحو متبادل مجاور agent إرسال رسالة، في قطع عمل و صف خروج فرعي درجة حالة. بلا نقاش فرعي درجة صحيح في تشغيل أيضا هو قد تخزين، أب درجة كل قدرة يرى هو؛ كل حزمة README شرح كل مزود خاص تحديد ضبط و حد.
+subagent حزمة بيت عائلة يجعل agent(ذكي جسم) سوف مهمة تفويض إرسال إعطاء فرعي agent، متابعة ذلك عمل، تزامن الآن ذاتي ذات إنشاء كل فرعي درجة. عزل عمل اختياري اختيار كل جديد عملية داخل فرعي درجة؛ حاجة قائم محادثة وقت اختياري اختيار حمل أب درجة تاريخ عملية داخل فرعي درجة؛ أيضا اختياري اختيار من ACP(Agent Client Protocol) ،Codex،Claude Code أو آخر Harness وقت التشغيل دعم حمل عملية خارج فرعي درجة. موجه إلى نموذج أداة أيضا يجعل agent قدرة كاف نحو متبادل مجاور agent إرسال رسالة، في قطع عمل و صف خروج فرعي درجة حالة. بلا نقاش فرعي درجة جارٍ تشغيل أيضا هو قد تخزين، أب درجة كل قدرة يرى هو؛ كل حزمة README شرح كل مزود خاص تحديد ضبط و حد.
 
 ## دليل
 
@@ -27,7 +27,7 @@ subagent حزمة بيت عائلة يجعل agent(ذكي جسم) سوف مهم�
 | [`subagent/`](subagent/README.ar.md) | تعريف تفويض إرسال خدمة: مزود سجل التسجيل، مرة صفة تشغيل، يمكن متابعة فرعي درجة و اكتشاف | `ctx.subagents` |
 | [`subagent-in-process-driver/`](subagent-in-process-driver/README.ar.md) | توفير مشترك عملية داخل تشغيل مشغل | بلا |
 | [`subagent-spawn-in-process/`](subagent-spawn-in-process/README.ar.md) | تشغيل كل جديد عملية داخل فرعي agent | تسجيل إلى `ctx.subagents` |
-| [`subagent-fork-in-process/`](subagent-fork-in-process/README.ar.md) | تشغيل من أب درجة قد إتمام تاريخ إرسال توليد عملية داخل فرعي agent | تسجيل إلى `ctx.subagents` |
+| [`subagent-fork-in-process/`](subagent-fork-in-process/README.ar.md) | تشغيل من أب درجة اكتمل تاريخ إرسال توليد عملية داخل فرعي agent | تسجيل إلى `ctx.subagents` |
 | [`subagent-acp/`](subagent-acp/README.ar.md) | مرور Agent Client Protocol تشغيل عملية خارج فرعي agent | تسجيل إلى `ctx.subagents` |
 | [`subagent-codex/`](subagent-codex/README.ar.md) | مرور رسمي جهة app-server بروتوكول تشغيل حقيقي Codex فرعي agent | تسجيل إلى `ctx.subagents` |
 | [`subagent-claude-code/`](subagent-claude-code/README.ar.md) | مرور رسمي جهة Agent SDK تشغيل حقيقي Claude Code فرعي agent | تسجيل إلى `ctx.subagents` |

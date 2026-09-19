@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write SAFETY.md
 SAFETY.md: cb4eca78f89f462bd7e481ff864d92af96f41bd1
-SAFETY.ar.md: 430d9caadcb0950faea79c061befd18fd2b6350f
+SAFETY.ar.md: 5f697e423e74187ffb4ce7177073aaac6961d64d

@@ -71,7 +71,7 @@ const LIVE_PROMPT = [
   ...Array.from(
     { length: 48 },
     (_, index) =>
-      `Context ${String(index + 1).padStart(2, '0')}: مستخدم صحيح في فحص طويل جلسة في زيادة كمية تصيير صفة قدرة.`
+      `Context ${String(index + 1).padStart(2, '0')}: مستخدم جارٍ فحص طويل جلسة في زيادة كمية تصيير صفة قدرة.`
       + ` Preserve item ${String(index)} and compare ${'payload'.repeat(8)}.`,
   ),
   '```ts',

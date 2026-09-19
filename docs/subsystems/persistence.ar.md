@@ -107,11 +107,11 @@ interface SessionHandle extends AsyncDisposable {
 
 ## انهيار انهيار استعادة إبقاء يتم في قطع جولة
 
-واحد في جولة في طريق انهيار انهيار سجل بـ فتح `turn/start` بينما بلا `turn/end` انتهاء. حفظ دائم**لن**قطع قطع أو إصلاح هو: في طويل دورة مدة مهمة في، مفرد عدد جولة ممكن غير معتاد ضخم كبير (سماح كثير خطوة، كبير كمية أداة إخراج) ، بينما هذه حدث في انهيار انهيار قبل قد يتم حمل دائم إلحاق. هو إرجاع شيء إدارة فوق صالح وصل متابعة سجل؛ فقط لديه تمزيق شق شيء إدارة ذيل جزء——يخص مرة من لم إتمام append——في لا كامل تفتيت قطعة سوف يتم إسقاط: من في استعادة كامل سجل (JSONL خلفية سوف جزء حل رمز تمزيق شق Zstandard لقطة) من كتابة مسار في جملة مقبض رقم مرة جديد append قبل حمل دائم إعادة كتابة. إصلاح هو قراءة جهة مسؤولية:resume(agent-loop) عبر ذلك كتابة جملة مقبض قراءة قد تخزين سجل، حساب حساب `interruptedTurnClosers`——ناقص أداة خطأ، أي لم إغلاق دمج `step/end`، و واحد دمج صار `turn/end { reason: { kind: 'interrupted' } }`——و في إصدار Session قبل يأخذ هو جمع بصفة عادي دفعة مرة عبر نفس جملة مقبض إلحاق.`interrupted` هو وحيد واحد لا من حلقة إرسال خروج `TurnEndReason`(رؤية [session.md](session.ar.md#why-a-turn-ended-turnendreasonmap)).
+واحد في جولة في طريق انهيار انهيار سجل بـ فتح `turn/start` بينما بلا `turn/end` انتهاء. حفظ دائم**لن**مقتطع أو إصلاح هو: في طويل دورة مدة مهمة في، مفرد عدد جولة ممكن غير معتاد ضخم كبير (سماح كثير خطوة، كبير كمية أداة إخراج) ، بينما هذه حدث في انهيار انهيار قبل قد يتم حمل دائم إلحاق. هو إرجاع شيء إدارة فوق صالح وصل متابعة سجل؛ فقط لديه تمزيق شق شيء إدارة ذيل جزء——يخص مرة من لم إتمام append——في لا كامل تفتيت قطعة سوف يتم إسقاط: من في استعادة كامل سجل (JSONL خلفية سوف جزء حل رمز تمزيق شق Zstandard لقطة) من كتابة مسار في جملة مقبض رقم مرة جديد append قبل حمل دائم إعادة كتابة. إصلاح هو قراءة جهة مسؤولية:resume(agent-loop) عبر ذلك كتابة جملة مقبض قراءة قد تخزين سجل، حساب حساب `interruptedTurnClosers`——ناقص أداة خطأ، أي لم إغلاق دمج `step/end`، و واحد دمج صار `turn/end { reason: { kind: 'interrupted' } }`——و في إصدار Session قبل يأخذ هو جمع بصفة عادي دفعة مرة عبر نفس جملة مقبض إلحاق.`interrupted` هو وحيد واحد لا من حلقة إرسال خروج `TurnEndReason`(رؤية [session.md](session.ar.md#why-a-turn-ended-turnendreasonmap)).
 
 لذلك إصلاح فقط في كتابة كل حق لـ تحت كتابة: نشط وثب جلسة كتابة جملة مقبض من ذلك دورة الحياة كل من يحتفظ، لذا تزامن `open(id, 'write')` سوف بـ `SessionAlreadyOwnedError` رفض، بينما لا هو يجعل إصلاح و نشط وثب جولة تنافس سرعة. فقط قراءة مراقبة جهة (session-query) فقط في داخل تخزين في استخدام نفس مثال إغلاق دمج حدث إعداد مستو يتم في قطع بارد سجل، لا عودة كتابة أي محتوى.
 
-فقط قراءة مراقبة أي `open(id, 'read')`: جملة مقبض توفير مرور مرور تحقق وصل متابعة بادئة قطع قطعة، أبدا إرجاع تمزيق شق ذيل جزء، كما نفس جملة مقبض فوق تكرار قراءة أبدا سوف مراقبة إلى مقارنة أولا قبل قراءة أكثر قديم حالة. حفظ دائم جانب لا وجود قد دقيق تجهيز Session ذاكرة مؤقتة:session-query يملك ذاتي ذات بارد قراءة ذاكرة مؤقتة، حسب `stat().revision` تغيير أمر لوحة لـ كل id ذاكرة مؤقتة واحد قد إعداد مستو بارد Session، فقط في أمر لوحة تغير وقت إعادة قراءة. هذا دورة الحياة من[أساس في جملة مقبض حفظ دائم Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.ar.md) تعريف؛ قد عودة ملف [Session دقيق تجهيز مرحلة مقطع سجل](../../.agents/notes/archived/architecture/2026-08-05-session-preparation.md) تسجيل تحميل إصدار حد `SessionPreparation` الأكثر أول قرار.
+فقط قراءة مراقبة أي `open(id, 'read')`: جملة مقبض توفير مرور مرور تحقق وصل متابعة بادئة مقتطعة، أبدا إرجاع تمزيق شق ذيل جزء، كما نفس جملة مقبض فوق تكرار قراءة أبدا سوف مراقبة إلى مقارنة أولا قبل قراءة أكثر قديم حالة. حفظ دائم جانب لا وجود قد دقيق تجهيز Session ذاكرة مؤقتة:session-query يملك ذاتي ذات بارد قراءة ذاكرة مؤقتة، حسب `stat().revision` تغيير أمر لوحة لـ كل id ذاكرة مؤقتة واحد قد إعداد مستو بارد Session، فقط في أمر لوحة تغير وقت إعادة قراءة. هذا دورة الحياة من[أساس في جملة مقبض حفظ دائم Agent Note](../../.agents/notes/implemented/architecture/2026-08-27-handle-based-session-persistence.ar.md) تعريف؛ قد عودة ملف [Session دقيق تجهيز مرحلة مقطع سجل](../../.agents/notes/archived/architecture/2026-08-05-session-preparation.md) تسجيل تحميل إصدار حد `SessionPreparation` الأكثر أول قرار.
 
 ## `SessionLocation`——رفض تشخيص ناتج هدف
 
@@ -223,7 +223,7 @@ interface CreateSessionOptions {
 }
 ```
 
-لذلك، إعادة تشغيل/fork استدعاء طريقة لـ `ctx.agents.create({ sessionId, seed, meta })`——fork أيضا سوف مع `meta.isSeeded: true` توفير `inheritedEventCount`، كما فقط لديه مرور agent-loop إصدار جلسة عندئذ سوف حفظ دائم، كما حلقة سوف في إصدار قبل عبر جديد جلسة كتابة جملة مقبض تخزين seed؛ سوف واحد*حفظ دائم*جلسة استعادة لـ نشط وثب agent استدعاء طريقة لـ `ctx.agents.resume({ resumeSessionId })`.
+لذلك، إعادة تشغيل/fork استدعاء طريقة لـ `ctx.agents.create({ sessionId, seed, meta })`——fork أيضا سوف مع `meta.isSeeded: true` توفير `inheritedEventCount`، كما فقط لديه مرور agent-loop إصدار جلسة عندئذ سوف حفظ دائم، كما حلقة سوف في إصدار قبل عبر جلسة جديدة كتابة جملة مقبض تخزين seed؛ سوف واحد*حفظ دائم*جلسة استعادة لـ نشط وثب agent استدعاء طريقة لـ `ctx.agents.resume({ resumeSessionId })`.
 
 ## دقيق تجهيز و استعادة كل حق
 
@@ -326,7 +326,7 @@ interface SessionPersistenceSnapshot {
 
 مع منتج تسليم provider تنفيذ سحب كائن `SessionPersistence` اتفاق (`create`/`open`/`stat`/`list`، تدريجي جلسة `SessionHandle` تحمل تحميل `read`/`append`/`flush`/`close`، كل مسار اختياري دعم حمل إلغاء) ، و عبر مشترك حفظ دائم عقد نحو طقم عنصر:
 
-- **[dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl)**——تدريجي جلسة فقط إلحاق منطق JSONL سجل، افتراضي تخزين لـ حمل checksum وصل متابعة Zstandard frame، أيضا يمكن إعداد لـ أصلي سطر؛ أداة تجهيز انهيار انهيار أمان أصل فرعي فعلي جسم تحويل، تدريجي دفعة `fsync` append، و في رقم مرة جديد append قبل قطع قطع تمزيق شق ذيل جزء.`stat`/`list` يحمل `sizeBytes` و كل قوة بينما لـ، من `fs.stat` إرسال توليد إصلاح حجز رقم.
+- **[dsh-session-persistence-jsonl](../../packages/session/session-persistence-jsonl)**——تدريجي جلسة فقط إلحاق منطق JSONL سجل، افتراضي تخزين لـ حمل checksum وصل متابعة Zstandard frame، أيضا يمكن إعداد لـ أصلي سطر؛ أداة تجهيز انهيار انهيار أمان أصل فرعي فعلي جسم تحويل، تدريجي دفعة `fsync` append، و في رقم مرة جديد append قبل مقتطع تمزيق شق ذيل جزء.`stat`/`list` يحمل `sizeBytes` و كل قوة بينما لـ، من `fs.stat` إرسال توليد إصلاح حجز رقم.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

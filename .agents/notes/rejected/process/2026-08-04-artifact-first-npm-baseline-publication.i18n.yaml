@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/process/2026-08-04-artifact-first-npm-baseline-publication.md
 2026-08-04-artifact-first-npm-baseline-publication.md: 7974e4b990a8a18f5064dd50ed37c2c5fb55c688
-2026-08-04-artifact-first-npm-baseline-publication.ar.md: d26d65514394d6aba08d68f2383bd80b30e70405
+2026-08-04-artifact-first-npm-baseline-publication.ar.md: 539dda5c65e3bf0e2ea5de5b6b6a0bca3ec38ba6

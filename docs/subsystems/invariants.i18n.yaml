@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/invariants.md
 invariants.md: 0377e96d2ab10011bccd3593d06930873ba095ac
-invariants.ar.md: c61d1c780935173f47aa2e8d68798cc06e07fd49
+invariants.ar.md: d8438dd8600944455b6820cf4cc003569e350649

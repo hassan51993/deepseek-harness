@@ -1,7 +1,7 @@
 /** Office preview copy and Host render configuration guidance. */
 export const ar = {
   title: 'Office وثيقة',
-  loading: 'صحيح في قراءة…',
+  loading: 'جارٍ قراءة…',
   retry: 'إعادة محاولة',
   missingFonts: 'نقص قليل وثيقة استخدام حرف جسم:{fonts}، ممكن أثر نص حرف و ترتيب إصدار.',
   showMore: 'عرض أكثر كثير',

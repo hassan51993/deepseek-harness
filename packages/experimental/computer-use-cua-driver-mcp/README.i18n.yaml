@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/computer-use-cua-driver-mcp/README.md
 README.md: 91f0cd88f41e583076a10fe6b9cf27f4ac7b86e7
-README.ar.md: 5d457f5ef0f06f5f0c2c6835d47c412fc7468384
+README.ar.md: 437d6fb03481376ae310a83551ae5394fb0b7d37

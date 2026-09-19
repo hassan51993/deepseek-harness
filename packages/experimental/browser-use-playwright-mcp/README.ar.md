@@ -43,7 +43,7 @@ kind: "package-reference"
 | `headless` | `true` | بدء وقت لا عرض نافذة |
 | `executablePath` | فوق تنقل اكتشاف | بدء استخدام Chromium يمكن تنفيذ ملف |
 | `endpoint` | attach وقت لا بد ملء | قد لديه متصفح ضبط تجربة طرف نقطة |
-| `toolCallTimeoutMs` | MCP عميل قيمة افتراضية | مفرد مرة استدعاء مهلة، مفرد موضع لـ جزء ثانية |
+| `toolCallTimeoutMs` | MCP عميل قيمة افتراضية | مفرد مرة استدعاء مهلة، مفرد موضع لـ مللي ثانية |
 
 [إعداد دليل](../../../docs/config-catalog.ar.md#deepseek-aidsh-experimental-browser-use-playwright-mcp) صف خروج قبول حقل. متصفح نمط من profile أو preset اختيار. عملية فرعية سوف صاف فارغ وراثة `PLAYWRIGHT_MCP_*` خيار، تجنب تجنب ذلك استبدال هذا إعداد.
 

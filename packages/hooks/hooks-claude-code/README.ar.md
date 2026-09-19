@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## عام وصف
 
-`dsh-hooks-claude-code` في agent(ذكي جسم) تشغيل خلال تنفيذ أنت قائم Claude Code `hooks.json` أو settings ملف في command خطاف، بلا حاجة إعادة كتابة. تلقي دعم حمل خطاف سوف في جلسة، نص التوجيه، أداة، إيقاف أو subagent وصول مقابل وقت لحظة وقت تشغيل. هو جمع يمكن حمل نموذج مرئي سبب منع سد نص التوجيه أو أداة استدعاء، إضافة محادثة سياق، أو قوي صنع نموذج مجددا تنفيذ واحد جولة. حاجة في harness في إعادة استخدام Claude Code command خطاف وقت اختيار هذه الحزمة؛ لا يوجد Claude Code مقابل شيء سلوك ينبغي استخدام أصلي إضافة.
+`dsh-hooks-claude-code` في agent(ذكي جسم) تشغيل خلال تنفيذ أنت قائم Claude Code `hooks.json` أو settings ملف في command خطاف، بلا حاجة إعادة كتابة. تلقي دعم حمل خطاف سوف في جلسة، نص التوجيه، أداة، إيقاف أو subagent وصول مقابل وقت لحظة وقت تشغيل. هو جمع يمكن حمل نموذج مرئي سبب منع سد نص التوجيه أو استدعاء الأداة، إضافة محادثة سياق، أو قوي صنع نموذج مجددا تنفيذ واحد جولة. حاجة في harness في إعادة استخدام Claude Code command خطاف وقت اختيار هذه الحزمة؛ لا يوجد Claude Code مقابل شيء سلوك ينبغي استخدام أصلي إضافة.
 
 ## دليل
 
@@ -58,7 +58,7 @@ kind: "package-reference"
 | `SessionStart` | جلسة بدء وقت | مرفق إضافة هذا جلسة في نموذج مرئي سياق |
 | `UserPromptSubmit` | agent استلام إلى نص التوجيه وقت | منع سد نص التوجيه، أو مرفق إضافة سياق |
 | `PreToolUse` | أداة تشغيل قبل | منع سد أداة، أو في تشغيل قبل طلب دفعة دقيق |
-| `PostToolUse` | أداة تشغيل بعد | حمل عكس تغذية منع سد نتيجة، أو مرفق إضافة سياق |
+| `PostToolUse` | أداة تشغيل بعد | حمل ملاحظات منع سد نتيجة، أو مرفق إضافة سياق |
 | `Stop` | تشغيل أي سوف إيقاف وقت | حمل سبب قوي صنع مجددا تنفيذ واحد خطوة |
 | `SubagentStart` | subagent بدء وقت | نحو ما زال في تشغيل subagent مرفق إضافة سياق (فقط حد نفس عملية) |
 | `SubagentStop` | subagent انتهاء وقت | فقط مراقبة قياس——لا يستطيع منع سد أو إضافة سياق |
@@ -84,7 +84,7 @@ kind: "package-reference"
 
 ### Hook نقطة خريطة
 
-كل تلقي دعم حمل حدث كل موجه إلى واحد harness نقطة توسيع:`SessionStart` في أول عدد جولة قبل عبر يحتاج انتظار `agent/created` ابتدائي تحويل إضافة دخول سياق،`UserPromptSubmit` و `PreToolUse` هو قدرة رفض نقل دخول حركة عمل waterfall(شلال نشر صيغة حدث)(`agent/pre-step`،`tools/pre-execute`) ،`PostToolUse` هو قدرة حمل عكس تغذية منع سد أو نحو تحت تنقل قرار إضافة سياق waterfall(`tools/post-execute`) ،`Stop` هو سلسلة سطر مستمع، ذلك منع سد نتيجة عبر `steer()` قوي صنع مجددا تنفيذ واحد خطوة (`agent/turn-stopping`). اثنان عدد subagent حدث موجه إلى child دورة الحياة إرسال إطلاق (`subagent/start`،`subagent/end`):start نحو ما زال في تشغيل نفس عملية child حقن سياق،stop فقط مراقبة قياس. فقط توفير سياق hook مجموع هو أولا عبر `next()` تفويض حمل، مجددا يأخذ حمل مصدر رسالة طي دخول تحت تنقل قرار، لذلك لاحق مستمع ما زال يمكن رفض أو تعديل كتابة؛ منع سد قرار خريطة لـ `deny`(`PreToolUse` لـ `ask`). تدريجي حدث وصل خط يقع في [`src/index.ts`](src/index.ts).
+كل تلقي دعم حمل حدث كل موجه إلى واحد harness نقطة توسيع:`SessionStart` في أول عدد جولة قبل عبر يحتاج انتظار `agent/created` ابتدائي تحويل إضافة دخول سياق،`UserPromptSubmit` و `PreToolUse` هو قدرة رفض نقل دخول حركة عمل waterfall(شلال نشر صيغة حدث)(`agent/pre-step`،`tools/pre-execute`) ،`PostToolUse` هو قدرة حمل ملاحظات منع سد أو نحو تحت تنقل قرار إضافة سياق waterfall(`tools/post-execute`) ،`Stop` هو سلسلة سطر مستمع، ذلك منع سد نتيجة عبر `steer()` قوي صنع مجددا تنفيذ واحد خطوة (`agent/turn-stopping`). اثنان عدد subagent حدث موجه إلى child دورة الحياة إرسال إطلاق (`subagent/start`،`subagent/end`):start نحو ما زال في تشغيل نفس عملية child حقن سياق،stop فقط مراقبة قياس. فقط توفير سياق hook مجموع هو أولا عبر `next()` تفويض حمل، مجددا يأخذ حمل مصدر رسالة طي دخول تحت تنقل قرار، لذلك لاحق مستمع ما زال يمكن رفض أو تعديل كتابة؛ منع سد قرار خريطة لـ `deny`(`PreToolUse` لـ `ask`). تدريجي حدث وصل خط يقع في [`src/index.ts`](src/index.ts).
 
 ### تحميل حمل و بيئة
 
@@ -154,15 +154,15 @@ hook لا إرجاع سياق وقت لا يوجد صار هذا.Hook نص أخ�
 
 #### نموذج يرى ماذا
 
-مزود توفير سبب تدريجي حرف نقل تمرير. ناقص سبب وقت، قد رفض أداة تغيير لـ `Error: blocked by PreToolUse hook`، قد منع سد أداة بعد عكس تغذية دقيق لـ `blocked by PostToolUse hook`، منع سد stop فإن دقيق إضافة steering `continue: blocked by Stop hook`؛ قد منع سد نص التوجيه لن إنتاج أي نموذج مرئي رسالة، بينما هو بـ `blocked` انتهاء هذا جولة.`systemMessage` و `updatedInput` سوف يتم سجل أو تحذير إبلاغ، لكن في هذا تنفيذ في مقابل نموذج غير ممكن رؤية.
+مزود توفير سبب تدريجي حرف نقل تمرير. ناقص سبب وقت، قد رفض أداة تغيير لـ `Error: blocked by PreToolUse hook`، قد منع سد أداة بعد ملاحظات دقيق لـ `blocked by PostToolUse hook`، منع سد stop فإن دقيق إضافة steering `continue: blocked by Stop hook`؛ قد منع سد نص التوجيه لن إنتاج أي نموذج مرئي رسالة، بينما هو بـ `blocked` انتهاء هذا جولة.`systemMessage` و `updatedInput` سوف يتم سجل أو تحذير إبلاغ، لكن في هذا تنفيذ في مقابل نموذج غير ممكن رؤية.
 
 #### Token أثر
 
-منع سد نص التوجيه لن إنتاج هذا نص التوجيه مقابل نموذج طلب token؛ رفض أو عكس تغذية سوف إضافة إبقاء رجوع أو مزود نص؛ قوي صنع continuation حاجة آخر عدد كامل طلب.
+منع سد نص التوجيه لن إنتاج هذا نص التوجيه مقابل نموذج طلب token؛ رفض أو ملاحظات سوف إضافة إبقاء رجوع أو مزود نص؛ قوي صنع continuation حاجة آخر عدد كامل طلب.
 
 #### KV Cache أثر
 
-قد منع سد نص التوجيه لا إرسال طلب، لن توجيه يؤدي بطلان. رفض، عكس تغذية و قوي صنع continuation سياق سوف إلحاق في يمكن إعادة استخدام بادئة بعد، لا تعديل كتابة بادئة.
+قد منع سد نص التوجيه لا إرسال طلب، لن توجيه يؤدي بطلان. رفض، ملاحظات و قوي صنع continuation سياق سوف إلحاق في يمكن إعادة استخدام بادئة بعد، لا تعديل كتابة بادئة.
 
 ## حدود معروفة وعمل مؤجل
 
@@ -175,7 +175,7 @@ hook لا إرجاع سياق وقت لا يوجد صار هذا.Hook نص أخ�
 - **`SessionStart` فقط دعم حمل جزء وظيفة**——سوف إزالة استهلاك JSON `additionalContext`، لكن لا دعم حمل صاف stdout سياق،`initialUserMessage`،`sessionTitle`،`watchPaths`،`reloadSkills` و `CLAUDE_ENV_FILE`.hook انفصال مغادرة تشغيل، لذلك سياق ممكن خطأ مرور رقم واحد طلب،payload سوف حذف `model`،`agent_type` و `session_title` انتظار اختياري حقل.
 - **`UserPromptSubmit` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد و JSON `additionalContext`، لكن لا دعم حمل صاف stdout سياق،`sessionTitle` و `suppressOriginalPrompt`. حذف غير يتم تغطية، لا فإن جسر وصل أيضا سوف استخدام ذاته 600 ثانية قيمة افتراضية، بينما غير Claude Code حدث خاص تحديد 30 ثانية command مهلة.
 - **`PreToolUse` فقط دعم حمل جزء وظيفة**——`deny` و `ask` قرار متاح؛`allow` لن مسبق مراجعة دفعة،`defer` لا تلقي دعم حمل،`additionalContext` سوف يتم تجاهل اختصار،`updatedInput` سوف يتم سجل + تحذير إبلاغ لكن لا تطبيق (رؤية [pre-tool-input-rewrite Agent Note](../../../.agents/notes/proposed/feature/2026-06-30-pre-tool-input-rewrite.ar.md)).
-- **`PostToolUse` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد عكس تغذية و JSON `additionalContext`، لكن لا دعم حمل `updatedToolOutput` و `updatedMCPToolOutput`،`tool_response` سوف عرض مستو لـ نص.
+- **`PostToolUse` فقط دعم حمل جزء وظيفة**——دعم حمل منع سد ملاحظات و JSON `additionalContext`، لكن لا دعم حمل `updatedToolOutput` و `updatedMCPToolOutput`،`tool_response` سوف عرض مستو لـ نص.
 - **`SubagentStart` و `SubagentStop` فقط دعم حمل جزء وظيفة**——اثنان من متساو تقرير إبلاغ معتاد كمية `agent_type` `general-purpose`، و في Claude Code تقرير إبلاغ أب جلسة موضع استخدام child جلسة id.Start سياق هو كل قوة بينما لـ، كما فقط قدرة وصول ما زال في تشغيل نفس عملية child؛stop فقط مراقبة قياس، لا يمكن منع سد subagent أو نحو ذلك توفير سياق.Stop حذف `agent_transcript_path`،`last_assistant_message`،`background_tasks` و `session_crons`، و بداية نهاية تقرير إبلاغ `stop_hook_active: false`.
 - **`Stop` فقط دعم حمل جزء وظيفة**——منع سد سوف قوي صنع آخر عدد نموذج جولة، لكن `stop_hook_active` بداية نهاية لـ `false`، سوف حذف `last_assistant_message`،`background_tasks` و `session_crons`، كما لم تنفيذ وصل متابعة منع سد حد أعلى. لذلك، بلا شرط منع سد hook سوف في كل خطوة في قوي صنع continuation، حذف غير هو ذاتي أنا حد.
 - **عام payload و إخراج حقل فقط دعم حمل جزء وظيفة**——قد خريطة حدث سوف حذف Claude Code أصل هذا سوف توفير `prompt_id`،`permission_mode` و `effort`، كما `transcript_path` دائم لا ملء ملء: هو بداية نهاية لـ فارغ نص، لأن حفظ دائم seam لا كشف ناتج مسار، كما افتراضي استخدام Zstandard ضغط جلسة سجل لا يمكن يتم hook نص برمجي قراءة.`systemMessage` سوف يتم سجل + تحذير إبلاغ لكن لا عرض؛`{"continue": false}` سوف يتم سجل لكن لن إيقاف تشغيل؛`suppressOutput`،`stopReason` و `terminalSequence` لن يتم تطبيق.

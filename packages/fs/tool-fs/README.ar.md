@@ -57,7 +57,7 @@ kind: "package-reference"
 | مفتاح | قيمة افتراضية | يحتوي معنى |
 |---|---|---|
 | `readLimit` | `2000` | مرة `read` استدعاء إرجاع افتراضي و الأكثر كبير سطر عدد |
-| `readMaxLineLength` | `2000` | كل سطر قطع قطع قبل إبقاء محرف عدد |
+| `readMaxLineLength` | `2000` | كل سطر مقتطع قبل إبقاء محرف عدد |
 | `readMaxBytes` | `51200` | مرة `read` استدعاء الذي اختيار سطر بايت حد أعلى؛ فيض خروج وقت بـ «قد بلوغ حد أعلى»footer انتهاء نافذة |
 | `readStreamMinSize` | `10485760` | كبير في انتظار في هذا كبير صغير أو كبير صغير لم معرفة ملف اعتماد تدفق صيغة قراءة، بينما لا هو كامل جسم تحميل إلى داخل تخزين |
 
@@ -207,7 +207,7 @@ Use the edit tool for targeted changes to existing UTF-8 text files. It replaces
 
 #### نموذج يرى محتوى
 
-كتابة دقيق إرجاع خمسة سطر حزمة شبكة:`<path><displayPath></path>`،`<type>file</type>`،`<content>`،`Created file` أو `Updated file`، و `</content>`. تحرير دقيق إرجاع `The file <displayPath> has been updated successfully.`؛ مقابل في `replace_all`، دقيق إرجاع `The file <displayPath> has been updated. All occurrences were successfully replaced.`. كامل كتابة أو استبدال نص ما زال إبقاء في assistant أداة استدعاء معامل في.
+كتابة دقيق إرجاع خمسة سطر حزمة شبكة:`<path><displayPath></path>`،`<type>file</type>`،`<content>`،`Created file` أو `Updated file`، و `</content>`. تحرير دقيق إرجاع `The file <displayPath> has been updated successfully.`؛ مقابل في `replace_all`، دقيق إرجاع `The file <displayPath> has been updated. All occurrences were successfully replaced.`. كامل كتابة أو استبدال نص ما زال إبقاء في assistant استدعاء الأداة معامل في.
 
 #### Token أثر
 

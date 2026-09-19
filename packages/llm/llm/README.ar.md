@@ -137,7 +137,7 @@ for await (const chunk of ctx.llm.stream({
 <a id="model-experience"></a>
 ## تجربة النموذج
 
-لا يوجد مباشر أثر، لأن LLM خدمة لا إضافة محتوى؛ مهايئ قرار أي وقت إضافة هذه الحزمة توجيه خروج مشترك صورة وصف رمز و تدريجي صورة احتلال موضع رمز.
+لا يوجد مباشر أثر، لأن LLM خدمة لا إضافة محتوى؛ مهايئ قرار أي وقت إضافة هذه الحزمة تصدير مشترك صورة وصف رمز و تدريجي صورة احتلال موضع رمز.
 
 #### KV Cache أثر
 
@@ -153,7 +153,7 @@ for await (const chunk of ctx.llm.stream({
 - **هذا خدمة لا توفير إعادة محاولة تنفيذ، ذاكرة مؤقتة أو سرعة معدل حد**——مزود تسجيل سوف تخزين إعادة محاولة سياسة، لكن مرة تدفق ما زال هو مرة مزود محاولة تجربة؛`@deepseek-ai/dsh-llm-retry` في حمل دائم agent خطوة حد فوق تنفيذ هذا سياسة.
 - **`GenerateOptions` أخذ مثال فقط يتضمن `temperature`/`maxTokens`/`stop`**——لا يوجد `tool_choice`،`top_p` أو penalty حقل؛ لديه إنتاج جهة سقوط أرض وقت مفردات عندئذ سوف زيادة طويل (رؤية[قد حذف كسول صفة دوران زر](../../../.agents/notes/archived/simplification/2026-07-04-drop-inert-request-knobs.md)).
 - **فقط لديه ظهور فعلي إنتاج جهة بعد، متبادل ينبغي تغيير جسم عندئذ سوف إضافة دخول**——`prefill`، تدريجي أداة `strict`، محتوى كتلة `cache` تلميح و `agent` رسالة مصدر تغيير جسم كل لا يوجد إنتاج جهة (رؤية [Agent Note](../../../.agents/notes/archived/simplification/2026-07-04-prune-producerless-vocabulary-variants.md)).
-- **`BlockAssembler` فقط معالجة نواة قلب كتلة نوع**——إضافة إضافة كتلة نوع تدفق إذا من لم من `block-end` إغلاق،`blocks()` سوف رمي خروج استثناء.
+- **`BlockAssembler` فقط معالجة نواة قلب كتلة نوع**——إضافة كتلة نوع تدفق إذا من لم من `block-end` إغلاق،`blocks()` سوف رمي خروج استثناء.
 - **`GenerateOptions.sessionId` هو محلي إعلان صنف لوحة نوع**——استيراد dsh-session `SessionId` سوف إنتاج اعتماد حلقة.
 
 <a id="dev-note"></a>

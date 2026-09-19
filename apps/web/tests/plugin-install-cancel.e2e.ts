@@ -41,14 +41,14 @@ it('cancels installation through the UI, restores files, and offers the spec aga
       if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) await page.keyboard.press('Escape')
       await page.getByRole('navigation', { name: 'عام وجه لوح' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
-      await panel.getByRole('button', { name: 'إضافة إضافة', exact: true }).click()
+      await panel.getByRole('button', { name: 'إضافة', exact: true }).click()
       // The dialog is named after its current screen, so it is found by role alone.
       const dialog = page.getByRole('dialog')
       await dialog.getByRole('textbox').fill('slow-package')
       await dialog.getByRole('button', { name: 'تثبيت', exact: true }).click()
       // The check passed: the running screen names the package and folds pnpm's output behind the details.
       await dialog.getByText('إصدار 1.0.0', { exact: true }).waitFor()
-      await dialog.getByRole('button', { name: 'فحص نظر تثبيت تفصيل حال', exact: true }).click()
+      await dialog.getByRole('button', { name: 'عرض تثبيت تفصيل حال', exact: true }).click()
       await dialog.getByText('Waiting for package download', { exact: true }).waitFor()
       await dialog.getByRole('button', { name: 'إلغاء تثبيت', exact: true }).click()
       // The Host's confirmation returns the dialog to the spec and says so in a toast.
@@ -72,7 +72,7 @@ it('cancels installation through the UI, restores files, and offers the spec aga
       `)
       await dialog.getByRole('button', { name: 'تثبيت', exact: true }).click()
       await dialog.getByRole('button', { name: 'قيام أي تفعيل', exact: true }).waitFor()
-      await dialog.getByRole('button', { name: 'فحص نظر تثبيت تفصيل حال', exact: true }).click()
+      await dialog.getByRole('button', { name: 'عرض تثبيت تفصيل حال', exact: true }).click()
       await dialog.getByText('Retry completed', { exact: true }).waitFor()
       expect(JSON.parse(await readFile(manifestPath, 'utf8'))).toMatchObject({ dependencies: { 'slow-package': '1.0.0' } })
       expect(tripwire.pageErrors).toEqual([])

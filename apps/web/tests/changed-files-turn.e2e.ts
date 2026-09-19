@@ -18,7 +18,7 @@ import { connectFreshWorkspaceAr, ZH_BROWSER_LOCALE } from './support.ts'
 const DIR = fileURLToPath(new URL('../../../snapshots/web/changed-files-turn', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
 const MODE = webSnapshotMode()
-const PROMPT = 'لا استخدام أولا فحص نظر دليل، مباشر فعل أربعة عنصر أمر: يأخذ intro.md داخل عنوان «عرض مثال مشروع» تعديل صار «مشروع شرح» ، جديد بناء src/util.ts توجيه خروج واحد اثنان عدد متبادل إضافة add دالة، جديد بناء app.local كتابة واحد سطر mode=demo، الأكثر بعد استخدام bash في notes.txt نهاية ذيل إلحاق واحد سطر done.'
+const PROMPT = 'لا استخدام أولا عرض دليل، مباشر فعل أربعة عنصر أمر: يأخذ intro.md داخل عنوان «عرض مثال مشروع» تعديل صار «مشروع شرح» ، جديد بناء src/util.ts تصدير واحد اثنان عدد متبادل إضافة add دالة، جديد بناء app.local كتابة واحد سطر mode=demo، الأكثر بعد استخدام bash في notes.txt نهاية ذيل إلحاق واحد سطر done.'
 
 /** Seed a committed repository so the turn's own edits are the only difference between its snapshots; `*.local` stays ignored. */
 async function seedRepository(cwd: string): Promise<void> {
@@ -111,8 +111,8 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
     expect(await card.getByRole('listitem').count()).toBe(3)
     expect(await card.getByRole('button', { name: 'توسيع الكل 4 عدد تعديل ملف' }).count()).toBe(1)
     // The header and every row open the turn's review in the Sidebar, with or without a Host desktop.
-    expect(await card.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' }).count()).toBe(1)
-    expect(await card.getByRole('button', { name: 'فحص نظر notes.txt تعديل' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'في الشريط الجانبي عرض هذا جولة تعديل' }).count()).toBe(1)
+    expect(await card.getByRole('button', { name: 'عرض notes.txt تعديل' }).count()).toBe(1)
     expect(tripwire.pageErrors).toEqual([])
     expect(tripwire.warnings).toEqual([])
   })
@@ -124,20 +124,20 @@ describe('web e2e: a git workspace turn ends with its changed files', () => {
       root.locator('[data-diff-line]').evaluateAll(lines => lines.map(line => `${line.getAttribute('data-diff-line')}:${line.textContent}`))
     const review = column.locator('[data-changes-review]')
     // The header lands on the first listed file; a row lands on its own.
-    await card.getByRole('button', { name: 'في جانب حافة شريط فحص نظر هذا جولة تعديل' }).click()
+    await card.getByRole('button', { name: 'في الشريط الجانبي عرض هذا جولة تعديل' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
-    await card.getByRole('button', { name: 'فحص نظر notes.txt تعديل' }).click()
+    await card.getByRole('button', { name: 'عرض notes.txt تعديل' }).click()
     await review.locator('[data-review-file="notes.txt"]').waitFor({ state: 'visible' })
     expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
     await expect.poll(() => drawn(review)).toEqual(['context:11 start', 'add:2+done'])
     // The ignored file has no snapshot; its comparison comes from the copies captured around the write call.
-    await review.getByRole('button', { name: 'اختيار يلزم فحص نظر ملف' }).click()
+    await review.getByRole('button', { name: 'اختيار يلزم عرض ملف' }).click()
     await page.getByRole('menuitem').filter({ hasText: 'app.local' }).click()
     await review.locator('[data-review-file="app.local"]').waitFor({ state: 'visible' })
     await expect.poll(() => drawn(review)).toEqual(['add:1+mode=demo'])
     expect(await review.getByText('هذا جولة جديد بناء ملف').count()).toBe(1)
     // A card row opens the same tab on another file; the split and wrap choices switch the drawing.
-    await card.getByRole('button', { name: 'فحص نظر intro.md تعديل' }).click()
+    await card.getByRole('button', { name: 'عرض intro.md تعديل' }).click()
     await review.locator('[data-review-file="intro.md"]').waitFor({ state: 'visible' })
     expect(await column.locator('[data-dockkit-tab]').filter({ hasText: 'رقم 1 جولة تعديل' }).count()).toBe(1)
     await review.getByRole('button', { name: 'يسار يمين مقابل مقارنة' }).click()

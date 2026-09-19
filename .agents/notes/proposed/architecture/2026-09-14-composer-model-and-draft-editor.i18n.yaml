@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-09-14-composer-model-and-draft-editor.md
 2026-09-14-composer-model-and-draft-editor.md: 8d2b7c306961b4cfa57e49d8acc2ec49742c78a9
-2026-09-14-composer-model-and-draft-editor.ar.md: d6811abe565ef2c25aaad70c8b658f011d33d224
+2026-09-14-composer-model-and-draft-editor.ar.md: 1cf1cd101620d67f57564cc4bbbbbe543a3b4a71

@@ -103,7 +103,7 @@
 }
 
 .root[data-kind='subtool'] {
-  padding-left: 28px;
+  padding-inline-start: 28px;
 }
 
 .text {
@@ -131,7 +131,7 @@
 .time {
   flex: none;
   width: 71px;
-  text-align: left;
+  text-align: start;
   font: var(--dsw-font-xs-13);
   color: var(--dsw-alias-label-tertiary);
   white-space: nowrap;

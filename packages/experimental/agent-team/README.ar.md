@@ -58,7 +58,7 @@ kind: "package-reference"
 
 ### Teammate
 
-طلب Lead إنشاء teammate: إعطاء هو واحد وحيد صغير كتابة اسم حرف (مثال مثل `reviewer`) و وصف ذلك مسؤولية.teammate يمكن fresh بدء (لا يحمل Lead محادثة أي تسجيل ذاكرة) ، أيضا يمكن بصفة fork بدء (وراثة Lead قد إتمام جولة) ؛ إنشاء طلب قرار استخدام أي نوع.teammate اسم حرف هو دائم دائم——أي جعل إنشاء فشل teammate أيضا إبقاء ذلك اسم حرف، أي اسم حرف كل لن يتم إعادة استخدام.
+طلب Lead إنشاء teammate: إعطاء هو واحد وحيد صغير كتابة اسم حرف (مثال مثل `reviewer`) و وصف ذلك مسؤولية.teammate يمكن fresh بدء (لا يحمل Lead محادثة أي تسجيل ذاكرة) ، أيضا يمكن بصفة fork بدء (وراثة Lead اكتمل جولة) ؛ إنشاء طلب قرار استخدام أي نوع.teammate اسم حرف هو دائم دائم——أي جعل إنشاء فشل teammate أيضا إبقاء ذلك اسم حرف، أي اسم حرف كل لن يتم إعادة استخدام.
 
 roster عرض كل عضو مسؤولية (`lead` أو `teammate`) و حالي حالة:`running`،`idle`،`inactive`(وجود لكن لم تحميل عضو) ،`provisioning` أو `failed`. لم تحميل عضو سوف في نداء تنبيه بعد استلام إلى ذلك رسالة.
 
@@ -76,7 +76,7 @@ roster عرض كل عضو مسؤولية (`lead` أو `teammate`) و حالي ح
 
 مهمة لديه owner: عضو claim مهمة بدء عمل، إتمام بعد علامة إتمام، تحرير عودة لوح أو إعادة فتح؛Lead يمكن يأخذ مهمة قسم إعداد إعطاء مهمة معنى عضو. كل مرة تغيير كل هو compare-and-set: أساس في مرور مدة فرعي هذا تحديث سوف يتم رفض، لذلك اثنان عدد عضو لن صامت صامت تغطية ذاك هذا صار نتيجة.
 
-عند اثنان عدد in-progress مهمة حساب تخطيط لمس و إعادة تراكم مسار وقت، ملف تلميح سوف إنتاج تحذير إبلاغ——هو جمع أبدا منع توقف أي عملية. قد حذف مهمة إبقاء في تاريخ في، لكن من نشط حركة قائمة في إزالة فقد.
+عند اثنان عدد in-progress مهمة خطة لمس و إعادة تراكم مسار وقت، ملف تلميح سوف إنتاج تحذير إبلاغ——هو جمع أبدا منع توقف أي عملية. قد حذف مهمة إبقاء في تاريخ في، لكن من نشط حركة قائمة في إزالة فقد.
 
 ### انتظار و في قطع
 
@@ -125,7 +125,7 @@ Lead يمكن إيقاف teammate حالي جولة، بينما لن حذف ذ�
 
 ### Team هوية و roster
 
-كل عادي وقت التشغيل root كل هو واحد خفي صيغة Team Lead، ذلك `TeamId` انتظار في `SessionId`؛ لا وجود إنشاء حدث، حمل دائم حالة من رقم واحد بند عضو، رسالة أو مهمة سجل بدء.`spawnTeammate()` أولا إلحاق و flush واحد بند `provisioning` عضو سجل، مجددا اشتراط إعداد مزود إنشاء مسبق إبقاء child؛ مزود فشل سوف إلحاق واحد بند حمل دائم `failed` عضو.fresh child لا يحمل Lead تاريخ؛fork child فقط التقاط مرة Lead قد إتمام turn بادئة. استعادة يأخذ لم نهاية ربط provisioning سجل مقابل وفق child مستقل حفظ دائم جلسة إجراء مقابل حساب: مباشر parent و continuable descriptor مطابقة، كما ابتدائي مستخدم رسالة قد سجل فإن إنتاج `active`، أخرى أي حال حال كل إنتاج `failed`. إذا استعادة في نفس عملية تنافس تنازع في أولا إتمام،creator سوف قبول نهاية حالة، أو تقرير إبلاغ `TEAM_PROVISIONING_CONFLICT` و drain هذا child. اسم حرف من رقم واحد بند provisioning سجل إبقاء، كما دائم لا إعادة استخدام.
+كل عادي وقت التشغيل root كل هو واحد خفي صيغة Team Lead، ذلك `TeamId` انتظار في `SessionId`؛ لا وجود إنشاء حدث، حمل دائم حالة من رقم واحد بند عضو، رسالة أو مهمة سجل بدء.`spawnTeammate()` أولا إلحاق و flush واحد بند `provisioning` عضو سجل، مجددا اشتراط إعداد مزود إنشاء مسبق إبقاء child؛ مزود فشل سوف إلحاق واحد بند حمل دائم `failed` عضو.fresh child لا يحمل Lead تاريخ؛fork child فقط التقاط مرة Lead اكتمل turn بادئة. استعادة يأخذ لم نهاية ربط provisioning سجل مقابل وفق child مستقل حفظ دائم جلسة إجراء مقابل حساب: مباشر parent و continuable descriptor مطابقة، كما ابتدائي مستخدم رسالة قد سجل فإن إنتاج `active`، أخرى أي حال حال كل إنتاج `failed`. إذا استعادة في نفس عملية تنافس تنازع في أولا إتمام،creator سوف قبول نهاية حالة، أو تقرير إبلاغ `TEAM_PROVISIONING_CONFLICT` و drain هذا child. اسم حرف من رقم واحد بند provisioning سجل إبقاء، كما دائم لا إعادة استخدام.
 
 ### حمل دائم mailbox
 
@@ -139,7 +139,7 @@ Lead يمكن إيقاف teammate حالي جولة، بينما لن حذف ذ�
 
 ### انتظار و في قطع
 
-`waitForChange()` انتظار تسجيل بعد حدوث تحت واحد بند roster،task،mailbox أو فوري حالة حافة، وقت طويل من 10 ثانية إلى 1 صغير وقت، و كما فقط تقرير إبلاغ هل مهلة؛ وقت التشغيل dispose سوف تحرير حالي انتظار. إلغاء سوف إبقاء Error reason؛ غير Error reason فإن عبر `TEAM_WAIT_ABORTED` تقرير إبلاغ.`interrupt()` فقط حد Lead، تفويض حمل continuable-subagent interrupt مسار، بـ `keepInbox` فقط إلغاء live teammate حالي turn؛ هو حيث لا تحرير مهمة owner، أيضا لا حذف حمل دائم mail.
+`waitForChange()` انتظار تسجيل بعد حدوث تحت واحد بند roster،task،mailbox أو فوري حالة حافة، وقت طويل من 10 ثانية إلى 1 ساعة، و كما فقط تقرير إبلاغ هل مهلة؛ وقت التشغيل dispose سوف تحرير حالي انتظار. إلغاء سوف إبقاء Error reason؛ غير Error reason فإن عبر `TEAM_WAIT_ABORTED` تقرير إبلاغ.`interrupt()` فقط حد Lead، تفويض حمل continuable-subagent interrupt مسار، بـ `keepInbox` فقط إلغاء live teammate حالي turn؛ هو حيث لا تحرير مهمة owner، أيضا لا حذف حمل دائم mail.
 
 ### حمل دائم صفة نموذج
 
@@ -169,7 +169,7 @@ dispose سوف إغلاق دقيق دخول، في توقف و انتظار قد
 
 ### متصفح Remote
 
-`TeamService` حذف roster،mailbox،task و lifecycle operation، أيضا يملك توليد `agentTeams/view`،`agentTeams/createTask` و `agentTeams/updateTask` Remote method.`./remote` توجيه خروج من Web UI تركيب Client contribution،`./client` فإن إعادة توجيه خروج يمكن في متصفح compilation face في أمان استخدام request،view و task mutation result type.Typert في خارج طبقة `RemoteResult` في إبقاء transport failure؛create و update rejection فإن بصفة transport نجاح استجابة في صريح domain result، منها مرور مدة update revision سوف منطقة قسم لـ task conflict.
+`TeamService` حذف roster،mailbox،task و lifecycle operation، أيضا يملك توليد `agentTeams/view`،`agentTeams/createTask` و `agentTeams/updateTask` Remote method.`./remote` تصدير من Web UI تركيب Client contribution،`./client` فإن إعادة تصدير يمكن في متصفح compilation face في أمان استخدام request،view و task mutation result type.Typert في خارج طبقة `RemoteResult` في إبقاء transport failure؛create و update rejection فإن بصفة transport نجاح استجابة في صريح domain result، منها مرور مدة update revision سوف منطقة قسم لـ task conflict.
 
 ## تجربة النموذج
 

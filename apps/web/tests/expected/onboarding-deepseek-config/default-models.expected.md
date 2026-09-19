@@ -36,7 +36,7 @@
           - /placeholder: https://api.deepseek.com/anthropic
         - text: طلب ملء كتابة و حالي اتصال إعداد توافق API عنوان.
         - region "نموذج دليل":
-          - text: نموذج دليل صحيح في استخدام مهايئ افتراضي نموذج
+          - text: نموذج دليل جارٍ استخدام مهايئ افتراضي نموذج
           - textbox "نموذج ID 1":
             - /placeholder: نموذج ID
             - text: deepseek-flash

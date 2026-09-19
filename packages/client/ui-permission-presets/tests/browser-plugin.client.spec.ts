@@ -224,7 +224,7 @@ describe('ui-permission browser plugin', () => {
     })
     b.locale.setLocale('ar')
     const localized = await b.popup().options(proj, new AbortController().signal)
-    expect(localized.map(option => option.label)).toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review'])
+    expect(localized.map(option => option.label)).toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review'])
     expect(localized.find(option => option.id === 'danger-full-access')?.confirmation).toEqual({
       title: 'تأكيد تفعيل تماما إذن؟',
       description: accessAr['confirm.description'],
@@ -308,7 +308,7 @@ describe('ui-permission browser plugin', () => {
     b.values.set(sid('s1'), { currentValue: 'workspace-write' })
     const options = await b.popup().options(proj, new AbortController().signal)
     expect(options.find(option => option.id === 'auto')?.detail)
-      .toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي أداة استدعاء و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
+      .toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
   })
 
   it('a pick submits the /permission line; rejection and unmatched throw', async () => {

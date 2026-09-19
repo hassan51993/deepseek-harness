@@ -86,7 +86,7 @@ intercept<K extends InjectKey>(name: K, config: Context[K] extends { [symbols.co
 intercept(name: string, config: any): this
 ```
 
-لـ في هذا سياق لـ تحت بدء إضافة إضافة خدمة مخصص تابع اعتراض قطع إعداد.
+لـ في هذا سياق لـ تحت بدء إضافة خدمة مخصص تابع اعتراض قطع إعداد.
 
 في إرجاع سياق تحت تحميل إضافة سوف يرى `config` قد دمج إلى خدمة تحليل بعد إعداد في (أصل أولا بند في قبل؛ رؤية `Service[symbols.resolveConfig]`). أب سياق لا تلقي أثر.
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-07-30-web-browser-snapshot-ci-gate.md
 2026-07-30-web-browser-snapshot-ci-gate.md: 93a38333bb46207a3c5244f0fa7ece8d8f5a7872
-2026-07-30-web-browser-snapshot-ci-gate.ar.md: 88b6008f8964ccff7a6cbb295ac1f81332108381
+2026-07-30-web-browser-snapshot-ci-gate.ar.md: d527a0d7ff25ea3d95d472ef2793dfd47c0a1c58

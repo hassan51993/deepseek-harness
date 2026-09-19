@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-06-embedded-stream-record-readers.md
 2026-09-06-embedded-stream-record-readers.md: 70951bd0822dc01dbb17b7f051572859c235daf9
-2026-09-06-embedded-stream-record-readers.ar.md: f75c52a23c0b66f98dd9be8ea5f03ca7fbe28f65
+2026-09-06-embedded-stream-record-readers.ar.md: c778b946c55be08285edf9751d193c372747433e

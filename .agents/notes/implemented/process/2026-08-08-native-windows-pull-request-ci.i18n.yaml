@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-08-native-windows-pull-request-ci.md
 2026-08-08-native-windows-pull-request-ci.md: 2d3422fe1e9847a2fd4ee3baf9ed5ef777781d52
-2026-08-08-native-windows-pull-request-ci.ar.md: c9139e314436f4adb5fdeccfca8c459df95d555a
+2026-08-08-native-windows-pull-request-ci.ar.md: a4fddfcd6b450e8fef8034608a7c5382dc9a7677

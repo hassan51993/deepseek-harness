@@ -9,8 +9,8 @@
 /* Mask */
 .onboardingMask {
   position: absolute;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   top: 80px;
   bottom: 0px;
   background: rgba(0, 0, 0, 0.24);

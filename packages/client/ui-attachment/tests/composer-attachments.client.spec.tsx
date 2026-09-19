@@ -33,7 +33,7 @@ const t = ((key: string, params?: Readonly<Record<string, unknown>>): string => 
     'image.original': 'أصل رسم',
     'image.preview': 'أصل رسم معاينة',
     'image.closePreview': 'إغلاق أصل رسم معاينة',
-    'image.openOriginal': 'فحص نظر أصل رسم',
+    'image.openOriginal': 'عرض أصل رسم',
     'attachment.dropBlocked': 'حالي لا يمكن إضافة ملف أو صورة',
     'attachment.dropTitle': 'ملف أو صورة سحب حركة إلى هذا موضع يكفي إضافة',
   }
@@ -162,13 +162,13 @@ describe('ComposerAttachments', () => {
 
     fireEvent.click(view.getByRole('button', { name: 'إزالة صورة pixel.png' }))
     expect(onRemoveAttachment).toHaveBeenCalledWith(image.id)
-    fireEvent.click(view.getByTitle('فحص نظر أصل رسم'))
+    fireEvent.click(view.getByTitle('عرض أصل رسم'))
     expect(view.getByRole('dialog', { name: 'أصل رسم معاينة' })).toBeTruthy()
     view.rerender(<ComposerAttachments {...props({ attachments: [], onRemoveAttachment })} />)
     expect(view.queryByRole('dialog', { name: 'أصل رسم معاينة' })).toBeNull()
 
     view.rerender(<ComposerAttachments {...initial} />)
-    fireEvent.click(view.getByTitle('فحص نظر أصل رسم'))
+    fireEvent.click(view.getByTitle('عرض أصل رسم'))
     fireEvent.keyDown(window, { key: 'Escape' })
     expect(view.queryByRole('dialog', { name: 'أصل رسم معاينة' })).toBeNull()
   })
@@ -195,7 +195,7 @@ describe('ComposerAttachments', () => {
     const image = attachment('unnamed', '')
     const view = render(<ComposerAttachments {...props({ attachments: [image] })} />)
     expect(view.getByAltText('انتظار إرسال صورة')).toBeTruthy()
-    fireEvent.click(view.getByTitle('فحص نظر أصل رسم'))
+    fireEvent.click(view.getByTitle('عرض أصل رسم'))
     expect(view.getByAltText('أصل رسم')).toBeTruthy()
   })
 })

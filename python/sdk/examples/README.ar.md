@@ -6,7 +6,7 @@
 
 ## تشغيل أقصى بسيط agent
 
-تثبيت `deepseek-harness-sdk`، توجيه خروج نموذج اعتماد، لكن بعد توفير عزل Harness home و workspace:
+تثبيت `deepseek-harness-sdk`، تصدير نموذج اعتماد، لكن بعد توفير عزل Harness home و workspace:
 
 ```sh
 export DEEPSEEK_API_KEY=sk-your-key-here
@@ -27,7 +27,7 @@ python python/sdk/examples/minimal.py \
 
 حمل دائم PTY يمكن تعديل وقت التشغيل عملية يمكن وصول أي مسار، لذلك فقط ينبغي في مرة صفة checkout أو حاوية في استخدام.
 
-## إضافة إضافة
+## إضافة
 
 مقابل نفس عدد صريح home استخدام وقت التشغيل wheel حزمة توفير `dsh` أمر، بـ إجراء حمل دائم profile تغيير:
 

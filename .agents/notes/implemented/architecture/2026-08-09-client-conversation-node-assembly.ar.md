@@ -8,7 +8,7 @@ Status: implemented
 
 Client Session حيث صيانة نقل نافذة، اتصال حالة و انتظار معالجة تفاعل، أيضا في في قلب تحويل transcript fold في حل تفسير Assistant،Tool، رسالة، أمر، ضغط، إعادة محاولة و turn tail انتظار عمل خدمة حدث. كل زيادة واحد نوع عمل خدمة عقدة، كل يلزم تعديل Session switch، تاريخ replay، بحث جذب، ذاكرة مؤقتة و React قسم مجموعة؛ عمل خدمة identity، حالة عرض دخول و نهائي عرض لا يوجد مستقل كل من.
 
-نقص قليل target-neutral assembly وقت، تشغيل في Assistant و Tool سوف يقع في finalized flow خارج، تسوية بعد عندئذ دخول حسب سجل ترتيب ترتيب عقدة قائمة.React parent بسبب بينما تغيير، أي جعل عمل خدمة ID و `key` مستقر أيضا سوف إعادة تركيب. كل كمية تاريخ تحميل،older prepend، فوري append و token streaming إذا قسم آخر مشي مختلف تحديث مسار، مرجع مستقر و نطاق جزء إعادة حساب أيضا فقط قدرة اعتماد كل موضع خاص تحويل ذاكرة مؤقتة.
+نقص قليل target-neutral assembly وقت، تشغيل في Assistant و Tool سوف يقع في finalized flow خارج، تسوية بعد عندئذ دخول حسب سجل ترتيب عقدة قائمة.React parent بسبب بينما تغيير، أي جعل عمل خدمة ID و `key` مستقر أيضا سوف إعادة تركيب. كل كمية تاريخ تحميل،older prepend، فوري append و token streaming إذا قسم آخر مشي مختلف تحديث مسار، مرجع مستقر و نطاق جزء إعادة حساب أيضا فقط قدرة اعتماد كل موضع خاص تحويل ذاكرة مؤقتة.
 
 عمل خدمة حدث بين صلة ربط طريقة و لا موحد واحد.Tool لديه call ID،Assistant بـ turn/step صلة ربط،Compaction لديه مستقل دورة الحياة و checkpoint،Inbox splice فإن يمثل واحد وصل متابعة حالة لحظة بين. يأخذ هذه فرق مختلف متابعة سد دخول موحد واحد fold، سوف يجعل مهمة واحد عمل خدمة تغير كل مرور مرور عام فحص جدول و جعل غير متصل ذاكرة مؤقتة بطلان.
 
@@ -26,7 +26,7 @@ Chat فقط تسجيل `next-step` Inbox Definition، لأن رسالة تصني
 |---|---|---|
 | Session | صيانة وصل متابعة منطق event window، منطقة قسم replace،prepend و scalar append، ضبط درجة snapshot إشعار | حل تفسير Tool،Assistant،Compaction انتظار عمل خدمة حدث |
 | Event Registry | حسب Cordis دورة الحياة حفظ وحيد `kind` Definition و وحيد fallback | حفظ بعض عدد Session Context أو State |
-| Assembler | مطابقة معيار event أو packed run، صيانة Context،Location، اعتماد و إصدار قذر تجميع | إدارة حل عمل خدمة State حقل أو Chat ترتيب ترتيب |
+| Assembler | مطابقة معيار event أو packed run، صيانة Context،Location، اعتماد و إصدار قذر تجميع | إدارة حل عمل خدمة State حقل أو Chat ترتيب |
 | Node Definition | تعريف واحد عمل خدمة كائن identity،State عرض دخول،Location data و target Node | إنشاء Context، تعديل آخر عمل خدمة State أو مسح الكل Context |
 | View Builder | يأخذ نهائي target Node زيادة كمية كامل إدارة صار هذا عرض snapshot | إعادة حل تفسير `SessionEventLike` input |
 | React renderer | حسب نهائي Node `kind` عرض renderer-owned data، و قراءة حالي Node الذي تابع Location فقط قراءة عمل خدمة data | إعداد مقابل عمل خدمة Event، مسح عام Nodes أو قرار عمل خدمة دورة الحياة |
@@ -63,7 +63,7 @@ start،result،resource،checkpoint و عمل خدمة ذاتي لديه إنه�
 
 مطابقة نجاح بعد،Assembler يأخذ معيار أو packed event،`role` و جذب محرك حساب حساب `location` مجموعة صار فقط قراءة `ConversationMatch`. واحد packed run بداية نهاية فقط احتلال واحد Match، و إبقاء fragment و timestamp-gap عدد مجموعة.
 
-Context `matches` دائم بعيد حسب أول `seq` رفع ترتيب حفظ، بينما لا هو حسب شبكة شبكة وصول أو قسم صفحة التقاط دخول ترتيب حفظ.Session journal قد رفض منطق range إعادة تراكم. تاريخ ذيل صفحة أولا ظهور result،older صفحة بعد ظهور call وقت، نهائي Match ترتيب ما زال هو call في قبل،result في بعد.
+Context `matches` دائم بعيد حسب أول `seq` رفع ترتيب حفظ، بينما لا هو حسب شبكة وصول أو قسم صفحة التقاط دخول ترتيب حفظ.Session journal قد رفض منطق range إعادة تراكم. تاريخ ذيل صفحة أولا ظهور result،older صفحة بعد ظهور call وقت، نهائي Match ترتيب ما زال هو call في قبل،result في بعد.
 
 Location يمكن مع prepend تكملة متساو حد أو append إغلاق حد بينما تغيير.Assembler استبدال تلقي أثر Match فقط قراءة Location و replay Context؛ عمل خدمة لا يأخذ قديم Location فرعي هذا عند مرجعي حفظ.
 
@@ -73,7 +73,7 @@ Location يمكن مع prepend تكملة متساو حد أو append إغلاق
 |---|---|---|
 | `key` | Assembler | `kind + id` مستقر نهائي identity |
 | `kind` / `id` | Definition + Assembler | حالي عمل خدمة نطاق الأسماء و عمل خدمة ID |
-| `matches` | Assembler | حالي نافذة قد استلام تجميع كما حسب أول `seq` ترتيب ترتيب كامل scalar و packed عمل خدمة دليل |
+| `matches` | Assembler | حالي نافذة قد استلام تجميع كما حسب أول `seq` ترتيب كامل scalar و packed عمل خدمة دليل |
 | `start` | Assembler | وحيد scalar start Match؛ بعد لم تحميل وقت لـ `undefined` |
 | `state` | Definition إرجاع،Assembler يحتفظ | الأكثر قريب مرة `start`/`update` قيمة راجعة؛ لم ابتدائي تحويل وقت لـ `undefined` |
 | `current` | Assembler | كل target الأكثر قريب مرة materialize Node أو `null` |
@@ -176,7 +176,7 @@ Assembler أيضا يأخذ reference-stable timeline تسليم إعطاء View
 
 ## ثلاثة نوع input window سلسلة مسار
 
-“تاريخ عكس مسح” وصف UI من الأكثر جديد ذيل صفحة نحو Session بدء نقطة تدريجي صفحة تحميل جهة نحو، لا يمثل Definition عكس ترتيب تنفيذ `update()`.Session journal سوف في إصدار قبل تحقق كل بند record منطق range؛ بلا نقاش قسم صفحة تحميل جهة نحو مثل أي،Assembler كل حسب كل قد قبول معيار event أو packed run أول `seq` ترتيب ترتيب.
+“تاريخ عكس مسح” وصف UI من الأكثر جديد ذيل صفحة نحو Session بدء نقطة تدريجي صفحة تحميل جهة نحو، لا يمثل Definition عكس ترتيب تنفيذ `update()`.Session journal سوف في إصدار قبل تحقق كل بند record منطق range؛ بلا نقاش قسم صفحة تحميل جهة نحو مثل أي،Assembler كل حسب كل قد قبول معيار event أو packed run أول `seq` ترتيب.
 
 | مشهد | إدخال نطاق | Context/State معالجة | View Builder |
 |---|---|---|---|
@@ -188,7 +188,7 @@ Assembler أيضا يأخذ reference-stable timeline تسليم إعطاء View
 
 1. `Session.open()` سحب أخذ الأكثر جديد tail page، و يأخذ وصل متابعة `SessionEventLike` entry تسليم إعطاء `replaceWindow(entries, hasMore)`.
 2. `replaceWindow` صاف فارغ قديم Context،start-seq بحث جذب،seq عكس نحو بحث جذب،Reader اعتماد و إدخال Map.
-3. الكل entry حسب أول عدد منطق `seq` رفع ترتيب ترتيب ترتيب و كتابة حالي نافذة.
+3. الكل entry حسب أول عدد منطق `seq` رفع ترتيب ترتيب و كتابة حالي نافذة.
 4. LocationIndex مقابل هذا عدد نافذة إعادة بناء Turn/Step facts.
 5. Assembler حسب رفع ترتيب وصول معيار event و packed run، و تدريجي بند استدعاء كل عادي Definition `match(event)`.
 6. كل أمر في نتيجة حسب `(kind, id)` أخذ نيل أو إنشاء Context، و يأخذ Match إدراج دخول هذا Context لديه ترتيب عدد مجموعة.
@@ -247,7 +247,7 @@ Chat `order` بنية صفة تغير ما زال ممكن إعادة ترتيب
 
 ### Replace،prepend و append متسق صفة
 
-ثلاثة بند سلسلة مسار نهائي كل التزام حراسة نفس ثابت كمية:Context Matches حسب seq ترتيب ترتيب،State من وحيد start صحيح ترتيب fold،Reader فقط نظر صارم إطار قبل ترتيب active Context،Location data حسب Step→Turn إصدار،Node key فقط من kind و ID قرار.
+ثلاثة بند سلسلة مسار نهائي كل التزام حراسة نفس ثابت كمية:Context Matches حسب seq ترتيب،State من وحيد start صحيح ترتيب fold،Reader فقط نظر صارم إطار قبل ترتيب active Context،Location data حسب Step→Turn إصدار،Node key فقط من kind و ID قرار.
 
 `replaceWindow` هو ابتدائي فتح،resync،gap repair و registry تغير منخفض تردد كامل استبدال، لا لأجل تنفيذ عادي load older.`prepend` و `append` كل إبقاء قائم Builder و Context identity.
 
@@ -307,7 +307,7 @@ Unknown fallback عرض Registry ownership:fallback فقط معالجة لا ي�
 
 ## View Builder و React identity
 
-[`ConversationViewRegistry`](../../../../packages/client/ui-conversation/src/client/conversation/view-registry.ts) لـ كل target حفظ مستقل builder factory، لا مشترك بعض عدد Session ترتيب ترتيب أو ذاكرة مؤقتة.
+[`ConversationViewRegistry`](../../../../packages/client/ui-conversation/src/client/conversation/view-registry.ts) لـ كل target حفظ مستقل builder factory، لا مشترك بعض عدد Session ترتيب أو ذاكرة مؤقتة.
 
 shell اختيار أو target source أول عدد subscriber سوف يأخذ هذا target إضافة دخول Session مفرد ضبط زيادة طويل active-target set.Assembler حسب وحيد target بحث جذب كل Context، لكن لن لـ inactive target إنشاء builder،Node أو snapshot. أول مرة تنشيط سوف flush بعد لم إصدار target-neutral عمل، إنشاء builder، و من هذا target حالي Context استدعاء مرة `replace({ nodes, timeline })`.
 
@@ -319,7 +319,7 @@ Session binding متاح، ذاكرة مؤقتة binding يصبح current أو V
 
 Chat بنية تغير فقط من جديد key،`anchorSeq`،visibility أو Location identity تغير إطلاق. عادي محتوى تغير لا إعادة بناء `order`؛keyed Node store فقط استبدال هذا key value تزامن نشر ذلك source.Turn-process projector فقط لـ بنية، قاعدة إطار أو حالة حدوث تغير Turn إعادة حساب عبر Node عرض، مجددا فقط إصدار هذا Turn process source.
 
-Builder لقاء إلى بنية تغير وقت من store حالي values حساب حساب visible order، و حسب لم تغير مرجع إعادة استخدام بحث جذب عدد مجموعة.Prepend يمكن زيادة قبل جزء تاريخ key،append يمكن زيادة ذيل جزء أو حسب عمل خدمة anchor سقوط موضع، قائم key لا بسبب ترتيب ترتيب تغير بينما إعادة تسمية.
+Builder لقاء إلى بنية تغير وقت من store حالي values حساب حساب visible order، و حسب لم تغير مرجع إعادة استخدام بحث جذب عدد مجموعة.Prepend يمكن زيادة قبل جزء تاريخ key،append يمكن زيادة ذيل جزء أو حسب عمل خدمة anchor سقوط موضع، قائم key لا بسبب ترتيب تغير بينما إعادة تسمية.
 
 [`ChatView`](../../../../packages/client/ui-chat/src/client/chat/ChatView.tsx) فقط مرة تاريخ `order`، و لـ كل key تحليل اثنان نسخة مستقر source. كل [`ChatNodeSeat`](../../../../packages/client/ui-chat/src/client/chat/ChatNodeSeat.tsx) بـ Context key ثابت في نفس عدد أب قائمة في، فقط حجز قراءة ذاته Node و Turn-process source، و حسب `node.kind` توزيع `'conversation.chat.node'` keyed slot.
 
@@ -331,7 +331,7 @@ Slot-level contextual Hook و entry-owned `inject.hooks` هو اثنان بند 
 
 معيار `useSession` ما زال يخص كل session-scoped slot renderer عام قدرة، لكن `ChatNodeSeat` لم يعد حاجة هو أو تجمع دمج `useChat`.`useTurnData()` هو استلام ضيق معتاد رؤية قراءة طريقة بينما لا هو إذن صندوق رملي. كل نافذة موحد حساب أو مهمة معنى كائن بحث جذب ما زال يمكن صريح استخدام Session snapshot؛ هو جمع لا يستطيع زائف تركيب صار “حالي Node Turn data”.
 
-Assistant streaming إلى final،Tool running إلى settled بداية نهاية إبقاء في نفس عدد Seat، فقط تحديث data و لا بد يلزم ترتيب ترتيب خاصية. تسوية لن بسبب عبر parent نقل حركة بينما إعادة وضع مكون داخلي State.
+Assistant streaming إلى final،Tool running إلى settled بداية نهاية إبقاء في نفس عدد Seat، فقط تحديث data و لا بد يلزم ترتيب خاصية. تسوية لن بسبب عبر parent نقل حركة بينما إعادة وضع مكون داخلي State.
 
 عمل خدمة رئيسي حركة يأخذ قد إصدار Node تعديل صار hidden وقت، هو سوف خروج visible order، استعادة visible وقت سوف إعادة mount. هذا هو واضح عمل خدمة سحب إظهار دلالة، و running→settled مستقر Seat حفظ إثبات مختلف.
 
@@ -360,7 +360,7 @@ SessionEventLike window
 
 Runtime tests ثابت Definition دورة الحياة تسجيل،exact-ID append،update-before-start استلام تجميع و start بعد صحيح ترتيب replay،prepend identity،Reader window-gap إصلاح، نقل تمرير اعتماد،Location closure،Step→Turn data phase order،Location data replacement،publication cadence، غير قاعدة سحب عودة، أول مرة حجز قراءة activation، مفرد ضبط active target و per-target Builder.
 
-Conversation tests تغطية الكل داخل بناء Chat Definition،Assistant Step data،Turn Tail و Deliverables Turn data،Chat ترتيب ترتيب و بنية مشترك،selector isolation،Assistant/Tool running-to-settled identity،nested PTC dispatch،steering،Compaction،Retry،interruption،load-older anchoring و slot dispatch.Trajectory tests فإن تغطية هو مستقل تسجيل Message،Assistant،Tool،Compaction،Request-header و boundary Definition، و متابعة إبقاء stage-oriented view model.
+Conversation tests تغطية الكل داخل بناء Chat Definition،Assistant Step data،Turn Tail و Deliverables Turn data،Chat ترتيب و بنية مشترك،selector isolation،Assistant/Tool running-to-settled identity،nested PTC dispatch،steering،Compaction،Retry،interruption،load-older anchoring و slot dispatch.Trajectory tests فإن تغطية هو مستقل تسجيل Message،Assistant،Tool،Compaction،Request-header و boundary Definition، و متابعة إبقاء stage-oriented view model.
 
 Slot type/runtime tests ثابت أب تسجيل يجب توفير إعلان common inject،`hookContext` نوع، مختلف Node context Hook عزل،factory/Hook identity مستقر، و غير متصل Session publication لا إعادة تصيير عمل خدمة renderer. أصل entry-owned Observable Hook اختبار متابعة ثابت لم استخدام contextual factory مسار.
 
@@ -398,17 +398,17 @@ Assembled Web snapshot،GUI و متصفح مشهد تغطية حقيقي plugin 
 
 **الأكثر بعد واحد subscriber مغادرة فتح وقت توقف استخدام target.** رفض: إرجاع هذا View سوف عكس تكرار إعادة بناء كامل snapshot. حجز قراءة فقط تأكيد أول مرة استخدام؛ مع بعد target في Session باق بقية دورة الحياة في إبقاء زيادة كمية تحديث.
 
-**في نهائي عمل خدمة Node فوق مجددا تراكم واحد طبقة عام layout model.** رفض:activity،tail candidacy و layout enum سوف يأخذ حالي Chat عمل خدمة دلالة إعادة تجميع في إلى جذب محرك. نهائي Node مباشر يحمل renderer الذي يحتاج data، فقط مشترك identity، ترتيب ترتيب و Location واقع.
+**في نهائي عمل خدمة Node فوق مجددا تراكم واحد طبقة عام layout model.** رفض:activity،tail candidacy و layout enum سوف يأخذ حالي Chat عمل خدمة دلالة إعادة تجميع في إلى جذب محرك. نهائي Node مباشر يحمل renderer الذي يحتاج data، فقط مشترك identity، ترتيب و Location واقع.
 
 **فقط في Assistant renderer تسجيل Turn data Hook.** رفض: وصول حالي Node Location هو `conversation.chat.node` slot عام مشترك قدرة، لا يخص بعض عدد عمل خدمة renderer. أب Chat entry تسجيل مرة common inject، كل keyed renderer مشترك نفس قوي نوع اتفاق.
 
-**يأخذ running Assistant أو Tool إبقاء في مستقل tail container.** رفض: تسوية وقت سوف عبر React parent نقل حركة، مستقر عمل خدمة key أيضا لا يمكن منع توقف remount. موحد واحد keyed order سماح data و ترتيب ترتيب موضع تغيير، لكن لا تغيير Seat identity.
+**يأخذ running Assistant أو Tool إبقاء في مستقل tail container.** رفض: تسوية وقت سوف عبر React parent نقل حركة، مستقر عمل خدمة key أيضا لا يمكن منع توقف remount. موحد واحد keyed order سماح data و ترتيب موضع تغيير، لكن لا تغيير Seat identity.
 
 ## عاقبة
 
 إضافة جديدة عمل خدمة عقدة يمكن نطاق جزء تسجيل ذاتي ذات matcher،State تحويل، اختياري Location data، نهائي target Node و renderer، بلا حاجة تعديل Session عمل خدمة switch.`ChatNodeDataMap` و Location data maps سماح عمل خدمة package عبر declaration merging دمج دخول قوي نوع data؛ كل متبادل صلة Event ما زال يجب كشف يمكن مفرد Event دفع توجيه مستقر ID.
 
-Host عمل خدمة package يأخذ ذاتي ذات حمل دائم Event عضو declaration-merge إلى `@deepseek-ai/dsh-session/types`،Client Definition فإن عبر مقابل عمل خدمة package `/types` فرعي مسار إجراء type-only import. زيادة قوي فعلي إعلان واجهة بينما لا هو إعادة توجيه خروج barrel، جعل Host و Client مستقل TypeScript Program كل قدرة نيل نيل نفسه Event narrowing، معا لا يأخذ Host runtime حمل دخول Client رسم.
+Host عمل خدمة package يأخذ ذاتي ذات حمل دائم Event عضو declaration-merge إلى `@deepseek-ai/dsh-session/types`،Client Definition فإن عبر مقابل عمل خدمة package `/types` فرعي مسار إجراء type-only import. زيادة قوي فعلي إعلان واجهة بينما لا هو إعادة تصدير barrel، جعل Host و Client مستقل TypeScript Program كل قدرة نيل نيل نفسه Event narrowing، معا لا يأخذ Host runtime حمل دخول Client رسم.
 
 ابتدائي ذيل صفحة،older prepend و live append مشترك واحد طقم Context ثابت كمية. نقص start،Reader window gap،Location unknown و packed عال تردد delta كل هو جذب محرك واضح جدول بلوغ حالة، لا حاجة عمل خدمة آخر بناء جهة نحو متبادل صلة cache.
 

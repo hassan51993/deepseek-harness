@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-12-ptc-runtime-vocabulary.md
 2026-09-12-ptc-runtime-vocabulary.md: 376c56987f8e4181c3d20f68c57a1fcdd581c24a
-2026-09-12-ptc-runtime-vocabulary.ar.md: 74a9106243b2f2e94bf60c90d722d6e01b36005b
+2026-09-12-ptc-runtime-vocabulary.ar.md: 07a454cadd1a62f539f69df3d6a8fb1ad1d89d6d

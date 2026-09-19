@@ -27,7 +27,7 @@
 }
 
 .headerBlank .headerCorner {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 /* macOS hiddenInset titlebar: the title row doubles as the window drag
@@ -140,7 +140,7 @@
   flex: none;
   align-items: center;
   gap: 8px;
-  margin-left: 20px;
+  margin-inline-start: 20px;
 }
 
 .headerUtilities:empty {
@@ -155,8 +155,8 @@
   display: flex;
   flex: none;
   align-items: center;
-  margin-left: 8px;
-  margin-right: -16px;
+  margin-inline-start: 8px;
+  margin-inline-end: -16px;
 }
 
 .headerCorner:empty {
@@ -171,7 +171,7 @@
   display: flex;
   gap: 36px;
   margin-top: 10px;
-  padding-left: 8px;
+  padding-inline-start: 8px;
 }
 
 /* figma .Tab 34:11442: 13/16 text (figma wt510, rendered 500). The 2px bar
@@ -192,9 +192,9 @@
 .tab::after {
   content: '';
   position: absolute;
-  right: 0;
+  inset-inline-end: 0;
   bottom: -1px;
-  left: 0;
+  inset-inline-start: 0;
   height: 2px;
   border-radius: 2px;
   background: transparent;
@@ -245,11 +245,11 @@
 }
 
 .widthHandle[data-side='left'] {
-  right: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
+  inset-inline-end: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
 }
 
 .widthHandle[data-side='right'] {
-  left: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
+  inset-inline-start: calc(50% + var(--dsh-chat-content-width) / 2 + 24px);
 }
 
 /* The glow: a short 2px bar riding the pointer's Y, centered in the strip
@@ -279,11 +279,11 @@
 }
 
 .widthHandle[data-side='left']::after {
-  right: 4px;
+  inset-inline-end: 4px;
 }
 
 .widthHandle[data-side='right']::after {
-  left: 4px;
+  inset-inline-start: 4px;
 }
 
 .widthHandle:hover::after,
@@ -380,7 +380,7 @@
   /* The product-wide 2px scrollbar offset (ui-workspace WorkspaceBrowser
      `.list`, ui-sidebar-files FilesBody `.body`): the bar sits 2px clear of
      the column's edge instead of flush against it. */
-  margin-right: 2px;
+  margin-inline-end: 2px;
   overflow-y: auto;
   /* Reserved unconditionally: the composer seat rides this box's content box in
      Chat and its padding box under a view's composer overlay, so an `auto`
@@ -469,9 +469,9 @@
      engine where the resolved width differs from this fixed 8px the card
      drifts by half the difference — accepted residual risk, recorded in
      ([decision](../../../../../../.agents/notes/archived/bug-fix/2026-08-12-composer-overlay-seat-width-compensation.md)). */
-  right: var(--dsh-scrollbar-width);
+  inset-inline-end: var(--dsh-scrollbar-width);
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 /* Hero phase: the composer stack (hero chrome + workspace row + card) is

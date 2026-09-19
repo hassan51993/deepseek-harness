@@ -160,8 +160,8 @@ describe('ModelSelect reasoning effort', () => {
       t={t}
     />)
 
-    expect(screen.getByRole('button', { name: 'صحيح في تحميل نموذج…' }).textContent)
-      .toContain('صحيح في تحميل نموذج…')
+    expect(screen.getByRole('button', { name: 'جارٍ تحميل نموذج…' }).textContent)
+      .toContain('جارٍ تحميل نموذج…')
     directory.set(state())
     await waitFor(() => {
       expect(screen.getByRole('button', {

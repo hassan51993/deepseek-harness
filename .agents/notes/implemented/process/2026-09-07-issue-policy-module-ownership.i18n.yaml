@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-07-issue-policy-module-ownership.md
 2026-09-07-issue-policy-module-ownership.md: fea30374fcc0832cb06ec27ae445896fa477a4d5
-2026-09-07-issue-policy-module-ownership.ar.md: 124c0d5aebde09fc89f58562145de4daee20798a
+2026-09-07-issue-policy-module-ownership.ar.md: e0285ee0c198eaaf549177cb579d463bc12b170a

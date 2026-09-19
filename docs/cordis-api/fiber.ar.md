@@ -130,7 +130,7 @@ public store: Dict<Impl> | undefined
 public inertia: Promise<void> | undefined
 ```
 
-حالي صحيح في إجراء تحميل أو إزالة تحويل؛ إذا لا يوجد هذا صنف تحويل، فإن لـ undefined.
+حالي جارٍ إجراء تحميل أو إزالة تحويل؛ إذا لا يوجد هذا صنف تحويل، فإن لـ undefined.
 
 [شفرة المصدر](../../vendor/cordis/src/fiber.ts#L200)
 

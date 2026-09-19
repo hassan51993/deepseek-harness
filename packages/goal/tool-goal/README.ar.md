@@ -37,7 +37,7 @@ kind: "package-reference"
 | `create_goal(objective, max_goal_rounds?)` | أصل حسب شخص صنف مباشر إرسال بدء قمة طبقة جولة إنشاء واحد goal |
 | `update_goal(goal_id, revision, action, objective?, max_goal_rounds?, blocked_reason?)` | مقابل دقيق goal revision تنفيذ `edit`،`pause`،`resume`،`complete` أو `blocked` |
 
-في `update_goal` قبل استدعاء `get_goal`، و نسخ دقيق `goal_id` و `revision`؛ كل استدعاء كل متبادل رفض، لذلك نموذج ترتيب ترتيب دفعة مرة قدرة مراقبة إلى أكثر مبكر تغيير و ذلك جديد revision. استبدال قيمة فقط يخص `edit`؛`blocked_reason` فقط لديه في `blocked` وقت عندئذ لا بد ملء، و بـ مستقر شفرة `model-reported` حفظ دائم. صارم إطار schema تحت فارغ نص و صفر ملء ملء قيمة نظر لـ حذف، بينما متعمد معنى قيمة ما زال حد تحديد إلى كل منها action.
+في `update_goal` قبل استدعاء `get_goal`، و نسخ دقيق `goal_id` و `revision`؛ كل استدعاء كل متبادل رفض، لذلك نموذج ترتيب دفعة مرة قدرة مراقبة إلى أكثر مبكر تغيير و ذلك جديد revision. استبدال قيمة فقط يخص `edit`؛`blocked_reason` فقط لديه في `blocked` وقت عندئذ لا بد ملء، و بـ مستقر شفرة `model-reported` حفظ دائم. صارم إطار schema تحت فارغ نص و صفر ملء ملء قيمة نظر لـ حذف، بينما متعمد معنى قيمة ما زال حد تحديد إلى كل منها action.
 
 ### إعداد
 

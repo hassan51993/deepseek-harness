@@ -2,7 +2,7 @@
 export const ar = {
   title: 'صورة',
   preview: 'صورة معاينة:{name}',
-  loading: 'صحيح في قراءة…',
+  loading: 'جارٍ قراءة…',
   failed: 'لا يمكن عرض هذا ورقة صورة',
   unsupported: 'صورة معاينة حاجة كامل ملف محتوى',
 } satisfies Record<string, string>

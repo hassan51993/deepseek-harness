@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-20-ptc-typed-tool-returns.md
 2026-07-20-ptc-typed-tool-returns.md: 5bc18152c3a1ee4c80c92dade9ba9f3da446e61f
-2026-07-20-ptc-typed-tool-returns.ar.md: 5ccc22057b1cfb3f99a14b765cb80f0c4e585abe
+2026-07-20-ptc-typed-tool-returns.ar.md: 3b23e96a9a53c76020818b223c777a9b4a58720e

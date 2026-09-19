@@ -15,7 +15,7 @@ harness أداة لديه يمكن استبدال قدرة، يشمل shell تن
 واحد بند يمكن استبدال قدرة يتضمن**ثلاثة عدد زاوية لون**:
 
 1. **Service Definition**——يملك `ctx.<key>` Cordis `Service` و مفردات نوع، فقط اعتماد اتفاق الذي يحتاج مفردات (مثال مثل `dsh-shell`:`ShellExecutor`،`ShellRunResult`،`ShellProcess`).Service Definition يمكن هو سحب كائن صنف، أيضا يمكن هو أداة جسم سجل التسجيل خدمة؛ أبدا هو TypeScript `interface`.
-2. **Service Provider**——توفير أو تسجيل تنفيذ إضافة (مثال مثل `dsh-bash-local`: عملية فرعية، من مزود إدارة نطاق إنهاء،spill ملف قطع قطع).[أصلي containment قرار](2026-08-28-subprocess-native-containment.ar.md) مسؤول محلي مزود OS خاص لديه نطاق آلية. صندوق رملي تحويل و بعيد مسار Service Provider هو اعتماد حسب نفس Service Definition تنفيذ أو تسجيل أخ أخ حزمة.
+2. **Service Provider**——توفير أو تسجيل تنفيذ إضافة (مثال مثل `dsh-bash-local`: عملية فرعية، من مزود إدارة نطاق إنهاء،spill ملف مقتطع).[أصلي containment قرار](2026-08-28-subprocess-native-containment.ar.md) مسؤول محلي مزود OS خاص لديه نطاق آلية. صندوق رملي تحويل و بعيد مسار Service Provider هو اعتماد حسب نفس Service Definition تنفيذ أو تسجيل أخ أخ حزمة.
 3. **Consumer**——نموذج و إضافة تحرير مسار الذي موجه إلى محتوى (مثال مثل `dsh-tool-bash`:`bash` schema، خلفية جملة مقبض تسجيل إلى عام مهمة وقت التشغيل).Consumer حقن خدمة مفتاح، من لا استيراد Service Provider خاص لديه نوع.
 
 زاوية لون اسم استخدام عنوان صيغة كبير صغير كتابة:**Service Definition**،**Service Provider** و **Consumer**. عام إشارة `provider` و `consumer` ما زال استخدام صغير كتابة.

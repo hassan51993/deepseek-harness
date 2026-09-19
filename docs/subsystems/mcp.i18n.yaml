@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/mcp.md
 mcp.md: 70df9c123bd3987cb865dc8f8dcd781b528a0011
-mcp.ar.md: 8cb646a36ce7678cafa4cf0badf1c54dc2de8650
+mcp.ar.md: 3b4ee9e0c71d879666b2e1716bd5b3b6d00cce38

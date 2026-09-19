@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write native/system/packages/linux-arm64/README.md
 README.md: c15aea6c50d2b6d8756c2df2a9f8ad7ca6c376b9
-README.ar.md: 4e68d1c3a6bf1bf61c7ebe8c886eccfcdcf415ee
+README.ar.md: 15c0b5cff1cfb474ff5b82b2f9dbcf6d920e8ccc

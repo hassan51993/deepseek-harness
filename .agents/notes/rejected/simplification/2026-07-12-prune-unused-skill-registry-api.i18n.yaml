@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/rejected/simplification/2026-07-12-prune-unused-skill-registry-api.md
 2026-07-12-prune-unused-skill-registry-api.md: 8dc4c360fc4c7d8fe47564b21e9a8e832f92fd29
-2026-07-12-prune-unused-skill-registry-api.ar.md: 100b3e7e5c6f3b527b2be7a3a4fbd38fb59ee3dd
+2026-07-12-prune-unused-skill-registry-api.ar.md: 36b05325f5e5df4775c84e86897f52b0b95effc1

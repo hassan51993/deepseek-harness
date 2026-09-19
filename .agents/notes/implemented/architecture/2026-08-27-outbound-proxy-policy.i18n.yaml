@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-27-outbound-proxy-policy.md
 2026-08-27-outbound-proxy-policy.md: ec55d724fd08fd048e310610097bdb980f4bd83c
-2026-08-27-outbound-proxy-policy.ar.md: 89080c8ef541c575dafc13cc632e5730c401a371
+2026-08-27-outbound-proxy-policy.ar.md: 41c4aeba0ee6180d30f0fc6e195f89febb945593

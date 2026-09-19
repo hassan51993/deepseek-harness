@@ -31,7 +31,7 @@ export function apply(ctx: Context, config: Config) {
 }
 ```
 
-توجيه خروج `Config` حيث هو TypeScript واجهة، أيضا هو نفس اسم وقت التشغيل schema: مستهلك نيل نيل نوع،Cordis نيل نيل تحقق جهاز. هذا مستودع استخدام [Schemastery](https://github.com/shigma/schemastery) تعريف schema؛Cordis ذاته قبول مهمة معنى [Standard Schema](https://standardschema.dev/) تحقق جهاز، لذلك سوف عادي كائن توجيه خروج لـ `Config` لا يمكن عمل.
+تصدير `Config` حيث هو TypeScript واجهة، أيضا هو نفس اسم وقت التشغيل schema: مستهلك نيل نيل نوع،Cordis نيل نيل تحقق جهاز. هذا مستودع استخدام [Schemastery](https://github.com/shigma/schemastery) تعريف schema؛Cordis ذاته قبول مهمة معنى [Standard Schema](https://standardschema.dev/) تحقق جهاز، لذلك سوف عادي كائن تصدير لـ `Config` لا يمكن عمل.
 
 مقابل ذلك إجراء إعداد:
 

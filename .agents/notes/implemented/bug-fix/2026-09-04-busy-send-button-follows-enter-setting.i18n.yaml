@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-04-busy-send-button-follows-enter-setting.md
 2026-09-04-busy-send-button-follows-enter-setting.md: e5ba013cdf231cc41ba6e8dc2c9b8d32b03086d8
-2026-09-04-busy-send-button-follows-enter-setting.ar.md: 555ccd592b3ca07b0b006a756c7d762c26f16e08
+2026-09-04-busy-send-button-follows-enter-setting.ar.md: 7cdcf8e1846ccf320b508cc581ea3e621971ce9a

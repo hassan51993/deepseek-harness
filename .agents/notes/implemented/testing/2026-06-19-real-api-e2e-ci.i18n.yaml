@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-06-19-real-api-e2e-ci.md
 2026-06-19-real-api-e2e-ci.md: dd71e25735316fdb167faeba819dc95a7d4abd89
-2026-06-19-real-api-e2e-ci.ar.md: 37d6dad364059e6c60531e5f2120bdaf29ab057b
+2026-06-19-real-api-e2e-ci.ar.md: abc6b0d8e76926cc8bae32238d4cb1468e9d0cd1

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.md
 2026-09-02-system-prompt-as-surface-node.md: a5d4e39e3defe04e403883474f4726332d6c6326
-2026-09-02-system-prompt-as-surface-node.ar.md: 9fe0238df3050b770e1a0f15f267de30051bfdb6
+2026-09-02-system-prompt-as-surface-node.ar.md: e3277c50325dfb3a2720b60e0209e1e3fbd59db8

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-22-fire-and-forget-webhook-sessions.md
 2026-08-22-fire-and-forget-webhook-sessions.md: 82654004423a30751d224a48d036282d394b5177
-2026-08-22-fire-and-forget-webhook-sessions.ar.md: 6f09e64c57244d8dce140bdab96a36a3ff6acd07
+2026-08-22-fire-and-forget-webhook-sessions.ar.md: 4a4a05477141cdac7e4516004dcc44f944cccdd3

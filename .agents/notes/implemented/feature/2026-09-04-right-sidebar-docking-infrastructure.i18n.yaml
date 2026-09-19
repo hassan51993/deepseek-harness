@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-04-right-sidebar-docking-infrastructure.md
 2026-09-04-right-sidebar-docking-infrastructure.md: 98598c27bb2232508c591cd559c39877fded35f2
-2026-09-04-right-sidebar-docking-infrastructure.ar.md: 6f130a3c12ec1a65121ccb524ba1fcd77feeb16f
+2026-09-04-right-sidebar-docking-infrastructure.ar.md: 7d620091550306c5cb181bd0a5afad013f0f1398

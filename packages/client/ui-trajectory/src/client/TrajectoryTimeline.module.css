@@ -21,7 +21,7 @@
 
 .labels {
   position: relative;
-  border-right: 0.5px solid var(--dsw-alias-border-l1);
+  border-inline-end: 0.5px solid var(--dsw-alias-border-l1);
   color: var(--dsw-alias-label-caption);
   font: var(--dsw-font-xs-13);
   font-size: 10px;
@@ -30,12 +30,12 @@
 
 .labels span {
   position: absolute;
-  right: 3px;
+  inset-inline-end: 3px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   height: 8px;
-  text-align: right;
+  text-align: end;
 }
 
 .labels span:nth-child(1) {
@@ -66,14 +66,14 @@
   z-index: 5;
   top: 0;
   bottom: 0;
-  left: 0;
+  inset-inline-start: 0;
   display: flex;
   width: 28px;
   align-items: center;
   justify-content: flex-start;
   appearance: none;
   box-sizing: border-box;
-  padding-left: 3px;
+  padding-inline-start: 3px;
   border: 0;
   outline: none;
   background: linear-gradient(
@@ -104,7 +104,7 @@
 .empty {
   position: absolute;
   top: 50%;
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translate(-50%, -50%);
   color: var(--dsw-alias-label-caption);
   font: var(--dsw-font-xs-13);
@@ -120,7 +120,7 @@
   z-index: 2;
   top: 7px;
   bottom: 7px;
-  left: var(--trajectory-domain-left);
+  inset-inline-start: var(--trajectory-domain-left);
   width: var(--trajectory-domain-width);
 }
 
@@ -129,7 +129,7 @@
   z-index: 3;
   top: 0;
   bottom: 0;
-  left: var(--trajectory-domain-left);
+  inset-inline-start: var(--trajectory-domain-left);
   width: var(--trajectory-domain-width);
   pointer-events: none;
 }
@@ -137,7 +137,7 @@
 @media (prefers-reduced-motion: no-preference) {
   .lanes[data-animate-viewport='true'],
   .turnBoundaries[data-animate-viewport='true'] {
-    transition: left 180ms ease-out;
+    transition: inset-inline-start 180ms ease-out;
   }
 }
 
@@ -145,7 +145,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--trajectory-turn-left);
+  inset-inline-start: var(--trajectory-turn-left);
   width: 0.5px;
   background: var(--dsw-alias-border-l2);
 }
@@ -153,7 +153,7 @@
 .span {
   position: absolute;
   top: calc(var(--trajectory-span-lane) * 14px);
-  left: calc(var(--trajectory-span-left) + var(--trajectory-span-gap));
+  inset-inline-start: calc(var(--trajectory-span-left) + var(--trajectory-span-gap));
   width: max(
     2px,
     calc(
@@ -255,7 +255,7 @@
   z-index: 1;
   top: 0;
   bottom: 0;
-  left: var(--trajectory-selection-left);
+  inset-inline-start: var(--trajectory-selection-left);
   width: var(--trajectory-selection-width);
   min-width: 1px;
   background: color-mix(
@@ -274,7 +274,7 @@
   z-index: 4;
   top: 0;
   bottom: 0;
-  left: var(--trajectory-selection-left);
+  inset-inline-start: var(--trajectory-selection-left);
   width: var(--trajectory-selection-width);
   min-width: 1px;
   pointer-events: none;
@@ -285,7 +285,7 @@
   z-index: 4;
   top: 0;
   bottom: 0;
-  left: clamp(
+  inset-inline-start: clamp(
     0px,
     calc(var(--trajectory-hover-left) - 1px),
     calc(100% - 2px)
@@ -306,11 +306,11 @@
 }
 
 .selectionEdges::before {
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .selectionEdges::after {
-  right: 0;
+  inset-inline-end: 0;
 }
 
 .selectionEdges[data-dragging='true']::before,

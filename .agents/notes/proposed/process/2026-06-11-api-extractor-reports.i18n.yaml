@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/process/2026-06-11-api-extractor-reports.md
 2026-06-11-api-extractor-reports.md: 92fbfcf187663bf430cb24fe6f809256917962ed
-2026-06-11-api-extractor-reports.ar.md: 2734cf57bf7c9c871629c57ee895f11f4c51f142
+2026-06-11-api-extractor-reports.ar.md: 125e36bcbffa577e9b8671605e55ebf04dada55d

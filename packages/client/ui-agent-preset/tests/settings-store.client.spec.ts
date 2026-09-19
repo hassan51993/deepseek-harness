@@ -118,7 +118,7 @@ describe('the agent-preset roster store', () => {
 
   it('carries the display metadata a preset published', async () => {
     const controller = derivedController(fakeApi([
-      { id: 'standard', trust: 'system', isDefault: true, name: 'معيار نمط', description: 'كامل تحرير رمز agent.' },
+      { id: 'standard', trust: 'system', isDefault: true, name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' },
     ] as never))
 
     await controller.load()
@@ -126,7 +126,7 @@ describe('the agent-preset roster store', () => {
     // Surfaces beyond this row read the same options; the id alone never said
     // what a preset does.
     expect(controller.store.getSnapshot().options).toEqual([
-      { id: 'standard', trust: 'system', name: 'معيار نمط', description: 'كامل تحرير رمز agent.' },
+      { id: 'standard', trust: 'system', name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' },
     ])
   })
 
@@ -306,13 +306,13 @@ describe('the new-session chip controller', () => {
 
   it('carries the display metadata into the menu rows', async () => {
     const controller = chip([
-      { id: 'standard', trust: 'system', isDefault: true, name: 'معيار نمط', description: 'كامل تحرير رمز agent.' },
+      { id: 'standard', trust: 'system', isDefault: true, name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' },
     ] as never, undefined)
 
     await controller.load()
 
     expect(controller.store.getSnapshot().options).toEqual([
-      { id: 'standard', trust: 'system', name: 'معيار نمط', description: 'كامل تحرير رمز agent.' },
+      { id: 'standard', trust: 'system', name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' },
     ])
   })
 

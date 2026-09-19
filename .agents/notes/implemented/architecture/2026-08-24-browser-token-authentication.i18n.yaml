@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-24-browser-token-authentication.md
 2026-08-24-browser-token-authentication.md: 722c907042093289d659d08da7c5a5df8bde183f
-2026-08-24-browser-token-authentication.ar.md: 3e1bf1e41ae82d528540065f2eec5cecfc947997
+2026-08-24-browser-token-authentication.ar.md: 38ccea361bfdc14746f7f4e3050ca725fcbd45f6

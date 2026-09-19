@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-10-deepseek-v41-request-image-projection.md
 2026-09-10-deepseek-v41-request-image-projection.md: 0ab2d31e0c7a1fb3e5cfc8048783d2704a940725
-2026-09-10-deepseek-v41-request-image-projection.ar.md: f8b53310ccfc4b8a6ae00521e840f4fd8384959f
+2026-09-10-deepseek-v41-request-image-projection.ar.md: 9f18d9c51937877b27f141191b7675359e5e5b95

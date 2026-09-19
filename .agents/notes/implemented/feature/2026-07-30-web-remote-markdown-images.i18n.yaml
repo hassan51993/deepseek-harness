@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-30-web-remote-markdown-images.md
 2026-07-30-web-remote-markdown-images.md: 46d935ac263a708addb82ca6200276a0462d535a
-2026-07-30-web-remote-markdown-images.ar.md: 7816f975dacd2cf428f933d5df3008962a959c5a
+2026-07-30-web-remote-markdown-images.ar.md: 910d6ad5fe967a044ed76450d7cfceaaf960cd04

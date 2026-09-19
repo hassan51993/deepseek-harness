@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/ssh/subprocess-ssh/README.md
 README.md: b053ab2d8699aedc1b5fb3e18608503f0fc4e109
-README.ar.md: 4777b0721b03c8a4145eeccf9a1c6fe7fe4155a6
+README.ar.md: e54f9a4b4c5be73713e1dcffaedd1c0719a3208c

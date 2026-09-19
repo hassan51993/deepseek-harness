@@ -6,7 +6,7 @@
 
 ## رئيسي جاف تدريجي حزمة سرعة تصفح
 
-واحد جولة حسب نفس بند حلقة تدفق مرور ستة عدد حزمة:[`agent-loop`](../../packages/core/agent-loop) في driver إقرار قيادة واحد بند ترتيب طابور نص التوجيه، في[جلسة سجل](session.ar.md)(`ctx.sessions`) فوق فتح بدء جولة، عبر [system-prompt](system-prompt.ar.md)(`ctx.systemPrompt`) تجميع طلب بادئة و من سجل إرسال توليد تاريخ، مرور [LLM(كبير لغة نموذج) seam](llm-streaming.ar.md) تدفق صيغة نيل أخذ نموذج استجابة، مرور[أداة سجل التسجيل](tools.ar.md)(`ctx.tools`) توزيع أداة استدعاء، و يأخذ كل نموذج مرئي واقع إلحاق عودة سجل، توفير تحت واحد خطوة إرسال توليد. حلقة نقل تشغيل محادثة مفردات——`Message`،`ContentBlock`،`StreamChunk`، نموذج طلب——من [`packages/llm`](../../packages/llm/README.ar.md) إعلان، سجل في [llm-streaming.md](llm-streaming.ar.md).
+واحد جولة حسب نفس بند حلقة تدفق مرور ستة عدد حزمة:[`agent-loop`](../../packages/core/agent-loop) في driver إقرار قيادة واحد بند ترتيب طابور نص التوجيه، في[جلسة سجل](session.ar.md)(`ctx.sessions`) فوق فتح بدء جولة، عبر [system-prompt](system-prompt.ar.md)(`ctx.systemPrompt`) تجميع طلب بادئة و من سجل إرسال توليد تاريخ، مرور [LLM(كبير لغة نموذج) seam](llm-streaming.ar.md) تدفق صيغة نيل أخذ نموذج استجابة، مرور[أداة سجل التسجيل](tools.ar.md)(`ctx.tools`) توزيع استدعاء الأداة، و يأخذ كل نموذج مرئي واقع إلحاق عودة سجل، توفير تحت واحد خطوة إرسال توليد. حلقة نقل تشغيل محادثة مفردات——`Message`،`ContentBlock`،`StreamChunk`، نموذج طلب——من [`packages/llm`](../../packages/llm/README.ar.md) إعلان، سجل في [llm-streaming.md](llm-streaming.ar.md).
 
 | حزمة | مسؤول محتوى | صفحة |
 |---|---|---|
@@ -23,7 +23,7 @@
 
 ## إنشاء و كل حق
 
-مستهلك عبر `ctx.agents` إنشاء agent——`create()` في واحد استدعاء جهة توفير `SessionId` تحت بناء كل جديد جلسة و agent،`resume()` أولا تحميل حمل دائم جلسة——أو من عبر حلقة إعلان صيغة إعداد بند إنشاء. تحرير مسار صيغة إنشاء إرجاع ملكية كل من جملة مقبض:
+مستهلك عبر `ctx.agents` إنشاء agent——`create()` في واحد استدعاء جهة توفير `SessionId` تحت بناء كل جلسة جديدة و agent،`resume()` أولا تحميل حمل دائم جلسة——أو من عبر حلقة إعلان صيغة إعداد بند إنشاء. تحرير مسار صيغة إنشاء إرجاع ملكية كل من جملة مقبض:
 
 شفرة المصدر:[`packages/core/agent/src/index.ts`](../../packages/core/agent/src/index.ts)
 
@@ -417,7 +417,7 @@ declare module '@deepseek-ai/dsh-llm' {
 type Branded<B extends string> = string & { readonly [BRAND]: B }
 ```
 
-اثنان عدد نواة قلب ID هو `ToolCallId`(صلة ربط أداة استدعاء و ذلك نتيجة؛dsh-llm) و `SessionId`(نشط وثب agent و حمل دائم جلسة مشترك معرف؛dsh-session). قدرة حزمة أيضا سوف صنف لوحة تحويل كل منها id، مثال مثل [jobs.md](jobs.ar.md) في `JobId`.
+اثنان عدد نواة قلب ID هو `ToolCallId`(صلة ربط استدعاء الأداة و ذلك نتيجة؛dsh-llm) و `SessionId`(نشط وثب agent و حمل دائم جلسة مشترك معرف؛dsh-session). قدرة حزمة أيضا سوف صنف لوحة تحويل كل منها id، مثال مثل [jobs.md](jobs.ar.md) في `JobId`.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

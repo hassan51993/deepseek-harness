@@ -3,8 +3,8 @@
   bottom: calc(100% + 4px);
   /* The overlay anchor is exactly the composer card's width; both insets pin
      the menu edge to edge with border and padding kept inside. */
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   z-index: 100;
   box-sizing: border-box;
   /* Fits the built-in rows without scrolling and still clamps at runtime to
@@ -35,9 +35,9 @@
 .menu[data-overflow-below]::after {
   content: '';
   position: absolute;
-  right: 14px;
+  inset-inline-end: 14px;
   bottom: 4px;
-  left: 4px;
+  inset-inline-start: 4px;
   height: 16px;
   background: linear-gradient(to bottom, transparent, var(--dsw-specific-menu));
   pointer-events: none;
@@ -64,7 +64,7 @@
   font-size: 14px;
   line-height: 22px;
   color: var(--dsw-alias-label-primary);
-  text-align: left;
+  text-align: start;
 }
 
 /* One shared highlight: pointer motion parks it here through the hover event,
@@ -124,7 +124,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  text-align: right;
+  text-align: end;
   color: var(--dsw-alias-label-tertiary);
 }
 
@@ -135,7 +135,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 /* Hint naming the keyboard twin of the chevron — a caption line plus a Tab

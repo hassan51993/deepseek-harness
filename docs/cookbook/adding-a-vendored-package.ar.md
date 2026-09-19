@@ -31,7 +31,7 @@ vendor/<dir>/
 
 `package.json` ثابت صيغة: تعديل كتابة `name` scope([خريطة](../rescope.ar.md)) ، إبقاء فوق تنقل `exports`/`type`؛ إعلان بيانات وصفية إشارة نحو `lib/types`؛ إصدار `.d.ts` و `.d.ts.map` إعلان إخراج؛ في `peerDependencies` في صف خروج ذلك Cordis اعتماد (و فوق تنقل manifest(بيانات وصفية بيان) متسق).vendored حزمة هو يمكن إصدار release member، لذلك لا نيل ضبط `private: true`، كما يجب ضبط `publishConfig.access: public`؛`version` حقل تتبع مع harness إصدار تسلسل (رؤية [vendor/README.md](../../vendor/README.md)). نقل تمرير صفة فوق تنقل اعتماد ذاته أيضا يجب يتم vendor أو قد وجود في مستودع في——vendor واحد حزمة نحو نحو معنى طعم حال vendor ذلك كامل بند اعتماد شجرة (مثل `@cordisjs/plugin-http` سوف سحب دخول `@cordisjs/fetch-file`).
 
-vendored TypeScript شفرة المصدر في محلي متبادل مقابل استيراد/توجيه خروج في نسخ بعد استخدام صريح `.ts` بعد لاحقة. هذا هو مستودع محلي بناء و فوق تنقل فرق مختلف:`rewriteRelativeImportExtensions` إخراج `.js` وقت التشغيل استيراد، بينما إعلان ملف إبقاء صريح `.ts` بعد لاحقة، جعل NodeNext/Node16 TypeScript مستهلك قدرة كاف تحليل.
+vendored TypeScript شفرة المصدر في محلي متبادل مقابل استيراد/تصدير في نسخ بعد استخدام صريح `.ts` بعد لاحقة. هذا هو مستودع محلي بناء و فوق تنقل فرق مختلف:`rewriteRelativeImportExtensions` إخراج `.js` وقت التشغيل استيراد، بينما إعلان ملف إبقاء صريح `.ts` بعد لاحقة، جعل NodeNext/Node16 TypeScript مستهلك قدرة كاف تحليل.
 
 ## 2. في أصل إعداد في تسجيل
 

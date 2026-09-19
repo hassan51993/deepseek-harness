@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/browser-use-chrome-devtools-mcp/README.md
 README.md: 4a0538d6b6f70e825362c05786bf166c02cdf919
-README.ar.md: c83f1d62d18a5a4bf6a831934c11f15a51dd2443
+README.ar.md: fd1e6a7e17e286e2a46d98c9ab006094d7c36293

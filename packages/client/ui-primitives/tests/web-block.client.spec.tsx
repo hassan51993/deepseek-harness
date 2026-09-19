@@ -151,10 +151,10 @@ describe('WebBlock search card', () => {
 
   it('shows the truncated indicator only when the list was capped by the tool', () => {
     const on = render(<WebBlock kind="search" sources={sources(1)} truncated />)
-    expect(on.getByText('مصدر قائمة قد قطع قطع')).toBeTruthy()
+    expect(on.getByText('مصدر قائمة قد مقتطع')).toBeTruthy()
     cleanup()
     const off = render(<WebBlock kind="search" sources={sources(1)} truncated={false} />)
-    expect(off.queryByText('مصدر قائمة قد قطع قطع')).toBeNull()
+    expect(off.queryByText('مصدر قائمة قد مقتطع')).toBeNull()
   })
 
   it('renders every source in one <ol> with no expand control', () => {
@@ -199,10 +199,10 @@ describe('WebBlock fetch card', () => {
 
   it('shows the truncated indicator only when the content was cut', () => {
     const on = render(<WebBlock kind="fetch" url="https://example.com" statusCode={200} truncated />)
-    expect(on.getByText('محتوى قد قطع قطع')).toBeTruthy()
+    expect(on.getByText('محتوى قد مقتطع')).toBeTruthy()
     cleanup()
     const off = render(<WebBlock kind="fetch" url="https://example.com" statusCode={200} truncated={false} />)
-    expect(off.queryByText('محتوى قد قطع قطع')).toBeNull()
+    expect(off.queryByText('محتوى قد مقتطع')).toBeNull()
   })
 
   it('carries a non-200 status verbatim', () => {

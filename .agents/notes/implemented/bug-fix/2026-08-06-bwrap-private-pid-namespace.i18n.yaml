@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-06-bwrap-private-pid-namespace.md
 2026-08-06-bwrap-private-pid-namespace.md: a9b9f8551bd7f305b213f3bd45d4230d140681d2
-2026-08-06-bwrap-private-pid-namespace.ar.md: fb8c774e0682e7161d361d02a9769a272496bcc5
+2026-08-06-bwrap-private-pid-namespace.ar.md: def36a0ff97c8824213855c5a53033e6998f7d0b

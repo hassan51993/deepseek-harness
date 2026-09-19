@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-31-alpha-historical-unknown-event-refusal.md
 2026-08-31-alpha-historical-unknown-event-refusal.md: 118c523dbb55a2cc44fc37dcdda21e1cabe9b2e0
-2026-08-31-alpha-historical-unknown-event-refusal.ar.md: 7767b066d24946f48d633cabba35b40d52d6edc7
+2026-08-31-alpha-historical-unknown-event-refusal.ar.md: 4e6528046ae4c4d8cb0f0b11e6bbb7f02498251a

@@ -22,7 +22,7 @@
 .panel {
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   bottom: 0;
   z-index: 10;
   display: flex;
@@ -32,7 +32,7 @@
      raised surface. The edge is the weight of the kit's split dividers inside
      (ui-dockkit `.divider`), so the panel's outline and its inner rules match. */
   background: var(--dsw-alias-bg-base);
-  border-left: 0.5px solid var(--dsw-alias-border-l4);
+  border-inline-start: 0.5px solid var(--dsw-alias-border-l4);
   transform: translateX(100%);
   visibility: hidden;
   transition:
@@ -62,7 +62,7 @@
 /* Windows keeps caption controls above fullscreen file and terminal panels. */
 :global([data-windows-titlebar]) .panel[data-sidebar-right-panel='fullscreen'] {
   overflow: hidden;
-  left: var(--dsh-windows-sidebar-width);
+  inset-inline-start: var(--dsh-windows-sidebar-width);
   max-width: calc(100% - var(--dsh-windows-sidebar-width));
   top: var(--dsh-windows-titlebar-height);
   border-radius: var(--dsh-windows-content-radius) 0 0 0;

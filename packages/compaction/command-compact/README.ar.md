@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## عام وصف
 
-`dsh-command-compact` لـ حديث يوم UI إضافة `/compact` أمر: إدخال هو، محادثة حينئذ سوف حسب يحتاج ضغط (compaction)——أي جعل بعد لم إطلاق تلقائي ضغط قوة، مقارنة مبكر تاريخ أيضا سوف يتم استبدال لـ واحد بند ملخص. هذا أمر ملائم لأجل أي ضغط خلفية، كما لا إزالة استهلاك نموذج جولة؛ إتمام بعد أنت سوف يرى ضغط كثير قليل تاريخ بند و تقدير حساب عقدة حذف token عدد. عند agent(ذكي جسم) صحيح في تنفيذ جولة أو ضغط قد في وقت التشغيل، هو سوف إبلاغ إبلاغ أنت ضغط مؤقت غير ممكن استخدام. تشغيل خلال أنت إرسال نص التوجيه سوف إبقاء ترتيب طابور، و في ضغط انتهاء بعد عندئذ بدء.
+`dsh-command-compact` لـ حديث يوم UI إضافة `/compact` أمر: إدخال هو، محادثة حينئذ سوف حسب يحتاج ضغط (compaction)——أي جعل بعد لم إطلاق تلقائي ضغط قوة، مقارنة مبكر تاريخ أيضا سوف يتم استبدال لـ واحد بند ملخص. هذا أمر ملائم لأجل أي ضغط خلفية، كما لا إزالة استهلاك نموذج جولة؛ إتمام بعد أنت سوف يرى ضغط كثير قليل تاريخ بند و تقدير حساب عقدة حذف token عدد. عند agent(ذكي جسم) جارٍ تنفيذ جولة أو ضغط قد في وقت التشغيل، هو سوف إبلاغ إبلاغ أنت ضغط مؤقت غير ممكن استخدام. تشغيل خلال أنت إرسال نص التوجيه سوف إبقاء ترتيب طابور، و في ضغط انتهاء بعد عندئذ بدء.
 
 ## دليل
 
@@ -41,7 +41,7 @@ kind: "package-reference"
 
 | حال شكل | أنت يرى رسالة |
 |---|---|
-| ضغط قد في تشغيل، أو agent صحيح في جولة في | `Compaction is unavailable because this process has an active compaction, or the agent is not idle.` |
+| ضغط قد في تشغيل، أو agent جارٍ جولة في | `Compaction is unavailable because this process has an active compaction, or the agent is not idle.` |
 | ضغط مرور مسار في تاريخ حدوث تغير | `The history selected for compaction changed before it could be replaced. The attempt is recorded in the session log.` |
 | لا يمكن إنتاج لديه استخدام ملخص | `Compaction could not produce a useful summary. The attempt is recorded in the session log.` |
 | ضغط لم جاف صاف أرض إتمام | `Compaction did not finish cleanly; some session history may have changed. Inspect the current session state before retrying.` |

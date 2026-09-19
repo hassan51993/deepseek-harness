@@ -142,7 +142,7 @@ interface SessionEventSearchDocument extends SessionEventRecord {
 }
 ```
 
-`ctx.sessionQuery.filterSessions(filters)` سوف مقابل كامل منطق جلسة لغة مادة مكتبة تطبيق `SessionResultFilter`؛`ctx.sessionQuery.filterEvents(sessionId, filters)` حسب seq رفع ترتيب إرجاع مطابقة وثيقة. رسالة، أداة استدعاء و أداة نتيجة، انتظار إنجاز أمر بند، و فشل و حالة تفصيل حال سوف قبول دخول دلالة نص؛ دفع إدارة (reasoning) كتلة، يتم منع توقف نص التوجيه، بنية حدث و تدفق قسم قطعة فإن لن.
+`ctx.sessionQuery.filterSessions(filters)` سوف مقابل كامل منطق جلسة لغة مادة مكتبة تطبيق `SessionResultFilter`؛`ctx.sessionQuery.filterEvents(sessionId, filters)` حسب seq رفع ترتيب إرجاع مطابقة وثيقة. رسالة، استدعاء الأداة و أداة نتيجة، انتظار إنجاز أمر بند، و فشل و حالة تفصيل حال سوف قبول دخول دلالة نص؛ دفع إدارة (reasoning) كتلة، يتم منع توقف نص التوجيه، بنية حدث و تدفق قسم قطعة فإن لن.
 
 ## كل نص بحث نتيجة صفحة
 

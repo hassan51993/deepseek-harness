@@ -51,7 +51,7 @@ export function apply(ctx: Context) {
 
 ## مراقبة إضافة
 
-إنشاء `tool-logger.ts`. هذا هو واحد مستقل إضافة، عبر harness `tools/result` حدث مراقبة تطبيق في كل مرة أداة استدعاء:
+إنشاء `tool-logger.ts`. هذا هو واحد مستقل إضافة، عبر harness `tools/result` حدث مراقبة تطبيق في كل مرة استدعاء الأداة:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'

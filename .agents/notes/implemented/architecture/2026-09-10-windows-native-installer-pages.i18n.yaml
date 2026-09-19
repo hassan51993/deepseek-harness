@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-10-windows-native-installer-pages.md
 2026-09-10-windows-native-installer-pages.md: 4819e1330b18d49da9643e5d97eb448ea7cfe38d
-2026-09-10-windows-native-installer-pages.ar.md: 4a4f9503788c743bf3c35eb6694b79dd6ecfe43d
+2026-09-10-windows-native-installer-pages.ar.md: 481395a659e8b95e782cd4ca80bcdafd75a32b51

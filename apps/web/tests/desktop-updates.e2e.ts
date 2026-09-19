@@ -82,8 +82,8 @@ describe('web e2e: Desktop update workspace chrome', () => {
           expect(await opens()).toBe(1)
           await page.screenshot({ path: join(evidence, 'downloading.png') })
 
-          const collapse = locale === 'ar-SA' ? 'استلام بدء جانب حافة شريط' : 'Collapse sidebar'
-          const expand = locale === 'ar-SA' ? 'فتح جانب حافة شريط' : 'Open sidebar'
+          const collapse = locale === 'ar-SA' ? 'طي الشريط الجانبي' : 'Collapse sidebar'
+          const expand = locale === 'ar-SA' ? 'فتح الشريط الجانبي' : 'Open sidebar'
           await page.getByRole('button', { name: collapse, exact: true }).click()
           const toggle = page.getByRole('button', { name: expand, exact: true })
           const badge = toggle.getByRole('img', { name: '58%…', exact: true })

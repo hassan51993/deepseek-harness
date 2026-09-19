@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-11-incremental-terminal-retention.md
 2026-09-11-incremental-terminal-retention.md: afdd17aa39cafd7c3d24b53343af79d0a3a34544
-2026-09-11-incremental-terminal-retention.ar.md: 95887032b0e03214f34f0701e35a513308223ed1
+2026-09-11-incremental-terminal-retention.ar.md: ff3155cebb36312678c65bcd2994ba36f364313c

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-package-manifest-types.md
 2026-09-05-package-manifest-types.md: 85766e515066d428f0829b8ace173ebd186e94d0
-2026-09-05-package-manifest-types.ar.md: 6929ee7a3500dbbbd493bf24e1870ff94f85ae3c
+2026-09-05-package-manifest-types.ar.md: 413eae476c6e3c1f1f06e8f908f1171e6e6d15f5

@@ -8,8 +8,8 @@ const messages = {
     help: 'Scroll or pinch to zoom · Drag or use arrow keys to pan · Esc to close',
   },
   ar: {
-    open: 'كل شاشة فحص نظر رسم جدول', title: 'رسم جدول فحص نظر جهاز',
-    zoomIn: 'وضع كبير', zoomOut: 'تقليص صغير', fit: 'ملائم ينبغي نافذة', close: 'إغلاق', helpLabel: 'فحص نظر جهاز مساعدة مساعدة',
+    open: 'كل شاشة عرض رسم جدول', title: 'رسم جدول عرض جهاز',
+    zoomIn: 'وضع كبير', zoomOut: 'تقليص صغير', fit: 'ملائم ينبغي نافذة', close: 'إغلاق', helpLabel: 'عرض جهاز مساعدة',
     help: 'تدحرج جولة أو مزدوج إشارة تقليص وضع · سحب حركة أو جهة نحو مفتاح مستو نقل · Esc إغلاق',
   },
 } satisfies Record<string, Record<string, string>>

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/boot/plugin-manager/README.md
 README.md: 9460ef906621f704113a16be117be77c2c2e7988
-README.ar.md: 0ceb905fbd9bd2cbc1afc2de3ae8cc970cdef074
+README.ar.md: d662b796ae775334196a1fc02f78a83bdc3cb1db

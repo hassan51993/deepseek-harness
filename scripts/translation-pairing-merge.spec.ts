@@ -695,9 +695,9 @@ describe('translation pairing merge composition', { timeout: 90_000 }, () => {
     )
 
     expect(git(fixture, ['diff', '--name-only', '--diff-filter=U']).split('\n')).toEqual([
+      'docs/manual.ar.md',
       'docs/manual.i18n.yaml',
       'docs/manual.md',
-      'docs/manual.ar.md',
     ])
     expectMergedPair(fixture)
   })

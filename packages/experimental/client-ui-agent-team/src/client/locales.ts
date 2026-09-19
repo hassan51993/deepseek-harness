@@ -8,7 +8,7 @@ export const ar = {
   trigger: 'Agent Team',
   refresh: 'تحديث جديد Team',
   close: 'إغلاق',
-  loading: 'صحيح في تحميل Team…',
+  loading: 'جارٍ تحميل Team…',
   empty: 'أيضا لا يوجد مشترك مهمة',
   roster: 'عضو',
   tasks: 'مشترك مهمة',
@@ -39,7 +39,7 @@ export const ar = {
   'memberStatus.failed': 'فشل',
   'status.pending': 'انتظار معالجة',
   'status.in_progress': 'إجراء في',
-  'status.completed': 'قد إتمام',
+  'status.completed': 'اكتمل',
 } satisfies Record<string, string>
 
 /** Agent Teams locale key union. */

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-09-08-desktop-update-policy-and-installation.md
 2026-09-08-desktop-update-policy-and-installation.md: 1792e6b9ff089794ff511c33bfa9edbadf778ba0
-2026-09-08-desktop-update-policy-and-installation.ar.md: 0fa717cc008f155e2a387f24efaec3a6fc5c331c
+2026-09-08-desktop-update-policy-and-installation.ar.md: 48ffa86e732fab4f7c3830b352a81f6ee9b9ac19

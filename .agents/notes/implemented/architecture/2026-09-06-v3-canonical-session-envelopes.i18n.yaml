@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-06-v3-canonical-session-envelopes.md
 2026-09-06-v3-canonical-session-envelopes.md: 5c6bd9d3a376c976d43f79acd80142247459343d
-2026-09-06-v3-canonical-session-envelopes.ar.md: cf54ac0bf4075aa54681b7dc6ef5b5e000f5e19a
+2026-09-06-v3-canonical-session-envelopes.ar.md: 8d4ceeec8d5b880fdd36b2a5c4857f4dd9ee3990

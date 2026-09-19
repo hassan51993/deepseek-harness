@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-04-configuration-source-ownership.md
 2026-08-04-configuration-source-ownership.md: 81623bdd4412acf0ec9a861e36a9cc19d9d26615
-2026-08-04-configuration-source-ownership.ar.md: b30f81214ca2dafcad9c0a19ba43219a02d51c8e
+2026-08-04-configuration-source-ownership.ar.md: 802911e4cfdf99d7b9583e640361d5cac4ecbec2

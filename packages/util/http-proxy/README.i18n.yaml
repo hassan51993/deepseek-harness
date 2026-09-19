@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/util/http-proxy/README.md
 README.md: 02d75bb00b126708feeb2168ab5d68777c908d3e
-README.ar.md: 57bd535b459eaf22a7cb1e3d9d3ded3920869a89
+README.ar.md: d524ea39d500ed5ddf90a0e9cf97379119186e89

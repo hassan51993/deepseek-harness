@@ -146,7 +146,7 @@
   line-height: 22px;
   font-weight: 400;
   color: var(--dsw-alias-label-primary);
-  text-align: left;
+  text-align: start;
 }
 
 .navCell:hover {
@@ -195,7 +195,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 /* Close button (figma .Icon_container 501:29982): 28x28, r28, 14px glyph. */

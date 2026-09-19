@@ -652,7 +652,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'LanguageRegistration',
-    declaration: 'export interface LanguageRegistration {\n    id: LocaleId;\n    label: string;\n    fallback: LocaleId;\n}',
+    declaration: 'export interface LanguageRegistration {\n    id: LocaleId;\n    label: string;\n    fallback: LocaleId;\n    direction?: LocaleDirection;\n}',
   },
   {
     name: 'LiveCompositionNode',
@@ -672,7 +672,7 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   },
   {
     name: 'LocaleDefinition',
-    declaration: 'export interface LocaleDefinition {\n    readonly id: LocaleId;\n    readonly label: string;\n    readonly fallback?: LocaleId;\n}',
+    declaration: 'export interface LocaleDefinition {\n    readonly id: LocaleId;\n    readonly label: string;\n    readonly fallback?: LocaleId;\n    readonly direction?: LocaleDirection;\n}',
   },
   {
     name: 'LocaleDict',
@@ -681,6 +681,10 @@ export const TYPE_API: readonly TypeApiEntry[] = [
   {
     name: 'LocaleDictOf',
     declaration: 'export type LocaleDictOf<N extends keyof LocaleNamespaceMap & string> = Record<LocaleNamespaceMap[N] & string, string>;',
+  },
+  {
+    name: 'LocaleDirection',
+    declaration: 'export type LocaleDirection = \'ltr\' | \'rtl\';',
   },
   {
     name: 'LocaleId',

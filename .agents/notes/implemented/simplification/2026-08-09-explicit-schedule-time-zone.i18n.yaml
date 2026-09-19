@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-08-09-explicit-schedule-time-zone.md
 2026-08-09-explicit-schedule-time-zone.md: accd494435af34a4421855b0efd16694446a04fd
-2026-08-09-explicit-schedule-time-zone.ar.md: 2cbe87a8e5e0467912c9077b5e412c7a4f53ea83
+2026-08-09-explicit-schedule-time-zone.ar.md: 7616ca4b1ced6b24a928e1d4e77300e7feab10b9

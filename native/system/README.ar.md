@@ -18,11 +18,11 @@ kind: "package-library"
 
 ## Use
 
-`@deepseek-ai/node-addon-system/landlock-run` لـ Landlock توجيه خروج `launcherPath`،`probe` و `grantArgs`. ذلك يمكن تنفيذ ملف اسم، معامل و فشل دلالة من [CLI اتفاق](docs/cli-contract.md) تعريف.
+`@deepseek-ai/node-addon-system/landlock-run` لـ Landlock تصدير `launcherPath`،`probe` و `grantArgs`. ذلك يمكن تنفيذ ملف اسم، معامل و فشل دلالة من [CLI اتفاق](docs/cli-contract.md) تعريف.
 
 [flock سلوك اتفاق](docs/flock-contract.md) سوف وصف رمز، عملية و استشارة استفسار صيغة قفل دلالة مقابل إلى مستقل أصلي اختبار.
 
-`@deepseek-ai/node-addon-system/flock` توجيه خروج `tryLockExclusive(fd): Promise<void>`. في استدعاء إتمام قبل إبقاء وصف رمز فتح. نيل أخذ عملية استخدام غير منع سد وحيد احتلال flock؛ حدوث تنافس تنازع وقت، إرجاع Promise سوف بـ `EAGAIN` أو `EWOULDBLOCK` رفض، إغلاق هذا فتح ملف وصف الأكثر بعد واحد وصف رمز أي تحرير قفل. مشاركة رؤية[مدخل README](packages/entry/README.ar.md).
+`@deepseek-ai/node-addon-system/flock` تصدير `tryLockExclusive(fd): Promise<void>`. في استدعاء إتمام قبل إبقاء وصف رمز فتح. نيل أخذ عملية استخدام غير منع سد وحيد احتلال flock؛ حدوث تنافس تنازع وقت، إرجاع Promise سوف بـ `EAGAIN` أو `EWOULDBLOCK` رفض، إغلاق هذا فتح ملف وصف الأكثر بعد واحد وصف رمز أي تحرير قفل. مشاركة رؤية[مدخل README](packages/entry/README.ar.md).
 
 استيراد مهمة واحد مدخل كل لن تحميل addon.Landlock يمكن تنفيذ ملف ناقص وقت استكشاف قياس لـ غير ممكن استخدام؛flock ربط ناقص وقت رفض نيل أخذ. اثنان بند مسار كل لن إجراء تحرير ترجمة، أيضا لن ساكن صامت سماح لا تلقي دعم حمل سلوك.
 

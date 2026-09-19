@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-07-pi-ai-settings-catalog-recovery.md
 2026-09-07-pi-ai-settings-catalog-recovery.md: 6c4b67a66971845dd146374b5882fefc9911e4e0
-2026-09-07-pi-ai-settings-catalog-recovery.ar.md: b3e98f0871c73eda33dce009467579d1202668be
+2026-09-07-pi-ai-settings-catalog-recovery.ar.md: f9192657a5a1861964e98bad82012a6a64275844

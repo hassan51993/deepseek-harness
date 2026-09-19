@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write benchmarks/active-stream-reconnect/README.md
 README.md: f8fa8943dcf018d739c429c261b645bde7429379
-README.ar.md: b91bdc718fdb47155daf43d674be966a3aa0f457
+README.ar.md: c34502b98c5da2cba4b70f5205f649937557efbb

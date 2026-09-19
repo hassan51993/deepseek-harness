@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-15-bounded-office-conversion.md
 2026-09-15-bounded-office-conversion.md: eabaa6189f2b332a91f2bd2536d30b445c298f63
-2026-09-15-bounded-office-conversion.ar.md: d28cb5749b6bdb7da998b42ffabf41bf143b6580
+2026-09-15-bounded-office-conversion.ar.md: 35a9ee3f1d8066eec41521be34589eb36a33a1a9

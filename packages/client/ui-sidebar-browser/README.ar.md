@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## عام وصف
 
-في مستقل يمين جانب Sidebar tab في تصفح تصفح HTTP(S) صفحة، يشمل loopback خدمة. حالي Web و Desktop كل استخدام iframe و تطبيق صيانة history. هذه الحزمة لن نحو يتم وصول محتوى حقن Electron أو Node قدرة.
+في مستقل يمين جانب Sidebar tab في تصفح HTTP(S) صفحة، يشمل loopback خدمة. حالي Web و Desktop كل استخدام iframe و تطبيق صيانة history. هذه الحزمة لن نحو يتم وصول محتوى حقن Electron أو Node قدرة.
 
 ## دليل
 
@@ -88,7 +88,7 @@ Controller واجهة لا اعتماد iframe API. لم قدوم `ElectronWebVi
 
 #### KV Cache أثر
 
-بلا؛ تصفح تصفح محتوى لا دخول نموذج طلب.
+بلا؛ تصفح محتوى لا دخول نموذج طلب.
 
 ## حدود معروفة وعمل مؤجل
 

@@ -180,7 +180,7 @@ describe('WorkspaceBrowser', () => {
       fireEvent.click(screen.getByRole('menuitem', { name }))
     }
     expect(names()).toEqual(['a', 'b', 'c'])
-    pick('يد حركة ترتيب ترتيب')
+    pick('يد حركة ترتيب')
     expect(names()).toEqual(['a', 'b', 'c'])
     const source = screen.getByText('c').closest('[role="treeitem"]') as HTMLElement
     const target = screen.getByText('a').closest('[role="treeitem"]') as HTMLElement
@@ -198,7 +198,7 @@ describe('WorkspaceBrowser', () => {
     expect(restored.store.getSnapshot().orderBy).toBe('manual')
     pick('الأكثر قريب تحديث')
     expect(names()).toEqual(['b', 'a', 'c'])
-    pick('يد حركة ترتيب ترتيب')
+    pick('يد حركة ترتيب')
     expect(names()).toEqual(['b', 'a', 'c'])
   })
 
@@ -215,7 +215,7 @@ describe('WorkspaceBrowser', () => {
     })
     const rows = () => screen.getAllByRole('treeitem').filter(row => row.getAttribute('aria-expanded') === null)
     expect(rows().map(row => row.textContent)).toEqual([
-      expect.stringContaining('جديد جلسة'), expect.stringContaining('tie-a'), expect.stringContaining('tie-b'),
+      expect.stringContaining('جلسة جديدة'), expect.stringContaining('tie-a'), expect.stringContaining('tie-b'),
     ])
     expect(b.store.getSnapshot().sessionOrderByAccount).toEqual({})
     rerender(b, { useSessions: hook(sessionState([
@@ -314,7 +314,7 @@ describe('WorkspaceBrowser', () => {
       useSessions: hook(sessionState([old, blank], { main: blank.id })),
       useWorkspaces: hook({ ...groups(['old', 'blank']), state: 'loading' }),
     })
-    expect(names()).toEqual([expect.stringContaining('جديد جلسة'), expect.stringContaining('old')])
+    expect(names()).toEqual([expect.stringContaining('جلسة جديدة'), expect.stringContaining('old')])
     expect(b.store.getSnapshot().sessionOrderByAccount[account]).toEqual(['blank', 'old', 'absent'])
 
     rerender(b, {
@@ -402,10 +402,10 @@ describe('WorkspaceBrowser', () => {
     expect(screen.getByText('قسم مجموعة طريقة')).toBeTruthy() // the menu heading label
     expect(screen.getByRole('separator')).toBeTruthy()
     expect(screen.getAllByRole('menuitem').map(item => item.textContent)).toEqual([
-      'حسب مساحة العمل', 'حسب مساحة العمل شجرة', 'مفرد قائمة', 'يد حركة ترتيب ترتيب', 'الأكثر قريب تحديث',
+      'حسب مساحة العمل', 'حسب مساحة العمل شجرة', 'مفرد قائمة', 'يد حركة ترتيب', 'الأكثر قريب تحديث',
     ])
     expect(screen.getByRole('menuitem', { name: 'حسب مساحة العمل' }).querySelector('svg')).toBeTruthy()
-    expect(screen.getByRole('menuitem', { name: 'يد حركة ترتيب ترتيب' }).querySelector('svg')).toBeTruthy()
+    expect(screen.getByRole('menuitem', { name: 'يد حركة ترتيب' }).querySelector('svg')).toBeTruthy()
     fireEvent.click(screen.getByRole('menuitem', { name: 'مفرد قائمة' }))
     // Store-driven flip: title changes, rows flatten newest-first, headers gone.
     expect(b.store.getSnapshot().groupBy).toBe('flat')
@@ -416,7 +416,7 @@ describe('WorkspaceBrowser', () => {
 
     // Back to workspace grouping through the same menu.
     fireEvent.click(screen.getByRole('button', { name: 'عرض خيار' }))
-    expect(screen.getByRole('menuitem', { name: 'يد حركة ترتيب ترتيب' }).hasAttribute('disabled')).toBe(false)
+    expect(screen.getByRole('menuitem', { name: 'يد حركة ترتيب' }).hasAttribute('disabled')).toBe(false)
     fireEvent.click(screen.getByRole('menuitem', { name: 'حسب مساحة العمل' }))
     expect(b.store.getSnapshot().groupBy).toBe('workspace')
     expect(screen.getByText('مساحة العمل')).toBeTruthy()
@@ -502,7 +502,7 @@ describe('WorkspaceBrowser', () => {
     })
 
     fireEvent.click(screen.getByRole('button', { name: 'عرض خيار' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'يد حركة ترتيب ترتيب' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'يد حركة ترتيب' }))
     fireEvent.dragStart(one, { dataTransfer: dragData() })
     fireDrag(three, 'drop', 180)
     b.view.unmount()
@@ -546,7 +546,7 @@ describe('WorkspaceBrowser', () => {
     fireEvent.click(screen.getByRole('button', { name: 'توسيع ذلك بقية 2 عدد جلسة' }))
     expect(screen.getByText('session-6')).toBeTruthy()
     expect(screen.getByText('session-7')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'استلام بدء' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'طي' })).toBeTruthy()
 
     fireEvent.click(screen.getByText('alpha'))
     expect(b.store.getSnapshot().groupExpansion).toEqual({ alpha: false })
@@ -563,14 +563,14 @@ describe('WorkspaceBrowser', () => {
       useSessions: hook(sessionState([blank, ...ordinary], { main: blank.id })),
       useWorkspaces: hook(workspaceState([workspace('alpha', [blank.id, ...ordinary.map(item => item.id)])])),
     })
-    expect(screen.getByText('جديد جلسة')).toBeTruthy()
+    expect(screen.getByText('جلسة جديدة')).toBeTruthy()
     for (const item of ordinary.slice(0, 5)) expect(screen.getByText(item.displayTitle)).toBeTruthy()
     expect(screen.queryByText('session-6')).toBeNull()
     expect(screen.getByRole('button', { name: 'توسيع ذلك بقية 1 عدد جلسة' })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'توسيع ذلك بقية 1 عدد جلسة' }))
     expect(screen.getByText('session-6')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: 'استلام بدء' }))
+    fireEvent.click(screen.getByRole('button', { name: 'طي' }))
     expect(screen.queryByText('session-6')).toBeNull()
 
     rerender(b, {
@@ -593,7 +593,7 @@ describe('WorkspaceBrowser', () => {
         .toEqual(['blank', 'session-1', 'session-2', 'session-3', 'session-4', 'session-5', 'session-6'])
     })
 
-    const blankRow = screen.getByText('جديد جلسة').closest('[role="treeitem"]') as HTMLElement
+    const blankRow = screen.getByText('جلسة جديدة').closest('[role="treeitem"]') as HTMLElement
     expect(blankRow.draggable).toBe(false)
     fireEvent.dragStart(blankRow, { dataTransfer: dragData() })
     expect(b.store.getSnapshot().sessionOrderByAccount.alpha)
@@ -640,7 +640,7 @@ describe('WorkspaceBrowser', () => {
     expect(b.store.getSnapshot().sessionOrderByAccount.alpha).toEqual(['two', 'one'])
 
     fireEvent.click(screen.getByRole('button', { name: 'عرض خيار' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'يد حركة ترتيب ترتيب' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'يد حركة ترتيب' }))
     expect(screen.getAllByRole('treeitem').slice(1)[0]?.textContent).toContain('two')
 
     const updated = sessionState([summary('one', 4), summary('two', 2)])
@@ -723,7 +723,7 @@ describe('WorkspaceBrowser', () => {
     })
     fireEvent.click(screen.getByText('alpha'))
     expect(screen.getByText('child-s')).toBeTruthy()
-    expect(screen.queryByRole('button', { name: /توسيع|استلام بدء/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /توسيع|طي/ })).toBeNull()
     expect(screen.getByText('child-s').closest('[role="treeitem"]')?.getAttribute('draggable')).toBe('true')
   })
 
@@ -786,21 +786,21 @@ describe('WorkspaceBrowser', () => {
         workspace('alpha', ['alpha-blank']), workspace('beta', ['beta-blank']),
       ])),
     })
-    expect(screen.getByText('جديد جلسة')).toBeTruthy()
+    expect(screen.getByText('جلسة جديدة')).toBeTruthy()
     expect(screen.queryByText('alpha-blank')).toBeNull()
     expect(screen.queryByText('beta-blank')).toBeNull()
 
     rerender(b, { useSessions: hook({ ...sessions, main: staleBlank.id }) })
-    expect(screen.getAllByText('جديد جلسة')).toHaveLength(1)
+    expect(screen.getAllByText('جلسة جديدة')).toHaveLength(1)
     b.store.actions.setGroupBy('flat')
     rerender(b, {})
-    expect(screen.getAllByText('جديد جلسة')).toHaveLength(1)
+    expect(screen.getAllByText('جلسة جديدة')).toHaveLength(1)
     // Search excludes blank rows entirely — neither the canonical stored
     // title nor the localized display label participates in matching.
     fireEvent.change(screen.getByPlaceholderText('بحث جلسة…'), { target: { value: 'new session' } })
-    expect(screen.queryByText('جديد جلسة')).toBeNull()
-    fireEvent.change(screen.getByPlaceholderText('بحث جلسة…'), { target: { value: 'جديد جلسة' } })
-    expect(screen.queryByText('جديد جلسة')).toBeNull()
+    expect(screen.queryByText('جلسة جديدة')).toBeNull()
+    fireEvent.change(screen.getByPlaceholderText('بحث جلسة…'), { target: { value: 'جلسة جديدة' } })
+    expect(screen.queryByText('جلسة جديدة')).toBeNull()
   })
 
   it.each(['workspace', 'flat', 'ungrouped'] as const)('keeps a new blank first across %s mode switches and enables drag after the first prompt', (mode) => {
@@ -820,7 +820,7 @@ describe('WorkspaceBrowser', () => {
       fireEvent.click(screen.getByRole('button', { name: 'عرض خيار' }))
       fireEvent.click(screen.getByRole('menuitem', { name }))
     }
-    pick('يد حركة ترتيب ترتيب')
+    pick('يد حركة ترتيب')
     pick('الأكثر قريب تحديث')
     rerender(b, {
       useSessions: hook(sessionState([
@@ -828,12 +828,12 @@ describe('WorkspaceBrowser', () => {
       ], { main: sid('blank') })),
       useWorkspaces: groups(['old', 'mid', 'blank']),
     })
-    expect(names()).toEqual(['جديد جلسة', 'mid', 'old'])
+    expect(names()).toEqual(['جلسة جديدة', 'mid', 'old'])
     expect(b.store.getSnapshot().orderBy).toBe('updated')
-    pick('يد حركة ترتيب ترتيب')
-    expect(names()).toEqual(['جديد جلسة', 'mid', 'old'])
+    pick('يد حركة ترتيب')
+    expect(names()).toEqual(['جلسة جديدة', 'mid', 'old'])
     pick('الأكثر قريب تحديث')
-    const blank = screen.getByText('جديد جلسة').closest('[role="treeitem"]') as HTMLElement
+    const blank = screen.getByText('جلسة جديدة').closest('[role="treeitem"]') as HTMLElement
     expect(blank.draggable).toBe(false)
     const old = screen.getByText('old').closest('[role="treeitem"]') as HTMLElement
     old.getBoundingClientRect = () => ({
@@ -841,10 +841,10 @@ describe('WorkspaceBrowser', () => {
     })
     fireEvent.dragStart(blank, { dataTransfer: dragData() })
     fireDrag(old, 'drop', 180)
-    expect(names()).toEqual(['جديد جلسة', 'mid', 'old'])
+    expect(names()).toEqual(['جلسة جديدة', 'mid', 'old'])
     b.view.unmount()
     const restored = mount({ useSessions: b.props.useSessions, useWorkspaces: b.props.useWorkspaces })
-    expect(names()).toEqual(['جديد جلسة', 'mid', 'old'])
+    expect(names()).toEqual(['جلسة جديدة', 'mid', 'old'])
     rerender(restored, { useSessions: hook(sessionState([
       summary('old', 100), summary('mid', 200), summary('blank', 300),
     ], { main: sid('blank') })) })
@@ -862,11 +862,11 @@ describe('WorkspaceBrowser', () => {
       ], { main: sid('new-blank') })),
       useWorkspaces: groups(['old', 'mid', 'blank', 'new-blank']),
     })
-    expect(names()).toEqual(['جديد جلسة', 'mid', 'old', 'blank'])
+    expect(names()).toEqual(['جلسة جديدة', 'mid', 'old', 'blank'])
     pick('الأكثر قريب تحديث')
-    expect(names()).toEqual(['جديد جلسة', 'blank', 'mid', 'old'])
-    pick('يد حركة ترتيب ترتيب')
-    expect(names()).toEqual(['جديد جلسة', 'blank', 'mid', 'old'])
+    expect(names()).toEqual(['جلسة جديدة', 'blank', 'mid', 'old'])
+    pick('يد حركة ترتيب')
+    expect(names()).toEqual(['جلسة جديدة', 'blank', 'mid', 'old'])
   })
 
   it('shows local metadata matches immediately, then clears back to the grouped tree', async () => {
@@ -887,7 +887,7 @@ describe('WorkspaceBrowser', () => {
       expect(screen.getByText('Needle row')).toBeTruthy()
       expect(screen.queryByText('Other row')).toBeNull()
       const status = screen.getByRole('status')
-      expect(status.textContent).toBe('صحيح في بحث جلسة تاريخ…')
+      expect(status.textContent).toBe('جارٍ بحث جلسة تاريخ…')
       expect(resultTree.contains(status)).toBe(false)
 
       fireEvent.change(input, { target: { value: 'zzz' } })
@@ -955,7 +955,7 @@ describe('WorkspaceBrowser', () => {
       })
       const input = screen.getByPlaceholderText<HTMLInputElement>('بحث جلسة…')
       fireEvent.change(input, { target: { value: 'waterfall token' } })
-      expect(screen.getByText('صحيح في بحث جلسة تاريخ…')).toBeTruthy()
+      expect(screen.getByText('جارٍ بحث جلسة تاريخ…')).toBeTruthy()
       expect(screen.queryByText('Research notes')).toBeNull()
 
       await act(async () => { await vi.advanceTimersByTimeAsync(250) })
@@ -973,7 +973,7 @@ describe('WorkspaceBrowser', () => {
       expect(b.store.getSnapshot().groupExpansion).toEqual({ root: true, research: true })
       const targetRow = screen.getByText('Research notes').closest('[role="treeitem"]')
       expect(targetRow).toBeTruthy()
-      expect(screen.getByRole('button', { name: 'استلام بدء' })).toBeTruthy()
+      expect(screen.getByRole('button', { name: 'طي' })).toBeTruthy()
       expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest' })
       expect(scrollIntoView.mock.instances.at(-1)).toBe(targetRow)
     } finally {
@@ -1010,7 +1010,7 @@ describe('WorkspaceBrowser', () => {
     })
     const targetRow = screen.getByText('Needle session').closest('[role="treeitem"]')
     expect(scrollIntoView.mock.instances.at(-1)).toBe(targetRow)
-    expect(screen.getByRole('button', { name: 'استلام بدء' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'طي' })).toBeTruthy()
   })
 
   it('waits for the reconnect baseline before resolving reveal membership', async () => {
@@ -1242,7 +1242,7 @@ describe('WorkspaceBrowser', () => {
       rerender(b, {})
       expect(screen.getByText('مؤقت بلا جلسة')).toBeTruthy()
       fireEvent.change(screen.getByPlaceholderText('بحث جلسة…'), { target: { value: 'x' } })
-      expect(screen.getByText('صحيح في بحث جلسة تاريخ…')).toBeTruthy()
+      expect(screen.getByText('جارٍ بحث جلسة تاريخ…')).toBeTruthy()
       await act(async () => { await vi.advanceTimersByTimeAsync(250) })
       expect(screen.getByText('بلا مطابقة جلسة')).toBeTruthy()
     } finally {
@@ -1628,7 +1628,7 @@ describe('WorkspaceBrowser', () => {
     expect(deleteWorkspace).toHaveBeenCalledWith(wid('alpha'))
     expect(confirm.disabled).toBe(true)
     expect(screen.getByRole<HTMLButtonElement>('button', { name: 'إلغاء' }).disabled).toBe(true)
-    expect(screen.getByRole('status').textContent).toBe('صحيح في حذف مساحة العمل…')
+    expect(screen.getByRole('status').textContent).toBe('جارٍ حذف مساحة العمل…')
     fireEvent.keyDown(document, { key: 'Escape' })
     fireEvent.click(screen.getByRole('button', { name: 'إغلاق' }))
     expect(screen.getByRole('dialog', { name: 'حذف مساحة العمل' })).toBeTruthy()

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-06-environment-prompt-suffix.md
 2026-09-06-environment-prompt-suffix.md: 1ef775a835a2637c50d791da51972097570ef95a
-2026-09-06-environment-prompt-suffix.ar.md: eb2926a88ab17e154789814d87845721ad72db92
+2026-09-06-environment-prompt-suffix.ar.md: 0897f71ae3f1d546847593ab222b806c078304f7

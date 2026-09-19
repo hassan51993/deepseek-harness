@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-10-desktop-web-wrapper.md
 2026-09-10-desktop-web-wrapper.md: 9853a65d1b74ee7bf8da4ddb495f021168b31a2a
-2026-09-10-desktop-web-wrapper.ar.md: 09916340890c0174c54caee36d644965bbce8fc8
+2026-09-10-desktop-web-wrapper.ar.md: 252671db7c3818e85d270f89c4c2f05ef3887134

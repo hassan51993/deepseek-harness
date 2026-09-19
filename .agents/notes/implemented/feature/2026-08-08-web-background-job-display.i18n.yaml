@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-08-web-background-job-display.md
 2026-08-08-web-background-job-display.md: 397513d13eb3396456dc2e710ae50a703d0c2dfd
-2026-08-08-web-background-job-display.ar.md: a01937ee3c2fd83546e6839d6db3ed953a2b18e5
+2026-08-08-web-background-job-display.ar.md: 9d9d0e47f24069f153f2c31c6b1b815da33e96ec

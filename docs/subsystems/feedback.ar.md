@@ -1,8 +1,8 @@
-# رسالة عكس تغذية
+# رسالة ملاحظات
 
 [English](feedback.md) | العربية
 
-[`@deepseek-ai/dsh-message-feedback`](../../packages/feedback/message-feedback) يملك إبرة مقابل مفرد بند assistant رسالة يمكن تحرير عكس تغذية. مرجعي Session سجل حفظ `feedback/message-put` و `feedback/message-delete`؛ غير ممكن تغيير Session درجة ملاحظة ما زال استخدام `feedback/record`، من [`@deepseek-ai/dsh-command-feedback`](../../packages/feedback/command-feedback) وصل نفس اثنان نوع عكس تغذية مشترك استخدام `FeedbackCategory` تصنيف جدول واحد بدء يملك. ثلاثة من كل هو فقط كتابة سجل حدث، أبدا دخول نموذج سياق.
+[`@deepseek-ai/dsh-message-feedback`](../../packages/feedback/message-feedback) يملك إبرة مقابل مفرد بند assistant رسالة يمكن تحرير ملاحظات. مرجعي Session سجل حفظ `feedback/message-put` و `feedback/message-delete`؛ غير ممكن تغيير Session درجة ملاحظة ما زال استخدام `feedback/record`، من [`@deepseek-ai/dsh-command-feedback`](../../packages/feedback/command-feedback) وصل نفس اثنان نوع ملاحظات مشترك استخدام `FeedbackCategory` تصنيف جدول واحد بدء يملك. ثلاثة من كل هو فقط كتابة سجل حدث، أبدا دخول نموذج سياق.
 
 مصدر:[`packages/feedback/message-feedback/src/types.ts`](../../packages/feedback/message-feedback/src/types.ts)
 
@@ -207,7 +207,7 @@ type MessageFeedbackDeleteResult =
   | MessageFeedbackRejected<MessageFeedbackSessionNotFound | MessageFeedbackVersionConflict>
 ```
 
-## Session عكس تغذية نوع
+## Session ملاحظات نوع
 
 مصدر:[`packages/feedback/command-feedback/src/types.ts`](../../packages/feedback/command-feedback/src/types.ts)
 
@@ -274,23 +274,23 @@ type SessionFeedbackRecordResult =
 
 ## بيانات و تزامن
 
-حالي بند من payload في `sessionId` و الذي تابع Session مطابقة مرجعي عكس تغذية حدث عودة نحو نيل إلى. كل بند يحمل جيد تقييم أو فرق تقييم، اختياري ملاحظة، اختياري تصنيف،Host قسم إعداد `createdAt`/`updatedAt` ختم الوقت و ذاتي ذات opaque version.version فقط قدرة لأجل متبادل انتظار مقارنة مقارنة، كما فقط و هدف رسالة مقارنة مقارنة؛ استدعاء جهة لا يستطيع ترتيب ترتيب أو ذاتي سطر دمج صار هو.
+حالي بند من payload في `sessionId` و الذي تابع Session مطابقة مرجعي ملاحظات حدث عودة نحو نيل إلى. كل بند يحمل جيد تقييم أو فرق تقييم، اختياري ملاحظة، اختياري تصنيف،Host قسم إعداد `createdAt`/`updatedAt` ختم الوقت و ذاتي ذات opaque version.version فقط قدرة لأجل متبادل انتظار مقارنة مقارنة، كما فقط و هدف رسالة مقارنة مقارنة؛ استدعاء جهة لا يستطيع ترتيب أو ذاتي سطر دمج صار هو.
 
 `put` اعتماد صارم إطار مرح مراقبة تزامن: قد لديه بند كل مرة طلب كل يجب مطابقة حالي `ifVersion`، أي جعل طلب لن تغيير هدف قيمة (تكرار قد تخزين تقييم قسم، ملاحظة و تصنيف put). اندفاع مفاجئ سوف إرجاع مرجعي حالي بند (لا وجود وقت لـ `null`) ، لذلك استدعاء جهة بلا حاجة مقدار خارج قراءة، يكفي تنسيق ضبط فقد فقد استجابة أو تزامن تحرير. حذف قد لا وجود بند نفس مثال نجاح. حسب Session تخطيط قسم طابور صف سلسلة سطر تنفيذ قراءة و تغيير؛cold تغيير في قراءة، مقارنة مقارنة، إلحاق و flush خلال يحتفظ حفظ دائم كتابة جملة مقبض. مطابقة إصدار بلا تغيير عملية لا إلحاق حدث.
 
 ## هدف و دورة الحياة مرجعي
 
-live يحتفظ من داخل تخزين سجل مباشر توفير هدف Session مراقبة قياس؛cold قراءة استخدام `SessionPersistence.open(id, 'read')` جملة مقبض، تغيير فإن استخدام كتابة جملة مقبض. اثنان بند مسار كل لا بنية صنع Session أو Agent. أولا من `stat(id)` مسبق فحص واضح لا وجود؛`stat` قد تأكيد وجود Session إذا قراءة فشل، سوف حسب أساس أساس ضبط تطبيق لذا عائق أصل مثال نقل بث.`put` فقط قبول أداة لديه إشارة تحديد `MessageId` غير فارغ،append-origin `assistant/message`؛replacement-origin، فقط تحمل تحميل usage فارغ سجل و غير assistant سجل كل لا هو عكس تغذية هدف.
+live يحتفظ من داخل تخزين سجل مباشر توفير هدف Session مراقبة قياس؛cold قراءة استخدام `SessionPersistence.open(id, 'read')` جملة مقبض، تغيير فإن استخدام كتابة جملة مقبض. اثنان بند مسار كل لا بنية صنع Session أو Agent. أولا من `stat(id)` مسبق فحص واضح لا وجود؛`stat` قد تأكيد وجود Session إذا قراءة فشل، سوف حسب أساس أساس ضبط تطبيق لذا عائق أصل مثال نقل بث.`put` فقط قبول أداة لديه إشارة تحديد `MessageId` غير فارغ،append-origin `assistant/message`؛replacement-origin، فقط تحمل تحميل usage فارغ سجل و غير assistant سجل كل لا هو ملاحظات هدف.
 
-fork نوع فرعي يمكن يتضمن أب Session عكس تغذية حدث، لكن payload إبقاء أب درجة `sessionId`، لذلك لن يصبح فرعي Session حالي عكس تغذية. حذف بند سوف إلحاق حذف علامة؛ مبكر أولا تقييم قسم و ملاحظة ما زال إبقاء في سجل في.
+fork نوع فرعي يمكن يتضمن أب Session ملاحظات حدث، لكن payload إبقاء أب درجة `sessionId`، لذلك لن يصبح فرعي Session حالي ملاحظات. حذف بند سوف إلحاق حذف علامة؛ مبكر أولا تقييم قسم و ملاحظة ما زال إبقاء في سجل في.
 
 ## حفظ دائم و Remote اتفاق
 
-نجاح رسالة عكس تغذية تغيير سوف انتظار مرجعي حفظ دائم إتمام:live عملية عبر الذي تابع Session إلحاق، و اشتراط لديه `ctx.sessions.flush` مستمع مشاركة و؛cold عملية عبر كتابة جملة مقبض إلحاق و flush. حفظ دائم لذا عائق سوف أصل مثال نقل بث، لن تقرير إبلاغ نجاح.`maxNoteBytes` لـ لا بد ملء بند، حسب UTF-8 بايت حد ملاحظة نص؛Web Host تركيب سوف ذلك ضبط لـ `8192`. هذا حزمة عبر `TypertRemoteService` و `@Remote` إصدار Host `messageFeedback.list`،`messageFeedback.put` و `messageFeedback.delete` واحد عنصر Remote اتفاق؛`command-feedback` بـ نفس مثال طريقة إصدار موجه إلى live Session Session درجة ملاحظة `sessionFeedback.record`. تحت جهة توليد Cordis API هو طريقة درجة مرجعي.
+نجاح رسالة ملاحظات تغيير سوف انتظار مرجعي حفظ دائم إتمام:live عملية عبر الذي تابع Session إلحاق، و اشتراط لديه `ctx.sessions.flush` مستمع مشاركة و؛cold عملية عبر كتابة جملة مقبض إلحاق و flush. حفظ دائم لذا عائق سوف أصل مثال نقل بث، لن تقرير إبلاغ نجاح.`maxNoteBytes` لـ لا بد ملء بند، حسب UTF-8 بايت حد ملاحظة نص؛Web Host تركيب سوف ذلك ضبط لـ `8192`. هذا حزمة عبر `TypertRemoteService` و `@Remote` إصدار Host `messageFeedback.list`،`messageFeedback.put` و `messageFeedback.delete` واحد عنصر Remote اتفاق؛`command-feedback` بـ نفس مثال طريقة إصدار موجه إلى live Session Session درجة ملاحظة `sessionFeedback.record`. تحت جهة توليد Cordis API هو طريقة درجة مرجعي.
 
 إضافة تحرير سوف إغلاق عملية وصل قبول، و ترتيب فارغ قد دخول كل Session طابور صف عمل.
 
-افتراضي حال حال تحت،[`session-log-deepseek`](../../packages/session/session-log-deepseek/README.ar.md) سوف في لاحق رمز دمج شرط DeepSeek طلب في، يأخذ عكس تغذية بصفة عادي `dsh_session_log` بعد لاحقة واحد جزء نقل إرسال؛ تركيب متاح `enabled: false` منع استخدام هو. سجل عكس تغذية لن إطلاق LLM طلب، أيضا لن مفرد وحيد فوق نقل `dsh_feedback`. مقابل في غير DeepSeek توجيه،[OTel خلفية](../../packages/session/session-telemetry-otel/README.ar.md) يمكن سوف مرجعي سجل بادئة تحرير حتى قد سجل عكس تغذية. أمر تأكيد نص تأكيد سجل و معرف Session و مجهول اسم مستخدم، لا تقرير إبلاغ بعيد قياس سياسة أو إلقاء تمرير نتيجة.
+افتراضي حال حال تحت،[`session-log-deepseek`](../../packages/session/session-log-deepseek/README.ar.md) سوف في لاحق رمز دمج شرط DeepSeek طلب في، يأخذ ملاحظات بصفة عادي `dsh_session_log` بعد لاحقة واحد جزء نقل إرسال؛ تركيب متاح `enabled: false` منع استخدام هو. سجل ملاحظات لن إطلاق LLM طلب، أيضا لن مفرد وحيد فوق نقل `dsh_feedback`. مقابل في غير DeepSeek توجيه،[OTel خلفية](../../packages/session/session-telemetry-otel/README.ar.md) يمكن سوف مرجعي سجل بادئة تحرير حتى قد سجل ملاحظات. أمر تأكيد نص تأكيد سجل و معرف Session و مجهول اسم مستخدم، لا تقرير إبلاغ بعيد قياس سياسة أو إلقاء تمرير نتيجة.
 
 ## Web واجهة
 
@@ -300,7 +300,7 @@ fork نوع فرعي يمكن يتضمن أب Session عكس تغذية حدث،
 
 كل Session واحد `MessageFeedbackController`، دعم دعم هذا Session داخل كل رسالة تحكم عنصر: مرة `list` قراءة أي ملء ملء كامل مقطع محادثة، كما تأخير متأخر إلى أول مرة hover أو focus عندئذ إرسال بدء، بينما غير تركيب وقت إطلاق. كل مرة تغيير يأخذ هذا controller الأكثر بعد مراقبة إلى إصدار بصفة `ifVersion` إرسال؛`version-conflict` استجابة يحمل مرجعي بند،controller حسب هذا مقابل حساب بينما لا إعادة سحب أخذ. تغيير حسب Session سلسلة سطر، ترتيب طابور عملية و قد إيداع إصدار مقارنة مقارنة. حقن `retract` عملية سوف في هذا طابور صف داخل إعادة فحص قد إيداع تقييم قسم، و في تزامن تغيير بعد تغيير لـ بلا عملية، لذلك قديم قديم UI لا يمكن التفاف مرور نابض نافذة سجل عار تقييم قسم.`connection/reset` فقط تحديث جديد قد قراءة مرور Session.
 
-مهمة واحد لم سجل تقييم قسم كل سوف فتح هذا Session عكس تغذية نابض نافذة، أي `conversation.input.overlay` `feedback-dialog` بند: مشترك استخدام Modal بطاقة، داخل وجه هو سبعة عدد تصنيف وسم و واحد تفصيل حال إطار. إيداع سوف put الذي اختيار تقييم قسم، حمل فوق الذي اختيار تصنيف و ذهاب حذف أول ذيل فارغ أبيض وصف، اثنان من أيضا يمكن كل لا حمل؛ نجاح سوف إغلاق نابض نافذة و عرض تأكيد toast، فشل فإن إبقاء نابض نافذة و مسودة مسودة و عرض تحذير إبلاغ toast. لا حمل نص `/feedback`(`ui-commands` بـ `action` توجيه واحد تركيب زينة) لـ Session فتح نفس عدد نابض نافذة، مع بعد عبر `sessionFeedback.record` سجل؛`/feedback <text>` ما زال مشي مضيف أمر مسار. مجددا مرة نقر قد سجل تقييم قسم سوف مباشر سحب عودة، لا فتح نابض نافذة.
+مهمة واحد لم سجل تقييم قسم كل سوف فتح هذا Session ملاحظات نابض نافذة، أي `conversation.input.overlay` `feedback-dialog` بند: مشترك استخدام Modal بطاقة، داخل وجه هو سبعة عدد تصنيف وسم و واحد تفصيل حال إطار. إيداع سوف put الذي اختيار تقييم قسم، حمل فوق الذي اختيار تصنيف و ذهاب حذف أول ذيل فارغ أبيض وصف، اثنان من أيضا يمكن كل لا حمل؛ نجاح سوف إغلاق نابض نافذة و عرض تأكيد toast، فشل فإن إبقاء نابض نافذة و مسودة مسودة و عرض تحذير إبلاغ toast. لا حمل نص `/feedback`(`ui-commands` بـ `action` توجيه واحد تركيب زينة) لـ Session فتح نفس عدد نابض نافذة، مع بعد عبر `sessionFeedback.record` سجل؛`/feedback <text>` ما زال مشي مضيف أمر مسار. مجددا مرة نقر قد سجل تقييم قسم سوف مباشر سحب عودة، لا فتح نابض نافذة.
 
 ## حد و حد
 
@@ -309,8 +309,8 @@ fork نوع فرعي يمكن يتضمن أب Session عكس تغذية حدث،
 - طلب إذا تماما جيد سقوط في live detach بعد،persistence catalog شيء تحويل header قبل أقصى قصير نافذة، ممكن استلام إلى `session-not-found`؛ استدعاء جهة ينبغي في retirement materialization بعد إعادة محاولة.
 - cold طلب قراءة كامل سجل؛ خدمة لا يوجد بند عدد أو تجمع دمج بايت حد أعلى.`maxNoteBytes` فقط حد كل بند ملاحظة.
 - Host اتفاق لا سجل قد إقرار إثبات actor أو مراجعة حساب هوية، لذلك زائف ضبط استدعاء جهة حد يمكن معلومة.
-- Web تحكم عنصر فقط ظهور في محادثة عرض.trajectory و waterfall عرض لا تصيير عكس تغذية بند، كل إدارة هو جمع مساعدة يد عقدة يحمل نفسه `messageId`.
-- Web تحكم جهاز لا إزالة استهلاك عكس تغذية سجل حدث، لذلك آخر عدد وسم صفحة تقييم قسم يلزم انتظار إلى إعادة وصل أو تحت مرة اندفاع مفاجئ استجابة عندئذ مرئي، لن قيام أي ظهور.
+- Web تحكم عنصر فقط ظهور في محادثة عرض.trajectory و waterfall عرض لا تصيير ملاحظات بند، كل إدارة هو جمع مساعدة يد عقدة يحمل نفسه `messageId`.
+- Web تحكم جهاز لا إزالة استهلاك ملاحظات سجل حدث، لذلك آخر عدد وسم صفحة تقييم قسم يلزم انتظار إلى إعادة وصل أو تحت مرة اندفاع مفاجئ استجابة عندئذ مرئي، لن قيام أي ظهور.
 - نابض نافذة لا مسبق أولا تحقق `maxNoteBytes`؛ إبرة مقابل رسالة تجاوز طويل وصف في إيداع وقت بـ `note-too-large` فشل، بينما لا هو في إدخال مرور مسار في.Session درجة ملاحظة لا يوجد كبير صغير حد أعلى،`/feedback` أمر من قدوم أيضا لا يوجد.
 - `sessionFeedback.record` فقط خدمة live Session، لا فإن عودة جواب `session-not-found`؛ نابض نافذة فتح خلال Session تراجع دور وقت، نابض نافذة سوف تقرير إبلاغ هذا فشل.
 

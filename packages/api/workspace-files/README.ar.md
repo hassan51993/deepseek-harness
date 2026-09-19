@@ -32,7 +32,7 @@ kind: "package-reference"
 | `stat(path)` | `WorkspaceFileStat { absolutePath, version, bytes? }` | واحد عادي ملف هوية، إصدار و كبير صغير، لا يحتوي محتوى |
 | `read(path, { offset?, limit? })` | `WorkspaceFileText` = stat + `{ offset, text, lines, eof }` | UTF-8 نص ملف واحد سطر نافذة؛`lines` حساب سطر عدد، جعل مفرد عدد فارغ سطر و تجاوز مرور ملف نهاية ذيل صفحة يمكن منطقة قسم |
 | `readBytes(path, { offset?, length? })` | `WorkspaceFileBytes` = stat + `{ offset, data, eof }` | مهمة معنى عادي ملف واحد أصلي بايت نافذة،base64 تحرير رمز |
-| `readAll(path)` | `WorkspaceFileBytes`، منها `offset: 0`،`eof: true` | `maxFileBytes` داخل كامل أصلي بايت؛ تجاوز كبير ملف فشل، لا قطع قطع |
+| `readAll(path)` | `WorkspaceFileBytes`، منها `offset: 0`،`eof: true` | `maxFileBytes` داخل كامل أصلي بايت؛ تجاوز كبير ملف فشل، لا مقتطع |
 | `readRelated(path, relativePath)` | `WorkspaceFileBytes` | Host من أساس ملف دليل تحليل خروج ملف كامل بايت |
 | `list(path)` | `WorkspaceDirectoryListing { path, entries, truncated }` | واحد دليل مباشر فرعي بند |
 | `changes()` | `WorkspaceFileWatchFrame` تدفق | حجز قراءة حينئذ خيط تأكيد، مع بعد لـ مساحة العمل أصل داخل نظام الملفات مراقبة |
@@ -64,7 +64,7 @@ kind: "package-reference"
 | `maxBytes` | `2097152`(2 MiB) | مفرد صفحة نص و مفرد عدد بايت نافذة بايت حد أعلى (يحتوي) ؛ أكثر كبير صفحة أو نافذة فشل |
 | `maxFileBytes` | `33554432`(32 MiB) | `readAll` و `readRelated` كامل ملف بايت حد أعلى (يحتوي) ؛ أكثر كبير ملف بـ `too-large` فشل |
 | `maxLines` | `5000` | صفحة كبير صغير نقص حذف قيمة و حد أعلى (سطر) ؛ أكثر كبير `limit` يتم رفض |
-| `maxEntries` | `2000` | إرجاع دليل بند عدد حد أعلى؛ ذلك بقية إسقاط و تقرير إبلاغ قطع قطع |
+| `maxEntries` | `2000` | إرجاع دليل بند عدد حد أعلى؛ ذلك بقية إسقاط و تقرير إبلاغ مقتطع |
 
 توليد[إعداد دليل](../../../docs/config-catalog.ar.md#deepseek-aidsh-api-workspace-files) هو كل يمكن قبول حقل و ذلك JSDoc تمام تجهيز مصدر.
 
@@ -74,7 +74,7 @@ kind: "package-reference"
 
 ### Client ملف مورد
 
-متصفح توجيه خروج نحو `ctx.resources` تسجيل `file` مزود، اشتراط `resources`،`remote` و `remote.workspaceFiles` في ساحة.bundle في مفرد عدد `workspace-files` بند توفير ينبغي اثنان وجه؛Client لا يوجد مفرد وحيد إعداد. مكون عبر `useResource<'file'>(address)` قراءة `WorkspaceFileStat { absolutePath, version, bytes? }` بيانات وصفية، محتوى آخر مرور Remote قراءة. أي UI(يشمل Global) وصول نفس كامل عنوان كل مشترك مراقبة.
+متصفح تصدير نحو `ctx.resources` تسجيل `file` مزود، اشتراط `resources`،`remote` و `remote.workspaceFiles` في ساحة.bundle في مفرد عدد `workspace-files` بند توفير ينبغي اثنان وجه؛Client لا يوجد مفرد وحيد إعداد. مكون عبر `useResource<'file'>(address)` قراءة `WorkspaceFileStat { absolutePath, version, bytes? }` بيانات وصفية، محتوى آخر مرور Remote قراءة. أي UI(يشمل Global) وصول نفس كامل عنوان كل مشترك مراقبة.
 
 `session/<sessionId>/<path>` عنوان يحمل تخويل Session، و متبادل مقابل أو قطعا مقابل مسار؛ قبل توجيه مائل عمود إبقاء، مثال مثل `dsh-resource://file/session/s//etc/hosts`.Host أصل مثال استقبال مسار، مسؤول تحليل و إذن فحص؛Client لا حاجة Session `cwd`.`absolute/<path>` ما زال يمكن تحليل، لكن لا يوجد تخويل Session، بـ `workspace-file/unknown-workspace` فشل، لا استعارة استخدام حالي أو Tab Session. لا دعم حمل عنوان بـ `workspace-file/unsupported-address` فشل. لغة قاعدة من [workspace-path](../../util/workspace-path/README.ar.md) تعريف؛Resource عام نوع طبقة فقط إقرار عنوان و `signal`.
 
@@ -92,7 +92,7 @@ kind: "package-reference"
 
 ### تصميم عام فكرة
 
-مرور `ctx.fs` قراءة استخدام خلفية قراءة إذن؛ صندوق رملي خلفية حد كتابة و تحرير، بينما لا حد قراءة.Typert lookup من live Session header أو حمل دائم طبقة header-only `stat` توجيه خروج `WorkspaceFileScope`، الذي بـ cold subagent Session لا حاجة تنشيط Agent أو قراءة حدث متن. هذا خدمة زيادة عادي ملف فحص و محدود نقل، مساحة العمل يتضمن اشتراط فقط يخص دليل صف رفع و تغيير مراقبة. صفحة من `streamText` قطع خروج، بعد من تدريجي كتلة حل رمز و رفض غير UTF-8: قطع صفحة جهاز مقابل نافذة قبل سطر فقط حساب عدد لا إبقاء، مقابل نافذة داخل كل قطعة مقطع أولا حسب بايت حد أعلى تحقق استلام مجددا مؤقت اندفاع، و في نافذة بعد رقم واحد محرف موضع إرجاع. تدفق قبل مرة `stat` إعطاء خروج صفحة الذي تقرير إبلاغ إصدار و كبير صغير.
+مرور `ctx.fs` قراءة استخدام خلفية قراءة إذن؛ صندوق رملي خلفية حد كتابة و تحرير، بينما لا حد قراءة.Typert lookup من live Session header أو حمل دائم طبقة header-only `stat` تصدير `WorkspaceFileScope`، الذي بـ cold subagent Session لا حاجة تنشيط Agent أو قراءة حدث متن. هذا خدمة زيادة عادي ملف فحص و محدود نقل، مساحة العمل يتضمن اشتراط فقط يخص دليل صف رفع و تغيير مراقبة. صفحة من `streamText` قطع خروج، بعد من تدريجي كتلة حل رمز و رفض غير UTF-8: قطع صفحة جهاز مقابل نافذة قبل سطر فقط حساب عدد لا إبقاء، مقابل نافذة داخل كل قطعة مقطع أولا حسب بايت حد أعلى تحقق استلام مجددا مؤقت اندفاع، و في نافذة بعد رقم واحد محرف موضع إرجاع. تدفق قبل مرة `stat` إعطاء خروج صفحة الذي تقرير إبلاغ إصدار و كبير صغير.
 
 كامل ملف قراءة سوف كبير صغير حد أعلى فحص تسليم إعطاء `fs.readBytes`، و سوف إرجاع بايت تحرير رمز لـ base64، توفير Remote استجابة استخدام.
 
@@ -144,7 +144,7 @@ Typert توليد `./typert` و `./remote` كشف Host و Client Remote ناتج
 - **تجاوز طويل مفرد سطر لا يوجد صفحة**——تجاوز مرور `maxBytes` مفرد سطر في يتضمن هو كل نافذة كل بـ `too-large` فشل، لأن صفحة حسب سطر بينما غير حسب بايت قطع.
 - **قراءة لا أداة تجهيز أمر خدمة صفة**——نتيجة بيانات وصفية قدوم ذاتي محتوى قراءة قبل stat؛ تزامن كتابة ممكن جعل تقرير إبلاغ إصدار و إرجاع محتوى لا متسق.
 - **generation طابور صف بلا حد**——واحد `changes` generation سوف مؤقت اندفاع كل واحد بند يتم يتضمن مراقبة مباشر إلى مستهلك pull؛ توقف ركود مستهلك سوف في تدفق توليد أمر مدة داخل حمل متابعة زيادة طويل Host داخل تخزين.
-- **`maxEntries` حد هو جواب سجل، لا هو صف رفع**——`list` يجعل `ctx.fs.listDir` صف خروج الكل فرعي بند بعد مجددا قطع قطع عدد مجموعة، بعيد تجاوز حد أعلى دليل ما زال يجعل Host دفع خروج كامل صف رفع بديل قيمة (`fs-local` فوق كل فرعي بند مرة stat) ؛ يلزم حد هذا نسخة عمل، حاجة نظام الملفات seam `listDir` دعم حمل حد أعلى.
+- **`maxEntries` حد هو جواب سجل، لا هو صف رفع**——`list` يجعل `ctx.fs.listDir` صف خروج الكل فرعي بند بعد مجددا مقتطع عدد مجموعة، بعيد تجاوز حد أعلى دليل ما زال يجعل Host دفع خروج كامل صف رفع بديل قيمة (`fs-local` فوق كل فرعي بند مرة stat) ؛ يلزم حد هذا نسخة عمل، حاجة نظام الملفات seam `listDir` دعم حمل حد أعلى.
 - **بطلان تدفق إبقاء بيانات وصفية**——Host انتهاء `changes` أو تدفق نهاية حالة فشل بعد، قد فتح قيمة إبقاء الأكثر بعد معروف حالة، مباشر إلى إعادة فتح.
 
 <a id="dev-note"></a>

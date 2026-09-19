@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-08-28-subprocess-native-containment.md
 2026-08-28-subprocess-native-containment.md: 3f5d050951b5dc6771873359673e3082a66e8307
-2026-08-28-subprocess-native-containment.ar.md: 2c66b906138c7f0d3f11e9e20d7ff1d4ef987f3e
+2026-08-28-subprocess-native-containment.ar.md: cfaa28625b1d354192a42d22ac648c7d335a14c8

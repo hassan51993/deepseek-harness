@@ -72,7 +72,7 @@ describe('LocaleRuntime', () => {
 
   it('interpolates {name} params and leaves unknown placeholders intact', () => {
     const { svc } = make()
-    svc.register('ns', 'ar', { greet: 'أنت جيد،{name}! رقم {n} مرة', partial: '{known} و {unknown}' })
+    svc.register('ns', 'ar', { greet: 'أنت جيد، {name}! رقم {n} مرة', partial: '{known} و {unknown}' })
     const t = svc.bind('ns')
     expect(t('greet', { name: 'عالم حد', n: 2 })).toBe('أنت جيد، عالم حد! رقم 2 مرة')
     expect(t('partial', { known: 'A' })).toBe('A و {unknown}')
@@ -87,7 +87,7 @@ describe('LocaleRuntime', () => {
   it('rejects duplicate (ns, locale) and disposer only removes its own dict', () => {
     const { svc } = make()
     const dispose = svc.register('ns', 'ar', { k: 'v1' })
-    expect(() => svc.register('ns', 'ZH', { k: 'v2' })).toThrow('already has locale')
+    expect(() => svc.register('ns', 'AR', { k: 'v2' })).toThrow('already has locale')
     dispose()
     const t = svc.bind('ns')
     expect(t('k')).toBe('k')
@@ -391,7 +391,7 @@ describe('LocaleRuntime', () => {
   it('starts with exactly the two shipped locales and their fallback relation', () => {
     const { svc } = make()
     expect(svc.getLocale().locales).toEqual([
-      { id: 'ar', label: 'العربية', fallback: 'en' },
+      { id: 'ar', label: 'العربية', fallback: 'en', direction: 'rtl' },
       { id: 'en', label: 'English' },
     ])
   })

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-09-nontransactional-loader.md
 2026-09-09-nontransactional-loader.md: cca926f7586ae92d51ec206881a7ab9cf9c2b862
-2026-09-09-nontransactional-loader.ar.md: cd0b79cc225650d706ec8ca806a8220f3998ac58
+2026-09-09-nontransactional-loader.ar.md: 4d97d6ee42a04c2e46fe356897851cb8f8eb4617

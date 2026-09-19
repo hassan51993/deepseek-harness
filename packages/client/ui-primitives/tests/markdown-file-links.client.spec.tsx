@@ -13,7 +13,7 @@ describe('Markdown file links', () => {
     ['../docs/My%20Notes.md#L24-L30', '../docs/My Notes.md', { line: 24 }],
     ['C:/work/file.ts#L2', 'C:/work/file.ts', { line: 2 }],
     ['C:%5Cwork%5Cfile.ts', 'C:\\work\\file.ts', undefined],
-    ['docs/%E4%B8%AD%E6%96%87.md', 'docs/العربية.md', undefined],
+    ['docs/%D8%A7%D9%84%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9.md', 'docs/العربية.md', undefined],
     ['file%23name%3F.txt', 'file#name?.txt', undefined],
   ])('opens %s through the preview callback', (target, path, options) => {
     const openFile = vi.fn()

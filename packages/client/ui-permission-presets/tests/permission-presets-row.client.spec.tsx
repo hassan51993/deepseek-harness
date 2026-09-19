@@ -87,7 +87,7 @@ describe('PermissionRow', () => {
       },
     })
     mount(controller)
-    const button = await screen.findByRole('button', { name: 'فقط يمكن فحص نظر' })
+    const button = await screen.findByRole('button', { name: 'فقط يمكن عرض' })
     expect(button.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(button)
     expect(button.getAttribute('aria-expanded')).toBe('true')
@@ -97,7 +97,7 @@ describe('PermissionRow', () => {
     fireEvent.click(button)
     expect(button.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(button)
-    fireEvent.click(screen.getByRole('menuitem', { name: 'فقط يمكن فحص نظر' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'فقط يمكن عرض' }))
     expect(mutate).not.toHaveBeenCalled()
     fireEvent.click(button)
     fireEvent.click(screen.getByRole('menuitem', { name: 'مساحة العمل داخل تعديل' }))
@@ -114,12 +114,12 @@ describe('PermissionRow', () => {
       },
     })
     mount(controller)
-    fireEvent.click(await screen.findByRole('button', { name: 'فقط يمكن فحص نظر' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'فقط يمكن عرض' }))
     fireEvent.click(screen.getByRole('menuitem', { name: 'تماما إذن' }))
     expect(mutate).not.toHaveBeenCalled()
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }))
     expect(screen.queryByRole('dialog', { name: 'تأكيد تفعيل تماما إذن؟' })).toBeNull()
-    fireEvent.click(screen.getByRole('button', { name: 'فقط يمكن فحص نظر' }))
+    fireEvent.click(screen.getByRole('button', { name: 'فقط يمكن عرض' }))
     fireEvent.click(screen.getByRole('menuitem', { name: 'تماما إذن' }))
     const dialog = screen.getByRole('dialog', { name: 'تأكيد تفعيل تماما إذن؟' })
     const enable = screen.getByRole('button', { name: 'تفعيل تماما إذن' })
@@ -148,7 +148,7 @@ describe('PermissionRow', () => {
       },
     })
     mount(readonly)
-    expect((await screen.findByRole('button', { name: 'فقط يمكن فحص نظر' })).hasAttribute('disabled')).toBe(true)
+    expect((await screen.findByRole('button', { name: 'فقط يمكن عرض' })).hasAttribute('disabled')).toBe(true)
   })
 
   it('shows loading and a contained write error', async () => {
@@ -170,7 +170,7 @@ describe('PermissionRow', () => {
     mount(controller)
     expect((await screen.findByRole('button', { name: 'تحميل في' })).hasAttribute('disabled')).toBe(true)
     describe.resolve(ok({ writable: true, hasDocument: false, namespaces: [view('read-only')] }))
-    const button = await screen.findByRole('button', { name: 'فقط يمكن فحص نظر' })
+    const button = await screen.findByRole('button', { name: 'فقط يمكن عرض' })
     fireEvent.click(button)
     fireEvent.click(screen.getByRole('menuitem', { name: 'مساحة العمل داخل تعديل' }))
     expect((await screen.findByRole('alert')).textContent).toBe('changed elsewhere')

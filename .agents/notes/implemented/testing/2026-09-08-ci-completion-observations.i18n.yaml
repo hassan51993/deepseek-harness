@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-08-ci-completion-observations.md
 2026-09-08-ci-completion-observations.md: 30722c3a5a5e46af2bb76fe521a0d18c9b31b69a
-2026-09-08-ci-completion-observations.ar.md: 081ff6511fec58097ae871c79f5dc2639ed35044
+2026-09-08-ci-completion-observations.ar.md: 4542c423f710f72c9791d7c08ac2d30cc8ad5d3f

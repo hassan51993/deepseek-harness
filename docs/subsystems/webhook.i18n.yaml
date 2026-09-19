@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/webhook.md
 webhook.md: de984c4d61945c6f23ce3a832ef394182878da58
-webhook.ar.md: 7009bc06525dd08947867dae1890a2758acc1f29
+webhook.ar.md: 862f6a3671bdb21e6ab56f8d934babe21de88d5f

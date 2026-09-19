@@ -6,7 +6,7 @@
 
 ## 1. إعلان API
 
-owner هو واحد Host جانب Cordis خدمة: وراثة `TypertRemoteService` يأخذ service مفتاح و wire namespace واحد بدء ربط، مجددا استخدام `@Remote` علامة ملاحظة مقابل خارج كشف طريقة. عمل خدمة طريقة توقيع إذا قد رمز دمج wire اتفاق حينئذ مباشر علامة ملاحظة هو ذاته؛ فقط لديه شكل حاجة ضبط كامل (تكملة `signal`، تبديل معامل ترتيب، تبديل توجيه خروج اسم) عندئذ كتابة واحد `remoteExport*` adapter، من هو استدعاء لا تعديل اسم عمل خدمة طريقة.lookup كائن (`Agent`،`Session`) فقط قدرة احتلال قمة طبقة معامل موضع، دعم حمل تنسيق عمل صيغة إلغاء طريقة يأخذ `signal: AbortSignal` وضع في الأكثر بعد واحد موضع.
+owner هو واحد Host جانب Cordis خدمة: وراثة `TypertRemoteService` يأخذ service مفتاح و wire namespace واحد بدء ربط، مجددا استخدام `@Remote` علامة ملاحظة مقابل خارج كشف طريقة. عمل خدمة طريقة توقيع إذا قد رمز دمج wire اتفاق حينئذ مباشر علامة ملاحظة هو ذاته؛ فقط لديه شكل حاجة ضبط كامل (تكملة `signal`، تبديل معامل ترتيب، تبديل تصدير اسم) عندئذ كتابة واحد `remoteExport*` adapter، من هو استدعاء لا تعديل اسم عمل خدمة طريقة.lookup كائن (`Agent`،`Session`) فقط قدرة احتلال قمة طبقة معامل موضع، دعم حمل تنسيق عمل صيغة إلغاء طريقة يأخذ `signal: AbortSignal` وضع في الأكثر بعد واحد موضع.
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -89,7 +89,7 @@ export async function rename(noteId: string, title: string): Promise<void> {
 
 ## 3. في حزمة فوق تسجيل
 
-`@Remote` يجب سقوط في واحد Loader entry إضافة حزمة داخل؛owner هو سحب كائن seam وقت يأخذ تحكم جهاز وضع دخول `packages/api/` تحت مقابل حزمة. حزمة بيان يلزم تكملة اثنان عدد توليد مدخل و protocol peer اعتماد،Client جانب فإن من `@deepseek-ai/dsh-api-remotes` assembly تركيب هذا مساهمة و حسب يحتاج تحويل فتحة نوع مفردات. اثنان عدد مدخل قسم آخر إشارة نحو أي عدد توليد ناتج، توليد إدارة خط مثل أي ترتيب ترتيب، رؤية [API Gateway مشاركة اعتبار](../api-gateway.ar.md).
+`@Remote` يجب سقوط في واحد Loader entry إضافة حزمة داخل؛owner هو سحب كائن seam وقت يأخذ تحكم جهاز وضع دخول `packages/api/` تحت مقابل حزمة. حزمة بيان يلزم تكملة اثنان عدد توليد مدخل و protocol peer اعتماد،Client جانب فإن من `@deepseek-ai/dsh-api-remotes` assembly تركيب هذا مساهمة و حسب يحتاج تحويل فتحة نوع مفردات. اثنان عدد مدخل قسم آخر إشارة نحو أي عدد توليد ناتج، توليد إدارة خط مثل أي ترتيب، رؤية [API Gateway مشاركة اعتبار](../api-gateway.ar.md).
 
 ```json
 {
@@ -102,7 +102,7 @@ export async function rename(noteId: string, title: string): Promise<void> {
 }
 ```
 
-تعديل توقيع، رمز جدول،namespace أو توجيه خروج اسم بعد إعادة ركض `pnpm run build:lib`،Client عندئذ أخذ نيل إلى جديد إعلان و codec؛ فقط تعديل تنفيذ جسم لا حاجة إعادة توليد.
+تعديل توقيع، رمز جدول،namespace أو تصدير اسم بعد إعادة ركض `pnpm run build:lib`،Client عندئذ أخذ نيل إلى جديد إعلان و codec؛ فقط تعديل تنفيذ جسم لا حاجة إعادة توليد.
 
 ## 4. في Client إزالة استهلاك
 
@@ -191,7 +191,7 @@ it('renders the failure code the Host reported', async () => {
 
 ## تحقق
 
-1. `pnpm run build:lib`: توقيع، رمز جدول،namespace أو توجيه خروج اسم تغيير مرور حينئذ يجب إعادة ركض،Client إعلان و codec من هو إنتاج خروج.
+1. `pnpm run build:lib`: توقيع، رمز جدول،namespace أو تصدير اسم تغيير مرور حينئذ يجب إعادة ركض،Client إعلان و codec من هو إنتاج خروج.
 2. `pnpm run typecheck`:Host و Client اثنان عدد program كل مرور واحد مرة، رمز جدول merge سقوط نقطة خطأ سوف في هذا داخل أحمر.
 3. نقطة اسم ركض اثنان جانب spec:`npx vitest run <owner spec> <client spec>`.
 4. طرف نقطة يخص منتج مرئي وجه وقت تكملة واحد بند تسجيل صنع جلسة لقطة، قاعدة رؤية[اختبار سياسة](../testing.ar.md).

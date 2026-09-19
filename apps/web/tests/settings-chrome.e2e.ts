@@ -106,10 +106,10 @@ describe('web e2e: settings modal and General preferences', () => {
     await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).click()
     await dialog.getByRole('heading', { name: 'داخل وضع إضافة', exact: true }).waitFor({ timeout: 10_000 })
     // Both groups start collapsed; the preset group's header still carries its display-only switcher.
-    const presetSwitcher = dialog.getByRole('button', { name: 'اختيار يلزم فحص نظر Agent مسبق ضبط' })
+    const presetSwitcher = dialog.getByRole('button', { name: 'اختيار يلزم عرض Agent مسبق ضبط' })
     await presetSwitcher.waitFor({ timeout: 10_000 })
     // The shipped default's ar display name comes from the ar dictionaries.
-    expect(await presetSwitcher.textContent()).toBe('معيار نمط (افتراضي)')
+    expect(await presetSwitcher.textContent()).toBe('النمط المعياري (افتراضي)')
     const presetToggle = dialog.getByRole('button', { name: 'جلسة إضافة', exact: true })
     expect(await presetToggle.getAttribute('aria-expanded')).toBe('false')
     expect(await dialog.locator('[data-plugin-scope="preset"] [data-plugin-entry]').count()).toBe(0)
@@ -197,8 +197,8 @@ describe('web e2e: settings modal and General preferences', () => {
     await selector.waitFor({ timeout: 10_000 })
     await expect.poll(() => selector.isEnabled(), { timeout: 5_000 }).toBe(true)
     await selector.click()
-    await page.getByRole('menuitem', { name: 'فقط يمكن فحص نظر' }).click()
-    await dialog.getByRole('button', { name: 'فقط يمكن فحص نظر' }).waitFor({ timeout: 10_000 })
+    await page.getByRole('menuitem', { name: 'فقط يمكن عرض' }).click()
+    await dialog.getByRole('button', { name: 'فقط يمكن عرض' }).waitFor({ timeout: 10_000 })
 
     const document = await readFile(join(scaffold.harnessHome, 'settings.yaml'), 'utf8')
     expect(document).toContain('permission:')
@@ -213,7 +213,7 @@ describe('web e2e: settings modal and General preferences', () => {
       ['approval/policy', { policy: 'ask' }],
     ])
 
-    await dialog.getByRole('button', { name: 'فقط يمكن فحص نظر' }).click()
+    await dialog.getByRole('button', { name: 'فقط يمكن عرض' }).click()
     await page.getByRole('menuitem', { name: 'تماما إذن' }).click()
     const confirmation = page.getByRole('dialog', { name: 'تأكيد تفعيل تماما إذن؟' })
     const enable = confirmation.getByRole('button', { name: 'تفعيل تماما إذن' })

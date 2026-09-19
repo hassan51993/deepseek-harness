@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-16-harness-level-loop.md
 2026-07-16-harness-level-loop.md: aa299d3342978bb08ad04be8df30e73ae20ef7ff
-2026-07-16-harness-level-loop.ar.md: 2835c66b9843429a9a6f216e5844953618f37432
+2026-07-16-harness-level-loop.ar.md: 60306d21b8c7b405d8d6ccb815073d822ade5443

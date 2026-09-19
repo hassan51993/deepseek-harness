@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-07-31-fail-loud-releases-the-terminal.md
 2026-07-31-fail-loud-releases-the-terminal.md: b4a59b4d01ca6d77da9d08f36454fd85ecad13f3
-2026-07-31-fail-loud-releases-the-terminal.ar.md: 1dc8fe168ae1a28f9b75adb18262beb587f27fd4
+2026-07-31-fail-loud-releases-the-terminal.ar.md: d43af4e6f0b493ec01044afb58de5e2cb8fd9a13

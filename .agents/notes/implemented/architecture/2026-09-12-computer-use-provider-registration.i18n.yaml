@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-12-computer-use-provider-registration.md
 2026-09-12-computer-use-provider-registration.md: 357f115c3014c7b80d9d6288868d0118db66267e
-2026-09-12-computer-use-provider-registration.ar.md: cc9358b25b4deec892b2455707a3a406b7e29dc3
+2026-09-12-computer-use-provider-registration.ar.md: 02755cca15559d530179463315bed27613b6cf3c

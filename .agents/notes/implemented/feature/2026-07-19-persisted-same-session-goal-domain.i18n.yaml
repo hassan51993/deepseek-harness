@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-19-persisted-same-session-goal-domain.md
 2026-07-19-persisted-same-session-goal-domain.md: ffb0bfa7a90d88a81cbf47583ca6c3a8ca25dc7f
-2026-07-19-persisted-same-session-goal-domain.ar.md: 8527ae9e7ed09fbf5bf25a831f6a77f26c5ac101
+2026-07-19-persisted-same-session-goal-domain.ar.md: 7e9eeceaa2f894b7b58eb7c0e741b30d1bc21f13

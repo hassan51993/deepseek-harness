@@ -16,9 +16,9 @@ Cordis إطار هيكل و ذلك أساس أساس مكتبة بـ شفرة ا
 | `vendor/group/` | `@cordisjs/plugin-group` | `@deepseek-ai/cordis-plugin-group` | 1.0.0 | تضمين طقم إضافة قسم مجموعة |
 | `vendor/timer/` | `@cordisjs/plugin-timer` | `@deepseek-ai/cordis-plugin-timer` | 1.1.2 | `ctx` فوق مع disposal عودة استلام تحديد وقت جهاز |
 | `vendor/hmr/` | `@cordisjs/plugin-hmr` | `@deepseek-ai/cordis-plugin-hmr` | 1.0.15 | إضافة و إعداد حار استبدال |
-| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | تحكم منصة سجل توجيه خروج |
+| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | تحكم منصة سجل تصدير |
 
-فرعي مسار توجيه خروج إبقاء أصل مسار:`@cordisjs/plugin-loader/repository` تغيير صار `@deepseek-ai/cordis-plugin-loader/repository`.
+فرعي مسار تصدير إبقاء أصل مسار:`@cordisjs/plugin-loader/repository` تغيير صار `@deepseek-ai/cordis-plugin-loader/repository`.
 
 ## تعديل اسم لا اصطدام ماذا
 

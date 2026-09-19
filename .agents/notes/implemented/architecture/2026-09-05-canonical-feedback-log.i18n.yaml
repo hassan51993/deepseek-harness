@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-05-canonical-feedback-log.md
 2026-09-05-canonical-feedback-log.md: 250c0ac2e5f99c4f2b43f44987cc4c4bb3f93c6b
-2026-09-05-canonical-feedback-log.ar.md: 95d24acea7ed789978f5b3fa75e0a6dd14056a17
+2026-09-05-canonical-feedback-log.ar.md: 546aa7addef16ea4cdff7b3b5359acd2d9aa6ed0

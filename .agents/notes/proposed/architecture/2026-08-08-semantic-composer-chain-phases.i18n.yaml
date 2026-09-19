@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-08-08-semantic-composer-chain-phases.md
 2026-08-08-semantic-composer-chain-phases.md: 6ebf5d857c9959775b0cc085a8144032bc6711e2
-2026-08-08-semantic-composer-chain-phases.ar.md: 91c4a938bfe9dca12be1b87972084a459f31535c
+2026-08-08-semantic-composer-chain-phases.ar.md: 188107564e449be58ad55e73bc384ac7ca8f72d0

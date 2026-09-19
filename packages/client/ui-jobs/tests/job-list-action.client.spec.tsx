@@ -99,7 +99,7 @@ describe('JobListAction rows', () => {
       ['bash', 'earlier live', 'تشغيل في', '0ثانية'],
       ['bash', 'later live', 'تشغيل في', '0ثانية'],
       ['bash', 'new done', 'قد فشل', '9ثانية'],
-      ['bash', 'old done', 'قد إتمام', '1ثانية'],
+      ['bash', 'old done', 'اكتمل', '1ثانية'],
     ])
   })
 
@@ -130,7 +130,7 @@ describe('JobListAction rows', () => {
     ])} />)
     fireEvent.click(screen.getByRole('button'))
     const words = rowCells().map(cells => cells[2])
-    expect(new Set(words)).toEqual(new Set(['تشغيل في', 'صحيح في إيقاف', 'قد إتمام', 'قد إلغاء', 'قد فشل']))
+    expect(new Set(words)).toEqual(new Set(['تشغيل في', 'جارٍ إيقاف', 'اكتمل', 'قد إلغاء', 'قد فشل']))
   })
 })
 
@@ -158,7 +158,7 @@ describe('JobListAction duration', () => {
       job({ id: 'bash-3' as JobView['id'], label: 'skew', status: 'completed', startedAt: START + 5_000, finishedAt: START }),
     ])} />)
     fireEvent.click(screen.getByRole('button'))
-    expect(rowCells().map(cells => cells[3])).toEqual(['2صغير وقت3قسم', '2قسم5ثانية', '0ثانية'])
+    expect(rowCells().map(cells => cells[3])).toEqual(['2ساعة3قسم', '2قسم5ثانية', '0ثانية'])
   })
 
   it('runs no clock while the list is closed', () => {

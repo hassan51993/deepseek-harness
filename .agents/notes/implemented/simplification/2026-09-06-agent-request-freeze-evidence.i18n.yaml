@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-06-agent-request-freeze-evidence.md
 2026-09-06-agent-request-freeze-evidence.md: d391978b4f01c0e1b798c60d1b8950f611c82637
-2026-09-06-agent-request-freeze-evidence.ar.md: cca932b4b518fba0c3c3f6ce21da0f9219cdfa23
+2026-09-06-agent-request-freeze-evidence.ar.md: c86c809ac2bc1f05aa599f20000c39df8d405be7

@@ -22,7 +22,7 @@
 | [settings.md](settings.ar.md) | مستخدم ضبط seam:`SettingsNamespace` تسجيل، قسم طبقة تحليل (قيمة افتراضية → تركيب `base` → مستخدم وثيقة) ،owner scope، حار إيداع |
 | [credentials.md](credentials.ar.md) | اعتماد seam: إعداد في `CredentialRef` مرجع (أبدا يحتوي قيمة) ، حسب عملية تحليل، مقابل UI أمان `CredentialInfo`، مزود مصدر طبقة |
 | [session-query.md](session-query.ar.md) | منطق سجل، محدود دقيق حدث قراءة، علاقة تتبع أثر، دلالة غربلة اختيار جهاز/وثيقة و كل نص فحص بحث نتيجة صفحة |
-| [feedback.md](feedback.ar.md) | ربط دورة الحياة تدريجي رسالة عكس تغذية سجل، مرح مراقبة إصدار، مرافق مع سجل حفظ دائم و Host Remote اتفاق |
+| [feedback.md](feedback.ar.md) | ربط دورة الحياة تدريجي رسالة ملاحظات سجل، مرح مراقبة إصدار، مرافق مع سجل حفظ دائم و Host Remote اتفاق |
 | [session-title.md](session-title.ar.md) | حمل دائم عنوان لقطة، يتم مرجع مصدر رسالة seq و مختلف خطوة مزود اتفاق |
 | [session-reference.md](session-reference.ar.md) | بنية تحويل عبر جلسة مرجع:`SessionReferenceInput`/`Candidate`،prepared رسالة سياق، مستقر خطأ تصنيف |
 | [system-prompt.md](system-prompt.ar.md) | تدريجي مرة تجميع سياق، أداة مزود نتيجة، نص التوجيه مقطع سقوط و تنسيق عمل صيغة تجميع |
@@ -52,7 +52,7 @@
 | [workflow.md](workflow.ar.md) | سير العمل seam:`WorkflowStartRequest`،`WorkflowMeta`،`WorkflowRun`/`Result`،`workflow/*` حدث تحميل حمل،`WorkflowError` يؤدي أمر صفة |
 | [jobs.md](jobs.ar.md) | خلفية مهمة وقت التشغيل: صنف لوحة تحويل `JobId`،producer اتفاق، مستهلك عرض و `ctx.jobs` خدمة سلوك |
 | [permission-presets.md](permission-presets.ar.md) | إذن مسبق ضبط طبقة:`PresetSpec`/`PresetOption`، إرسال توليد `custom` حالة، فقط تسجيل سجل `permission/preset` حدث |
-| [plan.md](plan.ar.md) | حساب تخطيط نمط: فقط تسجيل سجل `plan/mode` حالة، انتظار تحديد اختيار اندفاع تحديث،`PlanModeConfig`،`exit_plan_mode` مراجعة قراءة مسار |
+| [plan.md](plan.ar.md) | خطة نمط: فقط تسجيل سجل `plan/mode` حالة، انتظار تحديد اختيار اندفاع تحديث،`PlanModeConfig`،`exit_plan_mode` مراجعة قراءة مسار |
 | [invariants.md](invariants.ar.md) | وقت التشغيل ثابت صيغة سجل التسجيل: اختيار إعداد `Config`،`InvariantInstaller`/`InvariantFailure`، فارغ إعداد طقم إضافة اتفاق |
 | [web-server.md](web-server.ar.md) | HTTP تحميل جسم:`WebRouteKind`/`WebRoute`، مطابقة ترتيب، يمكن إقرار قيادة رجوع مقعد موضع،index تصيير تعليق وصل نقطة |
 | [webhook.md](webhook.ar.md) | عبر هوية تحقق مزود تسليم، مهمة معنى برنامج تحويل قاعدة، و إرسال بدء Workspace جلسة إنشاء بعد لا انتظار نتيجة |

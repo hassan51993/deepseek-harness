@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-06-release-rehearsal-selfhosted.md
 2026-09-06-release-rehearsal-selfhosted.md: 4027ccabcd7fa077f4a1452f3dff8098da50ea7e
-2026-09-06-release-rehearsal-selfhosted.ar.md: f28799c99d7de21168e6398390942ed1c3d5299d
+2026-09-06-release-rehearsal-selfhosted.ar.md: f5f3ba4b1dcb34bd1fedaf39ad71e09b5f2b507b

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-08-08-copy-only-preset-authoring.md
 2026-08-08-copy-only-preset-authoring.md: dddc7eb953d4d2625fc9e726a79c8f96a7d05a00
-2026-08-08-copy-only-preset-authoring.ar.md: 9118198260a9fe7266943acdb8adc95bcdf1ddf7
+2026-08-08-copy-only-preset-authoring.ar.md: fac03ef15a07397e9c07478517cef7a3ae4e743a

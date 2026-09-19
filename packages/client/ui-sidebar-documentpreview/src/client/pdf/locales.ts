@@ -2,8 +2,8 @@
 export const ar = {
   title: 'PDF',
   pageImage: 'PDF رقم {page} صفحة',
-  loading: 'صحيح في قراءة…',
-  rendering: 'صحيح في رسم صنع صفحة…',
+  loading: 'جارٍ قراءة…',
+  rendering: 'جارٍ رسم صنع صفحة…',
   failed: 'لا يمكن عرض PDF:{message}',
   password: 'هذا PDF حاجة سري رمز، مؤقت لا دعم حمل معاينة',
   workerFailed: 'PDF تصيير عملية لا يمكن متابعة، طلب إعادة محاولة',

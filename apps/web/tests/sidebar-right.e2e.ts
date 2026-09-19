@@ -1106,7 +1106,7 @@ describe('web e2e: shipped right Sidebar', () => {
         expect(await width(column)).toBeGreaterThan(300)
         await expect.poll(async () => await tabTitles(column)).toEqual(['ملف', 'بدء'])
         await expect.poll(async () => await guide.locator('[data-sidebar-right-guide-entry="files"]').innerText())
-          .toBe('مساحة العمل ملف\nتصفح تصفح جلسة مساحة العمل ملف')
+          .toBe('مساحة العمل ملف\nتصفح جلسة مساحة العمل ملف')
         await shot(arPage, '05-guide-copy-ar')
 
         expect(arTripwire.pageErrors).toEqual([])

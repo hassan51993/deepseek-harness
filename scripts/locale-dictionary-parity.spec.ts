@@ -98,7 +98,7 @@ function dictionariesIn(file: string): Dictionary[] {
   // before parsing — the silent narrowing this gate exists to prevent. A bare
   // `\b(ar|en)\b` misses `arSettings`/`accessAr`, because `\b` does not hold
   // between `h` and an uppercase letter.
-  if (!/\b(ar|en)\b|\b(ar|en)[A-Z]|(Zh|En)\b/.test(text)) return []
+  if (!/\b(ar|en)\b|\b(ar|en)[A-Z]|(Ar|En)\b/.test(text)) return []
   const source = ts.createSourceFile(file, text, ts.ScriptTarget.ESNext, true)
   const found: Dictionary[] = []
   const rel = relative(file)
@@ -226,7 +226,7 @@ function unwrap(node: ts.Expression | undefined): ts.Expression | undefined {
  */
 function localeOf(name: string): { locale: 'ar' | 'en'; pair: string } | undefined {
   for (const locale of ['ar', 'en'] as const) {
-    const other = locale === 'ar' ? 'Zh' : 'En'
+    const other = locale === 'ar' ? 'Ar' : 'En'
     if (name === locale) return { locale, pair: '' }
     // Synthetic names for inline shapes carry their own pair key after the
     // first ':' (the enclosing array's line, or the namespace expression).

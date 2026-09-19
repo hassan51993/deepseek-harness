@@ -20,7 +20,7 @@ Vendor CLI، فقط لأجل بناء و اختبار يمكن تنفيذ ملف
 
 ### Profile تطبيق
 
-`@deepseek-ai/dsh-sdk-app` و `@deepseek-ai/dsh-acp-app` في `@deepseek-ai/dsh-base` لـ فوق تركيب كامل بروتوكول تطبيق.SDK تركيب حزمة زيادة JSON-RPC خادم، تطبيق ذاتي لديه مساعدة مساعدة و stdio دورة الحياة؛ACP تركيب حزمة زيادة فقط لأجل تلقائي تحويل ACP خادم و نفسه تطبيق مسؤولية. اثنان من كل اعتماد base طبقة نموذج، أداة، حفظ دائم،settings،credentials، سياسة و بيئة سلوك.[مستقل sdk-minimal profile](../../archived/architecture/2026-08-24-standalone-sdk-minimal-profile.md) إعادة استخدام SDK بدء و JSON-RPC خدمة، لكن لحظة معنى يملك لا يحتوي `dsh-base` كامل صريح إعداد شجرة.
+`@deepseek-ai/dsh-sdk-app` و `@deepseek-ai/dsh-acp-app` في `@deepseek-ai/dsh-base` لـ فوق تركيب كامل بروتوكول تطبيق.SDK تركيب حزمة زيادة JSON-RPC خادم، تطبيق ذاتي لديه مساعدة و stdio دورة الحياة؛ACP تركيب حزمة زيادة فقط لأجل تلقائي تحويل ACP خادم و نفسه تطبيق مسؤولية. اثنان من كل اعتماد base طبقة نموذج، أداة، حفظ دائم،settings،credentials، سياسة و بيئة سلوك.[مستقل sdk-minimal profile](../../archived/architecture/2026-08-24-standalone-sdk-minimal-profile.md) إعادة استخدام SDK بدء و JSON-RPC خدمة، لكن لحظة معنى يملك لا يحتوي `dsh-base` كامل صريح إعداد شجرة.
 
 Profile manifest مسؤول patch إعادة تحميل:
 
@@ -34,7 +34,7 @@ Profile manifest مسؤول patch إعادة تحميل:
 
 ذاتي تعريف profile افتراضي لـ `live`.`startup` profile ما زال سوف تطبيق تركيب حزمة،profile،home درجة و استدعاء وقت `--patch` كل طبقة، لكن بدء بعد لن مراقبة نظر هذه ملف.`dsh-base` إدراج دخول وحدة HMR(حار وحدة استبدال) بند إعداد افتراضي منع استخدام؛ أداة لديه مرور مرور تحقق شفرة المصدر وحدة إعادة تحميل دورة الحياة profile يجب صريح تفعيل هو. مع مرفق profile متساو لا تفعيل خادم وحدة HMR:`patchReload: live` استخدام بدء جهاز فقط إعداد watcher،`startup` profile فإن لا تثبيت watcher.SDK و ACP لا يمكن في واحد ذاتي لديه stdio اتصال داخل أمان استبدال ذلك خادم،agent، حفظ دائم أو أداة سجل التسجيل.
 
-مع مرفق بروتوكول profile سوف stdout إبقاء إعطاء بروتوكول لقطة، عرض مساعدة مساعدة وقت لا بدء transport، و عبر محدود أصل عقدة dispose(مورد تحرير) معالجة stdin EOF و إشارة.ACP متابعة فقط لأجل تلقائي تحويل.SDK JSON-RPC طريقة، إشعار حقل و `initialize.serverInfo.name` إبقاء مستقر. كامل profile نموذج مرئي أداة و حفظ دائم قيمة افتراضية قدوم ذاتي `dsh-base`، يشمل ذلك[افتراضي تحرير جهاز اختيار](../simplification/2026-09-05-base-default-file-editor.ar.md) ؛`sdk-minimal` يملك ذاتي ذات صريح قيمة افتراضية. يمكن تشغيل لقطة مسؤول ثابت قد تجميع تطبيق إخراج.
+مع مرفق بروتوكول profile سوف stdout إبقاء إعطاء بروتوكول لقطة، عرض مساعدة وقت لا بدء transport، و عبر محدود أصل عقدة dispose(مورد تحرير) معالجة stdin EOF و إشارة.ACP متابعة فقط لأجل تلقائي تحويل.SDK JSON-RPC طريقة، إشعار حقل و `initialize.serverInfo.name` إبقاء مستقر. كامل profile نموذج مرئي أداة و حفظ دائم قيمة افتراضية قدوم ذاتي `dsh-base`، يشمل ذلك[افتراضي تحرير جهاز اختيار](../simplification/2026-09-05-base-default-file-editor.ar.md) ؛`sdk-minimal` يملك ذاتي ذات صريح قيمة افتراضية. يمكن تشغيل لقطة مسؤول ثابت قد تجميع تطبيق إخراج.
 
 ### TypeScript SDK ذاتي تعريف
 
@@ -82,7 +82,7 @@ Python وقت التشغيل wheel سوف [`python/sdk-runtime/runtime-bootstrap
 
 ## تحقق
 
-- شفرة المصدر و بناء بعد CLI تحقق استلام تغطية `sdk`،`sdk-minimal` و `acp` مساعدة مساعدة،transport بدء،stdout صاف صاف صفة،EOF، إشارة و أصل عقدة dispose.
+- شفرة المصدر و بناء بعد CLI تحقق استلام تغطية `sdk`،`sdk-minimal` و `acp` مساعدة،transport بدء،stdout صاف صاف صفة،EOF، إشارة و أصل عقدة dispose.
 - تركيب حزمة إعداد اختبار تثبيت إقامة `dsh-base` افتراضي منع استخدام وحدة HMR، مع مرفق نمط تغطية طبقة لا يحتوي هذا سياسة؛ ذاتي تعريف live profile e2e تثبيت إقامة بدء جهاز فقط مراقبة نظر fallback توفير إعداد إعادة تحميل.
 - تجمع تركيز وحدة طقم عنصر تغطية profile بدء تحليل، ابتدائي تحويل وقت حد،SDK إعادة محاولة، خادم حينئذ خيط و تضمين طقم عزل home، و مقابل تغيير بعد وقت التشغيل شفرة المصدر تنفيذ 100% نسبة التغطية.
 - تجنب مفتاح ACP و SDK لقطة بدء حقيقي `dsh` profile، و تثبيت إقامة بروتوكول إخراج و حفظ دائم سجل؛ تضمين طقم SDK تركيب سوف بدء ثاني عدد حقيقي profile وقت التشغيل.

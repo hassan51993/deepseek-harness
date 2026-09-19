@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-11-remove-e2b-providers.md
 2026-09-11-remove-e2b-providers.md: d66713abe011cf7990a6881e9e13b51c32dc47ee
-2026-09-11-remove-e2b-providers.ar.md: 420a3282760df8167d98efa8d3d6f72031280b79
+2026-09-11-remove-e2b-providers.ar.md: b950e594bd6ab14398e643542117fc46636546f6

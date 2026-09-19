@@ -67,7 +67,7 @@
 }
 
 .figures {
-  margin-left: auto;
+  margin-inline-start: auto;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: var(--dsw-alias-label-primary);
@@ -109,7 +109,7 @@
 
 .swatch {
   display: inline-block;
-  margin-right: 6px;
+  margin-inline-end: 6px;
   width: 8px;
   height: 8px;
   border-radius: 2px;

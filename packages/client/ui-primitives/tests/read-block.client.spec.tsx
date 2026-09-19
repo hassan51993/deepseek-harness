@@ -158,9 +158,9 @@ describe('ReadBlock height cap', () => {
 
     fireEvent.click(toggle)
     expect(rowTexts(view.container)).toHaveLength(10)
-    const collapse = view.getByRole('button', { name: 'استلام بدء محتوى' })
+    const collapse = view.getByRole('button', { name: 'طي محتوى' })
     expect(collapse.getAttribute('aria-expanded')).toBe('true')
-    expect(collapse.textContent).toBe('استلام بدء')
+    expect(collapse.textContent).toBe('طي')
 
     fireEvent.click(collapse)
     expect(gutters(view.container)).toEqual(['1', '2', '9', '10'])

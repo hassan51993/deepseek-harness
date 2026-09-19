@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .github/issue-management/README.md
 README.md: 75ee6bc2db704c52648209138a2ef99b66f43d93
-README.ar.md: 7ce27fcc08eea1b8d2e7dd2f21f565403bd36dc3
+README.ar.md: 7dd654c02caeab2ab38a787aaa971f83c253c2f3

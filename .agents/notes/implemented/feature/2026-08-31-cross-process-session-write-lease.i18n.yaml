@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-08-31-cross-process-session-write-lease.md
 2026-08-31-cross-process-session-write-lease.md: d0da445b544ae7a5b2cacd49d52317f96b1ee529
-2026-08-31-cross-process-session-write-lease.ar.md: 7e3747837831b9aacbe2ce0b8381a8d5080647b4
+2026-08-31-cross-process-session-write-lease.ar.md: 60f64cfed851a3155f223a488699590b981b913d

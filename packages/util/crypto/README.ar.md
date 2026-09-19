@@ -35,7 +35,7 @@ kind: "package-library"
 import { bytesToBase64, randomUUID, type Uuid } from '@deepseek-ai/dsh-util-crypto'
 ```
 
-| توجيه خروج | زاوية لون |
+| تصدير | زاوية لون |
 |---|---|
 | `bytesToBase64(data)` | بـ محدود قسم قطعة يأخذ بايت عدد مجموعة تحرير رمز لـ معيار base64. |
 | `randomUUID()` | مع آلة RFC 9562 v4 UUID نص، من `crypto.getRandomValues` صب صنع. يمكن أصل موضع استبدال `crypto.randomUUID()`. |

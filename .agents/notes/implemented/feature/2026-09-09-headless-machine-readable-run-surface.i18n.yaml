@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-09-headless-machine-readable-run-surface.md
 2026-09-09-headless-machine-readable-run-surface.md: de1432f8c182185e782ce0eded2333646855eb24
-2026-09-09-headless-machine-readable-run-surface.ar.md: 84997e6a223b47e049dfab28aa5b0c5270a9c51d
+2026-09-09-headless-machine-readable-run-surface.ar.md: 8192e02b7cf6bf7919dc312c5f7d19d895c350a4

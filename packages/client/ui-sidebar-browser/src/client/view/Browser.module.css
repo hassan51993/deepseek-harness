@@ -70,7 +70,7 @@
 .addressGo {
   position: absolute;
   top: 0;
-  right: 0;
+  inset-inline-end: 0;
   visibility: hidden;
   opacity: 0;
 }
@@ -93,8 +93,8 @@
 .addressChanged {
   position: absolute;
   top: 6px;
-  right: 8px;
-  padding-left: 8px;
+  inset-inline-end: 8px;
+  padding-inline-start: 8px;
   color: var(--dsw-alias-label-tertiary);
   font: var(--dsw-font-xxxs-11);
   line-height: 16px;
@@ -163,5 +163,5 @@
 
 .titleIcon {
   flex: 0 0 auto;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }

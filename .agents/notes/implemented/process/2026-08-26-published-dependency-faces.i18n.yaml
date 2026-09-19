@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-26-published-dependency-faces.md
 2026-08-26-published-dependency-faces.md: e6b46a58d4fff184ab13e3be0342ed0b9e281b7b
-2026-08-26-published-dependency-faces.ar.md: 32cc3f9b3945d421cc3bc3c9cc55778357f77a68
+2026-08-26-published-dependency-faces.ar.md: bfb6eceed0d42d0f54d837a57987d09d923e052a

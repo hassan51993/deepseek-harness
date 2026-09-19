@@ -64,7 +64,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     const currentMenu = page.getByRole('menu')
     await currentMenu.waitFor({ timeout: 10_000 })
     expect(await currentMenu.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
+      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
     await captureAutoReviewState(page, 'experimental-current-session-picker')
     const currentSnapshot = await captureStableAria(page, '[role="menu"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(CURRENT_SESSION_PICKER_EXPECTED, currentSnapshot, MODE)
@@ -187,7 +187,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(menuBox.width).toBeLessThanOrEqual(360)
     expect(menuBox.x).toBeGreaterThanOrEqual(0)
     expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(420)
-    for (const name of ['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
+    for (const name of ['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
       expect(await menu.getByText(name, { exact: true }).evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
     }
     await page.keyboard.press('Escape')
@@ -205,7 +205,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(slashBox.x + slashBox.width).toBeLessThanOrEqual(420)
     expect(await slash.evaluate(node => getComputedStyle(node).minWidth)).toBe('min(220px, 100%)')
     expect(await slash.evaluate(node => getComputedStyle(node).maxWidth)).toBe('100%')
-    for (const name of ['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
+    for (const name of ['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
       expect(await slash.getByText(name, { exact: true }).evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
     }
     await page.keyboard.press('Escape')
@@ -240,14 +240,14 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     await page.keyboard.press('Escape')
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن'])
+      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن'])
     await captureAutoReviewState(page, 'uninstalled-current-session-picker')
     await page.keyboard.press('Escape')
     await entry.update({ disabled: false })
     await scaffold.ctx.loader.await()
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
+      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
     expect(await access.getAttribute('aria-label')).toBe('وصول نمط، حالي: تماما إذن')
     await captureAutoReviewState(page, 'reinstalled-current-session-picker')
     await page.keyboard.press('Escape')
@@ -291,7 +291,7 @@ describe('web e2e: default permission choices', () => {
     const access = page.locator('button[aria-label^="وصول نمط"]').first()
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن فحص نظر', 'مساحة العمل داخل تعديل', 'تماما إذن'])
+      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن'])
     await captureAutoReviewState(page, 'default-current-session-picker')
     await page.keyboard.press('Escape')
     const input = page.locator('[data-composer-input]').first()

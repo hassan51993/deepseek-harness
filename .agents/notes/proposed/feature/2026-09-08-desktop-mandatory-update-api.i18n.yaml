@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/feature/2026-09-08-desktop-mandatory-update-api.md
 2026-09-08-desktop-mandatory-update-api.md: c7c37e0fafab1c14db0d26c6c0212c44c46275dd
-2026-09-08-desktop-mandatory-update-api.ar.md: fe96d7d622d94e416f4b86212c67b9bfb4c099f0
+2026-09-08-desktop-mandatory-update-api.ar.md: e03c766ea5cf3d104469b3cb549bd4d71233366f

@@ -33,7 +33,7 @@ kind: "package-reference"
 
 ### استعادة جلسة
 
-إلغاء عودة ملف سوف يأخذ جلسة استعادة إلى ذلك Workspace تحت سجل موضع؛ جلسة لا يخص أي Workspace وقت فإن استعادة إلى لم قسم مجموعة جلسة في، هذا سطر مع أي من صفحة إزالة فقد. هذا عملية استدعاء `ctx.uiWorkspace.unarchiveSession`، ذلك عودة نقل كامل عودة ملف تجميع دمج سوف تحديث كل اعتماد حسب هو مرور ترشيح واجهة، لذلك جلسة أيضا سوف إعادة ظهور في جانب حافة شريط و بحث في. استدعاء يتم رفض وقت سوف سجل واحد بند console تشخيص، و إبقاء هذا سطر بـ سهل مجددا مرة محاولة تجربة.
+إلغاء عودة ملف سوف يأخذ جلسة استعادة إلى ذلك Workspace تحت سجل موضع؛ جلسة لا يخص أي Workspace وقت فإن استعادة إلى لم قسم مجموعة جلسة في، هذا سطر مع أي من صفحة إزالة فقد. هذا عملية استدعاء `ctx.uiWorkspace.unarchiveSession`، ذلك عودة نقل كامل عودة ملف تجميع دمج سوف تحديث كل اعتماد حسب هو مرور ترشيح واجهة، لذلك جلسة أيضا سوف إعادة ظهور في الشريط الجانبي و بحث في. استدعاء يتم رفض وقت سوف سجل واحد بند console تشخيص، و إبقاء هذا سطر بـ سهل مجددا مرة محاولة تجربة.
 
 -----
 
@@ -74,7 +74,7 @@ kind: "package-reference"
 
 - [ui-settings](../ui-settings/README.ar.md)——إعلان `settings.section` و namespace scope خدمة مجال قاع مقعد.
 - [ui-settings-general](../ui-settings-general/README.ar.md)——تصيير تنقل و تركيب هذا قسم منطقة ضبط خارج قشرة.
-- [ui-workspace](../ui-workspace/README.ar.md)——ذلك Session سطر مسؤول عودة ملف جانب حافة شريط متصفح، و هذا صفحة استعارة بـ استعادة `ctx.uiWorkspace` خدمة.
+- [ui-workspace](../ui-workspace/README.ar.md)——ذلك Session سطر مسؤول عودة ملف الشريط الجانبي متصفح، و هذا صفحة استعارة بـ استعادة `ctx.uiWorkspace` خدمة.
 - [Workspace Controller](../../api/workspace-controller/README.ar.md)——`workspace.unarchiveSession` Remote و يحتفظ عودة ملف تجميع دمج Client model.
 - [Workspace فرعي نظام](../../../docs/subsystems/workspace.ar.md)——حمل دائم عودة ملف تجميع دمج، ذلك مجال حقل، و استعادة خلف بعد سجل التسجيل عملية.
 

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write benchmarks/long-session-browser/README.md
 README.md: ad27c2fb36b9089cea20be0d4075984a2626f411
-README.ar.md: e01a239e1b1770990f67d812f785f25264097645
+README.ar.md: 7bcf1aabc76a83fdf4214123d68d7a832d6e3660

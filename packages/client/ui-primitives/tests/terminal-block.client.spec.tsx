@@ -215,12 +215,12 @@ describe('TerminalBlock run-state dot', () => {
 
   it('shows the done dot for a clean settled exit', () => {
     const view = render(<TerminalBlock command="true" output="a" exitCode={0} />)
-    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'قد إتمام' })
+    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'اكتمل' })
   })
 
   it('counts a settled command with no exit status as a clean settle', () => {
     const view = render(<TerminalBlock command="ls" output="a" />)
-    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'قد إتمام' })
+    expect(runStateOf(view.container)).toEqual({ state: 'done', label: 'اكتمل' })
   })
 
   it('shows the error dot for a non-zero exit', () => {
@@ -310,9 +310,9 @@ describe('TerminalBlock height cap', () => {
 
     fireEvent.click(toggle)
     expect(outputLines(view.container)).toHaveLength(10)
-    const collapse = view.getByRole('button', { name: 'استلام بدء إخراج' })
+    const collapse = view.getByRole('button', { name: 'طي إخراج' })
     expect(collapse.getAttribute('aria-expanded')).toBe('true')
-    expect(collapse.textContent).toBe('استلام بدء')
+    expect(collapse.textContent).toBe('طي')
 
     fireEvent.click(collapse)
     expect(outputLines(view.container)).toEqual(['line 1', 'line 2', 'line 9', 'line 10'])

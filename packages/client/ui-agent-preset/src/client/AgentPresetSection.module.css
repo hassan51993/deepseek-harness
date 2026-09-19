@@ -152,7 +152,7 @@
 .brokenTip {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  inset-inline-start: 0;
   z-index: 1;
   width: max-content;
   max-width: 100%;
@@ -163,7 +163,7 @@
   font-size: 11px;
   font-weight: 400;
   line-height: 1.5;
-  text-align: left;
+  text-align: start;
   white-space: pre-line;
   overflow-wrap: anywhere;
   opacity: 0;
@@ -210,7 +210,7 @@
   background: none;
   font: inherit;
   color: inherit;
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -247,7 +247,7 @@
 
 /* Placement only: the capsule geometry and palette come from `Tag`. */
 .inUse {
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 /* Bounded to four lines. A preset publishes its own description, so one long
@@ -319,7 +319,7 @@
   content: attr(data-tip);
   position: absolute;
   bottom: calc(100% + 6px);
-  left: 50%;
+  inset-inline-start: 50%;
   transform: translateX(-50%);
   padding: 3px 8px;
   border-radius: 6px;

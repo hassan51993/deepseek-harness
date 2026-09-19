@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-07-31-web-default-search.md
 2026-07-31-web-default-search.md: 2e847da850459b17684c8b26ef6cad7e58ad409c
-2026-07-31-web-default-search.ar.md: ba70ce113c34d47743c883ca99ae650841a0a781
+2026-07-31-web-default-search.ar.md: 12ebdccc81817802dcae13e57f28328ed4ea723f
