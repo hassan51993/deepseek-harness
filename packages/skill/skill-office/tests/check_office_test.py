@@ -190,11 +190,11 @@ class OfficeCheckTest(unittest.TestCase):
         parts = {
             "xl/workbook.xml": f'<workbook xmlns="{S}" xmlns:r="{R}"><sheets><sheet name="Data" sheetId="1" r:id="r1"/></sheets></workbook>',
             "xl/_rels/workbook.xml.rels": f'<Relationships xmlns="{PKG}"><Relationship Id="r1" Target="/xl/worksheets/sheet1.xml"/></Relationships>',
-            "xl/sharedStrings.xml": f'<sst xmlns="{S}"><si><t>Deleted value</t></si><si><r><t>فعلي</t></r><r><t>محتوى</t></r></si></sst>',
+            "xl/sharedStrings.xml": f'<sst xmlns="{S}"><si><t>Deleted value</t></si><si><r><t>مح</t></r><r><t>توى</t></r></si></sst>',
             "xl/worksheets/sheet1.xml": f'<worksheet xmlns="{S}"><sheetData><row r="1"><c r="A1" t="s"><v>1</v></c><c r="B1" t="inlineStr"><is><t>Inline value</t></is></c></row></sheetData></worksheet>',
         }
         path = self.package("xlsx", parts)
-        self.assertEqual(self.run_check(path, "--contains", "فعلي محتوى", "--contains", "Inline value")[0], 0)
+        self.assertEqual(self.run_check(path, "--contains", "محتوى", "--contains", "Inline value")[0], 0)
         code, report = self.run_check(path, "--contains", "Deleted value")
         self.assertEqual(code, 1)
         self.assertEqual(report["checks"][-1]["status"], "fail")

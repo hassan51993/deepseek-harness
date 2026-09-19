@@ -797,7 +797,7 @@ describe('MessageItem arms', () => {
     expect(view.container.querySelector('[data-context-recall-icon]')).not.toBeNull()
     fireEvent.click(view.getByRole('button', { name: /^عبر جلسة استدعاء عودة\s*إعادة بنية loader, إصلاح CI$/ }))
     const rows = [...view.container.querySelectorAll('[data-context-recalls] li')].map(node => node.textContent)
-    expect(rows).toEqual(['إعادة بنية loaderإبقاء 18 بند · حذف 42 بند قد قطع قطع', 'إصلاح CIإبقاء 3 بند · حذف 0 بند'])
+    expect(rows).toEqual(['إعادة بنية loaderإبقاء 18 بند · حذف 42 بندقد قطع قطع', 'إصلاح CIإبقاء 3 بند · حذف 0 بند'])
     expect(view.container.querySelector('[data-context-text]')?.textContent).toBe('recalled material')
   })
 
@@ -890,7 +890,7 @@ describe('MessageItem arms', () => {
     expect(details?.open).toBe(false)
     expect(details?.dataset.active).toBe('true')
     expect(view.getByRole('status').textContent).toBe('صحيح في إعادة محاولة نموذج طلب (1/2) · 3s')
-    expect(view.getByText('إعادة محاولة تأخير متأخر:').parentElement?.textContent).toBe('إعادة محاولة تأخير متأخر:2500جزء ثانية')
+    expect(view.getByText('إعادة محاولة تأخير متأخر:').parentElement?.textContent).toBe('إعادة محاولة تأخير متأخر: 2500جزء ثانية')
     expect(view.getByText('فشل سبب:').parentElement?.textContent).toBe('فشل سبب: اتصال يتم إعادة وضع')
 
     act(() => { vi.advanceTimersByTime(1_100) })

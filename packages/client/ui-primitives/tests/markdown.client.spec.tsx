@@ -63,14 +63,14 @@ describe('MarkdownText', () => {
 
   it('closes punctuation-terminated strong emphasis before adjacent CJK text', () => {
     const cases = [
-      ['**ملاحظة معنى:**محتوى', 'ملاحظة معنى:'],
-      ['**Notice:**محتوى', 'Notice:'],
-      ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)'],
-      ['**حدث في بين عنصر (waterfall)**تنفيذ', 'حدث في بين عنصر (waterfall)'],
-      ['**جملة رقم.**لاحق', 'جملة رقم.'],
-      ['**Period.**لاحق', 'Period.'],
-      ['**رفع تنبيه!**متابعة', 'رفع تنبيه!'],
-      ['**Warning!**متابعة', 'Warning!'],
+      ['**注意：**内容', '注意：'],
+      ['**Notice:**内容', 'Notice:'],
+      ['**事件中间件（waterfall）**实现', '事件中间件（waterfall）'],
+      ['**事件中间件(waterfall)**实现', '事件中间件(waterfall)'],
+      ['**句号。**后续', '句号。'],
+      ['**Period.**后续', 'Period.'],
+      ['**提醒！**继续', '提醒！'],
+      ['**Warning!**继续', 'Warning!'],
     ] as const
     const source = cases.map(([markdown]) => markdown).join('\n\n')
 

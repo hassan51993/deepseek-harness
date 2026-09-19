@@ -69,7 +69,7 @@ export const ar = {
   'time.days': '{n}يوم',
   'time.months': '{n}عدد شهر',
   'time.years': '{n}سنة',
-  'time.ago': '{t}قبل',
+  'time.ago': '{t} قبل',
 } satisfies Record<string, string>
 
 /** The workspace namespace key union. */

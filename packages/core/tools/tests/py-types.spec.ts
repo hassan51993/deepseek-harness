@@ -523,7 +523,7 @@ describe('renderToolsSdkPy', () => {
       output: { type: 'string' },
     })
     const text = renderToolsSdkPy([of('مسار'), of('ﬁnd')])
-    expect(text).toContain('async def مسار (self, args: مسارArgs) -> str:')
+    expect(text).toContain('async def مسار(self, args: مسارArgs) -> str:')
     expect(text).toContain('# tools["ﬁnd"](args: FIndArgs) -> str')
     expect(text).toContain('class FIndArgs(TypedDict):')
     expect(text).not.toContain('async def ﬁnd')

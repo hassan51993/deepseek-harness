@@ -1315,7 +1315,7 @@ describe('ChatView', () => {
     const view = render(<h.ChatView {...h.props} />)
     const statuses = view.getAllByRole('status')
     expect(statuses.map(status => status.textContent)).toEqual([
-      'قد بلوغ إلى إخراج token حد أعلى عودة جواب يتم قطع قطع، قد لديه إخراج إبقاء في محادثة في. إرسال “متابعة” يمكن يجعل نموذج وصل حال إخراج.',
+      'قد بلوغ إلى إخراج token حد أعلىعودة جواب يتم قطع قطع، قد لديه إخراج إبقاء في محادثة في. إرسال “متابعة” يمكن يجعل نموذج وصل حال إخراج.',
     ])
     expect(view.queryByText('هذا جولة تشغيل فشل')).toBeNull()
   })

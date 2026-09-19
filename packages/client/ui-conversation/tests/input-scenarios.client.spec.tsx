@@ -310,14 +310,14 @@ describe('scenario: images ride an accepting command through the real pipeline',
 })
 
 describe('scenario H: backspace breaks the token', () => {
-  it.each(['goal', 'هدف', 'plan', 'حساب تخطيط', 'feedback', 'عكس تغذية'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
+  it.each(['goal', 'هدف', 'plan', 'خطة', 'feedback', 'ملاحظات'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
     const { source } = commandSource([{ name, description: name, input: { hint: 'هدف محتوى' } }],
       () => Promise.resolve({ kind: 'success' }))
     const b = await scopedBench((triggers) => { triggers.registerSource(source) })
     b.type(`/${name}`)
     fireEvent.keyDown(b.textarea, { key: ' ', keyCode: 32 })
     expect(b.shell.snapshot.phase).toBe('claimed')
-    b.type(`/${name} هذا هو هدف`)
+    b.type(`/${name} هدفي`)
     for (let i = 0; i < 5; i++) {
       act(() => {
         b.shell.editor.update(() => {

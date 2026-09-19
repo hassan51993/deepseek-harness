@@ -185,19 +185,19 @@ describe('ScheduleCatalogAction rows', () => {
     const tEn = makeTranslate(en)
     const tAr = makeTranslate(ar)
     const samples = [
-      [86_400, 'Every 1 day', '1يوم مرة'],
-      [172_800, 'Every 2 days', '2يوم مرة'],
-      [3_600, 'Every 1 hour', '1صغير وقت مرة'],
-      [7_200, 'Every 2 hours', '2صغير وقت مرة'],
-      [300, 'Every 5 minutes', '5قسم ساعة مرة'],
-      [301, 'Every 301 seconds', '301ثانية مرة'],
+      [86_400, 'Every 1 day', 'كل 1 يوم'],
+      [172_800, 'Every 2 days', 'كل 2 يوم'],
+      [3_600, 'Every 1 hour', 'كل 1 صغير وقت'],
+      [7_200, 'Every 2 hours', 'كل 2 صغير وقت'],
+      [300, 'Every 5 minutes', 'كل 5 قسم ساعة'],
+      [301, 'Every 301 seconds', 'كل 301 ثانية'],
     ] as const
     for (const [seconds, english, arabic] of samples) {
       const item = record(String(seconds), 'every', START + 1_000, { everySeconds: seconds })
       expect(formatScheduleFrequency(item, tEn)).toBe(english)
       expect(formatScheduleFrequency(item, tAr)).toBe(arabic)
     }
-    expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tAr)).toBe('مفرد مرة')
+    expect(formatScheduleFrequency(record('once', 'at', START + 1_000), tAr)).toBe('مرة واحدة')
     expect(tAr('status.scheduled')).toBe('انتظار في')
     expect(tAr('status.overdue')).toBe('قد تجاوز مدة')
   })
