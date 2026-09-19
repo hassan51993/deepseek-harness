@@ -69,7 +69,7 @@ describe('reading display metadata', () => {
   })
 
   it('trims surrounding whitespace', async () => {
-    const dir = await presetDir('name: " أقصى بسيط نمط "\n')
+    const dir = await presetDir('name: "  أقصى بسيط نمط  "\n')
 
     expect(await readPresetMetadata(dir)).toEqual({ name: 'أقصى بسيط نمط' })
   })

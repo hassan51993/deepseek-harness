@@ -440,18 +440,18 @@ describe('renderToolsSdkPy', () => {
         additionalProperties: false,
         properties: {
           مسار: { type: 'string' },
-          opts: { type: 'object', additionalProperties: false, properties: { عميق درجة: { type: 'number' } } },
+          opts: { type: 'object', additionalProperties: false, properties: { عمق: { type: 'number' } } },
         },
         required: ['مسار'],
       },
       output: { type: 'string' },
     }
     const text = renderToolsSdkPy([tool])
-    expect(text).toContain('async def بحث (self, args: بحثArgs) -> str:')
+    expect(text).toContain('async def بحث(self, args: بحثArgs) -> str:')
     expect(text).toContain('class بحثArgs(TypedDict):')
-    expect(text).toContain(' مسار: str')
+    expect(text).toContain('    مسار: str')
     expect(text).toContain('class بحثArgsOpts(TypedDict):')
-    expect(text).toContain(' عميق درجة: NotRequired[float]')
+    expect(text).toContain('    عمق: NotRequired[float]')
     expect(text).not.toContain('dict[str, Any]')
   })
 

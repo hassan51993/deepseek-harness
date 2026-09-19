@@ -194,7 +194,7 @@ The Host and Client still use only two independent TypeScript Programs, but Type
 ```text
 Host Program
 ├─ typert.host.js / typert.host.d.ts
-│ Host ذاته Service،Event،Object،schema و inbound Gateway معلومة
+│  Host ذاته Service،Event،Object،schema و inbound Gateway معلومة
 └─ typert.remote-client.js / typert.remote-client.d.ts / typert.remote-client.d.ts.map
    Host Remote مقابل مهمة معنى إزالة استهلاك بيئة wire إسقاط
 
@@ -297,8 +297,8 @@ Every generated method resolves to `Promise<RemoteResult<T>>`: a call reports it
 Typert in a consumer environment maintains both local information and Remote information imported from other environments, but stores them in separate registries:
 
 ```text
-Typert.local حالي بيئة ذاتي ذات عكس إطلاق نموذج
-Typert.remotes قد استيراد Remote contribution
+Typert.local    حالي بيئة ذاتي ذات عكس إطلاق نموذج
+Typert.remotes  قد استيراد Remote contribution
 ```
 
 `@deepseek-ai/dsh-api-remotes/client` centrally loads the required Remote contributions:

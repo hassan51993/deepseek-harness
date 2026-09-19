@@ -1468,6 +1468,17 @@ export async function readPersistedEvents(scaffold: WebScaffold, id: SessionId):
 const ARIA_AGE =
   /(?:now|\d+min|\d+h|\d+d|\d+mo|\d+y|للتو للتو|\d+قسم ساعة|\d+صغير وقت|\d+يوم|\d+عدد شهر|\d+سنة)(?=")/g
 
+/**
+ * Relative-duration spellings the Arabic dictionary renders, built from parts
+ * so the alternation stays inside the line-length budget.
+ */
+const AR_DURATION = new RegExp(
+  'نحو\\d+(?:سنة(?:\\d+عدد شهر)?|عدد شهر(?:\\d+يوم)?)'
+  + '|\\d+(?:يوم(?:\\d+صغير وقت(?:\\d+قسم\\d+ثانية)?)?'
+  + '|صغير وقت\\d+قسم\\d+ثانية|قسم\\d+ثانية|(?:\\.\\d+)?ثانية)',
+  'g',
+)
+
 function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): string {
   // The session heading renders the workspace's basename, not the full
   // path, so both spellings must collapse to the token.
@@ -1484,7 +1495,7 @@ function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): st
     )
     .replace(/\b\d[\d,]*(?:\.\d+)? ms\b/g, '{{duration}}')
     .replace(
-      /نحو\d+(?: سنة (?:\d+عدد شهر)?|عدد شهر (?:\d+يوم)?)|\d+(?: يوم (?:\d+صغير وقت (?:\d+قسم\d+ثانية)?)?|صغير وقت\d+قسم\d+ثانية|قسم\d+ثانية|(?:\.\d+)?ثانية)/g,
+      AR_DURATION,
       duration => duration.startsWith('نحو') ? duration : '{{duration}}',
     )
     .replace(/\d+(?:\.\d+)?(?= tok\/s(?!\w))/g, '{{throughput}}')

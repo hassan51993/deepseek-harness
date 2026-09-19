@@ -44,15 +44,15 @@ root
 └─ sidebar
    └─ sidebar.settings                   single/root
       └─ ui-settings(قشرة، صفر نص سجل)
-         ├─ settings.trigger single/root ui-settings-general تسجيل
-         ├─ settings.header single/root ui-settings-general تسجيل
-         ├─ settings.close single/root ui-settings-general تسجيل
+         ├─ settings.trigger             single/root  ui-settings-general تسجيل
+         ├─ settings.header              single/root  ui-settings-general تسجيل
+         ├─ settings.close               single/root  ui-settings-general تسجيل
          └─ settings.section             list/root
-            ├─ general (order 0) ui-settings-general تسجيل
+            ├─ general (order 0)         ui-settings-general تسجيل
             │  └─ settings.general.item  list/root
-            │ ├─ language (0) locale تسجيل
-            │ └─ appearance (10) ui-theme تسجيل
-            └─ models (order 10) ui-settings-models تسجيل
+            │     ├─ language (0)        locale تسجيل
+            │     └─ appearance (10)     ui-theme تسجيل
+            └─ models (order 10)         ui-settings-models تسجيل
 ```
 
 section/item contribution استخدام `ctx.slots.inject()`، لا اعتماد client manifest(بيانات وصفية بيان) apply ترتيب؛ محلي تحويل label مشي [كل كمية وصل دخول Note](../../archived/architecture/2026-07-30-client-locale-full-rollout.md) label thunk.SlotMap نوع قسم بيت:trigger/header/close/section صحيح بيت في ui-settings اتفاق (مستهلك general/models متساو اعتماد قشرة، بلا حلقة) ؛`settings.general.item` صحيح بيت في locale حزمة——هو هو الكل item تسجيل جهة الأكثر منخفض عام مشترك اعتماد (ضبط سطر لا بد حمل نص سجل) ، بينما إعلان جهة general اتفاق مقابل locale/ui-theme غير ممكن بلوغ (سوف صار حلقة) ؛ui-theme مرور re-export خروج فتحة إزالة استهلاك.
@@ -74,7 +74,7 @@ export interface ThemeDefinition {
 
 export interface ThemeSnapshot {
   preference: ThemePreference
-  active: ThemeDefinition // system قد تحليل لـ أداة جسم light/dark تعريف
+  active: ThemeDefinition            // system قد تحليل لـ أداة جسم light/dark تعريف
   themes: readonly ThemeDefinition[]
   revision: number
 }

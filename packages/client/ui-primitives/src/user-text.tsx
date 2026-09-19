@@ -24,7 +24,7 @@ import markdownCss from './markdown/MarkdownText.module.css'
 const SESSION_WIRE_RE = /@\[([^\]\n]+)\]\(dsh-session:[^)\s]+\)/gu
 
 /** Sentence punctuation a bare `@name` token may carry without being part of the reference. */
-const TRAILING_PUNCTUATION_RE = /[.,;:!?،. ؛:! ؟]+$/u
+const TRAILING_PUNCTUATION_RE = /[.,;:!?،؛؟]+$/u
 
 interface DecorationRange {
   readonly start: number

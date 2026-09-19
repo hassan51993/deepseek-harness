@@ -17,14 +17,14 @@ Status: implemented
 ```
 ┌─ Host ─────────────────────────┐   ┌─ Browser ─────────────────────────────────────────┐
 │ sessions/agents/SessionLog     │   │ client cordis root ctx                             │
-│ Connection + Gateway: RPC/events│◀─▶│ ├ vendored Loader + ctx.modules(داخل نواة، قشرة ساكن حالة يحتفظ)│
+│ Connection + Gateway: RPC/events│◀─▶│  ├ vendored Loader + ctx.modules(داخل نواة، قشرة ساكن حالة يحتفظ)│
 │ webserver:                     │   │  ├ immediately entries: connection/runtime/        │
-│ ├ GET /plugins/<id>/client.js │ │ │ ui-theme/i18n(fetch bundle،boot مسبق سحب) │
-│ └ GET / حقن __DSH_BOOT__ رسم │ │ ├ lazy entries: layout/sidebar/ │
-│ │ │ │ conversation/trajectory(fetch bundle، حسب يحتاج) │
-└────────────────────────────────┘ │ ├ ui-renderer(fetch bundle،React أصل) │
-                                     │ └ session scope ×N(مراقبة نظر قيادة، كسول صفة بناء) │
-                                     │ DOM loading صفحة → settled → React UI مرة صار نوع │
+│  ├ GET /plugins/<id>/client.js │   │  │   ui-theme/i18n(fetch bundle،boot مسبق سحب)       │
+│  └ GET / حقن __DSH_BOOT__ رسم  │   │  ├ lazy entries: layout/sidebar/                   │
+│                                │   │  │   conversation/trajectory(fetch bundle، حسب يحتاج) │
+└────────────────────────────────┘   │  ├ ui-renderer(fetch bundle،React أصل)       │
+                                     │  └ session scope ×N(مراقبة نظر قيادة، كسول صفة بناء)            │
+                                     │ DOM loading صفحة → settled → React UI مرة صار نوع       │
                                      └────────────────────────────────────────────────────┘
 ```
 

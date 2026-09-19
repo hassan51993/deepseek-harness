@@ -61,7 +61,7 @@ class DelayedSuccessAdapter extends LlmAdapter {
 
 const SCRIPT: StreamChunk[] = [
   { type: 'block-start', index: 0, blockType: 'text' },
-  { type: 'text-delta', index: 0, text: ' خمسة عدد حرف عنوان ' },
+  { type: 'text-delta', index: 0, text: '  خمسة عدد حرف عنوان  ' },
   { type: 'finish', reason: { kind: 'stop' } },
 ]
 

@@ -194,7 +194,7 @@ Host و Client ما زال فقط لديه اثنان عدد مستقل TypeScri
 ```text
 Host Program
 ├─ typert.host.js / typert.host.d.ts
-│ Host ذاته Service،Event،Object،schema و inbound Gateway معلومة
+│  Host ذاته Service،Event،Object،schema و inbound Gateway معلومة
 └─ typert.remote-client.js / typert.remote-client.d.ts / typert.remote-client.d.ts.map
    Host Remote مقابل مهمة معنى إزالة استهلاك بيئة wire إسقاط
 
@@ -297,8 +297,8 @@ Agent Scope تلقائي توفير ذاتي ذات `SessionId`. لذلك حمل
 واحد إزالة استهلاك بيئة Typert معا صيانة محلي معلومة و من أخرى بيئة استيراد Remote معلومة، لكن اثنان من تخزين وضع في مختلف registry:
 
 ```text
-Typert.local حالي بيئة ذاتي ذات عكس إطلاق نموذج
-Typert.remotes قد استيراد Remote contribution
+Typert.local    حالي بيئة ذاتي ذات عكس إطلاق نموذج
+Typert.remotes  قد استيراد Remote contribution
 ```
 
 `@deepseek-ai/dsh-api-remotes/client` تجميع في تحميل حاجة Remote contribution:

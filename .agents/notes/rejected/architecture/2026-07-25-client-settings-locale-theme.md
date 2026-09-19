@@ -44,15 +44,15 @@ root
 └─ sidebar
    └─ sidebar.settings                   single/root
       └─ ui-settings(قشرة، صفر نص سجل)
-         ├─ settings.trigger single/root ui-settings-general تسجيل
-         ├─ settings.header single/root ui-settings-general تسجيل
-         ├─ settings.close single/root ui-settings-general تسجيل
+         ├─ settings.trigger             single/root  ui-settings-general تسجيل
+         ├─ settings.header              single/root  ui-settings-general تسجيل
+         ├─ settings.close               single/root  ui-settings-general تسجيل
          └─ settings.section             list/root
-            ├─ general (order 0) ui-settings-general تسجيل
+            ├─ general (order 0)         ui-settings-general تسجيل
             │  └─ settings.general.item  list/root
-            │ ├─ language (0) locale تسجيل
-            │ └─ appearance (10) ui-theme تسجيل
-            └─ models (order 10) ui-settings-models تسجيل
+            │     ├─ language (0)        locale تسجيل
+            │     └─ appearance (10)     ui-theme تسجيل
+            └─ models (order 10)         ui-settings-models تسجيل
 ```
 
 Section and item contributions use `ctx.slots.inject()` and do not depend on the client manifest's apply order; localized labels ride the label thunk from the [full-rollout note](../../archived/architecture/2026-07-30-client-locale-full-rollout.md). The SlotMap types split homes: trigger/header/close/section have their canonical home in the ui-settings contract (the consumers, general and models, both depend on the shell — no cycle); `settings.general.item`'s canonical home is the locale package — it is the lowest common dependency of all item registrants (a settings row always carries copy), while the declarer general's contract is unreachable from locale/ui-theme (it would form a cycle); ui-theme consumes it through a re-export outlet.
@@ -74,7 +74,7 @@ export interface ThemeDefinition {
 
 export interface ThemeSnapshot {
   preference: ThemePreference
-  active: ThemeDefinition // system قد تحليل لـ أداة جسم light/dark تعريف
+  active: ThemeDefinition            // system قد تحليل لـ أداة جسم light/dark تعريف
   themes: readonly ThemeDefinition[]
   revision: number
 }
