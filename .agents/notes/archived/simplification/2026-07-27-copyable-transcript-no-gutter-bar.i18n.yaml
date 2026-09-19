@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-07-27-copyable-transcript-no-gutter-bar.md
-2026-07-27-copyable-transcript-no-gutter-bar.md: a4eca191d28a834b05a6839997aab602852912c0
-2026-07-27-copyable-transcript-no-gutter-bar.ar.md: b1f661cb76bb879e414a0dcfd08fc9349ae070c7
+2026-07-27-copyable-transcript-no-gutter-bar.md: b47686776a9c22163670faa8fb17ce42eee797c2
+2026-07-27-copyable-transcript-no-gutter-bar.ar.md: b3ed083ca4a90f5f2786a8e6dce8cd8256e2db45

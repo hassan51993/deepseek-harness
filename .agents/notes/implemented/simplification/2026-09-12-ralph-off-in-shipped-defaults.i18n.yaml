@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-09-12-ralph-off-in-shipped-defaults.md
-2026-09-12-ralph-off-in-shipped-defaults.md: 4ae434a0e9d6283c2934cdf74a562df360daa12e
-2026-09-12-ralph-off-in-shipped-defaults.ar.md: 490b33d85be411826d03c5def08b1905062ff830
+2026-09-12-ralph-off-in-shipped-defaults.md: 2f76c2ce160a5be532101a374c38f643493534ed
+2026-09-12-ralph-off-in-shipped-defaults.ar.md: 2eb1d0b4f70e27ae85f5e779f674b7ff49e8aa1c

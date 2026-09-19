@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-06-api-key-format-validation.md
-2026-08-06-api-key-format-validation.md: d3524d47934a97c25760b12befef18d6f3935575
-2026-08-06-api-key-format-validation.ar.md: 8844fd083d2f6f978f635c931d384060685423f0
+2026-08-06-api-key-format-validation.md: 9d1b2d0922be343b891b75001c0f917a1379af58
+2026-08-06-api-key-format-validation.ar.md: 3a6682062cf6a01d293be1f003a29261b35b70b3

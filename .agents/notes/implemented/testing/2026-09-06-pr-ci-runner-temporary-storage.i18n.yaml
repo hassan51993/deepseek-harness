@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/testing/2026-09-06-pr-ci-runner-temporary-storage.md
-2026-09-06-pr-ci-runner-temporary-storage.md: 59d609c08e1b228ae9a9705140f2832305dfead5
-2026-09-06-pr-ci-runner-temporary-storage.ar.md: f6765212af2424f2080063946f9104125993b9d5
+2026-09-06-pr-ci-runner-temporary-storage.md: 628891ed06b5e7a53124d0bd3a84a7b9b48ad685
+2026-09-06-pr-ci-runner-temporary-storage.ar.md: 3cb56a3e1c1c9bfba54ba57c84284dd80f81a960

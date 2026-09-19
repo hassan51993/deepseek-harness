@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-09-09-blocked-weighted-approvals-remain-pending.md
-2026-09-09-blocked-weighted-approvals-remain-pending.md: 50ab64dadc0d7ad14366950d24b4136d131f55ec
-2026-09-09-blocked-weighted-approvals-remain-pending.ar.md: 58ab10b3acb3bee92c720b622d92170a1a8bcf03
+2026-09-09-blocked-weighted-approvals-remain-pending.md: 606078acf3972a989516665a568c3ff0e09de486
+2026-09-09-blocked-weighted-approvals-remain-pending.ar.md: c8c35bd7b98aa22226743892191944fc3ddc8285

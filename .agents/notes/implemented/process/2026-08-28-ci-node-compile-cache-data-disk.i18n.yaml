@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-28-ci-node-compile-cache-data-disk.md
-2026-08-28-ci-node-compile-cache-data-disk.md: 3f5f7eb2f00a37b635b63093f60c66688b82316b
-2026-08-28-ci-node-compile-cache-data-disk.ar.md: c55a6c73cf98f0dd0b31b50d64e7937ee9e14305
+2026-08-28-ci-node-compile-cache-data-disk.md: a1bc1437c43e9e7ecf72547e82c84069ab025456
+2026-08-28-ci-node-compile-cache-data-disk.ar.md: 79ee409e1d5bdbf5df3fee6ea7115b489772ee62

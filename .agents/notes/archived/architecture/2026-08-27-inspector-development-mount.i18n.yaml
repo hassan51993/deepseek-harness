@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-27-inspector-development-mount.md
-2026-08-27-inspector-development-mount.md: 7816a80830b7b13f505ce1bcc27a9d8a22b90650
-2026-08-27-inspector-development-mount.ar.md: d50a2e10aed9486128c0304e68e6e8810889576c
+2026-08-27-inspector-development-mount.md: 1f8cacb25806ca4d0df9bc74fb8304010ce37bd8
+2026-08-27-inspector-development-mount.ar.md: 6b4610fba700f3e8a054bf7e9e6702f1f00e03ab

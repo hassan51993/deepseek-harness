@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-26-composer-gesture-editable-gate.md
-2026-08-26-composer-gesture-editable-gate.md: 28254f6ada383756aa1674ae2a5eaf2a2ca64564
-2026-08-26-composer-gesture-editable-gate.ar.md: 2a5024c53665675b7e7ea69554deaeef65381abf
+2026-08-26-composer-gesture-editable-gate.md: d997e618832b80dd0dd68d0d055473d3e2ded005
+2026-08-26-composer-gesture-editable-gate.ar.md: a0a0c5d57012e49e3b537a806045116760d2404f

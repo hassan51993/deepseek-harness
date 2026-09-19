@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-06-14-acp-multi-session.md
-2026-06-14-acp-multi-session.md: 6a0cb25ce5b2f75907696e984adb4d659cfba9bd
-2026-06-14-acp-multi-session.ar.md: f7a1f01c8cad85549fcc69eb8486120dd39b14cc
+2026-06-14-acp-multi-session.md: 8b2caf450101ed67fe989e5c322c59c337f3f113
+2026-06-14-acp-multi-session.ar.md: 8e63bd7f310171474442bbd31db1544dbfdb093a

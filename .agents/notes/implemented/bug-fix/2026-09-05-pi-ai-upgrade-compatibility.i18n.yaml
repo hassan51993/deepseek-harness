@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-05-pi-ai-upgrade-compatibility.md
-2026-09-05-pi-ai-upgrade-compatibility.md: e28d911facae33fcf278a6824376f889e3416d77
-2026-09-05-pi-ai-upgrade-compatibility.ar.md: 408669ddc963a505254529acaab4c19e9774c6b1
+2026-09-05-pi-ai-upgrade-compatibility.md: 09ff623f4b1a8b171659659033ec32b263a3a329
+2026-09-05-pi-ai-upgrade-compatibility.ar.md: d73ddbd5cda11986dfcfe7314a84a908cafdeecb

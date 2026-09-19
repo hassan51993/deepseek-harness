@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-26-models-page-extension-slots.md
-2026-08-26-models-page-extension-slots.md: 644a49d69a1567e418562a2c3e64bf195b2c6734
-2026-08-26-models-page-extension-slots.ar.md: 031d439005574c8f46fba427d0d01e44cb5aab9b
+2026-08-26-models-page-extension-slots.md: 4a3b40c2c51d70f29ce819a4e0af1d9913376a8a
+2026-08-26-models-page-extension-slots.ar.md: 0d29696b1b333a776ce80fdaed90bb35b6eda5df

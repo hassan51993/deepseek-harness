@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-12-linux-scope-direct-kill-settlement.md
-2026-09-12-linux-scope-direct-kill-settlement.md: e89d8f801d6f7fb1309f50e0bc3dbad69aa797d0
-2026-09-12-linux-scope-direct-kill-settlement.ar.md: 7ab43107491ec24d5e39a62c401d245b61bb744d
+2026-09-12-linux-scope-direct-kill-settlement.md: 3bdfeda8084af0be1d421c09e2f554ad9146ebc6
+2026-09-12-linux-scope-direct-kill-settlement.ar.md: d92457ded7ea0497a60a4d44e3264af846e6b8d2

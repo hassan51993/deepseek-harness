@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-22-tui-titles-from-session-title-service.md: 946ef283f91249c70f82280b754ef991665dbaa3
-2026-07-22-tui-titles-from-session-title-service.ar.md: f2fa4772c9fa404540dcf8a514cf571a284d4967
+2026-07-22-tui-titles-from-session-title-service.md: 5fd3f5ee9033e48a88eddd01605d4866f4f7a143
+2026-07-22-tui-titles-from-session-title-service.ar.md: 0a8b040c35af44b3280c41ff3cb56152d8dacf7c

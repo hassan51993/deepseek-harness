@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-15-profile-command-shorthand.md
-2026-09-15-profile-command-shorthand.md: 15bdf30b98eb814e299e8e2c3af3756b1f59aad1
-2026-09-15-profile-command-shorthand.ar.md: 77ffd2324fc8fe518368fce44f52ad85274eb7b5
+2026-09-15-profile-command-shorthand.md: b385d23570ce5143c598d67dd66cb608e28b6da7
+2026-09-15-profile-command-shorthand.ar.md: b632df44d053879550f5b8951ab9ac4bd36098fe

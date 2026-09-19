@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-08-06-coverage-uncovered-locations.md
-2026-08-06-coverage-uncovered-locations.md: a93793b4084ae2d9c8d9e67bc975f79a213363df
-2026-08-06-coverage-uncovered-locations.ar.md: c4333bfcfc1a910959f2f4c6abf7f61519115f9c
+2026-08-06-coverage-uncovered-locations.md: 1d39860124e78035769265b2c73b5c3294a3e9f7
+2026-08-06-coverage-uncovered-locations.ar.md: 7f99a9110f490a5d64087eb7244d94f04defa37f

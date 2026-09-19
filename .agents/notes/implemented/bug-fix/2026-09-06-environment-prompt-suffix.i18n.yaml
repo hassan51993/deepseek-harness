@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-06-environment-prompt-suffix.md
-2026-09-06-environment-prompt-suffix.md: 3438df0fec7b3296084c94b7db68d2800c6d6c98
-2026-09-06-environment-prompt-suffix.ar.md: 102d1196639ac7d7a754a24fc5a93bc93c1d05ba
+2026-09-06-environment-prompt-suffix.md: 1ef775a835a2637c50d791da51972097570ef95a
+2026-09-06-environment-prompt-suffix.ar.md: eb2926a88ab17e154789814d87845721ad72db92

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-10-minimal-preset-owns-rl-composition.md
-2026-08-10-minimal-preset-owns-rl-composition.md: fd901f37795efdf8df8df097e186d22ac9c69700
-2026-08-10-minimal-preset-owns-rl-composition.ar.md: 7e725428983ce7491869589f4e85d5aca507d22f
+2026-08-10-minimal-preset-owns-rl-composition.md: ff7ad2508dca5d986dedad22d630b23780c13b8c
+2026-08-10-minimal-preset-owns-rl-composition.ar.md: 93541754715f385829d199ef99f1b53257acf808

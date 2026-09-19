@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-11-background-first-continuable-delegation.md
-2026-08-11-background-first-continuable-delegation.md: b71fe00af0f5b35bb2749f5fe71d069f2810dc0f
-2026-08-11-background-first-continuable-delegation.ar.md: d1aa651fce59b97aafd226944d9ebc95badc8dd3
+2026-08-11-background-first-continuable-delegation.md: 87b8ad27556d61899e3322553c5ced3b941f5e36
+2026-08-11-background-first-continuable-delegation.ar.md: 1b60e4bf049c3df66e77b1def925e8f4e97f6fa2

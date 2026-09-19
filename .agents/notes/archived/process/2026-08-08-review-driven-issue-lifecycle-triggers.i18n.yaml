@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/process/2026-08-08-review-driven-issue-lifecycle-triggers.md
-2026-08-08-review-driven-issue-lifecycle-triggers.md: 444927968912d93f473e27ae8576e8371b9c287c
-2026-08-08-review-driven-issue-lifecycle-triggers.ar.md: 6e00e2a936b6421824743e779756011fcd4a1c9e
+2026-08-08-review-driven-issue-lifecycle-triggers.md: 9c6a7a4251158926d57a11564a86671bd2689273
+2026-08-08-review-driven-issue-lifecycle-triggers.ar.md: d700fa470832f89abe87084bc8c6d387afc57350

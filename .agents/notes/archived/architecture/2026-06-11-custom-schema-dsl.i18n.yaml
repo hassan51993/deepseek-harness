@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-06-11-custom-schema-dsl.md: e09fea6c4bb80e287b1b64471eee4c87f24fba4a
-2026-06-11-custom-schema-dsl.ar.md: 2bacbde02838ef61b05f38796bbeeea262fc2d23
+2026-06-11-custom-schema-dsl.md: 87f0c7fa01b5a52b22b89fb8f821b29ab573f675
+2026-06-11-custom-schema-dsl.ar.md: fc69d18bac8f94cb18eae77be8ef16dd78ad887f

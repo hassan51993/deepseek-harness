@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-24-web-per-turn-token-usage.md
-2026-08-24-web-per-turn-token-usage.md: eb3c82e5c0fe188566cbccbdb8c0ed1c361ed73e
-2026-08-24-web-per-turn-token-usage.ar.md: ea8b57a50dc9c77055c5ecd25e62c125c42a9a7a
+2026-08-24-web-per-turn-token-usage.md: 635ee688600e85025136ce5560025d7d22d8ba78
+2026-08-24-web-per-turn-token-usage.ar.md: 6dd17073d20ab8b1ace5b200140a79f0f15bfb59

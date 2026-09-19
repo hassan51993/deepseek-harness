@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-08-31-windows-coverage-flaky-test-budgets.md
-2026-08-31-windows-coverage-flaky-test-budgets.md: e026cb20c83648ad5d99070981a22f54c031f546
-2026-08-31-windows-coverage-flaky-test-budgets.ar.md: 7109756422738d994a4d733198404f4c3d065faf
+2026-08-31-windows-coverage-flaky-test-budgets.md: b455143433238040858fd8428c03456a7c15cc9e
+2026-08-31-windows-coverage-flaky-test-budgets.ar.md: 5f18fe32eae32c2022b99c49677374317029766c

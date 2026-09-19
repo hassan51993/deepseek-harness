@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-07-30-sidebar-resize-without-visible-pill.md
-2026-07-30-sidebar-resize-without-visible-pill.md: 50bf43564675540df2db8e88530a82177f551407
-2026-07-30-sidebar-resize-without-visible-pill.ar.md: 41a33e039aaa29813d4232e5a6d36141b55ce947
+2026-07-30-sidebar-resize-without-visible-pill.md: 2a2da5ec647ddbc5556fd879dda61a83d946513b
+2026-07-30-sidebar-resize-without-visible-pill.ar.md: 67501b38328d358f51e90745fe7ab4bf24e00f7c

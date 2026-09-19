@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-29-tui-hidden-mode-assistant-fold.md
-2026-07-29-tui-hidden-mode-assistant-fold.md: 53cd3d812212f8a72c56165c37b806cae58f37f6
-2026-07-29-tui-hidden-mode-assistant-fold.ar.md: cf3644478588bbba955fb6539dd99744ef6eb84c
+2026-07-29-tui-hidden-mode-assistant-fold.md: 97a5ddec166db5836b3dfddb01dda440e9f84717
+2026-07-29-tui-hidden-mode-assistant-fold.ar.md: cc0af212a261a780a92a0f5ddc79e7f3093c27e1

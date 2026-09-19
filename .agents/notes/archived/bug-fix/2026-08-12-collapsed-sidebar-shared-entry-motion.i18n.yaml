@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-12-collapsed-sidebar-shared-entry-motion.md
-2026-08-12-collapsed-sidebar-shared-entry-motion.md: c5bc18973db693cf9ba60800fbcf7720593dbad5
-2026-08-12-collapsed-sidebar-shared-entry-motion.ar.md: b87ef6322d548061cc2e29c0e8f9896098c09041
+2026-08-12-collapsed-sidebar-shared-entry-motion.md: 9ba4066dcc950026f74c9a82461725e15e060d25
+2026-08-12-collapsed-sidebar-shared-entry-motion.ar.md: 961b9c852977c25af49f5a25b2367976ff8ce13a

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/glossary.md
-glossary.md: 1a9ac39a73526833be3cdc191d67f519bdf8fc90
-glossary.ar.md: cd41876d41148082ddc18a08c49cf2abba882c79
+glossary.md: 09f48528b43c2dd5dc9af1eb79679bea845986a0
+glossary.ar.md: 743b87e9b72cb23375714a374c34894ab4752d44

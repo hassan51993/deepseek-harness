@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-30-tui-adapter-registration-race.md
-2026-07-30-tui-adapter-registration-race.md: 051f5e6af5d7fd6c0096c84af064d065dd6f8983
-2026-07-30-tui-adapter-registration-race.ar.md: 1706acb1d23bab987333a7ac0b5e2695226c1af5
+2026-07-30-tui-adapter-registration-race.md: c7570a7c083fc2f56140ed55667ad65648dd6310
+2026-07-30-tui-adapter-registration-race.ar.md: 706ccd53aa4c705f620822a90241e9d1d3d56ce0

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-27-steer-followup-image-delivery.md
-2026-08-27-steer-followup-image-delivery.md: 86652521e82ca0b829446f08d03ab2e65e235f3e
-2026-08-27-steer-followup-image-delivery.ar.md: 9e0441e59cc83b8827fe877717f376804839a2e3
+2026-08-27-steer-followup-image-delivery.md: 4773f1f49ba22fd6ef1013b1c63042708409a606
+2026-08-27-steer-followup-image-delivery.ar.md: 3b59cd70848942487d70fca61f2c83d988c28f3a

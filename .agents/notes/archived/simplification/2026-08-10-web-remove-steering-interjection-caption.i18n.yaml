@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-08-10-web-remove-steering-interjection-caption.md
-2026-08-10-web-remove-steering-interjection-caption.md: 4a2d5df1757154584a897147b5d6a7d492945b89
-2026-08-10-web-remove-steering-interjection-caption.ar.md: 82e24a16e7d8efb12a79b12069a5cb3ce39a3da7
+2026-08-10-web-remove-steering-interjection-caption.md: 9fd263fb3c4154ff3ae7a5ebf6ca10adbe8f7ede
+2026-08-10-web-remove-steering-interjection-caption.ar.md: 5b6c0c3c6fe5720b86cf17dd9e8c413ae8d71108

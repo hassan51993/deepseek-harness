@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-24-folder-reference-pick-vs-drill.md
-2026-08-24-folder-reference-pick-vs-drill.md: 18e994784f4148e306a98bfb457c43a67565a60e
-2026-08-24-folder-reference-pick-vs-drill.ar.md: c752db974b93011f89f1c3778b77b6ccb4186b8b
+2026-08-24-folder-reference-pick-vs-drill.md: 204da693c67ba66e6b1fff5bfc044ff4dafded86
+2026-08-24-folder-reference-pick-vs-drill.ar.md: 7545ac99fc22f186ebf009de8bb4aa4fae870a53

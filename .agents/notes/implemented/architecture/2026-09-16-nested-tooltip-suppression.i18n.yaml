@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-16-nested-tooltip-suppression.md
-2026-09-16-nested-tooltip-suppression.md: 1b06a3a1a4f754aa78e821ee8a1479dab19873ff
-2026-09-16-nested-tooltip-suppression.ar.md: 96063f78b281deb3561045bb73fcffa64a2c1ef8
+2026-09-16-nested-tooltip-suppression.md: 3f7ea3d8267d82edb04169fc5297166619fdf3ab
+2026-09-16-nested-tooltip-suppression.ar.md: 7d9ee4e491b68d236c19a1eb80d1b9f7130a721f

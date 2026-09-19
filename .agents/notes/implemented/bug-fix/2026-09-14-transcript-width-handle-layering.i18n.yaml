@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-14-transcript-width-handle-layering.md
-2026-09-14-transcript-width-handle-layering.md: 01d70e646e874d8266633597f1b510ad73fc2287
-2026-09-14-transcript-width-handle-layering.ar.md: c6e03ec5775256f5aac87d2f7c1ed66a12cf0c2a
+2026-09-14-transcript-width-handle-layering.md: 91bcca70d858a70c9c130795664e30c875bf08d0
+2026-09-14-transcript-width-handle-layering.ar.md: 54d582c57f043f8a592b25799e20b0c72b70dc07

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-16-desktop-window-menus.md
-2026-09-16-desktop-window-menus.md: 85ac42aa287b1cd9e595ade7cb44b965dea787dd
-2026-09-16-desktop-window-menus.ar.md: 1376b90058ceafa7e378b4fd543d261064f5d8aa
+2026-09-16-desktop-window-menus.md: 97835ce3e293e59183785a8c93f1450019a2a1a6
+2026-09-16-desktop-window-menus.ar.md: b2d5f046374844d75200c82272e9e2edc552da72

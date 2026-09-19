@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-07-workspace-files-dual-face-package.md
-2026-09-07-workspace-files-dual-face-package.md: adc900865cb8d5f19518828a9cb230a835d025f5
-2026-09-07-workspace-files-dual-face-package.ar.md: ccfa60417284129a280efd7ddad2ea275c242f1e
+2026-09-07-workspace-files-dual-face-package.md: d45d56f38eda8c1d100345b855a25ef489b98882
+2026-09-07-workspace-files-dual-face-package.ar.md: 0511cf1e6fbe8c110e2c1390552c87ad49f60216

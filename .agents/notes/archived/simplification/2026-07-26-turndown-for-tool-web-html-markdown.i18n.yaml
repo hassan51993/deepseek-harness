@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-07-26-turndown-for-tool-web-html-markdown.md
-2026-07-26-turndown-for-tool-web-html-markdown.md: 46c4eba12c782146aa32df245c5f69567723935a
-2026-07-26-turndown-for-tool-web-html-markdown.ar.md: 077ea89c54c63e41bec2aabd15e744b7b8a764da
+2026-07-26-turndown-for-tool-web-html-markdown.md: 0ba793402098480b75252c1ffbdffb1c97cd3a89
+2026-07-26-turndown-for-tool-web-html-markdown.ar.md: 055611245bf9615677a69e12865af7be8ce276b8

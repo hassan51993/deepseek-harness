@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-07-24-project-session-directories.md
-2026-07-24-project-session-directories.md: 0074c8b31304e6a7d32199b7461575356e406448
-2026-07-24-project-session-directories.ar.md: 3a1d348255588fd120221dc277a2841359c0a038
+2026-07-24-project-session-directories.md: 295711878187165d80a581ce37c077493a15c15e
+2026-07-24-project-session-directories.ar.md: 7d9c4b0dc058abe6346f4d56b3eab745d248bc1c

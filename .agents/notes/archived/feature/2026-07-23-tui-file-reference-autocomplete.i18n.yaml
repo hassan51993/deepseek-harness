@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-23-tui-file-reference-autocomplete.md
-2026-07-23-tui-file-reference-autocomplete.md: 3ceda81858bc3364a2c4ac5b91d599b23479412a
-2026-07-23-tui-file-reference-autocomplete.ar.md: c0b947edf6df42d27f5fee40d95eb073029e32b1
+2026-07-23-tui-file-reference-autocomplete.md: dcd82b6995023f196065079cd1139d75ba900266
+2026-07-23-tui-file-reference-autocomplete.ar.md: 70ddb630ca07d364bfa7f0a3eee32c2dd6bc0125

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-07-29-sticky-composer-conversation-scroll.md
-2026-07-29-sticky-composer-conversation-scroll.md: e861439d249f844f3cb781d23f0392ec5701cf01
-2026-07-29-sticky-composer-conversation-scroll.ar.md: 3cc252d2e937e50dbe9bc47255224fd155c72e53
+2026-07-29-sticky-composer-conversation-scroll.md: c4c8805cd08b51f463032c51e0df744e4599e798
+2026-07-29-sticky-composer-conversation-scroll.ar.md: 6793ae66e4a2bbc20ce5a602f79c0338269c4b68

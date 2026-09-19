@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/architecture/2026-09-16-creator-persistent-plugin-management.md
-2026-09-16-creator-persistent-plugin-management.md: 04ccbb83fe6d2f5c460f53100a9087cce119ea4d
-2026-09-16-creator-persistent-plugin-management.ar.md: 91afa00cd3f0adb8b21a52ee958bac61bc0912fc
+2026-09-16-creator-persistent-plugin-management.md: 846194ef19733360b5557564cf6cdabbdbf661e8
+2026-09-16-creator-persistent-plugin-management.ar.md: 5b5176d5d673b4627f079cf8c80633d7e9e321a3

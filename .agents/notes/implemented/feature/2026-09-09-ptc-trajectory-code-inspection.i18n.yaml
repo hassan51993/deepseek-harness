@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/feature/2026-09-09-ptc-trajectory-code-inspection.md
-2026-09-09-ptc-trajectory-code-inspection.md: 19779d20e8d08ce0ca9678ab6626765faa13cf65
-2026-09-09-ptc-trajectory-code-inspection.ar.md: 7cdb2321d61893e43426798d311847662450d289
+2026-09-09-ptc-trajectory-code-inspection.md: 54a4d1068bc5adb87cdf93bd4fdbb201230fe518
+2026-09-09-ptc-trajectory-code-inspection.ar.md: 928aad066154633151ca3be3f05e68a012be8dd3

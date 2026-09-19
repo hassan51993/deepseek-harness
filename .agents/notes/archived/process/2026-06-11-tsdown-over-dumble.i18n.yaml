@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-06-11-tsdown-over-dumble.md: b622fd41b262147e3a42ca590ccb192dd83d0b9f
-2026-06-11-tsdown-over-dumble.ar.md: 2200cb8c1776c5f50913ed7e3cfb9a6c305d31e0
+2026-06-11-tsdown-over-dumble.md: 92ccbc48275ec4dc5f6ef427eae873ccbf92cdf5
+2026-06-11-tsdown-over-dumble.ar.md: 170f7e9c0dcbc2f46b95ce98ad648d1db9f799df

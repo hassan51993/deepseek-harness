@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-07-27-tui-chat-channel-module-split.md
-2026-07-27-tui-chat-channel-module-split.md: 3cf9548d4d9d1b845bee5f7137d79a490827b082
-2026-07-27-tui-chat-channel-module-split.ar.md: d5de02bd0f7090c24ccfc5dabbbadff9ff42174e
+2026-07-27-tui-chat-channel-module-split.md: 199b27d93eb51302923f7f5dcc263c8afc29a0ae
+2026-07-27-tui-chat-channel-module-split.ar.md: 8d5aa99b764f9e3d4cc9d039062a3e67d6af6b83

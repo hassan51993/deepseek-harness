@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/adding-a-vendored-package.md
-adding-a-vendored-package.md: 0f8b9f38de8f0d2ae19f40b339529afbb40d90ed
-adding-a-vendored-package.ar.md: 2668b874eee845f6a505ae2e7d2ead5e63642ce2
+adding-a-vendored-package.md: 0f139bb99be5d469753717bf50651bc3ef683a12
+adding-a-vendored-package.ar.md: 5c74eb0e4f0b72269a417c2852cd7a3383a35514

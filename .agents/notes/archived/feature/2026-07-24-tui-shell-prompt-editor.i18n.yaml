@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-24-tui-shell-prompt-editor.md
-2026-07-24-tui-shell-prompt-editor.md: a3707d3fcd0ae30517083ed388eb38cb3b92cad7
-2026-07-24-tui-shell-prompt-editor.ar.md: ca050e2000ff772389086b5023935c816ec1154e
+2026-07-24-tui-shell-prompt-editor.md: 5a20274d3d01e9ffb8c9128953811cf03cafa494
+2026-07-24-tui-shell-prompt-editor.ar.md: 8654b806c05058dfe60e1e4ec36dbf7a470d2da4

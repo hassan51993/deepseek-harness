@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-09-01-ptc-omits-workflow-tool.md
-2026-09-01-ptc-omits-workflow-tool.md: ae53b30e43f9c27701724961162a1844111b1d2e
-2026-09-01-ptc-omits-workflow-tool.ar.md: 2fc839d0729b083ee86a8dff0c586fc426519421
+2026-09-01-ptc-omits-workflow-tool.md: b9f2965c1594d5e85d1dc3326b2c9d323bc5a0d1
+2026-09-01-ptc-omits-workflow-tool.ar.md: cc5a3580d70b16441294ad8ac563f381787eecb7

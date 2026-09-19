@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/simplification/2026-07-26-eventsource-parser-for-deepseek-sse.md
-2026-07-26-eventsource-parser-for-deepseek-sse.md: 9e716cf9556c9c2d8cdf6cb85c6908d45a127a0f
-2026-07-26-eventsource-parser-for-deepseek-sse.ar.md: 16c63ddc9646f6309654910bd80801bd20005545
+2026-07-26-eventsource-parser-for-deepseek-sse.md: 77ee427963145f6ec9af648d2e75ad880642c615
+2026-07-26-eventsource-parser-for-deepseek-sse.ar.md: 8864024e34b80c9292d6a7078be1da65cccb7df4

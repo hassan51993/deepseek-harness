@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-04-drop-inert-request-knobs.md: d4ef5f00caf3b2f580877374adaf6ddcd84e7326
-2026-07-04-drop-inert-request-knobs.ar.md: dfb57080e91039d48b9c173bf958c583005c3c32
+2026-07-04-drop-inert-request-knobs.md: 8da0ee0c084cda666fc92ed39bb1644ad19db0ba
+2026-07-04-drop-inert-request-knobs.ar.md: 529ea9a02541392faae5080efd9f6d9d7cd5ff47

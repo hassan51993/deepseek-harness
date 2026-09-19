@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/proposed/architecture/2026-09-06-logical-session-storage-rebuild.md
-2026-09-06-logical-session-storage-rebuild.md: 66a7163085e61418f18fcfd6b91c8bfcdde1d626
-2026-09-06-logical-session-storage-rebuild.ar.md: cf37e88f45ed62a9eddc533acca8806a2def3491
+2026-09-06-logical-session-storage-rebuild.md: a8e38ab16fd1022dd53735f14c7d45578a9447ed
+2026-09-06-logical-session-storage-rebuild.ar.md: 8ffd5af67812bc04f39b84031e62a2bf10f11c60

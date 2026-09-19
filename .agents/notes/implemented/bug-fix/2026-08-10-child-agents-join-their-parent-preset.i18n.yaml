@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-08-10-child-agents-join-their-parent-preset.md
-2026-08-10-child-agents-join-their-parent-preset.md: 5321d99bad35cf26ebc0e7842dc68c2775bc384b
-2026-08-10-child-agents-join-their-parent-preset.ar.md: f0d5b59c3787ef69c2c983da0c8ec0ff4a43e6e7
+2026-08-10-child-agents-join-their-parent-preset.md: 871105f0a41a2dc575f69a435e01904d099e41d3
+2026-08-10-child-agents-join-their-parent-preset.ar.md: 5e4c3f490a4a50231709dc27eafe1d4089073be1

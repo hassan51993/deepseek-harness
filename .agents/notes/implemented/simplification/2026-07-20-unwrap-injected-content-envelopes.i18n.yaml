@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/simplification/2026-07-20-unwrap-injected-content-envelopes.md
-2026-07-20-unwrap-injected-content-envelopes.md: 7d14ada7cc1b88071ec4f07870afcfff6211a883
-2026-07-20-unwrap-injected-content-envelopes.ar.md: 813adfb818cac35da6e8c3b279b2e795fa99ad1a
+2026-07-20-unwrap-injected-content-envelopes.md: a72dd162325d55a2c8ee2dd2e5e488f56f1c2b00
+2026-07-20-unwrap-injected-content-envelopes.ar.md: 3f6517e8254ae37b05a20d34834c30940f360649

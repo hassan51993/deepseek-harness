@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-21-tui-remove-cancel-command.md: eba4ada458cd7926cc06130d081b669da514fe79
-2026-07-21-tui-remove-cancel-command.ar.md: 9954af56682591287abc955d9f2485f02e1ce6b8
+2026-07-21-tui-remove-cancel-command.md: bce26d6dcf440a0a1f82c09f563d542177db7d84
+2026-07-21-tui-remove-cancel-command.ar.md: 84e186d123716258aecd6ebbf8473a5320fde337

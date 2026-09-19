@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write
-2026-07-04-trim-acp-bridge-unreachable-surface.md: 2b0e6bba085f30959cd3c33362cd369ca7aec422
-2026-07-04-trim-acp-bridge-unreachable-surface.ar.md: ab924775588e61841f835bfe73ccae6d9886fd2a
+2026-07-04-trim-acp-bridge-unreachable-surface.md: 70b0447547839817c07e7c8fa96e8b1b089d1067
+2026-07-04-trim-acp-bridge-unreachable-surface.ar.md: 65a94ae6114f180c9b1c87816a1d2a68e9eb509a

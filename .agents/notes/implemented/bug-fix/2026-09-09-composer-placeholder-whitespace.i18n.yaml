@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-09-composer-placeholder-whitespace.md
-2026-09-09-composer-placeholder-whitespace.md: c5d778f8fb1fdfc742636819a9ff27ddeeb0234e
-2026-09-09-composer-placeholder-whitespace.ar.md: b5f82bcd86f8567976bba96095d4de9d42bae9b1
+2026-09-09-composer-placeholder-whitespace.md: 54dc39d3afa6dd84e063084bc63a2e5c98ebebf9
+2026-09-09-composer-placeholder-whitespace.ar.md: 1146c3728d5e1be523558a7578cd14b6479b9927

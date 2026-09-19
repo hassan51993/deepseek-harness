@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/implemented/bug-fix/2026-09-15-desktop-profile-core-cleanup.md
-2026-09-15-desktop-profile-core-cleanup.md: da189664e2b55a9310b36ed02f0b275e2c1b1370
-2026-09-15-desktop-profile-core-cleanup.ar.md: dec12e4fe7f34beb5931961183041c3f642b44ae
+2026-09-15-desktop-profile-core-cleanup.md: 99611af024e974a2ec7eb64e3a9cb01791d610bb
+2026-09-15-desktop-profile-core-cleanup.ar.md: 926fc99a09dd2e5d62103b261b9818841fa40232

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-26-stable-turn-process-order.md
-2026-08-26-stable-turn-process-order.md: e7de4aac5244fd7b4d76e89d8a02d19579b077bb
-2026-08-26-stable-turn-process-order.ar.md: 28e16bc2840d96febe2fa9bf786748d25b43fb23
+2026-08-26-stable-turn-process-order.md: 5f1cd569eaa8c730c59c7038b2eaac070164073e
+2026-08-26-stable-turn-process-order.ar.md: bfcb9ea699fbb5804e95b3d92f85e157d1db606a

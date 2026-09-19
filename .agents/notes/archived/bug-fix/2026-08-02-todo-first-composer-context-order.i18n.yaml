@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-08-02-todo-first-composer-context-order.md
-2026-08-02-todo-first-composer-context-order.md: 146b5f237d58ed0b9d92791bded2cddc47455431
-2026-08-02-todo-first-composer-context-order.ar.md: 61e989ecd039e0e61196990cbcc7959a5ef929f1
+2026-08-02-todo-first-composer-context-order.md: 244aeff953f724420ffb7c32b0158c4047d3b014
+2026-08-02-todo-first-composer-context-order.ar.md: 5b56f5c50e1ff6b5c2825eaccf7dbc634db19c20

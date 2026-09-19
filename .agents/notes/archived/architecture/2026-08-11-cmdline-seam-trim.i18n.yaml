@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/architecture/2026-08-11-cmdline-seam-trim.md
-2026-08-11-cmdline-seam-trim.md: 6ec356ce481040f2b9c89ffdaa73411e8007a93b
-2026-08-11-cmdline-seam-trim.ar.md: dc711598041ced77497edb577505c3f5771fc505
+2026-08-11-cmdline-seam-trim.md: a2cd21cd8b0cb767f720c2900034f45e5a570738
+2026-08-11-cmdline-seam-trim.ar.md: 0f9ac0560f0355448650fd481845786a1f0d7cfe

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-08-21-out-of-process-subagent-minimal-diagnostics.md
-2026-08-21-out-of-process-subagent-minimal-diagnostics.md: 24fc06064f24fe0ff6a88d5da590f2ca7f90af02
-2026-08-21-out-of-process-subagent-minimal-diagnostics.ar.md: 29bdbd00cb47f06310e5ee90b6867e69bfbd1038
+2026-08-21-out-of-process-subagent-minimal-diagnostics.md: 74d8bd76f2a1ce06d73cc73d78a33411c40e61c7
+2026-08-21-out-of-process-subagent-minimal-diagnostics.ar.md: 26ac6381bbc2248c9160912df49e91c640a077a6

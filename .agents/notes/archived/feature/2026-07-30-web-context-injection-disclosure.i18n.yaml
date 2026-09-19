@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/feature/2026-07-30-web-context-injection-disclosure.md
-2026-07-30-web-context-injection-disclosure.md: e9551cacdcd5b3e45ba35eeb76db6c70e5bbe368
-2026-07-30-web-context-injection-disclosure.ar.md: a4937ba880df30b911f7c8a1eceaab7e2bb74026
+2026-07-30-web-context-injection-disclosure.md: c96fcc0f9b7371a9c8ab8f8ae8f59af344bf17e0
+2026-07-30-web-context-injection-disclosure.ar.md: e4b108745dd1fd9ef2d96627d42c303b09d7f0cb

@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/process/2026-08-09-chinese-contract-terminology.md
-2026-08-09-chinese-contract-terminology.md: 9cccebf2a4d751887c6b058488c6bb094143a82b
-2026-08-09-chinese-contract-terminology.ar.md: 3c19b0b7fcf8287b246aa1f77e8c11c47b079506
+2026-08-09-chinese-contract-terminology.md: e388448aa093c9a8eaf30a56cd19fb6351a2cb18
+2026-08-09-chinese-contract-terminology.ar.md: c0792a708a59a069104055d22b6afdde125b5b11

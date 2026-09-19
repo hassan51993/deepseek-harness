@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write .agents/notes/archived/bug-fix/2026-09-03-hidden-windows-subprocess-windows.md
-2026-09-03-hidden-windows-subprocess-windows.md: 3f449bf10ad8465b473d36ca13aee64f2a68bedb
-2026-09-03-hidden-windows-subprocess-windows.ar.md: 0e3b3f5b1ff03bdf2a43af7ae658bc8a5be679ea
+2026-09-03-hidden-windows-subprocess-windows.md: 38c41a4becd3a958999fed70adb4c03ce08fd11d
+2026-09-03-hidden-windows-subprocess-windows.ar.md: 64f2a2b974b22e4115c8163ec9e4c6f621c9b425
