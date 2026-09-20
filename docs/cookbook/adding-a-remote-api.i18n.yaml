@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/adding-a-remote-api.md
 adding-a-remote-api.md: fecade1d6d9ba1a6750b2cc116a18adaf9ecb48d
-adding-a-remote-api.ar.md: 22c50dc0e192334d1e2f2089cd65f87ed01c33d5
+adding-a-remote-api.ar.md: 7c3d301e6841f07839dc0349304f2bd16283aa7a

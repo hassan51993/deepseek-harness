@@ -48,9 +48,9 @@ Save the input as `.artifacts/persistence-change.prose.json`, creating the ignor
     "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts: 10 tests passed."
   },
   "ar": {
-    "summary": "سوف حفظ دائم خطاف مراجعة حساب قرار تعديل لـ اختياري.",
-    "compatibility": "قد لديه سجل ما زال صالح. خطاف تنفيذ إزالة استهلاك HookOutput، لا إعادة تشغيل هذا مراجعة حساب حقل. كتابة جهة ما زال سجل قرار، ناقص لا بديل جدول pass.",
-    "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts:10 عدد اختبار عبر."
+    "summary": "يجعل قرارَ تدقيق الخطاف المحفوظ اختياريًا.",
+    "compatibility": "السجلات القائمة تبقى صالحة. وتنفيذ الخطاف يستهلك HookOutput بدل إعادة تشغيل حقل التدقيق هذا. ولا يزال المنتجون يكتبون القرارات، وغيابه لا يعني pass.",
+    "verification": "pnpm exec vitest run packages/hooks/hook-protocol/tests/events.spec.ts: نجح 10 اختبارات."
   }
 }
 ```

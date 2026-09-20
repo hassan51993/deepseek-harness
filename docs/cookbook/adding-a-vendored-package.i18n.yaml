@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/adding-a-vendored-package.md
 adding-a-vendored-package.md: 0f139bb99be5d469753717bf50651bc3ef683a12
-adding-a-vendored-package.ar.md: fe479e2207710e44a3c995cce69b70eb96528323
+adding-a-vendored-package.ar.md: 77f1636c3c5af43bacd583f66fcffd501d1a177f

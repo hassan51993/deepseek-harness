@@ -2,5 +2,5 @@
 # side as of the last confirmed-consistent state. Both languages carry equal authority;
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/reviewing-persistence-type-changes.md
-reviewing-persistence-type-changes.md: eef077778b7e43aab7e7b6e4900586f4455fb14f
-reviewing-persistence-type-changes.ar.md: e8147f099042f5417e92594a0e6d348fc0b83e22
+reviewing-persistence-type-changes.md: f83f0e15a74570b978879ee1973624687ce4a250
+reviewing-persistence-type-changes.ar.md: d4dfb273751dc4cb0bfe3639389ec1d2444dbe56

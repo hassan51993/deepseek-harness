@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/adding-a-session-format-version.md
 adding-a-session-format-version.md: 8d1480b42303b636746f122f981d67e846b51bb0
-adding-a-session-format-version.ar.md: bc55d46d3f51fc303b1b38b3ae85c04d8c5309a6
+adding-a-session-format-version.ar.md: 995dce0ab9f6207bf11c0ca3ce3d705fa35643ad
