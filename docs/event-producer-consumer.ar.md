@@ -1,13 +1,13 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-doc-graphs.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-doc-graphs` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/event-producer-consumer.md` إعادة سجل إعداد مقابل. -->
+<!-- النصُّ الإنجليزي مولَّد من scripts/gen-doc-graphs.ts؛ وهذا الملف العربي يُصان يدويًا ويُقرن به عبر سجل الاقتران الثنائي اللغة.
+     عند التحديث، شغّل `pnpm run gen-doc-graphs` أولًا لتحديث النص الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/event-producer-consumer.md` لإعادة تسجيل الاقتران. -->
 
-# حدث إنتاج جهة و مستهلك مستطيل دفعة
+# مصفوفة منتِجي الأحداث ومستهلكيها
 
 [English](event-producer-consumer.md) | العربية
 
-هذا مستطيل دفعة عرض أي بعض حزمة سوف إرسال إرسال كل عدد harness ذاتي لديه حدث، و أي بعض حزمة سوف استماع هذه حدث. حدث بين وجود كثير مقابل كثير علاقة، لذلك سري تجميع علاقة بيانات بـ جدول إطار بينما غير واحد ورقة كبير نوع علاقة رسم عرض. استقبال جهة و حدث اسم نوع أيضا شمول غطاء متعمد التفاف مرور `ctx.emit` داخل يحتوي إرسال إرسال موضع، مثال مثل subagent دورة الحياة غلاف تركيب.
+تعرض هذه المصفوفةُ أيُّ الحزم توزّع كلَّ حدث يملكه الحزامُ وأيُّها يستمع إليه. والأحداثُ علاقةٌ من كثير إلى كثير، فتُعرض بياناتُ العلاقة الكثيفة جدولًا بدل رسم واحد كبير. ويغطي نوعا المستقبِل واسم الحدث أيضًا مواضعَ التوزيع المحتواة التي تتجاوز `ctx.emit` عمدًا، مثل احتواء دورة حياة الوكلاء الفرعيين.
 
-| Event | Mode | Declared in | Dispatchers | Listeners |
+| الحدث | الوضع | معلَن في | الموزّعون | المستمعون |
 | --- | --- | --- | --- | --- |
 | `agent-loop/config-start-failed` | `emit` | [`packages/core/agent-loop/src/index.ts:246`](../packages/core/agent-loop/src/index.ts) | [`agent-loop`](../packages/core/agent-loop) (`events.dispatch`) | - |
 | `agent-preset/selected` | `emit` | [`packages/preset/agent-presets/src/types.ts:82`](../packages/preset/agent-presets/src/types.ts) | [`agent-presets`](../packages/preset/agent-presets) (`emit`) | `remotes` |
@@ -85,9 +85,9 @@
 | `workflow/phase` | `emit` | [`packages/workflow/workflow/src/index.ts:51`](../packages/workflow/workflow/src/index.ts) | [`workflow`](../packages/workflow/workflow) (`events.dispatch`) | - |
 | `workflow/start` | `emit` | [`packages/workflow/workflow/src/index.ts:43`](../packages/workflow/workflow/src/index.ts) | [`workflow`](../packages/workflow/workflow) (`events.dispatch`) | [`workflow`](../packages/workflow/workflow) |
 
-## Non-harness or undeclared event strings seen in package source
+## سلاسل أحداث خارج الحزام أو غير معلَنة رُصدت في مصادر الحزم
 
-| Event string | Dispatchers | Listeners |
+| سلسلة الحدث | الموزّعون | المستمعون |
 | --- | --- | --- |
 | `internal/dispatch` | - | `agent-team`, [`commands`](../packages/interaction/commands), [`compaction`](../packages/compaction/compaction), [`fs`](../packages/fs/fs), [`goal`](../packages/goal/goal), [`goal-round-driver`](../packages/goal/goal-round-driver), [`hook-protocol`](../packages/hooks/hook-protocol), [`llm-retry`](../packages/llm/llm-retry), [`permission-presets`](../packages/interaction/permission-presets), [`plan-mode`](../packages/plan/plan-mode), [`sandbox-policy`](../packages/sandbox/sandbox-policy), [`schedule`](../packages/schedule/schedule), [`scope`](../packages/core/scope), [`session`](../packages/core/session), [`session-log-deepseek`](../packages/session/session-log-deepseek), [`session-title`](../packages/session/session-title), [`subagent`](../packages/subagent/subagent), [`terminal-bash`](../packages/terminal/terminal-bash), [`time-context`](../packages/context/time-context), [`tool-todo`](../packages/todo/tool-todo), [`tool-workflow`](../packages/workflow/tool-workflow), [`tools`](../packages/core/tools), `ui-renderer`, [`user-approval`](../packages/interaction/user-approval), [`webhook`](../packages/webhook/webhook), [`workflow`](../packages/workflow/workflow) |
 | `internal/plugin` | - | `computer-use-cua-driver-native`, `inspector`, `loader`, [`lsp-stdio`](../packages/lsp/lsp-stdio), [`mcp-client`](../packages/mcp/mcp-client), `modules` |
@@ -96,4 +96,4 @@
 | `internal/update` | - | [`app-boot`](../packages/boot/app-boot) |
 | `slots/changed` | `ui-renderer` (`emit`) | - |
 
-Maintenance mode: generated: Cordis event declarations and producer/listener edges are resolved from the repository TypeScript Program.
+وضعُ الصيانة: مولَّد — تصريحاتُ أحداث Cordis وحوافُّ المنتِجين والمستمعين تُحلّ من برنامج TypeScript في المستودع.
