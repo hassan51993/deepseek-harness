@@ -1,18 +1,18 @@
-# API Gateway
+# بوابة API
 
 [English](api-gateway.md) | العربية
 
-هذا نص هو Typert API Gateway حالي حالة مشاركة اعتبار. هو وصف عمل خدمة خدمة مثل أي إعلان واحد عنصر Remote طريقة، بناء مثل أي توليد Host و Client اتفاق، و استدعاء مثل أي إعادة استخدام Connection RPC و `/api` توجيه. جلسة حدث، زيادة كمية بيانات و أخرى تدفق بروتوكول لا يخص هذا نص نطاق؛ هو جمع يمكن استخدام نفس عدد Connection، لكن لا استخدام Remote طريقة وصف رمز.
+هذا مرجع الحالة الراهنة لبوابة API الخاصة بـ Typert. وهو يصف كيف تعلن خدمات الأعمال طرقَ Remote الأحادية، وكيف يولّد البناء عقودَ Host وClient، وكيف تعيد الاستدعاءات استعمالَ RPC الخاص بـ Connection والمسار `/api`. أما أحداث الجلسة والبيانات التدريجية وسائر بروتوكولات التدفق فخارج نطاق هذه الوثيقة؛ وقد تستعمل الـ Connection نفسها لكنها لا تستعمل واصفات طرق Remote.
 
-## تحرير مسار نموذج
+## نموذج البرمجة
 
-عمل خدمة خدمة عبر `@Remote` أو `@RemoteScope` اختيار مقابل Client فتح وضع طريقة. لم علامة طريقة لن دخول توليد Client نوع أو وقت التشغيل مساهمة، أيضا لا يستطيع عبر `ctx.remote` استدعاء.
+تستعمل خدمات الأعمال `@Remote` أو `@RemoteScope` لاختيار الطرق المكشوفة للـ Client. والطرق غير الموسومة لا تدخل أنواعَ Client المولَّدة ولا مساهماتِ وقت التشغيل، ولا يمكن استدعاؤها عبر `ctx.remote`.
 
-`@Remote` يمثل استدعاء أصل Host Context في تسجيل Cordis خدمة. تكرار مختلط Host كائن لا يستطيع مباشر عبر wire نقل؛ عمل خدمة حزمة يجب عبر `TypertLookupMap` إعلان هو و wire identity صلة ربط، و في وقت التشغيل نحو `ctx.typert.lookups` تسجيل افتراضي تحليل مزود. مثال مثل `Agent` معامل في Host توقيع في اسم لـ `agent`، توليد wire حقل لـ `agentId`،Gateway في استدعاء عمل خدمة طريقة قبل سوف id تحليل لـ Host كائن.Host تركيب يمكن استخدام `ctx.typert.lookups.configure()` تغطية بعض عدد lookup key تحليل سياسة، بينما لا تغيير عمل خدمة حزمة يملك معامل اسم،wire حقل أو مواصفة نوع symbol.
+ويدل `@Remote` على استدعاء خدمة Cordis مسجَّلة على سياق Host الجذر. ولا تستطيع كائنات Host المركَّبة عبور السلك مباشرةً؛ فعلى حزمة الأعمال أن تعلن ارتباطها بهوية على السلك عبر `TypertLookupMap`، وأن تسجّل مزوّدَ تحليل افتراضيًا في `ctx.typert.lookups` في وقت التشغيل. فمعامل `Agent` المسمّى `agent` في توقيع Host مثلًا ينتج حقلَ سلك باسم `agentId`، وتحلّ البوابة ذلك المعرّف إلى كائن Host قبل استدعاء طريقة الأعمال. ويستطيع تركيب Host أن يستعمل `ctx.typert.lookups.configure()` لتجاوز سياسة التحليل لمفتاح lookup دون تغيير اسم المعامل ولا حقل السلك ولا رمز النوع المعياري الذي تملكه حزمة الأعمال.
 
-`@RemoteScope(key)` يمثل أولا عبر `ctx.typert.contexts` يأخذ identity تحليل لـ واحد أثر مجال Context، مجددا من هذا Context أخذ نيل خدمة و استدعاء طريقة. هو ملائم لأجل طريقة ذاته اعتماد أثر مجال تركيب، بينما لا حاجة صريح استقبال `Agent` انتظار كائن حال شكل.
+أما `@RemoteScope(key)` فيحلّ الهويةَ أولًا إلى سياق ذي نطاق عبر `ctx.typert.contexts`، ثم يحصل على الخدمة من ذلك السياق ويستدعي الطريقة. وهو ينطبق حين تعتمد الطريقة نفسها على تركيب ذي نطاق ولا تحتاج إلى تلقّي كائنات مثل `Agent` صراحةً.
 
-خدمة عبر معتاد وراثة `TypertRemoteService`، يجعل Cordis خدمة key و افتراضي Remote namespace في منشئ في صريح ربط. قد لديه أخرى أساس صنف خدمة يمكن تعديل لـ إعلان `readonly typertRemote = bindTypertRemote(this, serviceKey)`؛ اثنان نوع طريقة كل سوف إبقاء تحت يمكن فحص عام binding، لا اعتماد تحرير ترجمة جهاز نحو بنية صنع دالة حقن symbol.
+وتوسّع الخدماتُ عادةً `TypertRemoteService` ليربط المُنشئ صراحةً مفتاحَ خدمة Cordis وفضاءَ أسماء Remote الافتراضي. أما الخدمة التي لها صنف أساس آخر فتستطيع بدل ذلك أن تعلن `readonly typertRemote = bindTypertRemote(this, serviceKey)`؛ والصيغتان تتركان ربطًا عامًا قابلًا للفحص ولا تعتمدان على حقن المصرّف رمزًا في المُنشئ.
 
 ```ts
 import type { Agent } from '@deepseek-ai/dsh-agent'
@@ -53,9 +53,9 @@ export class GoalService extends TypertRemoteService {
 }
 ```
 
-Remote طريقة يمكن تزامن إرجاع أو إرجاع Promise. إذا حاجة تنسيق عمل صيغة إلغاء،Host توقيع الأكثر بعد واحد معامل يجب هو عام نوع `signal: AbortSignal`؛ هو سجل في وصف رمز في بينما لا هو دخول `args`،Client توليد طريقة فإن قبول الأكثر بعد واحد اختياري `AbortSignal`.
+وقد تعيد طرق Remote قيمةً تزامنيًا أو تعيد Promise. وللإلغاء التعاوني يجب أن يكون المعامل الأخير في توقيع Host هو `signal: AbortSignal` بالنوع العام؛ فيُسجَّل في الواصف بدل أن يدخل `args`، بينما تقبل طريقةُ Client المولَّدة `AbortSignal` أخيرًا واختياريًا.
 
-Client استخدام عادي كائن فوق أداة جسم دالة، لا استخدام JavaScript Proxy. مباشر استدعاء و أثر مجال استدعاء قسم آخر ظهور في `ctx.remote.<namespace>` و `agentCtx.remote.<namespace>`. كل namespace كل هو تسجيل لـ `remote.<namespace>` يمكن تتبع أثر Cordis فرعي خدمة؛Client assembly عبر `ctx.remote.$mount()` تركيب مساهمة، الأكثر بعد واحد طريقة سحب عودة بعد هذا namespace مع أي إزالة. اعتماد إعلان عودة فعلي استدعاء جهة كل: فقط لديه قراءة `ctx.remote.<namespace>` أو `agentCtx.remote.<namespace>` عمل خدمة حزمة عندئذ في ذاتي ذات `inject` في معا إعلان `remote` و `remote.<namespace>`؛ فقط مسؤول تركيب contribution assembly، و لا استدعاء هذا namespace فوق طبقة وقت التشغيل، لا بديل عمل خدمة حزمة إعلان namespace اعتماد. عند واحد `@Remote` طريقة تماما جيد لديه واحد lookup معامل، كما نفس اسم `TypertContextMap` استخدام نفسه wire identity وقت، توليد أثر مجال توقيع سوف حذف هذا identity معامل.`@RemoteScope` فقط توليد أثر مجال استدعاء واجهة.
+ويستعمل الـ Client دوالَّ ملموسة على كائنات عادية، لا Proxy في JavaScript. وتظهر الاستدعاءات المباشرة وذات النطاق تحت `ctx.remote.<namespace>` و`agentCtx.remote.<namespace>`. وكل فضاء أسماء خدمةُ Cordis ابنة متتبَّعة مسجَّلة باسم `remote.<namespace>`؛ ويركّب تجميع Client المساهماتِ عبر `ctx.remote.$mount()`، ويُفرَّغ فضاء الأسماء بعد سحب آخر طريقة فيه. وإعلانات الاعتمادية تخص المستدعي الفعلي: فحزمة الأعمال التي تقرأ `ctx.remote.<namespace>` أو `agentCtx.remote.<namespace>` هي وحدها التي تعلن `remote` و`remote.<namespace>` في `inject` الخاصة بها؛ أما التجميعات التي تركّب المساهمات فقط، وأوقاتُ التشغيل الأعلى التي لا تستدعي ذلك الفضاء، فلا تعلن اعتمادية الفضاء نيابةً عن حزمة الأعمال. وحين يكون لطريقة `@Remote` معاملُ lookup واحد بالضبط ويستعمل `TypertContextMap` بالاسم نفسه هويةَ السلك نفسها، يحذف التوقيعُ ذو النطاق المولَّد معاملَ الهوية ذاك. و`@RemoteScope` لا يولّد إلا واجهةَ الاستدعاء ذات النطاق.
 
 ```ts ignore-check
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
@@ -73,92 +73,92 @@ await ctx.remote.goals.create(agentId, { objective: 'ship it' })
 await agentCtx.remote.goals.create({ objective: 'ship it' })
 ```
 
-Client تطبيق فقط تركيب إعداد `@deepseek-ai/dsh-api-remotes`. هذا حزمة بـ وقت التشغيل قيمة استيراد يتم اختيار عمل خدمة حزمة `/remote` فرعي مسار، عبر `ctx.remote.$mount()` تركيب مساهمة، معا إعادة تصدير نفسه ملف في إعلان دمج. زيادة واحد Host Remote حزمة هو Client تركيب كل من صريح اختيار؛ عمل خدمة مكون لا حاجة قسم آخر تحميل Typert Gateway أو عمل خدمة حزمة Remote JS.
+ولا تجمّع تطبيقات Client سوى `@deepseek-ai/dsh-api-remotes`. فتلك الحزمة تستورد المسارات الفرعية `/remote` لحزم أعمال مختارة قيمًا في وقت التشغيل، وتركّب مساهماتها عبر `ctx.remote.$mount()`، وتعيد تصدير دمج التصريحات من الملفات نفسها. وإضافة حزمة Remote من Host اختيارٌ صريح يتخذه مالك تركيب Client؛ ولا تحتاج مكوّنات الأعمال إلى تحميل بوابة Typert ولا JavaScript الخاص بـ Remote في حزمة الأعمال على حدة.
 
-`api-remotes` تركيب إعداد و `ctx.remote` اتفاق لا اعتماد React؛ أي Client تركيب إعداد قدرة يرى Host طريقة كل فقط حد في توليد وقت اختيار Remote طريقة.
+وتجميعُ `api-remotes` وعقدُ `ctx.remote` مستقلان عن React؛ وطرقُ Host الظاهرة لأي تجميع Client محصورة في طرق Remote المختارة وقت التوليد.
 
-## مكون مسؤولية
+## مسؤوليات المكوّنات
 
-| موضع | حزمة أو مدخل | مسؤولية |
+| الموضع | الحزمة أو المدخل | المسؤولية |
 |---|---|---|
-| مشترك | `@deepseek-ai/dsh-typert-protocol` | إعلان decorator،Gateway binding، يمكن دمج بروتوكول خريطة، استدعاء وصف رمز و مزود نوع؛ لا بدء TypeScript قسم تحليل، أيضا لا تسجيل Cordis خدمة |
-| بناء | `@deepseek-ai/dsh-typert-generator` | من Host `ts.Program` صارم إطار قسم تحليل Remote توقيع، نوع رسم،lookup،Context و شفرة المصدر موضع، و توليد Host و Host-for-Client ناتج |
-| Host | `@deepseek-ai/dsh-typert-registry` و Loader | يأخذ توليد Host وصف رمز،schema و عمل خدمة حزمة تسجيل بند وضع دخول `ctx.typert`، و يحتفظ lookup و Context مزود |
-| Host | `@deepseek-ai/dsh-api-session-controller` | مسؤول تطبيق Agent/Session هوية سياسة، و إعداد مقابل Typert lookup |
-| Host | `@deepseek-ai/dsh-api-gateway` | توفير `ctx.typertGateway`، إقرار قيادة Remote endpoint، تحقق طلب قيمة، تحليل كائن أو Context، و استدعاء فوري Cordis خدمة |
-| Client | `@deepseek-ai/dsh-api-gateway/client` | توفير `ctx.remote` و `remote.<namespace>` فرعي خدمة، يأخذ توليد وصف رمز تعليق صار أداة جسم طريقة، و عبر Connection إرسال بدء و إلغاء استدعاء |
-| Client | `@deepseek-ai/dsh-api-remotes/client` | صريح اختيار و تركيب هذا تطبيق سماح استخدام `/remote` مساهمة، نحو عمل خدمة شفرة حمل دخول مقابل إعلان دمج |
-| مزدوج جانب | `@deepseek-ai/dsh-client-connection` | توفير RPC carrier، طلب صلة ربط، معلومة مهمة حد، إلغاء، استجابة envelope و `/api` HTTP bridge |
+| مشترك | `@deepseek-ai/dsh-typert-protocol` | يعلن المزخرِفات، وارتباطات البوابة، وخرائط البروتوكول القابلة للتوسعة بالدمج، وواصفات الاستدعاء، وأنواع المزوّدين؛ ولا يبدأ تحليل TypeScript ولا يسجّل خدمات Cordis |
+| البناء | `@deepseek-ai/dsh-typert-generator` | يحلّل بصرامة توقيعاتِ Remote، ورسمَ الأنواع، وlookups، والسياقات، ومواضعَ المصدر من `ts.Program` الخاص بـ Host، ثم يولّد نواتج Host ونواتج Host إلى Client |
+| Host | `@deepseek-ai/dsh-typert-registry` وLoader | يضع واصفات Host المولَّدة وschemas وتسجيلات حزم الأعمال في `ctx.typert`، ويحمل مزوّدي lookup والسياقات |
+| Host | `@deepseek-ai/dsh-api-session-controller` | يملك سياسةَ هوية الـ Agent والجلسة في التطبيق ويضبط lookups المقابلة في Typert |
+| Host | `@deepseek-ai/dsh-api-gateway` | يوفّر `ctx.typertGateway`، ويطالب بنقاط نهاية Remote، ويتحقق من قيم الطلب، ويحلّ الكائنات أو السياقات، ويستدعي خدمات Cordis الحية |
+| Client | `@deepseek-ai/dsh-api-gateway/client` | يوفّر `ctx.remote` والخدماتِ الابنة `remote.<namespace>`، ويركّب الواصفات المولَّدة طرقًا ملموسة، ويبدأ الاستدعاءات ويلغيها عبر الـ Connection |
+| Client | `@deepseek-ai/dsh-api-remotes/client` | يختار صراحةً مساهماتِ `/remote` التي يسمح بها التطبيق ويركّبها، ويُدخل دمجَ التصريحات المقابل إلى شفرة الأعمال |
+| كلاهما | `@deepseek-ai/dsh-client-connection` | يوفّر حاملَ RPC، وربطَ الطلبات، وحدَّ الثقة، والإلغاء، ومغلّفَ الاستجابة، وجسرَ HTTP على `/api` |
 
-API Gateway حزمة معا يملك Host dispatcher و Client Remote endpoint اثنان عدد مقابل انتظار مدخل، لكن اثنان جانب بناء لن دخول نفس عدد `ts.Program`.Host مدخل لا استيراد Client Cordis `Context` دمج،Client مدخل أيضا لا استيراد Host Gateway خدمة.
+وتملك حزمة بوابة API موزّعَ Host ونقطةَ نهاية Remote في Client مدخلَين نظيرين، لكن البناءين لا يدخلان `ts.Program` واحدًا أبدًا. فمدخل Host لا يستورد دمجَ `Context` الخاص بـ Cordis في Client، ومدخل Client لا يستورد خدمةَ بوابة Host.
 
-## صارم إطار توليد خط الإنتاج
+## خط التوليد الصارم
 
-أصل بناء اعتماد مرة تنفيذ `build:lib:host`،`build:lib:client` و `build:web`.Host lib مرحلة مقطع أولا تشغيل `tsc -b tsconfig.host.json`، مجددا تشغيل `tsdown --env.DSH_BUILD_FACE host`؛Typert generator من صحيح معتاد Host Project Reference رسم تحرير ترجمة، و في هذا مرة tsdown في بـ Host aggregate لـ وحيد `ts.Program` نوع فرعي تشغيل.Client lib مرحلة مقطع مع بعد تشغيل `tsc -b tsconfig.client.json` و `tsdown --env.DSH_BUILD_FACE client`، استخدام للتو توليد Remote Client إعلان و وقت التشغيل مساهمة، لكن لم يعد مرة بدء Typert.
+يشغّل بناء الجذر `build:lib:host` و`build:lib:client` و`build:web` بهذا الترتيب. ويشغّل طورُ مكتبة Host أولًا `tsc -b tsconfig.host.json` ثم `tsdown --env.DSH_BUILD_FACE host`؛ ويصرّف رسمُ Project Reference المعتاد الخاص بـ Host مولّدَ Typert، الذي يعمل في مرور tsdown هذا وتجميعةُ Host هي بذرته الوحيدة لـ `ts.Program`. ثم يشغّل طورُ مكتبة Client الأمرَ `tsc -b tsconfig.client.json` و`tsdown --env.DSH_BUILD_FACE client`، مستهلكًا تصريحاتِ Remote الخاصة بـ Client ومساهماتِ وقت التشغيل المولَّدة حديثًا، دون أن يبدأ Typert من جديد.
 
-اثنان مرة tsdown كل استقبال كامل workspace، كما كل فقط تحزيم `lib/types` في من مقابل tsc مرحلة مقطع إرسال إطلاق JavaScript. أصل إعداد لا مسح Client ناتج، لا حسب حزمة اسم تصنيف، أيضا لا نحو tsdown نقل صيانة صيغة filter؛ كل حزمة محلي إعداد أصل حسب `DSH_BUILD_FACE` إرجاع حالي مرحلة مقطع مدخل. عادي Client إضافة في Client مرحلة مقطع واحد بدء توليد Node loader مدخل و browser bundle.
+ويتلقى مرورا tsdown مساحةَ العمل كاملةً، ولا يحزمان إلا JavaScript الذي أخرجه طورُ tsc المقابل إلى `lib/types`. ولا يمسح إعداد الجذر نواتجَ Client، ولا يصنّف أسماء الحزم، ولا يمرّر إلى tsdown مرشِّحًا مُصانًا؛ وإنما تعيد الإعدادات المحلية للحزم مداخلَ الطور الحالي اعتمادًا على `DSH_BUILD_FACE`. وإضافة Client العادية تنتج مدخل محمِّل Node وحزمة المتصفح معًا في طور Client.
 
-`api/remotes`،`api/gateway`،`api/session-controller` و `api/workspace-controller`(خارج إضافة `client/connection`) كل تفكيك قسم TypeScript face.`api/remotes` Client project اعتماد عمل خدمة حزمة في Host tsdown في توليد `/remote` إعلان؛ أصل aggregate و مباشر مستهلك يجب قسم آخر مرجع كل تفكيك قسم حزمة ذاتي ذات `tsconfig.host.json` أو `tsconfig.client.json`.`api-remotes` `clientBundle(..., { hostPhase: true })` يجعل Host مدخل في Host tsdown في توليد، يجعل Client tsdown فقط توليد browser مدخل.Agent/Session lookup سياسة يقع في `@deepseek-ai/dsh-api-session-controller`، بينما غير `api-remotes`.
+وتقسم `api/remotes` و`api/gateway` و`api/session-controller` و`api/workspace-controller` (مع `client/connection`) وجهَي TypeScript. فمشروع Client في `api/remotes` يعتمد على تصريحات `/remote` المولَّدة لحزم الأعمال أثناء tsdown الخاص بـ Host؛ وعلى تجميعات الجذر والمستهلكين المباشرين أن يشيروا إلى `tsconfig.host.json` أو `tsconfig.client.json` لكل حزمة مقسومة بحسب الجانب. ويُنتج `clientBundle(..., { hostPhase: true })` في `api-remotes` مدخلَ Host أثناء tsdown الخاص بـ Host، فلا يترك لـ tsdown الخاص بـ Client إلا مدخل المتصفح. وتسكن سياسة lookup للـ Agent والجلسة في `@deepseek-ai/dsh-api-session-controller`، لا في `api-remotes`.
 
-كل مساهمة عمل خدمة حزمة يأخذ توليد ملف كتابة ذاتي ذات `lib/`، بينما لا هو شفرة المصدر دليل:
+وتكتب كل حزمة أعمال مساهِمة الملفاتِ المولَّدة في دليل `lib/` الخاص بها، لا في دليل مصدرها:
 
-| ملف | مستهلك | محتوى |
+| الملف | المستهلك | المحتوى |
 |---|---|---|
-| `typert.host.js` | Host Loader | Host face وقت التشغيل عكس إطلاق، صارم إطار استدعاء وصف رمز و schema تسجيل قيمة |
-| `typert.host.d.ts` | Host نوع نظام | Host face توليد إعلان |
-| `typert.remote-client.js` | `api-remotes` | يمكن تركيب `TypertRemoteContribution`، يتضمن صارم إطار وصف رمز و وقت التشغيل codec |
-| `typert.remote-client.d.ts` | Client نوع نظام | `TypertRemoteNamespaceMap` و `TypertRemoteScopeMap` إعلان دمج و Client-safe نوع مرجع |
-| `typert.remote-client.d.ts.map` | تحرير جهاز | سوف توليد طريقة خاصية خريطة عودة Host حزمة في Remote طريقة إعلان |
+| `typert.host.js` | Loader الخاص بـ Host | انعكاس وقت التشغيل لوجه Host، وواصفات الاستدعاء الصارمة، وقيم تسجيل schemas |
+| `typert.host.d.ts` | نظام أنواع Host | التصريحات المولَّدة لوجه Host |
+| `typert.remote-client.js` | `api-remotes` | `TypertRemoteContribution` قابلة للتركيب تحمل واصفات صارمة وcodecs وقت التشغيل |
+| `typert.remote-client.d.ts` | نظام أنواع Client | دمج التصريحات لـ `TypertRemoteNamespaceMap` و`TypertRemoteScopeMap`، مع إشارات أنواع آمنة لـ Client |
+| `typert.remote-client.d.ts.map` | المحرّر | يربط خصائصَ الطرق المولَّدة بتصريحات طرق Remote في حزمة Host |
 
-عمل خدمة حزمة عبر `./typert` كشف Host Loader مدخل، عبر `./remote` كشف Host-for-Client مدخل. توليد جهاز معا تحقق هذه حزمة export و إصدار ملف بيان؛ فقط لديه أداة تجهيز متبادل ينبغي مدخل صريح مساهمة حزمة عندئذ سوف توليد ناتج.
+وتكشف حزم الأعمال مدخلَ Loader الخاص بـ Host عبر `./typert`، ومدخلَ Host إلى Client عبر `./remote`. ويتحقق المولّد أيضًا من تصديرات هذه الحزم ومن قوائم ملفاتها المنشورة؛ ولا يولّد نواتج إلا لحزم المساهمة الصريحة التي توفّر المدخل المقابل.
 
-Remote Client إعلان في معامل اسم قدوم ذاتي wire حقل، معامل و إرجاع نوع فإن مرجع أصل عمل خدمة حزمة تصدير Client-safe نوع. إعلان map يأخذ `ctx.remote.goals.create` نهائي تحليل إلى توليد خاصية خريطة إلى حمل `@Remote` Host مصدر طريقة، لذلك دعم حمل declaration-map تحرير جهاز يمكن من Client استدعاء قفز إلى حقيقي تنفيذ، بينما لا هو توقف في توليد `.d.ts`.
+وأسماء المعاملات في تصريحات Remote الخاصة بـ Client تأتي من حقول السلك، بينما تشير أنواع المعاملات والقيم الراجعة إلى أنواع آمنة لـ Client تصدّرها حزمةُ الأعمال الأصلية. وتحلّ خريطةُ التصريحات الخاصيةَ المولَّدة خلف `ctx.remote.goals.create` رجوعًا إلى طريقة Host المصدرية الموسومة بـ `@Remote`، فتستطيع المحرّرات الداعمة لخرائط التصريحات الانتقالَ من استدعاء Client إلى التنفيذ الحقيقي بدل التوقف عند ملف `.d.ts` المولَّد.
 
-صارم إطار قسم تحليل اشتراط Remote هو عام، غير ساكن حالة، لديه أداة جسم تنفيذ نسخة طريقة. طريقة لا يستطيع هو عام نوع؛ معامل يجب هو أداة اسم كما لا بد ملء بسيط مفرد معرف رمز، لا يستطيع استخدام حل بنية، قيمة افتراضية،rest أو اختياري معامل. يمكن JSON يمثل عادي نوع من Typert توليد صارم إطار schema؛ مساحة العمل class انتظار تكرار مختلط كائن يجب أداة لديه وحيد `TypertLookupMap` إعلان.lookup و Context حزمة معا مسؤول ساكن حالة إعلان دمج و وقت التشغيل مزود تسجيل؛ نقص قليل مهمة واحد جانب كل سوف توجيه يؤدي بناء فشل، أو من أول مرة استدعاء حاجة هذا مزود وقت فشل.
+ويشترط التحليل الصارم أن تكون طريقة Remote طريقةَ نسخة عامة غير ساكنة ولها تنفيذ ملموس. ولا يجوز أن تكون الطريقة عامة الأنواع؛ وعلى المعاملات أن تكون مطلوبة، مسمّاةً بمعرّفات بسيطة، ولا تستعمل التفكيك ولا القيم الافتراضية ولا معاملات الباقي ولا المعاملات الاختيارية. ويولّد Typert schemas صارمة للأنواع العادية القابلة للتمثيل بـ JSON؛ أما الكائنات المركَّبة مثل أصناف مساحة العمل فيجب أن يكون لها تصريح `TypertLookupMap` فريد. وحزمُ lookup والسياقات مسؤولة عن دمج التصريحات الساكن وعن تسجيل المزوّد في وقت التشغيل معًا؛ فإن غاب أحد الجانبين فشل البناء أو فشل أول استدعاء يحتاج المزوّد.
 
-## وقت التشغيل استدعاء
+## الاستدعاء في وقت التشغيل
 
-Remote استدعاء استخدام Connection `/api` توجيه.Client Remote استدعاء `connection.rpc.call('/api', '<namespace>/<method>', { args }, signal)`؛HTTP carrier مقابل `POST /api/<namespace>/<method>`،payload فقط يتضمن واحد أداة اسم `args` كائن.
+تستعمل استدعاءات Remote مسارَ `/api` في الـ Connection. فيستدعي Remote في Client الأمرَ `connection.rpc.call('/api', '<namespace>/<method>', { args }, signal)`؛ ويحوّل حاملُ HTTP ذلك إلى `POST /api/<namespace>/<method>`، بحمولة لا تحمل سوى كائن `args` مسمّى.
 
-Connection في HTTP bridge قبل تنفيذ `/api` موحد واحد معلومة مهمة فحص، مجددا في مشترك FetchHandler داخل توزيع.Typert Gateway فقط إقرار قيادة وجود صارم إطار وصف رمز أو نشط وثب SRC marker اثنان مقطع صيغة endpoint؛ وظيفة ذاتي لديه دقيق Fetch توجيه معالجة غير JSON استجابة، أخرى طلب إرجاع 404.Connection يملك نقل،RPC id، استجابة envelope و طلب إلغاء،Gateway فقط يملك Remote بيانات بروتوكول و عمل خدمة توزيع. استبدال Connection carrier لا اشتراط تغيير Remote وصف رمز أو Client تحرير مسار واجهة.
+وتجري الـ Connection فحصَ الثقة الموحَّد لمسار `/api` قبل جسر HTTP، ثم توزّع داخل FetchHandler المشترك. ولا تطالب بوابة Typert إلا بنقاط النهاية ذات المقطعين التي لها واصف صارم أو علامة SRC نشطة؛ أما مسارات Fetch المضبوطة التي تملكها الميزات فتعالج الاستجابات غير JSON، وترجع سائر الطلبات بـ 404. وتملك الـ Connection النقلَ ومعرّفات RPC ومغلّفاتِ الاستجابة وإلغاءَ الطلب، بينما لا تملك البوابة إلا بروتوكولَ بيانات Remote وتوزيعَ الأعمال. واستبدالُ حامل الـ Connection لا يقتضي تغييرًا في واصفات Remote ولا في واجهة برمجة Client.
 
-Gateway كل مرة استدعاء كل من حالي سجل التسجيل تحليل وصف رمز و فوري خدمة، لا ذاكرة مؤقتة عمل خدمة كائن. هو اشتراط `args` حقل تجميع دمج و وصف رمز تماما متسق، أولا استخدام codec تحقق wire قيمة، مجددا عبر تسجيل lookup أو Context مزود تحليل كائن أو استقبال من، الأكثر بعد استدعاء binding إشارة نحو خدمة طريقة و تحقق قيمة راجعة. نقص قليل مزود،identity لم أمر في،binding لا متسق، معامل ناقص أو كثير بقية،schema فشل و طريقة لا وجود كل سوف في دخول عمل خدمة شفرة قبل أو مغادرة فتح عمل خدمة شفرة بعد فشل.
+وفي كل استدعاء تحلّ البوابة الواصفَ والخدمةَ الحية من السجلات الحالية بدل تخزين كائنات الأعمال مؤقتًا. وهي تشترط أن تطابق الحقول في `args` الواصفَ بالضبط، وتتحقق من قيم السلك بالـ codecs، وتحلّ الكائنات أو المتلقّين عبر مزوّدي lookup أو السياقات المسجَّلين، وتستدعي طريقةَ الخدمة التي يقصدها الربط، وتتحقق من القيمة الراجعة. وغيابُ مزوّد، أو هويةٌ مجهولة، أو ربطٌ غير مطابق، أو معاملٌ ناقص أو زائد، أو فشلُ schema، أو طريقةٌ مفقودة، كلها تفشل قبل دخول شفرة الأعمال أو بعد الخروج منها.
 
-lookup مزود `register()` معا توفير مستقر إعلان و افتراضي resolver؛`configure()` توفير من Host تركيب يملك، يمكن مختلف خطوة تنفيذ كما تلقي effect دورة الحياة قيد resolver. إعداد يمكن أولا في مزود تركيب؛ لا يوجد مزود وقت استدعاء ما زال بـ `gateway/lookup-unavailable` فشل، إعداد إزالة بعد فإن استعادة مزود افتراضي سياسة.Session Controller مسؤول `agent` و `session` معيار resolver دلالة: إعادة استخدام live Agent، تلقائي استعادة عادي بارد جلسة، مقابل تزامن استعادة ذهاب إعادة، و رفض من subagent routing يملك identity؛`session` lookup إرجاع هذا Agent Session. استعادة فشل و ownership fence رمي خروج يحمل ذاتي لديه رمز `RemoteError`(`session/not-found` أو `session/agent-busy`) ،Gateway أصل مثال تحرير رمز فوق wire؛ فقط لديه لم عودة صنف throw عندئذ طي صار `gateway/internal`.
+ويوفّر `register()` الخاص بمزوّد lookup التصريحَ الثابت والمحلِّلَ الافتراضي معًا؛ ويوفّر `configure()` محلِّلًا يملكه تركيبُ Host وقد ينفَّذ لاتزامنيًا ويكون عمره عمرَ الأثر. وقد يسبق الضبطُ تركيبَ المزوّد؛ وبلا مزوّد يفشل الاستدعاء مع ذلك بـ `gateway/lookup-unavailable`، ويعيد تفريغُ الضبط سياسةَ المزوّد الافتراضية. ويملك متحكّم الجلسة دلالةَ المحلِّل المعيارية لـ `agent` و`session`: فهو يعيد استعمال Agent حيًّا، ويستأنف تلقائيًا الجلساتِ الباردة العادية، ويزيل تكرار الاستئنافات المتزامنة، ويرفض الهويات التي يملكها توجيهُ subagent؛ ويعيد lookup الخاص بـ `session` جلسةَ ذلك الـ Agent. ويرفع فشلُ الاستئناف وسياجُ الملكية خطأَ `RemoteError` يحمل رمزَه الخاص، `session/not-found` أو `session/agent-busy`، وتشفّره البوابة على السلك بلا تغيير؛ ولا ينطوي في `gateway/internal` إلا الرميُ غير المصنَّف.
 
-Client إزالة واحد مساهمة وقت سوف واحد بدء إزالة وصف رمز و أداة جسم طريقة، في توقف ذلك إجراء في استدعاء، و جعل خارجي ما زال يحتفظ قديم قديم طريقة جملة مقبض رفض متابعة استدعاء.Host فوق قد تسجيل مرور صارم إطار endpoint يتم سحب عودة بعد أيضا لن تخفيض إلى SRC دفع قطع، بـ تجنب حار إزالة صامت لكن خفض منخفض تحقق قوي درجة.
+وتفريغُ مساهمة في Client يزيل واصفاتها وطرقَها الملموسة معًا، ويجهض استدعاءاتها الجارية، ويجعل مقابض الطرق البائتة التي تحتفظ بها شفرةٌ خارجية ترفض أي استدعاء لاحق. كما أن نقطة نهاية صارمة سُحبت على Host لا تتدهور إلى استنتاج SRC، فيمنع ذلك تفريغًا حارًّا من إضعاف التحقق في صمت.
 
-## SRC تطوير رجوع
+## الرجوع إلى SRC أثناء التطوير
 
-Host عبر `node --import tsx/esm` من شفرة المصدر بدء وقت لن تنفيذ Typert تحرير ترجمة إضافة. معيار decorator ابتدائي تحويل جهاز ما زال سوف يأخذ طريقة اسم و استدعاء نمط سجل إلى Service أصل نوع فوق حمل إصدار وصف رمز في،`TypertRemoteService` أو `bindTypertRemote()` فإن توفير صريح خدمة binding؛Gateway بسبب بينما يمكن في لا بدء `ts.Program` حال حال تحت بنية صنع واحد مقارنة ضعيف مؤقت وصف رمز. وصف رمز استخدام مستقر نص خاصية اسم، لذلك `remoteMethods()` قدرة قراءة بروتوكول حزمة آخر عدد قد تثبيت فرعي هذا كتابة علامة.
+حين يُقلع Host من المصدر عبر `node --import tsx/esm`، فإنه لا ينفّذ إضافة مصرّف Typert. ومع ذلك تسجّل مهيّئاتُ المزخرِفات المعيارية اسمَ الطريقة ووضعَ الاستدعاء في واصف مرقَّم على النموذج الأولي للخدمة، بينما يوفّر `TypertRemoteService` أو `bindTypertRemote()` ربطَ الخدمة الصريح؛ فتستطيع البوابة عندئذ بناءَ واصف مؤقت أضعف بلا بدء `ts.Program`. واسمُ الخاصية النصي الثابت في الواصف يتيح لـ `remoteMethods()` قراءةَ العلامات التي كتبتها نسخة أخرى مثبَّتة من حزمة البروتوكول.
 
-SRC رجوع من تشغيل في دالة تحليل بسيط مفرد معامل اسم. معامل اسم و بعض عدد قد تسجيل lookup `parameter` نفسه، مثال مثل `agent` أو `session`، حينئذ استخدام ذلك `agentId` أو `sessionId` wire حقل و في Host تحليل كائن؛ أخرى معامل فقط فحص قيمة هل لـ بلا حلقة، بلا خاص خاص prototype JSON-safe بيانات.`@RemoteScope` مباشر استخدام قد تسجيل Host Context مزود wire حقل.SRC لا قراءة TypeScript نوع، لا توليد Zod schema، لا دفع قطع اختياري معامل، أيضا لا دعم حمل حل بنية، قيمة افتراضية،rest أو تكرار معامل اسم.
+ويحلّل الرجوعُ إلى SRC أسماءَ المعاملات البسيطة من الدالة الحية. وحين يطابق اسمُ معامل قيمةَ `parameter` في lookup مسجَّل، مثل `agent` أو `session`، يستعمل حقلَ السلك `agentId` أو `sessionId` الخاص به ويحلّ الكائن على Host؛ أما سائر المعاملات فلا يُفحص فيها إلا أنها بيانات خالية من الدورات، آمنة لـ JSON، بلا نموذج أولي خاص. ويستعمل `@RemoteScope` مباشرةً حقلَ السلك لمزوّد سياق Host مسجَّل. ولا يقرأ SRC أنواعَ TypeScript، ولا يولّد schemas بـ Zod، ولا يستنتج المعاملات الاختيارية، ولا يدعم التفكيك ولا القيم الافتراضية ولا معاملات الباقي ولا تكرار أسماء المعاملات.
 
-SRC فقط حل قرار Host شفرة المصدر عملية توزيع مشكلة.Client لن من تشغيل في Host اكتشاف decorator،Client Remote أيضا رفض تركيب نقص قليل صارم إطار codec SRC وصف رمز؛ ذلك نوع،codec و Remote تسجيل قيمة بداية نهاية قدوم ذاتي الأكثر قريب مرة توليد `lib/typert.remote-client.*`.
+ولا يحل SRC إلا مشكلةَ التوزيع في عملية Host تعمل من المصدر. فالـ Client لا يكتشف المزخرِفات من Host العامل، وRemote في Client يرفض تركيبَ واصفات SRC التي لا codecs صارمة لها؛ وأنواعُه وcodecs وقيمُ تسجيل Remote تأتي دائمًا من أحدث نواتج `lib/typert.remote-client.*` مولَّدة.
 
-## تطوير نمط
+## وضع التطوير
 
-Web تطوير أولا استخدام `pnpm run build` دقيق تجهيز حالي Host،Client و Web ناتج، لكن بعد في اثنان عدد طرفية في قسم آخر تشغيل شفرة المصدر Host و Client plugin watcher:
+يهيّئ تطويرُ Web نواتجَ Host وClient وWeb الحالية بـ `pnpm run build`، ثم يشغّل Host من المصدر ومراقبَ إضافات Client في طرفيتين منفصلتين:
 
 ```sh
 pnpm dsh web
 pnpm run dev:web
 ```
 
-`dsh` عبر tsx بدء Host شفرة المصدر، الذي بـ Host يمكن استخدام SRC رجوع؛`dev:web` فقط استماع حمل `dsh.client` إعلان Client إضافة و إعادة كتابة ذلك `lib/client.js`، هو لن قسم تحليل Host decorator، أيضا لن توليد Remote Client DTS.
+ويُقلع `dsh` مصدرَ Host عبر tsx، فيستطيع Host استعمال الرجوع إلى SRC؛ أما `dev:web` فلا يراقب إلا إضافات Client التي لها تصريح `dsh.client` ويعيد كتابة `lib/client.js` الخاص بها. وهو لا يحلّل مزخرِفات Host ولا يولّد DTS الخاص بـ Remote في Client.
 
-فقط تعديل Remote طريقة تنفيذ جسم بينما لا تغيير اتفاق وقت، بلا حاجة إعادة توليد Typert ملف. إضافة جديدة أو حذف decorator، تعديل تصدير اسم،namespace، معامل، قيمة راجعة،lookup،Context أو إلغاء توقيع وقت، إعادة تنفيذ لديه ترتيب lib بناء، يجعل Host أولا توليد صارم إطار اتفاق، مجددا يجعل Client تحرير ترجمة و تحزيم جديد مساهمة:
+وتغييرُ جسم تنفيذ طريقة Remote وحده دون تغيير عقدها لا يقتضي إعادة توليد ملفات Typert. أما بعد إضافة مزخرِف أو حذفه، أو تغيير اسم تصدير أو فضاء أسماء أو معامل أو قيمة راجعة أو lookup أو سياق أو توقيع إلغاء، فأعِد تشغيل بناء المكتبة المرتَّب ليولّد Host العقدَ الصارم قبل أن يصرّف Client المساهمةَ الجديدة ويحزمها:
 
 ```sh
 pnpm run build:lib
 ```
 
-تشغيل في Client watcher سوف في إعادة تحزيم وقت إزالة استهلاك هذه توليد ملف. إذا قد مفرد وحيد تشغيل `pnpm run build:lib:host` تحديث جديد Host اتفاق، أيضا يمكن مجددا تشغيل `pnpm run build:lib:client` إتمام Client جانب؛ جاف صاف عمل شجرة لا يستطيع قفز مرور Host مرحلة مقطع. فقط إعادة تحرير ترجمة قبل طرف شفرة المصدر لا يستطيع من Host decorator دفع توجيه جديد نوع.`pnpm run typecheck` سوف تنفيذ Host lib مرحلة مقطع بعد مجددا تشغيل Client tsc،CI و إصدار بناء أيضا استخدام نفس ترتيب.
+ويستهلك مراقبُ Client العامل هذه الملفاتِ المولَّدة حين يعيد الحزم. وإن كان `pnpm run build:lib:host` قد حدّث عقدَ Host أصلًا، فيستطيع `pnpm run build:lib:client` إتمامَ جانب Client؛ أما شجرة عمل نظيفة فلا تستطيع تخطي طور Host. وإعادةُ تصريف شفرة الواجهة وحدها لا تستنتج أنواعًا جديدة من مزخرِفات Host. ويشغّل `pnpm run typecheck` طورَ مكتبة Host قبل tsc الخاص بـ Client، وتستعمل CI وبناءات الإصدار الترتيبَ نفسه.
 
-## حد
+## الحدود
 
-Remote فقط معالجة لديه مفرد عدد طلب و مفرد عدد نتيجة واحد عنصر طريقة استدعاء. جلسة حدث تدفق، قسم صفحة، زيادة كمية reduce،projection و فعلي جسم فرعي تدفق حاجة مستقل بيانات بروتوكول و تسجيل نموذج؛ أي جعل هو جمع إعادة استخدام Connection، أيضا لا ينبغي زائف تركيب صار Remote طريقة أو وضع دخول استدعاء وصف رمز.
+لا يتولى Remote إلا استدعاءات الطرق الأحادية بطلب واحد ونتيجة واحدة. أما تدفقات أحداث الجلسة والترقيم والطيّ التدريجي والإسقاط وتدفقات الكيانات الفرعية فتشترط بروتوكول بيانات ونموذجَ تسجيل منفصلين؛ وحتى حين تعيد استعمال الـ Connection، يجب ألّا تتنكّر في صورة طرق Remote ولا تدخل واصفات الاستدعاء.
 
-API كل طبقة حسب `remotes → gateway → connection → webserver` مجموعة نسج.BFF و Typert RPC طبقة يقع في `packages/api`؛Connection و WebServer يقع في `packages/client/connection` و `packages/host/webserver`. حاجة تدفق صيغة أو متصفح أصلي استجابة وظيفة تسجيل دقيق Connection Fetch توجيه، بينما لا تعريف Remote طريقة.
+وتُنظَّم طبقات API على النحو `remotes ← gateway ← connection ← webserver`. وتسكن طبقتا BFF وRPC الخاصة بـ Typert تحت `packages/api`؛ وتسكن Connection وWebServer في `packages/client/connection` و`packages/host/webserver`. والميزةُ التي تحتاج استجابةً متدفقة أو أصيلة في المتصفح تسجّل مسارَ Fetch مضبوطًا في الـ Connection بدل تعريف طريقة Remote.
 
-lookup سياسة حسب key إعداد، لذلك كل `agent` أو `session` معامل مشترك بارد استعادة سلوك. فقط قبول live كائن حاجة صريح تدريجي معامل أو تدريجي endpoint سياسة، بينما هذا نوع سياسة و لا وجود؛ لا يستطيع عبر عمل خدمة طريقة داخلي تخمين قياس كائن هل قدوم ذاتي استعادة.
+وتُضبَط سياسة lookup لكل مفتاح، فتتشارك كل معاملات `agent` أو `session` سلوكَ الاستئناف البارد. وقبولُ الكائنات الحية وحدها كان سيقتضي سياسةً صريحة لكل معامل أو لكل نقطة نهاية، وهي غير موجودة؛ وعلى طريقة الأعمال ألّا تخمّن هل جاء الكائن من استعادة.
