@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/subagent.md
 subagent.md: 908c3a1664e0c89d5ae054d4e44f022e4369d0f1
-subagent.ar.md: bdbfaf492b5e41294afaf3f0858d7eab44d6d3b3
+subagent.ar.md: f35a0e466737bbc22ab2a7588052769cc1ee8619
