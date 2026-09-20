@@ -1,34 +1,34 @@
 # Translation prompt (pipeline asset)
 
-هذا ملف هو تلقائي قلب ترجمة خط الإنتاج prompt نموذج لوح؛ من `# Translation Prompt` بدء متن سوف تدريجي حرف دخول نموذج طلب، لذلك هذا ملف لا مشاركة و مزدوج لغة إعداد مقابل (رؤية [README.md](README.md) ترتيب حذف بيان). نموذج لوح متن و داخل تضمين few-shot صحيح خطأ مثال من jingtingxiang أساس في مقابل تخزين كمية ترجمة نص جودة كمية مراجعة تأليف كتابة، هو خط الإنتاج سلوك التقاط لوح أساس خط. تصيير وقت يأخذ [terminology.md](terminology.md) كامل جدول ملء دخول `{{terminology}}`؛ حذف هذا خارج لا حقن أي أخرى مستودع ملف (translation-rules.md قيد شخص و agent قلب ترجمة عمل، لا حقن هذا نموذج لوح).[style-samples.md](style-samples.md) تعريف نص جسم، نموذج لوح في Examples فقط لأجل شرح قاموس نوع مشكلة، اثنان من اندفاع مفاجئ وقت بـ نص جسم مثال مثال لـ دقيق. هذا نموذج لوح التزام دوران [نص التوجيه v4 اتفاق Agent Note](../../.agents/notes/archived/process/2026-07-23-translation-prompt-v4-contract.md) سجل توافق بروتوكول. تعديل هذا ملف سوف تغيير قلب ترجمة سلوك، يحتاج صحيح معتاد مرور مرور PR مراجعة.
+هذا الملف هو قالب التوجيه لخط الترجمة الآلي؛ والمتن الذي يبدأ عند `# Translation Prompt` يدخل طلب النموذج حرفيًا، ولذلك لا يشارك هذا الملف في الاقتران الثنائي اللغة (انظر قائمة الاستثناءات في [README.md](README.md)). متنُ القالب وأمثلة الصواب والخطأ القليلة المضمَّنة فيه مكتوبة على أساس مراجعة جودة ترجمات المستودع، وهي خط الأساس الذي يضبط سلوك خط المعالجة. وعند التصيير يُملأ `{{terminology}}` بجدول [terminology.md](terminology.md) كاملًا؛ ولا يُحقن أي ملف آخر من المستودع (فـ translation-rules.md يلزم عمل البشر والوكلاء في الترجمة، ولا يُحقن في هذا القالب). ويعرّف [style-samples.md](style-samples.md) الأسلوب، أما قسم Examples في القالب فيشرح أصناف المشكلات وحدها؛ وعند تعارضهما فالحكم لعينات الأسلوب. ويلتزم هذا القالب ببروتوكول التوافق المسجَّل في [Agent Note عن عقد التوجيه v4](../../.agents/notes/archived/process/2026-07-23-translation-prompt-v4-contract.md). وتعديل هذا الملف يغيّر سلوك الترجمة، فيمر بمراجعة PR كاملة.
 
-## احتلال موضع رمز اتفاق
+## عقد رموز الإحلال
 
-خط الإنتاج تصيير نموذج لوح وقت استبدال التالي احتلال موضع رمز، حذف هذا خارج لا تعديل كتابة نظام رسالة:
+يستبدل خط المعالجة رموز الإحلال التالية عند تصيير القالب، ولا يعدّل شيئًا آخر في رسالة النظام:
 
-| احتلال موضع رمز | ملء دخول محتوى | مصدر |
+| رمز الإحلال | المحتوى المملوء | المصدر |
 |---|---|---|
-| `{{source_lang}}` | مصدر لغة اسم (`English` / `Arabic`) | من تعديل جانب ملف دفع قطع:`.ar.md` يتم تعديل فإن لـ `Arabic` |
-| `{{target_lang}}` | هدف لغة اسم (`Arabic` / `English`) | و `{{source_lang}}` متبادل مقابل |
-| `{{terminology}}` | [terminology.md](terminology.md) كامل جدول إطار (Markdown أصل نص) | تصيير وقت قراءة مستودع حالي إصدار، لا ذاكرة مؤقتة |
+| `{{source_lang}}` | اسم لغة المصدر (`English` أو `Arabic`) | يُستنتج من الجانب المعدَّل: تعديل `.ar.md` يعني `Arabic` |
+| `{{target_lang}}` | اسم لغة الهدف (`Arabic` أو `English`) | مقابل `{{source_lang}}` |
+| `{{terminology}}` | جدول [terminology.md](terminology.md) كاملًا (نص Markdown الأصلي) | يُقرأ من نسخة المستودع الحالية عند التصيير، بلا ذاكرة مؤقتة |
 
-خط الإنتاج فقط تعرف آخر فوق جدول في احتلال موضع رمز، و كما مرة قلب ترجمة كامل مقالة وثيقة. هو لا دعم حمل `{{to}}`،`{{title_prompt}}`،`{{summary_prompt}}`،`{{terms_prompt}}`،`{{imt_style_guide}}`،`{{translation_rules}}` أو `%%` قسم مقطع بروتوكول؛ إخراج اعتماد نموذج لوح متن قاعدة تحديد ثلاثة مقطع XML، خط الإنتاج تحليل أخذ `<final>` مقطع.
+لا يعرف خط المعالجة سوى رموز الإحلال المذكورة في الجدول أعلاه، ويترجم الوثيقة كاملةً في مرة واحدة. وهو لا يدعم `{{to}}` و`{{title_prompt}}` و`{{summary_prompt}}` و`{{terms_prompt}}` و`{{imt_style_guide}}` و`{{translation_rules}}` ولا بروتوكول الأقسام `%%`؛ والخرج يتبع صيغة XML ذات الأقسام الثلاثة التي يحدّدها متن القالب، ويأخذ خط المعالجة قسم `<final>` عند التحليل.
 
-لغة تبديل سطر: قد لديه إعداد مقابل مصدر ملف ذاتي حمل تبديل سطر، نموذج حسب نموذج لوح قاعدة قلب تحويل يكفي. كل جديد إعداد مقابل مصدر ملف لا يوجد تبديل سطر، نموذج أيضا بلا من نيل معرفة ملف اسم——هذا وقت من خط الإنتاج في تحليل `<final>` بعد حسب هدف ملف اسم إدراج دخول أو تدقيق صحيح تبديل سطر (آلة آلة بعد معالجة، إعداد مقابل بوابة التقاط قاع تحقق).
+سطر تبديل اللغة: حين يحمل الملفُ المصدر سطر تبديل أصلًا، يكفي أن يقلبه النموذج وفق قاعدة القالب. أما المصدر الذي لا سطر تبديل فيه لأنه اقتران جديد، فلا يعرف النموذج اسم الملف أصلًا: هنا يدرج خط المعالجة سطر التبديل أو يصحّحه باسم الملف الهدف بعد تحليل `<final>` (معالجة بعدية آلية، وبوابة الاقتران هي شبكة الأمان).
 
-## Few-shot ذهب علامة
+## العينات الذهبية لـ few-shot
 
-خط الإنتاج استخدام**كامل مقالة وثيقة**في إنجليزي مقابل وفق بصفة few-shot، لا هو نموذج لوح داخل تضمين جملة فرعي درجة صحيح خطأ مثال. التالي 5 مجموعة إعداد مقابل وثيقة متساو مرور مرور شخص عمل مراجعة، بـ مستودع حالي إصدار لـ دقيق، مع مستودع تحديث:
+يستخدم خط المعالجة **وثائق كاملة** من الاقترانات الإنجليزية العربية بوصفها عينات few-shot، لا أمثلة صواب وخطأ على مستوى الجملة مضمَّنة في القالب. والاقترانات الخمسة التالية راجعها بشر، وتؤخذ من نسخة المستودع الحالية، فتتحدّث بتحدّثه:
 
 - `README.md` ↔ `README.ar.md`
 - `docs/development.md` ↔ `docs/development.ar.md`
 - `docs/i18n/README.md` ↔ `docs/i18n/README.ar.md`
 - `docs/i18n/translation-rules.md` ↔ `docs/i18n/translation-rules.ar.md`
-- `.agents/notes/implemented/process/2026-07-02-bilingual-docs-and-pairing-gate.md` ↔ مقابل `.ar.md`
+- `.agents/notes/implemented/process/2026-07-02-bilingual-docs-and-pairing-gate.md` ↔ نظيره `.ar.md`
 
-حقن طريقة: في نظام رسالة (هذا نموذج لوح) بعد، انتظار ترجمة وثيقة قبل، كل مجموعة بصفة واحد جولة عرض مثال محادثة——user رسالة لـ مصدر وثيقة كل نص،assistant رسالة لـ تحديد مسودة ترجمة نص كل نص (عار نص، لا حمل ثلاثة مقطع XML حزمة تركيب؛ فقط لديه حقيقي طلب اشتراط ثلاثة مقطع إخراج). سياق لا كاف وقت حسب فوق صف ترتيب من بعد نحو قبل حذف نقص مجموعة عدد. هذا 5 مجموعة أيضا هو مراجعة تدقيق دقيق مرساة نقطة (رؤية [style-samples.md](style-samples.md)) ، تعديل أي واحد مجموعة أي تغيير خط الإنتاج سلوك.
+طريقة الحقن: بعد رسالة النظام (وهي هذا القالب) وقبل الوثيقة المراد ترجمتها، يُعرض كل اقتران محادثةً نموذجية من جولة واحدة: رسالة user تحمل نص الوثيقة المصدر كاملًا، ورسالة assistant تحمل نص الترجمة المعتمَدة كاملًا (نصًّا مجردًا بلا غلاف XML ثلاثي الأقسام؛ فالطلب الحقيقي وحده هو الذي يشترط الخرج ثلاثي الأقسام). وعند ضيق السياق تُحذف الاقترانات من آخر القائمة إلى أولها. وهذه الخمسة هي أيضًا مراسي معايرة المراجعة (انظر [style-samples.md](style-samples.md))، فتعديل أي منها يغيّر سلوك خط المعالجة.
 
-## نموذج لوح متن
+## متن القالب
 
 ````text
 # Translation Prompt
@@ -71,7 +71,7 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Write in a professional, formal tone appropriate for developer documentation. Never use colloquial or casual expressions.
 - Name an actor when the target language would otherwise obscure an actor that the source states or unambiguously implies. Never invent responsibility merely to avoid a passive construction.
 - Prefer established target-language engineering terms over literal renderings. Replace metaphors with direct descriptions that preserve the source meaning.
-- Use polite imperative forms where the text instructs the reader to do something. In Arabic, address the reader as `أنت`, not `أنت`.
+- Use polite imperative forms where the text instructs the reader to do something. In Arabic, address the reader as `أنت`, never the deferential `حضرتك` or a plural `أنتم` aimed at one reader.
 - Keep the author's register: concise stays concise, detailed stays detailed.
 
 ### Sentence Structure
@@ -91,22 +91,22 @@ A lower-priority rule may refine but never override a higher-priority requiremen
 - Avoid repeating the same ordinary verb in close proximity when a natural equivalent preserves the exact meaning. Never vary a terminology-table form, defined concept, or contract verb merely for stylistic variety.
 
 #### When translating into Arabic
-- When a number modifies a noun, include a natural Arabic classifier or measure word when Arabic grammar requires one. For example: "three-role capability seam" → "يتضمن ثلاثة نوع زاوية لون قدرة seam", not "ثلاثة زاوية لون seam". Do not add classifiers to code, identifiers, versions, units, or fixed names.
+- Do not carry source-language measure words or classifiers into Arabic; Arabic has none. Render a counted noun with correct Arabic number agreement and word order instead. For example: "three-role capability seam" → "قدرة seam ثلاثية الأدوار", not "ثلاثة نوع قدرة seam". Leave code, identifiers, versions, units, and fixed names unchanged.
 
 ### Punctuation
 
 #### When translating into Arabic
-- Use full-width Arabic punctuation in Arabic prose: `،.: ؛؟!()«»`. Keep half-width punctuation inside code spans, numbers, and complete verbatim English text.
+- Use Arabic punctuation in Arabic prose: comma `،`, semicolon `؛`, question mark `؟`, and the quotation marks `«»`. The period, colon, exclamation mark, and parentheses keep their ASCII forms. ASCII punctuation also stays inside code spans, inside numbers, and inside complete English text quoted verbatim.
 - Prefer colons, periods, commas, or parentheses over em dashes when they make the sentence clearer or more natural. Keep an em dash when it is the clearest natural punctuation.
 - Use enumeration commas (،) between parallel Arabic items, not regular commas.
 - Keep list-item endings consistent with their grammar. Complete sentences may end with periods or other grammatically required punctuation; do not end list items with commas.
-- Put one half-width space between Arabic text and Latin words or numerals. Do not add a space next to full-width punctuation, and do not leave a meaningless half-width space between two Arabic characters.
+- Put one space between Arabic text and an adjacent Latin word or numeral. Do not put a space between a punctuation mark and the text it attaches to, and do not insert a space between two Arabic words where Arabic would not have one.
 - Markdown emphasis markers do not create a word boundary. Determine spacing from the rendered adjacent characters: Arabic next to Arabic takes no space, while Arabic next to a Latin word or numeral takes one half-width space.
-- Use half-width digits and Latin letters, never full-width forms.
-- For RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY), translate to the corresponding Arabic term (يجب، منع توقف، ينبغي عند، يمكن), preserve the SOURCE emphasis span exactly, and do not weaken its normative strength: plain source stays plain (يجب), italic source stays italic (*يجب*), and bold source stays bold (**يجب**).
+- Use Western Arabic numerals (`123`), never Eastern Arabic-Indic digits (`١٢٣`), and keep Latin letters in their ordinary forms.
+- For RFC 2119 keywords (MUST, MUST NOT, SHOULD, MAY), translate to the corresponding Arabic term (يجب، يجب ألا، ينبغي، يمكن), preserve the SOURCE emphasis span exactly, and do not weaken its normative strength: plain source stays plain (يجب), italic source stays italic (*يجب*), and bold source stays bold (**يجب**).
 
 #### When translating into English
-- Use half-width English punctuation and standard English spacing. Preserve full-width punctuation only in verbatim Arabic text.
+- Use ASCII English punctuation and standard English spacing. Preserve Arabic punctuation only inside verbatim Arabic text.
 - Convert enumeration commas (،) to English commas and Arabic prose quotation marks to English double quotes.
 - Convert Arabic topic-comment sentences and omitted-subject constructions into clear English subjects when the actor is stated or unambiguously implied. Do not invent an actor.
 - Use concise professional developer prose and established English technical terms. Do not transliterate Arabic engineering idioms literally.
@@ -138,11 +138,11 @@ The outer section tags are framing. If Markdown inside any section body contains
 
 <review>
 (Second pass: actual corrections only, one correction per line with a category tag, e.g.)
-- [Tone] "جانب تعليق سجل" → "مرافق مع سجل"(توليد صنع كلمة)
-- [Sentence] رقم 3 مقطع تكملة ملء فاصلة رقم قطع جملة
-- [Punctuation] اثنان موضع كسر طي رقم استبدال لـ خطر رقم
+- [Tone] «سجل جانبي» ← «سجل مرافق» (لفظ مصنوع)
+- [Sentence] الفقرة 3: قُسمت الجملة الطويلة بفاصلة منقوطة
+- [Punctuation] موضعان: استُبدلت الشرطة المعترضة بنقطتين رأسيتين
 - [Terminology: pending] source term → tentative rendering
-- بلا إصلاح صحيح
+- لا تصحيحات
 </review>
 
 <final>
@@ -196,7 +196,7 @@ After writing `<translation>`, verify it in two directions. First re-read it in 
 - Are list-item endings grammatically consistent, with none ending in commas?
 - Do RFC 2119 keywords preserve the source emphasis span and normative strength exactly?
 
-Record actual corrections in `<review>`, then output the corrected complete document in `<final>`. If no correction or pending terminology notice is needed, write exactly `- بلا إصلاح صحيح` in `<review>` and copy `<translation>` unchanged into `<final>`. If `<review>` contains only pending terminology notices, copy `<translation>` unchanged into `<final>`.
+Record actual corrections in `<review>`, then output the corrected complete document in `<final>`. If no correction or pending terminology notice is needed, write exactly `- لا تصحيحات` in `<review>` and copy `<translation>` unchanged into `<final>`. If `<review>` contains only pending terminology notices, copy `<translation>` unchanged into `<final>`.
 
 ## Examples
 
@@ -205,47 +205,47 @@ Below are representative examples of common problems and their corrections. Foll
 ### Colloquial verb → Professional verb
 - Source: `The repo pins pnpm@11.7.0 in package.json`
 - Bad: `مستودع في package.json في تثبيت إقامة pnpm@11.7.0`
-- Good: `هذا مستودع في package.json في ثابت استخدام pnpm@11.7.0`
+- Good: `يثبّت المستودع الإصدار pnpm@11.7.0 في package.json`
 
 ### Run-on sentence → Natural phrasing with pause
 - Source: `Read docs/architecture.md before changing anything under packages/.`
 - Bad: `تعديل packages/ تحت أي شرق غرب قبل أولا قراءة docs/architecture.md.`
-- Good: `في تعديل packages/ دليل تحت أي محتوى قبل، طلب أولا قراءة قراءة docs/architecture.md.`
+- Good: `اقرأ docs/architecture.md قبل تغيير أي شيء تحت packages/.`
 
 ### Stiff passive voice → Active and natural
 - Source: `a green gate means the pair was confirmed consistent at these exact contents, not that the confirmation was sound.`
 - Bad: `بوابة أخضر معنى طعم حال هذا مقابل وثيقة سبق في حالي محتوى فوق يتم تأكيد متسق، لا معنى طعم حال هذا مرة تأكيد ذاته هو مقابل.`
-- Good: `بوابة عبر معنى طعم حال هذا مجموعة وثيقة في حالي محتوى فوق متسق صفة نيل إلى تأكيد، لا بديل جدول تأكيد ذاته صحيح تأكيد يمكن اعتماد.`
+- Good: `البوابة الخضراء تعني أن الاقتران أُكِّد متسقًا عند هذا المحتوى بالذات، لا أن التأكيد كان سليمًا.`
 
 ### Invented word → Natural expression
 - Source: `A sidecar record of both blob hashes makes consistency checkable`
 - Bad: `جانب تعليق سجل اثنان جانب blob hash، جعل متسق صفة يمكن فحص`
-- Good: `مرافق مع سجل حفظ اثنان جانب blob hash، جعل متسق صفة يمكن فحص`
+- Good: `سجل مرافق يحفظ قيمتَي blob hash للجانبين، فيصير الاتساق قابلًا للفحص`
 
 ### Em-dash → Colon/period
 - Source: `FIXME — an issue that should block a new release. A release should not ship with an open FIXME unless reviewers explicitly agree the change can be merged anyway.`
 - Bad: `FIXME——ينبغي عند منع سد جديد إصدار إصدار مشكلة. حذف غير مراجعة من واضح نفس معنى يمكن وفق معتاد دمج دخول، إصدار لا ينبغي حمل حال لم حل قرار FIXME خروج باب.`
-- Good: `FIXME: ينبغي عند منع سد جديد إصدار إصدار مشكلة. حذف غير مراجعة من واضح نفس معنى هذا أكثر تعديل يمكن دمج، لا فإن إصدار إصدار لا ينبغي يتضمن لم حل قرار FIXME.`
+- Good: `FIXME: مشكلة ينبغي أن تمنع إصدارًا جديدًا. ولا ينبغي أن يُشحن إصدار وفيه FIXME مفتوح، إلا أن يوافق المراجعون صراحةً على دمج التغيير رغم ذلك.`
 
 ### Overly literal → Meaningful rendering
 - Source: `awkward phrasing is easier to notice when you read the translation without comparing it with the source`
 - Bad: `لا يأخذ ترجمة نص و أصل نص مقارنة مقارنة وقت، حرج إحراج إجراء لفظ أكثر سعة سهل يتم ملاحظة معنى`
-- Good: `لا مقابل وفق أصل نص قراءة قراءة ترجمة نص وقت، أكثر سعة سهل ملاحظة شعور آخر لي جدول بلوغ`
+- Good: `تسهل ملاحظة الصياغة الركيكة حين تقرأ الترجمة دون مقارنتها بالأصل`
 
 ### Terminology — do not translate what should be kept in English
 - Source: `typed service seams, and explicit extension points`
 - Bad: `نوع تحويل خدمة seam(نقطة توسيع) و صريح نقطة توسيع`
-- Good: `نوع تحويل خدمة seam و صريح نقطة توسيع`
+- Good: `خدمة seam ذات أنواع، ونقاط امتداد صريحة`
 
 ### Slang/jargon → Professional phrasing
 - Source: `The committed agent workflow lives in .agents/skills/dsh-translate-docs`
 - Bad: `دخول مستودع agent سير العمل رؤية .agents/skills/dsh-translate-docs`
-- Good: `مستودع داخل وضع agent سير العمل رؤية .agents/skills/dsh-translate-docs`
+- Good: `سير عمل agent المودَع في المستودع يسكن في .agents/skills/dsh-translate-docs`
 
 ### "For humans" — translate the intent, not the word
 - Source: `For humans, start with the development guide`
-- Bad: `مقابل في شخص عمل قراءة من، طلب أولا من تطوير إشارة جنوب بدء`("شخص عمل قراءة من"توليد صلب)
-- Good: `موجه إلى تطوير من: طلب أولا قراءة قراءة تطوير إشارة جنوب`("تطوير من"ذاتي لكن، كما العربية داخل خطر رقم في هذا موضع أكثر ذاتي لكن)
+- Bad: `مقابل في شخص عمل قراءة من، طلب أولا من تطوير إشارة جنوب بدء` ("شخص عمل قراءة من" لفظ مصنوع)
+- Good: `للمطوّرين: ابدأ بدليل التطوير` (نداء القارئ بصفته، وهو أطبع في العربية من ترجمة "humans" حرفيًا)
 
 ### Code block comments — NEVER translate
 - Source code block contains: `# full-screen TUI coding agent (needs DEEPSEEK_API_KEY)`
