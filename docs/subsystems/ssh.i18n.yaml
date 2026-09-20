@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/ssh.md
 ssh.md: 157af9f303d4ea0b5029f98146be9ce75865a73d
-ssh.ar.md: ef41c3005232e8e5d3f845e9e898799acfdf4dfc
+ssh.ar.md: b55f2d3bbd0e92a79fb1dcb1a05818f4024ea1b8

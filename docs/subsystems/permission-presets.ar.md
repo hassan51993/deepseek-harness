@@ -1,14 +1,14 @@
-# إذن مسبق ضبط
+# presets الأذونات
 
 [English](permission-presets.md) | العربية
 
-[dsh-permission-presets](../../packages/interaction/permission-presets) إذن مسبق ضبط طبقة (`ctx.permissionPresets`،`PermissionPresetService`) يأخذ اثنان عدد متبادل متبادل مستقل قوي صنع تنفيذ knob، أي[صندوق رملي نمط](sandbox.ar.md)(`sandbox/mode`) و[مراجعة دفعة سياسة](approval.ar.md)(`approval/policy`) ، ربط ربط صار أداة اسم مسبق ضبط، توفير عميل بصفة مفرد عدد Permissions اختيار جهاز توفير. إعداد جدول يملك لم قدوم جلسة قيمة افتراضية، بينما ثابت `registerAuto(admit)` خطاف يجعل [Auto review](../../packages/experimental/auto-review/README.ar.md) integration في واحد effect دورة الحياة داخل إصدار فقط حد حالي جلسة خيار. هذا طبقة هو اختياري قدرة، كما لا يملك تنفيذ سياسة: نص التوجيه سرد وصف و إعادة تشغيل ما زال قراءة كل منها knob طي نتيجة، مقدار خارج قوي صنع تنفيذ من Auto review يملك.[حزمة README](../../packages/interaction/permission-presets/README.ar.md) مسؤول تركيب حالة و حد؛[صندوق رملي تبديل تصميم](../../.agents/notes/implemented/feature/2026-07-06-sandbox.ar.md) مسؤول أصلي دوران زر اعتماد حسب.
+تجمع طبقةُ presets الأذونات في [dsh-permission-presets](../../packages/interaction/permission-presets) (`ctx.permissionPresets` و`PermissionPresetService`) مقبضَي الفرض المستقلين — [وضع العزل](sandbox.ar.md) (`sandbox/mode`) و[سياسة الموافقة](approval.ar.md) (`approval/policy`) — في presets مسمّاة يعرضها العميلُ مُنتقيًا واحدًا للأذونات. ويملك الجدولُ المضبوط افتراضاتِ الجلسات المقبلة، بينما يتيح الخطّافُ الثابت `registerAuto(admit)` لتكامل [Auto review](../../packages/experimental/auto-review/README.ar.md) أن ينشر خيارَه المقتصر على الجلسة الحالية طوال عمر أثر واحد. والطبقةُ اختيارية ولا تملك سياسةَ تنفيذ: فسردُ المطالبة وإعادةُ التشغيل يبقيان يقرآن طيَّ مقبضهما، بينما يملك Auto review الفرضَ الإضافي. ويملك [README الحزمة](../../packages/interaction/permission-presets/README.ar.md) حالةَ التركيب والحدود؛ ويملك [تصميم تبديل العزل](../../.agents/notes/implemented/feature/2026-07-06-sandbox.ar.md) المسوّغَ الأصلي للمقبضين.
 
-شفرة المصدر:[`packages/interaction/permission-presets/src/index.ts`](../../packages/interaction/permission-presets/src/index.ts)
+المصدر: [`packages/interaction/permission-presets/src/index.ts`](../../packages/interaction/permission-presets/src/index.ts)
 
-## مسبق ضبط جدول
+## جدول presets
 
-مسبق ضبط يأخذ واحد مستقر key خريطة إلى واحد مجموعة صندوق رملي/مراجعة دفعة تركيب، خارج إضافة اختياري عميل عرض معلومة. افتراضي إعداد جدول ذاتي حمل `workspace-write`(`workspace-write` + `ask`) و `danger-full-access`(`danger-full-access` + `never`) ؛`custom` و `auto` هو إبقاء اسم، لا يستطيع إعداد.
+يربط preset مفتاحًا ثابتًا واحدًا بحزمة عزل وموافقة مع عرض اختياري للعميل. ويشحن الجدولُ المضبوط الافتراضي `workspace-write` (`workspace-write` مع `ask`) و`danger-full-access` (`danger-full-access` مع `never`)؛ أما `custom` و`auto` فمحجوزان ولا يمكن ضبطهما.
 
 ```ts type-equiv
 /** One preset's sandbox/approval bundle and optional client presentation. */
@@ -42,19 +42,19 @@ interface Config {
 }
 ```
 
-هذا خدمة اشتراط واحد تطبيق إضافة عزل `ctx.shell` منفذ و `ctx.approval`، إعداد خطأ في إضافة تحميل وقت أي فشل: اسم لـ `custom` أو `auto` إعداد بند سوف رمي خروج استثناء؛ في لا تطبيق إضافة عزل bash منفذ (لا يوجد `sandboxMode` قدرة واقع) لـ فوق تركيب نفس مثال رمي خروج استثناء، لأن مسبق ضبط ربط ربط واحد صندوق رملي نمط.
+وتشترط الخدمةُ منفِّذَ `ctx.shell` حاصرًا و`ctx.approval`، ويفشل سوءُ الضبط عند تحميل الإضافة: فالمداخلُ المضبوطة المسماة `custom` أو `auto` ترمي، والتركيبُ فوق منفِّذ bash لا يحصر (بلا حقيقة قدرة `sandboxMode`) يرمي لأن presets تجمع وضعَ عزل.
 
-## ثابت حالي جلسة Auto تسجيل
+## تسجيل Auto الثابت للجلسة الحالية
 
-Auto integration سوف في ذاته effect دورة الحياة داخل استدعاء `registerAuto(admit)`. هذا خدمة ثابت `auto` هوية و `danger-full-access` إضافة `never` تركيب؛shipped عميل locale حرف قاموس يملك Auto label و description، بينما إعداد مسبق ضبط عرض معلومة ما زال عودة Host كل. استدعاء جهة لا يستطيع عبر عام contribution API إصدار أخرى مسبق ضبط.Auto ترتيب صف في إعداد مسبق ضبط بعد، أبدا سوف دخول `permission.defaultPreset` ضبط schema، و في effect dispose وقت إزالة فقد. تزامن `admit` عودة ضبط سوف في Auto اختيار تعديل Session قبل، و تخزين Auto Session إصدار قبل تشغيل، لذلك integration ناقص أو جارٍ إغلاق وقت لن تعديل كتابة حمل دائم هوية.
+ينادي تكاملُ Auto الدالةَ `registerAuto(admit)` طوال عمر أثره. وتثبّت هذه الخدمةُ هويةَ `auto` وحزمتَه `danger-full-access` مع `never`؛ وتملك قواميسُ لغة العميل المشحونة تسميةَ Auto ووصفَه، بينما يبقى عرضُ presets المضبوطة مملوكًا للمضيف. ولا يستطيع المستدعون نشرَ preset آخر عبر واجهة إسهام عامة. ويظهر Auto بعد presets المضبوطة، ولا يدخل قط schema إعدادات `permission.defaultPreset`، ويختفي حين يُتخلَّص من الأثر. ويعمل ردُّ النداء المتزامن `admit` قبل أن يغيّر اختيارُ Auto الجلسةَ وقبل أن تُنشر جلسةُ Auto مخزَّنة، فلا يعيد تكاملٌ غائب أو قيد الإغلاق كتابةَ الهوية الدائمة.
 
-تسجيل أو إزالة Auto سوف إرسال خروج بلا payload `permission-presets/catalog-changed` إشعار. عملية درجة مستهلك أولا حجز قراءة، مجددا استدعاء `catalog()`؛ كل مرة استلام إلى إشعار بعد إعادة قراءة كامل اختياري دليل.`permissions` Session إسقاط فقط يتضمن `currentValue`، لذلك دليل تغير لن إلحاق Session حدث، إصدار Session إسقاط لقطة أو تغيير Session تسلسل.
+ويُطلق تسجيلُ Auto أو إزالتُه إشعارَ `permission-presets/catalog-changed` بلا حمولة. ويشترك مستهلكو العملية قبل نداء `catalog()`، ثم يعيدون قراءةَ الدليل القابل للانتقاء كاملًا بعد كل إشعار. ولا يحتوي إسقاطُ الجلسة `permissions` إلا على `currentValue`، فتغييراتُ الدليل لا تُلحق حدثَ جلسة، ولا تنشر إطارَ إسقاط جلسة، وتترك تسلسلَ الجلسة كما هو.
 
-## حالي مسبق ضبط و إرسال توليد `custom`
+## الـpreset الحالي و`custom` المشتق
 
-`current(session)` من مطلوب `permissions` إسقاط إرسال توليد فعلي توليد فاعلية مسبق ضبط. هذا وحدة طي جلسة صندوق رملي نمط، مراجعة دفعة سياسة و قد سجل اختيار؛ حالة داخلي ناقص قيمة رجوع إلى منفذ إعداد نمط و مراجعة دفعة خدمة إعداد، الأكثر بعد رجوع إلى `ask`. إسقاط key ناقص وقت سوف صريح فشل. خدمة أولوية أخذ ما زال مطابقة اختيار، ذلك مرة أخذ رقم واحد مطابقة إعداد بند، لا فإن إرجاع `CUSTOM_PRESET`(`'custom'`).`custom` فقط هو إرسال توليد قيمة: عميل يمكن يأخذ هو عرض لـ حالي قيمة، لكن هو أبدا هو تبديل هدف، أيضا أبدا ظهور في حدث payload في.
+يشتق `current(session)` الـpreset الساري من إسقاط `permissions` المشترَط. وتطوي الوحدةُ وضعَ عزل الجلسة وسياسةَ موافقتها والاختيارَ المسجَّل؛ والقيمُ الغائبة داخل تلك الحالة ترتد إلى الوضع المضبوط للمنفِّذ وضبطِ خدمة الموافقة، ثم إلى `ask`. ويفشل مفتاحُ الإسقاط الغائب صراحةً. وتفضّل الخدمةُ اختيارًا لا يزال مطابقًا، ثم أولَ مدخل مضبوط مطابق، وإلا أعادت `CUSTOM_PRESET` (`'custom'`). و`custom` مشتقٌّ فقط: فقد يعرضه العملاءُ قيمةً حالية، لكنه ليس قط هدفَ تبديل ولا حمولةَ حدث.
 
-`names` أولا حسب إعلان ترتيب صف خروج إعداد مسبق ضبط، مجددا في Auto integration تخزين نشط وقت صف خروج Auto.`catalog()` يأخذ هذه اختياري بند بصفة واحد نسخة عملية درجة لقطة إرجاع.`optionOf(name)` لـ متاح بند (label رجوع لـ هذا key) أو إرسال توليد `custom` عرض بناء خيار، نقل دخول أخرى أي اسم كل سوف رمي خروج استثناء. عميل يأخذ دليل و Session إسقاط دمج؛`custom` يمكن علامة حالي قيمة، لكن أبدا سوف يصبح دليل بند.
+ويعدّد `names` presets المضبوطة بترتيب تصريحها متبوعةً بـAuto ما دام تكاملُه حيًّا. ويعيد `catalog()` تلك المداخلَ القابلة للانتقاء لقطةً واحدة على مستوى العملية. ويبني `optionOf(name)` مدخلًا متاحًا (وترتد تسميتُه إلى المفتاح) أو عرضَ `custom` المشتق، ويرمي لأي اسم آخر. ويصل العملاءُ الدليلَ بإسقاط الجلسة؛ وقد يسمّي `custom` القيمةَ الحالية لكنه لا يصير مدخلًا في الدليل.
 
 ```ts type-equiv
 /** Presentation for an available preset or the derived `custom` current value. */
@@ -68,11 +68,11 @@ interface PresetOption {
 }
 ```
 
-## تبديل و `permission/preset` حدث
+## التبديل وحدث `permission/preset`
 
-`set(session, name)` تحليل مسبق ضبط (لم معرفة اسم رمي خروج استثناء) ، في ملائم استخدام وقت تشغيل Auto دقيق دخول، في `name` بعد لا هو توليد فاعلية مسبق ضبط وقت إلحاق واحد بند فقط تسجيل سجل `permission/preset` حدث، لكن بعد عبر كل دوران زر ذاتي ذات setter([dsh-sandbox-policy](../../packages/sandbox/sandbox-policy) `setSandboxMode` و [dsh-user-approval](../../packages/interaction/user-approval) `setApprovalPolicy`) كتابة، كما فقط عند هذا knob توليد فاعلية قيمة حدوث تغير وقت عندئذ كتابة. نفس جولة داخل، اختيار حدث أولا في دوران زر حدث ظهور؛ إعادة اختيار حالي توليد فاعلية مسبق ضبط فإن ماذا كل لا إلحاق.
+يحلّ `set(session, name)` الـpreset (والأسماءُ المجهولة ترمي)، ويشغّل قبولَ Auto حين ينطبق، ويُلحق حدثَ `permission/preset` للسجل فقط ما لم يكن `name` هو الـpreset الساري سلفًا، ثم يكتب كلَّ مقبض عبر ضابطه — `setSandboxMode` من [dsh-sandbox-policy](../../packages/sandbox/sandbox-policy) و`setApprovalPolicy` من [dsh-user-approval](../../packages/interaction/user-approval) — ولا يفعل ذلك إلا حين تتغير القيمةُ السارية لذلك المقبض. ويسبق حدثُ الاختيار حدثَي المقبضين في الجولة نفسها، وإعادةُ انتقاء الـpreset الساري لا تُلحق شيئًا.
 
-`permission/preset` هو حمل دائم، فقط تسجيل سجل مستخدم معنى رسم: هو لا دخول نموذج transcript(نص سجل) ، نموذج مرئي عاقبة من knob حدث مرور كل منها مستهلك تحمل تحمل؛ هو وجود هو لـ في اثنان عدد مسبق ضبط مشترك نفس عدد دوران زر تركيب وقت، يجعل `current()` ما زال قدرة حفظ إقامة مستخدم اختيار بحث فعلا هو أي واحد مسبق ضبط.`permissions` إسقاط يأخذ هذا اختيار و اثنان عدد knob حدث واحد نفس طي، و إبقاء لأجل منطقة قسم فارغ استعادة seed و جلسة جديدة `session/end-seed` حد؛ إعادة تشغيل لا حاجة أي تتبع لحاق حالة أو أصلي سجل إعادة مسح. استعادة `auto` اختيار في agent إصدار قبل يجب وجود live Auto تسجيل. كامل حدث إعلان رؤية[حفظ دائم سجل حدث دليل](../persistence-catalog.ar.md) ؛ طريقة توقيع رؤية توليد[خدمة دليل](#ctxpermissionpresets--permissionpresetservice).
+و`permission/preset` نيّةُ مستخدم دائمة للسجل فقط: فهي تبقى خارج نص المحادثة الذي يراه النموذج (إذ يملك حدثا المقبضين النتائجَ التي يراها النموذج عبر مستهلكيهما)، ووُجدت ليستطيع `current()` حفظَ أيِّ preset اختاره المستخدم حين يتشارك presetان حزمةً واحدة. ويطوي إسقاطُ `permissions` ذلك الاختيارَ مع حدثَي المقبضين، ويحتفظ بحدّ `session/end-seed` المستعمل للتمييز بين بذرة فارغة مستعادة وجلسة جديدة؛ ولا تحتاج إعادةُ التشغيل إلى حالة لحاق ولا إلى إعادة مسح السجل الخام. ويشترط اختيارُ `auto` المستعاد تسجيلَ Auto الحي قبل نشر الوكيل. وتصريحُ الحدث كاملًا في [دليل أحداث سجل الحفظ الدائم](../persistence-catalog.ar.md)؛ وتوقيعاتُ الطرائق في [دليل الخدمات](#ctxpermissionpresets--permissionpresetservice) المولَّد.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

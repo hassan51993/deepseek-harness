@@ -1,12 +1,12 @@
-# خلفية مهمة وقت التشغيل
+# بيئة تشغيل مهام الخلفية
 
 [English](jobs.md) | العربية
 
-طويل وقت تشغيل إنتاج جهة،`ctx.jobs` و مهمة تحكم أمر مشترك استخدام نوع.[وقت التشغيل Agent Note](../../.agents/notes/implemented/architecture/2026-06-20-generic-long-running-tool-runtime.ar.md) مسؤول تصميم؛ هذا صفحة سجل [`packages/jobs/jobs/src/types.ts`](../../packages/jobs/jobs/src/types.ts) في تأكيد قطع حقل و تغيير جسم.
+أنواعٌ يتشاركها المنتِجون طوالُ الأمد و`ctx.jobs` وضوابطُ المهام. وتملك [ملاحظةُ الوكيل عن بيئة التشغيل](../../.agents/notes/implemented/architecture/2026-06-20-generic-long-running-tool-runtime.ar.md) التصميمَ؛ وتسجّل هذه الصفحةُ الحقولَ والأشكالَ بعينها من [`packages/jobs/jobs/src/types.ts`](../../packages/jobs/jobs/src/types.ts).
 
-## ID و حالة
+## المعرّفات والحالة
 
-`JobId` هو حسب `<kind>-N` توليد[صنف لوحة تحويل id](core.ar.md#branded-ids). وصول تحكم اعتماد يملك من تخويل، بينما غير id حفظ سري صفة.`JobKind` إرسال توليد ذاتي يمكن دمج توسيع map؛ سجل التسجيل سوف كل عدد kind نظر لـ لا نفاذ واضح id نطاق الأسماء.
+`JobId` [معرّفٌ موسوم](core.ar.md#branded-ids) يُولَّد بالصيغة `<kind>-N`. ويعتمد ضبطُ الوصول على تخويل المالك لا على سرّية المعرّف. ويشتق `JobKind` من خريطة قابلة للتوسعة بالدمج؛ ويعامل السجلُّ الأصنافَ فضاءاتِ أسماء معتمة للمعرّفات.
 
 ```ts type-equiv
 /**
@@ -19,11 +19,11 @@ interface JobKindMap {
 }
 ```
 
-`JobStatus` لـ `'running' | 'stopping' | 'completed' | 'killed' | 'failed'`؛ إنتاج جهة خاص لديه واقع عودة دخول `JobSnapshot.detail`.
+و`JobStatus` هي `'running' | 'stopping' | 'completed' | 'killed' | 'failed'`؛ أما الحقائقُ الخاصة بالمنتِج فمكانها `JobSnapshot.detail`.
 
-## إنتاج جهة اتفاق
+## عقد المنتِج
 
-`JobStart` إعلان هوية و بدء جهاز. وقت التشغيل سوف في استدعاء `run()` قبل إتمام مسبق فحص، مع بعد إيداع تسجيل، لم يعد تنفيذ ممكن فشل خطوة. إنتاج جهة يملك تنفيذ مورد؛ وقت التشغيل يملك هوية، وصول إذن و دورة الحياة حالة.
+يعلن `JobStart` الهويةَ ومُشغّلًا. وتُنهي بيئةُ التشغيل التمهيدَ قبل نداء `run()` وتودِع بلا خطوة لاحقة قابلة للفشل. ويملك المنتِجون مواردَ التنفيذ؛ وتملك بيئةُ التشغيل الهويةَ والوصولَ وحالةَ دورة الحياة.
 
 ```ts type-equiv
 /**
@@ -57,7 +57,7 @@ interface JobStart {
 }
 ```
 
-`JobHooks.done` سوف في إنتاج جهة تحرير ذلك مورد بعد resolve، بينما لا هو فقط في عمل إتمام وقت resolve. اختياري `readOutput` استخدام قدوم منطقة قسم سوف إزالة استهلاك إخراج تدفق صيغة مهمة و فقط لديه نهائي إخراج مهمة.
+و`JobHooks.done` يحلّ بعد أن يحرّر المنتِجُ مواردَه، لا لمجرد انتهاء العمل. ويميّز `readOutput` الاختياري مهامَّ المجرى المستهلِكة من مهامّ الخرج النهائي وحده.
 
 ```ts type-equiv
 /** Hooks through which the runtime controls and observes producer work. */
@@ -95,9 +95,9 @@ interface JobOutcome {
 }
 ```
 
-## مستهلك عرض
+## عروض المستهلك
 
-لقطة هو كل مرة جديد بناء فقط قراءة إسقاط.`ownerSession` يحمل لأجل تخويل مشترك `SessionId`؛ إتمام مستمع فإن سوف آخر سطر استلام إلى لأجل دورة الحياة تنظيف تأكيد قطع يملك من كائن. آخر عدد واجهة قد تسليم إنهاء حالة أو تحمل وعد تسليم وقت،`reported` سوف كبح صنع إتمام إشعار؛ ترتيب فارغ owner أو خدمة teardown إلغاء نفس مثال حساب دخول.
+اللقطاتُ إسقاطاتٌ طازجة للقراءة فقط. ويحمل `ownerSession` قيمةَ `SessionId` المشتركة المستعملة في التخويل؛ ويتلقى مستمعو الاكتمال على حدة كائنَ المالك بعينه المستعمل في تنظيف دورة الحياة. ويكبح `reported` إشعارَ اكتمال بعد أن يكون مبلِّغٌ آخر قد سلّم الحالةَ النهائية أو التزم بتسليمها، ومنه إلغاءُ التفكيك الذي يصرّف مالكًا أو الخدمة.
 
 ```ts type-equiv
 /**
@@ -152,9 +152,9 @@ interface JobRead {
 }
 ```
 
-## خدمة سلوك
+## سلوك الخدمة
 
-سحب كائن [`JobRegistry`](../../packages/jobs/jobs/src/index.ts) Service Definition قاعدة تحديد أصل فرعي `start`، حد تحديد استدعاء جهة أثر مجال `get` و `list`،`read`،`kill`، محدود `wait`، لذا عائق عزل `onJobDone` و `onJobsChanged` مستمع، و `attachController`؛[`LocalJobRegistry`](../../packages/jobs/jobs-local/src/index.ts) هو ذلك عملية نطاق جزء Service Provider. تخويل سوف مقارنة مقارنة يملك من جلسة؛ يملك من تنظيف و دقيق دخول سوف استخدام تأكيد قطع قد تسجيل `Agent` نسخة. محلي Service Provider `maxConcurrentJobsPerOwner` إعداد يجب هو صحيح أمان كامل عدد، قيمة افتراضية لـ `10`؛ هو حسب تأكيد قطع owner موحد حساب `running` و `stopping` سجل، كل بلا owner مهمة مشترك واحد خدمة درجة دلو، و في إنتاج جهة إنهاء تسوية بعد تحرير سعة كمية.Service Definition اتفاق رؤية [`dsh-jobs`](../../packages/jobs/jobs/README.ar.md) ، سجل التسجيل دورة الحياة و دقيق دخول سياسة رؤية [`dsh-jobs-local`](../../packages/jobs/jobs-local/README.ar.md) ، موجه إلى نموذج Consumer رؤية [`dsh-tool-jobs`](../../packages/jobs/tool-jobs/README.ar.md).
+يحدد تعريفُ الخدمة المجرد [`JobRegistry`](../../packages/jobs/jobs/src/index.ts) عمليةَ `start` الذرّية، و`get` و`list` المحدودتين بالمستدعي، و`read`، و`kill`، و`wait` المحدودة، ومستمعَي `onJobDone` و`onJobsChanged` المعزولَين عن الفشل، و`attachController`؛ و[`LocalJobRegistry`](../../packages/jobs/jobs-local/src/index.ts) هو مزوّدُ الخدمة المحلي في العملية. ويقارن التخويلُ جلساتِ المالكين؛ ويستعمل تنظيفُ المالك وقبولُه نسخةَ `Agent` المسجَّلة بعينها. وقيمةُ `maxConcurrentJobsPerOwner` في المزوّد المحلي عددٌ صحيح موجب آمن، افتراضُها `10`، وتعدّ سجلاتِ `running` و`stopping` لكل مالك بعينه، مع سلة واحدة مشتركة للمهام بلا مالك؛ ويحرّر استقرارُ المنتِج النهائي السعةَ. وانظر [`dsh-jobs`](../../packages/jobs/jobs/README.ar.md) لعقد تعريف الخدمة، و[`dsh-jobs-local`](../../packages/jobs/jobs-local/README.ar.md) لدورة حياة السجل وسياسة القبول، و[`dsh-tool-jobs`](../../packages/jobs/tool-jobs/README.ar.md) للمستهلك الذي يراه النموذج.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

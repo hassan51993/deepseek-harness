@@ -1,12 +1,12 @@
-# إنتاج خروج شيء
+# التسليمات
 
 [English](deliverables.md) | العربية
 
-سجل واحد جولة تسليم إعطاء مستخدم شرق غرب، من [deliverables حزمة مجموعة](../../packages/deliverables/README.ar.md) يملك: نموذج عبر `present` أداة إعلان ملف، تسجيل في واحد فقط كتابة سجل Session حدث داخل؛ هذا واحد جولة تعديل ملف، من جولة بدء و جولة انتهاء وقت git عمل شجرة لقطة مقابل مقارنة نيل خروج،git تغطية لا إلى مسار فإن من ملف أداة كل مرة تحرير قبل بعد كامل ملف التقاط نيل خروج، استخدام واحد فقط كتابة سجل حدث إعلان إبلاغ، و في Session تخزين نشط خلال من Host خدمة وصل نفس كل الذي صف ملف في جولة بدء و جولة انتهاء وقت مقابل مقارنة واحد بدء توفير. هو جمع فقط من عميل قراءة،Web [إنتاج خروج شيء إضافة](../../packages/client/ui-deliverables/README.ar.md) في جولة نهاية تصيير اثنان من. أداة سلوك، لقطة آلية و إعداد رؤية [`tool-present`](../../packages/deliverables/tool-present/README.ar.md) و [`workspace-changes`](../../packages/deliverables/workspace-changes/README.ar.md) حزمة README.
+ما تسلّمه الجولةُ إلى المستخدم، وتملكه [مجموعة حزم التسليمات](../../packages/deliverables/README.ar.md): الملفاتُ التي أعلنها النموذجُ عبر أداة `present`، مسجَّلةً في حدث جلسة للسجل فقط، والملفاتُ التي غيّرتها الجولةُ، ملخَّصةً من لقطات شجرة عمل git المأخوذة عند بدء الجولة ونهايتها مع التقاطات للملفات كاملةً حول كل تحرير بأداة ملفات للمسارات التي لا يغطيها git، ويعلن عنها حدثٌ للسجل فقط وتقدّمها خدمةُ مضيف ما دامت الجلسةُ حية، ومعها مقارنةُ كل ملف مدرَج بين بدء الجولة ونهايتها. ولا يقرؤها إلا العملاء؛ وتعرض [إضافةُ التسليمات](../../packages/client/ui-deliverables/README.ar.md) في Web كليهما عند نهاية الجولة. وسلوكُ الأداة وآلياتُ اللقطات والضبطُ في ملفات README للحزمتين [`tool-present`](../../packages/deliverables/tool-present/README.ar.md) و[`workspace-changes`](../../packages/deliverables/workspace-changes/README.ar.md).
 
-شفرة المصدر:[`packages/deliverables/tool-present/src/types.ts`](../../packages/deliverables/tool-present/src/types.ts) ،[`packages/deliverables/workspace-changes/src/types.ts`](../../packages/deliverables/workspace-changes/src/types.ts)
+المصدران: [`packages/deliverables/tool-present/src/types.ts`](../../packages/deliverables/tool-present/src/types.ts) و[`packages/deliverables/workspace-changes/src/types.ts`](../../packages/deliverables/workspace-changes/src/types.ts)
 
-## `PresentedFile`: واحد بند إعلان تسليم
+## `PresentedFile` — تسليم واحد معلَن
 
 ```ts type-equiv
 /** A declared filesystem file whose current contents remain at its source path. */
@@ -18,7 +18,7 @@ interface PresentedFile {
 }
 ```
 
-## `WorkspaceChangedFile`: واحد تعديل ملف
+## `WorkspaceChangedFile` — ملف واحد متغيّر
 
 ```ts type-equiv
 /** One file changed during a turn, with line counts from git or from the whole-file captures around its file-tool edits. */
@@ -42,7 +42,7 @@ interface WorkspaceChangedFile {
 }
 ```
 
-## `WorkspaceChangesSummary`: واحد جولة تعديل ملخص
+## `WorkspaceChangesSummary` — ملخص تغييرات جولة واحدة
 
 ```ts type-equiv
 /** Files changed during one top-level turn, kept on the Host until its Session is disposed. */
@@ -64,7 +64,7 @@ interface WorkspaceChangesSummary {
 }
 ```
 
-## `WorkspaceDiffHunk`: واحد unified diff hunk
+## `WorkspaceDiffHunk` — كتلة واحدة من الفرق الموحَّد
 
 ```ts type-equiv
 /** One unified-diff hunk with three context lines; every line keeps its `+`, `-`, or space prefix. */
@@ -82,7 +82,7 @@ interface WorkspaceDiffHunk {
 }
 ```
 
-## `WorkspaceFileDiff`: واحد ملف مقابل مقارنة
+## `WorkspaceFileDiff` — مقارنة ملف واحد
 
 ```ts type-equiv
 /** The comparison of one listed file's turn-start and turn-end contents, computed when asked for. */
@@ -108,7 +108,7 @@ type WorkspaceFileDiff =
   | { kind: 'oversized'; path: string; display: string }
 ```
 
-## `WorkspaceChanges`: توفير ملخص و مقابل مقارنة Host خدمة
+## `WorkspaceChanges` — خدمة المضيف التي تقدّم الملخصات والمقارنات
 
 ```ts type-equiv
 /** Serves the summaries and file comparisons the recorder keeps for live Sessions. */
@@ -133,9 +133,9 @@ interface WorkspaceChanges {
 }
 ```
 
-## حمل دائم حدث و توفير ملخص
+## الأحداث الدائمة والملخص المقدَّم
 
-`tool-present` عبر إعلان دمج يأخذ `deliverables/presented: { turn; callId; files: PresentedFile[] }` إضافة دخول `SessionEventMap`، كل مرة `present` نهائي نتيجة نجاح وقت إلحاق واحد بند.`workspace-changes` دمج `workspace/changes: { turn }`، في قمة طبقة جولة إيقاف وقت إلحاق؛ هذا حدث إعلان إبلاغ ملخص لا في سجل داخل، بينما هو من `workspaceChanges.summary(sessionId, seq)` حسب حدث ترتيب رقم إرجاع، مباشر إلى Session تحرير، لذلك Host إعادة بدء بعد إعادة فتح محادثة، أولا قبل جولة لا يوجد تعديل ملف بطاقة.`workspaceChanges.diff(sessionId, seq, index, signal)` حسب نفس مثال شرط مقابل مقارنة واحد الذي صف ملف. نفس جولة بعد قدوم حدث بديل أولا قبل، عميل فقط إبقاء الأكثر جديد واحد بند. توليد[حفظ دائم دليل](../persistence-catalog.ar.md#deliverablespresented--log-only) سجل اثنان موضع إعلان موضع. اثنان عدد حدث كل لن دخول نموذج طلب.
+تدمج `tool-present` تصريحَ `deliverables/presented: { turn; callId; files: PresentedFile[] }` في `SessionEventMap`، ويُلحق مرةً واحدة لكل نتيجة `present` نهائية ناجحة. وتدمج `workspace-changes` تصريحَ `workspace/changes: { turn }`، ويُلحق حين تتوقف جولةٌ عليا؛ والملخصُ الذي أعلن عنه ذلك الحدثُ ليس في السجل، لكن يعيده `workspaceChanges.summary(sessionId, seq)` لرقم تسلسل الحدث حتى يُتخلَّص من الجلسة، فالمحادثةُ التي تُفتح ثانيةً بعد إعادة تشغيل المضيف لا بطاقةَ ملفات متغيّرة لجولاتها السابقة. ويقارن `workspaceChanges.diff(sessionId, seq, index, signal)` ملفًّا واحدًا مدرَجًا بالشروط نفسِها. ويحلّ حدثٌ لاحق للجولة نفسِها محلَّ الأسبق، فلا يُبقي العميلُ إلا الأحدث. ويسجّل [دليلُ الحفظ الدائم](../persistence-catalog.ar.md#deliverablespresented--log-only) المولَّد موضعَي التصريح. ولا يصل أيٌّ من الحدثين إلى النموذج.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

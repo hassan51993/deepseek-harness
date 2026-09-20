@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/client-resources.md
 client-resources.md: 3101a87bb5a35e257a1d3b7ee41e68831b673337
-client-resources.ar.md: a05dcab6fef7128a25bc1986847e1565af387d8a
+client-resources.ar.md: f80cebdd38cf0b22999eef2fc60d59c526da91c3
