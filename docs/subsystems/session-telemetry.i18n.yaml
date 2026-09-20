@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/session-telemetry.md
 session-telemetry.md: 1dc9253ebe52bdd8efb84af1a1eaed22039815a3
-session-telemetry.ar.md: 09fb983a92346736c3ad26ea176e57279b21746a
+session-telemetry.ar.md: 1501334d10fe1210f51cb1097b6df89979e88666

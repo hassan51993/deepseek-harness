@@ -1,12 +1,12 @@
-# بعيد قياس (telemetry)
+# SessionTelemetryBackend
 
 [English](session-telemetry.md) | العربية
 
-مقابل خارج جلسة فوق تقرير تفكيك قسم لـ واحد بند[قدرة seam](../capability-seams.ar.md):Service Definition و التقاط تنسيق ضبط جهاز ([dsh-session-telemetry](../../packages/session/session-telemetry) ،`ctx.sessionTelemetry`) يملك كامل مرجعي حدث التقاط،`session-telemetry/record` انفصال حساس waterfall(شلال نشر صيغة حدث) ،handoff تنقل علامة و الأكثر صغير خلفية اتفاق؛ نشر جهة تحميل Service Provider([dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)) فإن هو أصل مثال إعداد OpenTelemetry JS SDK سجل خط الإنتاج. هو هو واحد بند اختياري قدرة، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، هذا داخل أيضا لا يوجد أي محتوى سوف دخول نموذج طلب. حد عام إدارة (harness مسؤولية توقف في `emit()`؛ دفعة معالجة، إعادة محاولة، ترتيب طابور و فقد فقد سياسة كل يخص فوق تقرير SDK) وصل نفس يتم مرفوض بديل خطة، متساو قد في[تكرار نشط Agent Note](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.ar.md) في تحديد سجل؛ التقاط و تنقل علامة اتفاق رؤية [Service Definition README](../../packages/session/session-telemetry/README.ar.md).
+يُقسَّم التبليغُ الصادر عن الجلسة [seam قدرة](../capability-seams.ar.md): فتعريفُ الخدمة ومنسّقُ الالتقاط ([dsh-session-telemetry](../../packages/session/session-telemetry)، `ctx.sessionTelemetry`) يملكان التقاطَ الأحداث المعيارية كاملةً، وشلالَ التنقيح `session-telemetry/record`، ومؤشرَ التسليم، وعقدَ الخلفية الأدنى؛ ومزوّدُ الخدمة الذي يحمّله النشرُ ([dsh-session-telemetry-otel](../../packages/session/session-telemetry-otel)) هو مسارُ سجلات OpenTelemetry JS SDK مضبوطًا كما هو. وهي قدرةٌ اختيارية واحدة، لا جزءٌ من عمود agent loop، ولا يصل شيءٌ منها إلى طلب نموذج. أما مسلّمةُ الحدّ — إذ ينتهي دورُ الحزام عند `emit()`، وتخص التجميعُ وإعادةُ المحاولة والاصطفافُ وسياسةُ الفقد SDK التبليغ — والبدائلُ المرفوضة، فمثبَّتة في [ملاحظة الوكيل عن الإحياء](../../.agents/notes/implemented/feature/2026-07-23-session-telemetry-otel-revival.ar.md)؛ وعقودُ الالتقاط والمؤشر في [README تعريف الخدمة](../../packages/session/session-telemetry/README.ar.md).
 
-شفرة المصدر:[`packages/session/session-telemetry/src/index.ts`](../../packages/session/session-telemetry/src/index.ts)
+المصدر: [`packages/session/session-telemetry/src/index.ts`](../../packages/session/session-telemetry/src/index.ts)
 
-## منطق سجل
+## السجل المنطقي
 
 ```ts type-equiv
 /**
@@ -55,11 +55,11 @@ interface SessionTelemetryRecord {
 }
 ```
 
-كل بند مرجعي[جلسة حدث](session.ar.md) كل سوف كامل نفاذ نقل لـ واحد بند لديه ترتيب ledger سجل، يشمل كل يحمل كامل ضيق تجميع stream `assistant/message` أو `assistant/attempt`، و هذا seam من لم استماع قول مرور، من إضافة دمج دخول قدوم نوع. عملية محلي `agent/assistant-stream` frame لا دخول هذا حمل دائم feed. جديد Session كائن من ذلك دورة الحياة حد بدء، حذف غير خلفية اختيار `includeHistory`؛ إعادة استلام رعاية نفس كائن وقت سوف من handoff تنقل علامة بعد متابعة. إلقاء تمرير هو كل قوة بينما لـ: تنقل علامة علامة هو «قد تسليم وصل» بينما غير «قد إرسال بلوغ» ، سجل ممكن فقد فقد (انهيار انهيار، إعادة تحميل نافذة) أيضا ممكن تكرار (جديد كائن إعادة تشغيل،SDK إعادة محاولة) ، لذلك استقبال طرف مقابل ledger سجل أساس في `(session.id, session.format_version, event.seq)` ذهاب إعادة؛ops سجل لحظة معنى حذف هذا صنف معرف——هو جمع هو لأجل إبلاغ تحذير إشارة، بينما غير لأجل تراكم إضافة بند، تكرار يتم سعة تحمل بينما غير يتم ذهاب إعادة.
+وكلُّ [حدث جلسة](session.ar.md) معياري، بما فيه كلُّ `assistant/message` أو `assistant/attempt` بمجراه المضغوط كاملًا، وكلُّ نوع دمجته إضافةٌ ولم يسمع به الـseam قط، يمرّ كاملًا سجلَّ دفتر واحدًا مرتَّبًا. ولا تدخل إطاراتُ `agent/assistant-stream` المحلية في العملية هذه التغذيةَ الدائمة. ويبدأ كائنُ جلسة جديد عند حدّ دورة حياته ما لم تختر الخلفيةُ `includeHistory`؛ وإعادةُ تبنّي الكائن نفسِه تستأنف بعد مؤشر تسليمه. والتسليمُ على قدر الاستطاعة: فالمؤشرُ يعلّم ما سُلّم للخلفية لا ما وصل، وقد تضيع السجلاتُ (انهيار، أو نافذةُ إعادة تحميل) أو تتكرر (إعادةُ تشغيل كائن جديد، أو إعاداتُ محاولة SDK)، فيزيل المتلقون تكرارَ سجلات الدفتر على `(session.id, session.format_version, event.seq)`؛ أما سجلاتُ التشغيل فتُغفل تلك الهويةَ عمدًا — فهي إشاراتٌ للتنبيه لا مداخلُ للجمع، وتحتمل التكرارَ بدلًا من ذلك.
 
-## مشترك كشف كشف
+## إفصاح المشاركة
 
-كل خلفية كل عبر `ctx.sessionTelemetry` فوق مطلوب سحب كائن `sharing` عضو كشف ذلك نشر درجة نمط ([Service Definition README](../../packages/session/session-telemetry/README.ar.md#the-sharing-disclosure)). هو حيث لا هو تدريجي Session وصل قبول قرار، أيضا لا هو إلقاء تمرير عودة تنفيذ.`/feedback` تأكيد نص لا استعلام هو.
+تكشف كلُّ خلفية وضعَها الذي اختاره النشرُ عبر العضو المجرد المشترَط `sharing` على `ctx.sessionTelemetry` ([README تعريف الخدمة](../../packages/session/session-telemetry/README.ar.md#the-sharing-disclosure)). وهذا ليس قرارَ قبول لكل جلسة ولا إيصالَ تسليم. ولا يستشيره إقرارُ `/feedback`.
 
 ```ts type-equiv
 /**
@@ -68,7 +68,7 @@ interface SessionTelemetryRecord {
 type SessionTelemetrySharingStatus = 'full' | 'feedback-only' | 'disabled'
 ```
 
-## التقاط سياسة
+## سياسة الالتقاط
 
 ```ts type-equiv
 /** Whether capture follows live events or reads the canonical log only when requested. */
@@ -85,9 +85,9 @@ interface SessionTelemetryCaptureOptions {
 }
 ```
 
-`includeHistory` سماح التقاط تخزين و وراثة سجل، لكن ذاته لا تخويل التقاط.[OTel خلفية](../../packages/session/session-telemetry-otel/README.ar.md) استخدام حسب يحتاج التقاط، و اشتراط جديد ذاته صريح ملاحظات؛ هو فقط تحرير قطع حتى هذا ملاحظات كامل بادئة، ملائم لأجل كل مزود.
+ويسمح `includeHistory` بالسجلات المخزَّنة والموروثة لكنه لا يخوّل الالتقاطَ بنفسه. وتستعمل [خلفيةُ OTel](../../packages/session/session-telemetry-otel/README.ar.md) الالتقاطَ عند الطلب وتشترط ملاحظاتٍ صريحة جديدة خاصة بها؛ ولا تحرّر إلا البادئةَ الكاملة عبر تلك الملاحظات، لكل مزوّد.
 
-## خلفية اتفاق
+## عقد الخلفية
 
 ```ts type-equiv
 /**
@@ -135,11 +135,11 @@ interface SessionTelemetrySink {
 }
 ```
 
-`SessionTelemetryBackend`(`ctx.sessionTelemetry`،[توقيع](#ctxsessiontelemetry--sessiontelemetrybackend-abstract-seam)) هو هذا اتفاق يمكن تحميل شكل: كل سياق فقط سماح واحد تنفيذ، تكرار تحميل سوف رمي خروج استثناء؛ خلفية في ذلك بنية صنع دالة في تركيب seam `SessionTelemetryCoordinator`، بـ هذا تركيب إعداد التقاط جانب.
+و`SessionTelemetryBackend` (`ctx.sessionTelemetry`، [التوقيعات](#ctxsessiontelemetry--sessiontelemetrybackend-abstract-seam)) هو صيغةُ العقد القابلة للتحميل — تنفيذٌ واحد لكل سياق، والتحميلُ المكرر يرمي — وتركّب الخلفيةُ `SessionTelemetryCoordinator` من الـseam في بانيها لتثبيت جانب الالتقاط.
 
-## انفصال حساس waterfall:`session-telemetry/record`
+## شلال التنقيح: `session-telemetry/record`
 
-كل بند سجل في مرجعي حدث فرعي هذا و `emit()` بين كل يلزم مرور مرور `session-telemetry/record` [waterfall](../cordis-primer.ar.md#cordis-waterfall-semantics)([حدث بند](#session-telemetryrecord--waterfall)).seam ذاته لا حمل أي قاعدة: لم تركيب مستمع وقت، سجل بـ التقاط وقت أصل مثال وصول خلفية؛ تصدير بيانات قدرة جاف صاف إلى ماذا مسار درجة، تماما تماما أخذ قرار في نشر جهة تركيب ماذا قاعدة. مستمع عبر تغيير تبديل `next()` قيمة راجعة قدوم كومة تراكم؛ لا استدعاء `next()` حينئذ إرجاع، أي استبدال ذلك تحت جهة الكل منطق؛ رمي خروج استثناء مستمع سوف في تنسيق ضبط جهاز عزل نطاق داخل بـ fail-closed طريقة خصم تحت هذا واحد بند سجل. انفصال حساس فقط أثر في تصدير فرعي هذا؛ مرجعي جلسة سجل دائم لا تعديل كتابة.
+يمرّ كلُّ سجل عبر [شلال](../cordis-primer.ar.md#cordis-waterfall-semantics) `session-telemetry/record` بين نسخ الحدث المعياري و`emit()` ([مدخل الحدث](#session-telemetryrecord--waterfall)). ولا يشحن الـseam قواعدَ خاصة به: فبلا مستمع مركَّب، تصل السجلاتُ إلى الخلفية كما التُقطت بالضبط، فالبياناتُ المصدَّرة نظيفةٌ بقدر القواعد التي يركّبها النشرُ بالضبط. ويتراكم المستمعون بتحويل القيمة التي يعيدها `next()`؛ والعودةُ بلا `next()` تحلّ محلَّ كل ما تحته؛ والمستمعُ الرامي يحجب ذلك السجلَ وحده فاشلًا مغلقًا داخل احتواء المنسّق. ويسري التنقيحُ على النسخة المصدَّرة وحدها — ولا يُعاد كتابةُ سجل الجلسة المعياري أبدًا.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
