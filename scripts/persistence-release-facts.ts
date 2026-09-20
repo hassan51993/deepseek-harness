@@ -27,17 +27,17 @@ function structuralChanges(entry: PersistenceReleaseEntry, language: Language): 
   if (entry.record.previous === null) {
     return language === 'en'
       ? 'This entry establishes the historical comparison starting point. Its declaration lists every extracted root; it makes no compatibility judgment about earlier versions.'
-      : 'هذا بند سجل بناء قيام تاريخ مقارنة مقارنة بدء نقطة. آلة جهاز إعلان صف خروج كل رفع أخذ أصل نوع، لا مقابل أكثر مبكر إصدار عمل توافق صفة حكم قطع.'
+      : 'هذا المدخل يُنشئ نقطةَ بدء المقارنة التاريخية. وتصريحُه يعدّد كلَّ جذر مستخرَج؛ ولا يصدر حكمَ توافق على الإصدارات الأسبق.'
   }
   if (entry.differences.length === 0) {
     return language === 'en'
       ? 'Normalized root types and their transitive digests are unchanged from the preceding tag.'
-      : 'مواصفة تحويل بعد أصل نوع و ذلك نقل تمرير مرجع ملخص و قبل واحد tag نفسه.'
+      : 'أنواعُ الجذور الموحَّدة وبصماتُها المتعدية لم تتغيّر عن الوسم السابق.'
   }
   const summary = language === 'en'
     ? `Detected ${count(entry.record.changes.length, 'changed root')} and ${count(entry.differences.length, 'structural difference')}. The minimum below is calculated using current rules for comparison only; it does not assert historical compliance, migration correctness, or runtime compatibility.`
-    : `فحص قياس إلى ${entry.record.changes.length} عدد أصل نوع تغير،${entry.differences.length} بند بنية فرق مختلف. تحت جدول الأكثر منخفض اشتراط حسب حالي قاعدة حساب حساب، فقط لأجل مقارنة مقارنة؛ لا يمثل قديم إصدار سبق التزام حراسة هذه قاعدة، أيضا لا إثبات ترحيل أو وقت التشغيل توافق صفة.`
-  const heading = language === 'en' ? '| Path | Change | Current minimum |' : '| مسار | تغير | حالي الأكثر منخفض اشتراط |'
+    : `اكتُشف ${entry.record.changes.length} جذرًا متغيّرًا و${entry.differences.length} فرقًا بنيويًا. والحدُّ الأدنى أدناه محسوبٌ بالقواعد الحالية للمقارنة وحدها؛ وهو لا يؤكّد امتثالًا تاريخيًا ولا صحةَ ترحيل ولا توافقًا في وقت التشغيل.`
+  const heading = language === 'en' ? '| Path | Change | Current minimum |' : '| المسار | التغيير | الحد الأدنى الحالي |'
   const rows = entry.differences.map((change) => {
     const path = change.path.replaceAll('`', '\\`').replaceAll('|', '\\|')
     return `| \`${path}\` | \`${change.kind}\` | \`${change.requiresVersionBump ? 'version-bump' : 'same-version'}\` |`
@@ -69,7 +69,7 @@ export function persistenceReleaseFactArtifacts(root: string, archive: Persisten
   const index = (language: Language): string => {
     const heading = language === 'en'
       ? '| Tag | Source date (UTC) | Session version | Roots / types | Changed roots |'
-      : '| Tag | شفرة المصدر يوم مدة (UTC) | Session إصدار | أصل / نوع | تغير أصل |'
+      : '| الوسم | تاريخ المصدر (UTC) | إصدار Session | الجذور / الأنواع | الجذور المتغيّرة |'
     const rows = archive.entries.map((entry, index) => {
       const tag = entry.release.tag
       const date = new Date(entry.release.sourceDate).toISOString().slice(0, 10)
@@ -85,7 +85,7 @@ export function persistenceReleaseFactArtifacts(root: string, archive: Persisten
       const path = `${entry.release.tag}${language === 'ar' ? '.ar' : ''}.md`
       const inventory = language === 'en'
         ? `${count(entry.roots.size, 'root')} / ${count(typeCounts[index] as number, 'type')}`
-        : `${entry.roots.size} عدد أصل نوع / ${typeCounts[index]} نوع نوع`
+        : `${entry.roots.size} جذرًا / ${typeCounts[index]} نوعًا`
       return replaceFacts(replaceFacts(read(path), 'inventory', inventory, path),
         'changes', '\n\n' + structuralChanges(entry, language) + '\n\n', path)
     }

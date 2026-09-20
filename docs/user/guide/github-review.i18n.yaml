@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/guide/github-review.md
 github-review.md: e57cd69535f10c669b8996f9038b714010aa520a
-github-review.ar.md: 6aa313084407cf6270a8487cf22efbc464f7b4e4
+github-review.ar.md: b8ca62ab285d33fdeaebc5b411828a494411bbef

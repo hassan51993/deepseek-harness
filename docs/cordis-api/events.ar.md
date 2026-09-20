@@ -1,11 +1,11 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/events.md` إعادة سجل إعداد مقابل. -->
+<!-- ملفُّ المصدر الإنجليزي مولَّد من scripts/gen-cordis-catalog.ts؛ وهذا الملف العربي جانبٌ مراجَع يُصان عبر الاقتران الثنائي اللغة.
+     عند التحديث شغّل `pnpm run gen-cordis-catalog` أولًا لتحديث الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/cordis-api/events.md` لإعادة تسجيل الاقتران. -->
 
-# حدث
+# Events
 
 [English](events.md) | العربية
 
-كل سياق في كل خلط دخول حدث توزيع API.Harness حدث إعلان و ذلك توزيع نمط سوف توليد إلى كل منها الذي تابع[فرعي نظام صفحة](../subsystems/core.ar.md).
+واجهةُ توزيع الأحداث الممزوجة في كل سياق. وتصريحاتُ أحداث الإطار وأوضاعُ توزيعها مولَّدة في [صفحة النظام الفرعي](../subsystems/core.ar.md) المالكة لكلٍّ منها.
 
 ### ctx.parallel(name, ...args)
 
@@ -21,14 +21,14 @@ parallel<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Promi
 parallel<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): Promise<void>
 ```
 
-توزيع واحد حدث، تزامن تشغيل كل مستمع.
+وزّع حدثًا، وشغّل كلَّ المستمعين على التوازي.
 
-- `name`: حدث اسم.
-- `args`: نقل تمرير إعطاء كل مستمع معامل.
+- `name`: اسمُ الحدث.
+- `args`: الوسائطُ الممرَّرة إلى كل مستمع.
 
-**قيمة راجعة**: واحد Promise، في كل مستمع متساو اكتمل بعد صرف الآن.
+**يعيد** وعدًا يتحلّل متى استقر كلُّ مستمع.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L44)
+[المصدر](../../vendor/cordis/src/events.ts#L44)
 
 ### ctx.emit(name, ...args)
 
@@ -43,12 +43,12 @@ emit<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): void
 emit<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): void
 ```
 
-تزامن توزيع واحد حدث، تجاهل اختصار مستمع قيمة راجعة.
+وزّع حدثًا تزامنيًا، متجاهلًا القيمَ التي يعيدها المستمعون.
 
-- `name`: حدث اسم.
-- `args`: نقل تمرير إعطاء كل مستمع معامل.
+- `name`: اسمُ الحدث.
+- `args`: الوسائطُ الممرَّرة إلى كل مستمع.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L53)
+[المصدر](../../vendor/cordis/src/events.ts#L53)
 
 ### ctx.serial(name, ...args)
 
@@ -64,14 +64,14 @@ serial<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Promisi
 serial<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): Promisify<ReturnType<Events[K]>>
 ```
 
-توزيع واحد حدث، اعتماد مرة انتظار كل مستمع، مباشر إلى منها واحد رفع قبل إنهاء توزيع.
+وزّع حدثًا، وانتظر المستمعين بالترتيب حتى يتوقف أحدهم.
 
-- `name`: حدث اسم.
-- `args`: نقل تمرير إعطاء كل مستمع معامل.
+- `name`: اسمُ الحدث.
+- `args`: الوسائطُ الممرَّرة إلى كل مستمع.
 
-**قيمة راجعة**: رقم واحد رفع قبل إنهاء قيمة (غير null، غير false كما غير undefined) ؛ إذا لا يوجد، فإن لا إرجاع هذا صنف قيمة.
+**يعيد** أولَ قيمة توقّف (ليست null ولا false ولا undefined)، إن وُجدت.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L63)
+[المصدر](../../vendor/cordis/src/events.ts#L63)
 
 ### ctx.bail(name, ...args)
 
@@ -87,14 +87,14 @@ bail<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): ReturnTyp
 bail<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): ReturnType<Events[K]>
 ```
 
-توزيع واحد حدث، اعتماد مرة استدعاء كل مستمع، مباشر إلى منها واحد رفع قبل إنهاء توزيع.
+وزّع حدثًا، واستدعِ المستمعين بالترتيب حتى يتوقف أحدهم.
 
-- `name`: حدث اسم.
-- `args`: نقل تمرير إعطاء كل مستمع معامل.
+- `name`: اسمُ الحدث.
+- `args`: الوسائطُ الممرَّرة إلى كل مستمع.
 
-**قيمة راجعة**: رقم واحد رفع قبل إنهاء قيمة (غير null، غير false كما غير undefined) ؛ إذا لا يوجد، فإن لا إرجاع هذا صنف قيمة.
+**يعيد** أولَ قيمة توقّف (ليست null ولا false ولا undefined)، إن وُجدت.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L73)
+[المصدر](../../vendor/cordis/src/events.ts#L73)
 
 ### ctx.waterfall(name, ...args)
 
@@ -113,16 +113,16 @@ waterfall<K extends keyof Events>(name: K, ...args: Parameters<Events[K]>): Retu
 waterfall<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K, ...args: Parameters<Events[K]>): ReturnType<Events[K]>
 ```
 
-توزيع واحد حدث، ذلك الأكثر بعد واحد معامل هو متابعة وصل تنفيذ `next` عودة ضبط.
+وزّع حدثًا وسيطُه الأخير متابعةُ `next`.
 
-كل مستمع كل سوف حزمة تركيب استدعاء سلسلة ذلك بقية جزء: استدعاء `next()` سوف تنفيذ تحت واحد مستمع، نهائي تنفيذ داخل وضع سلوك؛ لا استدعاء فإن سوف مرفوض لاحق تنفيذ.
+وكلُّ مستمع يلفّ بقيةَ السلسلة: فاستدعاءُ `next()` يستدعي المستمعَ التالي (وأخيرًا السلوكَ المدمج)؛ وعدمُ استدعائه نقضٌ.
 
-- `name`: حدث اسم.
-- `args`: مستمع معامل؛ الأكثر بعد واحد معامل هو الأكثر داخل طبقة `next`.
+- `name`: اسمُ الحدث.
+- `args`: وسائطُ المستمع؛ وآخرُها `next` الأعمق.
 
-**قيمة راجعة**: الأكثر خارج طبقة مستمع قيمة راجعة.
+**يعيد** القيمةَ التي يعيدها المستمعُ الأخير من الخارج.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L86)
+[المصدر](../../vendor/cordis/src/events.ts#L86)
 
 ### ctx.on(name, listener, options?)
 
@@ -138,15 +138,15 @@ waterfall<K extends keyof Events>(thisArg: NoInfer<ThisType<Events[K]>>, name: K
 on<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | EventOptions): () => boolean
 ```
 
-تسجيل واحد عودة حالي fiber كل حدث مستمع.
+سجّل مستمعَ حدث يملكه الـ fiber الحالي.
 
-- `name`: يلزم استماع حدث اسم.
-- `listener`: استخدام توزيع معامل استدعاء مستمع.
-- `options`: مستمع خيار؛ قيمة منطقية يمكن بصفة `prepend` بسيط كتابة.
+- `name`: اسمُ الحدث المستمَع إليه.
+- `listener`: يُستدعى بوسائط التوزيع.
+- `options`: خياراتُ المستمع؛ والقيمةُ المنطقية اختصارٌ لـ `prepend`.
 
-**قيمة راجعة**: واحد لأجل إزالة مستمع مورد تحرير دالة؛ إذا استدعاء هذا دالة وقت مستمع ما زال موضع في تسجيل حالة، فإن إرجاع `true`.
+**يعيد** محرِّرًا يزيل المستمع؛ و`true` إن كان لا يزال مسجَّلًا.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L97)
+[المصدر](../../vendor/cordis/src/events.ts#L97)
 
 ### ctx.once(name, listener, options?)
 
@@ -162,19 +162,19 @@ on<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | Eve
 once<K extends keyof Events>(name: K, listener: Events[K], options?: boolean | EventOptions): () => boolean
 ```
 
-و `on()` نفسه، لكن مستمع في أول مرة استدعاء بعد سوف ذاتي سطر ملاحظة إلغاء.
+مثل `on()`، إلا أن المستمع يحرّر نفسه بعد أول استدعاء.
 
-- `name`: يلزم استماع حدث اسم.
-- `listener`: استخدام توزيع معامل استدعاء، الأكثر كثير استدعاء مرة.
-- `options`: مستمع خيار؛ قيمة منطقية يمكن بصفة `prepend` بسيط كتابة.
+- `name`: اسمُ الحدث المستمَع إليه.
+- `listener`: يُستدعى مرةً واحدة على الأكثر بوسائط التوزيع.
+- `options`: خياراتُ المستمع؛ والقيمةُ المنطقية اختصارٌ لـ `prepend`.
 
-**قيمة راجعة**: واحد لأجل إزالة مستمع مورد تحرير دالة؛ إذا استدعاء هذا دالة وقت مستمع ما زال موضع في تسجيل حالة، فإن إرجاع `true`.
+**يعيد** محرِّرًا يزيل المستمع؛ و`true` إن كان لا يزال مسجَّلًا.
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L106)
+[المصدر](../../vendor/cordis/src/events.ts#L106)
 
 ## EventOptions
 
-`ctx.on()` و `ctx.once()` قبول خيار.
+الخياراتُ التي يقبلها `ctx.on()` و`ctx.once()`.
 
 ```ts cordis-catalog
 /** Options accepted by `ctx.on()` and `ctx.once()`. */
@@ -186,13 +186,13 @@ interface EventOptions {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L112)
+[المصدر](../../vendor/cordis/src/events.ts#L112)
 
 ## DispatchMode
 
-حدث خدمة استخدام حدث توزيع سياسة.
+استراتيجيةُ توزيع الأحداث التي تستعملها خدمةُ الأحداث.
 
-`emit` تشغيل تزامن مستمع لكن لا انتظار هو جمع،`parallel` معا انتظار كل مستمع،`serial` اعتماد مرة انتظار مستمع مباشر حتى منها واحد رفع قبل إنهاء توزيع،`bail` لقاء إلى رقم واحد تزامن رفع قبل إنهاء قيمة وقت إيقاف،`waterfall` فإن محيط التفاف نهائي `next` عودة ضبط تركيب مستمع.
+فـ `emit` يشغّل المستمعين التزامنيين بلا انتظارهم، و`parallel` ينتظرهم جميعًا معًا، و`serial` ينتظرهم بالترتيب حتى يتوقف أحدهم، و`bail` يتوقف عند أول قيمة توقّف تزامنية، و`waterfall` يركّب المستمعين حول استدعاء `next` نهائي.
 
 ```ts cordis-catalog
 /**
@@ -206,4 +206,4 @@ interface EventOptions {
 type DispatchMode = 'emit' | 'parallel' | 'serial' | 'bail' | 'waterfall'
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/events.ts#L32)
+[المصدر](../../vendor/cordis/src/events.ts#L32)

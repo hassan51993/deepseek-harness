@@ -1,17 +1,17 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/service.md` إعادة سجل إعداد مقابل. -->
+<!-- ملفُّ المصدر الإنجليزي مولَّد من scripts/gen-cordis-catalog.ts؛ وهذا الملف العربي جانبٌ مراجَع يُصان عبر الاقتران الثنائي اللغة.
+     عند التحديث شغّل `pnpm run gen-cordis-catalog` أولًا لتحديث الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/cordis-api/service.md` لإعادة تسجيل الاقتران. -->
 
 # Service
 
 [English](service.md) | العربية
 
-سياق خدمة أساس صنف. بـ إضافة شكل صيغة تحميل فرعي صنف سوف سوف ذاته تسجيل لـ `ctx.<name>`.
+الصنفُ الأساس لخدمات السياق. والصنفُ الفرعي المحمَّل إضافةً يسجّل نفسه باسم `ctx.<name>`.
 
-لأجل في `ctx` فوق عام أداة اسم API خدمة أساس صنف.
+صنفٌ أساس للخدمات التي تكشف واجهةً مسمّاة على `ctx`.
 
-فرعي صنف في بنية صنع دالة في استدعاء `super(ctx, name)`. خدمة سوف قيام أي تسجيل، و مع الذي تابع fiber تلقائي إزالة.
+وتستدعي الأصنافُ الفرعية `super(ctx, name)` من مُنشئها. وتُسجَّل الخدمةُ فورًا وتُزال تلقائيًا مع الـ fiber الذي يملكها.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L11)
+[المصدر](../../vendor/cordis/src/service.ts#L11)
 
 ### service.name
 
@@ -20,11 +20,11 @@
 public name!: string
 ```
 
-هذا نسخة تسجيل وقت استخدام خدمة اسم.
+اسمُ الخدمة الذي سُجِّلت به هذه النسخة.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L30)
+[المصدر](../../vendor/cordis/src/service.ts#L30)
 
-## ساكن حالة عضو
+## الأعضاء الساكنة
 
 ### Service.init
 
@@ -33,9 +33,9 @@ public name!: string
 static readonly init: unique symbol
 ```
 
-بنية صنع إتمام بعد تشغيل نسخة طريقة الذي استخدام رمز رقم مفتاح (صنف إضافة).
+مفتاحُ الرمز لطريقة نسخة تعمل بعد البناء (في إضافات الأصناف).
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L13)
+[المصدر](../../vendor/cordis/src/service.ts#L13)
 
 ### Service.check
 
@@ -44,9 +44,9 @@ static readonly init: unique symbol
 static readonly check: unique symbol
 ```
 
-نقل إعطاء `ctx.provide()` متاح صفة يسمى كلمة الذي استخدام رمز رقم مفتاح.
+مفتاحُ الرمز لمُسنَد التوفّر الممرَّر إلى `ctx.provide()`.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L15)
+[المصدر](../../vendor/cordis/src/service.ts#L15)
 
 ### Service.config
 
@@ -55,9 +55,9 @@ static readonly check: unique symbol
 static readonly config: unique symbol
 ```
 
-وهمي ضبط اعتراض قطع إعداد نوع معامل الذي استخدام رمز رقم مفتاح.
+مفتاحُ الرمز لمعامل نوع إعداد الاعتراض الشبحي.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L17)
+[المصدر](../../vendor/cordis/src/service.ts#L17)
 
 ### Service.invoke
 
@@ -66,9 +66,9 @@ static readonly config: unique symbol
 static readonly invoke: unique symbol
 ```
 
-جعل خدمة يمكن يتم استدعاء استدعاء جسم الذي استخدام رمز رقم مفتاح (مثال مثل `ctx.logger()`).
+مفتاحُ الرمز لمتن الاستدعاء الذي يجعل الخدمةَ قابلة للاستدعاء (مثل `ctx.logger()`).
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L19)
+[المصدر](../../vendor/cordis/src/service.ts#L19)
 
 ### Service.extend
 
@@ -77,9 +77,9 @@ static readonly invoke: unique symbol
 static readonly extend: unique symbol
 ```
 
-لأجل إرسال توليد توسيع خدمة نسخة مساعد مساعدة طريقة الذي استخدام رمز رقم مفتاح.
+مفتاحُ الرمز للمساعد الذي يشتق نسخةَ خدمة موسَّعة.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L21)
+[المصدر](../../vendor/cordis/src/service.ts#L21)
 
 ### Service.tracker
 
@@ -88,9 +88,9 @@ static readonly extend: unique symbol
 static readonly tracker: unique symbol
 ```
 
-سياق تتبع أثر الذي استخدام تتبع أثر جهاز بيانات وصفية رمز رقم مفتاح.
+مفتاحُ الرمز لبيانات المتتبِّع الوصفية المستعمَلة في تتبّع السياق.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L23)
+[المصدر](../../vendor/cordis/src/service.ts#L23)
 
 ### Service.resolveConfig
 
@@ -99,6 +99,6 @@ static readonly tracker: unique symbol
 static readonly resolveConfig: unique symbol
 ```
 
-تحت وصف اعتراض قطع إعداد تحليل مساعد مساعدة طريقة الذي استخدام رمز رقم مفتاح.
+مفتاحُ الرمز لمساعد تحليل إعداد الاعتراض أدناه.
 
-[شفرة المصدر](../../vendor/cordis/src/service.ts#L25)
+[المصدر](../../vendor/cordis/src/service.ts#L25)

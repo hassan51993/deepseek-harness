@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-tutorial/04-events.md
 04-events.md: 261e80bf3a94cd2a6dd8206d067cfef6b975a113
-04-events.ar.md: 31a037aa59cbc2a29154ff87b2841fd86be9292a
+04-events.ar.md: 1c8c18d7ac4ddc880d7797ae1a2c1340291915fa

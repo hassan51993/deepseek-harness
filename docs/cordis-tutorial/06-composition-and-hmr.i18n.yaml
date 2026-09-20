@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-tutorial/06-composition-and-hmr.md
 06-composition-and-hmr.md: 5af95e1f8788368c6f699b864ab2f722213d786a
-06-composition-and-hmr.ar.md: bad8ff9f51cf8ab5da24e6960a08e3b5f90b7b86
+06-composition-and-hmr.ar.md: e8fbd6391f5c8ae60e04c14c5db0db13c7ec98f8

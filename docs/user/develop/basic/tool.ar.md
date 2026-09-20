@@ -1,12 +1,12 @@
-# تطوير واحد أداة
+# بناء أداة
 
 [English](tool.md) | العربية
 
-هذا تعليم مسار سوف في Web UI في إضافة واحد `greet` أداة. طلب أولا إتمام[رقم واحد إضافة](./index.ar.md) ، و إبقاء منها `scratch-plugin` دليل.
+يضيف هذا الدرس أداةَ `greet` إلى واجهة Web. فأكمل [إضافتك الأولى](./index.ar.md) أولًا واحتفظ بدليل `scratch-plugin` الخاص بها.
 
-## إنشاء أداة إضافة
+## أنشئ إضافة الأداة
 
-سوف `scratch-plugin/src/my-plugin.ts` استبدال لـ:
+استبدل `scratch-plugin/src/my-plugin.ts` بهذا:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -33,20 +33,20 @@ export function apply(ctx: Context) {
 }
 ```
 
-`inject` يجعل Cordis انتظار أداة سجل التسجيل حينئذ خيط.`defineTool` أصل حسب `parameters` دفع توجيه و تحقق `args`؛`execute` إرجاع `output.schema` إعلان مواصفة قيمة،`output.render` مجددا سوف هذا قيمة تحويل لـ موجه إلى نموذج محتوى.
+و`inject` تجعل Cordis ينتظر registry الأدوات. و`defineTool` يستنتج `args` من `parameters` ويتحقق منها؛ و`execute` يعيد القيمةَ المعيارية التي يعلنها `output.schema`، و`output.render` يحوّل تلك القيمة إلى محتوى موجَّه إلى النموذج.
 
-## تشغيل و استدعاء أداة
+## شغّل الأداة واستدعِها
 
-إذا تطوير أمر لم في تشغيل، طلب إعادة بدء:
+أعِد تشغيل أمر التطوير إن لم يكن يعمل:
 
 ```sh
 pnpm dsh web --patch ./scratch-plugin/cordis.yml
 ```
 
-فتح `http://127.0.0.1:3080`، لكن بعد إدخال:`Use the greet tool to greet Ada.` نموذج يمكن استدعاء `greet`، و استلام إلى `Hello, Ada!` هذا واحد أداة نتيجة.
+افتح `http://127.0.0.1:3080` واطلب: `Use the greet tool to greet Ada.` فيستطيع النموذج استدعاءَ `greet` ويتلقى `Hello, Ada!` نتيجةً للأداة.
 
-## تحت واحد خطوة
+## الخطوات التالية
 
-- [إضافة إعداد](./config.ar.md) — يجعل سؤال انتظار لغة يمكن إعداد.
-- [أداة تحرير كتابة مشاركة اعتبار](../../../cookbook/adding-a-tool.ar.md) — فحص قراءة تضمين طقم schema، مواصفة قيمة، خلفية عمل، سياسة خطاف،PTC mode و UI بطاقة.
-- [قدرة قسم طبقة](../practice/index.ar.md) — سوف يمكن استبدال قدرة تفكيك قسم لـ Service Definition،Service Provider و Consumer ثلاثة صنف حزمة.
+- [إعداد الإضافات](./config.ar.md): اجعل التحية قابلة للضبط.
+- [مرجع تأليف الأدوات](../../../cookbook/adding-a-tool.ar.md): ابحث فيه عن schemas المتداخلة، والقيم المعيارية، والعمل الخلفي، وخطافات السياسة، ووضع PTC، وبطاقات الواجهة.
+- [طبقات القدرات](../practice/index.ar.md): اقسم قدرةً قابلة للاستبدال إلى حزم Service Definition وService Provider وConsumer.

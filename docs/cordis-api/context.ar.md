@@ -1,17 +1,17 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/context.md` إعادة سجل إعداد مقابل. -->
+<!-- ملفُّ المصدر الإنجليزي مولَّد من scripts/gen-cordis-catalog.ts؛ وهذا الملف العربي جانبٌ مراجَع يُصان عبر الاقتران الثنائي اللغة.
+     عند التحديث شغّل `pnpm run gen-cordis-catalog` أولًا لتحديث الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/cordis-api/context.md` لإعادة تسجيل الاقتران. -->
 
-# سياق
+# Context
 
 [English](context.md) | العربية
 
-سياق هو Cordis نواة قلب كائن: كل خدمة، حدث و دورة الحياة API كل عبر `ctx` وصول. حدث طريقة رؤية[حدث](events.ar.md) ، فرعي أثر و حالي fiber رؤية [Fiber](fiber.ar.md) ، إضافة تحميل رؤية[سجل التسجيل](registry.ar.md).
+السياقُ هو كائن Cordis الأساسي: فكلُّ خدمة وحدث وواجهةِ دورة حياة تُبلغ عبر `ctx`. وطرقُ الأحداث موثَّقة في [Events](events.ar.md)، والآثارُ والـ fiber الحالي في [Fiber](fiber.ar.md)، وتحميلُ الإضافات في [Registry](registry.ar.md).
 
-Cordis إضافة أصل اعتماد حاوية و فرعي اعتماد حاوية.
+حاوياتُ اعتماديات جذرًا وأبناءَ لإضافات Cordis.
 
-سياق هو واحد بديل إدارة: عادي خاصية قراءة عبر خدمة محلل إجراء، بينما `extend()`،`isolate()` و `intercept()` سوف إنشاء لديه أثر مجال فرعي سياق، كما لا تعديل ذلك أب سياق.
+والسياقُ وسيط: فقراءاتُ الخصائص العادية تمر بمحلِّل الخدمات، بينما تنشئ `extend()` و`isolate()` و`intercept()` سياقاتٍ ابنةً محدودةَ النطاق بلا تغيير أبيها.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L42)
+[المصدر](../../vendor/cordis/src/context.ts#L42)
 
 ### ctx.extend(meta?)
 
@@ -28,15 +28,15 @@ Cordis إضافة أصل اعتماد حاوية و فرعي اعتماد حاو
 extend(meta = {}): this
 ```
 
-في حالي أثر مجال لـ فوق إنشاء واحد حمل لديه مقدار خارج بيانات وصفية فرعي سياق.
+أنشئ سياقًا ابنًا ببيانات وصفية إضافية فوق النطاق الحالي.
 
-فرعي سياق عبر أصل نوع وراثة حالي سياق كل خاصية؛`meta` ذاتي لديه خاصية سوف حجب حجب وراثة نفس اسم خاصية. أب سياق لن يتم تعديل.
+ويرث الابنُ نموذجيًا كلَّ خاصية في هذا السياق؛ وخصائصُ `meta` الذاتية تظلّل الموروثة. ولا يتغيّر الأب.
 
-- `meta`: يلزم في فرعي سياق فوق تعريف ذاتي لديه خاصية، يشمل بـ symbol لـ مفتاح خاصية.
+- `meta`: الخصائصُ الذاتية (بما فيها مفاتيح الرموز) التي تُعرَّف على الابن.
 
-**إرجاع**وراثة ذاتي حالي سياق فرعي سياق.
+**يعيد** سياقًا ابنًا يرث من هذا السياق.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L99)
+[المصدر](../../vendor/cordis/src/context.ts#L99)
 
 ### ctx.isolate(name, label?)
 
@@ -56,16 +56,16 @@ extend(meta = {}): this
 isolate(name: string, label?: symbol)
 ```
 
-إنشاء واحد فرعي سياق، جعل `name` يملك مستقل خدمة أثر مجال.
+أنشئ سياقًا ابنًا بنطاق خدمة مستقل للاسم `name`.
 
-في إرجاع سياق لـ تحت، مقابل خدمة `name` قراءة كتابة سوف أصل حسب جديد وسم تحليل، بينما لم يعد أصل حسب أب سياق وسم تحليل، لذلك يمكن توفير مختلف تنفيذ بينما لا أثر أب أثر مجال. سوف نفس عدد `label` نقل إعطاء اثنان مرة `isolate()` استدعاء، يمكن جعل اثنان من إضافة دخول نفس أثر مجال.
+وتحت السياق المعاد، تتحلّل قراءةُ الخدمة `name` وكتابتُها مقابل الوسم الجديد لا مقابل وسم الأب، فيمكن توفير تنفيذ مختلف بلا أثر على نطاق الأب. وتمريرُ `label` نفسه إلى استدعاءَي `isolate()` يصل نطاقيهما.
 
-- `name`: يلزم عزل خدمة اسم.
-- `label`: يلزم إضافة دخول أثر مجال وسم؛ افتراضي لـ واحد جديد بناء وحيد symbol.
+- `name`: اسمُ الخدمة المعزولة.
+- `label`: وسمُ النطاق الذي يُوصَل؛ وافتراضُه رمزٌ فريد جديد.
 
-**إرجاع**واحد فرعي سياق، ذلك `name` خدمة في جديد أثر مجال في تحليل.
+**يعيد** سياقًا ابنًا تتحلّل فيه خدمةُ `name` في النطاق الجديد.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L121)
+[المصدر](../../vendor/cordis/src/context.ts#L121)
 
 ### ctx.intercept(name, config)
 
@@ -86,16 +86,16 @@ intercept<K extends InjectKey>(name: K, config: Context[K] extends { [symbols.co
 intercept(name: string, config: any): this
 ```
 
-لـ في هذا سياق لـ تحت بدء إضافة خدمة مخصص تابع اعتراض قطع إعداد.
+أضف إعدادَ اعتراض خاصًّا بخدمة للإضافات التي تُقلع تحت هذا السياق.
 
-في إرجاع سياق تحت تحميل إضافة سوف يرى `config` قد دمج إلى خدمة تحليل بعد إعداد في (أصل أولا بند في قبل؛ رؤية `Service[symbols.resolveConfig]`). أب سياق لا تلقي أثر.
+والإضافاتُ المحمَّلة تحت السياق المعاد ترى `config` مدموجًا في الإعداد المحلول للخدمة (ومداخلُ الأسلاف أولًا؛ انظر `Service[symbols.resolveConfig]`). ولا يتأثر السياقُ الأب.
 
-- `name`: يلزم اعتراض قطع ذلك إعداد خدمة اسم.
-- `config`: يلزم لـ هذا خدمة دمج اعتراض قطع إعداد.
+- `name`: اسمُ الخدمة التي يُعترَض إعدادُها.
+- `config`: إعدادُ الاعتراض الذي يُدمج لتلك الخدمة.
 
-**إرجاع**واحد يحمل مقدار خارج اعتراض قطع بند فرعي سياق.
+**يعيد** سياقًا ابنًا يحمل مدخلَ الاعتراض الإضافي.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L139)
+[المصدر](../../vendor/cordis/src/context.ts#L139)
 
 ### ctx.root
 
@@ -104,9 +104,9 @@ intercept(name: string, config: any): this
 root: this
 ```
 
-تطبيق أصل سياق، كل فرعي سياق متساو مشترك هو.@experimental
+السياقُ الجذر للتطبيق (ويتشاركه كل سياق ابن). @experimental
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L22)
+[المصدر](../../vendor/cordis/src/context.ts#L22)
 
 ### ctx.baseUrl
 
@@ -115,9 +115,9 @@ root: this
 baseUrl?: string
 ```
 
-لأجل تحليل متبادل مقابل إضافة/وحدة شرح رمز أساس أساس URL، قبل رفع هو وقت التشغيل ضبط هذا قيمة.
+الرابطُ الأساسي المستعمَل لتحليل محدِّدات الإضافات والوحدات النسبية، إن ضبطه وقتُ التشغيل.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L24)
+[المصدر](../../vendor/cordis/src/context.ts#L24)
 
 ### ctx.events
 
@@ -126,9 +126,9 @@ baseUrl?: string
 events: EventsService
 ```
 
-حدث مجموع خط. هو طريقة أيضا سوف خلط دخول `ctx`(`ctx.on`،`ctx.emit` انتظار).
+ناقلُ الأحداث. وطرقُه ممزوجة على `ctx` أيضًا (`ctx.on` و`ctx.emit` وغيرهما).
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L26)
+[المصدر](../../vendor/cordis/src/context.ts#L26)
 
 ### ctx.logger
 
@@ -137,9 +137,9 @@ events: EventsService
 logger: LoggerService
 ```
 
-سجل خدمة. استدعاء `ctx.logger(name)` يمكن نيل أخذ أداة اسم logger.
+خدمةُ التسجيل. استدعِ `ctx.logger(name)` لمسجّل مسمًّى.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L28)
+[المصدر](../../vendor/cordis/src/context.ts#L28)
 
 ### ctx.reflect
 
@@ -148,9 +148,9 @@ logger: LoggerService
 reflect: ReflectService
 ```
 
-لـ سياق بديل إدارة توفير دعم حمل عكس إطلاق طبقة (`ctx.get`،`ctx.provide` انتظار).
+طبقةُ الانعكاس التي تسند وسيطَ السياق (`ctx.get` و`ctx.provide` وغيرهما).
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L30)
+[المصدر](../../vendor/cordis/src/context.ts#L30)
 
 ### ctx.registry
 
@@ -159,11 +159,11 @@ reflect: ReflectService
 registry: RegistryService
 ```
 
-إضافة سجل التسجيل. هو طريقة سوف خلط دخول `ctx`(`ctx.plugin`،`ctx.inject`).
+registry الإضافات. وطرقُه ممزوجة على `ctx` (`ctx.plugin` و`ctx.inject`).
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L32)
+[المصدر](../../vendor/cordis/src/context.ts#L32)
 
-## ساكن حالة عضو
+## الأعضاء الساكنة
 
 ### Context.effect
 
@@ -172,9 +172,9 @@ registry: RegistryService
 static readonly effect: unique symbol
 ```
 
-مورد تحرير دالة لأجل عام ذلك EffectMeta تشخيص شجرة symbol مفتاح.
+مفتاحُ الرمز الذي يكشف المحرِّرُ تحته شجرةَ تشخيصات EffectMeta.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L44)
+[المصدر](../../vendor/cordis/src/context.ts#L44)
 
 ### Context.filter
 
@@ -183,9 +183,9 @@ static readonly effect: unique symbol
 static readonly filter: unique symbol
 ```
 
-سياق مستمع مرور ترشيح جهاز symbol مفتاح، كل مرة قسم إرسال حدث وقت كل سوف استعلام هذا مرور ترشيح جهاز.
+مفتاحُ الرمز لمرشِّح مستمعي السياق، ويُستشار عند كل توزيع حدث.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L46)
+[المصدر](../../vendor/cordis/src/context.ts#L46)
 
 ### Context.isolate
 
@@ -194,9 +194,9 @@ static readonly filter: unique symbol
 static readonly isolate: unique symbol
 ```
 
-عزل خريطة symbol مفتاح (رؤية `Context[symbols.isolate]` خاصية).
+مفتاحُ الرمز لخريطة العزل (انظر الخاصية `Context[symbols.isolate]`).
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L48)
+[المصدر](../../vendor/cordis/src/context.ts#L48)
 
 ### Context.intercept
 
@@ -205,9 +205,9 @@ static readonly isolate: unique symbol
 static readonly intercept: unique symbol
 ```
 
-اعتراض قطع خريطة symbol مفتاح (رؤية `Context[symbols.intercept]` خاصية).
+مفتاحُ الرمز لخريطة الاعتراض (انظر الخاصية `Context[symbols.intercept]`).
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L50)
+[المصدر](../../vendor/cordis/src/context.ts#L50)
 
 ### Context.is(value)
 
@@ -224,17 +224,17 @@ static readonly intercept: unique symbol
 static is(value: any): value is Context
 ```
 
-مقابل في Cordis سياق بديل إدارة و سياق أصل نوع، إرجاع true.
+يعيد true لوسطاء سياق Cordis ولنماذج السياق الأولية.
 
-هذا طريقة يمكن عبر realm و كثير عدد cordis فرعي هذا عمل، لأن ذلك صنف لوحة معرف بـ عام symbol لـ مفتاح، بينما لا هو عبر `instanceof` حكم قطع.
+وهو يعمل عبر المجالات وعبر نسخ متعددة من cordis، لأن العلامةَ مفهرسة برمز عام لا بـ `instanceof`.
 
-- `value`: يلزم اختبار قيمة.
+- `value`: القيمةُ المختبَرة.
 
-**إرجاع** `true` وقت،`value` هو Cordis سياق، و سوف استلام ضيق ذلك نوع.
+**يعيد** `true` إن كانت `value` سياقَ Cordis، ويضيّق نوعَها.
 
-[شفرة المصدر](../../vendor/cordis/src/context.ts#L61)
+[المصدر](../../vendor/cordis/src/context.ts#L61)
 
-## خدمة تخزين و خلط دخول
+## مخزن الخدمات والمزائج
 
 ### ctx.get(name, strict?)
 
@@ -251,14 +251,14 @@ get<K extends string & keyof this>(name: K, strict?: boolean): undefined | this[
 get(name: string, strict?: boolean): any
 ```
 
-من تخزين في قراءة خدمة، بلا حاجة ممتلئ كاف حقن اشتراط.
+اقرأ خدمةً من المخزن بلا اشتراط الحقن.
 
-- `name`: خدمة اسم.
-- `strict`: ضبط لـ `true`(قيمة افتراضية) وقت، فقط إرجاع ذلك مزود fiber حالي موضع في نشط حركة حالة تنفيذ.
+- `name`: اسمُ الخدمة.
+- `strict`: حين تكون `true` (وهو الافتراض)، لا تُعاد إلا التنفيذاتُ التي يكون الـ fiber الموفِّر لها نشطًا حاليًا.
 
-**إرجاع**خدمة قيمة؛ إذا بعد لم توفير، فإن إرجاع `undefined`.
+**يعيد** قيمةَ الخدمة، أو `undefined` حين لا تكون موفَّرة بعد.
 
-[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L17)
+[المصدر](../../vendor/cordis/src/reflect.ts#L17)
 
 ### ctx.set(name, value)
 
@@ -276,14 +276,14 @@ set<K extends string & keyof this>(name: K, value: undefined | this[K]): void
 set(name: string, value: any): void
 ```
 
-تغطية قد توفير خدمة قيمة.
+اكتب فوق قيمة خدمة موفَّرة.
 
-فقط لديه توفير هذا خدمة fiber عندئذ قدرة ضبط هو؛ ضبط بعد لم توفير اسم سوف رمي خروج استثناء.
+ولا يجوز ضبطُها إلا للـ fiber الذي وفّر الخدمة؛ وضبطُ اسم غير موفَّر يرمي.
 
-- `name`: خدمة اسم.
-- `value`: جديد خدمة قيمة.
+- `name`: اسمُ الخدمة.
+- `value`: قيمةُ الخدمة الجديدة.
 
-[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L29)
+[المصدر](../../vendor/cordis/src/reflect.ts#L29)
 
 ### ctx.provide(name, value)
 
@@ -304,16 +304,16 @@ provide<K extends string & keyof this>(name: K, value: undefined | this[K]): () 
 provide(name: string, value?: any): () => void
 ```
 
-تسجيل واحد عودة حالي fiber كل خدمة تنفيذ.
+سجّل تنفيذَ خدمة يملكه الـ fiber الحالي.
 
-fiber تنشيط بعد، هذا خدمة مقابل نفس عزل أثر مجال داخل اعتماد جهة مرئي؛ عند إرجاع مورد تحرير دالة تشغيل أو fiber إزالة وقت، هذا خدمة سوف يتم إلغاء تسجيل، و نداء تنبيه اعتماد جهة. إذا هذا اسم قد في هذا أثر مجال في يتم توفير، أو قد إعلان لـ وصول جهاز، فإن رمي خروج استثناء.
+وتصير الخدمةُ ظاهرةً للمعتمدين عليها في نطاق العزل نفسه متى صار الـ fiber نشطًا؛ ويُلغى تسجيلُها (فيستيقظ المعتمدون) حين يعمل المحرِّرُ المعاد أو حين يُفرَّغ الـ fiber. ويرمي إن كان الاسمُ موفَّرًا أصلًا في هذا النطاق أو معلَنًا وصولةً.
 
-- `name`: خدمة اسم.
-- `value`: خدمة قيمة.
+- `name`: اسمُ الخدمة.
+- `value`: قيمةُ الخدمة.
 
-**إرجاع**واحد لأجل إلغاء تسجيل هذا خدمة مورد تحرير دالة.
+**يعيد** محرِّرًا يلغي تسجيلَ الخدمة.
 
-[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L44)
+[المصدر](../../vendor/cordis/src/reflect.ts#L44)
 
 ### ctx.accessor(name, options)
 
@@ -330,14 +330,14 @@ fiber تنشيط بعد، هذا خدمة مقابل نفس عزل أثر مجا
 accessor(name: string, options: Omit<Property.Accessor, 'type'>): void
 ```
 
-تعريف واحد من get/set خطاف دعم حمل حساب حساب نوع سياق خاصية.
+عرّف خاصيةَ سياق محسوبة تسندها خطافا get وset.
 
-حالي fiber إزالة وقت سوف إزالة هذا وصول جهاز. إذا هذا اسم قد يتم إعلان، فإن رمي خروج استثناء.
+وتُزال الوصولةُ حين يُفرَّغ الـ fiber الحالي. وترمي إن كان الاسمُ معلَنًا أصلًا.
 
-- `name`: سياق خاصية اسم.
-- `options`:`get` خطاف و اختياري `set` خطاف.
+- `name`: اسمُ خاصية السياق.
+- `options`: خطافُ `get` وخطافُ `set` الاختياري.
 
-[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L56)
+[المصدر](../../vendor/cordis/src/reflect.ts#L56)
 
 ### ctx.mixin(name, mixins)
 
@@ -356,11 +356,11 @@ mixin<K extends string & keyof this>(name: K, mixins: (keyof this & keyof this[K
 mixin<T extends {}>(source: T, mixins: (keyof this & keyof T)[] | Dict<string>): void
 ```
 
-مباشر في `ctx` فوق عام خدمة إشارة تحديد عضو.
+اكشف أعضاءً مختارة من خدمة على `ctx` مباشرةً.
 
-كل خلط دخول مفتاح كل سوف يصبح واحد تحويل إرسال إلى هذا خدمة وصول جهاز، و سوف طريقة ربط إلى هذا خدمة. مثال مثل،`ctx.on` سوف تحويل إرسال إلى `ctx.events.on`. حالي fiber إزالة وقت سوف إزالة هذه خلط دخول.
+وكلُّ مفتاح ممزوج يصير وصولةً تمرّر إلى الخدمة (وتربط الطرقَ بها)، فـ `ctx.on` مثلًا يمرّر إلى `ctx.events.on`. وتُزال المزائجُ حين يُفرَّغ الـ fiber الحالي.
 
-- `name`: تخزين وضع مصدر خدمة سياق خاصية.
-- `mixins`: يلزم تحويل إرسال مفتاح، أو من مصدر مفتاح إلى ctx مفتاح خريطة.
+- `name`: خاصيةُ السياق التي تحمل الخدمةَ المصدر.
+- `mixins`: المفاتيحُ التي تُمرَّر، أو خريطةُ مفتاح المصدر إلى مفتاح ctx.
 
-[شفرة المصدر](../../vendor/cordis/src/reflect.ts#L67)
+[المصدر](../../vendor/cordis/src/reflect.ts#L67)

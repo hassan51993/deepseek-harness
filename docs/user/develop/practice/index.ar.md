@@ -1,20 +1,20 @@
-# قدرة ثلاثة نوع زاوية لون تصميم
+# تصميم القدرات ذات الأدوار الثلاثة
 
 [English](index.md) | العربية
 
-هذا نص قسم لـ اثنان جزء: أولا مشاركة اعتبار ثلاثة نوع زاوية لون قدرة نمط عام فكرة، مجددا عبر عال درجة تعليم مسار بناء واحد بند قدرة. طلب أولا إتمام[أساس أساس إضافة مسار](../basic/index.ar.md) و[خدمة تعليم مسار](../framework/service.ar.md).
+لهذه الصفحة جزآن: مرجعٌ مفاهيمي لنمط القدرة ذات الأدوار الثلاثة، يليه درسٌ متقدم يبني قدرةً واحدة. فأكمل [مسار الإضافة الأساسي](../basic/index.ar.md) و[درس الخدمات](../framework/service.ar.md) أولًا.
 
-## عام فكرة مشاركة اعتبار
+## مرجع مفاهيمي
 
-عند واحد بند قدرة كاف كاف عام، حاجة دعم حمل يمكن استبدال مزود وقت (مثال مثل Bash تنفيذ) ،harness سوف منطقة قسم ثلاثة نوع زاوية لون:**Service Definition**،**Service Provider** و **Consumer**. زاوية لون حاجة مستقل عرض دخول أو استبدال وقت، سوف هو جمع وضع دخول مختلف حزمة؛ لا فإن واحد حزمة يمكن تحمل تحمل كثير عدد زاوية لون. كامل قدرة بنية صار ذلك seam. أي مفرد واحد زاوية لون كل لا هو seam.
+حين تكون القدرة عامةً بما يكفي لتحتاج مزوّدين قابلين للاستبدال، مثل تنفيذ Bash، يفصل الإطارُ ثلاثةَ أدوار: **Service Definition** و**Service Provider** و**Consumer**. وضع الأدوارَ في حزم منفصلة حين تحتاج إلى التطور أو الاستبدال مستقلةً؛ وإلا جاز للحزمة الواحدة أن تملك أكثر من دور. والقدرةُ كاملةً هي seam الخاص بها. ولا دورَ منفرد يكون seam.
 
-## بـ Bash لـ مثال
+## مثال Bash
 
-بـ Bash تنفيذ قدرة لـ مثال:
+تتكوّن قدرةُ تنفيذ Bash من:
 
-- **Service Definition** (`dsh-shell`): تعريف Cordis خدمة و Bash طلب و نتيجة نوع
-- **Service Provider** (`dsh-bash-local`): في محلي حساب حساب آلة فوق تنفيذ أمر
-- **Consumer** (`dsh-tool-bash`): سوف هذا قدرة عام لـ نموذج يمكن استدعاء أداة
+- **Service Definition** (`dsh-shell`): تعرّف خدمةَ Cordis وأنواعَ طلب Bash ونتيجته
+- **Service Provider** (`dsh-bash-local`): ينفّذ الأوامر على الجهاز المحلي
+- **Consumer** (`dsh-tool-bash`): يكشف القدرةَ أداةً يستدعيها النموذج
 
 ```
 ┌─────────────┐     ┌──────────────────┐     ┌──────────────┐
@@ -26,11 +26,11 @@
                     inject: ['shell']
 ```
 
-## تفكيك قسم جيد موضع
+## فوائد القسمة
 
-### مزود يمكن استبدال
+### استبدال المزوّدين
 
-نفس عدد Service Definition يمكن لديه كثير عدد مزود، يمكن عبر `cordis.yml` اختيار:
+يجوز أن يكون لـ Service Definition واحدة عدةُ مزوّدين يُختارون من `cordis.yml`:
 
 ```yaml
 # Local execution
@@ -39,25 +39,25 @@
 # Replace this row with another package that provides the same service.
 ```
 
-أكثر تبديل مزود وقت،Service Definition و أداة متساو إبقاء ثابت.
+وتبقى Service Definition والأداةُ بلا تغيير بينما يتغيّر المزوّد.
 
-### مستقل عرض دخول
+### التطور المستقل
 
-- استدعاء جهة بدء اعتماد Service Definition اتفاق بعد،Service Definition جدا قليل تعديل.
-- Service Provider يمكن مستقل أفضل تحويل صفة قدرة و أمان صفة.
-- Consumer يمكن ضبط كامل قدرة نحو نموذج عرض طريقة.
+- تتغيّر Service Definition نادرًا بعد أن يعتمد المستدعون على عقدها.
+- ويستطيع Service Providers تحسينَ الأداء والأمان مستقلَّين.
+- ويستطيع المستهلكون تغييرَ كيفية عرضهم القدرةَ للنموذج.
 
-### اعتماد حل اقتران
+### فكّ ارتباط الاعتماديات
 
-- Service Provider اعتماد Service Definition.
-- Consumer اعتماد Service Definition.
-- Service Provider و Consumer **متبادل لا اعتماد**.
+- يعتمد Service Provider على Service Definition.
+- ويعتمد Consumer على Service Definition.
+- و**لا يعتمد** Service Provider وConsumer أحدهما على الآخر.
 
-حالي داخل وضع نظام صف و ذلك حزمة رابط من[قدرة seam مشاركة اعتبار](../../../capability-seams.ar.md) مسؤول.
+ويملك [مرجع seams القدرات](../../../capability-seams.ar.md) العائلاتِ المدمجة الحالية وروابطَ حزمها.
 
-## تعليم مسار: تطوير ثلاثة نوع زاوية لون قدرة
+## درس: طوّر قدرةً ذات ثلاثة أدوار
 
-### رقم واحد خطوة: تحرير كتابة Service Definition
+### الخطوة 1: اكتب Service Definition
 
 ```ts ignore-check
 // packages/my-cap/my-cap/src/index.ts
@@ -87,7 +87,7 @@ export interface MyCapResult {
 }
 ```
 
-### ثاني خطوة: تحرير كتابة Service Provider
+### الخطوة 2: اكتب Service Provider
 
 ```ts ignore-check
 // packages/my-cap/my-cap-local/src/index.ts
@@ -108,7 +108,7 @@ export function apply(ctx: Context) {
 }
 ```
 
-### رقم ثلاثة خطوة: تحرير كتابة مستهلك
+### الخطوة 3: اكتب مستهلكًا
 
 ```ts ignore-check
 // packages/my-cap/tool-my-cap/src/index.ts
@@ -137,19 +137,19 @@ export function apply(ctx: Context) {
 }
 ```
 
-### في cordis.yml في تركيب
+### ركّبها في cordis.yml
 
 ```yaml
 - name: '@deepseek-ai/dsh-my-cap-local'
 - name: '@deepseek-ai/dsh-tool-my-cap'
 ```
 
-## تصميم يلزم نقطة
+## نقاط التصميم
 
-- **لا يلزم مسبق منع صفة تفكيك قسم**: فقط لديه زاوية لون حاجة مستقل عرض دخول وقت، عندئذ استخدام مختلف حزمة. بسيط مفرد أداة إضافة بلا حاجة تفكيك قسم.
-- **Service Definition يملك Request/Result نوع**:Service Provider و Consumer فقط اعتماد Service Definition حزمة.
-- **صريح أفضل في خفي صيغة**: تنفيذ ينبغي عبر صريح `resolve(request): Spec` خطوة معالجة قيمة افتراضية، بينما لا هو في `run()` في إخفاء `?? default`.
+- **لا تقسم استباقًا**: استعمل حزمًا منفصلة حين تحتاج الأدوارُ إلى التطور مستقلةً وحدها. وإضافةُ الأداة البسيطة لا تحتاج ذلك.
+- **Service Definition تملك أنواع الطلب والنتيجة**: فلا يعتمد Service Providers والمستهلكون إلا على حزمة Service Definition.
+- **الصريح مقدَّم على الضمني**: احسم القيمَ الافتراضية في خطوة `resolve(request): Spec` صريحة، لا بإخفاء تعبيرات `?? default` داخل `run()`.
 
-## تحت واحد خطوة
+## الخطوات التالية
 
-- [LLM(كبير لغة نموذج) مهايئ](./llm-adapter.ar.md): تنفيذ واحد LLM مزود
+- [مهايئ LLM](./llm-adapter.ar.md): نفّذ مزوّد LLM
