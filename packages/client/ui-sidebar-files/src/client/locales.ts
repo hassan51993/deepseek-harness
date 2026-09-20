@@ -20,19 +20,19 @@ declare module '@deepseek-ai/dsh-client-ui-slots' {
 
 /** Arabic dictionary and key-set source of truth. */
 export const ar = {
-  'type.label': 'ملف',
-  'guide.title': 'مساحة العمل ملف',
-  'guide.description': 'تصفح جلسة مساحة العمل ملف',
-  loading: 'جارٍ قراءة…',
-  empty: 'فارغ دليل',
-  truncated: 'بند جدا كثير، فقط عرض واحد جزء.',
-  noWorkspace: 'هذا عدد جلسة لا يوجد مساحة العمل دليل.',
-  reload: 'إعادة قراءة',
-  'entry.other': 'هذا لا هو ملف أو دليل، لا قاعدة فتح.',
-  'error.notFound': 'هذا عدد دليل لا في. ممكن قد يتم نقل حركة أو حذف.',
-  'error.outsideWorkspace': 'هذا عدد دليل في مساحة العمل خارج، جانب شريط لن قراءة هو.',
-  'error.notDirectory': 'هذا لا هو واحد دليل.',
-  'error.unavailable': 'قراءة فشل:{message}',
+  'type.label': 'الملفات',
+  'guide.title': 'ملفات مساحة العمل',
+  'guide.description': 'تصفّح ملفات مساحة عمل هذه الجلسة',
+  loading: 'جارٍ القراءة…',
+  empty: 'مجلد فارغ',
+  truncated: 'العناصر كثيرة جدًا، ويُعرض بعضها فقط.',
+  noWorkspace: 'ليس لهذه الجلسة مجلد مساحة عمل.',
+  reload: 'إعادة التحميل',
+  'entry.other': 'هذا ليس ملفًا ولا مجلدًا، فلا يمكن فتحه.',
+  'error.notFound': 'لم يعد هذا المجلد موجودًا. ربما نُقل أو حُذف.',
+  'error.outsideWorkspace': 'هذا المجلد خارج مساحة العمل، فلن يقرأه الشريط الجانبي.',
+  'error.notDirectory': 'هذا ليس مجلدًا.',
+  'error.unavailable': 'تعذّرت القراءة: {message}',
 } satisfies Record<string, string>
 
 /** Files dictionary key union. */

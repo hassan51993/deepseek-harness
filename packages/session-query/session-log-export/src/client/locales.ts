@@ -3,15 +3,15 @@ export const NS = 'session-log-download'
 
 /** Arabic Session export strings. */
 export const ar = {
-  'header.more': 'أكثر كثير عملية',
-  'menu.download': 'تحت تحميل Session سجل',
-  'dialog.preparingTitle': 'جارٍ تصدير Session',
-  'dialog.preparingDescription': 'جارٍ دقيق تجهيز يتضمن حالي Session، فرعي Session و مرفق عنصر ZIP ملف.',
-  'dialog.successTitle': 'Session تصدير قد بدء تحت تحميل',
-  'dialog.successDescription': 'متصفح جارٍ تحت تحميل Session ZIP ملف.',
-  'dialog.errorTitle': 'Session تصدير فشل',
+  'header.more': 'إجراءات أخرى',
+  'menu.download': 'تنزيل سجل الجلسة',
+  'dialog.preparingTitle': 'جارٍ تصدير الجلسة',
+  'dialog.preparingDescription': 'جارٍ تحضير أرشيف ZIP يتضمّن هذه الجلسة وجلساتها الفرعية ومرفقاتها.',
+  'dialog.successTitle': 'بدأ تنزيل الجلسة',
+  'dialog.successDescription': 'المتصفح ينزّل أرشيف ZIP الخاص بالجلسة.',
+  'dialog.errorTitle': 'فشل تصدير الجلسة',
   'dialog.close': 'إغلاق',
-  'dialog.commandFailed': 'لا يمكن بدء Session تصدير.',
+  'dialog.commandFailed': 'تعذّر بدء تصدير الجلسة.',
 } as const
 
 /** English Session export strings. */

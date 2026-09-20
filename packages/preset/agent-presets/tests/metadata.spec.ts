@@ -29,9 +29,9 @@ async function presetDir(content?: string): Promise<string> {
 
 describe('reading display metadata', () => {
   it('reads a name and a description', async () => {
-    const dir = await presetDir('name: النمط المعياري\ndescription: كامل تحرير رمز agent.\n')
+    const dir = await presetDir('name: الوضع المعياري\ndescription: كامل تحرير رمز agent.\n')
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط المعياري', description: 'كامل تحرير رمز agent.' })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'الوضع المعياري', description: 'كامل تحرير رمز agent.' })
   })
 
   it('treats an absent file as no metadata', async () => {
@@ -69,15 +69,15 @@ describe('reading display metadata', () => {
   })
 
   it('trims surrounding whitespace', async () => {
-    const dir = await presetDir('name: "  أقصى بسيط نمط  "\n')
+    const dir = await presetDir('name: "  الوضع الأدنى  "\n')
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'أقصى بسيط نمط' })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'الوضع الأدنى' })
   })
 
   it('reads a declared order', async () => {
-    const dir = await presetDir('name: النمط المعياري\norder: 1\n')
+    const dir = await presetDir('name: الوضع المعياري\norder: 1\n')
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'النمط المعياري', order: 1 })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'الوضع المعياري', order: 1 })
   })
 
   it('ignores an order that is not a finite number', async () => {
@@ -96,18 +96,18 @@ describe('reading display metadata', () => {
 
 describe('rendering display metadata', () => {
   it('round-trips through a read', async () => {
-    const rendered = renderPresetMetadata({ name: 'إنشاء صنع نمط', description: 'يمكن تعديل ذاتي ذات تجميع.' })
+    const rendered = renderPresetMetadata({ name: 'وضع الإنشاء', description: 'يمكن تعديل ذاتي ذات تجميع.' })
     const dir = await presetDir(rendered)
 
-    expect(await readPresetMetadata(dir)).toEqual({ name: 'إنشاء صنع نمط', description: 'يمكن تعديل ذاتي ذات تجميع.' })
+    expect(await readPresetMetadata(dir)).toEqual({ name: 'وضع الإنشاء', description: 'يمكن تعديل ذاتي ذات تجميع.' })
   })
 
   it('stores a declared order', () => {
-    expect(renderPresetMetadata({ name: 'النمط المعياري', order: 1 })).toBe('name: النمط المعياري\norder: 1\n')
+    expect(renderPresetMetadata({ name: 'الوضع المعياري', order: 1 })).toBe('name: الوضع المعياري\norder: 1\n')
   })
 
   it('omits an absent field rather than writing it blank', () => {
-    expect(renderPresetMetadata({ name: 'أقصى بسيط نمط' })).toBe('name: أقصى بسيط نمط\n')
+    expect(renderPresetMetadata({ name: 'الوضع الأدنى' })).toBe('name: الوضع الأدنى\n')
     // Description without a name is legal too: the picker falls back to the id.
     expect(renderPresetMetadata({ description: 'فقط فعل فحص بحث.' })).toBe('description: فقط فعل فحص بحث.\n')
   })

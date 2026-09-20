@@ -42,9 +42,9 @@ function mount(overrides: Partial<FeedbackDialogState> = {}) {
 
 describe('FeedbackDialog', () => {
   it('owns the conversation-log disclosure and stability category in both supported locales', () => {
-    expect(ar['dialog.hint']).toBe('ملء كتابة تفصيل حال بـ مساعدة أنا جمع تعديل دخول تجربة، إيداع محتوى سوف يشمل حالي محادثة سجل')
+    expect(ar['dialog.hint']).toBe('أضِف تفاصيل تساعدنا على التحسين. سيتضمّن ما ترسله سجل المحادثة الحالي.')
     expect(en['dialog.hint']).toBe('Add details to help us improve. Your submission will include the current conversation log.')
-    expect(ar['category.service-stability']).toBe('مستقر صفة و سرعة درجة')
+    expect(ar['category.service-stability']).toBe('الاستقرار والسرعة')
     expect(en['category.service-stability']).toBe('Stability and speed')
   })
 

@@ -13,7 +13,7 @@ import {
   assertFixtureInventory, captureStableAria, compareOrRefreshGolden,
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
 
 /** Starts the shipped default on this scenario's declared reasoning model. */
 const OVERLAY = fileURLToPath(new URL('./declared-reasoning.overlay.yml', import.meta.url))
@@ -48,7 +48,7 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
       },
     })
     browser = await chromium.launch()
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -65,7 +65,7 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
     const trigger = page.getByRole('button', { name: /^اختيار نموذج/ })
     await trigger.waitFor({ timeout: 15_000 })
     await trigger.click()
-    await page.getByRole('menuitem', { name: /دفع إدارة انتظار درجة/ }).click()
+    await page.getByRole('menuitem', { name: /جهد الاستدلال/ }).click()
 
     // Declared levels, nothing else: the provider-default entry (the route
     // configures no `reasoning`), then Off/High/Max — minimal, low, medium,
@@ -103,12 +103,12 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
       { timeout: 10_000 },
     ).toContain('reasoningEffort: high')
     await expect.poll(() => trigger.getAttribute('aria-label'), { timeout: 10_000 })
-      .toBe('اختيار نموذج، حالي Acme Think، دفع إدارة انتظار درجة High')
+      .toBe('اختيار نموذج، الحالي Acme Think، جهد الاستدلال High')
 
     // Reopening the drilled pane parks the keyboard on the level in use, and
     // Shift+Tab walks back out like Escape: to the drilled cell, then closed.
     await trigger.click()
-    await page.getByRole('menuitem', { name: /دفع إدارة انتظار درجة/ }).click()
+    await page.getByRole('menuitem', { name: /جهد الاستدلال/ }).click()
     const high = page.getByRole('menuitemradio', { name: 'High' })
     await expect.poll(
       () => high.evaluate(element => element === document.activeElement),
@@ -116,7 +116,7 @@ describe.skipIf(MODE === 'record')('web e2e: declared reasoning efforts reach th
     ).toBe(true)
     await page.keyboard.press('Shift+Tab')
     await expect.poll(
-      () => page.getByRole('menuitem', { name: /دفع إدارة انتظار درجة/ })
+      () => page.getByRole('menuitem', { name: /جهد الاستدلال/ })
         .evaluate(element => element === document.activeElement),
       { timeout: 10_000 },
     ).toBe(true)

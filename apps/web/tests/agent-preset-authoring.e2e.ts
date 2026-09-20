@@ -20,7 +20,7 @@ import {
   captureStableAria, compareOrRefreshGolden, launchWebScaffold, watchConsole,
   webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
+import { AR_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot } from './support.ts'
 
 const SNAPSHOT_DIR = fileURLToPath(new URL('./expected/agent-preset-authoring', import.meta.url))
 const SECTION_EXPECTED = join(SNAPSHOT_DIR, 'section.expected.md')
@@ -41,7 +41,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
 
   /** The settings dialog, opened on the Agent-presets section. */
   function settingsDialog(): Locator {
-    return page.getByRole('dialog', { name: 'ضبط' })
+    return page.getByRole('dialog', { name: 'الإعدادات' })
   }
 
   beforeAll(async () => {
@@ -57,7 +57,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     })
     browser = await chromium.launch()
     // The scenario asserts the shipped Arabic copy, so the browser asks for it.
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -71,28 +71,28 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
 
   it('offers the roster with copy as the only way to create', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-section'))
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
     const dialog = settingsDialog()
     await dialog.waitFor({ timeout: 10_000 })
-    await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()
-    await dialog.getByRole('heading', { name: 'Agent مسبق ضبط' }).waitFor({ timeout: 10_000 })
-    // The intro copy also names النمط المعياري. Wait for the roster's own action so
+    await dialog.getByRole('button', { name: 'الإعدادات المسبقة للوكيل' }).click()
+    await dialog.getByRole('heading', { name: 'الإعدادات المسبقة للوكيل' }).waitFor({ timeout: 10_000 })
+    // The intro copy also names الوضع المعياري. Wait for the roster's own action so
     // the snapshot cannot land between the section shell and its cards.
-    await dialog.getByRole('button', { name: 'عرض: النمط المعياري', exact: true }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'عرض: الوضع المعياري', exact: true }).waitFor({ timeout: 10_000 })
 
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
 
     await compareOrRefreshGolden(SECTION_EXPECTED, snapshot, MODE)
-    const toggle = dialog.getByRole('switch', { name: 'سماح تبديلagentنمط' })
+    const toggle = dialog.getByRole('switch', { name: 'السماح بتبديل أوضاع الوكيل' })
     expect(await toggle.getAttribute('aria-checked')).toBe('true')
     // The intro states the copy path directly, and the shipped rows offer
     // view/copy but never delete or a location — their
     // install is overwritten by upgrades and is not the user's to manage.
     expect(snapshot).toContain('أو استخدام «إنشاء صنع نمط» يجعل Agent مساعدة أنت إنشاء')
     expect(snapshot).not.toContain('جديد بناء مسبق ضبط')
-    expect(snapshot).toContain('عرض: النمط المعياري')
-    expect(snapshot).not.toContain('حذف: النمط المعياري')
-    expect(snapshot).not.toContain('فتح دليل')
+    expect(snapshot).toContain('عرض: الوضع المعياري')
+    expect(snapshot).not.toContain('حذف: الوضع المعياري')
+    expect(snapshot).not.toContain('فتح المجلد')
     // The rest of this scenario exercises the existing default and Creator
     // actions with the beta picker enabled by default.
   }, 60_000)
@@ -100,8 +100,8 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
   it('views a shipped composition read-only instead of editing it', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-view'))
     const dialog = settingsDialog()
-    await dialog.getByRole('button', { name: 'عرض: النمط المعياري' }).click()
-    const viewer = page.getByRole('dialog', { name: 'عرض · النمط المعياري' })
+    await dialog.getByRole('button', { name: 'عرض: الوضع المعياري' }).click()
+    const viewer = page.getByRole('dialog', { name: 'عرض · الوضع المعياري' })
     await viewer.waitFor({ timeout: 10_000 })
 
     // The real shipped composition, not a golden: the viewer shows whatever
@@ -115,23 +115,23 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     await viewer.waitFor({ state: 'detached', timeout: 10_000 })
   }, 60_000)
 
-  it('copies أقصى بسيط نمط whole under a new id and lands in its files', async () => {
+  it('copies الوضع الأدنى whole under a new id and lands in its files', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-copy'))
     const dialog = settingsDialog()
-    await dialog.getByRole('button', { name: 'نسخ: أقصى بسيط نمط' }).click()
-    const copyDialog = page.getByRole('dialog', { name: 'نسخ مسبق ضبط · نسخ ذاتي أقصى بسيط نمط' })
+    await dialog.getByRole('button', { name: 'نسخ: الوضع الأدنى' }).click()
+    const copyDialog = page.getByRole('dialog', { name: 'نسخ الإعداد المسبق · منسوخ من الوضع الأدنى' })
     await copyDialog.waitFor({ timeout: 10_000 })
 
     const dialogSnapshot = await captureStableAria(
-      page, '[role="dialog"][aria-label^="نسخ مسبق ضبط"]', scaffold.workspaceCwd)
+      page, '[role="dialog"][aria-label^="نسخ الإعداد المسبق"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(COPY_DIALOG_EXPECTED, dialogSnapshot, MODE)
     // Two fields and nothing else: the id is the directory name the host
     // needs up front; description and composition live in the files.
-    expect(dialogSnapshot).toContain('معرف رمز')
+    expect(dialogSnapshot).toContain('المعرّف')
     expect(dialogSnapshot).not.toContain('وصف')
 
     await copyDialog.getByPlaceholder('my-agent').fill('my-agent')
-    await copyDialog.getByPlaceholder('اختيار جهاز في عرض اسم حرف، نقص حذف استخدام معرف رمز').fill('أنا نمط')
+    await copyDialog.getByPlaceholder('يظهر في المنتقي؛ يُستخدم المعرّف افتراضيًا').fill('أنا نمط')
     await copyDialog.getByRole('button', { name: 'إنشاء' }).click()
     await copyDialog.waitFor({ state: 'detached', timeout: 10_000 })
 
@@ -139,7 +139,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // its directory is revealed as text right away: landing in the files is
     // the completion of a copy, not a follow-up.
     await dialog.getByText('أنا نمط').first().waitFor({ timeout: 10_000 })
-    await dialog.getByText('مسبق ضبط ملف:').waitFor({ timeout: 10_000 })
+    await dialog.getByText('ملفات الإعداد المسبق:').waitFor({ timeout: 10_000 })
     // The copy dialog is detached, so the settings dialog is the only one
     // left (it names itself via aria-labelledby, which a CSS attribute
     // selector cannot address).
@@ -157,7 +157,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     expect(composition).toBe(await readFile(join(SHIPPED_PRESETS, 'minimal', 'agent.cordis.yml'), 'utf8'))
     const metadata = await readFile(join(userRoot, 'my-agent', 'preset.yml'), 'utf8')
     expect(metadata).toContain('name: أنا نمط')
-    expect(metadata).toContain('description: فقط توفير حمل دائم shell مفرد أداة تحرير رمز Agent.')
+    expect(metadata).toContain('description: وكيل برمجة بأداة واحدة مع صدفة دائمة.')
     expect(metadata).not.toContain('order:')
   }, 60_000)
 
@@ -165,7 +165,7 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-preset-authoring-delete'))
     const dialog = settingsDialog()
     await dialog.getByRole('button', { name: 'حذف: أنا نمط' }).click()
-    const confirm = page.getByRole('dialog', { name: 'حذف هذا مسبق ضبط؟' })
+    const confirm = page.getByRole('dialog', { name: 'حذف هذا الإعداد المسبق؟' })
     await confirm.waitFor({ timeout: 10_000 })
     await confirm.getByRole('button', { name: 'حذف', exact: true }).click()
     await confirm.waitFor({ state: 'detached', timeout: 10_000 })
@@ -174,9 +174,9 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     expect(existsSync(join(userRoot, 'my-agent'))).toBe(false)
     // The custom group outlives its only member: the heading stays with the
     // creator entry so the place to author a preset never disappears.
-    expect(await dialog.getByRole('heading', { name: 'ذاتي تعريف' }).count()).toBe(1)
-    expect(await dialog.getByRole('button', { name: 'استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط' }).count()).toBe(1)
-    expect(await dialog.getByText('النمط المعياري').count()).toBeGreaterThan(0)
+    expect(await dialog.getByRole('heading', { name: 'مخصّص' }).count()).toBe(1)
+    expect(await dialog.getByRole('button', { name: 'صُغ إعدادًا مسبقًا مخصّصًا بوضع الإنشاء' }).count()).toBe(1)
+    expect(await dialog.getByText('الوضع المعياري').count()).toBeGreaterThan(0)
   }, 60_000)
 
   it('marks damaged presets broken and clears a ghost through delete', async () => {
@@ -190,9 +190,9 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
 
     // The section reads the roster when it mounts; hop away and back.
     const dialog = settingsDialog()
-    await dialog.getByRole('button', { name: 'عام ضبط' }).click()
-    await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()
-    await dialog.getByText('تحميل فشل').first().waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'عام' }).click()
+    await dialog.getByRole('button', { name: 'الإعدادات المسبقة للوكيل' }).click()
+    await dialog.getByText('تعذّر التحميل').first().waitFor({ timeout: 10_000 })
 
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd, {
       replacements: [[userRoot, '{{presetRoot}}']],
@@ -208,29 +208,29 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     expect(await dialog.getByRole('button', { name: 'نسخ: خفي مرن مسبق ضبط' }).isDisabled()).toBe(true)
     // A broken card offers no "set default" affordance at all — the aria name
     // IS the broken marking, so the picking name must not exist.
-    expect(await dialog.getByRole('button', { name: 'ضبط لـ افتراضي: broken-yaml' }).count()).toBe(0)
+    expect(await dialog.getByRole('button', { name: 'تعيينه افتراضيًا: broken-yaml' }).count()).toBe(0)
 
     // The ghost's way out is the card's own delete — and the id it blocked
     // is claimable again immediately afterwards.
     await dialog.getByRole('button', { name: 'حذف: خفي مرن مسبق ضبط' }).click()
-    const confirm = page.getByRole('dialog', { name: 'حذف هذا مسبق ضبط؟' })
+    const confirm = page.getByRole('dialog', { name: 'حذف هذا الإعداد المسبق؟' })
     await confirm.waitFor({ timeout: 10_000 })
     await confirm.getByRole('button', { name: 'حذف', exact: true }).click()
     await confirm.waitFor({ state: 'detached', timeout: 10_000 })
     await expect.poll(async () => dialog.getByText('خفي مرن مسبق ضبط').count(), { timeout: 10_000 }).toBe(0)
     expect(existsSync(join(userRoot, 'ghost'))).toBe(false)
 
-    await dialog.getByRole('button', { name: 'نسخ: أقصى بسيط نمط' }).click()
-    const copyDialog = page.getByRole('dialog', { name: 'نسخ مسبق ضبط · نسخ ذاتي أقصى بسيط نمط' })
+    await dialog.getByRole('button', { name: 'نسخ: الوضع الأدنى' }).click()
+    const copyDialog = page.getByRole('dialog', { name: 'نسخ الإعداد المسبق · منسوخ من الوضع الأدنى' })
     await copyDialog.waitFor({ timeout: 10_000 })
     await copyDialog.getByPlaceholder('my-agent').fill('ghost')
     await copyDialog.getByRole('button', { name: 'إنشاء' }).click()
     await copyDialog.waitFor({ state: 'detached', timeout: 10_000 })
-    await dialog.getByRole('button', { name: 'ضبط لـ افتراضي: ghost' }).waitFor({ timeout: 10_000 })
+    await dialog.getByRole('button', { name: 'تعيينه افتراضيًا: ghost' }).waitFor({ timeout: 10_000 })
 
     // Leave the roster as the earlier tests shaped it.
     await dialog.getByRole('button', { name: 'حذف: ghost' }).click()
-    const cleanup = page.getByRole('dialog', { name: 'حذف هذا مسبق ضبط؟' })
+    const cleanup = page.getByRole('dialog', { name: 'حذف هذا الإعداد المسبق؟' })
     await cleanup.waitFor({ timeout: 10_000 })
     await cleanup.getByRole('button', { name: 'حذف', exact: true }).click()
     await cleanup.waitFor({ state: 'detached', timeout: 10_000 })
@@ -244,11 +244,11 @@ describe('web e2e: agent-preset authoring is a host-side copy', () => {
     // the way to a composed host session.
     await settingsDialog().getByRole('button', { name: 'إغلاق' }).last().click()
     await connectFreshWorkspaceAr(page, scaffold.workspaceCwd)
-    await page.getByRole('button', { name: 'ضبط', exact: true }).click()
+    await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
     const dialog = settingsDialog()
     await dialog.waitFor({ timeout: 10_000 })
-    await dialog.getByRole('button', { name: 'Agent مسبق ضبط' }).click()
-    await dialog.getByRole('button', { name: 'استخدام «إنشاء صنع نمط» إنشاء عمل ذاتي تعريف مسبق ضبط' }).click()
+    await dialog.getByRole('button', { name: 'الإعدادات المسبقة للوكيل' }).click()
+    await dialog.getByRole('button', { name: 'صُغ إعدادًا مسبقًا مخصّصًا بوضع الإنشاء' }).click()
 
     // Leaving settings is part of the gesture: the flow lands on the
     // new-session screen with the self-referential preset staged, and the

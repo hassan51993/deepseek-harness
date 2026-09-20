@@ -301,7 +301,7 @@ describe('track', () => {
     const { controller } = controllerBench([reference.source])
     controller.track('@r', 2, { tier: 'plain' }, 1)
     expect(controller.menu.getSnapshot().groups[0]).toMatchObject({ showGroupTitle: false, status: 'pending' })
-    reference.pending[0]!.resolve([{ name: 'README.md', section: 'ملف و ملف مشبك' }])
+    reference.pending[0]!.resolve([{ name: 'README.md', section: 'الملفات والمجلدات' }])
     await tick()
     expect(controller.menu.getSnapshot().groups[0]).toMatchObject({ showGroupTitle: false, status: 'ready' })
   })

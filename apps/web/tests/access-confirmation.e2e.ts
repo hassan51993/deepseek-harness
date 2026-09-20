@@ -14,7 +14,7 @@ import {
   launchWebScaffold, watchConsole, webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
 import {
-  ZH_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot, writeComposerDraft,
+  AR_BROWSER_LOCALE, connectFreshWorkspaceAr, saveFailureShot, writeComposerDraft,
 } from './support.ts'
 
 import { AUTO_REVIEW_FIXTURE, captureAutoReviewState } from './auto-review-fixture.ts'
@@ -39,10 +39,10 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     // is temporarily unavailable.
     const executablePath = process.env.DSH_PLAYWRIGHT_EXECUTABLE_PATH
     browser = await chromium.launch(executablePath === undefined ? {} : { executablePath })
-    // Keep the Arabic surface via {@link ZH_BROWSER_LOCALE}: the golden pins
+    // Keep the Arabic surface via {@link AR_BROWSER_LOCALE}: the golden pins
     // the actual registered dictionary rather than a test-local translation
     // callback.
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE, colorScheme: 'light' })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE, colorScheme: 'light' })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await page.waitForSelector('[class*="frame"]', { timeout: 30_000 })
@@ -56,15 +56,15 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
 
   it('matches the three confirmed Auto entry states and gates both visible picks', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-auto-review-entry'))
-    const access = page.locator('button[aria-label^="وصول نمط"]').first()
+    const access = page.locator('button[aria-label^="وضع الوصول"]').first()
     await access.waitFor({ timeout: 10_000 })
-    expect(await access.getAttribute('aria-label')).toBe('وصول نمط، حالي: مساحة العمل داخل تعديل')
+    expect(await access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: الكتابة في مساحة العمل')
 
     await access.click()
     const currentMenu = page.getByRole('menu')
     await currentMenu.waitFor({ timeout: 10_000 })
     expect(await currentMenu.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto reviewEXP'])
     await captureAutoReviewState(page, 'experimental-current-session-picker')
     const currentSnapshot = await captureStableAria(page, '[role="menu"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(CURRENT_SESSION_PICKER_EXPECTED, currentSnapshot, MODE)
@@ -78,36 +78,36 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(Math.abs(currentTriggerBox!.y - currentMenuBox!.y - currentMenuBox!.height - 4)).toBeLessThan(1)
 
     await currentMenu.getByRole('menuitem', { name: 'Auto review EXP' }).click()
-    const autoDialog = page.getByRole('dialog', { name: 'تأكيد تفعيل Auto review(فعلي تحقق) ؟' })
+    const autoDialog = page.getByRole('dialog', { name: 'تفعيل Auto review (تجريبي)؟' })
     await autoDialog.waitFor({ timeout: 10_000 })
     const autoEnable = autoDialog.getByRole('button', { name: 'تفعيل Auto review' })
     expect(await autoEnable.isDisabled()).toBe(true)
-    expect(await autoDialog.getByText(/لا استخدام صندوق رملي/).count()).toBe(1)
-    expect(await autoDialog.getByText(/خطأ وضع سطر أو خطأ رفض/).count()).toBe(1)
-    expect(await autoDialog.getByText(/مقدار خارج token/).count()).toBe(1)
+    expect(await autoDialog.getByText(/يعمل Auto review بلا عزل/).count()).toBe(1)
+    expect(await autoDialog.getByText(/قد تسمح أو تمنع عن خطأ/).count()).toBe(1)
+    expect(await autoDialog.getByText(/رموزًا إضافية/).count()).toBe(1)
     expect(await autoDialog.evaluate(node => node.parentElement?.parentElement === document.body)).toBe(true)
     await captureAutoReviewState(page, 'experimental-confirmation')
     const confirmationSnapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(AUTO_CONFIRMATION_EXPECTED, confirmationSnapshot, MODE)
     await autoDialog.getByRole('button', { name: 'إلغاء' }).click()
     await expect.poll(() => autoDialog.count()).toBe(0)
-    expect(await access.getAttribute('aria-label')).toBe('وصول نمط، حالي: مساحة العمل داخل تعديل')
+    expect(await access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: الكتابة في مساحة العمل')
 
     const input = page.locator('[data-composer-input]').first()
     await writeComposerDraft(page, input, '/permission')
-    const suggestions = page.getByRole('listbox', { name: 'إطلاق مرشح بناء اقتراح' })
+    const suggestions = page.getByRole('listbox', { name: 'اقتراحات الإدخال' })
     await suggestions.waitFor({ timeout: 10_000 })
     await input.press('Escape')
     await expect.poll(() => suggestions.count()).toBe(0)
     await input.press('Enter')
 
-    const slashPicker = page.locator('[aria-label="/permission خيار"]')
+    const slashPicker = page.locator('[aria-label="خيارات /permission"]')
     await slashPicker.waitFor({ timeout: 10_000 })
     const slashRows = slashPicker.getByRole('option')
     expect(await slashRows.count()).toBe(4)
     expect(await slashPicker.getByRole('option', { name: 'Auto review EXP' }).count()).toBe(1)
     await captureAutoReviewState(page, 'experimental-slash-picker')
-    const slashSnapshot = await captureStableAria(page, '[aria-label="/permission خيار"]', scaffold.workspaceCwd)
+    const slashSnapshot = await captureStableAria(page, '[aria-label="خيارات /permission"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(SLASH_PICKER_EXPECTED, slashSnapshot, MODE)
 
     const slashPickerBox = await slashPicker.boundingBox()
@@ -119,14 +119,14 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(Math.abs(composerBox!.y - slashPickerBox!.y - slashPickerBox!.height - 4)).toBeLessThan(1)
 
     await slashPicker.getByRole('option', { name: 'Auto review EXP' }).click()
-    const slashDialog = page.getByRole('dialog', { name: 'تأكيد تفعيل Auto review(فعلي تحقق) ؟' })
+    const slashDialog = page.getByRole('dialog', { name: 'تفعيل Auto review (تجريبي)؟' })
     await slashDialog.waitFor({ timeout: 10_000 })
     expect(await slashDialog.count()).toBe(1)
     expect(await slashPicker.count()).toBe(0)
-    await slashDialog.getByRole('checkbox', { name: 'أنا قد حل هذه ريح خطر، و رغبة معنى متابعة' }).check()
+    await slashDialog.getByRole('checkbox', { name: 'أدرك هذه المخاطر وأريد المتابعة' }).check()
     await slashDialog.getByRole('button', { name: 'تفعيل Auto review' }).click()
     await expect.poll(() => access.getAttribute('aria-label'), { timeout: 10_000 })
-      .toBe('وصول نمط، حالي:Auto review EXP')
+      .toBe('وضع الوصول، الحالي: Auto review EXP')
     expect(await slashDialog.count()).toBe(0)
     expect(await input.textContent()).toBe('')
     await captureAutoReviewState(page, 'experimental-current-session')
@@ -137,23 +137,23 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     await writeComposerDraft(page, input, '/permission workspace-write')
     await input.press('Enter')
     await expect.poll(() => access.getAttribute('aria-label'), { timeout: 10_000 })
-      .toBe('وصول نمط، حالي: مساحة العمل داخل تعديل')
+      .toBe('وضع الوصول، الحالي: الكتابة في مساحة العمل')
     expect(await page.getByRole('dialog').count()).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('requires acknowledgement before the composer picker can enable Full access', async () => {
     onTestFailed(() => saveFailureShot(page, 'web-e2e-full-access-confirmation'))
-    const access = page.locator('button[aria-label^="وصول نمط"]').first()
+    const access = page.locator('button[aria-label^="وضع الوصول"]').first()
     await access.waitFor({ timeout: 10_000 })
 
-    expect(await access.getAttribute('aria-label')).toBe('وصول نمط، حالي: مساحة العمل داخل تعديل')
+    expect(await access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: الكتابة في مساحة العمل')
 
     await access.click()
-    await page.getByRole('menuitem', { name: 'تماما إذن' }).click()
-    const dialog = page.getByRole('dialog', { name: 'تأكيد تفعيل تماما إذن؟' })
+    await page.getByRole('menuitem', { name: 'وصول كامل' }).click()
+    const dialog = page.getByRole('dialog', { name: 'تفعيل الوصول الكامل؟' })
     await dialog.waitFor({ timeout: 10_000 })
-    const enable = dialog.getByRole('button', { name: 'تفعيل تماما إذن' })
+    const enable = dialog.getByRole('button', { name: 'تفعيل الوصول الكامل' })
     expect(await enable.isDisabled()).toBe(true)
 
     // The modal is in this page's body (not a native/new window) and escapes
@@ -162,18 +162,18 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     const snapshot = await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd)
     await compareOrRefreshGolden(UI_EXPECTED, snapshot, MODE)
 
-    await dialog.getByRole('checkbox', { name: 'أنا قد حل ريح خطر، و رغبة معنى متابعة' }).check()
+    await dialog.getByRole('checkbox', { name: 'أدرك المخاطر وأريد المتابعة' }).check()
     expect(await enable.isEnabled()).toBe(true)
     await enable.click()
     await expect.poll(() => access.getAttribute('aria-label'), { timeout: 10_000 })
-      .toBe('وصول نمط، حالي: تماما إذن')
+      .toBe('وضع الوصول، الحالي: وصول كامل')
     expect(await dialog.count()).toBe(0)
     expect(tripwire.pageErrors).toEqual([])
   }, 60_000)
 
   it('keeps all permission names readable with a collapsed narrow trigger', async () => {
     await page.setViewportSize({ width: 420, height: 1000 })
-    const access = page.locator('button[aria-label^="وصول نمط"]').first()
+    const access = page.locator('button[aria-label^="وضع الوصول"]').first()
     const composer = page.locator('[data-composer-card]').first()
     await expect.poll(async () => (await composer.boundingBox())!.width).toBeLessThanOrEqual(460)
     await expect.poll(async () => (await access.boundingBox())!.width).toBeLessThan(60)
@@ -187,7 +187,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(menuBox.width).toBeLessThanOrEqual(360)
     expect(menuBox.x).toBeGreaterThanOrEqual(0)
     expect(menuBox.x + menuBox.width).toBeLessThanOrEqual(420)
-    for (const name of ['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
+    for (const name of ['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto review']) {
       expect(await menu.getByText(name, { exact: true }).evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
     }
     await page.keyboard.press('Escape')
@@ -196,7 +196,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     await writeComposerDraft(page, input, '/permission')
     await input.press('Escape')
     await input.press('Enter')
-    const slash = page.locator('[aria-label="/permission خيار"]')
+    const slash = page.locator('[aria-label="خيارات /permission"]')
     await slash.waitFor()
     await captureAutoReviewState(page, 'experimental-narrow-slash')
     const slashBox = (await slash.boundingBox())!
@@ -205,7 +205,7 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     expect(slashBox.x + slashBox.width).toBeLessThanOrEqual(420)
     expect(await slash.evaluate(node => getComputedStyle(node).minWidth)).toBe('min(220px, 100%)')
     expect(await slash.evaluate(node => getComputedStyle(node).maxWidth)).toBe('100%')
-    for (const name of ['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto review']) {
+    for (const name of ['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto review']) {
       expect(await slash.getByText(name, { exact: true }).evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true)
     }
     await page.keyboard.press('Escape')
@@ -215,22 +215,22 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
   it('refreshes both pickers through unload and reinstall without restoring Auto', async () => {
     await page.setViewportSize({ width: 1680, height: 1000 })
     const input = page.locator('[data-composer-input]').first()
-    const access = page.locator('button[aria-label^="وصول نمط"]').first()
+    const access = page.locator('button[aria-label^="وضع الوصول"]').first()
     await writeComposerDraft(page, input, '/permission auto')
     await input.press('Enter')
-    await expect.poll(() => access.getAttribute('aria-label')).toBe('وصول نمط، حالي:Auto review EXP')
+    await expect.poll(() => access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: Auto review EXP')
     expect(await page.getByRole('dialog').count()).toBe(0)
     await writeComposerDraft(page, input, '/permission')
     await input.press('Escape')
     await input.press('Enter')
-    const slash = page.locator('[aria-label="/permission خيار"]')
+    const slash = page.locator('[aria-label="خيارات /permission"]')
     await slash.waitFor()
     expect(await slash.getByRole('option').count()).toBe(4)
     const entry = [...scaffold.ctx.loader.entries()].find(row => row.options.id === 'auto-review')
     if (entry === undefined) throw new Error('experimental Auto integration is absent')
     await entry.update({ disabled: true })
     await scaffold.ctx.loader.await()
-    await expect.poll(() => access.getAttribute('aria-label')).toBe('وصول نمط، حالي: تماما إذن')
+    await expect.poll(() => access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: وصول كامل')
     await expect.poll(() => slash.count()).toBe(0)
     expect(await input.textContent()).toBe('/permission')
     await input.press('Enter')
@@ -240,15 +240,15 @@ describe('web e2e: experimental Auto and Full access confirmation', () => {
     await page.keyboard.press('Escape')
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن'])
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل'])
     await captureAutoReviewState(page, 'uninstalled-current-session-picker')
     await page.keyboard.press('Escape')
     await entry.update({ disabled: false })
     await scaffold.ctx.loader.await()
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
-    expect(await access.getAttribute('aria-label')).toBe('وصول نمط، حالي: تماما إذن')
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto reviewEXP'])
+    expect(await access.getAttribute('aria-label')).toBe('وضع الوصول، الحالي: وصول كامل')
     await captureAutoReviewState(page, 'reinstalled-current-session-picker')
     await page.keyboard.press('Escape')
     await writeComposerDraft(page, input, '/permission')
@@ -279,7 +279,7 @@ describe('web e2e: default permission choices', () => {
   beforeAll(async () => {
     scaffold = await launchWebScaffold()
     browser = await chromium.launch()
-    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE, colorScheme: 'light' })
+    page = await browser.newPage({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE, colorScheme: 'light' })
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
     await connectFreshWorkspaceAr(page, scaffold.workspaceCwd)
   }, 120_000)
@@ -288,17 +288,17 @@ describe('web e2e: default permission choices', () => {
     await scaffold?.close()
   })
   it('offers only the three standard modes in both pickers', async () => {
-    const access = page.locator('button[aria-label^="وصول نمط"]').first()
+    const access = page.locator('button[aria-label^="وضع الوصول"]').first()
     await access.click()
     await expect.poll(() => page.getByRole('menuitem').allTextContents())
-      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن'])
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل'])
     await captureAutoReviewState(page, 'default-current-session-picker')
     await page.keyboard.press('Escape')
     const input = page.locator('[data-composer-input]').first()
     await writeComposerDraft(page, input, '/permission')
     await input.press('Escape')
     await input.press('Enter')
-    const slash = page.locator('[aria-label="/permission خيار"]')
+    const slash = page.locator('[aria-label="خيارات /permission"]')
     await slash.waitFor()
     expect(await slash.getByRole('option').count()).toBe(3)
     expect(await slash.getByText('Auto review', { exact: true }).count()).toBe(0)

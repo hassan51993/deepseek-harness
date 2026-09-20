@@ -317,9 +317,9 @@ describe('GoalDock adapter', () => {
     const t = makeTranslate(ar, commonAr)
     const props = { useProjection, useGoalActivation, ...actions, t } as unknown as Parameters<typeof GoalDock>[0]
     const rendered = render(<GoalDock {...props} />)
-    expect(rendered.getByText('لم تشغيل هدف')).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'استعادة هدف' })).toBeTruthy()
-    expect(rendered.queryByRole('button', { name: 'مؤقت توقف هدف' })).toBeNull()
+    expect(rendered.getByText('هدف غير مفعّل')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'استئناف الهدف' })).toBeTruthy()
+    expect(rendered.queryByRole('button', { name: 'إيقاف الهدف مؤقتًا' })).toBeNull()
   })
 })
 

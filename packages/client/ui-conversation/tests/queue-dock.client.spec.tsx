@@ -174,10 +174,10 @@ describe('QueueDock', () => {
     const props = kitFor(pending)
     const view = render(<QueueDock {...props} useSession={source.useSession} useProjection={source.useProjection} />)
     expect(view.getByText('انتظار فوق نقل').closest('[data-submission-echo]')).not.toBeNull()
-    expect(view.getByRole('img', { name: 'ترتيب طابور رسالة صورة' }).getAttribute('src')).toBe('blob:queue-preview')
-    expect(view.getByLabelText('ترتيب طابور ملف notes.txt').textContent).toContain('2.4GB')
-    expect(view.getByRole('status').textContent).toBe('إرسال في…')
-    for (const name of ['تحرير ترتيب طابور رسالة', 'حذف ترتيب طابور رسالة', 'إدراج كلام إرسال']) {
+    expect(view.getByRole('img', { name: 'صورة رسالة في الطابور' }).getAttribute('src')).toBe('blob:queue-preview')
+    expect(view.getByLabelText('ملف في الطابور notes.txt').textContent).toContain('2.4GB')
+    expect(view.getByRole('status').textContent).toBe('جارٍ الإرسال…')
+    for (const name of ['تحرير الرسالة في الطابور', 'إزالة الرسالة من الطابور', 'توجيه الرسالة في الطابور']) {
       const button = view.getByRole('button', { name }) as HTMLButtonElement
       expect(button.disabled).toBe(true)
       fireEvent.click(button)
@@ -194,10 +194,10 @@ describe('QueueDock', () => {
     expect(view.getAllByText('انتظار فوق نقل')).toHaveLength(1)
     expect(view.container.querySelector('[data-submission-echo]')).toBeNull()
     expect(view.queryByRole('status')).toBeNull()
-    for (const name of ['تحرير ترتيب طابور رسالة', 'حذف ترتيب طابور رسالة', 'إدراج كلام إرسال']) {
+    for (const name of ['تحرير الرسالة في الطابور', 'إزالة الرسالة من الطابور', 'توجيه الرسالة في الطابور']) {
       expect((view.getByRole('button', { name }) as HTMLButtonElement).disabled).toBe(false)
     }
-    fireEvent.click(view.getByRole('button', { name: 'تحرير ترتيب طابور رسالة' }))
+    fireEvent.click(view.getByRole('button', { name: 'تحرير الرسالة في الطابور' }))
     expect((view.getByRole('textbox') as HTMLInputElement).value).toBe('انتظار فوق نقل')
   })
 
@@ -218,7 +218,7 @@ describe('QueueDock', () => {
     const view = render(
       <QueueDock {...kitFor(pending, { loadImage })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
-    expect(view.getByRole('img', { name: 'ترتيب طابور رسالة صورة' }).getAttribute('src')).toBe('blob:local-preview')
+    expect(view.getByRole('img', { name: 'صورة رسالة في الطابور' }).getAttribute('src')).toBe('blob:local-preview')
     expect(loadImage).not.toHaveBeenCalled()
 
     act(() => {
@@ -229,12 +229,12 @@ describe('QueueDock', () => {
     })
     expect(view.container.querySelector('[data-submission-echo]')).toBeNull()
     expect(view.getByText('queued image')).toBeTruthy()
-    expect(view.getByRole('button', { name: 'حذف ترتيب طابور رسالة' })).toHaveProperty('disabled', false)
-    expect(view.queryByRole('img', { name: 'ترتيب طابور رسالة صورة' })).toBeNull()
+    expect(view.getByRole('button', { name: 'إزالة الرسالة من الطابور' })).toHaveProperty('disabled', false)
+    expect(view.queryByRole('img', { name: 'صورة رسالة في الطابور' })).toBeNull()
     expect(loadImage).toHaveBeenCalledOnce()
 
     await act(async () => { image.resolve('blob:durable-image'); await image.promise })
-    const thumbnail = view.getByRole('img', { name: 'ترتيب طابور رسالة صورة' })
+    const thumbnail = view.getByRole('img', { name: 'صورة رسالة في الطابور' })
     expect(thumbnail.getAttribute('src')).toBe('blob:durable-image')
     expect(thumbnail.closest('li')?.hasAttribute('data-submission-echo')).toBe(false)
   })
@@ -249,8 +249,8 @@ describe('QueueDock', () => {
     }
     const source = liveSession(pending)
     const view = render(<QueueDock {...kitFor(pending)} useSession={source.useSession} useProjection={source.useProjection} />)
-    expect(view.getByRole('status').textContent).toBe('إرسال في…')
-    const header = view.getByRole('button', { name: /2 بند ترتيب طابور رسالة\s*إرسال في…/ })
+    expect(view.getByRole('status').textContent).toBe('جارٍ الإرسال…')
+    const header = view.getByRole('button', { name: /2 رسائل في الطابور\s*جارٍ الإرسال…/ })
     expect(header.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(header)
     expect(view.getAllByRole('status')).toHaveLength(1)
@@ -270,11 +270,11 @@ describe('QueueDock', () => {
     const single = snapshotWith([row('i-1', 'one')])
     const source = liveSession(single)
     const view = render(<QueueDock {...kitFor(single)} useSession={source.useSession} useProjection={source.useProjection} />)
-    expect(view.queryByRole('button', { name: '1 بند ترتيب طابور رسالة' })).toBeNull()
+    expect(view.queryByRole('button', { name: '1 رسائل في الطابور' })).toBeNull()
     expect(view.getByText('one')).toBeTruthy()
 
     act(() => { source.push(snapshotWith([row('i-1', 'one'), row('i-2', 'two')])) })
-    const header = view.getByRole('button', { name: '2 بند ترتيب طابور رسالة' })
+    const header = view.getByRole('button', { name: '2 رسائل في الطابور' })
     expect(header.getAttribute('aria-expanded')).toBe('false')
     expect(document.getElementById(header.getAttribute('aria-controls')!)).toBeTruthy()
     expect(view.queryByText('one')).toBeNull()
@@ -295,19 +295,19 @@ describe('QueueDock', () => {
     const source = liveSession(single)
     const view = render(<QueueDock {...kitFor(single)} useSession={source.useSession} useProjection={source.useProjection} />)
 
-    fireEvent.click(view.getByLabelText('تحرير ترتيب طابور رسالة'))
-    fireEvent.change(view.getByLabelText('تحرير ترتيب طابور رسالة'), { target: { value: 'draft' } })
+    fireEvent.click(view.getByLabelText('تحرير الرسالة في الطابور'))
+    fireEvent.change(view.getByLabelText('تحرير الرسالة في الطابور'), { target: { value: 'draft' } })
     act(() => {
       source.push(snapshotWith([row('i-edit', 'before'), row('i-2', 'second')]))
     })
 
-    const header = view.getByRole('button', { name: '2 بند ترتيب طابور رسالة' })
+    const header = view.getByRole('button', { name: '2 رسائل في الطابور' })
     expect(header).toHaveProperty('disabled', true)
     expect(header.getAttribute('aria-expanded')).toBe('true')
-    expect(view.getByRole('textbox', { name: 'تحرير ترتيب طابور رسالة' })).toHaveProperty('value', 'draft')
+    expect(view.getByRole('textbox', { name: 'تحرير الرسالة في الطابور' })).toHaveProperty('value', 'draft')
     expect(view.getByText('second')).toBeTruthy()
 
-    fireEvent.click(view.getByLabelText('إلغاء تحرير'))
+    fireEvent.click(view.getByLabelText('إلغاء التحرير'))
     expect(header).toHaveProperty('disabled', false)
     expect(header.getAttribute('aria-expanded')).toBe('false')
     expect(view.queryByText('second')).toBeNull()
@@ -322,12 +322,12 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(single, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(view.getByLabelText('حذف ترتيب طابور رسالة'))
+    fireEvent.click(view.getByLabelText('إزالة الرسالة من الطابور'))
     act(() => {
       source.push(snapshotWith([row('i-remove', 'remove me'), row('i-2', 'second')]))
     })
 
-    const header = view.getByRole('button', { name: '2 بند ترتيب طابور رسالة' })
+    const header = view.getByRole('button', { name: '2 رسائل في الطابور' })
     expect(header).toHaveProperty('disabled', true)
     expect(header.getAttribute('aria-expanded')).toBe('true')
     expect(view.getByText('remove me')).toBeTruthy()
@@ -348,7 +348,7 @@ describe('QueueDock', () => {
     const first = snapshotWith([row('i-1', 'one'), row('i-2', 'two')])
     const source = liveSession(first)
     const view = render(<QueueDock {...kitFor(first)} useSession={source.useSession} useProjection={source.useProjection} />)
-    fireEvent.click(view.getByRole('button', { name: '2 بند ترتيب طابور رسالة' }))
+    fireEvent.click(view.getByRole('button', { name: '2 رسائل في الطابور' }))
     expect(view.getByText('one')).toBeTruthy()
 
     act(() => { source.push(snapshotWith([])) })
@@ -357,7 +357,7 @@ describe('QueueDock', () => {
       source.push(snapshotWith([row('i-3', 'three'), row('i-4', 'four')]))
     })
 
-    const header = view.getByRole('button', { name: '2 بند ترتيب طابور رسالة' })
+    const header = view.getByRole('button', { name: '2 رسائل في الطابور' })
     expect(header.getAttribute('aria-expanded')).toBe('false')
     expect(view.queryByText('three')).toBeNull()
   })
@@ -368,30 +368,30 @@ describe('QueueDock', () => {
     const source = liveSession(snap)
     const view = render(<QueueDock {...kitFor(snap)} useSession={source.useSession} useProjection={source.useProjection} />)
     expect(view.getByText(`before ${'🙂'.repeat(193)}…`)).toBeTruthy()
-    fireEvent.click(view.getByLabelText('تحرير ترتيب طابور رسالة'))
+    fireEvent.click(view.getByLabelText('تحرير الرسالة في الطابور'))
     expect((view.getByRole('textbox') as HTMLInputElement).value).toBe(text)
   })
 
   it('renders active actions and disables editing for mixed-content rows', () => {
     const snap = snapshotWith([
-      row('i-1', 'رقم واحد بند ترتيب طابور رسالة'),
+      row('i-1', 'رقم واحد رسائل في الطابور'),
       row('i-2', null, 'image [image]'),
     ])
     const source = liveSession(snap)
     const { container, getByRole } = render(
       <QueueDock {...kitFor(snap)} useSession={source.useSession} useProjection={source.useProjection} />,
     )
-    fireEvent.click(getByRole('button', { name: '2 بند ترتيب طابور رسالة' }))
+    fireEvent.click(getByRole('button', { name: '2 رسائل في الطابور' }))
     expect([...container.querySelectorAll('li')].map(item => item.textContent))
-      .toEqual(['رقم واحد بند ترتيب طابور رسالة', 'image'])
+      .toEqual(['رقم واحد رسائل في الطابور', 'image'])
     expect(container.querySelectorAll('button')).toHaveLength(7)
-    expect(container.querySelectorAll('[aria-label="تحرير ترتيب طابور رسالة"]')).toHaveLength(2)
-    expect(container.querySelectorAll('[aria-label="حذف ترتيب طابور رسالة"]')).toHaveLength(2)
-    expect(container.querySelectorAll('[aria-label="إدراج كلام إرسال"]')).toHaveLength(2)
-    expect((container.querySelectorAll('[aria-label="تحرير ترتيب طابور رسالة"]')[0] as HTMLButtonElement).disabled).toBe(false)
-    expect((container.querySelectorAll('[aria-label="تحرير ترتيب طابور رسالة"]')[1] as HTMLButtonElement).disabled).toBe(true)
-    expect(container.querySelectorAll('[aria-label="تحرير ترتيب طابور رسالة"]')[1]?.getAttribute('title'))
-      .toBe('يتضمن غير نص محتوى، مؤقت لا دعم حمل تحرير')
+    expect(container.querySelectorAll('[aria-label="تحرير الرسالة في الطابور"]')).toHaveLength(2)
+    expect(container.querySelectorAll('[aria-label="إزالة الرسالة من الطابور"]')).toHaveLength(2)
+    expect(container.querySelectorAll('[aria-label="توجيه الرسالة في الطابور"]')).toHaveLength(2)
+    expect((container.querySelectorAll('[aria-label="تحرير الرسالة في الطابور"]')[0] as HTMLButtonElement).disabled).toBe(false)
+    expect((container.querySelectorAll('[aria-label="تحرير الرسالة في الطابور"]')[1] as HTMLButtonElement).disabled).toBe(true)
+    expect(container.querySelectorAll('[aria-label="تحرير الرسالة في الطابور"]')[1]?.getAttribute('title'))
+      .toBe('تتضمّن محتوى غير نصي، والتحرير غير مدعوم بعد')
   })
 
   it('renders queued image thumbnails from durable references beside the text preview', async () => {
@@ -406,7 +406,7 @@ describe('QueueDock', () => {
       expect(container.querySelector('img')?.getAttribute('src')).toBe('blob:thumb-1')
     })
     expect(loadImage).toHaveBeenCalledWith(expect.objectContaining({ attachmentId: 'att-9' }))
-    expect(container.querySelector('img')?.getAttribute('alt')).toBe('ترتيب طابور رسالة صورة')
+    expect(container.querySelector('img')?.getAttribute('alt')).toBe('صورة رسالة في الطابور')
     expect(container.querySelector('li')?.textContent).toBe('حمل رسم رسالة')
   })
 
@@ -432,9 +432,9 @@ describe('QueueDock', () => {
     const source = liveSession(snap)
     const view = render(<QueueDock {...kitFor(snap, { loadImage })} useSession={source.useSession} useProjection={source.useProjection} />)
     await waitFor(() => { expect(view.container.querySelector('img')).not.toBeNull() })
-    const group = view.getByLabelText('ترتيب طابور ملف report.csv').parentElement
+    const group = view.getByLabelText('ملف في الطابور report.csv').parentElement
     expect(group?.children).toHaveLength(2)
-    expect(group?.children[0]?.getAttribute('aria-label')).toBe('ترتيب طابور ملف report.csv')
+    expect(group?.children[0]?.getAttribute('aria-label')).toBe('ملف في الطابور report.csv')
     expect(group?.children[1]?.tagName).toBe('IMG')
   })
 
@@ -476,11 +476,11 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByLabelText('تحرير ترتيب طابور رسالة'))
-    const editor = getByLabelText('تحرير ترتيب طابور رسالة') as HTMLInputElement
-    expect(getByLabelText('حفظ ترتيب طابور رسالة')).toBeTruthy()
-    expect(getByLabelText('إلغاء تحرير')).toBeTruthy()
-    expect(queryByLabelText('حذف ترتيب طابور رسالة')).toBeNull()
+    fireEvent.click(getByLabelText('تحرير الرسالة في الطابور'))
+    const editor = getByLabelText('تحرير الرسالة في الطابور') as HTMLInputElement
+    expect(getByLabelText('حفظ الرسالة في الطابور')).toBeTruthy()
+    expect(getByLabelText('إلغاء التحرير')).toBeTruthy()
+    expect(queryByLabelText('إزالة الرسالة من الطابور')).toBeNull()
     fireEvent.change(editor, { target: { value: 'after' } })
     fireEvent.keyDown(editor, { key: 'Enter' })
 
@@ -500,13 +500,13 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByLabelText('تحرير ترتيب طابور رسالة'))
-    fireEvent.change(getByLabelText('تحرير ترتيب طابور رسالة'), { target: { value: 'abandoned' } })
-    fireEvent.click(getByLabelText('إلغاء تحرير'))
+    fireEvent.click(getByLabelText('تحرير الرسالة في الطابور'))
+    fireEvent.change(getByLabelText('تحرير الرسالة في الطابور'), { target: { value: 'abandoned' } })
+    fireEvent.click(getByLabelText('إلغاء التحرير'))
     expect(getByText('before')).toBeTruthy()
 
-    fireEvent.click(getByLabelText('تحرير ترتيب طابور رسالة'))
-    fireEvent.keyDown(getByLabelText('تحرير ترتيب طابور رسالة'), { key: 'Escape' })
+    fireEvent.click(getByLabelText('تحرير الرسالة في الطابور'))
+    fireEvent.keyDown(getByLabelText('تحرير الرسالة في الطابور'), { key: 'Escape' })
     expect(getByText('before')).toBeTruthy()
     expect(updateQueue).not.toHaveBeenCalled()
   })
@@ -519,14 +519,14 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByLabelText('تحرير ترتيب طابور رسالة'))
-    const editor = getByLabelText('تحرير ترتيب طابور رسالة')
+    fireEvent.click(getByLabelText('تحرير الرسالة في الطابور'))
+    const editor = getByLabelText('تحرير الرسالة في الطابور')
     fireEvent.change(editor, { target: { value: '   ' } })
-    expect(getByLabelText('حفظ ترتيب طابور رسالة')).toHaveProperty('disabled', true)
+    expect(getByLabelText('حفظ الرسالة في الطابور')).toHaveProperty('disabled', true)
     fireEvent.change(editor, { target: { value: 'إدخال في' } })
     fireEvent.keyDown(editor, { key: 'Enter', isComposing: true })
     expect(updateQueue).not.toHaveBeenCalled()
-    expect(getByLabelText('تحرير ترتيب طابور رسالة')).toBeTruthy()
+    expect(getByLabelText('تحرير الرسالة في الطابور')).toBeTruthy()
   })
 
   it('removes the addressed row', async () => {
@@ -537,8 +537,8 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByRole('button', { name: '2 بند ترتيب طابور رسالة' }))
-    fireEvent.click(getAllByLabelText('حذف ترتيب طابور رسالة')[0]!)
+    fireEvent.click(getByRole('button', { name: '2 رسائل في الطابور' }))
+    fireEvent.click(getAllByLabelText('إزالة الرسالة من الطابور')[0]!)
     await waitFor(() => {
       expect(updateQueue).toHaveBeenCalledWith(iid('i-1'), { kind: 'remove' })
     })
@@ -552,7 +552,7 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(running, { updateQueue })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    const button = rendered.getByLabelText('إدراج كلام إرسال')
+    const button = rendered.getByLabelText('توجيه الرسالة في الطابور')
     expect(button).toHaveProperty('disabled', false)
     fireEvent.click(button)
     await waitFor(() => {
@@ -560,8 +560,8 @@ describe('QueueDock', () => {
     })
 
     act(() => { source.push({ ...running, running: false }) })
-    expect(rendered.getByLabelText('إدراج كلام إرسال')).toHaveProperty('disabled', true)
-    expect(rendered.getByLabelText('إدراج كلام إرسال').getAttribute('title')).toBe('فقط تشغيل في يمكن إدراج كلام إرسال')
+    expect(rendered.getByLabelText('توجيه الرسالة في الطابور')).toHaveProperty('disabled', true)
+    expect(rendered.getByLabelText('توجيه الرسالة في الطابور').getAttribute('title')).toBe('التوجيه متاح فقط أثناء عمل الوكيل')
   })
 
   it('renders ordinary queue actions for a continuable child', () => {
@@ -582,9 +582,9 @@ describe('QueueDock', () => {
     )
 
     expect(view.getByText('pending child follow-up')).toBeTruthy()
-    expect(view.getByLabelText('تحرير ترتيب طابور رسالة')).toBeTruthy()
-    expect(view.getByLabelText('حذف ترتيب طابور رسالة')).toBeTruthy()
-    expect(view.getByLabelText('إدراج كلام إرسال')).toBeTruthy()
+    expect(view.getByLabelText('تحرير الرسالة في الطابور')).toBeTruthy()
+    expect(view.getByLabelText('إزالة الرسالة من الطابور')).toBeTruthy()
+    expect(view.getByLabelText('توجيه الرسالة في الطابور')).toBeTruthy()
   })
 
   it('keeps a one-shot child Queue read-only', () => {
@@ -605,9 +605,9 @@ describe('QueueDock', () => {
     )
 
     expect(view.getByText('pending child follow-up')).toBeTruthy()
-    expect(view.queryByLabelText('تحرير ترتيب طابور رسالة')).toBeNull()
-    expect(view.queryByLabelText('حذف ترتيب طابور رسالة')).toBeNull()
-    expect(view.queryByLabelText('إدراج كلام إرسال')).toBeNull()
+    expect(view.queryByLabelText('تحرير الرسالة في الطابور')).toBeNull()
+    expect(view.queryByLabelText('إزالة الرسالة من الطابور')).toBeNull()
+    expect(view.queryByLabelText('توجيه الرسالة في الطابور')).toBeNull()
   })
 
   it('keeps the row and reports a genuine steer failure', async () => {
@@ -619,11 +619,11 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue, notify })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByLabelText('إدراج كلام إرسال'))
+    fireEvent.click(getByLabelText('توجيه الرسالة في الطابور'))
     await waitFor(() => {
       expect(notify).toHaveBeenCalledWith(
         'error',
-        'إدراج كلام إرسال فشل، طلب إعادة محاولة.',
+        'فشل التوجيه. أعد المحاولة.',
       )
     })
     expect(getByText('pending steer')).toBeTruthy()
@@ -638,9 +638,9 @@ describe('QueueDock', () => {
       <QueueDock {...kitFor(snap, { updateQueue, notify })} useSession={source.useSession} useProjection={source.useProjection} />,
     )
 
-    fireEvent.click(getByLabelText('حذف ترتيب طابور رسالة'))
+    fireEvent.click(getByLabelText('إزالة الرسالة من الطابور'))
     await waitFor(() => {
-      expect(notify).toHaveBeenCalledWith('error', 'حذف فشل: هذا بند رسالة ممكن قد بدء إرسال.')
+      expect(notify).toHaveBeenCalledWith('error', 'فشلت الإزالة: ربما بدأ إرسال هذه الرسالة بالفعل.')
     })
     expect(getByText('pending')).toBeTruthy()
   })

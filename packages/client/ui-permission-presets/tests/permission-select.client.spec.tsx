@@ -56,7 +56,7 @@ function setup(options: {
 }
 
 function trigger(): HTMLButtonElement {
-  return screen.getByRole('button', { name: /^وصول نمط/ }) as HTMLButtonElement
+  return screen.getByRole('button', { name: /^وضع الوصول/ }) as HTMLButtonElement
 }
 
 describe('PermissionSelect', () => {
@@ -74,17 +74,17 @@ describe('PermissionSelect', () => {
       selection: { currentValue: 'read-only' },
       select: () => submitted.promise,
     })
-    expect(trigger().textContent).toBe('فقط يمكن عرض')
+    expect(trigger().textContent).toBe('قراءة فقط')
     expect([...trigger().querySelectorAll('svg')]
       .every(icon => icon.closest('[aria-hidden="true"]') !== null)).toBe(true)
 
     fireEvent.click(trigger())
     expect(screen.getAllByRole('menuitem').map(item => item.textContent))
-      .toEqual(['فقط يمكن عرض', 'مساحة العمل داخل تعديل', 'تماما إذن', 'Auto reviewEXP'])
-    fireEvent.click(screen.getByRole('menuitem', { name: 'مساحة العمل داخل تعديل' }))
+      .toEqual(['قراءة فقط', 'الكتابة في مساحة العمل', 'وصول كامل', 'Auto reviewEXP'])
+    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحة العمل' }))
 
     expect(select).toHaveBeenCalledExactlyOnceWith('workspace-write')
-    expect(trigger().textContent).toBe('مساحة العمل داخل تعديل')
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
     expect(trigger().disabled).toBe(true)
     submitted.resolve(true)
     await act(async () => { await submitted.promise })
@@ -121,19 +121,19 @@ describe('PermissionSelect', () => {
     const { select } = setup()
     const open = () => {
       fireEvent.click(trigger())
-      fireEvent.click(screen.getByRole('menuitem', { name: 'تماما إذن' }))
+      fireEvent.click(screen.getByRole('menuitem', { name: 'وصول كامل' }))
     }
     open()
-    const enable = screen.getByRole<HTMLButtonElement>('button', { name: 'تفعيل تماما إذن' })
+    const enable = screen.getByRole<HTMLButtonElement>('button', { name: 'تفعيل الوصول الكامل' })
     expect(enable.disabled).toBe(true)
-    fireEvent.click(screen.getByRole('checkbox', { name: 'أنا قد حل ريح خطر، و رغبة معنى متابعة' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'أدرك المخاطر وأريد المتابعة' }))
     fireEvent.click(screen.getByRole('button', { name: 'إلغاء' }))
     expect(select).not.toHaveBeenCalled()
 
     open()
     expect(screen.getByRole<HTMLInputElement>('checkbox').checked).toBe(false)
     fireEvent.click(screen.getByRole('checkbox'))
-    fireEvent.click(screen.getByRole('button', { name: 'تفعيل تماما إذن' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تفعيل الوصول الكامل' }))
     expect(select).toHaveBeenCalledExactlyOnceWith('danger-full-access')
     await act(async () => {})
   })
@@ -143,24 +143,24 @@ describe('PermissionSelect', () => {
     fireEvent.click(trigger())
     fireEvent.click(screen.getByRole('menuitem', { name: 'Auto review EXP' }))
 
-    const dialog = screen.getByRole('dialog', { name: 'تأكيد تفعيل Auto review(فعلي تحقق) ؟' })
-    expect(dialog.textContent).toContain('لا استخدام صندوق رملي')
-    expect(dialog.textContent).toContain('خطأ وضع سطر أو خطأ رفض')
-    fireEvent.click(screen.getByRole('checkbox', { name: 'أنا قد حل هذه ريح خطر، و رغبة معنى متابعة' }))
+    const dialog = screen.getByRole('dialog', { name: 'تفعيل Auto review (تجريبي)؟' })
+    expect(dialog.textContent).toContain('تفعيل Auto review (تجريبي)؟يعمل Auto review بلا عزل. قبل كل استدعاء أداة أصلي وكل استدعاء داخلي في PTC، يراجع النموذج نفسه المستخدَم في الوكيل الحالي ما إذا كان يُسمح به. هذه الميزة تجريبية، وقد تسمح أو تمنع عن خطأ، وتستهلك رموزًا إضافية.أدرك هذه المخاطر وأريد المتابعةإلغاءتفعيل Auto review')
+    expect(dialog.textContent).toContain('تفعيل Auto review (تجريبي)؟يعمل Auto review بلا عزل. قبل كل استدعاء أداة أصلي وكل استدعاء داخلي في PTC، يراجع النموذج نفسه المستخدَم في الوكيل الحالي ما إذا كان يُسمح به. هذه الميزة تجريبية، وقد تسمح أو تمنع عن خطأ، وتستهلك رموزًا إضافية.أدرك هذه المخاطر وأريد المتابعةإلغاءتفعيل Auto review')
+    fireEvent.click(screen.getByRole('checkbox', { name: 'أدرك هذه المخاطر وأريد المتابعة' }))
     fireEvent.click(screen.getByRole('button', { name: 'تفعيل Auto review' }))
     expect(select).toHaveBeenCalledExactlyOnceWith('auto')
     act(() => { selection.set({ value: { currentValue: 'auto' } }) })
     await act(async () => {})
 
-    expect(trigger().getAttribute('aria-label')).toBe('وصول نمط، حالي:Auto review EXP')
+    expect(trigger().getAttribute('aria-label')).toBe('وضع الوصول، الحالي: Auto review EXP')
     expect(trigger().querySelector('sup')?.textContent).toBe('EXP')
-    expect(trigger().getAttribute('title')).toBe('بلا صندوق رملي تشغيل؛ كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.')
+    expect(trigger().getAttribute('title')).toBe('يعمل بلا عزل، بعد مراجعة تجريبية يجريها النموذج نفسه لكل استدعاء أداة أصلي ولكل استدعاء داخلي في PTC.')
   })
 
   it('revokes open UI when locked or either source disappears', () => {
     const locked = setup()
     fireEvent.click(trigger())
-    fireEvent.click(screen.getByRole('menuitem', { name: 'تماما إذن' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'وصول كامل' }))
     locked.view.rerender(<PermissionSelect {...locked.props} locked />)
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(trigger().disabled).toBe(true)
@@ -207,7 +207,7 @@ describe('PermissionSelect', () => {
         selection.set({ value: { currentValue: 'danger-full-access' } })
         catalog.set({ value: withoutAuto })
       })
-      expect(trigger().textContent).toBe('تماما إذن')
+      expect(trigger().textContent).toBe('وصول كامل')
       expect(trigger().disabled).toBe(true)
     } finally {
       submitted.resolve(false)
@@ -223,11 +223,11 @@ describe('PermissionSelect', () => {
     expect(trigger().querySelectorAll('svg')).toHaveLength(1)
 
     fireEvent.click(trigger())
-    fireEvent.click(screen.getByRole('menuitem', { name: 'مساحة العمل داخل تعديل' }))
-    expect(trigger().textContent).toBe('مساحة العمل داخل تعديل')
+    fireEvent.click(screen.getByRole('menuitem', { name: 'الكتابة في مساحة العمل' }))
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
     await act(async () => {})
     expect(trigger().textContent).toBe('Custom')
     act(() => { selection.set({ value: { currentValue: 'workspace-write' } }) })
-    expect(trigger().textContent).toBe('مساحة العمل داخل تعديل')
+    expect(trigger().textContent).toBe('الكتابة في مساحة العمل')
   })
 })

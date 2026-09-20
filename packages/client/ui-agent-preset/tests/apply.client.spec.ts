@@ -262,7 +262,7 @@ describe('ui-agent-preset apply', () => {
     expect(section.component).toBe(AgentPresetSection)
     expect(section.options).toMatchObject({ id: 'agent-presets', order: 20 })
     // The nav label is a locale-following thunk; owners resolve it at read time.
-    expect(resolveSlotLabel(section.options.label)).toBe('Agent مسبق ضبط')
+    expect(resolveSlotLabel(section.options.label)).toBe('الإعدادات المسبقة للوكيل')
   })
 
   it('registers into a declaration that arrives after apply', async () => {

@@ -447,7 +447,7 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
       class="logoRow"
     >
       <button
-        aria-label="جديد بناء جلسة"
+        aria-label="جلسة جديدة"
         class="brand wide"
         type="button"
       >
@@ -485,7 +485,7 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
                 <span
                   class="localBuildTitle"
                 >
-                  DSH محلي بناء
+                  إصدار DSH محلي
                 </span>
                 <span
                   class="buildVersion"
@@ -514,7 +514,7 @@ exports[`sidebar shell snapshots > renders the expanded column in the default lo
       </button>
     </div>
     <button
-      aria-label="جديد بناء جلسة"
+      aria-label="جلسة جديدة"
       class="newSession"
       type="button"
     >

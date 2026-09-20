@@ -5,17 +5,17 @@
 - text: بسيط مفرد رسم واحد SVG يمثل فنغ وعد اعتماد مان هيكل بنية, حفظ لـ von-neumann.svg {{clock}}
 - button "نسخ":
   - img
-- button "2 مرة استدعاء الأداة · 1 بند رسالة" [expanded]:
-  - text: 2 مرة استدعاء الأداة · 1 بند رسالة
+- button "2 استدعاءات أدوات · 1 رسالة" [expanded]:
+  - text: 2 استدعاءات أدوات · 1 رسالة
   - img
-- button "سياق حقن @deepseek-ai/dsh-system-prompt":
-  - img
-  - img
-  - text: سياق حقن @deepseek-ai/dsh-system-prompt
-- button "تفكير اعتبار The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.":
+- button "حقن السياق @deepseek-ai/dsh-system-prompt":
   - img
   - img
-  - text: تفكير اعتبار The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.
+  - text: حقن السياق @deepseek-ai/dsh-system-prompt
+- button "تفكير The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.":
+  - img
+  - img
+  - text: تفكير The user wants a simple SVG diagram of the von Neumann architecture, saved as von-neumann.svg. Let me create a clean SVG showing CPU (control unit, ALU), memory, input, and output with bidirectional data/control buses.
 - paragraph: أنا قدوم إنشاء واحد فنغ وعد اعتماد مان هيكل بنية SVG عرض معنى رسم.
 - button "كتابة von-neumann.svg +83 -0":
   - img
@@ -23,17 +23,17 @@
   - text: كتابة
   - button "von-neumann.svg"
   - text: +83 -0
-- button "تفكير اعتبار The file is created. Let me present it as a deliverable.":
+- button "تفكير The file is created. Let me present it as a deliverable.":
   - img
   - img
-  - text: تفكير اعتبار The file is created. Let me present it as a deliverable.
-- button "تسليم ملف قد تسليم von-neumann.svg":
+  - text: تفكير The file is created. Let me present it as a deliverable.
+- button "تسليم الملفات تم التسليم von-neumann.svg":
   - img
-  - text: تسليم ملف قد تسليم von-neumann.svg
+  - text: تسليم الملفات تم التسليم von-neumann.svg
 - paragraph:
   - text: قد إنشاء
   - code:
-    - button "في الشريط الجانبي فتح von-neumann.svg": von-neumann.svg
+    - button "فتح von-neumann.svg": في الشريط الجانبي von-neumann.svg
   - text: ، واحد بسيط نظيف فنغ وعد اعتماد مان هيكل بنية عرض معنى رسم، يتضمن:
 - list:
   - listitem:
@@ -48,29 +48,29 @@
   - listitem:
     - strong: مجموع خط اتصال
     - text: :CPU و داخل تخزين بين عنوان مجموع خط، و CPU و I/O ضبط تجهيز بين بيانات/تحكم خط، سهم رأس علامة واضح بيانات تدفق نحو
-- paragraph: تحت جهة مرفق واحد سطر نواة قلب تفكير تفكير شرح: إشارة أمر و بيانات بـ اثنان دخول صنع موحد واحد تخزين في تخزين جهاز في. استخدام متصفح فتح هذا SVG ملف يكفي عرض.
-- button "في الشريط الجانبي عرض هذا جولة تعديل": قد تحرير 1 عدد ملف +83 -0
+- paragraph: تحت جهة مرفق واحد سطر نواة قلب تفكير تفكير شرح: إشارة أمر و بيانات بـ ثنائي موحد واحد تخزين في تخزين جهاز في. استخدام متصفح فتح هذا SVG ملف يكفي عرض.
+- button "مراجعة تغييرات هذه الجولة في الشريط الجانبي": قد تحرير 1 عدد ملف +83 -0
 - list:
   - listitem:
-    - button "عرض von-neumann.svg تعديل": von-neumann.svg +83 -0
-- text: هذا رئيسي آلة لا يوجد متاح طاولة وجه، لا يمكن استخدام خارجي برنامج فتح ملف أو ملف مشبك؛ ملف ما زال يمكن في الشريط الجانبي معاينة
-- button "في الشريط الجانبي معاينة von-neumann.svg"
+    - button "عرض تغييرات von-neumann.svg": von-neumann.svg +83 -0
+- text: لا يتوفّر لهذا المضيف سطح مكتب لفتح الملفات أو المجلدات في تطبيقات خارجية. لا يزال بالإمكان معاينة الملفات في الشريط الجانبي.
+- button "معاينة von-neumann.svg" في الشريط الجانبي
 - text: von-neumann.svg فنغ وعد اعتماد مان هيكل بنية عرض معنى رسم SVG
-- button "في الشريط الجانبي فتح von-neumann.svg": فتح
-- button "von-neumann.svg أكثر كثير ملف عملية" [disabled]:
+- button "فتح von-neumann.svg": في الشريط الجانبي فتح
+- button "إجراءات ملفات أخرى لـ von-neumann.svg" [disabled]:
   - img
 - button "نسخ":
   - img
-- button "جيد عودة جواب":
+- button "رد جيد":
   - img
-- button "لديه مشكلة عودة جواب":
+- button "رد سيئ":
   - img
-- button "في جديد محادثة في فرع":
+- button "التفرّع إلى محادثة جديدة":
   - img
-- button "استخدام كمية 32K tok":
+- button "الاستهلاك 32K tok":
   - img
-  - text: استخدام كمية 32K tok
-- button "استخدام وقت {{duration}}":
+  - text: الاستهلاك 32K tok
+- button "استغرق {{duration}}":
   - img
-  - text: استخدام وقت {{duration}}
+  - text: استغرق {{duration}}
 - text: {{clock}}

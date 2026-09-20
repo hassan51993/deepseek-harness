@@ -44,7 +44,7 @@ function setup() {
   const parent = new fixture.FakeWindow({})
   dialogs = new DesktopUpdateDialog('preload-update-dialog.cjs', resolveDesktopLocale('ar-SA'))
   const show = (signal?: AbortSignal) => dialogs!.show(parent as unknown as BrowserWindow, {
-    message: 'تحت تحميل إتمام', buttons: ['تثبيت و إعادة بدء'], cancelId: 1, ...(signal === undefined ? {} : { signal }),
+    message: 'تحت تحميل إتمام', buttons: ['التثبيت وإعادة التشغيل'], cancelId: 1, ...(signal === undefined ? {} : { signal }),
   })
   const invoke = (channel: string, ...args: unknown[]) => {
     const window = fixture.windows.at(-1)!
@@ -57,7 +57,7 @@ it('accepts only a displayed choice from its own main frame and retains cancella
   const f = setup()
   const pending = f.show()
   const window = fixture.windows.at(-1)!
-  expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ closeLabel: 'إغلاق', buttons: ['تثبيت و إعادة بدء'], cancelId: 1 })
+  expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ closeLabel: 'إغلاق', buttons: ['التثبيت وإعادة التشغيل'], cancelId: 1 })
   const respond = fixture.handlers.get(UPDATE_DIALOG_IPC.respond)!
   expect(() => respond({ sender: {}, senderFrame: window.webContents.mainFrame }, 0)).toThrow(/unowned/)
   expect(() => respond({ sender: window.webContents, senderFrame: { ...window.webContents.mainFrame } }, 0)).toThrow(/unowned/)
@@ -128,7 +128,7 @@ it('supplies localized disclosure copy without putting diagnostics in the ordina
     message: 'لم قدرة أمان إيقاف مهمة', technicalDetails: 'exit 0; shutdown acknowledged false',
   })
   expect(f.invoke(UPDATE_DIALOG_IPC.status)).toMatchObject({ detail: '',
-    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'عرض تقنية فن تفصيل حال' })
+    technicalDetails: 'exit 0; shutdown acknowledged false', technicalDetailsLabel: 'عرض التفاصيل التقنية' })
   dialogs!.cancel()
   await pending
 })

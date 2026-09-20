@@ -1,15 +1,15 @@
 - banner:
-  - navigation "جلسة طبقة درجة":
+  - navigation "تسلسل الجلسات":
     - button "فقط عودة تكرار MESSAGES_WEB_READY، لا استدعاء" [disabled]
   - img
   - text: النمط المعياري
-  - button "أكثر كثير عملية":
+  - button "إجراءات أخرى":
     - img
-  - button "فتح يمين الشريط الجانبي":
+  - button "فتح الشريط الجانبي الأيمن":
     - img
   - tablist:
     - tab "محادثة" [selected]
-    - tab "مسار أثر"
+    - tab "مسار التنفيذ"
 - button "توجيه النظام":
   - img
   - img
@@ -17,41 +17,41 @@
 - text: فقط عودة تكرار MESSAGES_WEB_READY، لا استدعاء أداة. {{clock}}
 - button "نسخ":
   - img
-- button "قد تفكير اعتبار":
-  - text: قد تفكير اعتبار
+- button "فكّر برهة":
+  - text: فكّر برهة
   - img
-- button "تفكير اعتبار":
+- button "تفكير":
   - img
   - img
-  - text: تفكير اعتبار
+  - text: تفكير
 - paragraph: MESSAGES_WEB_READY
 - button "نسخ":
   - img
-- button "جيد عودة جواب":
+- button "رد جيد":
   - img
-- button "لديه مشكلة عودة جواب":
+- button "رد سيئ":
   - img
-- button "في جديد محادثة في فرع":
+- button "التفرّع إلى محادثة جديدة":
   - img
-- button "استخدام كمية 8.2K tok":
+- button "الاستهلاك 8.2K tok":
   - img
-  - text: استخدام كمية 8.2K tok
-- button "استخدام وقت {{duration}}":
+  - text: الاستهلاك 8.2K tok
+- button "استغرق {{duration}}":
   - img
-  - text: استخدام وقت {{duration}}
+  - text: استغرق {{duration}}
 - text: {{clock}}
-- textbox "إرسال رسالة أو إنشاء مهمة, / استدعاء إشارة أمر, @ ملف أو محادثة"
-- button "إضافة ملف أو استدعاء إشارة أمر":
+- textbox "أرسِل رسالة أو شغّل مهمة، / للأوامر، @ للملفات أو الجلسات"
+- button "إضافة ملفات أو تشغيل أوامر":
   - img
-- button "وصول نمط، حالي: مساحة العمل داخل تعديل": مساحة العمل داخل تعديل
-- button "اختيار نموذج، حالي DeepSeek-V4-Flash، دفع إدارة انتظار درجة high":
+- button "وضع الوصول، الحالي: الكتابة في مساحة العمل": الكتابة في مساحة العمل
+- button "اختيار نموذج، حالي DeepSeek-V4-Flash، جهد الاستدلال high":
   - text: DeepSeek-V4-Flash high
   - img
 - button "إرسال رسالة" [disabled]
 - button "1 جولة 1 خطوة · {{throughput}} tok/s":
   - img
   - text: 1 جولة 1 خطوة{{throughput}} tok/s
-- button "8.2K tok · ذاكرة مؤقتة أمر في 16%":
+- button "8.2K tok · إصابة الذاكرة المؤقتة 16%":
   - img
-  - text: 8.2K tokذاكرة مؤقتة أمر في 16%
-- button "سياق قد استخدام 1%": 1%
+  - text: 8.2K tokإصابة الذاكرة المؤقتة 16%
+- button "من السياق مستخدم 1%": 1%

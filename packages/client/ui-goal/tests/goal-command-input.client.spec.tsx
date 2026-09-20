@@ -129,7 +129,7 @@ describe('goal command input projection', () => {
       t,
     } as unknown as Parameters<typeof GoalCommandInputView>[0]
     const view = render(<GoalCommandInputView {...props} />)
-    const bubble = view.getByRole('group', { name: 'إشارة أمر إدخال' })
+    const bubble = view.getByRole('group', { name: 'إدخال الأوامر' })
 
     expect(bubble.textContent).toBe('/goal ship it')
     expect(within(bubble).queryByRole('button')).toBeNull()
@@ -148,7 +148,7 @@ describe('goal command input projection', () => {
       t,
     } as unknown as Parameters<typeof GoalCommandInputView>[0]
     const view = render(<GoalCommandInputView {...props} />)
-    const bubble = view.getByRole('group', { name: 'إشارة أمر إدخال' })
+    const bubble = view.getByRole('group', { name: 'إدخال الأوامر' })
     expect(bubble.textContent).toBe('/goal')
     expect([...bubble.querySelectorAll('[data-ref-chip]')].map(chip => chip.textContent)).toEqual(['/goal'])
   })
@@ -163,7 +163,7 @@ describe('goal command input projection', () => {
       t,
     } as unknown as Parameters<typeof GoalCommandInputView>[0]
     const view = render(<GoalCommandInputView {...props} />)
-    const bubble = view.getByRole('group', { name: 'إشارة أمر إدخال' })
+    const bubble = view.getByRole('group', { name: 'إدخال الأوامر' })
     expect(bubble.textContent).toBe('/goal فحص /goal لغة قاعدة')
     const chips = [...bubble.querySelectorAll('[data-ref-chip]')]
     expect(chips.map(chip => chip.textContent)).toEqual(['/goal'])

@@ -122,14 +122,14 @@ describe('SubagentHeaderLineage', () => {
     }
     const view = render(<SubagentHeaderLineage {...props(catalog(), {}, summaries)} />)
 
-    const trigger = screen.getByRole('button', { name: '1 عدد فرعي بديل إدارة، جارٍ تشغيل' })
+    const trigger = screen.getByRole('button', { name: '1 وكيل فرعي قيد التشغيل' })
     expect(trigger.querySelector('[data-state="ongoing"]')).not.toBeNull()
 
     view.rerender(<SubagentHeaderLineage {...props(catalog(), {}, {
       ...summaries,
       [GRANDCHILD]: { ...summaries[GRANDCHILD]!, running: false },
     })} />)
-    const inactiveTrigger = screen.getByRole('button', { name: '3 عدد فرعي بديل إدارة' })
+    const inactiveTrigger = screen.getByRole('button', { name: '3 وكلاء فرعيون' })
     expect(inactiveTrigger.querySelector('[data-state="ongoing"]')).toBeNull()
   })
 
@@ -145,27 +145,27 @@ describe('SubagentHeaderLineage', () => {
       [forkChild]: { ...summary(forkChild, 1), parentId: fork, origin: 'subagent', running: true },
     })} />)
 
-    const trigger = screen.getByRole('button', { name: '2 عدد فرعي بديل إدارة' })
+    const trigger = screen.getByRole('button', { name: '2 وكلاء فرعيون' })
     expect(trigger.querySelector('[data-state="ongoing"]')).toBeNull()
   })
 
   it('renders healthy counts, stable rows, diagnostics, and catalog-addressed navigation', () => {
     const input = props(catalog())
     render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     hoverCatalog(trigger)
 
     expect(input.setCatalogOpen).toHaveBeenCalledWith(PARENT, true)
     expect(screen.getAllByRole('treeitem')).toHaveLength(3)
-    expect(screen.getByText('جارٍ مسح مشروع ملف · يمكن متابعة · جارٍ تشغيل')).toBeTruthy()
-    expect(screen.getByText('مرة صفة · حالي لم تشغيل')).toBeTruthy()
-    const diagnostic = screen.getByRole('treeitem', { name: /جلسة سجل ضرر تالف/ })
+    expect(screen.getByText('جارٍ مسح مشروع ملف · قابل للمتابعة · قيد التشغيل')).toBeTruthy()
+    expect(screen.getByText('لمرة واحدة · متوقف')).toBeTruthy()
+    const diagnostic = screen.getByRole('treeitem', { name: /سجل جلسة تالف/ })
     expect(diagnostic.getAttribute('aria-disabled')).toBe('true')
-    expect(screen.getByRole('button', { name: 'توسيع worker تحت درجة فرعي بديل إدارة' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'توسيع reviewer تحت درجة فرعي بديل إدارة' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'توسيع الوكلاء التابعين لـ reviewer' })).toBeNull()
     expect(screen.getByRole('treeitem', { name: /reviewer/ }).children).toHaveLength(2)
 
-    const sidebarButton = screen.getByRole('button', { name: 'في الشريط الجانبي فتح worker' })
+    const sidebarButton = screen.getByRole('button', { name: 'فتح worker في الشريط الجانبي' })
     fireEvent.keyDown(sidebarButton, { key: 'Enter' })
     fireEvent.click(sidebarButton)
     expect(input.openChildAside).toHaveBeenCalledWith({
@@ -206,7 +206,7 @@ describe('SubagentHeaderLineage', () => {
       }],
     }))
     render(<SubagentHeaderLineage {...input} />)
-    hoverCatalog(screen.getByRole('button', { name: /1 عدد فرعي بديل إدارة/ }))
+    hoverCatalog(screen.getByRole('button', { name: /1 وكيل فرعي/ }))
 
     expect(screen.getByRole('treeitem', { name: /worker/ }).children).toHaveLength(1)
   })
@@ -214,7 +214,7 @@ describe('SubagentHeaderLineage', () => {
   it('supports trigger/menu keyboard traversal, Escape focus restore, and outside close', async () => {
     const input = props(catalog())
     render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     fireEvent.keyDown(trigger, { key: 'ArrowDown' })
     await Promise.resolve()
     expect(document.activeElement).toBe(screen.getByRole('treeitem', { name: /worker/ }))
@@ -243,7 +243,7 @@ describe('SubagentHeaderLineage', () => {
       await act(async () => { await vi.advanceTimersByTimeAsync(duration) })
     }
     const view = render(<SubagentHeaderLineage {...props(catalog())} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     const triggerRect = vi.spyOn(trigger, 'getBoundingClientRect')
       .mockReturnValue({ bottom: 40, left: 50 } as DOMRect)
 
@@ -280,7 +280,7 @@ describe('SubagentHeaderLineage', () => {
 
   it('repositions an open catalog after viewport resize and document scroll', () => {
     const view = render(<SubagentHeaderLineage {...props(catalog())} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     const bounds = vi.spyOn(trigger, 'getBoundingClientRect')
     bounds.mockReturnValue({ bottom: 20, left: 30 } as DOMRect)
     hoverCatalog(trigger)
@@ -303,7 +303,7 @@ describe('SubagentHeaderLineage', () => {
   it('cancels a pending hover when the trigger becomes hidden', async () => {
     vi.useFakeTimers()
     const view = render(<SubagentHeaderLineage {...props(catalog())} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
 
     fireEvent.mouseEnter(trigger.parentElement!)
     await vi.advanceTimersByTimeAsync(149)
@@ -334,12 +334,12 @@ describe('SubagentHeaderLineage', () => {
       ],
     }))
     render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     fireEvent.keyDown(trigger, { key: 'Tab' })
     expect(screen.queryByRole('tree')).toBeNull()
     hoverCatalog(trigger)
-    expect(screen.getByRole('treeitem', { name: /فرعي بديل إدارة سجل إصدار لا تلقي دعم حمل/ })).toBeTruthy()
-    expect(screen.getByRole('treeitem', { name: /جلسة سجل مؤقت غير ممكن استخدام/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /إصدار سجل وكيل فرعي غير مدعوم/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /سجل الجلسة غير متاح مؤقتًا/ })).toBeTruthy()
 
     fireEvent.keyDown(screen.getByRole('treeitem', { name: /worker/ }), { key: 'Enter' })
     expect(input.openChild).toHaveBeenLastCalledWith({
@@ -422,31 +422,31 @@ describe('SubagentHeaderLineage', () => {
     })) as Record<SessionId, SessionSummary>
     const input = props(catalog({ entries }), {}, summaries)
     render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: '1 عدد فرعي بديل إدارة، جارٍ تشغيل' })
-    expect(within(trigger).getByText('9 عدد فرعي بديل إدارة')).toBeTruthy()
+    const trigger = screen.getByRole('button', { name: '1 وكيل فرعي قيد التشغيل' })
+    expect(within(trigger).getByText('9 وكلاء فرعيون')).toBeTruthy()
     hoverCatalog(trigger)
 
-    const runningRow = screen.getByRole('treeitem', { name: /running.*4\.6K tok · 1قسم10ثانية/ })
+    const runningRow = screen.getByRole('treeitem', { name: /running.*4\.6K رمز · 1 د 10 ث/ })
     const runningMetrics = within(runningRow)
-    const tokenMetric = runningMetrics.getByText('4.6K tok')
-    const durationMetric = runningMetrics.getByText('1قسم10ثانية')
+    const tokenMetric = runningMetrics.getByText('4.6K رمز')
+    const durationMetric = runningMetrics.getByText('1 د 10 ث')
     expect(tokenMetric.parentElement).toBe(durationMetric.parentElement)
     expect(tokenMetric.nextElementSibling).toBe(durationMetric)
-    expect(screen.getByRole('treeitem', { name: /finished.*123 tok · 1ساعة02قسم03ثانية/ })).toBeTruthy()
-    expect(screen.getByRole('treeitem', { name: /interrupted.*123M tok · 6ثانية/ })).toBeTruthy()
-    expect(screen.getByRole('treeitem', { name: /days.*12يوم05ساعة06قسم07ثانية/ })).toBeTruthy()
-    expect(screen.getByText('12يوم5ساعة').getAttribute('title'))
-      .toBe('مجموع نشط وثب استهلاك وقت:12يوم05ساعة06قسم07ثانية')
-    expect(screen.getByText('1يوم')).toBeTruthy()
-    expect(screen.getByText('نحو6عدد شهر12يوم')).toBeTruthy()
-    expect(screen.getByText('نحو1عدد شهر')).toBeTruthy()
-    expect(screen.getByText('نحو2سنة3عدد شهر')).toBeTruthy()
-    expect(screen.getByText('نحو1سنة')).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /finished.*123 رمز · 1 س 02 د 03 ث/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /interrupted.*123M رمز · 6 ث/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /days.*12 ي 05 س 06 د 07 ث/ })).toBeTruthy()
+    expect(screen.getByText('12 ي 5 س').getAttribute('title'))
+      .toBe('إجمالي المدة النشطة: 12 ي 05 س 06 د 07 ث')
+    expect(screen.getByText('1 ي')).toBeTruthy()
+    expect(screen.getByText('~6 شهر 12 ي')).toBeTruthy()
+    expect(screen.getByText('~1 شهر')).toBeTruthy()
+    expect(screen.getByText('~2 سنة 3 شهر')).toBeTruthy()
+    expect(screen.getByText('~1 سنة')).toBeTruthy()
 
     await vi.advanceTimersByTimeAsync(1_000)
-    expect(screen.getByRole('treeitem', { name: /running.*4\.6K tok · 1قسم11ثانية/ })).toBeTruthy()
-    expect(screen.getByRole('treeitem', { name: /finished.*123 tok · 1ساعة02قسم03ثانية/ })).toBeTruthy()
-    expect(screen.getByRole('treeitem', { name: /interrupted.*123M tok · 6ثانية/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /running.*4\.6K رمز · 1 د 11 ث/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /finished.*123 رمز · 1 س 02 د 03 ث/ })).toBeTruthy()
+    expect(screen.getByRole('treeitem', { name: /interrupted.*123M رمز · 6 ث/ })).toBeTruthy()
   })
 
   it('lazily expands and collapses descendant catalogs with direct-parent navigation', () => {
@@ -464,9 +464,9 @@ describe('SubagentHeaderLineage', () => {
       [GRANDCHILD]: grandchildCatalog,
     })
     render(<SubagentHeaderLineage {...input} />)
-    hoverCatalog(screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ }))
+    hoverCatalog(screen.getByRole('button', { name: /2 وكلاء فرعيون/ }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'توسيع worker تحت درجة فرعي بديل إدارة' }))
+    fireEvent.click(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' }))
     expect(input.setCatalogOpen).toHaveBeenCalledWith(CHILD, true)
     const nested = screen.getByRole('treeitem', { name: /indexer/ })
     expect(nested.getAttribute('aria-level')).toBe('2')
@@ -492,12 +492,12 @@ describe('SubagentHeaderLineage', () => {
     }
     const deferred = props(catalog(), {}, summaries)
     const view = render(<SubagentHeaderLineage {...deferred} />)
-    hoverCatalog(screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ }))
-    fireEvent.click(screen.getByRole('button', { name: 'توسيع worker تحت درجة فرعي بديل إدارة' }))
+    hoverCatalog(screen.getByRole('button', { name: /2 وكلاء فرعيون/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' }))
 
     expect(deferred.setCatalogOpen).toHaveBeenCalledWith(CHILD, true)
     expect(screen.getByRole('group').getAttribute('aria-busy')).toBe('true')
-    const loadingRows = screen.getAllByRole('treeitem', { name: 'جارٍ تحميل فرعي بديل إدارة' })
+    const loadingRows = screen.getAllByRole('treeitem', { name: 'جارٍ تحميل الوكلاء الفرعيين' })
     expect(loadingRows).toHaveLength(2)
     expect(loadingRows.every(row => row.getAttribute('aria-level') === '2')).toBe(true)
     expect(loadingRows[1]?.querySelector('[data-state="ongoing"]')).not.toBeNull()
@@ -506,7 +506,7 @@ describe('SubagentHeaderLineage', () => {
       [CHILD]: catalog({ entries: [], state: 'loading' }),
     }, summaries)
     view.rerender(<SubagentHeaderLineage {...loading} />)
-    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل فرعي بديل إدارة' })).toHaveLength(2)
+    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل الوكلاء الفرعيين' })).toHaveLength(2)
 
     const ready = props(catalog(), {
       [CHILD]: catalog({
@@ -526,7 +526,7 @@ describe('SubagentHeaderLineage', () => {
     expect(screen.getByRole('group').getAttribute('aria-busy')).toBeNull()
     expect(screen.getByRole('treeitem', { name: /indexer/ })).toBeTruthy()
     expect(screen.getByRole('treeitem', { name: /critic/ })).toBeTruthy()
-    expect(screen.queryByRole('treeitem', { name: 'جارٍ تحميل فرعي بديل إدارة' })).toBeNull()
+    expect(screen.queryByRole('treeitem', { name: 'جارٍ تحميل الوكلاء الفرعيين' })).toBeNull()
   })
 
   it('uses ArrowRight and ArrowLeft for branch disclosure', async () => {
@@ -539,7 +539,7 @@ describe('SubagentHeaderLineage', () => {
       }),
     })
     render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     fireEvent.keyDown(trigger, { key: 'ArrowDown' })
     await Promise.resolve()
     const worker = screen.getByRole('treeitem', { name: /worker/ })
@@ -563,10 +563,10 @@ describe('SubagentHeaderLineage', () => {
       }),
     })
     render(<SubagentHeaderLineage {...input} />)
-    hoverCatalog(screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ }))
-    fireEvent.click(screen.getByRole('button', { name: 'توسيع worker تحت درجة فرعي بديل إدارة' }))
-    fireEvent.click(screen.getByRole('button', { name: 'توسيع indexer تحت درجة فرعي بديل إدارة' }))
-    fireEvent.click(screen.getByRole('button', { name: 'طي worker تحت درجة فرعي بديل إدارة' }))
+    hoverCatalog(screen.getByRole('button', { name: /2 وكلاء فرعيون/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' }))
+    fireEvent.click(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ indexer' }))
+    fireEvent.click(screen.getByRole('button', { name: 'طي الوكلاء التابعين لـ worker' }))
 
     expect(input.setCatalogOpen).toHaveBeenCalledWith(GRANDCHILD, false)
     expect(input.setCatalogOpen).toHaveBeenCalledWith(CHILD, false)
@@ -589,9 +589,9 @@ describe('SubagentHeaderLineage', () => {
       error: new RemoteError('gateway/internal', 'index down', {}),
     }))
     render(<SubagentHeaderLineage {...failed} />)
-    hoverCatalog(screen.getByRole('button', { name: /0 عدد فرعي بديل إدارة/ }))
+    hoverCatalog(screen.getByRole('button', { name: /0 وكلاء فرعيون/ }))
     expect(screen.getByText('index down')).toBeTruthy()
-    fireEvent.click(screen.getByRole('button', { name: /إعادة محاولة/ }))
+    fireEvent.click(screen.getByRole('button', { name: /إعادة المحاولة/ }))
     expect(failed.refresh).toHaveBeenCalledWith(PARENT)
   })
 
@@ -608,17 +608,17 @@ describe('SubagentHeaderLineage', () => {
     const absent = props(undefined, {}, summaries)
     const view = render(<SubagentHeaderLineage {...absent} />)
 
-    const trigger = screen.getByRole('button', { name: '1 عدد فرعي بديل إدارة، جارٍ تشغيل' })
-    expect(within(trigger).getByText('2 عدد فرعي بديل إدارة')).toBeTruthy()
+    const trigger = screen.getByRole('button', { name: '1 وكيل فرعي قيد التشغيل' })
+    expect(within(trigger).getByText('2 وكلاء فرعيون')).toBeTruthy()
     hoverCatalog(trigger)
     expect(absent.setCatalogOpen).toHaveBeenCalledWith(PARENT, true)
-    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل فرعي بديل إدارة' })).toHaveLength(2)
+    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل الوكلاء الفرعيين' })).toHaveLength(2)
     expect(absent.openChild).not.toHaveBeenCalled()
 
     const staleEmpty = props(catalog({ entries: [] }), {}, summaries)
     view.rerender(<SubagentHeaderLineage {...staleEmpty} />)
-    expect(screen.getByRole('button', { name: '1 عدد فرعي بديل إدارة، جارٍ تشغيل' })).toBeTruthy()
-    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل فرعي بديل إدارة' })).toHaveLength(2)
+    expect(screen.getByRole('button', { name: '1 وكيل فرعي قيد التشغيل' })).toBeTruthy()
+    expect(screen.getAllByRole('treeitem', { name: 'جارٍ تحميل الوكلاء الفرعيين' })).toHaveLength(2)
     expect(staleEmpty.openChild).not.toHaveBeenCalled()
   })
 
@@ -632,9 +632,9 @@ describe('SubagentHeaderLineage', () => {
 
     const failed = props(catalog({ entries: [], state: 'error', error: null }))
     render(<SubagentHeaderLineage {...failed} />)
-    const trigger = screen.getByRole('button', { name: /0 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /0 وكلاء فرعيون/ })
     hoverCatalog(trigger)
-    expect(screen.getByText('لا يمكن تحميل فرعي بديل إدارة')).toBeTruthy()
+    expect(screen.getByText('تعذّر تحميل الوكلاء الفرعيين')).toBeTruthy()
     fireEvent.keyDown(trigger, { key: 'ArrowDown' })
     await Promise.resolve()
     expect(screen.getByRole('tree')).toBeTruthy()
@@ -644,7 +644,7 @@ describe('SubagentHeaderLineage', () => {
   it('navigates from outside the tree and tolerates a deferred focus after unmount', async () => {
     const input = props(catalog())
     const view = render(<SubagentHeaderLineage {...input} />)
-    const trigger = screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })
+    const trigger = screen.getByRole('button', { name: /2 وكلاء فرعيون/ })
     hoverCatalog(trigger)
     fireEvent.keyDown(screen.getByRole('tree'), { key: 'ArrowUp' })
     expect(document.activeElement).toBe(screen.getByRole('treeitem', { name: /reviewer/ }))
@@ -663,8 +663,8 @@ describe('SubagentHeaderLineage', () => {
       }),
     })
     const view = render(<SubagentHeaderLineage {...populated} />)
-    hoverCatalog(screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ }))
-    fireEvent.click(screen.getByRole('button', { name: 'توسيع worker تحت درجة فرعي بديل إدارة' }))
+    hoverCatalog(screen.getByRole('button', { name: /2 وكلاء فرعيون/ }))
+    fireEvent.click(screen.getByRole('button', { name: 'توسيع الوكلاء التابعين لـ worker' }))
 
     const empty = props(catalog({ entries: [] }))
     view.rerender(<SubagentHeaderLineage {...empty} />)
@@ -677,7 +677,7 @@ describe('SubagentHeaderLineage', () => {
     const view = render(<SubagentHeaderLineage {...props(catalog())} />)
 
     expect(screen.getByText('/')).toBeTruthy()
-    expect(screen.getByRole('button', { name: /2 عدد فرعي بديل إدارة/ })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /2 وكلاء فرعيون/ })).toBeTruthy()
 
     view.rerender(<SubagentHeaderLineage {...props(catalog({ entries: [] }))} />)
     expect(screen.queryByText('/')).toBeNull()
@@ -700,7 +700,7 @@ describe('SubagentHeaderLineage', () => {
     }
     render(<SubagentHeaderLineage {...input} />)
 
-    const switcher = screen.getByRole('button', { name: 'تبديل فرعي بديل إدارة:worker' })
+    const switcher = screen.getByRole('button', { name: 'تبديل الوكيل الفرعي: worker' })
     expect(switcher.className).toContain('switcherTrigger')
     expect(within(switcher).getByText('worker')).toBeTruthy()
     expect(switcher.querySelector('svg')).not.toBeNull()
@@ -736,7 +736,7 @@ describe('SubagentHeaderLineage', () => {
     }
     render(<SubagentHeaderLineage {...input} />)
 
-    expect(screen.getByRole('button', { name: `تبديل فرعي بديل إدارة:${CHILD}` })).toBeTruthy()
+    expect(screen.getByRole('button', { name: `تبديل الوكيل الفرعي: ${CHILD}` })).toBeTruthy()
   })
 
   it('keeps an ancestor switcher muted and omits its descendant count', () => {
@@ -760,9 +760,9 @@ describe('SubagentHeaderLineage', () => {
     }
     render(<SubagentHeaderLineage {...input} />)
 
-    const switcher = screen.getByRole('button', { name: 'تبديل فرعي بديل إدارة:worker' })
+    const switcher = screen.getByRole('button', { name: 'تبديل الوكيل الفرعي: worker' })
     expect(switcher.className).toContain('ancestorSwitcherTrigger')
-    expect(screen.queryByRole('button', { name: /1 عدد فرعي بديل إدارة/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /1 وكيل فرعي/ })).toBeNull()
     vi.useFakeTimers()
     fireEvent.mouseEnter(switcher.parentElement!)
     fireEvent.click(switcher)
@@ -818,7 +818,7 @@ describe('SubagentHeaderLineage', () => {
     }
     render(<SubagentHeaderLineage {...input} />)
 
-    hoverCatalog(screen.getByRole('button', { name: 'تبديل فرعي بديل إدارة:indexer' }))
+    hoverCatalog(screen.getByRole('button', { name: 'تبديل الوكيل الفرعي: indexer' }))
 
     expect(input.setCatalogOpen).toHaveBeenCalledWith(CHILD, true)
     const current = screen.getByRole('treeitem', { name: /indexer/ })
@@ -831,11 +831,11 @@ describe('SubagentHeaderLineage', () => {
 describe('SubagentReadOnlyComposer', () => {
   it('explains the exact missing-parent recovery path', () => {
     render(<SubagentReadOnlyComposer matched={{ reason: 'parent-unavailable' }} t={t} />)
-    expect(screen.getByRole('status').textContent).toContain('أب جلسة حالي لا في خط')
+    expect(screen.getByRole('status').textContent).toContain('هذا الوكيل الفرعي للقراءة فقط حاليًاالجلسة الأم غير متصلة؛ أعد فتحها لمواصلة إرسال الرسائل.')
   })
 
   it('explains that one-shot histories never accept follow-ups', () => {
     render(<SubagentReadOnlyComposer matched={{ reason: 'one-shot' }} t={t} />)
-    expect(screen.getByRole('status').textContent).toContain('مرة صفة مهمة لا دعم حمل لاحق رسالة')
+    expect(screen.getByRole('status').textContent).toContain('سجل وكيل فرعي لمرة واحدةمهام المرة الواحدة لا تقبل رسائل متابعة؛ راجِع سجل التنفيذ كاملًا هنا.')
   })
 })

@@ -2,8 +2,8 @@
 export const ar = {
   'viewer.label': 'Markdown',
   'code.copy': 'نسخ',
-  'code.copied': 'قد نسخ',
-  'footnotes': 'قدم ملاحظة',
+  'code.copied': 'تم النسخ',
+  footnotes: 'الحواشي',
 } satisfies Record<string, string>
 
 /** Markdown namespace keys. */

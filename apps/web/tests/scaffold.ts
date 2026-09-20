@@ -1466,16 +1466,21 @@ export async function readPersistedEvents(scaffold: WebScaffold, id: SessionId):
  * closing quote, where the bucket is always last.
  */
 const ARIA_AGE =
-  /(?:now|\d+min|\d+h|\d+d|\d+mo|\d+y|للتو|\d+دقيقة|\d+ساعة|\d+يوم|\d+عدد شهر|\d+سنة)(?=")/g
+  /(?:now|\d+min|\d+h|\d+d|\d+mo|\d+y|الآن|\d+ دقيقة|\d+ ساعة|\d+ يوم|\d+ شهر|\d+ سنة)(?=")/g
 
 /**
  * Relative-duration spellings the Arabic dictionary renders, built from parts
  * so the alternation stays inside the line-length budget.
  */
 const AR_DURATION = new RegExp(
-  'نحو\\d+(?:سنة(?:\\d+عدد شهر)?|عدد شهر(?:\\d+يوم)?)'
-  + '|\\d+(?:يوم(?:\\d+ساعة(?:\\d+قسم\\d+ثانية)?)?'
-  + '|ساعة\\d+قسم\\d+ثانية|قسم\\d+ثانية|(?:\\.\\d+)?ثانية)',
+  '~\\d+ (?:سنة(?: \\d+ شهر)?|شهر(?: \\d+ ي)?)'
+  + '|\\d+ ي(?: \\d+ س(?: \\d+ د \\d+ ث)?)?'
+  + '|\\d+ س \\d+ د \\d+ ث'
+  // The optional spaces cover the stats line's compact `2د42ث` and the
+  // message-chrome template's `2 د 42 ث`.
+  + '|\\d+ ?د ?\\d+ ?ث'
+  + '|\\d+(?:\\.\\d+)? م\\.ث'
+  + '|\\d+(?:\\.\\d+)? ث',
   'g',
 )
 
@@ -1496,9 +1501,9 @@ function normalizeAria(snapshot: string, workspaceCwd: string, age: boolean): st
     .replace(/\b\d[\d,]*(?:\.\d+)? ms\b/g, '{{duration}}')
     .replace(
       AR_DURATION,
-      duration => duration.startsWith('نحو') ? duration : '{{duration}}',
+      duration => duration.startsWith('~') ? duration : '{{duration}}',
     )
-    .replace(/\d+(?:\.\d+)?(?= tok\/s(?!\w))/g, '{{throughput}}')
+    .replace(/\d+(?:\.\d+)?(?= (?:tok\/s(?!\w)|رمز\/ث))/g, '{{throughput}}')
     // Seeded compaction prices realized file paths, whose length differs
     // between local worktrees and CI scratch directories.
     .replace(/(Compacted \d+ history items \(~)\d+( tokens\))/g, '$1{{tokens}}$2')

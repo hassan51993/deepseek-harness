@@ -163,10 +163,10 @@ describe('matrix row: claimed', () => {
     expect(shell.snapshot.claim).toEqual({ name: 'goal', token: '/goal ', hint: 'هدف' })
     expect(view.container.querySelector('[data-lexical-text][style*="warn-label"]')?.textContent).toBe('/goal ')
     // The ar dictionary owns a hint.goal entry, which overrides the raw claim hint (production behavior).
-    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ'))
+    expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
     expect(textarea.getAttribute('contenteditable')).toBe('true')
     // Free editing beyond the token: hint drops, claim holds.
-    act(() => { shell.setDraft('/goal إصدار إصدار') })
+    act(() => { shell.setDraft('/goal الإصدار إصدار') })
     expect(shell.snapshot.phase).toBe('claimed')
     expect(textarea.style.getPropertyValue('--dsh-composer-hint')).toBe('')
   })
@@ -337,7 +337,7 @@ describe('matrix row: locked (session disabled)', () => {
   it('disables the textarea and chrome; the machine currency is untouched', () => {
     const { view, textarea, shell } = bench({ disabled: true })
     expect(textarea.getAttribute('aria-disabled')).toBe('true')
-    expect((view.getByLabelText('إضافة ملف أو استدعاء إشارة أمر') as HTMLButtonElement).disabled).toBe(true)
+    expect((view.getByLabelText('إضافة ملفات أو تشغيل أوامر') as HTMLButtonElement).disabled).toBe(true)
     expect(shell.snapshot.phase).toBe('plain')
   })
 

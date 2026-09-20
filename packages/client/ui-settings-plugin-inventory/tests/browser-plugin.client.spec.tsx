@@ -65,7 +65,7 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
     expect(entry.component).toBe(PluginInventorySettingsTab)
     expect(entry.options).toMatchObject({ id: 'all', order: 10 })
     expect(entry.locale).toBe(NS)
-    expect(resolveSlotLabel(entry.options.label)).toBe('إضافة قائمة')
+    expect(resolveSlotLabel(entry.options.label)).toBe('قائمة الإضافات')
     expect(b.list).not.toHaveBeenCalled()
 
     const injected = (entry.inject as unknown as () => PluginInventorySettingsTabInjected)()
@@ -82,8 +82,8 @@ describe('ui-settings-plugin-inventory browser plugin', () => {
 
     // Shipped preset names resolve over the agent-preset dictionaries the
     // real plugin registers; user-authored metadata stays untranslated.
-    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'النمط المعياري' } as never)
-    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('النمط المعياري')
+    b.locale.register('settings.agentPreset', 'ar', { presetStandardName: 'الوضع المعياري' } as never)
+    expect(injected.presetName({ id: 'standard', trust: 'system', isDefault: true, rows: [] })).toBe('الوضع المعياري')
     expect(injected.presetName({ id: 'mine', trust: 'user', name: 'أنا ذاتي ذات', isDefault: false, rows: [] })).toBe('أنا ذاتي ذات')
     await b.ctx.fiber.dispose()
   })

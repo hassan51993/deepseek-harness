@@ -2,15 +2,15 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'appearance.title': 'خارج مراقبة',
-  'appearance.light': 'ضحل لون',
-  'appearance.dark': 'عميق لون',
-  'appearance.system': 'تتبع مع نظام',
-  'fontSize.title': 'حرف رقم كبير صغير',
-  'fontSize.description': 'فقط أثر جلسة محتوى حرف رقم',
+  'appearance.title': 'المظهر',
+  'appearance.light': 'فاتح',
+  'appearance.dark': 'داكن',
+  'appearance.system': 'حسب النظام',
+  'fontSize.title': 'حجم الخط',
+  'fontSize.description': 'يؤثر في محتوى المحادثة فقط',
   'fontSize.unit': 'px',
-  'fontSize.increase': 'زيادة كبير حرف رقم',
-  'fontSize.decrease': 'نقص صغير حرف رقم',
+  'fontSize.increase': 'تكبير حجم الخط',
+  'fontSize.decrease': 'تصغير حجم الخط',
 } satisfies Record<string, string>
 
 /** The settings.theme namespace key union. */

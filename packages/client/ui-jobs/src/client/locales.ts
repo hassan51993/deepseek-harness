@@ -5,21 +5,21 @@ export const NS = 'job'
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'count.live.one': '{count} عدد خلفية مهمة تشغيل في',
-  'count.live.other': '{count} عدد خلفية مهمة تشغيل في',
-  'count.idle.one': '{count} عدد خلفية مهمة',
-  'count.idle.other': '{count} عدد خلفية مهمة',
-  'list.aria': 'خلفية مهمة',
-  'status.running': 'تشغيل في',
-  'status.stopping': 'جارٍ إيقاف',
-  'status.completed': 'اكتمل',
-  'status.killed': 'قد إلغاء',
-  'status.failed': 'قد فشل',
-  'duration.seconds': '{seconds}ثانية',
-  'duration.minutes': '{minutes}قسم{seconds}ثانية',
-  'duration.hours': '{hours}ساعة{minutes}قسم',
-  'duration.title.live': 'قد تشغيل {duration}',
-  'duration.title.done': 'استهلاك وقت {duration}',
+  'count.live.one': '{count} مهمة خلفية قيد التشغيل',
+  'count.live.other': '{count} مهام خلفية قيد التشغيل',
+  'count.idle.one': '{count} مهمة خلفية',
+  'count.idle.other': '{count} مهام خلفية',
+  'list.aria': 'مهام الخلفية',
+  'status.running': 'قيد التشغيل',
+  'status.stopping': 'جارٍ الإيقاف',
+  'status.completed': 'مكتملة',
+  'status.killed': 'ملغاة',
+  'status.failed': 'فاشلة',
+  'duration.seconds': '{seconds} ث',
+  'duration.minutes': '{minutes} د {seconds} ث',
+  'duration.hours': '{hours} س {minutes} د',
+  'duration.title.live': 'يعمل منذ {duration}',
+  'duration.title.done': 'استغرق {duration}',
 } as const
 
 /** English dictionary, key-identical to the Arabic source of truth. */

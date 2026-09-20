@@ -2,11 +2,11 @@
 
 /** Arabic dictionary and key-set source of truth. */
 export const ar = {
-  waiting: 'انتظار مراجعة دفعة',
-  'detail.aria': 'مراجعة دفعة تفصيل حال',
-  escalation: 'أداة {toolName} طلب تجاوز حق تنفيذ',
+  waiting: 'في انتظار الموافقة',
+  'detail.aria': 'تفاصيل الموافقة',
+  escalation: 'الأداة {toolName} تطلب تنفيذًا بصلاحيات مرتفعة',
   reject: 'رفض',
-  allowOnce: 'سماح مرة',
+  allowOnce: 'السماح مرة واحدة',
 } satisfies Record<string, string>
 
 /** Approval dictionary key union. */

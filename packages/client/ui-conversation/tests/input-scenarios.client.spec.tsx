@@ -109,7 +109,7 @@ function commandSource(
 }
 
 const COMMANDS: FakeCommand[] = [
-  { name: 'goal', description: 'ضبط تحديد هدف', input: { hint: 'هدف محتوى' } },
+  { name: 'goal', description: 'ضبط تحديد هدف', input: { hint: 'نص الهدف' } },
   { name: 'compact', description: 'ضغط سياق' },
   { name: 'vision', description: 'تعرف آخر صورة', input: { hint: 'تفكير سؤال ماذا', attachments: true } },
 ]
@@ -226,16 +226,16 @@ describe('scenario A: menu-pick /goal, type args, enter submits', () => {
     act(() => { b.shell.editor.update(() => {}, { discrete: true }) }) // flush the queued decoration refresh
     expect(b.view.container.querySelector('[data-lexical-text][style*="warn-label"]')?.textContent).toBe('/goal ')
     // The ar dictionary owns a hint.goal entry, which overrides the machine's raw hint (production behavior).
-    expect(b.textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('إدخال هدف، ذكي جسم سوف حمل متابعة تنفيذ'))
+    expect(b.textarea.style.getPropertyValue('--dsh-composer-hint')).toBe(JSON.stringify('صِف هدف مهمة طويلة'))
     // Continue typing args; hint drops; claim holds.
-    b.type('/goal إصدار v1')
+    b.type('/goal الإصدار v1')
     expect(b.shell.snapshot.phase).toBe('claimed')
     // Enter: submitting → command execute → commit clears.
     fireEvent.keyDown(b.textarea, { key: 'Enter' })
-    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal إصدار v1', []) })
+    await vi.waitFor(() => { expect(b.execute).toHaveBeenCalledWith('/goal الإصدار v1', []) })
     await vi.waitFor(() => { expect(b.shell.snapshot.draft).toBe('') })
     expect(b.shell.snapshot.phase).toBe('plain')
-    expect(b.view.getByText('قد تنفيذ /goal إصدار v1')).toBeTruthy()
+    expect(b.view.getByText('قد تنفيذ /goal الإصدار v1')).toBeTruthy()
     expect(b.sink).not.toHaveBeenCalled()
   })
 })
@@ -310,8 +310,8 @@ describe('scenario: images ride an accepting command through the real pipeline',
 })
 
 describe('scenario H: backspace breaks the token', () => {
-  it.each(['goal', 'هدف', 'plan', 'خطة', 'feedback', 'ملاحظات'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
-    const { source } = commandSource([{ name, description: name, input: { hint: 'هدف محتوى' } }],
+  it.each(['goal', 'هدف', 'plan', 'الخطة', 'feedback', 'ملاحظات'])('keeps /%s claimed when its arguments and separator are deleted', async (name) => {
+    const { source } = commandSource([{ name, description: name, input: { hint: 'نص الهدف' } }],
       () => Promise.resolve({ kind: 'success' }))
     const b = await scopedBench((triggers) => { triggers.registerSource(source) })
     b.type(`/${name}`)

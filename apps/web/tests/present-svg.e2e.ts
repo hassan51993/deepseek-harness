@@ -12,7 +12,7 @@ import {
   fixtureUserPrompts, launchWebScaffold, recordFixture, watchConsole,
   webSnapshotMode, type WebScaffold,
 } from './scaffold.ts'
-import { connectFreshWorkspaceAr, ZH_BROWSER_LOCALE } from './support.ts'
+import { connectFreshWorkspaceAr, AR_BROWSER_LOCALE } from './support.ts'
 
 const DIR = fileURLToPath(new URL('../../../snapshots/web/present-svg', import.meta.url))
 const FIXTURE = join(DIR, 'session.v3.jsonl')
@@ -45,7 +45,7 @@ describe('web e2e: requested SVG is explicitly delivered', () => {
     })
     browser = await chromium.launch()
     page = await browser.newPage({
-      viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
+      viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE, timezoneId: 'Asia/Shanghai',
     })
     tripwire = watchConsole(page)
     await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })

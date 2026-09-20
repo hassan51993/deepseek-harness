@@ -175,7 +175,7 @@ describe('TrajectoryTable', () => {
       />,
     )
 
-    expect(screen.getByText('2 عدد استدعاء الأداة · bash')).toBeTruthy()
+    expect(screen.getByText('2 استدعاءات أدوات · bash')).toBeTruthy()
   })
 
   it('shows assistant timing facts after keyboard selection', () => {
@@ -1040,7 +1040,7 @@ describe('TrajectoryTable', () => {
   })
 
   it.each([['English', t, 'Attachments', 'Image 1', 'Summary', 'Preview', 'Raw'],
-    ['Arabic', tAr, 'مرفق عنصر', 'صورة 1', 'عام وصف', 'معاينة', 'أصلي محتوى']] as const)(
+    ['Arabic', tAr, 'المرفقات', 'الصورة 1', 'الملخّص', 'معاينة', 'خام']] as const)(
     'keeps mixed attachments ordered and raw fields complete in %s',
     (_locale, translate, listLabel, imageLabel, summaryTab, previewTab, rawTab) => {
       const attachment = {

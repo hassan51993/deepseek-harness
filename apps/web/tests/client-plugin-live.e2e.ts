@@ -6,17 +6,17 @@ import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { chromium, type Page } from 'playwright'
 import { expect, it, onTestFailed, onTestFinished } from 'vitest'
 import { launchWebScaffold, watchConsole, captureStableAria, compareOrRefreshGolden, webSnapshotMode } from './scaffold.ts'
-import { saveFailureShot, ZH_BROWSER_LOCALE } from './support.ts'
+import { saveFailureShot, AR_BROWSER_LOCALE } from './support.ts'
 
 const FIXTURE = fileURLToPath(new URL('./fixtures/plugins/fixture-live-client', import.meta.url))
 const EXPECTED = fileURLToPath(new URL('./expected/client-plugin-live', import.meta.url))
 
 async function openInventory(page: Page, url: string) {
   await page.goto(url, { waitUntil: 'load' })
-  await page.getByRole('button', { name: 'ضبط', exact: true }).click()
-  const dialog = page.getByRole('dialog', { name: 'ضبط' })
-  await dialog.getByRole('button', { name: 'داخل وضع إضافة', exact: true }).click()
-  await dialog.getByRole('searchbox', { name: 'بحث إضافة' }).waitFor()
+  await page.getByRole('button', { name: 'الإعدادات', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'الإعدادات' })
+  await dialog.getByRole('button', { name: 'الإضافات المدمجة', exact: true }).click()
+  await dialog.getByRole('searchbox', { name: 'بحث في الإضافات' }).waitFor()
   return dialog
 }
 
@@ -27,8 +27,8 @@ it('synchronizes two pages, disposes effects and restores an offline page from t
   const host = scaffold.ctx.loader.ctx.fiber.uid
   const browser = await chromium.launch()
   try {
-    const context = await browser.newContext({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
-    const otherContext = await browser.newContext({ viewport: { width: 1680, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+    const context = await browser.newContext({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
+    const otherContext = await browser.newContext({ viewport: { width: 1680, height: 1000 }, locale: AR_BROWSER_LOCALE })
     const page = await context.newPage()
     const other = await otherContext.newPage()
     const consoles = [watchConsole(page), watchConsole(other)]
@@ -62,7 +62,7 @@ it('synchronizes two pages, disposes effects and restores an offline page from t
     await compareOrRefreshGolden(join(EXPECTED, 'enabled.expected.md'), await captureStableAria(page, '[data-live-client]', scaffold.workspaceCwd), webSnapshotMode())
 
     // The inventory filter is page-owned state that live composition must preserve.
-    const draft = otherInventory.getByRole('searchbox', { name: 'بحث إضافة' })
+    const draft = otherInventory.getByRole('searchbox', { name: 'بحث في الإضافات' })
     await draft.fill('unfinished-filter')
     await toggle()
     for (const target of [page, other]) {
@@ -109,7 +109,7 @@ it('keeps a failed client download local and retries without changing Host enabl
   const scaffold = await launchWebScaffold({ extraInstallAnchors: [join(FIXTURE, 'package.json')] })
   const browser = await chromium.launch()
   try {
-    const page = await browser.newPage({ locale: ZH_BROWSER_LOCALE })
+    const page = await browser.newPage({ locale: AR_BROWSER_LOCALE })
     onTestFailed(() => saveFailureShot(page, 'web-e2e-client-live-retry'))
     await openInventory(page, scaffold.authenticatedUrl)
     const bundle = (url: URL) => url.pathname.startsWith('/plugins/') && url.search.includes('@fixture/live-client/client.js')
@@ -121,7 +121,7 @@ it('keeps a failed client download local and retries without changing Host enabl
     expect(await page.locator('[data-live-client]').count()).toBe(0)
     expect(scaffold.ctx.clientModules.graph().entries.some(row => row.id === '@fixture/live-client')).toBe(true)
     await page.unroute(bundle)
-    await failure.getByRole('button', { name: 'إعادة محاولة هذا صفحة تزامن' }).click()
+    await failure.getByRole('button', { name: 'إعادة محاولة هذه الصفحة' }).click()
     await page.locator('[data-live-client]').waitFor()
     await expect.poll(() => failure.count()).toBe(0)
     expect(scaffold.ctx.loader.resolve(entryId).fiber?.state).toBe(2)
@@ -146,20 +146,20 @@ it('recovers an uncreated client entry with rebuilt factory code without navigat
   const host = scaffold.ctx.loader.ctx.fiber.uid
   const browser = await chromium.launch()
   try {
-    const page = await browser.newPage({ locale: ZH_BROWSER_LOCALE })
+    const page = await browser.newPage({ locale: AR_BROWSER_LOCALE })
     onTestFailed(() => saveFailureShot(page, 'web-e2e-client-factory-rebuild'))
     const inventory = await openInventory(page, scaffold.authenticatedUrl)
-    const draft = inventory.getByRole('searchbox', { name: 'بحث إضافة' })
+    const draft = inventory.getByRole('searchbox', { name: 'بحث في الإضافات' })
     await draft.fill('unfinished-filter')
     let navigations = 0
     page.on('framenavigated', () => { navigations++ })
     const entryId = await scaffold.ctx.loader.create({ name: '@fixture/live-client' })
     const failure = page.locator('[data-client-sync-failure]')
     await failure.getByText(/fixture r0 factory failed/).waitFor()
-    const rebuilt = source.replace('حركة حالة إضافة قد تفعيل', 'حركة حالة إضافة r1 قد تفعيل').replace('Live plugin enabled', 'Live plugin r1 enabled')
+    const rebuilt = source.replace('حركة حالة إضافة مفعّلة', 'حركة حالة إضافة r1 مفعّلة').replace('Live plugin enabled', 'Live plugin r1 enabled')
     await writeFile(file, rebuilt)
     scaffold.ctx.clientModules.rebuilt('@fixture/live-client')
-    await page.getByText('حركة حالة إضافة r1 قد تفعيل', { exact: true }).waitFor()
+    await page.getByText('حركة حالة إضافة r1 مفعّلة', { exact: true }).waitFor()
     await expect.poll(() => failure.count()).toBe(0)
     await compareOrRefreshGolden(join(EXPECTED, 'recovered.expected.md'), await captureStableAria(page, '[data-live-client]', scaffold.workspaceCwd), webSnapshotMode())
     expect(await draft.inputValue()).toBe('unfinished-filter')
@@ -179,11 +179,11 @@ it('reports bootstrap rebuilds without remounting the settings page or navigatin
   const host = scaffold.ctx.loader.ctx.fiber.uid
   const browser = await chromium.launch()
   try {
-    const page = await browser.newPage({ locale: ZH_BROWSER_LOCALE })
+    const page = await browser.newPage({ locale: AR_BROWSER_LOCALE })
     const console = watchConsole(page)
     onTestFailed(() => saveFailureShot(page, 'web-e2e-client-bootstrap-rebuild'))
     const inventory = await openInventory(page, scaffold.authenticatedUrl)
-    const draft = inventory.getByRole('searchbox', { name: 'بحث إضافة' })
+    const draft = inventory.getByRole('searchbox', { name: 'بحث في الإضافات' })
     await draft.fill('unfinished-filter')
     const originalInput = await draft.elementHandle()
     let navigations = 0
@@ -191,7 +191,7 @@ it('reports bootstrap rebuilds without remounting the settings page or navigatin
     scaffold.ctx.clientModules.rebuilt('@deepseek-ai/dsh-client-modules')
     const failure = page.locator('[data-client-sync-failure]')
     await failure.getByText(/replacing bootstrap module .* requires a page reload/).waitFor()
-    await failure.getByRole('button', { name: 'إعادة محاولة هذا صفحة تزامن' }).click()
+    await failure.getByRole('button', { name: 'إعادة محاولة هذه الصفحة' }).click()
     await failure.getByText(/replacing bootstrap module .* requires a page reload/).waitFor()
     await compareOrRefreshGolden(join(EXPECTED, 'bootstrap-rebuild.expected.md'), await captureStableAria(page, '[data-client-sync-failure]', scaffold.workspaceCwd), webSnapshotMode())
     expect(await originalInput!.evaluate(input => input.isConnected)).toBe(true)
@@ -212,7 +212,7 @@ it('removes the client UI and resources while Host cleanup is still pending', as
   const host = scaffold.ctx.loader.ctx.fiber.uid
   const browser = await chromium.launch()
   try {
-    const page = await browser.newPage({ locale: ZH_BROWSER_LOCALE })
+    const page = await browser.newPage({ locale: AR_BROWSER_LOCALE })
     await openInventory(page, scaffold.authenticatedUrl)
     let navigations = 0
     page.on('framenavigated', () => { navigations++ })

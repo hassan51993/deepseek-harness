@@ -98,7 +98,7 @@ describe('ui-settings-general apply', () => {
     const entry = generalEntry(c)
     expect(entry.options).toMatchObject({ id: 'general', order: 0 })
     // The nav label is a locale-following thunk; owners resolve at read time.
-    expect(generalLabel(c)).toBe('عام ضبط')
+    expect(generalLabel(c)).toBe('عام')
     expect(c.ctx.slots.spec('settings.general.item')).toEqual({ kind: 'list', scope: 'root' })
     // The General items and the onboarding steps are feature-owned rows; this plugin seats none of its own.
     expect(c.ctx.slots.entries('settings.general.item').filter(row => row.locale === NS)).toEqual([])
@@ -117,10 +117,10 @@ describe('ui-settings-general apply', () => {
     const english = localeView('en', 1)
     settings.mutate.mockResolvedValueOnce(ok(english))
     const t = c.ctx.locale.bind(NS)
-    expect(t('title')).toBe('ضبط')
-    expect(t('connection.error')).toBe('اتصال استثناء، تحديث جديد إعادة محاولة')
-    expect(t('connection.connecting')).toBe('إعادة اتصال في')
-    expect(t('connection.connected')).toBe('اتصال نجاح')
+    expect(t('title')).toBe('الإعدادات')
+    expect(t('connection.error')).toBe('انقطع الاتصال')
+    expect(t('connection.connecting')).toBe('جارٍ إعادة الاتصال')
+    expect(t('connection.connected')).toBe('متصل')
     c.ctx.locale.setLocale('en')
     expect(t('close')).toBe('Close')
     expect(t('connection.reconnect')).toBe('Disconnected, reconnect now')
@@ -156,7 +156,7 @@ describe('ui-settings-general apply', () => {
       expect(c.ctx.settingsScope.describe().getSnapshot().view?.namespaces).toEqual([english])
     })
     c.ctx.locale.setLocale('ar')
-    expect(generalLabel(c)).toBe('عام ضبط')
+    expect(generalLabel(c)).toBe('عام')
     await vi.waitFor(() => {
       expect(settings.mutate.mock.calls).toEqual([
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],
@@ -213,7 +213,7 @@ describe('ui-settings-general apply', () => {
     c.ctx.locale.setLocale('en')
     expect(generalLabel(c)).toBe('General')
     c.ctx.locale.setLocale('ar')
-    expect(generalLabel(c)).toBe('عام ضبط')
+    expect(generalLabel(c)).toBe('عام')
     await vi.waitFor(() => {
       expect(settings.mutate.mock.calls).toEqual([
         [LOCALE_SETTINGS_NAMESPACE, [{ op: 'set', path: ['preference'], value: 'en' }], 0],

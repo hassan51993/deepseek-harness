@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { chromium } from 'playwright'
 import { expect, it } from 'vitest'
 import { launchWebScaffold, captureStableAria, compareOrRefreshGolden, webSnapshotMode, watchConsole, type WebScaffold } from './scaffold.ts'
-import { ZH_BROWSER_LOCALE } from './support.ts'
+import { AR_BROWSER_LOCALE } from './support.ts'
 
 it('offers approval for blocked install scripts and installs once they are allowed', async () => {
   const scratch = await mkdtemp(join(tmpdir(), 'dsh-install-approve-'))
@@ -42,31 +42,31 @@ it('offers approval for blocked install scripts and installs once they are allow
         console.log('Built native-package');
         });
       `)
-      const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: ZH_BROWSER_LOCALE })
+      const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, locale: AR_BROWSER_LOCALE })
       const tripwire = watchConsole(page)
       await page.goto(scaffold.authenticatedUrl)
       await page.waitForSelector('[class*="frame"]')
-      if (await page.getByRole('dialog', { name: 'ضبط' }).count() > 0) await page.keyboard.press('Escape')
-      await page.getByRole('navigation', { name: 'عام وجه لوح' }).getByRole('button', { name: 'إضافة', exact: true }).click()
+      if (await page.getByRole('dialog', { name: 'الإعدادات' }).count() > 0) await page.keyboard.press('Escape')
+      await page.getByRole('navigation', { name: 'اللوحات العامة' }).getByRole('button', { name: 'إضافة', exact: true }).click()
       const panel = page.locator('[data-plugin-panel]')
       await panel.getByRole('button', { name: 'إضافة', exact: true }).click()
       const dialog = page.getByRole('dialog')
       await dialog.getByRole('textbox').fill('native-package')
       await dialog.getByRole('button', { name: 'تثبيت', exact: true }).click()
       // pnpm's refusal becomes the approval block, naming the package whose script waits; plain retry is not offered.
-      const approval = dialog.getByRole('group', { name: 'حاجة سماح تثبيت نص برمجي' })
+      const approval = dialog.getByRole('group', { name: 'نصوص التثبيت تحتاج إذنًا' })
       await approval.waitFor({ timeout: 20_000 })
       await expect.poll(() => approval.getByText('native-package', { exact: true }).count()).toBe(1)
-      expect(await dialog.getByRole('button', { name: 'إعادة محاولة', exact: true }).count()).toBe(0)
+      expect(await dialog.getByRole('button', { name: 'إعادة المحاولة', exact: true }).count()).toBe(0)
       expect(await readFile(policyPath, 'utf8')).toContain('native-package: set this to true or false')
       const snapshot = (await captureStableAria(page, '[role="dialog"]', scaffold.workspaceCwd))
         .split(process.execPath).join('{{node}}')
         .split(scaffold.harnessHome).join('{{harnessHome}}')
       await compareOrRefreshGolden(fileURLToPath(new URL('./expected/plugin-install-approve/blocked.expected.md', import.meta.url)), snapshot, webSnapshotMode())
-      await approval.getByRole('button', { name: 'سماح هذه نص برمجي و إعادة محاولة', exact: true }).click()
+      await approval.getByRole('button', { name: 'السماح بهذه النصوص وإعادة المحاولة', exact: true }).click()
       // The Host saved the permission before running pnpm again, and the installed screen says so.
-      await dialog.getByRole('button', { name: 'قيام أي تفعيل', exact: true }).waitFor({ timeout: 20_000 })
-      await dialog.getByText('قد سماح تشغيل تثبيت نص برمجي:native-package', { exact: true }).waitFor()
+      await dialog.getByRole('button', { name: 'تفعيلها الآن', exact: true }).waitFor({ timeout: 20_000 })
+      await dialog.getByText('سُمح بنصوص التثبيت لـ native-package', { exact: true }).waitFor()
       expect(await readFile(policyPath, 'utf8')).toMatch(/native-package: true/)
       expect(JSON.parse(await readFile(join(profile, 'package.json'), 'utf8'))).toMatchObject({ dependencies: { 'native-package': '1.0.0' } })
       expect(tripwire.pageErrors).toEqual([])

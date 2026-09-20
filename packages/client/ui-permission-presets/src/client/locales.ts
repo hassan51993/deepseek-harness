@@ -5,18 +5,18 @@ export const PERMISSION_ACCESS_NS = 'permission.access'
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'title': 'إذن',
-  'description': 'اختيار جلسة جديدة افتراضي إذن نمط',
-  'loading': 'تحميل في',
-  'unavailable': 'غير ممكن استخدام',
-  'preset.readOnly': 'فقط يمكن عرض',
-  'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
-  'preset.fullAccess': 'تماما إذن',
-  'confirm.title': 'تأكيد تفعيل تماما إذن؟',
-  'confirm.description': 'تفعيل تماما إذن بعد، جلسة جديدة سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة لاحق مهمة وقت استخدام.',
-  'confirm.acknowledge': 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
+  title: 'الأذونات',
+  description: 'اختر وضع الأذونات الافتراضي للجلسات الجديدة',
+  loading: 'جارٍ التحميل',
+  unavailable: 'غير متاح',
+  'preset.readOnly': 'قراءة فقط',
+  'preset.workspaceWrite': 'الكتابة في مساحة العمل',
+  'preset.fullAccess': 'وصول كامل',
+  'confirm.title': 'تفعيل الوصول الكامل؟',
+  'confirm.description': 'يتيح الوصول الكامل للجلسات الجديدة تقليل خطوات التأكيد وتنفيذ المزيد من الإجراءات مباشرةً، بما فيها العمليات الحسّاسة وتعديل الملفات والأوامر الخارجية. لا تستخدمه إلا إذا كنت تثق بالمهام التالية.',
+  'confirm.acknowledge': 'أدرك المخاطر وأريد المتابعة',
   'confirm.cancel': 'إلغاء',
-  'confirm.enable': 'تفعيل تماما إذن',
+  'confirm.enable': 'تفعيل الوصول الكامل',
 } satisfies Record<string, string>
 
 /** The settings.permission namespace key union. */
@@ -40,22 +40,22 @@ export const en = {
 
 /** Arabic dictionary for the current-session popup gate. */
 export const accessAr = {
-  'mode': 'وصول نمط، حالي:{name}',
+  'mode': 'وضع الوصول، الحالي: {name}',
   'close': 'إغلاق',
-  'preset.readOnly': 'فقط يمكن عرض',
-  'preset.workspaceWrite': 'مساحة العمل داخل تعديل',
-  'preset.fullAccess': 'تماما إذن',
-  'confirm.title': 'تأكيد تفعيل تماما إذن؟',
-  'confirm.description': 'تفعيل تماما إذن بعد، ذكي جسم سوف نقص قليل تأكيد خطوة، و كما يمكن مباشر تنفيذ أكثر كثير عملية، يشمل حساس شعور عملية، ملف تعديل أو خارجي أمر. فقط بناء اقتراح في أنت معلومة مهمة حالي مهمة وقت استخدام.',
-  'confirm.acknowledge': 'أنا قد حل ريح خطر، و رغبة معنى متابعة',
+  'preset.readOnly': 'قراءة فقط',
+  'preset.workspaceWrite': 'الكتابة في مساحة العمل',
+  'preset.fullAccess': 'وصول كامل',
+  'confirm.title': 'تفعيل الوصول الكامل؟',
+  'confirm.description': 'يقلّل الوصول الكامل خطوات التأكيد ويتيح للوكيل تنفيذ المزيد من الإجراءات مباشرةً، بما فيها العمليات الحسّاسة وتعديل الملفات والأوامر الخارجية. لا تستخدمه إلا إذا كنت تثق بالمهمة الحالية.',
+  'confirm.acknowledge': 'أدرك المخاطر وأريد المتابعة',
   'confirm.cancel': 'إلغاء',
-  'confirm.enable': 'تفعيل تماما إذن',
+  'confirm.enable': 'تفعيل الوصول الكامل',
   'auto.label': 'Auto review',
   'auto.badge': 'EXP',
-  'auto.description': 'بلا صندوق رملي تشغيل؛ كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل من نفس نموذج إجراء فعلي تحقق صفة مراجعة فحص.',
-  'auto.confirm.title': 'تأكيد تفعيل Auto review(فعلي تحقق) ؟',
-  'auto.confirm.description': 'Auto review لا استخدام صندوق رملي. كل مرة أصلي استدعاء الأداة و PTC داخل طبقة استدعاء قبل، كل سوف من و حالي agent نفسه نموذج إجراء مراجعة فحص. هذا وظيفة ما زال تابع فعلي تحقق صفة، ممكن خطأ وضع سطر أو خطأ رفض، و سوف إزالة استهلاك مقدار خارج token.',
-  'auto.confirm.acknowledge': 'أنا قد حل هذه ريح خطر، و رغبة معنى متابعة',
+  'auto.description': 'يعمل بلا عزل، بعد مراجعة تجريبية يجريها النموذج نفسه لكل استدعاء أداة أصلي ولكل استدعاء داخلي في PTC.',
+  'auto.confirm.title': 'تفعيل Auto review (تجريبي)؟',
+  'auto.confirm.description': 'يعمل Auto review بلا عزل. قبل كل استدعاء أداة أصلي وكل استدعاء داخلي في PTC، يراجع النموذج نفسه المستخدَم في الوكيل الحالي ما إذا كان يُسمح به. هذه الميزة تجريبية، وقد تسمح أو تمنع عن خطأ، وتستهلك رموزًا إضافية.',
+  'auto.confirm.acknowledge': 'أدرك هذه المخاطر وأريد المتابعة',
   'auto.confirm.enable': 'تفعيل Auto review',
 } satisfies Record<string, string>
 

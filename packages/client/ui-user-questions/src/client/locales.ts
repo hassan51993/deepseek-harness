@@ -2,21 +2,21 @@
 
 /** Arabic dictionary (the key-set source of truth). */
 export const ar = {
-  'error.incomplete': 'طلب أولا إتمام هذا طريق مشكلة.',
-  'error.unanswered': 'طلب اختيار واحد خيار أو ملء كتابة ذاتي تعريف جواب سجل.',
-  'nav.prev': 'فوق واحد عنوان',
-  'nav.next': 'تحت واحد عنوان',
-  'nav.minimize': 'طي مشكلة بطاقة',
-  'nav.maximize': 'توسيع مشكلة بطاقة',
-  'nav.cancel': 'وضع ترك كامل مجموعة مشكلة',
-  'option.recommended': 'دفع ترشيح',
-  'custom.placeholder': 'إدخال أنت جواب سجل',
-  'action.skip': 'قفز مرور',
-  'action.next': 'تحت واحد عنوان',
-  'plan.header': 'خطة انتظار مراجعة',
-  'plan.approve': 'نفس معنى تنفيذ',
+  'error.incomplete': 'أكمِل هذا السؤال أولًا.',
+  'error.unanswered': 'اختر أحد الخيارات أو اكتب إجابة خاصة بك.',
+  'nav.prev': 'السؤال السابق',
+  'nav.next': 'السؤال التالي',
+  'nav.minimize': 'طي بطاقة السؤال',
+  'nav.maximize': 'توسيع بطاقة السؤال',
+  'nav.cancel': 'تجاهل كل الأسئلة',
+  'option.recommended': 'موصى به',
+  'custom.placeholder': 'اكتب إجابتك',
+  'action.skip': 'تخطّي',
+  'action.next': 'التالي',
+  'plan.header': 'مراجعة الخطة',
+  'plan.approve': 'موافقة',
   'plan.decline': 'رفض',
-  'plan.discuss': 'اشتراط تعديل',
+  'plan.discuss': 'طلب تعديلات',
 } satisfies Record<string, string>
 
 /** The question namespace key union. */

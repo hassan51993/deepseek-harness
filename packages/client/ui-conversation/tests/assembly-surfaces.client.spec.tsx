@@ -242,7 +242,7 @@ describe('title projection across assembled surfaces', () => {
   it('one summary update re-labels the current-session crumb', async () => {
     const runtime = await bench()
     const view = runtime.renderRoot()
-    const hierarchy = view.getByRole('navigation', { name: 'جلسة طبقة درجة' })
+    const hierarchy = view.getByRole('navigation', { name: 'تسلسل الجلسات' })
     expect(within(hierarchy).getByRole('button', { name: 'S' }).hasAttribute('disabled')).toBe(true)
 
     await runtime.sessions.updateSummary(SID, { displayTitle: 'إصلاح حجز عنوان', title: 'إصلاح حجز عنوان' })

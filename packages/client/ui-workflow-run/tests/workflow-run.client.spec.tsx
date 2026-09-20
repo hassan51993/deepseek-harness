@@ -378,7 +378,7 @@ describe('WorkflowRunPanel', () => {
     fireEvent.keyDown(runHeader, { key: ' ' })
     const updatedPhase = screen.getByRole('button', { name: /Research/ })
     expect(updatedPhase.getAttribute('aria-expanded')).toBe('false')
-    expect(screen.getByText('تشغيل في 2')).toBeTruthy()
+    expect(screen.getByText('قيد التشغيل 2')).toBeTruthy()
     fireEvent.keyDown(updatedPhase, { key: 'Enter' })
     expect(screen.getByText('worker')).toBeTruthy()
     expect(screen.getByText('second')).toBeTruthy()
@@ -395,7 +395,7 @@ describe('WorkflowRunPanel', () => {
       name: 'audit', status: 'running', phases: [phase()],
     }
     const view = render(<WorkflowRunPanel {...panelProps(running)} />)
-    const runningPhase = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const runningPhase = screen.getByRole('button', { name: /بلا مرحلة/ })
     fireEvent.click(runningPhase)
     fireEvent.keyDown(runningPhase, { key: 'Enter' })
     expect(screen.getByText('worker')).toBeTruthy()
@@ -409,7 +409,7 @@ describe('WorkflowRunPanel', () => {
       })],
     }
     view.rerender(<WorkflowRunPanel {...panelProps(phaseCompleted)} />)
-    const phaseHeader = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const phaseHeader = screen.getByRole('button', { name: /بلا مرحلة/ })
     expect(phaseHeader.getAttribute('aria-expanded')).toBe('false')
     expect(screen.queryByText('done')).toBeNull()
     fireEvent.click(phaseHeader)
@@ -426,7 +426,7 @@ describe('WorkflowRunPanel', () => {
     view.rerender(<WorkflowRunPanel {...panelProps(cleanUpdate)} />)
     expect(screen.getByText('reviewed')).toBeTruthy()
 
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
     const runHeader = screen.getByRole('button', { name: /^audit/ })
     fireEvent.click(runHeader)
     const renewed: WorkflowRunChatData = {
@@ -440,7 +440,7 @@ describe('WorkflowRunPanel', () => {
     }
     view.rerender(<WorkflowRunPanel {...panelProps(renewed)} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('true')
     expect(screen.getByText('new')).toBeTruthy()
 
     const renewedPhaseCompleted: WorkflowRunChatData = {
@@ -454,8 +454,8 @@ describe('WorkflowRunPanel', () => {
     }
     view.rerender(<WorkflowRunPanel {...panelProps(renewedPhaseCompleted)} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('false')
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
 
     view.rerender(<WorkflowRunPanel {...panelProps({
       ...renewedPhaseCompleted,
@@ -463,7 +463,7 @@ describe('WorkflowRunPanel', () => {
     })} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('true')
   })
 
   it('refolds a phase when a complete activity cycle arrives as one clean update', () => {
@@ -475,7 +475,7 @@ describe('WorkflowRunPanel', () => {
       phases: [phase({ members: [firstMember] })],
     }
     const phaseView = render(<WorkflowRunPanel {...panelProps(phaseClean)} />)
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
     expect(screen.getByText('first')).toBeTruthy()
     const runHeader = screen.getByRole('button', { name: /^phase-cycle/ })
     fireEvent.click(runHeader)
@@ -487,7 +487,7 @@ describe('WorkflowRunPanel', () => {
       }] })],
     })} />)
     expect(runHeader.getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('false')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
     expect(screen.queryByText('first')).toBeNull()
     expect(screen.queryByText('second')).toBeNull()
 
@@ -501,7 +501,7 @@ describe('WorkflowRunPanel', () => {
       }] })],
     })} />)
     expect(runHeader.getAttribute('aria-expanded')).toBe('false')
-    expect(screen.queryByRole('button', { name: /لم قسم مرحلة مقطع/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /بلا مرحلة/ })).toBeNull()
   })
 
   it('initializes a newly observed phase before it becomes interactive', () => {
@@ -530,13 +530,13 @@ describe('WorkflowRunPanel', () => {
     const running: WorkflowRunChatData = { name: 'empty', status: 'running', phases: [] }
     const view = render(<WorkflowRunPanel {...panelProps(running)} />)
     expect(screen.getByRole('button', { name: /^empty/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByText('لا يوجد بدء عضو')).toBeTruthy()
+    expect(screen.getByText('لم يبدأ أي عضو')).toBeTruthy()
     view.rerender(<WorkflowRunPanel {...panelProps({ ...running, status: 'completed' })} />)
     const header = screen.getByRole('button', { name: /^empty/ })
     expect(header.getAttribute('aria-expanded')).toBe('false')
-    expect(screen.queryByText('لا يوجد بدء عضو')).toBeNull()
+    expect(screen.queryByText('لم يبدأ أي عضو')).toBeNull()
     fireEvent.click(header)
-    expect(screen.getByText('لا يوجد بدء عضو')).toBeTruthy()
+    expect(screen.getByText('لم يبدأ أي عضو')).toBeTruthy()
   })
 
   it.each(['failed', 'cancelled', 'interrupted'] as const)(
@@ -549,7 +549,7 @@ describe('WorkflowRunPanel', () => {
         })],
       })} />)
       const runHeader = screen.getByRole('button', { name: /^member-outcome/ })
-      const phaseHeader = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+      const phaseHeader = screen.getByRole('button', { name: /بلا مرحلة/ })
       expect(runHeader.getAttribute('aria-expanded')).toBe('true')
       expect(phaseHeader.getAttribute('aria-expanded')).toBe('true')
       expect(screen.getByText(status)).toBeTruthy()
@@ -564,7 +564,7 @@ describe('WorkflowRunPanel', () => {
       name: 'audit', status: 'running', phases: [phase()],
     }
     const view = render(<WorkflowRunPanel {...panelProps(running)} />)
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
 
     const failed: WorkflowRunChatData = {
@@ -575,8 +575,8 @@ describe('WorkflowRunPanel', () => {
     }
     view.rerender(<WorkflowRunPanel {...panelProps(failed)} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('true')
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('true')
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
 
     view.rerender(<WorkflowRunPanel {...panelProps({
@@ -590,8 +590,8 @@ describe('WorkflowRunPanel', () => {
     })} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('false')
-    expect(screen.getByText('فشل 1 · قد إلغاء 1')).toBeTruthy()
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
+    expect(screen.getByText('فاشل 1 · ملغى 1')).toBeTruthy()
   })
 
   it('keeps clean sibling phases independent and preserves empty versus absent names', () => {
@@ -608,24 +608,24 @@ describe('WorkflowRunPanel', () => {
     })} />)
     const runHeader = screen.getByRole('button', { name: /^audit/ })
     expect(runHeader.getAttribute('aria-expanded')).toBe('true')
-    const cleanPhase = screen.getByRole('button', { name: /فارغ مرحلة مقطع اسم/ })
+    const cleanPhase = screen.getByRole('button', { name: /اسم مرحلة فارغ/ })
     expect(cleanPhase.getAttribute('aria-expanded')).toBe('false')
-    const activePhase = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const activePhase = screen.getByRole('button', { name: /بلا مرحلة/ })
     expect(activePhase.getAttribute('aria-expanded')).toBe('true')
-    expect(screen.queryByText('فارغ عضو اسم')).toBeNull()
+    expect(screen.queryByText('اسم عضو فارغ')).toBeNull()
     expect(screen.getByText('second')).toBeTruthy()
     fireEvent.click(cleanPhase)
-    expect(screen.getByText('فارغ عضو اسم')).toBeTruthy()
+    expect(screen.getByText('اسم عضو فارغ')).toBeTruthy()
     expect(screen.getByText('second')).toBeTruthy()
     fireEvent.click(activePhase)
     expect(screen.queryByText('second')).toBeNull()
-    expect(screen.getByText('فارغ عضو اسم')).toBeTruthy()
+    expect(screen.getByText('اسم عضو فارغ')).toBeTruthy()
     fireEvent.click(runHeader)
     fireEvent.click(runHeader)
-    expect(screen.getByRole('button', { name: /فارغ مرحلة مقطع اسم/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('false')
-    fireEvent.click(screen.getByRole('button', { name: /فارغ مرحلة مقطع اسم/ }))
-    expect(screen.queryByText('فارغ عضو اسم')).toBeNull()
+    expect(screen.getByRole('button', { name: /اسم مرحلة فارغ/ }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(screen.getByRole('button', { name: /اسم مرحلة فارغ/ }))
+    expect(screen.queryByText('اسم عضو فارغ')).toBeNull()
   })
 
   it('renders mixed and interrupted aggregate status while attention stays visible', () => {
@@ -639,7 +639,7 @@ describe('WorkflowRunPanel', () => {
       })],
     }
     const mixedView = render(<WorkflowRunPanel {...panelProps(mixed)} />)
-    expect(screen.getByText('فشل 1 · قد إلغاء 1')).toBeTruthy()
+    expect(screen.getByText('فاشل 1 · ملغى 1')).toBeTruthy()
     expect([...mixedView.container.querySelectorAll('[data-member-status]')]
       .map(row => row.getAttribute('data-member-status'))).toEqual(['failed', 'cancelled'])
     expect(mixedView.container.querySelectorAll('[data-state="error"]')).toHaveLength(2)
@@ -655,7 +655,7 @@ describe('WorkflowRunPanel', () => {
         ],
       })],
     })} />)
-    expect(screen.getByText('اكتمل 1 · قد في قطع 1')).toBeTruthy()
+    expect(screen.getByText('مكتمل 1 · مقطوع 1')).toBeTruthy()
     expect(interruptedView.container.querySelector('[data-run-status="interrupted"]')).toBeTruthy()
     expect(interruptedView.container.querySelectorAll('[data-state="warning"]')).toHaveLength(2)
   })
@@ -683,7 +683,7 @@ describe('WorkflowRunPanel', () => {
     const member = screen.getByRole('button', { name: 'فتح worker' })
     const second = screen.getByRole('button', { name: 'فتح second' })
     const runHeader = screen.getByRole('button', { name: /^audit/ })
-    const phaseHeader = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const phaseHeader = screen.getByRole('button', { name: /بلا مرحلة/ })
     member.focus()
     expect(document.activeElement).toBe(member)
     fireEvent.blur(member, { relatedTarget: second })
@@ -719,7 +719,7 @@ describe('WorkflowRunPanel', () => {
     expect(document.activeElement).toBe(outside)
     expect(runHeader.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(runHeader)
-    const completedPhase = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const completedPhase = screen.getByRole('button', { name: /بلا مرحلة/ })
     expect(completedPhase.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(completedPhase)
     expect(screen.queryByRole('button', { name: 'فتح worker' })).toBeNull()
@@ -741,7 +741,7 @@ describe('WorkflowRunPanel', () => {
       })],
     })} />)
     const retained = screen.getByRole('button', { name: 'worker' })
-    const phaseHeader = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const phaseHeader = screen.getByRole('button', { name: /بلا مرحلة/ })
     const runHeader = screen.getByRole('button', { name: /^audit/ })
 
     expect(fireEvent.mouseDown(retained)).toBe(true)
@@ -770,7 +770,7 @@ describe('WorkflowRunPanel', () => {
       })],
     })} />)
     const retained = screen.getByRole('button', { name: 'worker' })
-    const phaseHeader = screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ })
+    const phaseHeader = screen.getByRole('button', { name: /بلا مرحلة/ })
     const runHeader = screen.getByRole('button', { name: /^audit/ })
     fireEvent.blur(retained, { relatedTarget: phaseHeader })
     phaseHeader.focus()
@@ -804,11 +804,11 @@ describe('WorkflowRunPanel', () => {
       })],
     })} />)
     const runHeader = screen.getByRole('button', { name: /^audit/ })
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('true')
     fireEvent.click(runHeader)
     expect(runHeader.getAttribute('aria-expanded')).toBe('false')
     fireEvent.click(runHeader)
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('false')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('false')
   })
 
   it('reinitializes manual choices from durable facts after a renderer remount', () => {
@@ -816,12 +816,12 @@ describe('WorkflowRunPanel', () => {
       name: 'audit', status: 'running', phases: [phase()],
     }
     const view = render(<WorkflowRunPanel {...panelProps(data)} />)
-    fireEvent.click(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }))
+    fireEvent.click(screen.getByRole('button', { name: /بلا مرحلة/ }))
     fireEvent.click(screen.getByRole('button', { name: /^audit/ }))
     view.unmount()
     render(<WorkflowRunPanel {...panelProps(data)} />)
     expect(screen.getByRole('button', { name: /^audit/ }).getAttribute('aria-expanded')).toBe('true')
-    expect(screen.getByRole('button', { name: /لم قسم مرحلة مقطع/ }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: /بلا مرحلة/ }).getAttribute('aria-expanded')).toBe('true')
   })
 
   it('opens only a running ordinary-list subagent proven to have this parent', () => {

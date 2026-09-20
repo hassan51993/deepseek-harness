@@ -247,7 +247,7 @@ describe('FileMutationRow diff card', () => {
     expect(view.getByText('+1 -0')).toBeTruthy()
     // The footer counts live inside the collapsed diff card.
     toggleRow(view)
-    expect(view.getByText('└ +1 -0 · 1 عدد ملف')).toBeTruthy()
+    expect(view.getByText('└ +1 -0 · 1 ملف')).toBeTruthy()
   })
 
   it('reflects the run state on its leading slot', () => {
@@ -301,7 +301,7 @@ describe('FileMutationRow diff card', () => {
     expect(view.container.querySelector('[data-state="stopped"]')).not.toBeNull()
     // The amber StateDot is aria-hidden, so ToolRow carries the state to AT as
     // visually-hidden text; without it a stopped row is a colour-only signal.
-    expect(view.getByText('قد إيقاف')).toBeTruthy()
+    expect(view.getByText('توقّف')).toBeTruthy()
   })
 
   it('renders a plain summary span when the call carries no file path', () => {

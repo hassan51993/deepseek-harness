@@ -54,7 +54,7 @@ function providePresentation(ctx: Context): PresentationCapture {
       return () => { capture.localeDisposed = true }
     },
     // Minimal bound-translate fake: ar dictionary lookup, key passthrough on miss.
-    bind: () => (key: string) => key === 'menu.userOnly' ? 'فقط مستخدم' : key,
+    bind: () => (key: string) => key === 'menu.userOnly' ? 'للمستخدم فقط' : key,
   })
   return capture
 }
@@ -125,13 +125,13 @@ describe('apply', () => {
     expect(presentation.dictionaries).toEqual([{
       namespace: 'skill', dictionaries: {
         ar: {
-          'row.title': 'Skill',
-          'row.running': 'جارٍ تحميل skill',
-          'row.failed': 'skill تحميل فشل',
-          'row.stopped': 'skill تحميل قد في توقف',
-          'row.instructions': 'شرح',
-          'row.inspect': 'عرض',
-          'menu.userOnly': 'فقط مستخدم',
+          'row.title': 'مهارة',
+          'row.running': 'جارٍ تحميل المهارة',
+          'row.failed': 'تعذّر تحميل المهارة',
+          'row.stopped': 'توقّف تحميل المهارة',
+          'row.instructions': 'التعليمات',
+          'row.inspect': 'فحص',
+          'menu.userOnly': 'للمستخدم فقط',
         },
         en: {
           'row.title': 'Skill',
@@ -386,7 +386,7 @@ describe('user-only marking', () => {
     const candidates = await source.candidates(proj('s1'), req(''))
     expect(candidates).toEqual([
       { name: 'shared-skill', description: 'both surfaces' },
-      { name: 'user-only-skill', description: 'فقط مستخدم · user surface only' },
+      { name: 'user-only-skill', description: 'للمستخدم فقط · user surface only' },
     ])
   })
 })

@@ -148,9 +148,9 @@ describe('CodeBlock', () => {
     await act(async () => {
       await Promise.resolve()
     })
-    expect(screen.getByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تم النسخ' })).toBeTruthy()
     // While the ok label is showing, further clicks are no-ops.
-    fireEvent.click(screen.getByRole('button', { name: 'نسخ نجاح' }))
+    fireEvent.click(screen.getByRole('button', { name: 'تم النسخ' }))
     expect(writeText).toHaveBeenCalledTimes(1)
     await vi.advanceTimersByTimeAsync(1000)
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
@@ -168,7 +168,7 @@ describe('CodeBlock', () => {
       await Promise.resolve()
     })
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(screen.queryByRole('button', { name: 'نسخ نجاح' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'تم النسخ' })).toBeNull()
   })
 
   it('falls back to execCommand when clipboard.writeText is unavailable', async () => {
@@ -184,7 +184,7 @@ describe('CodeBlock', () => {
     render(<CodeBlock code="plain body" />)
     fireEvent.click(screen.getByRole('button', { name: 'نسخ' }))
     expect(exec).toHaveBeenCalledWith('copy')
-    expect(await screen.findByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'تم النسخ' })).toBeTruthy()
   })
 
   it('does not claim success when execCommand throws or is absent', async () => {
@@ -212,6 +212,6 @@ describe('CodeBlock', () => {
     fireEvent.click(absent.getByRole('button', { name: 'نسخ' }))
     await Promise.resolve()
     expect(absent.getByRole('button', { name: 'نسخ' })).toBeTruthy()
-    expect(absent.queryByRole('button', { name: 'نسخ نجاح' })).toBeNull()
+    expect(absent.queryByRole('button', { name: 'تم النسخ' })).toBeNull()
   })
 })

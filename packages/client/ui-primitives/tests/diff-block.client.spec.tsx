@@ -193,20 +193,20 @@ describe('DiffBlock height cap', () => {
     // The path header counts as a row, so a body of maxLines added lines plus
     // the header is one over the cap.
     const { container } = render(<DiffBlock diffs={diffs} />)
-    const toggle = screen.getByRole('button', { name: /توسيع ذلك بقية/ })
+    const toggle = screen.getByRole('button', { name: /^توسيع \d+ سطر فروق إضافي$/ })
     expect(toggle.getAttribute('aria-expanded')).toBe('false')
     // Collapsed shows fewer rows than the full body.
     const collapsedCount = bodyRows(container).length
     expect(collapsedCount).toBeLessThan(DEFAULT_DIFF_MAX_LINES + 1)
     fireEvent.click(toggle)
-    expect(screen.getByRole('button', { name: 'طي فرق مختلف' }).getAttribute('aria-expanded')).toBe('true')
+    expect(screen.getByRole('button', { name: 'طي الفروق' }).getAttribute('aria-expanded')).toBe('true')
     expect(bodyRows(container).length).toBeGreaterThan(collapsedCount)
   })
 
   it('shows no expand control at or under the cap', () => {
     const diffs: DiffHunk[] = [{ path: 'a.ts', oldText: null, newText: added(4) }]
     render(<DiffBlock diffs={diffs} maxLines={16} />)
-    expect(screen.queryByRole('button', { name: /توسيع ذلك بقية|طي فرق مختلف/ })).toBeNull()
+    expect(screen.queryByRole('button', { name: /^توسيع \d+ سطر فروق إضافي$|طي الفروق/ })).toBeNull()
   })
 })
 
@@ -224,7 +224,7 @@ describe('DiffBlock copy', () => {
     await act(async () => { fireEvent.click(copy) })
     // Path header, del/add prefixes, and the same-file gap all reach the clipboard.
     expect(writeText).toHaveBeenCalledWith('a.ts\n- old\n+ new\n⋯\n- p\n+ q')
-    expect(screen.getByRole('button', { name: 'نسخ نجاح' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'تم النسخ' })).toBeTruthy()
     await act(async () => { await vi.advanceTimersByTimeAsync(1000) })
     expect(screen.getByRole('button', { name: 'نسخ' })).toBeTruthy()
   })
@@ -247,7 +247,7 @@ describe('DiffBlock copy', () => {
     render(<DiffBlock diffs={[{ path: 'a.ts', oldText: null, newText: 'x' }]} />)
     const copy = screen.getByRole('button', { name: 'نسخ' })
     await act(async () => { fireEvent.click(copy) })
-    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'نسخ نجاح' })) })
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'تم النسخ' })) })
     expect(writeText).toHaveBeenCalledTimes(1)
   })
 })

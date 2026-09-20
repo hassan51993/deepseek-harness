@@ -48,10 +48,10 @@ describe('web e2e: Desktop update workspace chrome', () => {
           await page.goto(scaffold.authenticatedUrl, { waitUntil: 'load' })
           await page.waitForSelector('[class*="frame"]')
           await expect.poll(() => page.evaluate(() => (window as FixtureWindow).updateFixture.listeners.size)).toBe(1)
-          const availableLabel = locale === 'ar-SA' ? 'جديد إصدار' : 'Update'
-          const retryLabel = locale === 'ar-SA' ? 'إعادة محاولة تحديث' : 'Retry update'
-          const errorDetail = locale === 'ar-SA' ? 'تحت تحميل تحديث فشل، طلب إعادة محاولة.' : 'Could not download the update. Please try again.'
-          const readyLabel = locale === 'ar-SA' ? 'تثبيت و إعادة بدء' : 'Install and Restart'
+          const availableLabel = locale === 'ar-SA' ? 'تحديث' : 'Update'
+          const retryLabel = locale === 'ar-SA' ? 'إعادة محاولة التحديث' : 'Retry update'
+          const errorDetail = locale === 'ar-SA' ? 'تعذّر تنزيل التحديث. حاول مرة أخرى.' : 'Could not download the update. Please try again.'
+          const readyLabel = locale === 'ar-SA' ? 'التثبيت وإعادة التشغيل' : 'Install and Restart'
           const version = '0.1.5-nightly.20260911'
           // The carrier classification deliberately uses English shell copy; Web copy follows its own locale.
           const available = presentDesktopUpdate({ phase: 'available', version }, en)

@@ -154,18 +154,18 @@ describe('SettingsRoot trigger', () => {
     const presentation = { phase: 'installing' as const, version: '1.0.1' }
     const f = mount({ dictionary: ar, connectionState: 'connecting',
       desktopUpdate: { failed: false, opening: false, presentation } })
-    expect(screen.getByRole('button', { name: 'جارٍ دقيق تجهيز إعادة بدء…' })).toBeTruthy()
-    expect(screen.queryByText('إعادة اتصال في')).toBeNull()
+    expect(screen.getByRole('button', { name: 'جارٍ التحضير لإعادة التشغيل…' })).toBeTruthy()
+    expect(screen.queryByText('جارٍ إعادة الاتصال')).toBeNull()
     f.setDesktopUpdate({ failed: false, opening: false,
       presentation: { phase: 'error', version: presentation.version, failure: 'install' } })
-    expect(screen.queryByRole('button', { name: 'إعادة محاولة تحديث' })).toBeNull()
-    expect(screen.getByText('إعادة اتصال في')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'إعادة محاولة التحديث' })).toBeNull()
+    expect(screen.getByText('جارٍ إعادة الاتصال')).toBeTruthy()
   })
   it.each([
     { column: 'expanded English', wide: true, dictionary: en, name: 'Settings' },
     { column: 'collapsed English', wide: false, dictionary: en, name: 'Settings' },
-    { column: 'expanded Arabic', wide: true, dictionary: ar, name: 'ضبط' },
-    { column: 'collapsed Arabic', wide: false, dictionary: ar, name: 'ضبط' },
+    { column: 'expanded Arabic', wide: true, dictionary: ar, name: 'الإعدادات' },
+    { column: 'collapsed Arabic', wide: false, dictionary: ar, name: 'الإعدادات' },
   ])('uses the locale name and accepts keyboard-style activation for the $column trigger', ({
     wide, dictionary, name,
   }) => {
@@ -216,21 +216,21 @@ describe('SettingsRoot trigger', () => {
     vi.useFakeTimers()
     const mounted = mount({ dictionary: ar })
     mounted.setConnectionState('connecting')
-    const attempt = screen.getByRole('button', { name: 'اتصال في قطع، جارٍ إعادة محاولة، نقر قيام أي إعادة وصل' })
-    expect(attempt.textContent).toContain('إعادة اتصال في')
+    const attempt = screen.getByRole('button', { name: 'جارٍ إعادة الاتصال، أعِد الاتصال الآن' })
+    expect(attempt.textContent).toContain('جارٍ إعادة الاتصال')
     fireEvent.click(attempt)
     expect(mounted.reconnect).toHaveBeenCalledOnce()
-    expect(attempt.textContent).toContain('إعادة اتصال في')
+    expect(attempt.textContent).toContain('جارٍ إعادة الاتصال')
     // An attempt that resolves mid-hold keeps its label until the hold ends.
     act(() => { vi.advanceTimersByTime(100) })
     mounted.setConnectionState('connected')
-    expect(screen.getByRole('button', { name: 'اتصال في قطع، جارٍ إعادة محاولة، نقر قيام أي إعادة وصل' }).textContent)
-      .toContain('إعادة اتصال في')
+    expect(screen.getByRole('button', { name: 'جارٍ إعادة الاتصال، أعِد الاتصال الآن' }).textContent)
+      .toContain('جارٍ إعادة الاتصال')
     act(() => { vi.advanceTimersByTime(700) })
-    expect(screen.getByRole('status', { name: 'اتصال نجاح' })).toBeTruthy()
+    expect(screen.getByRole('status', { name: 'متصل' })).toBeTruthy()
     // The full two-second confirmation follows the delayed appearance.
     act(() => { vi.advanceTimersByTime(1_999) })
-    expect(screen.getByRole('status', { name: 'اتصال نجاح' })).toBeTruthy()
+    expect(screen.getByRole('status', { name: 'متصل' })).toBeTruthy()
     act(() => { vi.advanceTimersByTime(1) })
     act(() => { vi.advanceTimersByTime(150) })
     expect(screen.queryByRole('status')).toBeNull()

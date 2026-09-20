@@ -71,8 +71,8 @@ describe('TranscriptViewRow', () => {
 
   it('shows the conversation-display values in Arabic', () => {
     mount('compact', ar)
-    fireEvent.click(screen.getByRole('button', { name: 'ضيق تجميع' }))
-    fireEvent.click(screen.getByRole('menuitem', { name: 'معيار' }))
-    expect(screen.getByRole('button', { name: 'معيار' })).toBeDefined()
+    fireEvent.click(screen.getByRole('button', { name: 'مضغوط' }))
+    fireEvent.click(screen.getByRole('menuitem', { name: 'عادي' }))
+    expect(screen.getByRole('button', { name: 'عادي' })).toBeDefined()
   })
 })

@@ -115,13 +115,13 @@ describe('todo_write assembly (product registrations, no outlet twins)', () => {
     // Keyed toolview registration took the row (summary derived from args).
     const row = view.container.querySelector('[data-tool="todo_write"]')
     expect(row).not.toBeNull()
-    expect(row!.textContent).toContain('1/3 اكتمل · تنفيذ fixture مثال هذا')
+    expect(row!.textContent).toContain('1/3 مكتملة · تنفيذ fixture مثال هذا')
 
     // The plan strip sits in the input dock, fed by the projection
     // (default-collapsed: the header summary shows; rows appear on expand).
     const panel = view.container.querySelector('[data-testid="todo-panel"]')
     expect(panel).not.toBeNull()
-    expect(panel!.textContent).toContain('1 اكتمل\u2002·\u20021 إجراء في\u2002·\u20021 انتظار معالجة')
+    expect(panel!.textContent).toContain('1 مكتملة\u2002·\u20021 قيد التنفيذ\u2002·\u20021 معلّقة')
     fireEvent.click(panel!.querySelector('button')!)
     expect([...panel!.querySelectorAll('li')].map(li => li.getAttribute('data-status')))
       .toEqual(['completed', 'in_progress', 'pending'])

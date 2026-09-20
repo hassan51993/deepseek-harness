@@ -903,7 +903,7 @@ describe('resync', () => {
 describe('snapshot ownership', () => {
   it('publishes event-window appends without changing an unrelated Session snapshot', async ({ mock, start }) => {
     const session = await sessionBench(mock, start, SID)
-    mock.stream(FOLLOW, followScript(history(plainTurn(SessionSeq(0), 0, 'مستقر', 'تحديد'))))
+    mock.stream(FOLLOW, followScript(history(plainTurn(SessionSeq(0), 0, 'مستقر', 'موافق'))))
     await session.open()
     const sessionBefore = session.getSnapshot()
     const windowBefore = session.eventSource.getSnapshot()

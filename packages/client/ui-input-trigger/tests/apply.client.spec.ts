@@ -54,7 +54,7 @@ describe('apply', () => {
     const { ctx, locale } = await bench()
     await ctx.plugin({ inject: [...inject], apply }).await()
     const t = locale.bind('slash.menu')
-    expect(t('command')).toBe('إشارة أمر')
+    expect(t('command')).toBe('الأوامر')
     locale.setLocale('en')
     expect(t('skill')).toBe('Skills')
     expect(t('subagent')).toBe('Subagents')

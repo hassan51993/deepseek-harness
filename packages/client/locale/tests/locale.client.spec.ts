@@ -54,11 +54,11 @@ describe('LocaleRuntime', () => {
     const { svc } = make()
     // The shipped common pair is registered by apply; the bench registers it
     // directly to pin the production chain: ns -> common -> en -> key.
-    svc.register('common', 'ar', { retry: 'إعادة محاولة' })
+    svc.register('common', 'ar', { retry: 'إعادة المحاولة' })
     svc.register('common', 'en', { retry: 'Retry' })
     svc.register('ns', 'en', { own: 'Own' })
     const t = svc.bind('ns')
-    expect(t('retry')).toBe('إعادة محاولة')
+    expect(t('retry')).toBe('إعادة المحاولة')
     // ar is active and `ns` has no ar dictionary at all: the en fallback answers.
     expect(t('own')).toBe('Own')
     svc.setLocale('en')

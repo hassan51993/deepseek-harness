@@ -130,6 +130,6 @@ describe('ToolCallTree', () => {
 
     expect(renderSlot).not.toHaveBeenCalled()
     expect(view.queryByTestId('keyed-skill')).toBeNull()
-    expect(view.getByText('Auto review قد رفض')).toBeTruthy()
+    expect(view.getByText('رفضتها المراجعة التلقائية')).toBeTruthy()
   })
 })
