@@ -15,9 +15,9 @@ How to translate between the two sides of a documentation pair in this repo. Bot
 - The register is calibrated by [style-samples.md](style-samples.md) — human-approved gold pairs, one per document genre. The counterpart MUST match the target-language side of the nearest sample; where its voice and a prose voice rule disagree, the sample wins. Arabic targets use institutional technical Arabic; English targets use concise professional developer prose.
 - Write as a native technical author restating the content, not as a translator transposing sentences, while preserving every source clause: nothing added, nothing dropped — fluency never justifies losing a clause.
 - Give sentences an explicit actor when the target language would otherwise obscure it; for Arabic, replace vague passives or abstract subjects with the actual actor (نظام، بوابة، مراجعة شخص).
-- Prefer established target-language engineering idiom over calques (خطأ تقرير/تسرب فحص for false positive/negative, تنفيذ أحمر خط for enforcement frontier); localize metaphors instead of transplanting them, and unpack noun chains where the target language requires it.
+- Prefer established target-language engineering idiom over calques (إنذار كاذب/سلبية فائتة for false positive/negative, حدّ الإلزام for enforcement frontier); localize metaphors instead of transplanting them, and unpack noun chains where the target language requires it.
 - Split long paragraphs by semantic unit — one idea per paragraph. Paragraph boundaries MAY differ from the source; the structural signature does not count paragraphs.
-- When translating into Arabic, category nouns use Arabic with a first-mention English annotation (فعلي تشغيل يد سجل (cookbook)); when translating into English, use the conventional English category name. Literal directory or file references stay code-formatted English.
+- When translating into Arabic, category nouns use Arabic with a first-mention English annotation (دليل عملي (cookbook)); when translating into English, use the conventional English category name. Literal directory or file references stay code-formatted English.
 
 ## Structure preservation
 
@@ -35,7 +35,7 @@ The repo's Markdown conventions apply to `.ar.md` files unchanged: one physical 
 ## Terminology
 
 - [terminology.md](terminology.md) is the source of truth in both directions. Before translating, load it; every listed term MUST follow its row and its "لا يلزم ترجمة عمل" prohibitions. An Arabic target uses the "العربية" column and its "أول مرة ظهور" annotation; an English target uses the "English" column without adding a Arabic gloss.
-- For an Arabic target, an unlisted technical term MAY use an established rendering from a major Arabic-language OSS or vendor source (K8s/Vue/MDN Arabic docs, دقيق لين بسيط في ريح إطار إشارة جنوب, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «انتظار تحديد فن لغة»(pending terms) with a suggested rendering.
+- For an Arabic target, an unlisted technical term MAY use an established rendering from a major Arabic-language OSS or vendor source (K8s/Vue/MDN Arabic docs, big-tech project docs), cited in the PR. Without such precedent it MUST stay in English and be listed under «مصطلحات معلّقة» (pending terms) with a suggested rendering.
 - For an English target, use the established English technical term. If the source term has no unambiguous established equivalent, preserve it with a short explanatory gloss and list it under pending terms. Neither direction may invent a rendering inline; a decided term enters [terminology.md](terminology.md) in the same PR or a follow-up.
 
 ## Typography
