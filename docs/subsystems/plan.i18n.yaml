@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/plan.md
 plan.md: 99ad3586bf7bf52171ae3f5308b8262506a6e60e
-plan.ar.md: 9563cfaeef7865ba559be77316f68a31d49b819b
+plan.ar.md: 60feee25aa9a5ba98af4618c18999990fff582b1

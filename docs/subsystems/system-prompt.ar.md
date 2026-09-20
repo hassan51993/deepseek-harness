@@ -1,14 +1,14 @@
-# توجيه النظام تجميع
+# تجميع مطالبة النظام
 
 [English](system-prompt.md) | العربية
 
-[system-prompt حزمة](../../packages/core/system-prompt) مسؤول إدارة نص التوجيه مساهمة من و مرة تجميع استدعاء بين تسليم تبديل بيانات. هذا حزمة [README](../../packages/core/system-prompt/README.ar.md) سجل تسجيل، ترتيب، أثر مجال و تصيير سلوك؛ هذا صفحة سجل كل إضافة تنفيذ أو نقل تمرير تأكيد قطع عبر حزمة نوع.
+تملك [حزمة system-prompt](../../packages/core/system-prompt) البياناتِ المتبادلة بين المساهمين في المطالبة ونداءِ تجميع واحد. ويوثّق [README](../../packages/core/system-prompt/README.ar.md) الحزمةِ سلوكَ التسجيل والترتيب والنطاق والعرض؛ وتسجّل هذه الصفحةُ الأنواعَ المشتركة بين الحزم بعينها التي تنفّذها الإضافاتُ أو تمرّرها.
 
-شفرة المصدر:[`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts).
+المصدر: [`packages/core/system-prompt/src/index.ts`](../../packages/core/system-prompt/src/index.ts).
 
-## تجميع سياق
+## سياق التجميع
 
-`AssembleContext` معرف مرة تجميع الذي تحليل أثر مجال طبقة، و يمكن يحمل هذا طلب صريح تحكم إشارة. هو يمكن دمج توسيع:`dsh-agent` إضافة اختياري حقل `agent`، لأجل يحمل حالي agent(ذكي جسم) نسخة؛`assembleContextFor(agent, signal)` فإن واحد بدء ضبط هذه صريح حقل. عار تجميع حيث لا يوجد أثر مجال، أيضا لا يوجد إشارة.
+يحدد `AssembleContext` طبقةَ النطاق التي يحلّها تجميعٌ واحد، وقد يحمل إشارةَ التحكم الصريحة لذلك الطلب. وهو قابل للتوسعة بالدمج: فـ`dsh-agent` يضيف الحقلَ الاختياري الحي `agent`، ويضبط `assembleContextFor(agent, signal)` الحقلين الصريحين معًا. والتجميعُ المجرد لا نطاقَ له ولا إشارة.
 
 ```ts type-equiv
 /** Merge-extensible context for one prompt assembly. */
@@ -23,9 +23,9 @@ interface AssembleContext {
 }
 ```
 
-## أداة مزود نتيجة
+## نتيجة مزوّد الأدوات
 
-`ToolProviderResult.schemas` هو حالي تجميع في مقابل نموذج مرئي أداة schema تجميع دمج.`knownNames` هو مزود في حد قبل اسم كل تجميع، لأجل منطقة قسم «إعداد اسم تجميع كتابة خطأ» و «معروف أداة في هذا أثر مجال في يتم متعمد إخفاء».
+`ToolProviderResult.schemas` هي المجموعةُ التي يراها النموذج في التجميع الحالي. و`knownNames` هو فضاءُ أسماء المزوّد قبل التقييد، ويُستعمل للتمييز بين خطأ مطبعي في اسم مضبوط وأداة معروفة أُخفيت عمدًا في هذا النطاق.
 
 ```ts type-equiv
 /** Tool schemas visible in one assembly and their pre-restriction name set. */
@@ -37,11 +37,11 @@ interface ToolProviderResult {
 }
 ```
 
-## نص التوجيه مقطع سقوط
+## أقسام المطالبة
 
-تصدير `PERSONA_PREFIX_SECTION`(`deployment:persona-prefix`) و `PERSONA_SUFFIX_SECTION`(`deployment:persona-suffix`) لـ عام إعداد و حمل أثر مجال مساهمة الذي مشترك مقطع سقوط تسمية. هو جمع مقابل `PromptSectionOrderName` بند لـ `DEPLOYMENT_PERSONA_PREFIX` و `DEPLOYMENT_PERSONA_SUFFIX`؛[حزمة README](../../packages/core/system-prompt/README.ar.md#configure-the-prompt) قاعدة تحديد ذلك موضع و نموذج لوح إعداد.
+يسمّي `PERSONA_PREFIX_SECTION` المصدَّر (`deployment:persona-prefix`) و`PERSONA_SUFFIX_SECTION` (`deployment:persona-suffix`) الخانتين اللتين يتشاركهما الضبطُ العام والإسهاماتُ النطاقية. ومدخلاهما في `PromptSectionOrderName` هما `DEPLOYMENT_PERSONA_PREFIX` و`DEPLOYMENT_PERSONA_SUFFIX`؛ ويملك [README الحزمة](../../packages/core/system-prompt/README.ar.md#configure-the-prompt) موضعَهما وضبطَ قالبهما.
 
-`PromptSection` هو واحد نسخة فقط قراءة نفس عملية تسجيل اتفاق. ذلك نص يمكن هو ساكن حالة، أيضا يمكن من حالي تجميع سياق حركة حالة تحليل. كل مقطع أولا حسب order رفع ترتيب صف، مجددا حسب اسم شفرة وحدة ترتيب صف؛ مستودع مساهمة جهة عبر `getSectionOrder()` تحليل خدمة يحتفظ أداة اسم قسم إعداد.Runtime-context مساهمة جهة عبر `getContextOrder()` تحليل مستقل قسم إعداد. تنسيق عمل صيغة تجميع إتمام بعد، واحد صالح `complete` مقطع سوف يصبح وحيد نص التوجيه مقطع سقوط.agent loop(ذكي جسم حلقة) استخدام `renderPrompt` تصيير تجميع بعد كل مقطع، و يأخذ نص بصفة `system/message` surface عقدة إيداع——أول عدد خطوة بصفة surface رقم 0 رقم عقدة إلحاق، بعد في تصيير نص تغير وقت أصل أرض استبدال، أو من عند قد دقيق تجهيز استدعاء إعلان `systemPromptUpdate: 'in-history'` وقت، في تسلسل تأخير متابعة خلال يأخذ غير فارغ تحديث إلحاق إلى قد ذاكرة مؤقتة تاريخ بعد——لذلك نص التوجيه بصفة إرسال توليد تاريخ في رسالة بينما لا هو طلب حقل وصول نموذج ([قرار](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.ar.md) ؛[قرار قاعدة](../../packages/core/agent-loop/README.ar.md#understand-the-implementation)).
+و`PromptSection` عقدُ تسجيل للقراءة فقط داخل العملية نفسها. وقد يكون نصُّه ساكنًا أو محلولًا من سياق التجميع الحالي. وتُرتَّب الأقسامُ تصاعديًا بالترتيب ثم بالاسم حسب وحدات الترميز؛ ويحلّ المساهمون في المستودع التخصيصَ المسمّى الذي تملكه الخدمةُ عبر `getSectionOrder()`. ويحلّ المساهمون في سياق وقت التشغيل تخصيصَهم المستقل عبر `getContextOrder()`. ويصير قسمُ `complete` الساري الواحد قسمَ المطالبة الوحيد بعد التجميع التعاوني. ويعرض agent loop الأقسامَ المجمَّعة بـ`renderPrompt` ويودِع النصَّ عقدةَ سطح `system/message` — تُلحق عقدةَ سطح رقم 0 في الخطوة الأولى، ثم تُستبدل في موضعها حين يتغيّر النصُّ المعروض، أو تُلحق بعد التاريخ المخزَّن للتحديثات غير الفارغة في سلسلة مستمرة حين يعلن النداءُ المُعَدّ `systemPromptUpdate: 'in-history'` — فتصل المطالبةُ إلى النموذج رسالةً من تاريخ مشتق لا حقلًا في الطلب ([القرار](../../.agents/notes/implemented/architecture/2026-09-02-system-prompt-as-surface-node.ar.md)؛ [قاعدة القرار](../../packages/core/agent-loop/README.ar.md#understand-the-implementation)).
 
 ```ts type-equiv
 /** One contributed section of the system prompt (registry input). */
@@ -71,9 +71,9 @@ interface PromptSection {
 }
 ```
 
-## حركة حالة نص التوجيه سياق
+## سياق المطالبة الديناميكي
 
-`PromptContext` هو و `PromptSection` مقابل ذاكرة مؤقتة أمان بنية. تجميع سوف تحليل هذه مساهمة و ترتيب؛agent loop(ذكي جسم حلقة) فقط في كامل حالي لقطة حدوث تغير أو يتم ضغط (compaction) إزالة وقت، عندئذ سوف سوف ذلك سجل في إبقاء نموذج تاريخ بعد.
+`PromptContext` هو النظيرُ الآمن مع التخزين المؤقت لـ`PromptSection`. ويحلّ التجميعُ هذه الإسهاماتِ ويرتّبها، بينما يسجّل agent loop لقطتَها الحالية كاملةً بعد تاريخ النموذج المحفوظ، ولا يفعل ذلك إلا حين تتغيّر أو حين يزيلها الضغطُ.
 
 ```ts type-equiv
 /** Dynamic model context materialized as a durable user-role snapshot. */

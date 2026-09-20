@@ -1,14 +1,14 @@
-# spill تخزين
+# تخزين الفائض
 
 [English](spill.md) | العربية
 
-spill تخزين[قدرة seam](../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.ar.md) حمل دائم حفظ استدعاء جهة توفير نص، و إرجاع موجه إلى نموذج تحديد موضع رمز و فحص بحث إشارة جذب. ذلك Service Definition هو [dsh-spill](../../packages/spill/spill)(`ctx.spillStore`) ، محلي Service Provider هو [dsh-spill-local](../../packages/spill/spill-local). مستهلك يشمل[أداة نتيجة سياسة](../../packages/spill/spill-policy) و[جلسة مرجع](../../packages/context/session-reference/README.ar.md).spill هو اختياري قدرة، لا يخص[ذكي جسم حلقة رئيسي جاف](core.ar.md) ؛ معاينة و spill قرار من مستهلك مسؤول، تخزين فإن أصل مثال حفظ الذي توفير نص.
+يحفظ [seam قدرة](../../.agents/notes/implemented/architecture/2026-07-08-tool-output-spill-files.ar.md) تخزين الفائض النصَّ الذي يقدّمه المستدعي، ويعيد محدِّدًا يراه النموذج مع إرشاد الاسترجاع. وتعريفُ خدمته هو [dsh-spill](../../packages/spill/spill) (`ctx.spillStore`)، ومزوّدُ خدمته المحلي هو [dsh-spill-local](../../packages/spill/spill-local). ومن مستهلكيه [سياسة نتائج الأدوات](../../packages/spill/spill-policy) و[مراجع الجلسات](../../packages/context/session-reference/README.ar.md). والفائضُ اختياري وليس من [عمود agent loop](core.ar.md)؛ ويملك المستهلكون قراراتِ المعاينة والإفاضة، بينما يحفظ التخزينُ النصَّ المقدَّم حرفيًا.
 
-شفرة المصدر:[`packages/spill/spill/src/types.ts`](../../packages/spill/spill/src/types.ts)
+المصدر: [`packages/spill/spill/src/types.ts`](../../packages/spill/spill/src/types.ts)
 
-## حفظ طلب
+## طلب الحفظ
 
-`saveText` هو وحيد خدمة عملية: أصل مثال حمل دائم حفظ `content`، و إرجاع لا نفاذ واضح تحديد موضع رمز، خلفية توفير فحص بحث تلميح و دقيق بايت عدد. طلب يحمل حفظ وقت تخزين نطاق الأسماء (`owner`) ، وصف صفة إنتاج من مصدر معلومة (`source`، قطعا غير وصول تحكم) و خلفية متاح عمل تسمية تلميح بينما غير مسار `suggestedName`. أداة مصدر معرف فعلي استدعاء الأداة؛ جلسة مرجع مصدر معرف يتم التقاط مصدر جلسة، بينما ذلك ملكية هو استقبال سياق هدف جلسة.
+`saveText` هي عمليةُ الخدمة الوحيدة: تحفظ `content` حرفيًا، وتعيد محدِّدًا معتمًا، وتلميحَ استرجاع تقدّمه الخلفية، وعددَ البايتات بالضبط. ويحمل الطلبُ فضاءَ أسماء التخزين وقتَ الحفظ (`owner`)، وتفاصيلَ وصفية عن المنتِج (`source`، وليست ضبطَ وصول قط)، و`suggestedName` قد تستعمله الخلفيةُ تلميحَ تسمية لا مسارًا. ومصدرُ الأداة يحدد نداءَ الأداة الفعلي؛ أما مصدرُ مرجع الجلسة فيحدد الجلسةَ المصدر الملتقَطة، بينما مالكُه الجلسةُ الهدف التي تتلقى السياق.
 
 ```ts type-equiv
 /** One request to persist text to a spill artifact. */
@@ -38,7 +38,7 @@ interface SpillOwner {
 }
 ```
 
-إبقاء مدة تنظيف يمكن وصل نفس أخرى قديم جلسة ناتج واحد بدء جعل قديم تحديد موضع رمز بطلان؛spill seam لا تعريف تدريجي جلسة تنظيف سياسة.
+وقد يُنهي تنظيفُ مدة الحفظ صلاحيةَ محدِّدات قديمة مع سائر آثار الجلسات القديمة؛ ولا يعرّف seam الفائض سياسةَ تنظيف لكل جلسة.
 
 ```ts type-equiv
 /**
@@ -63,7 +63,7 @@ type SpillSource = {
 }
 ```
 
-## نتيجة
+## النتيجة
 
 ```ts type-equiv
 /** A saved spill artifact: its locator, byte length, and backend-specific retrieval guidance. */
@@ -74,7 +74,7 @@ interface SpillRef {
 }
 ```
 
-`SpillLocator` هو خلفية إرجاع[صنف لوحة تحويل](core.ar.md#branded-ids) موجه إلى نموذج جملة مقبض. محلي خلفية سوف هو تصيير لـ نظام الملفات مسار؛ بعيد مسار أو قاعدة بيانات خلفية يمكن تصيير URI، مفتاح أو أمر token. مستهلك سوف هو نظر لـ لا نفاذ واضح قيمة، و استخدام `retrievalHint` تصيير، بينما لا هو زائف تحديد `read` بداية نهاية هو صحيح تأكيد فحص بحث آلية.
+و`SpillLocator` مقبضٌ [موسوم](core.ar.md#branded-ids) يراه النموذج وتعيده الخلفية. وتعرضه الخلفيةُ المحلية مسارًا في نظام الملفات؛ وتستطيع خلفيةٌ بعيدة أو قاعديةُ بيانات أن تعرض URI أو مفتاحًا أو رمزَ أمر. ويعامله المستهلكون معتمًا ويعرضونه مع `retrievalHint` بدل افتراض أن `read` هي آليةُ الاسترجاع الصحيحة دائمًا.
 
 ```ts type-equiv
 /**
@@ -85,11 +85,11 @@ interface SpillRef {
 type SpillLocator = Branded<'SpillLocator'>
 ```
 
-## خدمة
+## الخدمة
 
-`SpillStore`(`ctx.spillStore`، تعريف في [`packages/spill/spill/src/index.ts`](../../packages/spill/spill/src/index.ts)) هو فقط لديه واحد طريقة سحب كائن خدمة:`saveText(input) → Promise<SpillRef>`. هو حمل دائم حفظ كامل `content`، و في فعلي تخزين فشل (إذن،ENOSPC، خلفية غير ممكن استخدام) وقت رفض. هذا seam فقط مسؤول تخزين: لا مسؤول إبقاء سياسة، أداة نتيجة استبدال أو فحص بحث/بحث API.
+`SpillStore` (`ctx.spillStore`، المعرَّفة في [`packages/spill/spill/src/index.ts`](../../packages/spill/spill/src/index.ts)) خدمةٌ مجردة بطريقة واحدة: `saveText(input) → Promise<SpillRef>`. وهي تحفظ `content` كاملًا وترفض عند فشل تخزين حقيقي (الأذونات، أو ENOSPC، أو خلفية غير متاحة). ويملك الـ seam التخزينَ وحده: فلا سياسةَ حفظ، ولا استبدالَ نتائج أدوات، ولا واجهةَ استرجاع أو بحث.
 
-محلي خلفية ([dsh-spill-local](../../packages/spill/spill-local)) كتابة `<root>/session-<hash>/<random>-<safeName>`: أصل دليل هو قد إعداد أو تأخير متأخر إنشاء خاص (0700) دليل، جلسة فرعي دليل اعتماد `sha256(sessionId)`، و عبر ترتيب هو كما فقط كل من يمكن وصول كتابة (`open(path, 'wx', 0o600)`) منع توقف مسبق أولا غرس دخول رمز رقم رابط إعادة تحديد نحو كتابة. ذلك `locator` هو محلي مسار،`retrievalHint` فإن إبلاغ معرفة نموذج في هذا مسار فوق استخدام `read` أو `grep`. سياسة مستهلك ([dsh-spill-policy](../../packages/spill/spill-policy)) سوف يأخذ تجاوز مرور `maxInlineBytes` صاف نص نهائي نتيجة استبدال لـ إبقاء مكتبة توليد أول ذيل معاينة و spill مرجع؛ هذا مرور مسار كل قوة بينما لـ: حفظ فشل وقت إبقاء أصلي داخل ربط نتيجة، بينما لن يأخذ نجاح استدعاء تغيير صار `isError`.
+وتكتب الخلفيةُ المحلية ([dsh-spill-local](../../packages/spill/spill-local)) تحت `<root>/session-<hash>/<random>-<safeName>` — جذرٌ خاص (0700) مضبوط أو منشأ كسولًا، ودليلٌ فرعي للجلسة باسم `sha256(sessionId)`، وكتابةٌ حصرية للمالك وحده (`open(path, 'wx', 0o600)`) فلا يستطيع رابطٌ رمزي مزروع تحويلَها. و`locator` لديها هو المسارُ المحلي، و`retrievalHint` يخبر النموذجَ أن يستعمل `read` أو `grep` على ذلك المسار. ويستبدل مستهلكُ السياسة ([dsh-spill-policy](../../packages/spill/spill-policy)) النتيجةَ النهائية النصية التي تتجاوز `maxInlineBytes` بمعاينة رأس وذيل من مكتبة الاحتفاظ مع مرجع الفائض، على قدر الاستطاعة: فإخفاقُ الحفظ يُبقي النتيجةَ المضمَّنة الأصلية بدل أن يحوّل نداءً ناجحًا إلى `isError`.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
