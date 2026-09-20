@@ -1,53 +1,53 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-tool-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-tool-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/tool-catalog.md` إعادة سجل إعداد مقابل. -->
+<!-- النصُّ الإنجليزي مولَّد من scripts/gen-tool-catalog.ts؛ وهذا الملف العربي يُصان يدويًا ويُقرن به عبر سجل الاقتران الثنائي اللغة.
+     عند التحديث، شغّل `pnpm run gen-tool-catalog` أولًا لتحديث النص الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/tool-catalog.md` لإعادة تسجيل الاقتران. -->
 
-# أداة Schema دليل
+# دليل schemas الأدوات
 
 [English](tool-catalog.md) | العربية
 
-قد إصدار إضافة نحو `ctx.tools` توفير كل موجه إلى نموذج أداة: نموذج عبر توجيه النظام تجميع نيل نيل `name`،`description` و JSON Schema `parameters`. هذا دليل هو[فرعي نظام صفحة](subsystems/core.ar.md)(نوع و كل صفحة توليد `cordis-surface` وصل خط منطقة مجال) تكملة ملء؛ هذا صفحة صف خروج هو نحو agent(ذكي جسم) توفير*أداة*.
+كلُّ أداة يراها النموذجُ وتسهم بها إضافةٌ مشحونة في `ctx.tools`: الاسمُ `name` والوصفُ `description` وschema المعاملات `parameters` بصيغة JSON Schema التي يتلقاها النموذجُ عبر تجميع مطالبة النظام. وهي تكمّل [صفحات الأنظمة](subsystems/core.ar.md) (الأنواعَ ومنطقةَ واجهة Cordis البرمجية المولَّدة في كل صفحة) — فهذه الصفحةُ هي *الأدوات* المعروضة على الوكيل.
 
-إنجليزي نص مصدر ملف من نظام**توليد**، و عبر `pnpm run verify-tool-catalog`(`doc-sync`(وثيقة تزامن بوابة) واحد جزء) تحقق جديد طازج درجة؛ هذا العربية ملف بصفة مرور مراجعة مقابل جانب عبر مزدوج لغة إعداد مقابل صيانة. و Cordis دليل (صاف شفرة المصدر AST معالجة) مختلف، إنجليزي نص توليد جهاز سوف في حقيقي سياق في**بدء**كل أداة إضافة و قراءة `ctx.tools.schemas()`، لأن أداة schema لا يمكن عبر ساكن حالة قسم تحليل تماما تحديد، مثال مثل وقت التشغيل توسيع قطعة رفع، تجميع وصل وصف، من إعداد قرار اسم و استخدام أصلي JSON Schema MCP أداة. كامل صفة حراسة حماية سوف glob مطابقة `packages/*/tool-*`؛ إذا توليد جهاز بدء manifest(بيانات وصفية بيان) متروك تسرب أي حزمة، فحص حينئذ سوف فشل، لذلك جديد أداة لن في بلا شخص ملاحظة شعور حال حال تحت نقص قليل وثيقة.
+وهذا الملفُّ مولَّد ويُتحقق من طزاجته بـ`pnpm run verify-tool-catalog` (وهو جزءٌ من `doc-sync`) — فلا تحرّره يدويًّا. وخلافًا لدليل cordis (وهو مرورٌ صرف على شجرة المصدر)، **يُقلع** هذا المولِّدُ كلَّ إضافة أدوات في سياق حقيقي ويقرأ `ctx.tools.schemas()`، لأن schema الأداة غيرُ معروف ساكنًا (فهناك قوائمُ تُنشر في وقت التشغيل، وأوصافٌ موصولة، وأسماءٌ يقودها الضبط، وأدواتُ MCP بـJSON Schema خام). ويمسح حارسُ الاكتمال النمطَ `packages/*/tool-*` ويفشل إن غابت حزمةٌ عن بيان إقلاع المولِّد، فلا تبقى أداةٌ جديدة بلا توثيق بصمت.
 
-نطاق:`packages/*/tool-*` تحت قد إصدار منتج أداة، كل أداة متساو استخدام ذلك**افتراضي**إعداد بدء؛ لكن إذا بعض عدد Config حقل هو**لا بد ملء بند**كما لا يوجد قيمة افتراضية، توليد جهاز حينئذ يجب عمل خروج اختيار، مقابل حزمة شرح سوف سجل هذا صفحة عرض هو أي عدد فرع. تسجيل أداة**اسم**يمكن هو تحميل وقت إعداد، مثال مثل `tool-subagent` `toolName`، لذلك نشر ممكن بـ مختلف اسم أو مقدار خارج اسم توفير بعض عدد حزمة؛ إذا وجود مع منتج إصدار آخر اسم، مقابل حزمة شرح سوف إعطاء بـ سجل.`examples/` في عرض عرض أداة (مثال مثل `echo`) لا في نطاق داخل، هذا و Cordis دليل فقط شمول غطاء حزمة نطاق متسق.
+النطاق: أدواتُ المنتَج المشحونة تحت `packages/*/tool-*`، ويُقلع كلٌّ منها بضبطه **الافتراضي**، إلا حين يكون حقلُ ضبط **مشترَطًا** بلا افتراض — فهناك يجب على المولِّد أن يختار، وتسجّل ملاحظةُ الحزمة أيَّ الفرعين تعرضه هذه الصفحة. وقد يكون **اسمُ** الأداة المسجَّل ضبطًا عند التحميل (مثل `toolName` في `tool-subagent`)، فقد يكشف نشرٌ حزمةً باسم مختلف أو إضافي — وتسجّل ملاحظةُ الحزمة تلك الأسماءَ البديلة المشحونة حيث توجد. وأدواتُ العرض في `examples/` (مثل `echo`) مستبعَدة، اتساقًا مع نطاق دليل cordis المقتصر على الحزم.
 
 <a id="tool-package-map"></a>
 
-## أداة حزمة خريطة
+## خريطة حزم الأدوات
 
-تحت جدول سوف نموذج مرئي أداة اسم و ذلك خلف بعد إضافة حزمة و خدمة seam مقابل بدء قدوم. كل حزمة فصل عقدة مع بعد إعطاء خروج تأكيد قطع JSON Schema.
+يصل هذا الجدولُ أسماءَ الأدوات التي يراها النموذجُ بحزمة الإضافة وseams الخدمات وراءها. وتأتي schemas JSON بعينها في أقسام الحزم أدناه.
 
-| أداة حزمة | نموذج مرئي اسم | اعتماد | كتابة/أثر | مع منتج إصدار آخر اسم | نشر شرح |
+| حزمة الأداة | الأسماء التي يراها النموذج | تشترط | تكتب أو تؤثر في | الأسماء البديلة المشحونة | ملاحظة النشر |
 | --- | --- | --- | --- | --- | --- |
 | `@deepseek-ai/dsh-plugin-manager` | `plugin_manager` | `ctx.tools`, `ctx.pluginManager`, `ctx.sandboxPolicy` | `tool/call`, `tool/result`, `user/message` | - | - |
 | `@deepseek-ai/dsh-mcp-resources` | `list_mcp_resource_templates`, `list_mcp_resources`, `read_mcp_resource` | `ctx.tools`, `ctx.mcpResources` | `tool/call`, `tool/result` | - | - |
 | `@deepseek-ai/dsh-experimental-browser-use-stagehand-native` | `stagehand_act`،`stagehand_extract`،`stagehand_navigate`،`stagehand_observe`،`stagehand_screenshot`،`stagehand_tabs` | `ctx.browserUse`،`ctx.agents`،`ctx.tools`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | - |
-| `@deepseek-ai/dsh-tool-ask-user` | `ask_user_question` | `ctx.tools`،`ctx.userQuestions` | `tool/call`،`tool/result after a UI/provider answers the question` | - | ask_user_question سوف مؤقت توقف استدعاء الأداة، مباشر إلى حالي UI مزود إرجاع شخص صنف جواب سجل. |
-| `@deepseek-ai/dsh-tools` | `run_code` | `ctx.tools`،`ctx.ptcRuntime (execution time)`،`ctx.systemPrompt` | `tool/call`،`one tool/ptc-dispatch-start + tool/ptc-dispatch pair per bridged sub-call`،`tool/result` | - | في `mode: ptc`/`mode: both` تحت، هو من أداة سجل التسجيل كل، بصفة يمكن مرور ترشيح قدرة طبقة خارج إبقاء نقل آلية (مشاركة رؤية PTC mode Agent Note). في `ptc` تحت، هو هو سجل التسجيل مقابل بروتوكول صيغة (wire format) وحيد مساهمة؛ أخرى مرئي قدرة في استخدام قد تحميل وقت التشغيل لغة توليد SDK فصل عقدة في إعلان. برنامج عبر binding استدعاء هذه قدرة، استدعاء حسب وفق أصلي تزامن اتفاق ضبط درجة: بدء ترتيب و سياسة التزام دوران إيداع ترتيب، تزامن أمان دالة جسم الأكثر كثير إعادة تراكم تنفيذ `maxParallelSubCalls` عدد. استدعاء سوف إعادة دخول كامل كما تلقي حراسة حماية حفظ حماية أداة خط الإنتاج، و سوف كل تضمين طقم تنفيذ صلة ربط إلى هذا خارج طبقة نتيجة. |
-| `@deepseek-ai/dsh-plan-mode` | `exit_plan_mode` | `ctx.tools`،`ctx.systemPrompt`،`ctx.userQuestions (execution time, opportunistic)` | `tool/call`،`plan/mode inactive on an approved review`،`tool/result` | - | قاعدة تخطيط لم تنشيط وقت،exit_plan_mode ما زال إبقاء في موجه إلى نموذج schema في، هذا مثال حالة تحويل لن في قاعدة تخطيط سياسة تغيير خارج مقدار خارج صنع صار أداة دليل تغيير حركة. ذلك تنفيذ مسار سوف رفض قاعدة تخطيط نمط خارج استدعاء؛ في قاعدة تخطيط نمط تحت، هو عبر مستخدم تفاعل seam إيداع خطة (دفعة دقيق/أصل حسب ملاحظات متابعة قاعدة تخطيط) ، دفعة دقيق بعد سوف في خطوة حد سجل قاعدة تخطيط نمط قد توقف استخدام. |
-| `@deepseek-ai/dsh-tool-bash` | `bash` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة (قدوم ذاتي `@deepseek-ai/dsh-tool-jobs`) استلام تجميع/إيقاف؛ منع استخدام `enableRunInBackground` إعداد (افتراضي لـ true) بعد، هذا معامل سوف يتم تماما إزالة. |
-| `@deepseek-ai/dsh-tool-present` | `present` | `ctx.tools`, `ctx.fs`, `ctx.sessionProjections` | `tool/call`, `deliverables/presented في نجاح نهائي نتيجة بعد`, `tool/result` | - | تسليم عودة استدعاء جهة Session كل؛Web ui-deliverables توفير مصدر ملف فتح و بطاقة. |
-| `@deepseek-ai/dsh-tool-pwsh` | `pwsh` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة قول مستهلك (من `@deepseek-ai/dsh-pwsh-local` انتظار PowerShell منفذ لـ `ctx.shell` توفير خلفية) ؛ حذف صندوق رملي واجهة خارج، هو تدريجي بند مقابل bash استدعاء الأداة. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة استلام تجميع/إيقاف؛ حمل إدارة `DSH_*` بيئة قدوم ذاتي `@deepseek-ai/dsh-shell-env`. كل مرة استدعاء كل في جديد عملية في تشغيل، لا استخدام حمل دائم PTY جلسة. مسار اعتماد أصلي `C:\...` شكل صيغة، متغير اعتماد `$env:NAME`. |
-| `@deepseek-ai/dsh-tool-cordis` | `cordis_inspect_list`, `cordis_inspect_query` | `ctx.tools`, `ctx.cordisInspect` | `tool/call`, `tool/result` | - | إنشاء صنع نمط توفير اثنان عدد فقط قراءة وقت التشغيل فحص أداة.Cordis host runner توفير فحص سجل التسجيل؛Client استعلام حاجة قد اتصال صفحة. حفظ دائم تغيير تحرير كتابة لـ تركيب حزمة، مجددا عبر plugin_manager تثبيت. |
-| `@deepseek-ai/dsh-tool-bash-persistent` | `bash` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | واحد حسب كل من عزل حمل دائم bash أداة؛ نشر تركيب توفير PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف. |
-| `@deepseek-ai/dsh-tool-pwsh-persistent` | `pwsh` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | واحد حسب كل من عزل حمل دائم pwsh أداة، حمل دائم bash أداة Windows مقابل شيء؛ نشر تركيب توفير pwsh جهة قول PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف. |
-| `@deepseek-ai/dsh-tool-str-replace-editor` | `str_replace_editor` | `ctx.tools`،`ctx.fs` | `tool/call`،`fs/observed after view presence/absence, edit absence, or successful mutation`،`tool/result` | - | أساس في نظام الملفات seam مستقل عرض/إنشاء/وحيد حرف وجه كمية استبدال/حسب سطر إدراج دخول أداة؛ يمكن و أي shell أو طرفية واجهة تركيب. |
-| `@deepseek-ai/dsh-tool-fs` | `edit`،`read`،`read_image`،`write` | `ctx.tools`،`ctx.fs`،`ctx.systemPrompt`،`ctx.attachments (image-tool registration)`،`ctx.llm + an image-capable route (image-tool execution)` | `tool/call`،`fs/write-intent or fs/edit-intent for mutations`،`fs/observed after read presence/absence or successful file operation`،`durable attachment (read_image)`،`tool/result` | - | أولا قراءة بعد كتابة/تحرير سياسة من `@deepseek-ai/dsh-fs-observation-policy` إضافة؛ هو هو واحد `fs/*` حدث بوابة إضافة، لن تغيير schema. تحميل هذه أداة نشر حسب مسبق مدة أيضا ينبغي تحميل هذا إضافة. لا يوجد `ctx.attachments` وقت صورة أداة لن تسجيل؛ ذلك schema و توجيه غير متصل، تنفيذ وقت حذف غير تأكيد قطع توجيه نموذج إعلان صورة إدخال، لا فإن رفض. |
-| `@deepseek-ai/dsh-tool-fs-search` | `glob`،`grep` | `ctx.tools`،`ctx.subprocess`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subprocess spawn مع حزمة توفير ripgrep اثنان دخول صنع ملف (`@vscode/ripgrep`) ، و بصفة عادي قبل منصة استدعاء تشغيل، أبدا بصفة خلفية مهمة؛ بلا حاجة في مضيف آلة تثبيت `rg`، أيضا لا مرور مرور shell طبقة. هذا دليل استخدام `sampleOverCapGlobResults: true`؛ نشر يجب صريح اختيار هذا سلوك. نتيجة تجاوز مرور حد أعلى وقت، سوف عبر اختياري ctx.spillStore خلفية حفظ كامل صيغة تحويل قائمة؛ في مشترك وضع نشر في، إذا خلفية عام محلي مسار، إرجاع تحديد موضع معلومة يمكن توفير لاحق قراءة/بحث. |
-| `@deepseek-ai/dsh-tool-terminal` | `terminal_close`،`terminal_list`،`terminal_open`،`terminal_read`،`terminal_send`،`terminal_signal` | `ctx.tools`،`ctx.terminals`،`ctx.systemPrompt`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | هذا 6 عدد طرفية أداة حاجة اختيار تفعيل، لأجل تكملة ملء مرة صفة bash/نظام الملفات أداة.`terminal_send(run_in_background: true)` سوف تسجيل إلى `ctx.jobs`؛schema لا يتضمن TUI، أداة اسم حسب مفتاح تسلسل،BEL، ضبط كامل مقياس قياس، تلقائي بدء و عبر agent مشترك. |
-| `@deepseek-ai/dsh-tool-goal` | `create_goal`،`get_goal`،`update_goal` | `ctx.tools`،`ctx.agents`،`ctx.goals`،`ctx.systemPrompt`،`a calling Agent in an authorized open turn` | `tool/call`،`goal/change for mutations`،`tool/result` | - | create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص صنف أصل إذن؛complete و blocked أيضا قبول تأكيد قطع حالي Goal Round.blocked افتراضي تحت حد هو 3 عدد نيل دقيق Round. |
-| `@deepseek-ai/dsh-schedule` | `schedule_create`،`schedule_delete`،`schedule_list` | `ctx.tools`،`ctx.sessions`،Session حفظ دائم، لم قدوم إنشاء live أصل Agent | `tool/call`،`schedule/change create or delete`،`tool/result` | - | فقط في اختيار تفعيل Schedule إضافة تحميل بعد إنشاء live أصل Agent scope داخل تسجيل. إصدار 1 قبول after_seconds، صريح قطعا مقابل at و محدود ثابت سرعة معدل every_seconds، و كشف كشف session-local تسليم؛ إدارة قراءة و تغيير يجب عبر مشترك Session حفظ دائم barrier. |
-| `@deepseek-ai/dsh-tool-lsp` | `lsp` | `ctx.tools`،`ctx.lsp`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | lsp أداة سوف مزود اختيار و لغة خادم عملية فرعية وضع في ctx.lsp بعد، لذلك ذلك نموذج مرئي schema في أكثر تبديل مزود وقت إبقاء مستقر. وقت التشغيل اشتراط قد تسجيل مزود، مثال مثل `@deepseek-ai/dsh-lsp-stdio`؛ إذا لا يوجد مزود، استعلام سوف إرجاع بنية تحويل `LSP_UNAVAILABLE` خطأ، بينما لن تغيير schema. |
-| `@deepseek-ai/dsh-tool-ralph` | `ralph` | `ctx.tools`،`ctx.workflowEngine`،`ctx.subagents`،`ctx.systemPrompt`،`a calling Agent (exec.agent parents every fresh round)` | `tool/call`،`tool/result`،`workflow and child session events during execution` | - | ثابت قبل منصة سير العمل سوف في كل Round بدء واحد كل جديد بنية تحويل فرعي درجة؛ نموذج فقط قدرة اختيار غير ممكن تغيير هدف و اختياري Round حد أعلى. |
+| `@deepseek-ai/dsh-tool-ask-user` | `ask_user_question` | `ctx.tools`،`ctx.userQuestions` | `tool/call`،`tool/result after a UI/provider answers the question` | - | توقف `ask_user_question` نداءَ الأداة حتى يعيد مزوّدُ الواجهة النشط جوابَ إنسان. |
+| `@deepseek-ai/dsh-tools` | `run_code` | `ctx.tools`،`ctx.ptcRuntime (execution time)`،`ctx.systemPrompt` | `tool/call`،`one tool/ptc-dispatch-start + tool/ptc-dispatch pair per bridged sub-call`،`tool/result` | - | يملكه سجلُّ الأدوات نقلًا محجوزًا خارج طبقات القدرات القابلة للترشيح تحت `mode: ptc` أو `mode: both` (انظر ملاحظة الوكيل عن وضع PTC). وتحت `ptc` هو إسهامُ السجل الوحيد على الشبكة؛ أما سائرُ القدرات المرئية فتُعلَن في قسم SDK مولَّد بلغة بيئة التشغيل المحمَّلة، ويناديها البرنامجُ عبر ارتباطات مجدولة تحت عقد التوازي الأصيل (بدءٌ وسياسةٌ بترتيب التقديم؛ وتتداخل المتونُ الآمنة مع التوازي حتى `maxParallelSubCalls`) تعيد دخولَ مسار الأدوات المحروس كاملًا وتربط كلَّ تنفيذ متداخل بهذه النتيجة الخارجية. |
+| `@deepseek-ai/dsh-plan-mode` | `exit_plan_mode` | `ctx.tools`،`ctx.systemPrompt`،`ctx.userQuestions (execution time, opportunistic)` | `tool/call`،`plan/mode inactive on an approved review`،`tool/result` | - | تبقى `exit_plan_mode` في schema الذي يراه النموذجُ ما دام التخطيطُ خاملًا، فلا تضيف الانتقالاتُ اضطرابَ دليل أدوات فوق تغيير سياسة الخطة. ويرفض مسارُ تنفيذها النداءاتِ خارج وضع التخطيط؛ وفي وضع التخطيط تعرض الخطةَ عبر seam أسئلة المستخدم (الموافقةُ أو مواصلةُ التخطيط بملاحظات)، وتسجّل الموافقةُ خمولَ وضع التخطيط عند حدّ الخطوة. |
+| `@deepseek-ai/dsh-tool-bash` | `bash` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | أداةُ bash هي المستهلكُ الذي يراه النموذجُ لـseam منفّذ bash. ويُسجَّل تشغيلُ `run_in_background` في بيئة `ctx.jobs` العامة ويُجمع أو يُوقف عبر أدوات `job_*` من `@deepseek-ai/dsh-tool-jobs`؛ ويزيل ضبطُ `enableRunInBackground` (وافتراضُه true) المعاملَ كلَّه حين يُعطَّل. |
+| `@deepseek-ai/dsh-tool-present` | `present` | `ctx.tools`, `ctx.fs`, `ctx.sessionProjections` | `tool/call`, `deliverables/presented في نجاح نهائي نتيجة بعد`, `tool/result` | - | التسليماتُ تخص الجلسةَ المستدعية؛ وتقدّم ui-deliverables في Web فتحَ ملفات المصدر والبطاقات. |
+| `@deepseek-ai/dsh-tool-pwsh` | `pwsh` | `ctx.tools`،`ctx.shell`،`ctx.systemPrompt`،`ctx.shellEnv`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | أداةُ pwsh هي المستهلكُ بلهجة PowerShell لـseam منفّذ bash في تركيبات Windows (ويسند `ctx.shell` منفّذُ PowerShell مثل `@deepseek-ai/dsh-pwsh-local`)؛ وهي تحاكي أداةَ bash نداءً بنداء ناقصًا ضوابطَ العزل — فتُسجَّل تشغيلاتُ `run_in_background` في بيئة `ctx.jobs` العامة وتُجمع أو تُوقف عبر أدوات `job_*`، وتأتي بيئةُ `DSH_*` المدارة من `@deepseek-ai/dsh-shell-env`. ويعمل كلُّ نداء في عملية جديدة (بلا جلسة PTY دائمة)، بمسارات `C:\...` أصيلة ومتغيّرات `$env:NAME`. |
+| `@deepseek-ai/dsh-tool-cordis` | `cordis_inspect_list`, `cordis_inspect_query` | `ctx.tools`, `ctx.cordisInspect` | `tool/call`, `tool/result` | - | يقدّم وضعُ المؤلف أداتَي فحص للقراءة فقط في وقت التشغيل. ويقدّم مشغّلُ Cordis في المضيف سجلَّ الفحص؛ وتشترط استعلاماتُ العميل صفحةً متصلة. وألّف التغييراتِ الدائمة حزمًا وثبّتها بـ`plugin_manager`. |
+| `@deepseek-ai/dsh-tool-bash-persistent` | `bash` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | أداةُ bash دائمة واحدة معزولة بمالكها؛ ويقدّم تركيبُ النشر خلفيةَ PTY وقد يتجاوز وصفَ البيئة الذي يراه النموذج. |
+| `@deepseek-ai/dsh-tool-pwsh-persistent` | `pwsh` | `ctx.tools`،`ctx.terminals`،`an owning Agent at execution time` | `tool/call`،`PTY shell state`،`tool/result` | - | أداةُ pwsh دائمة واحدة معزولة بمالكها، وهي نظيرُ أداة bash الدائمة على Windows؛ ويقدّم تركيبُ النشر خلفيةَ PTY بلهجة pwsh وقد يتجاوز وصفَ البيئة الذي يراه النموذج. |
+| `@deepseek-ai/dsh-tool-str-replace-editor` | `str_replace_editor` | `ctx.tools`،`ctx.fs` | `tool/call`،`fs/observed after view presence/absence, edit absence, or successful mutation`،`tool/result` | - | أداةٌ مستقلة للعرض والإنشاء والاستبدال الحرفي الفريد وإدراج الأسطر فوق seam نظام الملفات؛ وهي تتركب مع أي واجهة صدفة أو طرفية. |
+| `@deepseek-ai/dsh-tool-fs` | `edit`،`read`،`read_image`،`write` | `ctx.tools`،`ctx.fs`،`ctx.systemPrompt`،`ctx.attachments (image-tool registration)`،`ctx.llm + an image-capable route (image-tool execution)` | `tool/call`،`fs/write-intent or fs/edit-intent for mutations`،`fs/observed after read presence/absence or successful file operation`،`durable attachment (read_image)`،`tool/result` | - | تضيف `@deepseek-ai/dsh-fs-observation-policy` سياسةَ «اقرأ قبل الكتابة أو التحرير» (وهي إضافةُ بوابة أحداث `fs/*` بلا تغيير schema)؛ ويُتوقع من النشر الذي يحمّل هذه الأدواتِ أن يحمّلها أيضًا. ولا تُسجَّل أداةُ الصور بلا `ctx.attachments`؛ وschema لديها مستقلٌّ عن المسار، ويرفض التنفيذُ ما لم يعلن النموذجُ المسلوك بعينه قبولَ مُدخَل الصور. |
+| `@deepseek-ai/dsh-tool-fs-search` | `glob`،`grep` | `ctx.tools`،`ctx.subprocess`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | `glob` و`grep` أداتا اكتشاف بلا شروط تطلقان ثنائيَّ ripgrep المحزوم (`@vscode/ripgrep`) عبر `ctx.subprocess` نداءين أماميين عاديين (لا مهامَّ خلفية قط) — بلا تثبيت `rg` على المضيف وبلا طبقة صدفة. ويستعمل الدليلُ `sampleOverCapGlobResults: true`؛ وعلى عمليات النشر أن تختار ذلك السلوكَ صراحةً. وتحفظ النتائجُ المسقوفة القائمةَ المنسَّقة كاملةً عبر خلفية `ctx.spillStore` الاختيارية؛ والمحدِّداتُ المعادة قابلةٌ للقراءة والبحث لاحقًا حين تكشف الخلفيةُ مساراتٍ محلية في عمليات نشر متجاورة. |
+| `@deepseek-ai/dsh-tool-terminal` | `terminal_close`،`terminal_list`،`terminal_open`،`terminal_read`،`terminal_send`،`terminal_signal` | `ctx.tools`،`ctx.terminals`،`ctx.systemPrompt`،`ctx.jobs at call time for run_in_background` | `tool/call`،`tool/result` | - | أدواتُ الطرفية الست اختياريةُ التفعيل وتكمّل أدواتِ الصدفة ونظام الملفات ذاتَ اللقطة الواحدة. ويُسجَّل `terminal_send(run_in_background: true)` في `ctx.jobs`؛ أما واجهاتُ TUI وتسلسلاتُ المفاتيح المسمّاة وBEL وتغييرُ الحجم والبدءُ التلقائي والمشاركةُ بين الوكلاء فغائبةٌ عن الـschema. |
+| `@deepseek-ai/dsh-tool-goal` | `create_goal`،`get_goal`،`update_goal` | `ctx.tools`،`ctx.agents`،`ctx.goals`،`ctx.systemPrompt`،`a calling Agent in an authorized open turn` | `tool/call`،`goal/change for mutations`،`tool/result` | - | تشترط `create` و`edit` و`pause` و`resume` سلطةَ إنسان مباشرة في الجذر؛ وتقبل `complete` و`blocked` أيضًا جولةَ الهدف الحالية بعينها. والحدُّ الأدنى الافتراضي لـ`blocked` ثلاثُ جولات مقبولة. |
+| `@deepseek-ai/dsh-schedule` | `schedule_create`،`schedule_delete`،`schedule_list` | `ctx.tools`،`ctx.sessions`،Session حفظ دائم، لم قدوم إنشاء live أصل Agent | `tool/call`،`schedule/change create or delete`،`tool/result` | - | تُسجَّل داخل نطاقات الوكلاء الجذريين الأحياء المنشأة بعد تحميل إضافة الجدولة الاختيارية وحدها. ويقبل الإصدارُ 1 قيمَ `after_seconds` و`at` المطلقة الصريحة و`every_seconds` ذاتَ المعدل الثابت المحدودة، ويفصح عن التسليم المحلي في الجلسة؛ وتشترط قراءاتُ الإدارة وتغييراتُها حاجزَ حفظ الجلسة المشترك. |
+| `@deepseek-ai/dsh-tool-lsp` | `lsp` | `ctx.tools`،`ctx.lsp`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | تُبقي أداةُ lsp انتقاءَ المزوّدين وعملياتِ خوادم اللغة الفرعية خلف `ctx.lsp`، فيبقى schema الذي يراه النموذجُ ثابتًا عبر المزوّدين. وتشترط مزوّدًا مسجَّلًا (مثل `@deepseek-ai/dsh-lsp-stdio`) في وقت التشغيل؛ وبلا واحد يعيد الاستعلامُ خطأَ `LSP_UNAVAILABLE` المبنيَن بدل تغيير الـschema. |
+| `@deepseek-ai/dsh-tool-ralph` | `ralph` | `ctx.tools`،`ctx.workflowEngine`،`ctx.subagents`،`ctx.systemPrompt`،`a calling Agent (exec.agent parents every fresh round)` | `tool/call`،`tool/result`،`workflow and child session events during execution` | - | مسارُ عمل أمامي ثابت يبدأ ابنًا مبنيَنًا جديدًا واحدًا لكل جولة؛ ولا ينتقي النموذجُ إلا الهدفَ غيرَ القابل للتغيير وسقفَ جولات اختياريًا. |
 | `@deepseek-ai/dsh-tool-skill` | `skill` | `ctx.tools`،`ctx.agents`،`ctx.skills` | `tool/call`،`tool/result`،`user/message replacement catalogs via agent.inject()` | - | - |
-| `@deepseek-ai/dsh-tool-session-query` | `session_event_read`،`session_event_search`،`session_event_trace`،`session_search`،`session_trace` | `ctx.tools`،`ctx.systemPrompt`،`ctx.sessionQuery`،`a calling Agent for workspace authority` | `tool/call`،`tool/result` | - | هذا 5 عدد فقط قراءة أداة سوف إخفاء مزود تنقل علامة، و أصل حسب غير ممكن تغيير استدعاء agent جلسة لـ كل نتيجة تخويل. هذا حزمة حاجة اختيار تفعيل؛ حاجة قوي صنع قطع توقف وقت أو حد سطر داخل إخراج تركيب أيضا سوف تركيب عام مهلة أو spill سياسة. |
-| `@deepseek-ai/dsh-tool-subagent` | `list_subagent_models`،`subagent` | `ctx.tools`،`ctx.subagents`،`ctx.systemPrompt`،`لأجل نموذج اكتشاف و الذي اختيار توجيه تحقق ctx.llm` | `tool/call`،`tool/result`،`child session events through the chosen provider` | `subagent`،`subagent_fork` | تسجيل تفويض إرسال أداة اسم أخذ قرار في تحميل وقت `toolName` إعداد (افتراضي لـ `subagent`) ؛ فوق وصف افتراضي schema إغلاق نموذج اختيار، بينما اكتشاف schema فإن عرض لـ قد تفعيل Session في متاح ثابت إعداد طقم أداة.Web preset سوف في كل جديد قمة طبقة Session إنشاء وقت قراءة إضافة صفحة انحراف جيد، و لـ ذلك فرعي Session إبقاء هذا قرار؛`subagent_fork` بداية نهاية استخدام ثابت توجيه. كل نسخة عبر `modelSelectionSettings`،`backgroundMode` و `enableRunInBackground` مستقل تحكم هل قراءة نموذج اختيار ضبط و ذلك خلفية سلوك. |
-| `@deepseek-ai/dsh-tool-subagent-control` | `interrupt_agent`،`list_agents`،`send_message` | `ctx.tools`،`ctx.subagents`،`ctx.agents and ctx.sessionProjections (list_agents only)` | `tool/call`،`tool/result`،`child session events through ctx.subagents` | - | هذه هو تحكم يمكن متابعة خلفية subagent عام تسمية أداة: ربط مزود `tool-subagent` نسخة تسجيل مختلف تفويض إرسال أداة؛ هذه الحزمة تسجيل مرة `send_message` و `interrupt_agent`، آخر من `list_agents` عبر مفرد وحيد تحميل `/list-agents` إضافة توفير، ذلك دليل سطر استخدام sessionProjections و فوري Agent سجل التسجيل. |
-| `@deepseek-ai/dsh-tool-jobs` | `job_kill`،`job_list`،`job_output` | `ctx.tools`،`ctx.jobs`،`ctx.systemPrompt` | `tool/call`،`tool/result`،`user/message via agent.inject() for background completion notices` | - | و مهمة نوع صنف غير متصل خلفية مهمة تحكم جهاز: خلفية bash أمر،PTY إرسال و subagent كل عبر نفسه 3 عدد أداة قراءة، صف خروج و إنهاء. تحميل هذا إضافة سوف تعليق وصل تحكم جهاز، من بينما تفعيل إنتاج جهة `ctx.jobs.start()`. |
-| `@deepseek-ai/dsh-experimental-tool-agent-team` | `interrupt_agent`،`list_agents`،`send_message`،`spawn_teammate`،`team_task_create`،`team_task_get`،`team_task_list`،`team_task_update`،`wait_agent` | `ctx.tools`،`ctx.systemPrompt`،`ctx.agentTeams`،`an exact live Team member Agent` | `tool/call`،`team/member`،`team/message/queued`،`team/message/delivered`،`team/task`،`tool/result` | - | هذا 9 عدد أداة حد تحديد في خفي صيغة Team Lead و حمل دائم teammate أثر مجال. مع منتج إصدار dsh-base bundle افتراضي منع استخدام هذا حزمة؛ وثيقة في Agent Teams profile patch سوف تفعيل هو، و منع استخدام قديم continuable child نفس اسم تحكم أداة. |
-| `@deepseek-ai/dsh-tool-todo` | `todo_write` | `ctx.tools`،`owning Agent session` | `tool/call`،`todo/write`،`tool/result` | - | todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/write حدث تصيير لـ فحص بيان.`allowParallelInProgress` هو لا يوجد قيمة افتراضية لا بد ملء بند، لذلك هذا دليل واضح اختيار `true`، مقابل وصف سماح معا وجود كثير عدد `in_progress` بند. اختيار `false` نشر سوف نيل نيل نفس أداة، لكن وصف سوف اشتراط فقط قدرة لديه 1 عدد نشط حركة مهمة. |
+| `@deepseek-ai/dsh-tool-session-query` | `session_event_read`،`session_event_search`،`session_event_trace`،`session_search`،`session_trace` | `ctx.tools`،`ctx.systemPrompt`،`ctx.sessionQuery`،`a calling Agent for workspace authority` | `tool/call`،`tool/result` | - | تُخفي الأدواتُ الخمسُ للقراءة فقط مؤشراتِ المزوّدين وتخوّل كلَّ نتيجة من جلسة الوكيل المستدعي غير القابلة للتغيير. والحزمةُ اختياريةُ التفعيل؛ وتركّب التركيباتُ التي تحتاج إلى مهل مفروضة أو خرج مضمَّن محدود سياساتِ المهلة أو الفائض العامة أيضًا. |
+| `@deepseek-ai/dsh-tool-subagent` | `list_subagent_models`،`subagent` | `ctx.tools`،`ctx.subagents`،`ctx.systemPrompt`،`لأجل نموذج اكتشاف و الذي اختيار توجيه تحقق ctx.llm` | `tool/call`،`tool/result`،`child session events through the chosen provider` | `subagent`،`subagent_fork` | اسمُ التفويض المسجَّل هو ضبطُ `toolName` عند التحميل (وافتراضُه `subagent`)؛ وschema الافتراضي أعلاه انتقاءُ النماذج فيه معطَّل، بينما يُعرض schema الاكتشاف رفيقًا ثابتًا متاحًا في جلسة مفعَّلة. وتأخذ presets في Web عيّنةً من تفضيل الإضافات لكل جلسة عليا جديدة وتحفظ ذلك القرارَ لجلسات أبنائها؛ ويبقى `subagent_fork` ثابتَ المسار. وتتحكم كلُّ نسخة مستقلةً في قراءتها إعداداتِ انتقاء النماذج وفي سلوك خلفيتها عبر `modelSelectionSettings` و`backgroundMode` و`enableRunInBackground`. |
+| `@deepseek-ai/dsh-tool-subagent-control` | `interrupt_agent`،`list_agents`،`send_message` | `ctx.tools`،`ctx.subagents`،`ctx.agents and ctx.sessionProjections (list_agents only)` | `tool/call`،`tool/result`،`child session events through ctx.subagents` | - | أدواتُ التحكم المسمّاة عالميًا فوق الوكلاء الفرعيين الخلفيين القابلين للمتابعة: فنسخُ `tool-subagent` المرتبطة بمزوّدين تسجّل أدواتِ تفويض متمايزة، بينما تسجّل هذه الحزمةُ `send_message` و`interrupt_agent` مرةً واحدة، مع `list_agents` من إضافة `/list-agents` المحمَّلة على حدة (وتستعمل صفوفُ دليلها سجلَّي sessionProjections والوكلاء الحي). |
+| `@deepseek-ai/dsh-tool-jobs` | `job_kill`،`job_list`،`job_output` | `ctx.tools`،`ctx.jobs`،`ctx.systemPrompt` | `tool/call`،`tool/result`،`user/message via agent.inject() for background completion notices` | - | متحكمُ مهام الخلفية المحايد تجاه الأصناف: فأوامرُ bash الخلفية وإرسالاتُ PTY والوكلاءُ الفرعيون تُقرأ وتُعدَّد وتُقتل عبر الأدوات الثلاث نفسِها. ويربط تحميلُ الإضافة المتحكمَ الذي يسلّح `ctx.jobs.start()` لدى المنتِجين. |
+| `@deepseek-ai/dsh-experimental-tool-agent-team` | `interrupt_agent`،`list_agents`،`send_message`،`spawn_teammate`،`team_task_create`،`team_task_get`،`team_task_list`،`team_task_update`،`wait_agent` | `ctx.tools`،`ctx.systemPrompt`،`ctx.agentTeams`،`an exact live Team member Agent` | `tool/call`،`team/member`،`team/message/queued`،`team/message/delivered`،`team/task`،`tool/result` | - | الأدواتُ التسع كلُّها محدودةٌ بقادة الفرق الضمنيين والزملاء الدائمين. وتُبقي حزمةُ dsh-base المشحونة الحزمةَ معطَّلة؛ وتفعّلها رقعةُ الملف التعريفي الموثَّقة لفرق الوكلاء بينما تعطّل أسماءَ التحكم القديمة في الأبناء القابلين للمتابعة. |
+| `@deepseek-ai/dsh-tool-todo` | `todo_write` | `ctx.tools`،`owning Agent session` | `tool/call`،`todo/write`،`tool/result` | - | `todo_write` حالةٌ تملكها الجلسة؛ وتعرض الواجهاتُ أحدثَ حدث `todo/write` قائمةَ تحقق. و`allowParallelInProgress` مشترَطة بلا افتراض، فيذكر الدليلُ اختيارَه: `true`، ووصفُه يدعو إلى عدة بنود `in_progress`. أما النشرُ الذي يختار `false` فيتلقى الأداةَ نفسَها بوصف يطلب مهمةً نشطة واحدة بالضبط. |
 | `@deepseek-ai/dsh-tool-workflow` | `workflow` | `ctx.tools`،`ctx.workflowEngine`،`ctx.systemPrompt`،`a calling Agent (exec.agent parents the script children)` | `tool/call`،`tool/result` | - | - |
-| `@deepseek-ai/dsh-tool-web` | `web_fetch`،`web_search` | `ctx.tools`،`ctx.web`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | web_search و web_fetch سوف مزود اختيار وضع في ctx.web بعد، جعل نموذج مرئي schema في أكثر تبديل خلفية وقت إبقاء مستقر. |
+| `@deepseek-ai/dsh-tool-web` | `web_fetch`،`web_search` | `ctx.tools`،`ctx.web`،`ctx.systemPrompt` | `tool/call`،`tool/result` | - | تُبقي `web_search` و`web_fetch` انتقاءَ المزوّدين خلف `ctx.web` فتبقى schemas التي يراها النموذجُ ثابتةً عبر تبديل الخلفيات. |
 
 <a id="deepseek-aidsh-plugin-manager"></a>
 
@@ -55,7 +55,7 @@
 
 ### `plugin_manager`
 
-صف خروج حالي profile في إضافة أو تركيب حزمة، تفعيل أو منع استخدام هو جمع، تثبيت تركيب حزمة أو إزالة قد تثبيت تركيب حزمة. كل بند عملية كل اشتراط danger-full-access إذن أو هذا مرة استدعاء دفعة دقيق. دفعة دقيق لا تغيير جلسة إذن نمط. تغيير أثر هذا profile كل جلسة. أولا صف خروج بند بـ نيل أخذ دقيق تأكيد معرف. حزمة تثبيت ممكن تشغيل قد نيل دفعة دقيق بناء نص برمجي. دعم حمل حار تحديث profile قيام أي تطبيق تغيير؛ فقط بدء وقت تحميل profile حاجة إعادة بدء.
+يعدّد الإضافاتِ أو الحزمَ في الملف التعريفي الحالي، أو يفعّلها أو يعطّلها، أو يثبّت حزمةً، أو يزيل حزمةً مثبَّتة. ويشترط كلُّ فعل إذنَ danger-full-access أو موافقةً على هذا النداء. ولا تغيّر الموافقةُ وضعَ أذونات الجلسة. وتؤثر التغييراتُ في كل جلسة في هذا الملف التعريفي. عدِّد أولًا لتحصّل المعرّفاتِ بعينها. وقد ينفّذ تثبيتُ الحزم سكربتاتِ بناء مسموحًا بها. وتطبّق الملفاتُ التعريفية الحية التغييراتِ فورًا؛ أما ملفاتُ الإقلاع فتشترط إعادةَ تشغيل.
 
 ```json
 {
@@ -103,7 +103,7 @@
 }
 ```
 
-مصدر: [`packages/boot/plugin-manager/src/tools.ts`](../packages/boot/plugin-manager/src/tools.ts)
+المصدر: [`packages/boot/plugin-manager/src/tools.ts`](../packages/boot/plugin-manager/src/tools.ts)
 
 <a id="deepseek-aidsh-mcp-resources"></a>
 
@@ -111,7 +111,7 @@
 
 ### `list_mcp_resource_templates`
 
-صف خروج MCP خادم توفير معامل تحويل مورد URI نموذج لوح.
+يعدّد قوالبَ روابط الموارد ذات المعاملات من خادم MCP.
 
 ```json
 {
@@ -132,11 +132,11 @@
 }
 ```
 
-مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+المصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 ### `list_mcp_resources`
 
-صف خروج MCP خادم توفير مورد.
+يعدّد المواردَ المتاحة من خادم MCP.
 
 ```json
 {
@@ -157,11 +157,11 @@
 }
 ```
 
-مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+المصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 ### `read_mcp_resource`
 
-حسب URI من إشارة تحديد خادم قراءة MCP مورد. استخدام قد صف خروج URI أو توسيع بعد مورد نموذج لوح.
+يقرأ موردَ MCP برابطه من الخادم المسمّى. استعمل رابطًا معدودًا أو قالبَ مورد موسَّعًا.
 
 ```json
 {
@@ -183,7 +183,7 @@
 }
 ```
 
-مصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
+المصدر: [`packages/mcp/mcp-resources/src/tools.ts`](../packages/mcp/mcp-resources/src/tools.ts)
 
 <a id="deepseek-aidsh-experimental-browser-use-stagehand-native"></a>
 
@@ -191,7 +191,7 @@
 
 ### `stagehand_act`
 
-استخدام إعداد Stagehand نموذج تنفيذ مرة ذاتي لكن لغة متصفح عملية.
+ينفّذ فعلَ متصفح واحدًا بلغة طبيعية عبر نموذج Stagehand المضبوط.
 
 ```json
 {
@@ -214,11 +214,11 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_extract`
 
-استخدام إعداد Stagehand نموذج و اختياري JSON Schema رفع أخذ صفحة بيانات.
+يستخرج بياناتِ الصفحة عبر نموذج Stagehand المضبوط وschema JSON اختياري.
 
 ```json
 {
@@ -283,11 +283,11 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_navigate`
 
-سوف Stagehand متصفح وسم صفحة تنقل حتى إشارة تحديد URL.
+ينقل لسانَ متصفح Stagehand إلى رابط.
 
 ```json
 {
@@ -310,11 +310,11 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_observe`
 
-استخدام إعداد Stagehand نموذج فحص بحث رمز دمج إشارة أمر متصفح عملية.
+يجد أفعالَ المتصفح المطابِقة لتعليمة عبر نموذج Stagehand المضبوط.
 
 ```json
 {
@@ -337,11 +337,11 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_screenshot`
 
-قطع أخذ Stagehand وسم صفحة رسم مثل بـ توفير نظر شعور فحص.
+يلتقط صورةَ شاشة للسان Stagehand للفحص البصري.
 
 ```json
 {
@@ -364,11 +364,11 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 ### `stagehand_tabs`
 
-صف خروج، إنشاء، اختيار أو إغلاق Stagehand متصفح وسم صفحة.
+يعدّد لسانَ متصفح Stagehand أو ينشئه أو يختاره أو يغلقه.
 
 ```json
 {
@@ -430,7 +430,7 @@
 }
 ```
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 <a id="deepseek-aidsh-tool-ask-user"></a>
 
@@ -438,7 +438,7 @@
 
 ### `ask_user_question`
 
-متابعة عملية قبل، إذا حاجة تأكيد، اختيار أو ناقص معلومة، طلب نحو مستخدم رفع خروج بسيط واضح مشكلة. إرسال واحد أو كثير عدد مشكلة، كل مشكلة كل حمل واحد مستقر id، هذا id سوف في جواب سجل في أصل مثال إرجاع.
+اسأل المستخدمَ سؤالًا موجزًا حين تحتاج إلى تأكيد أو اختيار أو معلومة ناقصة قبل المضي. أرسل سؤالًا واحدًا أو أكثر، ولكلٍّ معرّفٌ ثابت يُردّ مع الجواب.
 
 ```json
 {
@@ -502,9 +502,9 @@
 }
 ```
 
-مصدر:[`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts)
+المصدر: [`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts)
 
-ask_user_question سوف مؤقت توقف استدعاء الأداة، مباشر إلى حالي UI مزود إرجاع شخص صنف جواب سجل.
+توقف `ask_user_question` نداءَ الأداة حتى يعيد مزوّدُ الواجهة النشط جوابَ إنسان.
 
 <a id="deepseek-aidsh-tools"></a>
 
@@ -512,7 +512,7 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 
 ### `run_code`
 
-إبرة مقابل متاح أداة تنفيذ TypeScript برنامج. قبول اثنان عدد لا بد ملء معامل:`code`، أي مختلف خطوة دالة**دالة جسم**(فقط استخدام يمكن مسح حذف لغة قاعدة؛ دعم حمل قمة طبقة `await` و `return`) ؛ و `description`، بسيط يلزم شرح هذا برنامج فعل ماذا. طلب أصل حسب توجيه النظام في إعلان، بـ `await tools.name(args)` شكل صيغة استدعاء أداة. فقط لديه ضرب طبع أو إرجاع محتوى يخص برنامج إخراج، طلب حذر حذر غربلة اختيار. يحتوي صورة فرعي أداة نتيجة سوف في تشغيل انتهاء بعد مرفق إضافة.
+ينفّذ برنامجَ TypeScript في مقابل الأدوات المتاحة. ويأخذ وسيطين مشترَطين: `code`، وهو **متنُ** دالة لاتزامنية (بنحو قابل للمحو فقط؛ و`await` و`return` في المستوى الأعلى يعملان)، و`description`، وهو ملخصٌ قصير لما يفعله البرنامج. ونادِ الأدواتِ بالصيغة `await tools.name(args)` بحسب التصريحات في مطالبة النظام. ولا يكون خرجُ البرنامج إلا ما تطبعه أو تعيده — فانتقِه بعناية. وتُرفق نتائجُ الأدوات الفرعية الحاملةُ صورًا بعد التشغيل.
 
 ```json
 {
@@ -550,9 +550,9 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 }
 ```
 
-مصدر:[`packages/core/tools/src/ptc.ts`](../packages/core/tools/src/ptc.ts)
+المصدر: [`packages/core/tools/src/ptc.ts`](../packages/core/tools/src/ptc.ts)
 
-في `mode: ptc`/`mode: both` تحت، هو من أداة سجل التسجيل كل، بصفة يمكن مرور ترشيح قدرة طبقة خارج إبقاء نقل آلية (مشاركة رؤية PTC mode Agent Note). في `ptc` تحت، هو هو سجل التسجيل مقابل بروتوكول صيغة وحيد مساهمة؛ أخرى مرئي قدرة في استخدام قد تحميل وقت التشغيل لغة توليد SDK فصل عقدة في إعلان. برنامج عبر binding استدعاء هذه قدرة، استدعاء حسب وفق أصلي تزامن اتفاق ضبط درجة: بدء ترتيب و سياسة التزام دوران إيداع ترتيب، تزامن أمان دالة جسم الأكثر كثير إعادة تراكم تنفيذ `maxParallelSubCalls` عدد. استدعاء سوف إعادة دخول كامل كما تلقي حراسة حماية حفظ حماية أداة خط الإنتاج، و سوف كل تضمين طقم تنفيذ صلة ربط إلى هذا خارج طبقة نتيجة.
+يملكه سجلُّ الأدوات نقلًا محجوزًا خارج طبقات القدرات القابلة للترشيح تحت `mode: ptc` أو `mode: both` (انظر ملاحظة الوكيل عن وضع PTC). وتحت `ptc` هو إسهامُ السجل الوحيد على الشبكة؛ أما سائرُ القدرات المرئية فتُعلَن في قسم SDK مولَّد بلغة بيئة التشغيل المحمَّلة، ويناديها البرنامجُ عبر ارتباطات مجدولة تحت عقد التوازي الأصيل (بدءٌ وسياسةٌ بترتيب التقديم؛ وتتداخل المتونُ الآمنة مع التوازي حتى `maxParallelSubCalls`) تعيد دخولَ مسار الأدوات المحروس كاملًا وتربط كلَّ تنفيذ متداخل بهذه النتيجة الخارجية.
 
 <a id="deepseek-aidsh-plan-mode"></a>
 
@@ -560,7 +560,7 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 
 ### `exit_plan_mode`
 
-فقط في قاعدة تخطيط نمط تحت استخدام. إيداع خطة توفير مستخدم مراجعة، و في نيل دفعة بعد خروج قاعدة تخطيط نمط. إرسال**كامل** Markdown خطة، بـ واحد لـ خطة تسمية # عنوان فتح رأس. مستخدم يمكن دفعة دقيق (من أنت تحت واحد خطوة بدء تنفيذ خطة) ، أيضا يمكن اشتراط متابعة قاعدة تخطيط؛ ذلك ملاحظات سوف عبر أداة نتيجة إرجاع، طلب تعديل بعد مجددا مرة إيداع.
+استعملها في وضع التخطيط وحده. اعرض خطتَك لمراجعة المستخدم، واخرج من وضع التخطيط عند الموافقة. وأرسل الخطةَ **كاملةً** بصيغة markdown، بادئًا بعنوان `#` يسمّيها. وللمستخدم أن يوافق (فتنفّذ الخطةَ من خطوتك التالية) أو أن يواصل التخطيط — وتعود ملاحظاتُه في نتيجة الأداة؛ فراجِع واعرض ثانيةً.
 
 ```json
 {
@@ -577,9 +577,9 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 }
 ```
 
-مصدر:[`packages/plan/plan-mode/src/index.ts`](../packages/plan/plan-mode/src/index.ts)
+المصدر: [`packages/plan/plan-mode/src/index.ts`](../packages/plan/plan-mode/src/index.ts)
 
-قاعدة تخطيط لم تنشيط وقت،exit_plan_mode ما زال إبقاء في موجه إلى نموذج schema في، هذا مثال حالة تحويل لن في قاعدة تخطيط سياسة تغيير خارج مقدار خارج صنع صار أداة دليل تغيير حركة. ذلك تنفيذ مسار سوف رفض قاعدة تخطيط نمط خارج استدعاء؛ في قاعدة تخطيط نمط تحت، هو عبر مستخدم تفاعل seam إيداع خطة (دفعة دقيق/أصل حسب ملاحظات متابعة قاعدة تخطيط) ، دفعة دقيق بعد سوف في خطوة حد سجل قاعدة تخطيط نمط قد توقف استخدام.
+تبقى `exit_plan_mode` في schema الذي يراه النموذجُ ما دام التخطيطُ خاملًا، فلا تضيف الانتقالاتُ اضطرابَ دليل أدوات فوق تغيير سياسة الخطة. ويرفض مسارُ تنفيذها النداءاتِ خارج وضع التخطيط؛ وفي وضع التخطيط تعرض الخطةَ عبر seam أسئلة المستخدم (الموافقةُ أو مواصلةُ التخطيط بملاحظات)، وتسجّل الموافقةُ خمولَ وضع التخطيط عند حدّ الخطوة.
 
 <a id="deepseek-aidsh-tool-bash"></a>
 
@@ -587,7 +587,7 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 
 ### `bash`
 
-تنفيذ bash أمر (`bash -c`) و إرجاع stdout/stderr. كل مرة استدعاء كل في جديد shell في تشغيل: استدعاء بين لا إبقاء أي حالة (cwd، متغير، دالة) ، طلب نقل دخول `workdir`، لا يلزم استخدام `cd`. غير صفر خروج سوف تقرير إبلاغ لـ `[exit code: N]`. حالي harness بيئة معلومة عبر حمل إدارة `$DSH_*` متغير عام، حاجة وقت طلب فحص هذه متغير. أمر ممكن في ملف صندوق رملي في تشغيل؛ يتم منع توقف ملف عملية تقرير إبلاغ لـ `[sandbox: file access denied under <mode> mode]`، هذا هو سياسة رفض، بينما لا هو أمر نقص وقوع، طلب لا تبديل واحد نوع طريقة إعادة محاولة. مقارنة طويل إخراج سوف مقتطع، فقط إبقاء ذيل جزء؛ مثل متاح، كامل إخراج سوف حفظ إلى ملف و تقرير إبلاغ ذلك مسار. مقابل في طويل وقت تشغيل أمر، طلب ضبط `run_in_background: true`: استدعاء سوف قيام أي إرجاع job id؛ استخدام `job_output` قراءة إخراج، استخدام `job_kill` إيقاف مهمة.
+ينفّذ أمرَ bash (`bash -c`) ويعيد stdout وstderr لديه. ويعمل كلُّ نداء في صدفة جديدة: فلا حالةَ (لا دليلَ عمل ولا متغيّرات ولا دوال) تبقى بين النداءات — فمرّر `workdir` بدل استعمال `cd`. ويُبلَّغ عن الخروج غير الصفري بالصيغة `[exit code: N]`. وتُكشف حقائقُ بيئة الحزام الحالية عبر متغيّرات `$DSH_*` المدارة؛ ففحصها عند الحاجة. وقد تعمل الأوامرُ تحت عزل ملفات؛ ويُبلَّغ عن عملية ملفات محجوبة بالصيغة `[sandbox: file access denied under <mode> mode]` — وهو منعُ سياسة لا خللٌ في الأمر؛ فلا تعِد المحاولةَ بطريق آخر. ويُقتطع الخرجُ الطويل إلى ذيله؛ ويُحفظ الخرجُ كاملًا في ملف يُبلَّغ عن مساره حين يتوفر. واضبط `run_in_background: true` للأوامر الطويلة: فيعيد النداءُ معرّفَ مهمة فورًا؛ واقرأ خرجَها بـ`job_output` وأوقِفها بـ`job_kill`.
 
 ```json
 {
@@ -621,9 +621,9 @@ ask_user_question سوف مؤقت توقف استدعاء الأداة، مبا�
 }
 ```
 
-مصدر:[`packages/shell/tool-bash/src/index.ts`](../packages/shell/tool-bash/src/index.ts)
+المصدر: [`packages/shell/tool-bash/src/index.ts`](../packages/shell/tool-bash/src/index.ts)
 
-bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة (قدوم ذاتي `@deepseek-ai/dsh-tool-jobs`) استلام تجميع/إيقاف؛ منع استخدام `enableRunInBackground` إعداد (افتراضي لـ true) بعد، هذا معامل سوف يتم تماما إزالة.
+أداةُ bash هي المستهلكُ الذي يراه النموذجُ لـseam منفّذ bash. ويُسجَّل تشغيلُ `run_in_background` في بيئة `ctx.jobs` العامة ويُجمع أو يُوقف عبر أدوات `job_*` من `@deepseek-ai/dsh-tool-jobs`؛ ويزيل ضبطُ `enableRunInBackground` (وافتراضُه true) المعاملَ كلَّه حين يُعطَّل.
 
 <a id="deepseek-aidsh-tool-present"></a>
 
@@ -631,7 +631,7 @@ bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. �
 
 ### `present`
 
-إعلان تسليم Session نظام الملفات يمكن وصول قد لديه ملف. إذا أنت إنشاء أو تحديث ملف هو مستخدم اشتراط استقبال صار نتيجة، فإن يجب في كتابة إتمام بعد، نهائي عودة تكرار قبل استدعاء present، يشمل عبر Bash أو شفرة تنفيذ إنشاء ملف. في عودة تكرار في رفع إلى ملف مسار لا يستطيع بديل هذا مرة استدعاء. ملف يجب قد وجود. مستخدم فتح حالي مصدر ملف؛ لا نسخ أو حفظ ذلك محتوى.
+يعلن ملفاتٍ موجودة يمكن بلوغُها عبر نظام ملفات الجلسة تسليماتٍ نهائية. وحين يكون ملفٌّ تنشئه أو تحدّثه خرجًا طلب المستخدمُ تلقّيه، فعليك نداءُ `present` بعد كتابته وقبل ردّك النهائي، بما في ذلك الملفاتُ المنشأة عبر Bash أو تنفيذ الشفرة. وذكرُ مساره في ردّك لا يغني عن هذا النداء. ويجب أن تكون الملفاتُ موجودةً سلفًا. ويفتح المستخدمُ ملفاتِ المصدر الحالية؛ ولا تُنسخ محتوياتُها ولا تُحفظ.
 
 ```json
 {
@@ -664,9 +664,9 @@ bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. �
 }
 ```
 
-مصدر: [`packages/deliverables/tool-present/src/index.ts`](../packages/deliverables/tool-present/src/index.ts)
+المصدر: [`packages/deliverables/tool-present/src/index.ts`](../packages/deliverables/tool-present/src/index.ts)
 
-تسليم عودة استدعاء جهة Session كل؛Web ui-deliverables توفير مصدر ملف فتح و بطاقة.
+التسليماتُ تخص الجلسةَ المستدعية؛ وتقدّم ui-deliverables في Web فتحَ ملفات المصدر والبطاقات.
 
 <a id="deepseek-aidsh-tool-pwsh"></a>
 
@@ -674,7 +674,7 @@ bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. �
 
 ### `pwsh`
 
-تنفيذ PowerShell أمر (`pwsh -Command`) و إرجاع stdout/stderr. كل مرة استدعاء كل في جديد pwsh عملية في تشغيل: استدعاء بين لا إبقاء أي حالة (cwd، متغير، دالة) ، طلب نقل دخول `workdir`، لا يلزم استخدام `cd`. مسار اعتماد Windows أصلي شكل صيغة (`C:\...`) ؛ استخدام `$env:NAME` قراءة بيئة متغير. غير صفر خروج سوف تقرير إبلاغ لـ `[exit code: N]`. حالي harness بيئة معلومة عبر حمل إدارة `$env:DSH_*` متغير عام، حاجة وقت طلب فحص هذه متغير. أمر ممكن في ملف صندوق رملي في تشغيل؛ يتم منع توقف ملف عملية تقرير إبلاغ لـ `[sandbox: file access denied under <mode> mode]`، هذا هو سياسة رفض، بينما لا هو أمر نقص وقوع، طلب لا تبديل واحد نوع طريقة إعادة محاولة. مقارنة طويل إخراج سوف مقتطع، فقط إبقاء ذيل جزء؛ مثل متاح، كامل إخراج سوف حفظ إلى ملف و تقرير إبلاغ ذلك مسار. في Windows فوق، يتم قوي صنع إنهاء أمر سوف بـ `[exit code: 1]` تسوية كما لا حمل إشارة علامة، طلب سوف ذلك نظر لـ في قطع، بينما لا هو أمر فشل. مقابل في طويل وقت تشغيل أمر، طلب ضبط `run_in_background: true`: استدعاء سوف قيام أي إرجاع job id؛ استخدام `job_output` قراءة إخراج، استخدام `job_kill` إيقاف مهمة.
+ينفّذ أمرَ PowerShell (`pwsh -Command`) ويعيد stdout وstderr لديه. ويعمل كلُّ نداء في عملية pwsh جديدة: فلا حالةَ (لا دليلَ عمل ولا متغيّرات ولا دوال) تبقى بين النداءات — فمرّر `workdir` بدل استعمال `cd`. وتستعمل المساراتُ صيغةَ Windows الأصيلة (`C:\...`)؛ واقرأ متغيّراتِ البيئة بـ`$env:NAME`. ويُبلَّغ عن الخروج غير الصفري بالصيغة `[exit code: N]`. وتُكشف حقائقُ بيئة الحزام الحالية عبر متغيّرات `$env:DSH_*` المدارة؛ ففحصها عند الحاجة. وقد تعمل الأوامرُ تحت عزل ملفات؛ ويُبلَّغ عن عملية ملفات محجوبة بالصيغة `[sandbox: file access denied under <mode> mode]` — وهو منعُ سياسة لا خللٌ في الأمر؛ فلا تعِد المحاولةَ بطريق آخر. ويُقتطع الخرجُ الطويل إلى ذيله؛ ويُحفظ الخرجُ كاملًا في ملف يُبلَّغ عن مساره حين يتوفر. وعلى Windows يستقر أمرٌ قُتل قسرًا بالصيغة `[exit code: 1]` بلا واسم إشارة — فعامله انقطاعًا لا فشلَ أمر. واضبط `run_in_background: true` للأوامر الطويلة: فيعيد النداءُ معرّفَ مهمة فورًا؛ واقرأ خرجَها بـ`job_output` وأوقِفها بـ`job_kill`.
 
 ```json
 {
@@ -708,9 +708,9 @@ bash أداة هو bash منفذ seam موجه إلى نموذج مستهلك. �
 }
 ```
 
-مصدر:[`packages/shell/tool-pwsh/src/index.ts`](../packages/shell/tool-pwsh/src/index.ts)
+المصدر: [`packages/shell/tool-pwsh/src/index.ts`](../packages/shell/tool-pwsh/src/index.ts)
 
-pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة قول مستهلك (من `@deepseek-ai/dsh-pwsh-local` انتظار PowerShell منفذ لـ `ctx.shell` توفير خلفية) ؛ حذف صندوق رملي واجهة خارج، هو تدريجي بند مقابل bash استدعاء الأداة. استخدام `run_in_background` تشغيل سوف تسجيل إلى عام `ctx.jobs` وقت التشغيل، و عبر `job_*` أداة استلام تجميع/إيقاف؛ حمل إدارة `DSH_*` بيئة قدوم ذاتي `@deepseek-ai/dsh-shell-env`. كل مرة استدعاء كل في جديد عملية في تشغيل، لا استخدام حمل دائم PTY جلسة. مسار اعتماد أصلي `C:\...` شكل صيغة، متغير اعتماد `$env:NAME`.
+أداةُ pwsh هي المستهلكُ بلهجة PowerShell لـseam منفّذ bash في تركيبات Windows (ويسند `ctx.shell` منفّذُ PowerShell مثل `@deepseek-ai/dsh-pwsh-local`)؛ وهي تحاكي أداةَ bash نداءً بنداء ناقصًا ضوابطَ العزل — فتُسجَّل تشغيلاتُ `run_in_background` في بيئة `ctx.jobs` العامة وتُجمع أو تُوقف عبر أدوات `job_*`، وتأتي بيئةُ `DSH_*` المدارة من `@deepseek-ai/dsh-shell-env`. ويعمل كلُّ نداء في عملية جديدة (بلا جلسة PTY دائمة)، بمسارات `C:\...` أصيلة ومتغيّرات `$env:NAME`.
 
 <a id="deepseek-aidsh-tool-cordis"></a>
 
@@ -718,7 +718,7 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `cordis_inspect_list`
 
-صف خروج Host حالي معروف كل Cordis Inspect Provider، يشمل محلي Host Provider و Client تزامن الأكثر جديد بيان. كل بند يتضمن منصة، استخدام طريق، فقط قراءة طريقة و إدخال إخراج schema. تحرير كتابة أو إعداد إضافة قبل أولا استدعاء هذا أداة، مجددا من نتيجة اختيار cordis_inspect_query provider و طريقة. لا يلزم تخمين قياس اسم، أيضا لا يلزم يأخذ Inspect طريقة عند عمل إضافة شفرة يمكن استدعاء عمل خدمة Service.
+يعدّد كلَّ مزوّد فحص Cordis يعرفه المضيفُ حاليًا، ومنهم مزوّدو المضيف المحليون وأحدثُ البيانات المتزامنة من العميل. ويحتوي كلُّ مدخل منصتَه وغرضَه وطرائقَه للقراءة فقط وschemas مُدخَله ومُخرَجه. نادِ هذه الأداةَ قبل كتابة إضافة أو ضبطها، ثم اختر المزوّدَ والطريقةَ لـ`cordis_inspect_query` من نتيجتها. ولا تخمّن الأسماءَ ولا تعامل طريقةَ فحص بوصفها خدمةَ عمل تستطيع شفرةُ الإضافة نداءَها.
 
 ```json
 {
@@ -727,11 +727,11 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
+المصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
 
 ### `cordis_inspect_query`
 
-تنفيذ Inspect Provider واضح إعلان فقط قراءة استعلام.platform،provider و method يجب قدوم ذاتي cordis_inspect_list،input يجب رمز دمج هذا طريقة schema. تحرير كتابة إضافة شفرة قبل، استخدام هذا أداة قراءة دقيق تأكيد Service طريقة،Event نمط،Builtin توقيع،Tool schema، رئيسي عنوان token، أو فوري Slot شجرة و props.Host استعلام في محلي تشغيل.Client استعلام انتظار صفحة أول عدد صالح استجابة، مباشر إلى صفحة عودة ينبغي أو أداة إلغاء. هذا أداة لا يستطيع استدعاء عمل خدمة Service طريقة أو تعديل وقت التشغيل. مقابل في Service.listService و Event.listEvents، لا نقل input يمكن تصفح دقيق بسيط توقيع دليل، مجددا استعلام دقيق تأكيد خدمة أو حدث بـ نيل نيل كامل اتفاق و مرجع نوع. مقابل في Slots.listSubTree، لا نقل root يمكن تصفح دقيق بسيط شجرة؛ استعلام دقيق تأكيد Slot root يمكن نيل نيل كامل تسجيل اتفاق و props، بينما استعلام دقيق تأكيد Factory root فقط إرجاع identity،scope و registrant.
+يشغّل استعلامًا للقراءة فقط أعلنه مزوّدُ فحص صراحةً. ويجب أن تأتي `platform` و`provider` و`method` من `cordis_inspect_list`، وأن يستوفي `input` schema تلك الطريقة. استعمل هذه الأداةَ قبل كتابة شفرة إضافة لتقرأ طرائقَ الخدمات بعينها، أو أوضاعَ الأحداث، أو توقيعاتِ المدمجات، أو schemas الأدوات، أو رموزَ السمات، أو أشجارَ الخانات الحية وخصائصها. وتعمل استعلاماتُ المضيف محليًّا. أما استعلامُ العميل فينتظر أولَ استجابة صفحة صالحة ويبقى معلَّقًا حتى تجيب صفحةٌ أو تُلغى الأداة. ولا تستطيع هذه الأداةُ استدعاءَ طرائق خدمات العمل ولا تغييرَ بيئة التشغيل. ولـ`Service.listService` و`Event.listEvents`، استعلم بلا مُدخَل لتتصفح دليلَ التوقيعات المضغوط، ثم استعلم عن الخدمة أو الحدث بعينه لتحصّل عقدَه المبنيَن وأنواعَه المشار إليها. ولـ`Slots.listSubTree`، استعلم بلا جذر لتتصفح الشجرةَ المضغوطة، ثم استعلم عن جذر خانة بعينه لتحصّل عقدَ تسجيله كاملًا وخصائصَه؛ ويعيد جذرُ مصنع بعينه هويتَه ونطاقَه ومسجّله.
 
 ```json
 {
@@ -765,9 +765,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
+المصدر: [`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts)
 
-إنشاء صنع نمط توفير اثنان عدد فقط قراءة وقت التشغيل فحص أداة.Cordis host runner توفير فحص سجل التسجيل؛Client استعلام حاجة قد اتصال صفحة. حفظ دائم تغيير تحرير كتابة لـ تركيب حزمة، مجددا عبر plugin_manager تثبيت.
+يقدّم وضعُ المؤلف أداتَي فحص للقراءة فقط في وقت التشغيل. ويقدّم مشغّلُ Cordis في المضيف سجلَّ الفحص؛ وتشترط استعلاماتُ العميل صفحةً متصلة. وألّف التغييراتِ الدائمة حزمًا وثبّتها بـ`plugin_manager`.
 
 <a id="deepseek-aidsh-tool-bash-persistent"></a>
 
@@ -775,7 +775,7 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `bash`
 
-في حمل دائم bash shell في تشغيل أمر. يشمل حالي دليل و قد تصدير بيئة متغير في داخل حالة سوف في هذا agent كثير مرة استدعاء بين إبقاء.
+يشغّل الأوامرَ في صدفة bash دائمة. وتبقى الحالةُ، ومنها دليلُ العمل الحالي ومتغيّراتُ البيئة المصدَّرة، عبر النداءات لهذا الوكيل.
 
 ```json
 {
@@ -792,9 +792,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/shell/tool-bash-persistent/src/index.ts`](../packages/shell/tool-bash-persistent/src/index.ts)
+المصدر: [`packages/shell/tool-bash-persistent/src/index.ts`](../packages/shell/tool-bash-persistent/src/index.ts)
 
-واحد حسب كل من عزل حمل دائم bash أداة؛ نشر تركيب توفير PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف.
+أداةُ bash دائمة واحدة معزولة بمالكها؛ ويقدّم تركيبُ النشر خلفيةَ PTY وقد يتجاوز وصفَ البيئة الذي يراه النموذج.
 
 <a id="deepseek-aidsh-tool-pwsh-persistent"></a>
 
@@ -802,7 +802,7 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `pwsh`
 
-في حمل دائم PowerShell shell في تشغيل أمر. يشمل حالي دليل و قد تصدير بيئة متغير في داخل حالة سوف في هذا agent كثير مرة استدعاء بين إبقاء.
+يشغّل الأوامرَ في صدفة PowerShell دائمة. وتبقى الحالةُ، ومنها دليلُ العمل الحالي ومتغيّراتُ البيئة المصدَّرة، عبر النداءات لهذا الوكيل.
 
 ```json
 {
@@ -819,9 +819,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/shell/tool-pwsh-persistent/src/index.ts`](../packages/shell/tool-pwsh-persistent/src/index.ts)
+المصدر: [`packages/shell/tool-pwsh-persistent/src/index.ts`](../packages/shell/tool-pwsh-persistent/src/index.ts)
 
-واحد حسب كل من عزل حمل دائم pwsh أداة، حمل دائم bash أداة Windows مقابل شيء؛ نشر تركيب توفير pwsh جهة قول PTY خلفية، و يمكن تغطية موجه إلى نموذج بيئة وصف.
+أداةُ pwsh دائمة واحدة معزولة بمالكها، وهي نظيرُ أداة bash الدائمة على Windows؛ ويقدّم تركيبُ النشر خلفيةَ PTY بلهجة pwsh وقد يتجاوز وصفَ البيئة الذي يراه النموذج.
 
 <a id="deepseek-aidsh-tool-str-replace-editor"></a>
 
@@ -829,19 +829,19 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `str_replace_editor`
 
-لأجل عرض، إنشاء و تحرير ملف ذاتي تعريف تحرير أداة:
+أداةُ تحرير مخصصة لعرض الملفات وإنشائها وتحريرها
 
-* حالة سوف في أمر استدعاء و و مستخدم نقاش نقاش بين حمل دائم إبقاء
-* إذا `path` هو ملف،`view` سوف عرض تطبيق `cat -n` بعد نتيجة. إذا `path` هو دليل،`view` سوف صف خروج الأكثر كثير نحو تحت 2 طبقة غير إخفاء ملف و دليل
-* إذا إشارة تحديد `create` أمر هدف `path` قد بصفة ملف وجود، فإن لا يستطيع استخدام هذا أمر
-* إذا `command` إنتاج مقارنة طويل إخراج، إخراج سوف يتم مقتطع و علامة لـ `<response clipped>`
-* حالي أمر لا استخدام بعض عدد معامل وقت، قيمة لـ `null` احتلال موضع معامل نظر لـ لم توفير. لا بد ملء معامل ما زال يجب توفير قيمة؛ حذف مطابقة محتوى وقت ينبغي حذف `str_replace.new_str`، بينما لا هو سوف ذلك ضبط لـ `null`
+* تبقى الحالةُ عبر نداءات الأوامر والمحادثات مع المستخدم
+* إن كان `path` ملفًّا، عرض `view` نتيجةَ تطبيق `cat -n`. وإن كان دليلًا، عدّد `view` الملفاتِ والأدلةَ غيرَ المخفية حتى مستويين
+* لا يمكن استعمالُ الأمر `create` إن كان `path` المحدد موجودًا سلفًا ملفًّا
+* إن ولّد `command` خرجًا طويلًا، اقتُطع ووُسم بـ`<response clipped>`
+* يُعامل النائبُ `null` لمعامل لا يستعمله الأمرُ المختار كأنه مُغفَل. وتبقى المعاملاتُ المشترَطة محتاجةً إلى قيم؛ فأغفِل `str_replace.new_str` بدل ضبطها على `null` عند حذف مطابقة
 
-استخدام `str_replace` أمر وقت طلب ملاحظة معنى:
+ملاحظات على استعمال الأمر `str_replace`:
 
-* `old_str` معامل ينبغي و أصل ملف في واحد سطر أو كثير سطر وصل متابعة محتوى**تماما**مطابقة. طلب إبقاء معنى فارغ أبيض محرف!
-* إذا `old_str` معامل في ملف في لا وحيد، فإن لن تنفيذ استبدال. طلب تأكيد حفظ في `old_str` في يتضمن كاف كاف سياق، جعل ذلك وحيد
-* `new_str` معامل ينبغي يتضمن لأجل استبدال `old_str` قد تحرير سطر
+* ينبغي أن يطابق المعاملُ `old_str` **بالضبط** سطرًا أو أكثر متتاليًا من الملف الأصلي. وانتبه للفراغات!
+* إن لم يكن المعاملُ `old_str` فريدًا في الملف، لم يُنفَّذ الاستبدال. فاحرص على تضمين سياق كافٍ في `old_str` ليصير فريدًا
+* ينبغي أن يحتوي المعاملُ `new_str` الأسطرَ المحرَّرة التي تحلّ محلَّ `old_str`
 
 ```json
 {
@@ -927,9 +927,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-str-replace-editor/src/index.ts`](../packages/fs/tool-str-replace-editor/src/index.ts)
+المصدر: [`packages/fs/tool-str-replace-editor/src/index.ts`](../packages/fs/tool-str-replace-editor/src/index.ts)
 
-أساس في نظام الملفات seam مستقل عرض/إنشاء/وحيد حرف وجه كمية استبدال/حسب سطر إدراج دخول أداة؛ يمكن و أي shell أو طرفية واجهة تركيب.
+أداةٌ مستقلة للعرض والإنشاء والاستبدال الحرفي الفريد وإدراج الأسطر فوق seam نظام الملفات؛ وهي تتركب مع أي واجهة صدفة أو طرفية.
 
 <a id="deepseek-aidsh-tool-fs"></a>
 
@@ -937,7 +937,7 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `edit`
 
-عبر استبدال حرف وجه كمية نص قدوم تحرير قائم UTF-8 نص ملف.
+يحرّر ملفَّ نص UTF-8 موجودًا باستبدال نص حرفي.
 
 ```json
 {
@@ -968,11 +968,11 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+المصدر: [`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `read`
 
-قراءة UTF-8 نص ملف، و إرجاع حمل سطر رقم محتوى.
+يقرأ ملفَّ نص UTF-8 ويعيد محتوًى مرقَّم الأسطر.
 
 ```json
 {
@@ -997,11 +997,11 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+المصدر: [`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `read_image`
 
-قراءة PNG/JPEG/WebP/GIF ملف و إرجاع رسم مثل ذاته. بلا توسيع اسم مسار نفس مثال يتم قبول؛ صيغة حسب ملف محتوى فحص قياس، لذلك مواصفة تحويل مرفق عنصر مسار يمكن مباشر نقل دخول، بلا حاجة نسخ أو إعادة تسمية.Harness سوف في تحت مرة نموذج طلب قبل تحقق و تقليص صغير تلقي دعم حمل كبير رسم، لذلك فقط لـ عرض صورة وقت ينبغي مباشر استخدام هذا أداة، بلا حاجة تثبيت صورة مكتبة أو إنشاء تقليص اختصار رسم. يمكن استخدام صغير دفعة مرة تزامن قراءة ذاك هذا مستقل ملف. اشتراط حالي نموذج قبول رسم مثل إدخال.
+يقرأ ملفَّ PNG أو JPEG أو WebP أو GIF ويعيد الصورةَ نفسَها. ويُقبل مسارٌ بلا امتداد؛ فالصيغةُ تُكشف من محتوى الملف، فتُمرَّر مساراتُ المرفقات الموحَّدة مباشرةً بلا نسخ ولا إعادة تسمية. ويتحقق الحزامُ من الصور المدعومة الكبيرة ويصغّرها قبل طلب النموذج التالي، فاستعمل هذه الأداةَ مباشرةً بدل تثبيت مكتبات صور أو إنشاء مصغَّرات لمجرد فحص صورة. ويمكن قراءةُ ملفات مستقلة على التوازي في دفعات صغيرة. ويشترط أن يقبل النموذجُ الحالي مُدخَلَ صور.
 
 ```json
 {
@@ -1018,11 +1018,11 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+المصدر: [`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
 ### `write`
 
-إنشاء أو تماما استبدال UTF-8 نص ملف.
+ينشئ ملفَّ نص UTF-8 أو يستبدله كاملًا.
 
 ```json
 {
@@ -1044,9 +1044,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
+المصدر: [`packages/fs/tool-fs/src/index.ts`](../packages/fs/tool-fs/src/index.ts)
 
-أولا قراءة بعد كتابة/تحرير سياسة من `@deepseek-ai/dsh-fs-observation-policy` إضافة؛ هو هو واحد `fs/*` حدث بوابة إضافة، لن تغيير schema. تحميل هذه أداة نشر حسب مسبق مدة أيضا ينبغي تحميل هذا إضافة. لا يوجد `ctx.attachments` وقت صورة أداة لن تسجيل؛ ذلك schema و توجيه غير متصل، تنفيذ وقت حذف غير تأكيد قطع توجيه نموذج إعلان صورة إدخال، لا فإن رفض.
+تضيف `@deepseek-ai/dsh-fs-observation-policy` سياسةَ «اقرأ قبل الكتابة أو التحرير» (وهي إضافةُ بوابة أحداث `fs/*` بلا تغيير schema)؛ ويُتوقع من النشر الذي يحمّل هذه الأدواتِ أن يحمّلها أيضًا. ولا تُسجَّل أداةُ الصور بلا `ctx.attachments`؛ وschema لديها مستقلٌّ عن المسار، ويرفض التنفيذُ ما لم يعلن النموذجُ المسلوك بعينه قبولَ مُدخَل الصور.
 
 <a id="deepseek-aidsh-tool-fs-search"></a>
 
@@ -1054,7 +1054,7 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 
 ### `glob`
 
-فحص بحث مسار مطابقة glob نمط ملف. فقط إرجاع مطابقة ملف مسار، أبدا إرجاع دليل؛ يشمل إخفاء ملف و يتم تجاهل اختصار ملف، لكن ترتيب حذف VCS بيانات وصفية دليل. الأكثر كثير حسب تعديل وقت ترتيب إرجاع 100 بند مسار؛ إذا نتيجة أكثر كثير، فإن تعديل لـ إرجاع من قمة طبقة بند في سحب مثال 100 بند مسار، شرح قد سحب مثال، و تقرير إبلاغ كامل ترتيب تسلسل جدول حفظ موضع. هذا أداة لا قطعة رفع دليل بند.
+يجد الملفاتِ التي تطابق مساراتُها نمطَ glob. ويعيد مساراتِ الملفات المطابِقة — لا الأدلةَ قط — ومنها الملفاتُ المخفية والمتجاهَلة (وتُستبعد أدلةُ بيانات أنظمة التحكم بالإصدارات). ويعود ما يصل إلى 100 مسار بترتيب وقت التعديل؛ أما النتيجةُ الأكبر فتعيد 100 مسار أُخذت عيّنةً عبر المداخل العليا، وتقول ذلك، وتبلّغ أين حُفظت القائمةُ المرتَّبة كاملةً. ولا تعدّد هذه الأداةُ مداخلَ الأدلة.
 
 ```json
 {
@@ -1075,11 +1075,11 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
+المصدر: [`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
 
 ### `grep`
 
-استخدام ripgrep صحيح فإن جدول بلوغ صيغة بحث ملف محتوى. إرجاع حمل سطر رقم مطابقة سطر، و حسب ملف قسم مجموعة. قبل 250 بند مطابقة سوف مباشر إرجاع؛ نتيجة بلوغ إلى حد أعلى وقت سوف تقرير إبلاغ كامل مطابقة قائمة حفظ موضع. مثل يحتاج دورة حافة سياق، طلب مقابل مطابقة ملف استخدام read.
+يبحث في محتويات الملفات بتعبير ripgrep النمطي. ويعيد الأسطرَ المطابِقة بأرقامها، مجمَّعةً بالملف. ويعيد أولَ 250 مطابقة مضمَّنةً؛ وتبلّغ النتيجةُ المسقوفة أين حُفظت قائمةُ المطابقات كاملةً. واستعمل `read` على ملف مطابِق للسياق المحيط.
 
 ```json
 {
@@ -1104,9 +1104,9 @@ pwsh أداة هو Windows تركيب في bash منفذ seam PowerShell جهة 
 }
 ```
 
-مصدر:[`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
+المصدر: [`packages/fs/tool-fs-search/src/index.ts`](../packages/fs/tool-fs-search/src/index.ts)
 
-glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subprocess spawn مع حزمة توفير ripgrep اثنان دخول صنع ملف (`@vscode/ripgrep`) ، و بصفة عادي قبل منصة استدعاء تشغيل، أبدا بصفة خلفية مهمة؛ بلا حاجة في مضيف آلة تثبيت `rg`، أيضا لا مرور مرور shell طبقة. هذا دليل استخدام `sampleOverCapGlobResults: true`؛ نشر يجب صريح اختيار هذا سلوك. نتيجة تجاوز مرور حد أعلى وقت، سوف عبر اختياري ctx.spillStore خلفية حفظ كامل صيغة تحويل قائمة؛ في مشترك وضع نشر في، إذا خلفية عام محلي مسار، إرجاع تحديد موضع معلومة يمكن توفير لاحق قراءة/بحث.
+`glob` و`grep` أداتا اكتشاف بلا شروط تطلقان ثنائيَّ ripgrep المحزوم (`@vscode/ripgrep`) عبر `ctx.subprocess` نداءين أماميين عاديين (لا مهامَّ خلفية قط) — بلا تثبيت `rg` على المضيف وبلا طبقة صدفة. ويستعمل الدليلُ `sampleOverCapGlobResults: true`؛ وعلى عمليات النشر أن تختار ذلك السلوكَ صراحةً. وتحفظ النتائجُ المسقوفة القائمةَ المنسَّقة كاملةً عبر خلفية `ctx.spillStore` الاختيارية؛ والمحدِّداتُ المعادة قابلةٌ للقراءة والبحث لاحقًا حين تكشف الخلفيةُ مساراتٍ محلية في عمليات نشر متجاورة.
 
 <a id="deepseek-aidsh-tool-terminal"></a>
 
@@ -1114,7 +1114,7 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 
 ### `terminal_close`
 
-إغلاق واحد حمل دائم طرفية، و انتظار ذلك التقاط كما كل عملية شجرة تماما خروج.
+يغلق طرفيةً دائمة واحدة وينتظر حتى تزول شجرةُ العمليات المملوكة الملتقَطة لديها.
 
 ```json
 {
@@ -1131,11 +1131,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_list`
 
-صف خروج حالي agent كل حمل دائم طرفية جلسة.
+يعدّد جلساتِ الطرفية الدائمة التي يملكها الوكيلُ الحالي.
 
 ```json
 {
@@ -1144,11 +1144,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_open`
 
-عبر قد تسجيل خلفية نوع إنشاء حسب كل من عزل حمل دائم طرفية جلسة. حاجة في كثير مرة استدعاء الأداة بين إبقاء shell أو REPL حالة وقت، طلب استخدام هذا أداة.
+ينشئ جلسةَ طرفية دائمة معزولة بمالكها من نوع خلفية مسجَّل. استعملها لحالة صدفة أو REPL يجب أن تبقى عبر نداءات الأدوات.
 
 ```json
 {
@@ -1173,11 +1173,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_read`
 
-من حمل دائم طرفية قراءة واحد صفحة محدود إبقاء إخراج، لا إرسال إدخال.
+يقرأ صفحةً محدودة من الخرج المحفوظ في طرفية دائمة بلا إرسال مُدخَل.
 
 ```json
 {
@@ -1202,11 +1202,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_send`
 
-نحو حمل دائم طرفية إرسال نص. افتراضي سوف إيداع Enter، و انتظار تلميح رمز،stdin انتظار، إخراج ساكن صامت، مهلة أو جلسة خروج. خلفية نمط سوف إرجاع توفير job_output/job_kill استخدام job id.
+يرسل نصًّا إلى طرفية دائمة. ويُقدَّم Enter افتراضيًا وينتظر النداءُ مطالبةً أو انتظارَ stdin أو صمتَ خرج أو انتهاءَ مهلة أو خروجَ الجلسة. ويعيد وضعُ الخلفية معرّفَ مهمة لـ`job_output` و`job_kill`.
 
 ```json
 {
@@ -1236,11 +1236,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
 ### `terminal_signal`
 
-نحو حمل دائم طرفية حالي قبل منصة عملية مجموعة إرسال سماح إشارة.
+يرسل إشارةً مسموحًا بها إلى مجموعة العمليات الأمامية الحالية في طرفية دائمة.
 
 ```json
 {
@@ -1269,9 +1269,9 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts`](../packages/terminal/tool-terminal/src/index.ts)
 
-هذا 6 عدد طرفية أداة حاجة اختيار تفعيل، لأجل تكملة ملء مرة صفة bash/نظام الملفات أداة.`terminal_send(run_in_background: true)` سوف تسجيل إلى `ctx.jobs`؛schema لا يتضمن TUI، أداة اسم حسب مفتاح تسلسل،BEL، ضبط كامل مقياس قياس، تلقائي بدء و عبر agent مشترك.
+أدواتُ الطرفية الست اختياريةُ التفعيل وتكمّل أدواتِ الصدفة ونظام الملفات ذاتَ اللقطة الواحدة. ويُسجَّل `terminal_send(run_in_background: true)` في `ctx.jobs`؛ أما واجهاتُ TUI وتسلسلاتُ المفاتيح المسمّاة وBEL وتغييرُ الحجم والبدءُ التلقائي والمشاركةُ بين الوكلاء فغائبةٌ عن الـschema.
 
 <a id="deepseek-aidsh-tool-goal"></a>
 
@@ -1279,7 +1279,7 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 
 ### `create_goal`
 
-عند حالي مباشر شخص صنف طلب هو حاجة عبر ذاتي رئيسي Goal Round حمل متابعة دفع دخول طويل مدة هدف وقت، إنشاء واحد حفظ دائم نفس جلسة إتمام هدف. أي استخدام مستخدم لا يوجد واضح قول «إنشاء هدف» ، أنت أيضا يمكن دفع قطع ذلك معنى رسم. لا يلزم لأجل بسيط مفرد مفرد جولة عمل. تنفيذ وقت سوف رفض غير شخص صنف إذن و subagent إذن.
+ينشئ هدفَ إنجاز محفوظًا واحدًا داخل الجلسة نفسِها حين يكون طلبُ الإنسان المباشر الحالي هدفًا طويلَ الأمد ينبغي أن يستمر عبر جولات أهداف مستقلة. ولك أن تستنتج تلك النيةَ بلا أن يقول المستخدمُ «أنشئ هدفًا». ولا تستعملها للعمل التافه ذي الجولة الواحدة. ويرفض التنفيذُ سلطةَ غير البشر وسلطةَ الوكلاء الفرعيين.
 
 ```json
 {
@@ -1300,11 +1300,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+المصدر: [`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
 ### `get_goal`
 
-قراءة حالي نفس جلسة هدف، يشمل تأكيد قطع id/revision، هدف، مرحلة مقطع، اكتمل تأخير متابعة Round عدد،Round حد أعلى، وجود وقت منع سد سبب، و هل قد دقيق تجهيز تحت مرة تأخير متابعة. تحديث هدف قبل طلب أولا استدعاء هذا أداة.
+يقرأ الهدفَ الحالي داخل الجلسة، ومعه معرّفُه ومراجعتُه بعينهما، وهدفُه، وطورُه، وجولاتُ الاستمرار المكتملة، وحدُّ الجولات، وسببُ الإعاقة حين يوجد، وهل سُلّحت متابعةٌ أخرى. نادِ هذه قبل تحديث هدف.
 
 ```json
 {
@@ -1313,11 +1313,11 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+المصدر: [`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
 ### `update_goal`
 
-تحديث تأكيد قطع حالي هدف revision.edit،pause و resume اشتراط مباشر قمة طبقة شخص صنف طلب. في تلقائي تأخير متابعة حالي هدف خلال، أيضا سماح complete و blocked. في بلوغ إلى إعداد الأكثر صغير Round عدد قبل سوف رفض blocked؛ نموذج ما زال يجب حكم قطع نفسه شرط هل في هذه Round في حمل متابعة وجود، و في blocked_reason في إعطاء بـ شرح.
+يحدّث مراجعةَ الهدف الحالية بعينها. وتشترط `edit` و`pause` و`resume` طلبَ إنسان مباشرًا في المستوى الأعلى. وأثناء متابعة تلقائية للهدف الحالي، يُسمح أيضًا بـ`complete` و`blocked`. وتُرفض `blocked` قبل بلوغ أدنى عدد جولات مضبوط؛ ويبقى النموذجُ مسؤولًا عن الحكم بأن الشرطَ نفسَه استمر عبر تلك الجولات وعليه شرحُ ذلك في `blocked_reason`.
 
 ```json
 {
@@ -1363,9 +1363,9 @@ glob و grep هو بلا شرط متاح اكتشاف أداة، عبر ctx.subp
 }
 ```
 
-مصدر:[`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
+المصدر: [`packages/goal/tool-goal/src/index.ts`](../packages/goal/tool-goal/src/index.ts)
 
-create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص صنف أصل إذن؛complete و blocked أيضا قبول تأكيد قطع حالي Goal Round.blocked افتراضي تحت حد هو 3 عدد نيل دقيق Round.
+تشترط `create` و`edit` و`pause` و`resume` سلطةَ إنسان مباشرة في الجذر؛ وتقبل `complete` و`blocked` أيضًا جولةَ الهدف الحالية بعينها. والحدُّ الأدنى الافتراضي لـ`blocked` ثلاثُ جولات مقبولة.
 
 <a id="deepseek-aidsh-schedule"></a>
 
@@ -1373,7 +1373,7 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 
 ### `schedule_create`
 
-في حالي جلسة في إنشاء واحد بند رفع تنبيه. طلب توفير غير فارغ prompt و تماما جيد واحد selector: صحيح أمان كامل عدد after_seconds تأخير وقت؛ بصفة صارم إطار حمل انحراف نقل يوم مدة وقت أو محلي يوم مدة/وقت كائن at؛ أو لا صغير في 300 أمان كامل عدد every_seconds. ثابت سرعة معدل رفع تنبيه بداية نهاية و إنشاء وقت لحظة مقابل متساو، سوف قفز مرور خطأ مرور حدوث وقت نقطة، و يأخذ كل بند تجاوز مدة قاعدة الأكثر جديد واحد حدوث وقت نقطة دمج إلى واحد دفعة مرة في. تسليم نمط هو session-local: فقط لديه هذا جلسة موضع في live حالة وقت، رفع تنبيه عندئذ سوف دقيق وقت تشغيل؛ لا فإن رفع تنبيه سوف دخول overdue حالة، مباشر حتى جلسة استعادة.
+ينشئ تذكيرًا واحدًا في الجلسة الحالية. قدّم مطالبةً غيرَ فارغة ومُنتقيًا واحدًا بالضبط: تأخيرَ `after_seconds` عددًا صحيحًا موجبًا آمنًا، أو `at` بصيغة تاريخ ووقت بفرق توقيت صارم أو كائنِ تاريخ ووقت محلي، أو `every_seconds` عددًا صحيحًا آمنًا لا يقل عن 300. وتبقى التذكيراتُ ذاتُ المعدل الثابت مرساةً إلى وقت الإنشاء، وتتخطى المناسباتِ الفائتة، وتجمع مناسبةً أحدث واحدة لكل قاعدة متأخرة. والتسليمُ محليٌّ في الجلسة: فيعمل التذكيرُ في وقته ما دامت هذه الجلسةُ حية، وإلا صار متأخرًا حتى تُستأنف الجلسة.
 
 ```json
 {
@@ -1426,11 +1426,11 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 }
 ```
 
-مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+المصدر: [`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
 ### `schedule_delete`
 
-استخدام schedule_create أو schedule_list إرجاع تأكيد قطع id، حذف حالي جلسة في واحد بند نشط حركة رفع تنبيه. لم معرفة أو قد انتهاء id سوف إرجاع deleted false.
+يحذف تذكيرًا نشطًا واحدًا في الجلسة الحالية بالمعرّف بعينه الذي أعاده `schedule_create` أو `schedule_list`. والمعرّفاتُ المجهولة أو المنتهية سلفًا تعيد `deleted` بقيمة false.
 
 ```json
 {
@@ -1447,11 +1447,11 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 }
 ```
 
-مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+المصدر: [`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
 ### `schedule_list`
 
-حسب إنشاء ترتيب صف خروج حالي جلسة في كل نشط حركة رفع تنبيه، يشمل تأكيد قطع id،UTC هدف،scheduled أو overdue حالة، و session-local تسليم نمط.
+يعدّد كلَّ تذكير نشط في الجلسة الحالية بترتيب الإنشاء، ومعه معرّفُه بعينه، وهدفُه بالتوقيت العالمي، وحالتُه مجدولًا أو متأخرًا، ووضعُ تسليمه المحلي في الجلسة.
 
 ```json
 {
@@ -1460,9 +1460,9 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 }
 ```
 
-مصدر:[`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
+المصدر: [`packages/schedule/schedule/src/tools.ts`](../packages/schedule/schedule/src/tools.ts)
 
-فقط في اختيار تفعيل Schedule إضافة تحميل بعد إنشاء live أصل Agent scope داخل تسجيل. إصدار 1 قبول after_seconds، صريح قطعا مقابل at و محدود ثابت سرعة معدل every_seconds، و كشف كشف session-local تسليم؛ إدارة قراءة و تغيير يجب عبر مشترك Session حفظ دائم barrier.
+تُسجَّل داخل نطاقات الوكلاء الجذريين الأحياء المنشأة بعد تحميل إضافة الجدولة الاختيارية وحدها. ويقبل الإصدارُ 1 قيمَ `after_seconds` و`at` المطلقة الصريحة و`every_seconds` ذاتَ المعدل الثابت المحدودة، ويفصح عن التسليم المحلي في الجلسة؛ وتشترط قراءاتُ الإدارة وتغييراتُها حاجزَ حفظ الجلسة المشترك.
 
 <a id="deepseek-aidsh-tool-lsp"></a>
 
@@ -1470,7 +1470,7 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 
 ### `lsp`
 
-استعلام لغة خادم، بـ دقيق تنقل شفرة.operation يمكن أخذ goToDefinition،findReferences،goToImplementation أو hover.line و character هو من 1 بدء UTF-16 ضوء علامة جلوس علامة.findReferences يتضمن إعلان.
+يستعلم خادمَ لغة لتنقّل دقيق في الشفرة. و`operation` واحدةٌ من `goToDefinition` و`findReferences` و`goToImplementation` و`hover`. و`line` و`character` إحداثيا مؤشر بترميز UTF-16 يبدآن من واحد. ويشمل `findReferences` التصريحَ.
 
 ```json
 {
@@ -1508,9 +1508,9 @@ create،edit،pause و resume اشتراط مباشر قدوم ذاتي شخص �
 }
 ```
 
-مصدر:[`packages/lsp/tool-lsp/src/index.ts`](../packages/lsp/tool-lsp/src/index.ts)
+المصدر: [`packages/lsp/tool-lsp/src/index.ts`](../packages/lsp/tool-lsp/src/index.ts)
 
-lsp أداة سوف مزود اختيار و لغة خادم عملية فرعية وضع في ctx.lsp بعد، لذلك ذلك نموذج مرئي schema في أكثر تبديل مزود وقت إبقاء مستقر. وقت التشغيل اشتراط قد تسجيل مزود، مثال مثل `@deepseek-ai/dsh-lsp-stdio`؛ إذا لا يوجد مزود، استعلام سوف إرجاع بنية تحويل `LSP_UNAVAILABLE` خطأ، بينما لن تغيير schema.
+تُبقي أداةُ lsp انتقاءَ المزوّدين وعملياتِ خوادم اللغة الفرعية خلف `ctx.lsp`، فيبقى schema الذي يراه النموذجُ ثابتًا عبر المزوّدين. وتشترط مزوّدًا مسجَّلًا (مثل `@deepseek-ai/dsh-lsp-stdio`) في وقت التشغيل؛ وبلا واحد يعيد الاستعلامُ خطأَ `LSP_UNAVAILABLE` المبنيَن بدل تغيير الـschema.
 
 <a id="deepseek-aidsh-tool-ralph"></a>
 
@@ -1518,7 +1518,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `ralph`
 
-محيط التفاف واحد غير ممكن تغيير هدف تشغيل استخدام كل جديد agent قبل منصة Ralph حلقة. فقط عند مباشر شخص صنف واضح اشتراط Ralph أو استخدام كل جديد agent تكرار بديل وقت استخدام. كل Round كل سوف بدء واحد كل جديد فرعي درجة، هذا فرعي درجة نظر لا إلى أب درجة محادثة أو أولا قبل فرعي جلسة؛ مشترك مساحة العمل ملء عند طويل مدة تسجيل ذاكرة،Round بين فقط نقل تمرير محدود بنية تحويل تقرير إبلاغ. عند عمل عملية تقرير إبلاغ إتمام، تقرير إبلاغ أداة جسم منع سد بند أو بلوغ إلى Round حد أعلى وقت، استدعاء إرجاع. عادي طويل مدة نفس جلسة عمل ينبغي استخدام goal أداة.
+يشغّل حلقةَ Ralph أمامية بوكيل جديد نحو هدف واحد غير قابل للتغيير. استعملها فقط حين يطلب الإنسانُ المباشر Ralph أو التكرارَ بوكيل جديد صراحةً. وتفتح كلُّ جولة ابنًا جديدًا بلا محادثة أب ولا جلسة ابن سابقة؛ ومساحةُ العمل المشتركة هي الذاكرةُ طويلة الأمد، ولا يعبر بين الجولات إلا تقريرٌ مبنيَن محدود. ويعود النداءُ حين يبلّغ عاملٌ عن اكتمال أو عن معيق ملموس، أو عند حدّ الجولات. أما العملُ المعتاد الطويل داخل الجلسة نفسِها فيخص أدواتِ الأهداف.
 
 ```json
 {
@@ -1539,9 +1539,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/workflow/tool-ralph/src/index.ts`](../packages/workflow/tool-ralph/src/index.ts)
+المصدر: [`packages/workflow/tool-ralph/src/index.ts`](../packages/workflow/tool-ralph/src/index.ts)
 
-ثابت قبل منصة سير العمل سوف في كل Round بدء واحد كل جديد بنية تحويل فرعي درجة؛ نموذج فقط قدرة اختيار غير ممكن تغيير هدف و اختياري Round حد أعلى.
+مسارُ عمل أمامي ثابت يبدأ ابنًا مبنيَنًا جديدًا واحدًا لكل جولة؛ ولا ينتقي النموذجُ إلا الهدفَ غيرَ القابل للتغيير وسقفَ جولات اختياريًا.
 
 <a id="deepseek-aidsh-tool-skill"></a>
 
@@ -1549,7 +1549,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `skill`
 
-تحميل متاح skill(تقنية قدرة) كامل شرح. في تنفيذ نقطة اسم بعض بند skill أو و ذلك واضح مطابقة مهمة قبل، طلب استخدام جلسة skill دليل في تأكيد قطع اسم استدعاء هذا أداة.
+يحمّل تعليماتِ مهارة متاحة كاملةً. نادِ هذه باسم المهارة بعينه من دليل مهارات الجلسة قبل العمل على مهمة تسمّي تلك المهارةَ أو تطابقها بوضوح.
 
 ```json
 {
@@ -1566,7 +1566,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/skill/tool-skill/src/index.ts`](../packages/skill/tool-skill/src/index.ts)
+المصدر: [`packages/skill/tool-skill/src/index.ts`](../packages/skill/tool-skill/src/index.ts)
 
 <a id="deepseek-aidsh-tool-session-query"></a>
 
@@ -1574,7 +1574,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `session_event_read`
 
-من واحد قد نيل تخويل جلسة في قراءة واحد كامل كما لم حذف عقدة حدث، و اختياري متبادل مجاور أصلي حدث عام وصف.
+يقرأ حدثًا واحدًا كاملًا غيرَ مختصر وملخصاتٍ اختيارية لأحداث خام مجاورة من جلسة مخوَّلة.
 
 ```json
 {
@@ -1603,11 +1603,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_event_search`
 
-في واحد قد نيل تخويل جلسة في بحث أولا قبل حدث؛ إذا بحث حالي جلسة، فإن ترتيب حذف تنفيذ هذا مرة استدعاء خطوة.
+يبحث في الأحداث السابقة في جلسة مخوَّلة واحدة؛ وتستبعد الجلسةُ الحالية الخطوةَ التي تجري هذا النداء.
 
 ```json
 {
@@ -1663,11 +1663,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_event_trace`
 
-قراءة قد نيل تخويل جلسة في بعض عدد حدث كل مباشر استبدال علاقة، و هذا حدث و ذلك مرجع مصدر حدث بين علاقة.
+يقرأ كلَّ استبدال مباشر وكلَّ علاقة بحدث مصدر مذكور لحدث واحد في جلسة مخوَّلة.
 
 ```json
 {
@@ -1688,11 +1688,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_search`
 
-بحث استدعاء جهة مساحة العمل في أولا قبل جلسة، و من كل جلسة إرجاع مطابقة درجة الأكثر عال حدث.
+يبحث في الجلسات السابقة في مساحة عمل المستدعي ويعيد أقوى حدث مطابِق من كل جلسة.
 
 ```json
 {
@@ -1781,11 +1781,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
 ### `session_trace`
 
-قراءة محيط التفاف واحد جلسة قد تخويل جلسة جدول نظام، يشمل كامل مرئي أصل أولا و بعد بديل علاقة.
+يقرأ نسبَ الجلسات المخوَّل حول جلسة واحدة، ومعه علاقاتُ الأسلاف والأحفاد المرئية كاملةً.
 
 ```json
 {
@@ -1799,9 +1799,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts`](../packages/session-query/tool-session-query/src/index.ts)
 
-هذا 5 عدد فقط قراءة أداة سوف إخفاء مزود تنقل علامة، و أصل حسب غير ممكن تغيير استدعاء agent جلسة لـ كل نتيجة تخويل. هذا حزمة حاجة اختيار تفعيل؛ حاجة قوي صنع قطع توقف وقت أو حد سطر داخل إخراج تركيب أيضا سوف تركيب عام مهلة أو spill سياسة.
+تُخفي الأدواتُ الخمسُ للقراءة فقط مؤشراتِ المزوّدين وتخوّل كلَّ نتيجة من جلسة الوكيل المستدعي غير القابلة للتغيير. والحزمةُ اختياريةُ التفعيل؛ وتركّب التركيباتُ التي تحتاج إلى مهل مفروضة أو خرج مضمَّن محدود سياساتِ المهلة أو الفائض العامة أيضًا.
 
 <a id="deepseek-aidsh-tool-subagent"></a>
 
@@ -1809,7 +1809,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `list_subagent_models`
 
-اكتشاف subagent متاح LLM توجيه، لا أكثر تعديل حالي Agent. بلا معامل استدعاء سوف صف خروج قد تسجيل مزود؛ توفير `provider` وقت سوف صف خروج ذلك عام نشر نموذج؛ معا توفير `provider` و `model` وقت سوف فحص هذا دقيق نموذج و ذلك دفع إدارة قوي درجة. دليل بند فقط توفير بناء اقتراح:adapter ممكن قبول لم صف خروج نموذج id. يأخذ إرجاع id لأجل تفويض إرسال أداة `provider`،`model` و `reasoning_effort` حقل.
+يكتشف مساراتِ LLM للوكلاء الفرعيين بلا تغيير الوكيل الحالي. نادِه بلا وسائط لتعداد المزوّدين المسجَّلين، أو بـ`provider` لتعداد نماذجه المعلَنة، أو بـ`provider` و`model` لفحص ذلك النموذج بعينه وجهودِ استدلاله. وعضويةُ الدليل إرشادية: فقد يقبل مهايئٌ معرّفَ نموذج غيرَ معدود. واستعمل المعرّفاتِ المعادة في حقول `provider` و`model` و`reasoning_effort` لدى أداة تفويض.
 
 ```json
 {
@@ -1827,11 +1827,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/subagent/tool-subagent/src/list-models.ts`](../packages/subagent/tool-subagent/src/list-models.ts)
+المصدر: [`packages/subagent/tool-subagent/src/list-models.ts`](../packages/subagent/tool-subagent/src/list-models.ts)
 
 ### `subagent`
 
-سوف واحد بند ذاتي يتضمن مهمة تفويض إرسال إعطاء subagent(في ذاته سياق في عمل مستقل agent) ، استخدام هو إزالة تجمع تركيز كما مستقل عمل، مثال مثل بحث بحث، حد تحديد نطاق تنفيذ أو قسم تحليل، بـ تجنب إزالة استهلاك حالي محادثة سياق.subagent سوف إرجاع نتيجة، لكن لن إرجاع في بين خطوة. طلب توفير كامل، مستقل نص التوجيه، لأن هو نظر لا إلى حالي محادثة. هذا استدعاء افتراضي انتظار نتيجة. ضبط `run_in_background: true` يمكن إرجاع job id؛ استخدام `job_output` استلام تجميع نتيجة، استخدام `job_kill` إيقاف مهمة.
+يفوّض مهمةً قائمة بذاتها إلى وكيل فرعي (وهو وكيلٌ منفصل يعمل في سياقه) لينقل عنك عملًا مركَّزًا مستقلًّا — بحثًا أو تنفيذًا محدودًا أو تحليلًا — فلا يستهلك سياقَ هذه المحادثة. ويعيد الوكيلُ الفرعي نتيجتَه لا خطواتِه الوسيطة. وأعطِه مطالبةً كاملة قائمة بذاتها: فهو لا يرى هذه المحادثة. وينتظر هذا النداءُ النتيجةَ افتراضيًا. واضبط `run_in_background: true` ليعيد معرّفَ مهمة؛ واجمعه بـ`job_output` وأوقِفه بـ`job_kill`.
 
 ```json
 {
@@ -1857,9 +1857,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/subagent/tool-subagent/src/index.ts`](../packages/subagent/tool-subagent/src/index.ts)
+المصدر: [`packages/subagent/tool-subagent/src/index.ts`](../packages/subagent/tool-subagent/src/index.ts)
 
-تسجيل تفويض إرسال أداة اسم أخذ قرار في تحميل وقت `toolName` إعداد (افتراضي لـ `subagent`) ؛ فوق وصف افتراضي schema إغلاق نموذج اختيار، بينما اكتشاف schema فإن عرض لـ قد تفعيل Session في متاح ثابت إعداد طقم أداة.Web preset سوف في كل جديد قمة طبقة Session إنشاء وقت قراءة إضافة صفحة انحراف جيد، و لـ ذلك فرعي Session إبقاء هذا قرار؛`subagent_fork` بداية نهاية استخدام ثابت توجيه. كل نسخة عبر `modelSelectionSettings`،`backgroundMode` و `enableRunInBackground` مستقل تحكم هل قراءة نموذج اختيار ضبط و ذلك خلفية سلوك.
+اسمُ التفويض المسجَّل هو ضبطُ `toolName` عند التحميل (وافتراضُه `subagent`)؛ وschema الافتراضي أعلاه انتقاءُ النماذج فيه معطَّل، بينما يُعرض schema الاكتشاف رفيقًا ثابتًا متاحًا في جلسة مفعَّلة. وتأخذ presets في Web عيّنةً من تفضيل الإضافات لكل جلسة عليا جديدة وتحفظ ذلك القرارَ لجلسات أبنائها؛ ويبقى `subagent_fork` ثابتَ المسار. وتتحكم كلُّ نسخة مستقلةً في قراءتها إعداداتِ انتقاء النماذج وفي سلوك خلفيتها عبر `modelSelectionSettings` و`backgroundMode` و`enableRunInBackground`.
 
 <a id="deepseek-aidsh-tool-subagent-control"></a>
 
@@ -1867,7 +1867,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `interrupt_agent`
 
-أصل حسب agent id طلب إلغاء خلفية agent حالي جولة. هدف يمكن هو أنت مباشر فرعي درجة، أيضا يمكن هو في أنت تحت جهة إنشاء أكثر عميق طبقة agent. فقط لديه حالي جولة سوف إيقاف: قد ترتيب طابور إرسال إعطاء هذا agent رسالة سوف واحد مباشر وضع وضع إلى لاحق send_message؛ هو بدء agent سوف متابعة تشغيل؛ هذا agent ذاته ما زال يمكن قبول لاحق عملية. إيقاف طلب يتم قبول بعد، هذا استدعاء قيام أي إرجاع، لذلك هدف ممكن أيضا سوف قصير مؤقت تشغيل؛ في قطع واحد اكتمل agent هو يمكن قبول فارغ عملية.
+يطلب إلغاءَ الجولة الحالية لوكيل خلفي بمعرّف وكيله. وقد يكون الهدفُ ابنَك المباشر أو وكيلًا أعمق أُنشئ تحتك. ولا تتوقف إلا الجولةُ الحالية: فالرسائلُ المصطفّة للوكيل سلفًا تبقى مركونةً حتى `send_message` لاحق، والوكلاءُ الذين بدأهم يواصلون العمل، ويبقى الوكيلُ نفسُه متاحًا للمتابعات. ويعود هذا النداءُ حالما يُقبل طلبُ الإيقاف، فقد يواصل الهدفُ العملَ لبرهة؛ ومقاطعةُ وكيل انتهى سلفًا عمليةٌ مقبولة بلا أثر.
 
 ```json
 {
@@ -1884,11 +1884,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
+المصدر: [`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
 
 ### `list_agents`
 
-حسب حمل دائم id و وسم صف خروج أنت يمكن متابعة خلفية subagent. استخدام هو عودة ذاكرة أنت بدء مرور أي بعض subagent، بينما لا هو جولة استفسار إتمام حال حال——subagent إتمام وقت أنت سوف يتم إبلاغ معرفة. حالة قدوم ذاتي فوري سجل التسجيل:running يمثل agent هذا لحظة جارٍ عمل؛idle يمثل قد تحميل لكن موضع في جولة بين، ممكن جارٍ انتظار هو بدء agent؛ready يمثل هو فقط وجود في تخزين في——يمكن استعادة بينما غير نهاية حالة، أيضا لا يمثل لديه نتيجة انتظار استلام تجميع؛`send_message` سوف في تشغيل في child الأكثر قريب step حد steer رسالة، أو لـ idle،ready child بدء جولة، كما بلا نقاش موضع في أي نوع حالة، مباشر فرعي درجة كل ما زال يمكن بصفة `send_message` هدف. هذا لقطة و غير إلقاء تمرير تحمل وعد؛`send_message` سوف تنفيذ مرجعي فحص، ما زال ممكن فشل. لا يمكن قراءة فرعي درجة سوف بصفة تشخيص معلومة تقرير إبلاغ، بينما لن يتم ساكن صامت إسقاط.`descendants` أثر مجال سوف حسب مستقر قبل ترتيب مرة تاريخ أنت تحت جهة كامل شجرة شجرة، و لـ كل بند علامة ملاحظة ذلك حمل دائم مباشر أب جلسة id و عميق درجة. فقط لديه عميق درجة لـ 1 بند يمكن استخدام `send_message`؛ أكثر عميق بند فقط قدرة بصفة `interrupt_agent` مرشح هدف.
+يعدّد وكلاءَك الفرعيين الخلفيين القابلين للمتابعة بمعرّفهم الدائم وتسميتهم. استعمله لتتذكر من بدأتَ منهم، لا لتستطلع الاكتمالَ — فأنت تُخبَر حين ينتهي أحدُهم. وتأتي الحالةُ من السجل الحي: فـ`running` تعني أن الوكيلَ يعمل الآن، و`idle` تعني أنه محمَّل لكنه بين الجولات (وقد ينتظر وكلاءَ بدأهم)، و`ready` تعني أنه موجودٌ في التخزين وحده — قابلٌ للاستئناف لا نهائيٌّ ولا نتيجةٌ تنتظر الجمع؛ ويوجّه `send_message` ابنًا عاملًا عند أقرب حدّ خطوة أو يبدأ جولةً لابن خامل أو جاهز، ويبقى الابنُ المباشر مرشحًا لـ`send_message` في كل حالة. واللقطةُ ليست وعدَ تسليم — فـ`send_message` يجري الفحصَ المرجعي وقد يفشل مع ذلك. ويُبلَّغ عن الأبناء الذين تعذّرت قراءتُهم تشخيصاتٍ بدل إسقاطهم صامتًا. ويمشي النطاقُ `descendants` في الشجرة كلها تحتك بترتيب سابق ثابت، ويوسم كلَّ مدخل بمعرّف جلسة أبيه المباشر الدائم وبعمقه. ولك استعمالُ `send_message` لمداخل العمق 1 وحدها؛ أما الأعمقُ فمرشحةٌ لـ`interrupt_agent` فقط.
 
 ```json
 {
@@ -1906,11 +1906,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/subagent/tool-subagent-control/src/list-agents.ts`](../packages/subagent/tool-subagent-control/src/list-agents.ts)
+المصدر: [`packages/subagent/tool-subagent-control/src/list-agents.ts`](../packages/subagent/tool-subagent-control/src/list-agents.ts)
 
 ### `send_message`
 
-أصل حسب agent id نحو مباشر يمكن متابعة child إرسال رسالة. إذا أنت هو إقامة إبقاء يمكن متابعة child، أيضا يمكن يأخذ ذاتي ذات مباشر parent بصفة هدف. إذا هدف ما زال في عمل، رسالة سوف steer ذلك الأكثر قريب step؛ إذا هدف موضع في idle، رسالة سوف بدء واحد جولة. هذا استدعاء لن إرجاع هذا agent جواب سجل، فقط سوف تأكيد رسالة قد إلقاء تمرير. استدعاء فشل يمثل رسالة**لم**إلقاء تمرير.
+يرسل رسالةً إلى ابن مباشر قابل للمتابعة بمعرّف وكيله. وإن كنتَ ابنًا مقيمًا قابلًا للمتابعة، فلك أن تستهدف أباك المباشر أيضًا. وإن كان الهدفُ ما زال يعمل، وجّهت الرسالةُ أقربَ خطوة له؛ وإن كان خاملًا، بدأت الرسالةُ جولة. ولا يعيد هذا النداءُ جوابًا من الوكيل — بل تأكيدَ تسليم الرسالة وحده. والفشلُ يعني أن الرسالةَ **لم** تُسلَّم.
 
 ```json
 {
@@ -1932,9 +1932,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
+المصدر: [`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts)
 
-هذه هو تحكم يمكن متابعة خلفية subagent عام تسمية أداة: ربط مزود `tool-subagent` نسخة تسجيل مختلف تفويض إرسال أداة؛ هذه الحزمة تسجيل مرة `send_message` و `interrupt_agent`، آخر من `list_agents` عبر مفرد وحيد تحميل `/list-agents` إضافة توفير، ذلك دليل سطر استخدام sessionProjections و فوري Agent سجل التسجيل.
+أدواتُ التحكم المسمّاة عالميًا فوق الوكلاء الفرعيين الخلفيين القابلين للمتابعة: فنسخُ `tool-subagent` المرتبطة بمزوّدين تسجّل أدواتِ تفويض متمايزة، بينما تسجّل هذه الحزمةُ `send_message` و`interrupt_agent` مرةً واحدة، مع `list_agents` من إضافة `/list-agents` المحمَّلة على حدة (وتستعمل صفوفُ دليلها سجلَّي sessionProjections والوكلاء الحي).
 
 <a id="deepseek-aidsh-tool-jobs"></a>
 
@@ -1942,7 +1942,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `job_kill`
 
-أصل حسب job id طلب إلغاء جارٍ تشغيل خلفية مهمة. هذا استدعاء قيام أي إرجاع؛ مهمة عمل حق صحيح إيقاف بعد، سوف بـ killed حالة تسوية.
+يطلب إلغاءَ مهمة خلفية عاملة بمعرّف المهمة. ويعود فورًا؛ وتستقر المهمةُ بحالة `killed` حالما يتوقف عملُها فعلًا.
 
 ```json
 {
@@ -1963,11 +1963,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+المصدر: [`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
 ### `job_list`
 
-صف خروج أنت خلفية مهمة (يشمل جارٍ تشغيل و اكتمل مهمة) و ذلك id، نوع صنف و حالة.
+يعدّد مهامَّك الخلفية (العاملةَ والمنتهية) بمعرّفاتها وأصنافها وحالاتها.
 
 ```json
 {
@@ -1976,11 +1976,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+المصدر: [`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
 ### `job_output`
 
-قراءة خلفية مهمة. تدفق صيغة مهمة فقط إرجاع ذاتي فوق مرة قراءة بـ قدوم إخراج؛ نهائي إخراج مهمة سوف في تسوية بعد إرجاع نتيجة. كل استجابة كل بـ `[status: ...]` ربط ذيل. قراءة افتراضي لا منع سد؛ ضبط `wait: true` بعد، الأكثر طويل انتظار إلى إعداد حد أعلى.
+يقرأ مهمةً خلفية. ولا تعيد مهامُّ المجرى إلا الخرجَ منذ القراءة السابقة؛ وتعيد مهامُّ الخرج النهائي نتيجتَها بعد الاستقرار. وتنتهي كلُّ استجابة بـ`[status: ...]`. والقراءاتُ غيرُ حاجبة ما لم تُضبط `wait: true`، فتنتظر حتى السقف المضبوط.
 
 ```json
 {
@@ -2005,9 +2005,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
+المصدر: [`packages/jobs/tool-jobs/src/index.ts`](../packages/jobs/tool-jobs/src/index.ts)
 
-و مهمة نوع صنف غير متصل خلفية مهمة تحكم جهاز: خلفية bash أمر،PTY إرسال و subagent كل عبر نفسه 3 عدد أداة قراءة، صف خروج و إنهاء. تحميل هذا إضافة سوف تعليق وصل تحكم جهاز، من بينما تفعيل إنتاج جهة `ctx.jobs.start()`.
+متحكمُ مهام الخلفية المحايد تجاه الأصناف: فأوامرُ bash الخلفية وإرسالاتُ PTY والوكلاءُ الفرعيون تُقرأ وتُعدَّد وتُقتل عبر الأدوات الثلاث نفسِها. ويربط تحميلُ الإضافة المتحكمَ الذي يسلّح `ctx.jobs.start()` لدى المنتِجين.
 
 <a id="deepseek-aidsh-experimental-tool-agent-team"></a>
 
@@ -2015,7 +2015,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `interrupt_agent`
 
-في قطع واحد اسم teammate حالي turn، معا إبقاء ذلك انتظار معالجة inbox. فقط Team Lead متاح.
+يقاطع الجولةَ الحالية لزميل واحد مع حفظ صندوق وارده المعلَّق. لقائد الفريق وحده.
 
 ```json
 {
@@ -2032,11 +2032,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `list_agents`
 
-صف خروج Lead و كل حمل دائم teammate، و كل منها حالي وقت التشغيل حالة.
+يعدّد القائدَ وكلَّ زميل دائم مع حالته الحالية في وقت التشغيل.
 
 ```json
 {
@@ -2045,11 +2045,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `send_message`
 
-نحو آخر اسم Team member إرسال واحد بند حمل دائم رسالة.running target سوف في الأكثر قريب خطوة حد استلام إلى رسالة؛idle target سوف بدء واحد turn؛inactive teammate سوف بارد استعادة.
+يرسل رسالةً دائمة واحدة إلى عضو فريق آخر. فالهدفُ العامل يتلقاها عند أقرب حدّ خطوة؛ والهدفُ الخامل يبدأ جولة؛ والزميلُ غيرُ النشط يستأنف من البارد.
 
 ```json
 {
@@ -2071,11 +2071,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `spawn_teammate`
 
-إنشاء واحد اسم أداة اسم، حمل دائم teammate. فقط لديه Team Lead يمكن استدعاء هذا أداة.
+ينشئ زميلًا دائمًا مسمًّى واحدًا. ولا ينادي هذه الأداةَ إلا قائدُ الفريق.
 
 ```json
 {
@@ -2110,11 +2110,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_create`
 
-في مشترك Team مهمة لوح فوق إنشاء واحد بلا owner pending task.
+ينشئ مهمةً معلَّقة واحدة بلا مالك على لوحة مهام الفريق المشتركة.
 
 ```json
 {
@@ -2150,11 +2150,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_get`
 
-في تعديل أو تنفيذ مشترك مهمة قبل، قراءة ذلك كامل الأكثر جديد قيمة.
+يقرأ أحدثَ قيمة كاملة لمهمة مشتركة واحدة قبل تغييرها أو تنفيذها.
 
 ```json
 {
@@ -2171,11 +2171,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_list`
 
-صف خروج مشترك مهمة، يشمل readiness،owner،revision،blocker و write-scope warning.
+يعدّد المهامَّ المشتركة، ومعها الجاهزيةُ والمالكُ والمراجعةُ والمعيقاتُ وتحذيراتُ نطاقات الكتابة.
 
 ```json
 {
@@ -2210,11 +2210,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `team_task_update`
 
-استخدام team_task_get أو team_task_list إرجاع الأكثر جديد revision، مقابل مشترك مهمة عملية تنفيذ compare-and-set.
+يقارن ويعيّن فعلَ مهمة مشتركة بأحدث مراجعة من `team_task_get` أو `team_task_list`.
 
 ```json
 {
@@ -2277,11 +2277,11 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
 ### `wait_agent`
 
-انتظار هذا مرة استدعاء بدء بعد تحت مرة teammate حالة،mailbox أو مشترك مهمة تغيير. هو أبدا سوف نداء تنبيه inactive member؛ إذا لا يوجد أخرى member جارٍ running أو provisioning، فإن قيام أي إرجاع noProgress. نداء تنبيه أو مهلة بعد ينبغي إعادة صف خروج حالة، بينما لا هو جولة استفسار.
+ينتظر التغييرَ التالي في حالة زميل أو في صندوق البريد أو في مهمة مشتركة بعد بدء هذا النداء. وهو لا يوقظ الأعضاءَ غيرَ النشطين قط ويعيد `noProgress` فورًا حين لا يعمل عضوٌ آخر ولا يُهيَّأ. وأعِد التعدادَ بعد الإيقاظ أو انتهاء المهلة بدل الاستطلاع.
 
 ```json
 {
@@ -2295,9 +2295,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts`](../packages/experimental/tool-agent-team/src/index.ts)
 
-هذا 10 عدد أداة حد تحديد في خفي صيغة Team Lead و حمل دائم teammate أثر مجال. مع منتج إصدار dsh-base bundle افتراضي منع استخدام هذا حزمة؛ وثيقة في Agent Teams profile patch سوف تفعيل هو، و منع استخدام قديم continuable child نفس اسم تحكم أداة.
+الأدواتُ التسع كلُّها محدودةٌ بقادة الفرق الضمنيين والزملاء الدائمين. وتُبقي حزمةُ dsh-base المشحونة الحزمةَ معطَّلة؛ وتفعّلها رقعةُ الملف التعريفي الموثَّقة لفرق الوكلاء بينما تعطّل أسماءَ التحكم القديمة في الأبناء القابلين للمتابعة.
 
 
 <a id="deepseek-aidsh-tool-todo"></a>
@@ -2306,7 +2306,7 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 
 ### `todo_write`
 
-سجل و تحديث حالي عمل بنية تحويل مهمة قائمة. كل مرة استدعاء كل يلزم إرسال**كامل قائمة**، هو سوف**استبدال**قبل قائمة، لا دعم حمل نطاق جزء تحديث أو تدريجي بند تحرير. طلب استخدام هو قاعدة تخطيط كثير خطوة عمل و عرض دخول درجة: بدء قبل لـ كل أداة جسم خطوة إضافة واحد بند todo. سوف حالي جارٍ معالجة كل بند todo علامة لـ `in_progress`؛ تأكيد فعلي و سطر وقت التشغيل (مثال مثل تزامن subagent أو خلفية أمر) يمكن معا علامة كثير بند، ترتيب عمل فإن علامة 1 بند. فقط يلزم عمل بعد لم إتمام، حينئذ ينبغي حتى قليل لديه واحد بند مهمة لـ `in_progress`. بعض بند todo إتمام بعد قيام أي علامة لـ `completed`، لا يلزم دفعة كمية علامة إتمام؛ فقط لديه الكل عمل إتمام بعد، عندئذ يمكن لا يوجد `in_progress` بند. بسيط مفرد مفرد خطوة مهمة بلا حاجة استخدام قائمة. حالة:`pending`(لم بدء) ،`in_progress`(جارٍ معالجة) ،`completed`(اكتمل).
+يسجّل قائمةَ مهام مبنيَنة للعمل الحالي ويحدّثها. أرسل القائمةَ **كاملةً** في كل نداء — فهي **تستبدل** القائمةَ السابقة (لا تحديثاتِ جزئية ولا تحريرَ بند بند). استعملها لتخطيط العمل المتعدد الخطوات وإظهار التقدم: أضِف بندًا واحدًا لكل خطوة ملموسة قبل أن تبدأ. وعلّم `in_progress` على كل بند يُعمل عليه فعلًا — بندين أو أكثر حين يجري العملُ متوازيًا حقًّا (كوكلاء فرعيين متزامنين أو أوامر خلفية)، وبندًا واحدًا للعمل المتسلسل؛ وما بقي عملٌ، ينبغي أن يكون بندٌ واحد على الأقل `in_progress`. وعلّم `completed` على البند لحظةَ إنجازه (ولا تجمع الإنجازاتِ دفعةً واحدة)، ولا تدع القائمةَ بلا بند `in_progress` إلا حين يكتمل العملُ كلُّه. وتخطَّ القائمةَ في المهام التافهة ذات الخطوة الواحدة. والحالات: `pending` (لم تبدأ)، و`in_progress` (يُعمل عليها الآن)، و`completed` (انتهت).
 
 ```json
 {
@@ -2346,9 +2346,9 @@ lsp أداة سوف مزود اختيار و لغة خادم عملية فرعي
 }
 ```
 
-مصدر:[`packages/todo/tool-todo/src/index.ts`](../packages/todo/tool-todo/src/index.ts)
+المصدر: [`packages/todo/tool-todo/src/index.ts`](../packages/todo/tool-todo/src/index.ts)
 
-todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/write حدث تصيير لـ فحص بيان.`allowParallelInProgress` هو لا يوجد قيمة افتراضية لا بد ملء بند، لذلك هذا دليل واضح اختيار `true`، مقابل وصف سماح معا وجود كثير عدد `in_progress` بند. اختيار `false` نشر سوف نيل نيل نفس أداة، لكن وصف سوف اشتراط فقط قدرة لديه 1 عدد نشط حركة مهمة.
+`todo_write` حالةٌ تملكها الجلسة؛ وتعرض الواجهاتُ أحدثَ حدث `todo/write` قائمةَ تحقق. و`allowParallelInProgress` مشترَطة بلا افتراض، فيذكر الدليلُ اختيارَه: `true`، ووصفُه يدعو إلى عدة بنود `in_progress`. أما النشرُ الذي يختار `false` فيتلقى الأداةَ نفسَها بوصف يطلب مهمةً نشطة واحدة بالضبط.
 
 <a id="deepseek-aidsh-tool-workflow"></a>
 
@@ -2356,20 +2356,20 @@ todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/wri
 
 ### `workflow`
 
-تشغيل لأجل كبير قاعدة نموذج تحرير ترتيب subagent JavaScript سير العمل نص برمجي. عند عمل سوف قسم تفرق إلى سماح كثير متبادل متبادل مستقل جزء وقت، طلب استخدام هذا أداة، مثال مثل مراجعة فحص كبير كمية ملف، تنفيذ ترحيل، فتح عرض كثير زاوية درجة بحث بحث أو مقابل اكتشاف إجراء مقابل مقاومة صيغة تحقق؛ هذا وقت ينبغي سوف تحرير ترتيب كتابة صار نص برمجي، بينما لا هو تدريجي جولة تفويض إرسال.
+يشغّل سكربتَ مسار عمل بلغة JavaScript ينسّق وكلاءَ فرعيين على نطاق واسع. استعمله للعمل الذي ينتشر على قطع مستقلة كثيرة — تدقيقٌ على ملفات كثيرة، أو ترحيلٌ، أو بحثٌ من زوايا عدة، أو تحققٌ عدائي من النتائج — حيث تكتب التنسيقَ سكربتًا بدل التفويض جولةً بجولة.
 
-سير العمل هوية عبر `meta` معامل بـ JSON شكل صيغة نقل دخول: لا بد ملء `name`(بسيط قصير kebab-case) و `description` نص، و اختياري `whenToUse` نص و `phases` عدد مجموعة (`{title, detail?, provider?, model?}`).`script` معامل فقط قدرة هو صاف JavaScript **دالة جسم**، لا يستطيع هو TypeScript، أيضا لا يستطيع يتضمن `export const meta` لغة جملة؛meta هو معامل بينما غير شفرة. نص برمجي دعم حمل قمة طبقة await؛ طلب بـ `return <value>` ربط ذيل، هذا قيمة يجب يمكن JSON تسلسل تحويل، و بصفة هذا أداة نتيجة.
+وتركب هويةُ مسار العمل معاملَ `meta` بصيغة JSON: فالسلسلتان `name` (بنسق kebab-case قصير) و`description` مشترَطتان، والسلسلةُ `whenToUse` ومصفوفةُ `phases` (`{title, detail?, provider?, model?}`) اختياريتان. والمعاملُ `script` هو متنُ JavaScript الصرف **وحده** (لا TypeScript، وبلا جملة `export const meta` — فـmeta معاملٌ لا شفرة)، ويعمل بـ`await` في المستوى الأعلى؛ وانتهِ بـ`return <value>` — ويجب أن تكون القيمةُ قابلةً للتسلسل بـJSON وهي نتيجةُ هذه الأداة.
 
-نص برمجي دالة جسم توفير التالي خطاف:
+خطّافات متن السكربت:
 
-- `agent(prompt, opts?): Promise<any>`: تشغيل واحد subagent مباشر حتى إتمام. لا توفير `opts.schema` وقت، تحليل لـ فرعي درجة نهائي نص؛ توفير `opts.schema` وقت، هو يجب هو بـ كائن لـ أصل، كما**فقط قدرة**استخدام type/properties/required/additionalProperties/items/enum/const/oneOf JSON Schema، لا دعم حمل pattern/format/عدد قيمة حد، هذا وقت تحليل لـ عبر تحقق كائن. فرعي درجة فشل وقت تحليل لـ `null`، يمكن استخدام `.filter(Boolean)` مرور ترشيح. أخرى خيار يشمل `label`(عرض اسم) ،`phase`(دخول درجة مجموعة) ، و متبادل متبادل مستقل `provider`/`model` LLM(كبير لغة نموذج) هدف تغطية بند، اثنان من يمكن مفرد وحيد توفير. أخرى أي خيار (`effort`/`isolation`/`agentType`) كل سوف واضح تقرير خطأ.
-- `pipeline(items, ...stages): Promise<any[]>`: يجعل كل بند قسم آخر مرور مرور كل مرحلة مقطع، مرحلة مقطع بين**لا يوجد**شاشة عائق؛ كثير مرحلة مقطع عمل أولوية استخدام هو. كل مرحلة مقطع استقبال `(prev, item, index)`. عادي مرحلة مقطع استثناء سوف سوف هذا**بند**تغيير لـ `null`، و قفز مرور هو باق بقية مرحلة مقطع.
-- `parallel(thunks): Promise<any[]>`: تزامن تشغيل صفر معامل دالة و انتظار**الكل**إتمام. هو سوف شكل صار شاشة عائق، فقط عند بعض عدد مرحلة مقطع تأكيد فعلي حاجة تجميع مجموع الكل أولا قبل نتيجة وقت استخدام. رمي خروج استثناء thunk تحليل لـ `null`.
-- `phase(title)`: بدء واحد دخول درجة مرحلة مقطع؛`log(message)`: شرح دخول درجة؛`args`: استدعاء الأداة `args` إدخال، أصل مثال توفير.
+- `agent(prompt, opts?): Promise<any>` — يشغّل وكيلًا فرعيًا واحدًا حتى الاكتمال. وبلا `opts.schema` يحلّ إلى نص الابن النهائي؛ ومع `opts.schema` (وهو JSON Schema مجذور بكائن يستعمل `type` و`properties` و`required` و`additionalProperties` و`items` و`enum` و`const` و`oneOf` **وحدها** — بلا `pattern` ولا `format` ولا حدود عددية) يحلّ إلى الكائن المتحقَّق منه. ويحلّ إلى `null` حين يفشل الابن (فرشّح بـ`.filter(Boolean)`). ومن الخيارات الأخرى: `label` (للعرض)، و`phase` (مجموعةُ تقدّم)، وتجاوزا هدف LLM المستقلان `provider` و`model` (ويجوز تقديمُ أيٍّ منهما وحده). وما عدا ذلك (`effort` أو `isolation` أو `agentType`) يُرفض بصوت عالٍ.
+- `pipeline(items, ...stages): Promise<any[]>` — يشغّل كلَّ بند عبر المراحل مستقلًّا بلا حاجز بين المراحل (وفضّله للعمل متعدد المراحل). وتتلقى كلُّ مرحلة `(prev, item, index)`. ورميُ مرحلة عادي يُسقط ذلك **البند** إلى `null` ويتخطى مراحلَه الباقية.
+- `parallel(thunks): Promise<any[]>` — يشغّل دوالَّ بلا وسائط على التوازي وينتظرها **كلَّها** (وهو حاجز؛ فاستعمله فقط حين تحتاج مرحلةٌ إلى كل النتائج السابقة معًا). والدالةُ الرامية تحلّ إلى `null`.
+- `phase(title)` — يبدأ مرحلةَ تقدّم؛ و`log(message)` — يسرد التقدمَ؛ و`args` — مُدخَلُ `args` في نداء الأداة حرفيًّا.
 
-إذا خطأ استخدام خطاف (معامل خطأ، لم معرفة خيار، لا تلقي دعم حمل schema، إطلاق حد أعلى) ، رمي خروج خطأ**مجموع سوف**إنهاء نص برمجي، أبدا سوف تراجع تحويل لـ مفرد عدد بند `null`.
+والخطّافاتُ المساءُ استعمالُها (وسائطُ خاطئة، أو خياراتٌ مجهولة، أو schemas غيرُ مدعومة، أو سقوفٌ انكسرت) ترمي أخطاءً **تقتل السكربتَ دائمًا** — ولا تذوب قط في `null` لبند.
 
-قيد: تزامن حد أعلى و agent مجموع عدد حد أعلى متساو سوف توليد فاعلية؛ لا توفير نظام الملفات، شبكة، تحديد وقت جهاز أو Node.js API. أداة جسم عمل من agent إتمام، نص برمجي فقط مسؤول تحرير ترتيب. هذا تشغيل في قبل منصة تنفيذ: كامل نص برمجي إتمام بعد، استدعاء عندئذ سوف إرجاع.
+القيود: تسري سقوفُ التوازي ومجموعِ الوكلاء؛ ولا يُقدَّم نظامُ ملفات ولا شبكةٌ ولا مؤقّتات ولا واجهاتُ Node.js — فالوكلاءُ يعملون والسكربتُ ينسّقهم وحسب. ويعمل التشغيلُ في المقدمة: فيعود هذا النداءُ حين ينتهي السكربتُ كلُّه.
 
 ```json
 {
@@ -2444,7 +2444,7 @@ todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/wri
 }
 ```
 
-مصدر:[`packages/workflow/tool-workflow/src/index.ts`](../packages/workflow/tool-workflow/src/index.ts)
+المصدر: [`packages/workflow/tool-workflow/src/index.ts`](../packages/workflow/tool-workflow/src/index.ts)
 
 <a id="deepseek-aidsh-tool-web"></a>
 
@@ -2452,7 +2452,7 @@ todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/wri
 
 ### `web_fetch`
 
-نيل أخذ إشارة تحديد HTTP(S) URL محتوى، و سوف ذلك حل رمز لـ نص بعد إرجاع.
+يجلب محتوى رابط HTTP أو HTTPS بعينه ويعيده مفكوكَ الترميز نصًّا.
 
 ```json
 {
@@ -2469,11 +2469,11 @@ todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/wri
 }
 ```
 
-مصدر:[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
+المصدر: [`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
 
 ### `web_search`
 
-في Web فوق بحث الأكثر جديد معلومة. في لا بد ملء `queries` عدد مجموعة في توفير 1–4 عدد استعلام. إرجاع اختياري ملخص جواب سجل و مصدر URL قائمة.
+يبحث في الوِب عن معلومات حالية. قدّم من استعلام إلى أربعة في المصفوفة المشترَطة `queries`. ويعيد جوابَ ملخص اختياريًا وقائمةَ روابط مصادر.
 
 ```json
 {
@@ -2493,6 +2493,6 @@ todo_write هو جلسة كل حالة؛UI سوف الأكثر جديد todo/wri
 }
 ```
 
-مصدر:[`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
+المصدر: [`packages/web/tool-web/src/index.ts`](../packages/web/tool-web/src/index.ts)
 
-web_search و web_fetch سوف مزود اختيار وضع في ctx.web بعد، جعل نموذج مرئي schema في أكثر تبديل خلفية وقت إبقاء مستقر.
+تُبقي `web_search` و`web_fetch` انتقاءَ المزوّدين خلف `ctx.web` فتبقى schemas التي يراها النموذجُ ثابتةً عبر تبديل الخلفيات.
