@@ -1,31 +1,29 @@
-# نواة قلب
+# النواة
 
 [English](core.md) | العربية
 
-**نواة قلب**فرعي نظام أي [`packages/core`](../../packages/core/README.ar.md) ، يتضمن كل تركيب كل سوف بدء حزمة: حدث تتبع مصدر جلسة سجل، توجيه النظام تجميع، أداة سجل التسجيل،agent(ذكي جسم) نوع، و قيادة هو جمع أداة جسم حلقة. هذا صفحة شرح `agent`/`agent-loop` هذا مقابل حزمة الذي إعلان محتوى:agent مثل أي يتم إنشاء و يملك، و `Agent` جملة مقبض إلقاء تمرير، إلغاء و اعتراض قطع اتفاق؛ هذا صفحة أيضا شرح كل فرعي نظام كل التزام دوران اثنان عدد نوع نمط. هذا مجموعة مخصص تابع صفحة و دليل ذلك بقية جزء رؤية[فرعي نظام README](README.ar.md).
+نظامُ **النواة** هو [`packages/core`](../../packages/core/README.ar.md) — وهي الحزمُ التي يُقلعها كلُّ تركيب: سجلُّ الجلسة المسنَد إلى الأحداث، وتجميعُ مطالبة النظام، وسجلُّ الأدوات، وأنواعُ الوكيل، والحلقةُ الملموسة التي تقودها. وتشرح هذه الصفحةُ ما يعلنه زوجُ `agent` و`agent-loop` — كيف يُنشأ الوكيلُ ويُملَك، وعقودَ التسليم والإلغاء والاعتراض في مقبض `Agent` — مع نمطَي الأنواع اللذين يتبعهما كلُّ نظام. أما صفحاتُ المجموعة المخصصة وبقيةُ المجلد فمفهرسة في [README الأنظمة](README.ar.md).
 
-## رئيسي جاف تدريجي حزمة سرعة تصفح
+## العمود، حزمةً حزمة
 
-واحد جولة حسب نفس بند حلقة تدفق مرور ستة عدد حزمة:[`agent-loop`](../../packages/core/agent-loop) في driver إقرار قيادة واحد بند ترتيب طابور نص التوجيه، في[جلسة سجل](session.ar.md)(`ctx.sessions`) فوق فتح بدء جولة، عبر [system-prompt](system-prompt.ar.md)(`ctx.systemPrompt`) تجميع طلب بادئة و من سجل إرسال توليد تاريخ، مرور [LLM(كبير لغة نموذج) seam](llm-streaming.ar.md) تدفق صيغة نيل أخذ نموذج استجابة، مرور[أداة سجل التسجيل](tools.ar.md)(`ctx.tools`) توزيع استدعاء الأداة، و يأخذ كل نموذج مرئي واقع إلحاق عودة سجل، توفير تحت واحد خطوة إرسال توليد. حلقة نقل تشغيل محادثة مفردات——`Message`،`ContentBlock`،`StreamChunk`، نموذج طلب——من [`packages/llm`](../../packages/llm/README.ar.md) إعلان، سجل في [llm-streaming.md](llm-streaming.ar.md).
+تجري الجولةُ عبر الحزم الست في حلقة واحدة: يدّعي القائدُ في [`agent-loop`](../../packages/core/agent-loop) مطالبةً مصطفّة، ويفتح جولةً على [سجل الجلسة](session.ar.md) (`ctx.sessions`)، ويجمّع بادئةَ الطلب عبر [مطالبة النظام](system-prompt.ar.md) (`ctx.systemPrompt`) ويشتق التاريخَ من السجل، ويبثّ استجابةَ النموذج عبر [seam LLM](llm-streaming.ar.md)، ويوزّع نداءاتِ الأدوات عبر [سجل الأدوات](tools.ar.md) (`ctx.tools`)، ويُلحق كلَّ حقيقة يراها النموذجُ بالسجل قبل أن تشتق الخطوةُ التالية منه. أما مفرداتُ المحادثة التي تحرّكها الحلقةُ — `Message` و`ContentBlock` و`StreamChunk` وطلبُ النموذج — فتعلنها [`packages/llm`](../../packages/llm/README.ar.md) وتوثّقها [llm-streaming.md](llm-streaming.ar.md).
 
-| حزمة | مسؤول محتوى | صفحة |
+| الحزمة | تملك | الصفحة |
 |---|---|---|
-| `session/` | فقط إلحاق `SessionEvent` سجل و داخل تخزين store——وحيد حق مصدر (`ctx.sessions`) | [session.md](session.ar.md) |
-| `system-prompt/` | نص التوجيه مقطع سقوط و أداة schema تجميع (`ctx.systemPrompt`) | [system-prompt.md](system-prompt.ar.md) |
-| `tools/` | حمل أثر مجال أداة سجل التسجيل و تلقي حفظ حماية تنفيذ خط الإنتاج (`ctx.tools`) | [tools.md](tools.ar.md) |
-| `agent/` | `Agent` واجهة، فوري سجل التسجيل، إرسال بدء من أثر مجال و `agent/*` حدث مفردات (`ctx.agents`) | هذا صفحة |
-| `agent-loop/` | تنفيذ عام `Agent` اتفاق أداة جسم driver(`ctx.agentLoop`) | هذا صفحة |
-| `scope/` | سجل التسجيل و حلقة لأجل بناء حسب agent أثر مجال تسجيل أصل لغة | [scope.md](scope.ar.md) |
+| `session/` | سجلَّ `SessionEvent` ذا الإلحاق فقط والمخزنَ في الذاكرة — وهو مصدرُ الحقيقة الوحيد (`ctx.sessions`) | [session.md](session.ar.md) |
+| `system-prompt/` | تجميعَ أقسام المطالبة وschemas الأدوات (`ctx.systemPrompt`) | [system-prompt.md](system-prompt.ar.md) |
+| `tools/` | سجلَّ الأدوات المنطاقي ومسارَ التنفيذ المحروس (`ctx.tools`) | [tools.md](tools.ar.md) |
+| `agent/` | واجهةَ `Agent`، والسجلَّ الحي، ونطاقَ المُبادر، ومفرداتِ أحداث `agent/*` (`ctx.agents`) | هذه الصفحة |
+| `agent-loop/` | القائدَ الملموس الذي ينفّذ عقدَ `Agent` العلني (`ctx.agentLoop`) | هذه الصفحة |
+| `scope/` | بدائيةَ التسجيل المنطاقية التي تبني عليها السجلاتُ والحلقةُ النطاقَ لكل وكيل | [scope.md](scope.ar.md) |
 
-`scope/` هو هذا داخل وحيد غير خدمة حزمة: واحد صفر اعتماد مكتبة (`createScope`/`scopeOf`/`scopeTarget`) ، في وحدة رسم في يقع في `session/` و `system-prompt/` لـ تحت، صحيح هو لـ يجعل هو جمع إزالة استهلاك هو بينما لا شكل صار حلقة.`agent-loop` هو عام `Agent` اتفاق وحيد أداة جسم تنفيذ، وضع في هذا داخل لأن هو هو harness افتراضي منتج حلقة؛ هو في `ctx.agents.withInitiator()` داخل تشغيل كل driver. توسيع إضافة اعتماد `agent`——يشمل حاجة إرسال بدء Agent وقت——بينما أبدا مباشر اعتماد `agent-loop`، لذلك حلقة إبقاء يمكن استبدال.[`dsh-base`](../../packages/bundle/base/README.ar.md) هو افتراضي منتج تركيب،[`dsh-sdk-minimal`](../../packages/bundle/sdk-minimal/README.ar.md) فإن إعلان واحد شجرة أكثر صغير مستقل إعداد شجرة.
+و`scope/` هي الحزمةُ الوحيدة التي ليست خدمة: مكتبةٌ بلا توابع (`createScope` و`scopeOf` و`scopeTarget`) تقع تحت `session/` و`system-prompt/` في رسم الوحدات بالضبط ليستطيعا استهلاكَها بلا دورة. و`agent-loop` هو التنفيذُ الملموس الوحيد لعقد `Agent` العلني ويعيش هنا لأنه حلقةُ المنتَج الافتراضية في الحزام؛ وهو يشغّل كلَّ قائد داخل `ctx.agents.withInitiator()`. وتعتمد إضافاتُ التوسعة على `agent` — بما في ذلك حين تحتاج إلى الوكيل المُبادر — ولا تعتمد على `agent-loop` مباشرةً قط، فتبقى الحلقةُ قابلةً للاستبدال. و[`dsh-base`](../../packages/bundle/base/README.ar.md) تركيبُ المنتَج الافتراضي، بينما تعلن [`dsh-sdk-minimal`](../../packages/bundle/sdk-minimal/README.ar.md) شجرةً مستقلة أصغر.
 
-<a id="creation-and-ownership"></a>
+## الإنشاء والملكية
 
-## إنشاء و كل حق
+ينشئ المستهلكون وكلاءَ عبر `ctx.agents` — فـ`create()` يبني جلسةً ووكيلًا جديدين تحت `SessionId` واحد يقدّمه المستدعي، و`resume()` يحمّل جلسةً محفوظة أولًا — أو تصريحيًّا عبر مداخل ضبط الحلقة. ويعيد الإنشاءُ البرمجي مقبضَ المالك:
 
-مستهلك عبر `ctx.agents` إنشاء agent——`create()` في واحد استدعاء جهة توفير `SessionId` تحت بناء كل جلسة جديدة و agent،`resume()` أولا تحميل حمل دائم جلسة——أو من عبر حلقة إعلان صيغة إعداد بند إنشاء. تحرير مسار صيغة إنشاء إرجاع ملكية كل من جملة مقبض:
-
-شفرة المصدر:[`packages/core/agent/src/index.ts`](../../packages/core/agent/src/index.ts)
+المصدر: [`packages/core/agent/src/index.ts`](../../packages/core/agent/src/index.ts)
 
 ```ts type-equiv
 /**
@@ -48,17 +46,15 @@ interface AgentHandle {
 }
 ```
 
-`CreateAgentOptions` يحمل مشترك معرف و جديد agent إصدار قبل الذي يحتاج واحد قطع: اختياري تخزين نشط `parentAgent`، جلسة بيانات وصفية (`meta`——قد تحقق `cwd`،fork جدول نظام،`isSeeded` علامة، مصدر تصنيف، تفويض إرسال عميق درجة و `agentPreset`) ، نفس درجة حقل `inheritedEventCount` الذي يمثل دقيق fork cut، اختياري `seed` إعادة تشغيل بادئة، حسب agent `AgentOptions`، فقط إنشاء مدة صالح إلغاء `signal`، و `setup`.`ResumeAgentOptions` هو حمل دائم معرف مقابل بند:`resumeSessionId`،`parentAgent`،`agentOptions`،`signal` و `setup`.`setup` عودة ضبط (`AgentSetup`) في اثنان عدد id متساو لم إصدار وقت استقبال `(agentCtx, agent)`: سياق يملك أثر مجال تسجيل، صريح Agent توفير تأكيد قطع فرعي Session،Context بلا حاجة عكس نحو خاصية. كل مرور `agentCtx` تسجيل محتوى كل أولا في `agent/created` و رقم مرة نص التوجيه تجميع وجود.Setup يمكن إرجاع في إصدار قبل واحد لحظة استدعاء تزامن commit؛setup رفض،commit رمي خروج أو كل من dispose(مورد تحرير) كل سوف تراجع أمر خدمة، اثنان عدد id متساو لا إصدار.
+ويحمل `CreateAgentOptions` الهويةَ المشتركة وكلَّ ما يحتاجه وكيلٌ جديد قبل النشر: `parentAgent` حيًّا اختياريًا، وبياناتِ الجلسة الوصفية (`meta` — `cwd` متحقَّقًا منه، ونسبَ التفريع، وواسمَ `isSeeded`، وتصنيفَ المنشأ، وعمقَ التفويض، و`agentPreset`)، وقطعَ التفريع بعينه في الحقل الشقيق `inheritedEventCount`، وبادئةَ إعادة تشغيل `seed` اختيارية، و`AgentOptions` لكل وكيل، وإشارةَ إلغاء `signal` خاصة بالإنشاء، و`setup`. و`ResumeAgentOptions` نظيرُه للهوية المحفوظة: `resumeSessionId` و`parentAgent` و`agentOptions` و`signal` و`setup`. ويتلقى ردُّ نداء `setup` (وهو `AgentSetup`) الزوجَ `(agentCtx, agent)` بينما المعرّفان لم يُنشرا بعد: فالسياقُ يملك التسجيلاتِ المنطاقية، بينما يقدّم الوكيلُ الصريح جلسةَ الابن بعينها بلا خاصية عكسية على السياق. وكلُّ ما يُسجَّل عبر `agentCtx` يوجد قبل `agent/created` وقبل أول تجميع مطالبة. وقد يعيد الإعدادُ إيداعًا متزامنًا يُستدعى قبل النشر مباشرةً؛ ويتراجع عن المعاملة رفضُ الإعداد أو رميُ الإيداع أو تخلصُ المالك بلا نشر أي من المعرّفين.
 
-`AgentFactory` هو سجل التسجيل خلف بعد إنشاء واجهة: حلقة مرور `ctx.agents.setFactory()` تسجيل ذلك عمل مصنع، لذلك مستهلك استخدام `ctx.agents` وقت بلا حاجة اعتماد أداة جسم حلقة حزمة. وقت التشغيل فرعي Agent إنشاء جهة ضبط `options.parentAgent`؛ سجل التسجيل يأخذ options و استدعاء جهة Context نقل إعطاء عمل مصنع، لا من منها واحد بند دفع توجيه آخر بند. تأكيد قطع `create`/`resume` توقيع و تراجع اتفاق رؤية تحت جهة[توليد منطقة كتلة](#ctxagents--agentregistry).
+و`AgentFactory` هي واجهةُ الإنشاء خلف السجل: فتسجّل الحلقةُ مصنعَها عبر `ctx.agents.setFactory()`، فيستعمل المستهلكون `ctx.agents` بلا اعتماد على حزمة الحلقة الملموسة. ويضبط منشئُ ابن في وقت التشغيل `options.parentAgent`؛ ويمرّر السجلُّ الخياراتِ وسياقَ المستدعي إلى المصنع بلا اشتقاق أحدهما من الآخر. وتوقيعا `create` و`resume` بعينهما وعقودُ التراجع في [القسم المولَّد](#ctxagents--agentregistry) أدناه.
 
-<a id="the-agent-handle"></a>
+## مقبض الوكيل
 
-## Agent جملة مقبض
+`Agent` هو السطحُ الذي تبرمج عليه كلُّ إضافة (واجهةً كانت أو خطّافات أو منسّقات)؛ ويعيده `ctx.agents.get(id)`، ويحمله [نطاق المُبادر](#initiating-agent). والتنفيذُ الملموس داخليٌّ في حزمة dsh-agent-loop؛ ولا يعتمد عليه شيءٌ خارجها. وتكشف طريقةُ `send` الموحَّدة توجيهَ الهدف والإيقاظ مباشرةً؛ و`followup` و`steer` و`inject` أسماءٌ بديلة بإعدادات ثابتة.
 
-`Agent` هو كل إضافة (UI، خطاف،orchestrator) موجه إلى تحرير مسار surface؛`ctx.agents.get(id)` إرجاع هو،[إرسال بدء من أثر مجال](#initiating-agent) يحمل هو. أداة جسم تنفيذ لـ dsh-agent-loop حزمة داخلي دقيق عقدة؛ حلقة خارج لا يوجد أي مكون اعتماد هو. موحد واحد `send` طريقة مباشر كشف target و wakeup توجيه؛`followup`،`steer` و `inject` هو ثابت مسبق ضبط آخر اسم طريقة.
-
-شفرة المصدر:[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
+المصدر: [`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
 
 ```ts type-equiv
 /** Public live-agent handle; the runtime face augments its live capabilities. */
@@ -194,7 +190,7 @@ type AssistantStreamFrame =
   }
 ```
 
-`running` وصف كامل مشغل ترتيب فارغ منطقة بين، ممكن عبر تجاوز وصل متابعة ترتيب طابور جولة؛ هو لا يستطيع إثبات بعض عدد جولة ما زال فتح.dispose سوف يأخذ agent من سجل التسجيل إزالة تزامن خروج `agent/disposed`؛ هو لا هو واحد نهاية حالة status قيمة.`followup()` لا إرجاع جملة مقبض: ذلك `MessageId` معرف هو حمل دائم inbox إدراج دخول، إقرار قيادة و إسقاط واقع، بينما غير بعد مساعدة يد إخراج أو جولة انتهاء.`whenIdle()` مراقبة هو كامل agent، لذلك فقط لديه عند استدعاء جهة واضح يملك من عودة تنفيذ إلى فارغ خامل هذا مقطع منطقة بين وقت، عندئذ قدرة يأخذ هو تسمية لـ مرة run([قرار](../../.agents/notes/implemented/architecture/2026-07-30-followup-enqueue-and-owned-runs.ar.md)).
+و`running` تصف فترةَ تصريف القائد كلَّها وقد تمتد على جولات مصطفّة متتالية؛ وهي لا تثبت أن جولةً ما زالت مفتوحة. ويزيل التخلصُ الوكيلَ من السجل ويُطلق `agent/disposed`؛ وهو ليس قيمةَ حالة نهائية. ولا يعيد `followup()` مقبضًا: فـ`MessageId` لديه يحدد حقائقَ الإدراج الدائم في صندوق الوارد والادعاءِ والإهمال، لا خرجَ مساعد لاحقًا ولا نهايةَ جولة. ويراقب `whenIdle()` الوكيلَ كلَّه، فلا يسمّي المستدعون فترةً من الإيصال إلى الخمول تشغيلةً إلا حين يملكون تلك الفترةَ صراحةً ([القرار](../../.agents/notes/implemented/architecture/2026-07-30-followup-enqueue-and-owned-runs.ar.md)).
 
 ```ts type-equiv
 /** Merge-extensible agent creation options. Persona belongs to system-prompt sections. */
@@ -210,9 +206,9 @@ interface AgentOptions {
 }
 ```
 
-في `agent/request` بعد، توزيع اشتراط `provider` و `model` كل وجود. صريح `reasoningEffort` سوف لـ هذا توجيه أول مرة طلب توفير ابتدائي قيمة؛ تأكيد قطع نموذج تحليل سوف تحقق هذا قيمة، حذف وقت فإن سماح ملء دخول مهايئ قيمة افتراضية. توفير `maxTokens` وقت، هو يجب هو صحيح أمان كامل عدد، و حد كل مرة محادثة نموذج طلب إخراج؛ حذف وقت، نظام سوف في كتابة طلب header قبل ملء دخول تأكيد قطع نموذج مهايئ قيمة افتراضية، لا فإن مزود سلوك إبقاء ثابت.agent أثر مجال `deployment:persona-prefix` نص التوجيه مقطع سقوط يمكن حجب حجب عام افتراضي persona.
+ويشترط التوزيعُ `provider` و`model` بعد `agent/request`. ويبذر `reasoningEffort` صريحًا أولَ طلب على ذلك المسار؛ ويتحقق حلُّ النموذج بعينه منه، بينما يتيح إغفالُه تجسّدَ افتراض المهايئ. و`maxTokens`، حين توجد، يجب أن تكون عددًا صحيحًا موجبًا آمنًا وتسقّف كلَّ طلب نموذج محادثة؛ وإغفالُها يتيح تجسّدَ افتراض مهايئ النموذج بعينه قبل ترويسة الطلب، وإلا ترك سلوكَ المزوّد كما هو. وقد يحجب قسمُ مطالبة `deployment:persona-prefix` المحدود بالوكيل الشخصيةَ الافتراضية العامة.
 
-inbox أي إلقاء تمرير مفردات——agent بـ حمل دائم إسقاط شكل صيغة يملك اثنان بند لديه ترتيب انتظار معالجة رسالة قائمة:
+وصندوقُ الوارد هو مفرداتُ التسليم — قائمتا رسائل معلَّقة مرتَّبتان يملكهما الوكيلُ إسقاطًا دائمًا:
 
 ```ts type-equiv
 /** Agent-owned access to pending work; concrete storage belongs to the driver. */
@@ -276,9 +272,9 @@ interface Inbox {
 type InboxTarget = 'next-turn' | 'next-step'
 ```
 
-كل انتظار معالجة دخول طابور بند حينئذ هو ذلك `UserMessage`؛`MessageId` هو وحيد معرف. بنية تحويل `Inbox` طريقة سوف سجل مواصفة تحويل حمل دائم `agent/inbox/spliced` تغيير، و رفض تكرار انتظار معالجة id.`replace(messageId, newMessage)` و `remove(messageId)` عبر `MessageId` عبر اثنان نسخة قائمة تحديد موضع انتظار معالجة رسالة؛ استبدال يمكن تغيير معرف، و أولا سوف قديم رسالة بصفة discarded إصدار، مجددا سوف جديد رسالة بصفة inserted إصدار. عادي حذف و `clear()` كل يمثل إلغاء. في خطوة حد،dsh-agent-loop حزمة داخلي `ReactLoopInbox` سوف عبر صاف حذف splice إزالة محاكاة دخول خطوة دفعة مرة——الكل `next-step` إدخال، خارج إضافة جولة حد فوق واحد بند `next-turn` رسالة——كما لا إرسال خروج discarded إشعار، مع بعد تدريجي بند إرسال خروج claimed إشعار. فقط توفير حلقة استخدام انتظار معالجة فحص قياس و قيادة أخذ عملية لا يخص `Agent.inbox`.`AgentLoop` خدمة في إصدار عمل مصنع قبل تسجيل معيار `inbox` إسقاط؛ ذلك cell هو وحيد live حالة، نفس نسخة طي في لا يوجد Agent وقت أيضا خدمة في بارد مستهلك. هذا fold سوف رفض لا أمان أو تجاوز حد splice جلوس علامة، و عبر اثنان نسخة قائمة تكرار معرف، و عبر حدث seq إشارة خروج صيغة خطأ حمل دائم تاريخ. تتبع أثر مفرد بند رسالة مستهلك استخدام دقيق `agent/inbox/inserted`،`claimed` و `discarded` إشعار.
+وكلُّ مناسبة معلَّقة هي `UserMessage` الخاصة بها؛ و`MessageId` هو الهويةُ الوحيدة. وتسجّل طرائقُ `Inbox` البنيوية تغييراتِ `agent/inbox/spliced` الدائمة الموحَّدة وترفض المعرّفاتِ المعلَّقة المكررة. ويحدد `replace(messageId, newMessage)` و`remove(messageId)` الرسالةَ المعلَّقة عبر القائمتين؛ وقد يغيّر الاستبدالُ الهويةَ فيُطلق الرسالةَ القديمة مهمَلةً ثم الرسالةَ الجديدة مدرَجةً. والإزالاتُ المعتادة و`clear()` إلغاءات. وعند حدّ خطوة، يزيل `ReactLoopInbox` الداخلي في dsh-agent-loop الدفعةَ المقترحة — كلَّ مُدخَل `next-step`، ومعه عند حدّ جولة رسالةَ `next-turn` واحدة — بتشريحات حذف نقية بلا إشعارات إهمال، ثم يُطلق إشعاراتِ ادعاء لكل رسالة. وكشفُ المعلَّق وادعاؤه الخاصان بالحلقة ليسا من `Agent.inbox`. وتسجّل خدمةُ `AgentLoop` إسقاطَ `inbox` القياسي قبل نشر مصنعها؛ وخليتُه هي الحالةُ الحية الوحيدة، ويخدم الطيُّ نفسُه المستهلكين الباردين ولو لم يوجد وكيل. ويرفض الطيُّ إحداثياتِ التشريح غيرَ الآمنة أو الخارجة عن المدى والهوياتِ المكررة عبر القائمتين، ويحدد التاريخَ الدائم المشوَّه برقم تسلسل حدثه. ويستعمل المستهلكون الذين يتابعون رسالةً واحدة إشعاراتِ `agent/inbox/inserted` و`claimed` و`discarded` بعينها.
 
-إلغاء:
+والإلغاء:
 
 ```ts type-equiv
 /** Options for {@link Agent.cancel}. */
@@ -301,27 +297,25 @@ type AgentCancelCause =
   | { readonly kind: 'disposed' }
 ```
 
-cause هو من TypeScript قوي صنع قيد نفس عملية إدخال. نشط وثب إلغاء يحتفظ من سوف سوف هو نسخ إلى فقط وقت التشغيل `AbortSignal.reason`؛signal لا منح إعطاء تنسيق عمل مستمع أي تصنيف إذن. حمل دائم `turn/end` بـ `{ kind: 'aborted', reason: TurnEndCancelCause }` سجل نتيجة، إلغاء سبب مع نهاية حالة نتيجة واحد بدء حفظ دائم.
+والسببُ مُدخَلٌ داخل العملية يفرضه TypeScript. وينسخه حاملُ إلغاء نشط في `AbortSignal.reason` المقتصر على وقت التشغيل؛ ولا تمنح الإشارةُ المستمعين المتعاونين سلطةَ تصنيف. ويسجّل `turn/end` الدائم الحصيلةَ بالصيغة `{ kind: 'aborted', reason: TurnEndCancelCause }`، فيحطّ سببُ الإلغاء في النتيجة النهائية.
 
-[حدث تصنيف](../architecture.ar.md#events) مسؤول `agent/*` دورة الحياة، فحص نقطة و waterfall(شلال نشر صيغة حدث) اتفاق. جولة و خطوة حد هو حمل دائم جلسة حدث، بينما لا هو agent emit.
+ويملك [تصنيف الأحداث](../architecture.ar.md#events) عقودَ دورة حياة `agent/*` ونقاطِ التفتيش والشلالات. وحدودُ الجولات والخطوات أحداثُ جلسة دائمة لا إطلاقاتُ وكيل.
 
 <a id="initiating-agent"></a>
 
-## إرسال بدء Agent
+## الوكيل المُبادر
 
-`ctx.agents` يحمل عملية محلي initiator حينئذ هو فوق وجه تأكيد قطع `Agent`، لا هو مفرد وحيد frame أو نسخ معرف. بيئة في وجود هذا قيمة حيث لا يستطيع إثبات تخزين نشط، أيضا لا بديل جدول تخويل؛[initiator أثر مجال قرار](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.ar.md) تعريف ذلك دورة الحياة و أثر مجال قاعدة.
+المُبادرُ المحلي في العملية الذي يحمله `ctx.agents` هو `Agent` بعينه أعلاه، لا إطارٌ منفصل ولا هويةٌ منسوخة. والحضورُ المحيط ليس دليلَ حياة ولا تخويلًا؛ ويعرّف [قرار نطاق المُبادر](../../.agents/notes/implemented/architecture/2026-07-15-agent-initiator-scope.ar.md) عمرَه وقواعدَ نطاقه.
 
-<a id="interception-decisions"></a>
+## قرارات الاعتراض
 
-## اعتراض قطع قرار
+تستعمل قراراتُ ما قبل الخطوة نوعَ `UserMessage` المعرَّف نفسَه الذي يستعمله المُدخَلُ الدائم بدور المستخدم. والدفعةُ الداخلة هي المرجع وتحفظ `id` و`source` لكل رسالة. وتربط جسورُ الخطّافات حقولَ قراراتها الأصيلة بهذه النتيجة المنوَّعة.
 
-pre-step قرار استخدام و حمل دائم user-role إدخال نفسه، حمل معرف `UserMessage` نوع. دخول خطوة دفعة مرة أداة لديه مرجعي صفة، و إبقاء كل بند رسالة `id` و `source`. خطاف جسر وصل طبقة يأخذ ذلك أصلي قرار حقل خريطة إلى هذا واحد نوع تحويل نتيجة فوق.
+المصدر: [`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
 
-شفرة المصدر:[`packages/core/agent/src/types.ts`](../../packages/core/agent/src/types.ts)
+ويتلقى `agent/pre-step` حمولةً واحدة تحمل الدفعةَ المدّعاة حصريًّا (`messages`)، وإحداثياتِ الخطوة المقترحة (`turn` و`step`)، وإشارةَ إلغاء الجولة الحالية `signal`. ويعمل الاقتراحُ الأول داخل جولة مفتوحة قبل أي خطوة؛ وقد تقدّم متابعةُ أداة دفعةً مدّعاة فارغة بين الخطوات:
 
-`agent/pre-step` استقبال واحد payload، يحمل وحيد احتلال قد قيادة أخذ دفعة مرة (`messages`) ، محاكاة دخول خطوة جلوس علامة (`turn`،`step`) و حالي جولة إلغاء `signal`. أول مرة رفع سجل في قد فتح جولة داخل، أي خطوة بدء قبل تشغيل؛ أداة continuation يمكن في خطوة بين إيداع فارغ قد قيادة أخذ دفعة مرة:
-
-هو إرجاع `PreStepDecision`.reject لن فتح خطوة.enter توفير في `step/start` بعد إلحاق كامل رسالة دفعة مرة؛ نهائي قرار حذف قد قيادة إلغاء خبر إبقاء قد حذف، بينما قيادة أخذ بعد إدراج دخول إدخال ما زال إبقاء انتظار لاحق معالجة:
+وهو يعيد `PreStepDecision`. والرفضُ لا يفتح خطوةً. والدخولُ يقدّم دفعةَ الرسائل كاملةً تُلحق بعد `step/start`؛ وتبقى الرسائلُ المدّعاة التي يُغفلها القرارُ النهائي مزالةً، بينما يبقى المُدخَلُ المدرَج بعد الادعاء معلَّقًا:
 
 ```ts type-equiv
 /** Whether and with which messages the loop enters a proposed step. */
@@ -335,43 +329,43 @@ type PreStepDecision =
   }
 ```
 
-`agent/request-error` في فشل نموذج خطوة إغلاق بعد، ذلك جولة إغلاق قبل تشغيل.listener يمكن في فشل جولة signal ما زال تخزين نشط وقت إصلاح حمل دائم حالة أو await سياسة عمل. معالجة هذا خطأ listener إرجاع `{ kind: 'retry' }` كما لا استدعاء `next()`؛ افتراضي `undefined` سوف يجعل فشل إبقاء نهاية حالة.
+ويعمل `agent/request-error` بعد إغلاق خطوة نموذج فاشلة وقبل إغلاق جولتها. ويستطيع المستمعون إصلاحَ حالة دائمة أو انتظارَ عمل سياسة ما دامت إشارةُ الجولة الفاشلة حية. ويعيد المستمعُ المعالِج `{ kind: 'retry' }` بلا نداء `next()`؛ ويُبقي الافتراضُ `undefined` الفشلَ نهائيًّا.
 
 ```ts type-equiv
 /** Action returned by a listener that owns model-request recovery. */
 type RequestErrorAction = { kind: 'retry' } | undefined
 ```
 
-`agent/pre-step` هو طلب دفع توجيه قبل وحيد waterfall(شلال نشر صيغة) مستمع سلسلة.`agent/turn-stopping` في جولة لا يوجد أداة أو steering(في طريق جذب توجيه) لاحق وقت تشغيل، أولا في الأكثر بعد مرة steering ترتيب فارغ.
+و`agent/pre-step` سلسلةُ مستمعي الشلال الوحيدة قبل اشتقاق الطلب. ويعمل `agent/turn-stopping` حين لا تكون للجولة متابعةُ أداة ولا متابعةُ توجيه، قبل تصريف توجيه نهائي واحد.
 
-`agent/created` يحمل `SessionStartSource`(جلسة دورة الحياة لـ أي بدء؛ جسر وصل طبقة حسب هذا مطابقة ذلك SessionStart):
+ويحمل `agent/created` قيمةَ `SessionStartSource` (وهي سببُ بدء دورة حياة الجلسة؛ ويفهرس جسرٌ مطابِقَ SessionStart عليها):
 
 ```ts type-equiv
 /** Why a session lifecycle began; seeded creates are `startup`, while persisted loads are `resume`. */
 type SessionStartSource = 'startup' | 'resume' | 'clear' | 'compact'
 ```
 
-## جلسة
+## الجلسات
 
-`Session` هو واحد نسخة نوع تحويل `SessionEvent` **فقط إلحاق سجل**——وحيد حق مصدر.LLM رسالة تاريخ من سجل*إرسال توليد*(`deriveMessages()`) ، بينما غير مفرد وحيد تخزين. كل بند يحمل مفرد ضبط `seq`،`time` و حسب `type` حكم آخر `data` payload؛surface تغيير جسم أيضا يمكن في `sourceEventSeqs` في صف خروج يتم مرجع مقارنة مبكر حدث، و يحمل `surfaceOp`.
+`Session` هي **سجلٌّ ذو إلحاق فقط** من `SessionEvent` منوَّعة — وهي مصدرُ الحقيقة الوحيد. وتاريخُ رسائل LLM *مشتقٌّ* من السجل (`deriveMessages()`)، لا مخزَّنٌ على حدة. ويحمل كلُّ مدخل `seq` تصاعديًّا و`time` وحمولةَ `data` مميَّزةً بـ`type`؛ وقد تعدّد أشكالُ السطح أيضًا أحداثًا أسبق مذكورة في `sourceEventSeqs` وتحمل `surfaceOp`.
 
-`SessionEvent` معلومة غلاف تأكيد قطع شرط حقل، عشرة ثلاثة نوع نواة قلب حدث تغيير جسم (`turn/start`،`turn/end`،`step/start`،`step/end`،`user/message`،`system/message`،`assistant/message`،`assistant/attempt`،`tool/call`،`tool/result`،`request/header`،`request/context`،`session/end-seed`) ،`deriveMessages()` إسقاط قاعدة،`TurnEndReason` سبب و تنفيذ غلاف إغلاق و مستقل حدث قاعدة كل في **[session.md](session.ar.md)** في. سجل مثل أي حفظ دائم——`SessionPersistence` واجهة،JSONL provider،`session/flush` فحص نقطة، انهيار انهيار استعادة و `SessionHeader`——فإن في **[persistence.md](persistence.ar.md)** في.
+أما الحقولُ الشرطية بعينها في مغلّف `SessionEvent`، وأشكالُ الأحداث النواة الثلاثةَ عشر (`turn/start` و`turn/end` و`step/start` و`step/end` و`user/message` و`system/message` و`assistant/message` و`assistant/attempt` و`tool/call` و`tool/result` و`request/header` و`request/context` و`session/end-seed`)، وقواعدُ إسقاط `deriveMessages()`، وأسبابُ `TurnEndReason`، وقواعدُ إحاطة التنفيذ والأحداثِ المستقلة فعلى **[session.md](session.ar.md)**. وكيف يصير السجلُّ دائمًا — واجهةُ `SessionPersistence`، ومزوّدُ JSONL، ونقطةُ تفتيش `session/flush`، والتعافي من الانهيار، و`SessionHeader` — فعلى **[persistence.md](persistence.ar.md)**.
 
 ## `ToolDefinition`
 
-وحيد يخص نواة قلب خط الإنتاج تحرير كتابة نوع: كل قد تسجيل أداة*هو ماذا*——واحد موجه إلى نموذج `ToolSchema` إضافة فوق واحد `execute` دالة، و اختياري نهائي محتوى عودة ضبط و UI عودة ضبط. أداة عمل من جدا قليل يد حركة بنية صنع هو (`defineTool` DSL سوف استخدام نوع تحويل معامل بناء) ، لكن هو هو سجل التسجيل تخزين و من حلقة لأجل توزيع اتفاق.
+هو نوعُ تأليف المسار الوحيد الذي هو من النواة: ما تكونه كلُّ أداة مسجَّلة — `ToolSchema` يراه النموذجُ مع دالة `execute` وردودِ نداء اختيارية للمحتوى النهائي وللواجهة. ونادرًا ما يبنيه مؤلفُ أداة بيده (فلغةُ `defineTool` تبنيه بوسائط منوَّعة)، لكنه العقدُ الذي يمسكه السجلُّ وتوزّع عبره الحلقة.
 
-ذلك كامل حقل،`defineTool`/`ValueSchemaSpec`/`ParameterSchemaSpec` نوع تحويل schema DSL،`ToolExecution`/`ToolExecutionResult` waterfall نوع، و أداة عرض UI نوع كل في **[tools.md](tools.ar.md)** في.
+أما حقولُه كاملةً، ولغةُ schemas المنوَّعة `defineTool` و`ValueSchemaSpec` و`ParameterSchemaSpec`، وأنواعُ شلال `ToolExecution` و`ToolExecutionResult`، وأنواعُ عرض الأدوات في الواجهة فعلى **[tools.md](tools.ar.md)**.
 
-## كل مستودع عام نوع نمط
+## أنماط الأنواع في المستودع كله
 
-اثنان عدد نمط في كل فرعي نظام في عكس تكرار ظهور، فقط في هذا موضع سجل مرة.
+يتكرر نمطان عبر كل نظام، وهما موثَّقان مرةً واحدة هنا.
 
 <a id="the-map--derived-union-pattern"></a>
 
-### `…Map → derived-union` نمط
+### نمط «`…Map` ← اتحادٌ مشتق»
 
-harness في بضعة نحو كل يمكن توسيع و نوع كل التزام دوران نفس نمط: واحد بـ حكم آخر وسم لـ مفتاح واجهة (`…Map`) ، ربط دمج نوع من `keyof` إرسال توليد. إضافة عبر**إعلان دمج**إضافة تغيير جسم——بلا حاجة تعديل يملك هذا نوع حزمة.
+يتبع كلُّ نوع مجموع قابل للتوسعة في الحزام تقريبًا نمطًا واحدًا: واجهةٌ مفهرَسة بوسم مميِّز (وهي `…Map`)، يُشتق منها الاتحادُ بـ`keyof`. وتضيف الإضافاتُ أشكالًا بـ**دمج التصريحات** — بلا تعديل الحزمة المالكة.
 
 ```ts ignore-check
 // The pattern, schematically:
@@ -390,9 +384,9 @@ declare module '@deepseek-ai/dsh-llm' {
 }
 ```
 
-خمسة عدد مواصفة map استخدام هذا نمط؛ إضافة عمل من توسيع هو جمع:
+وتستعمل خمسُ خرائط معيارية هذا النمطَ؛ ويوسّعها مؤلفُ الإضافة:
 
-| Map | حزمة | إرسال توليد | دليل |
+| الخريطة | الحزمة | تشتق | الدليل |
 |---|---|---|---|
 | `ContentBlockMap` | dsh-llm | `ContentBlock` | [llm-streaming.md](llm-streaming.ar.md#content-blocks-and-messages) |
 | `MessageSourceMap` | dsh-llm | `MessageSource` | [llm-streaming.md](llm-streaming.ar.md#content-blocks-and-messages) |
@@ -400,24 +394,24 @@ declare module '@deepseek-ai/dsh-llm' {
 | `TurnEndReasonMap` | dsh-session | `TurnEndReason` | [session.md](session.ar.md) |
 | `SessionEventMap` | dsh-session | `SessionEvent` | [session.md](session.ar.md) |
 
-مستهلك الأكثر معتاد `switch` اثنان عدد كبير نوع حكم آخر ربط دمج نوع هو:**`StreamChunk`**(تدفق صيغة بروتوكول) و **`SessionEvent`**(سجل بند). حسب مستودع اتفاق، مقابل وسم فعل `switch`——لا يلزم سلسلة صيغة `if`——هذا مثال كل فرع كل قدرة ضيق تحويل نوع، تجميع خطأ وسم سوف تحرير ترجمة فشل.
+واتحادان مميَّزان كبيران هما الأكثرُ تفريعًا لدى المستهلكين بـ`switch`: **`StreamChunk`** (بروتوكولُ البث) و**`SessionEvent`** (مدخلُ السجل). وبحسب عرف المستودع، فرِّع على الوسم بـ`switch` — لا تسلسل `if` — فيضيّق كلُّ فرع النوعَ ويفشل وسمٌ مكتوب خطأً عند الترجمة.
 
 <a id="branded-ids"></a>
 
-### صنف لوحة تحويل ID
+### المعرّفات الموسومة
 
-في حزمة بين نقل تمرير ID كل مرور مرور**صنف لوحة تحويل**——بنية فوق هو نص، لكن في نوع طبقة وجه غير ممكن متبادل تبديل (لا يستطيع يأخذ `SessionId` نقل إعطاء حاجة `ToolCallId` موضع). بنية صنع استخدام مشترك `brandString<T>()` helper أو الذي تابع جهة ذاتي تعريف تحقق عمل مصنع؛ مقارنة مقارنة، سجل سجل و JSON سلوك و عادي نص نفسه.
+المعرّفاتُ الممرَّرة بين الحزم **موسومة** — فهي سلاسلُ بنيويًّا لكنها غيرُ قابلة للتبادل على مستوى الأنواع (فلا يُمرَّر `SessionId` حيث يُتوقع `ToolCallId`). ويستعمل الإنشاءُ المساعدَ المشترك `brandString<T>()` أو مصنعًا متحققًا يعرّفه المالك؛ وتتصرف المقارنةُ والتسجيلُ وJSON تصرفَ السلاسل العادية.
 
-`Branded<B>` أصل لغة و بلا حالة بنية صنع دالة يقع في [dsh-brand](../../packages/util/brand) ، هذا حزمة لا اعتماد harness قدرة.`brandString<T>()` تطبيق فقط تحرير ترجمة مدة وجود نص صنف لوحة.
+وتعيش بدائيةُ `Branded<B>` والبانيُ عديمُ الحالة في [dsh-brand](../../packages/util/brand)، التي لا تابعةَ قدرة حزام لها. ويطبّق `brandString<T>()` علامةَ سلسلة عند الترجمة وحدها.
 
-شفرة المصدر:[`packages/util/brand/src/index.ts`](../../packages/util/brand/src/index.ts)
+المصدر: [`packages/util/brand/src/index.ts`](../../packages/util/brand/src/index.ts)
 
 ```ts type-equiv
 /** A string carrying a compile-time-only brand `B`. */
 type Branded<B extends string> = string & { readonly [BRAND]: B }
 ```
 
-اثنان عدد نواة قلب ID هو `ToolCallId`(صلة ربط استدعاء الأداة و ذلك نتيجة؛dsh-llm) و `SessionId`(نشط وثب agent و حمل دائم جلسة مشترك معرف؛dsh-session). قدرة حزمة أيضا سوف صنف لوحة تحويل كل منها id، مثال مثل [jobs.md](jobs.ar.md) في `JobId`.
+والمعرّفان النواةُ هما `ToolCallId` (يربط نداءَ أداة بنتيجته؛ في dsh-llm) و`SessionId` (هويةُ الوكيل الحي والجلسة الدائمة المشتركة؛ في dsh-session). وتَسِم حزمُ القدرات معرّفاتِها أيضًا، مثل `JobId` في [jobs.md](jobs.ar.md).
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 
