@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/typert.md
 typert.md: 46465d09012ef6a88c654bbdfcd3652177f7c5b3
-typert.ar.md: ad664db442b49c16458207e78ba22b986b8b9ec3
+typert.ar.md: efb4706d44864c34b4662292413b8a5f7d7e5ab8
