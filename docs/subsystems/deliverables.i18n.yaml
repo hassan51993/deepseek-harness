@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/deliverables.md
 deliverables.md: 7873f3b8bdf35ed0648d941537908bb93f10493b
-deliverables.ar.md: 4985bfe6f1c7dd3c6d4a7bb06b654d736db9c196
+deliverables.ar.md: 9666fa377528b9bda51a6cd54da106ebdac9d68c

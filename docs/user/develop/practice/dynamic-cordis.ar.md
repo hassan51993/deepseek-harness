@@ -1,15 +1,15 @@
-# عبر نص التوجيه إعداد حفظ دائم إضافة
+# ضبط الإضافات الدائمة من توجيه
 
 [English](dynamic-cordis.md) | العربية
 
-إنشاء صنع نمط توفير [Plugin Manager](../../../../packages/boot/plugin-manager/README.ar.md) و فقط قراءة[وقت التشغيل فحص](../../../../packages/extensions/tool-cordis/README.ar.md). إضافة إعداد يخص حالي profile، أثر ذلك جلسة، و في عملية إعادة بدء بعد إبقاء.
+يوفّر وضعُ المُنشئ [مدير الإضافات](../../../../packages/boot/plugin-manager/README.ar.md) و[فحصَ وقت التشغيل](../../../../packages/extensions/tool-cordis/README.ar.md) للقراءة فقط. وإعدادُ الإضافات يخص الـ profile الحالي، ويؤثر في جلساته، وينجو من إعادة تشغيل العملية.
 
-## اتصال MCP خادم
+## اربط خادم MCP
 
-بدء Web profile و اختيار إنشاء صنع نمط. دقيق تجهيز واحد يمكن وصول كما توفير `ping` Streamable HTTP MCP خادم، سوف ذلك فعلي طرف نقطة ملء دخول التالي نص التوجيه:
+أقلع profile الخاص بـ Web واختر وضعَ المُنشئ. ومع خادم MCP يعمل بـ Streamable HTTP ويمكن الوصول إليه ويكشف `ping`، أرسل هذا التوجيه مستعملًا نقطةَ نهايته الفعلية:
 
-> سوف `<endpoint>` موضع MCP خادم إعداد إلى حالي profile، تسمية لـ `demo`. قيام أي تفعيل هو أداة، لكن بعد استدعاء هو ping أداة و إبلاغ إبلاغ أنا نتيجة.
+> Configure the MCP server at `<endpoint>` in this profile as `demo`. Make its tools available now, then call its ping tool and tell me the result.
 
-agent تحرير كتابة صاف إعداد تركيب حزمة، في patch في إدراج دخول `@deepseek-ai/dsh-mcp-client`، مجددا عبر `plugin_manager install_bundle` تثبيت. تفعيل HMR وقت، أداة سوف ظهور في نفس عدد تشغيل في جلسة داخل. معا فحص إدارة نتيجة (`application: applied`) و نجاح `mcp__demo__ping` استدعاء. إرجاع `restart-required` قد حفظ بند بعد لم تنشيط؛ فشل بند حاجة إصلاح إعداد.
+فيكتب الوكيل حزمةً للإعداد وحده يدرج patch الخاص بها `@deepseek-ai/dsh-mcp-client`، ثم يثبّتها بـ `plugin_manager install_bundle`. ومع تفعيل HMR تظهر الأدوات في الجلسة العاملة نفسها. وتحقّق من نتيجة الإدارة (`application: applied`) ومن نجاح استدعاء `mcp__demo__ping` معًا. والمدخلُ المحفوظ بحالة `restart-required` لم ينشط بعد؛ والمدخلُ الفاشل يحتاج إصلاحَ إعداد.
 
-تعديل إعداد قبل أولا قراءة تركيب حزمة patch. استخدام Plugin Manager توقف استخدام بند أو إزالة تركيب حزمة. يمكن قبول إعداد و اتصال فشل سلوك رؤية [MCP client مشاركة اعتبار](../../../../packages/mcp/mcp-client/README.ar.md).
+واقرأ patch الحزمة قبل تعديل إعدادها. واستعمل مديرَ الإضافات لتعطيل المداخل أو إزالة الحزمة. وانظر [مرجع عميل MCP](../../../../packages/mcp/mcp-client/README.ar.md) للإعداد المقبول ولسلوك أعطال الاتصال.

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/todo.md
 todo.md: 9856421c79f3563fff27d79ed6dc8eac10072805
-todo.ar.md: 0a2fc9d9e89033878d8e6d45a3339a2b3fe66650
+todo.ar.md: a4d01803ae659632217b644224818703a58e99cf

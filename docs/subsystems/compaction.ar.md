@@ -1,31 +1,31 @@
-# ضغط (compaction)
+# الضغط
 
 [English](compaction.md) | العربية
 
-ضغط seam هو واحد[قدرة seam](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.ar.md) ، و bash واحد مثال قسم لـ Service Definition([dsh-compaction](../../packages/compaction/compaction) ،`ctx.compaction`) ،Service Provider(مثال مثل [dsh-compaction-basic](../../packages/compaction/compaction-basic) خلفية) و موجه إلى مستخدم Consumer([dsh-command-compact](../../packages/compaction/command-compact)). ضغط هو**واحد بند اختياري قدرة**، لا يخص agent loop(ذكي جسم حلقة) رئيسي جاف، لذلك ذلك مفردات تعريف في هذا بينما غير [core.md](core.ar.md) في. أساس في tokenizer أو نموذج لوح خلفية هو تنفيذ نفس واجهة أخ أخ حزمة. و bash مختلف، هذا واجهة لا بد لكن اعتماد `dsh-session` و `dsh-llm`: ذلك حركة كلمة أثر في agent كل `Session`، بينما ذلك حمل دائم ملخص حدث استخدام `ContentBlock` مفردات (رؤية[ضغط قدرة seam Agent Note](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md)).
+seam الضغط — وهو [seam قدرة](../../.agents/notes/implemented/architecture/2026-06-13-capability-seams.ar.md) مقسومٌ مثل bash: تعريفُ الخدمة ([dsh-compaction](../../packages/compaction/compaction)، `ctx.compaction`)، ومزوّدُ الخدمة (خلفيةٌ مثل [dsh-compaction-basic](../../packages/compaction/compaction-basic))، والمستهلكُ البشري ([dsh-command-compact](../../packages/compaction/command-compact)). والضغطُ **قدرةٌ اختيارية واحدة**، لا جزءٌ من عمود agent loop — ولذلك تعيش مفرداتُه هنا لا في [core.md](core.ar.md). والخلفيةُ القائمة على مُرمِّز أو على قالب حزمةٌ شقيقة تنفّذ الواجهةَ نفسَها. وخلافًا لـbash، تعتمد الواجهةُ بالضرورة على `dsh-session` و`dsh-llm`: فأفعالُها تعمل على `Session` يملكها وكيل، ويستعمل حدثُ ملخصها الدائم مفرداتِ `ContentBlock` (انظر [ملاحظة الوكيل عن seam قدرة الضغط](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md)).
 
-شفرة المصدر:[`packages/compaction/compaction/src/types.ts`](../../packages/compaction/compaction/src/types.ts)
+المصدر: [`packages/compaction/compaction/src/types.ts`](../../packages/compaction/compaction/src/types.ts)
 
-## `compaction/*` جلسة حدث
+## أحداث الجلسة `compaction/*`
 
-ضغط عبر إعلان دمج لـ [`SessionEventMap`](session.ar.md) توسيع ثلاثة نوع حدث نوع. ثلاثة من كل**فقط كتابة سجل**——هو جمع سجل قفل، ملخص، اختيار في نطاق، يتم حجب حجب حدث seq،token عدد و نموذج استدعاء، أبدا دخول surface. هذا داخل متعمد لا توسيع `SurfaceEventType`(فقط لديه إنتاج رسالة حدث عندئذ وصول نموذج) ، لذلك ملخص ذاته تحمل تحميل في آخر بند حمل لديه `surfaceOp: { op: 'replace', startSeq, endSeq }` `user/message` فوق——هذا هو ملخص ضغط تنفيذ وحيد surface تغيير.[Agent Note](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md) مسؤول إعادة استخدام `user/message` قرار اعتماد حسب.
+يوسّع الضغطُ [`SessionEventMap`](session.ar.md) بثلاثة أنواع أحداث عبر دمج التصريحات. والثلاثةُ **للسجل فقط** — تسجّل القفلَ والملخصَ والمدى المنتقى وأرقامَ تسلسل الأحداث المظلَّلة وعددَ الرموز ونداءَ النموذج بلا انضمام إلى السطح. ولا يُوسَّع `SurfaceEventType` عمدًا (فلا يصل النموذجَ إلا ما ينتج رسائل)، فيركب الملخصُ نفسُه رسالةَ `user/message` منفصلة تحمل `surfaceOp: { op: 'replace', startSeq, endSeq }` — وهي تغييرُ السطح الوحيد الذي يجريه ضغطُ الملخص. وتملك [ملاحظةُ الوكيل](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md) مسوّغَ إعادة استعمال `user/message`.
 
-| حدث | تحميل حمل | أثر |
+| الحدث | الحمولة | الدور |
 |---|---|---|
-| `compaction/start` | `{ turn }` | نيل أخذ سجل سجل قفل؛ عدد حرف معرف بعد لم انتهاء تلقائي جولة،`null` معرف مستقل يد حركة محاولة تجربة |
-| `compaction/summary` | `{ summary, rawOutput?, llmStreamCall?, shadowedRange, shadowedSeqs, shadowedTokenCount, provider, model, maxTokens?, usage? }` | أمان ملخص إسقاط، اختياري كامل مزود إخراج و usage، توليد نتيجة وقت تماما جيد عبر هذا سياق `ctx.llm.stream()` إرسال بدء مرة استدعاء الذي حمل `llmStreamCall: true` علامة (هذا وقت يجب توفير كامل `rawOutput`) ، يتم حجب حجب surface حد مقابل (`start`/`end` seq——موضع عبر درجة، بينما غير عدد قيمة منطقة بين) ، حسب surface ترتيب صف يتم حجب حجب seq، تقدير حساب token عدد، و ملخص استدعاء envelope(`provider`،`model`، إذا لديه توليد حد أعلى فإن أيضا يشمل هذا حد أعلى)——كتابة سجل بعد، هذا مرة صفة طلب يمكن من سجل + شفرة إعادة بناء (رؤية يمكن إعادة بناء صفة Agent Note) ؛ لم حمل علامة `rawOutput` و لا يستطيع حكم تحديد استدعاء مسار |
-| `compaction/end` | `{ turn, error? }` | استخدام نفسه عدد حرف أو `null` ملكية قيمة تحرير قفل (`error` سجل فشل محاولة تجربة) |
+| `compaction/start` | `{ turn }` | يحصّل القفلَ المسجَّل في السجل؛ ويحدد العددُ الجولةَ التلقائية المفتوحة، بينما تحدد `null` محاولةً يدوية مستقلة |
+| `compaction/summary` | `{ summary, rawOutput?, llmStreamCall?, shadowedRange, shadowedSeqs, shadowedTokenCount, provider, model, maxTokens?, usage? }` | إسقاطُ الملخص الآمن، وخرجُ المزوّد الكامل واستعمالُه اختياريًا، وواسمُ `llmStreamCall: true` حين استهلك إنتاجُ النتيجة نداءً واحدًا بالضبط عبر `ctx.llm.stream()` في هذا السياق (وهو يشترط `rawOutput` كاملًا)، وزوجُ حدّي السطح المظلَّلين (رقما تسلسل `start` و`end` — امتدادُ مواضع لا مجالٌ عددي)، وأرقامُ التسلسل المظلَّلة بترتيب السطح، وعددُ الرموز المقدَّر، ومغلّفُ نداء التلخيص (`provider` و`model`، مع سقف توليده إن سرى) — مسجَّلًا ليكون الطلبُ ذو اللقطة الواحدة قابلًا لإعادة البناء من السجل والشفرة (انظر ملاحظةَ الوكيل عن قابلية إعادة البناء)؛ و`rawOutput` بلا واسم لا يحدد مسارَ النداء |
+| `compaction/end` | `{ turn, error? }` | يحرّر القفلَ بالمالك نفسِه عددًا أو `null` (ويسجّل `error` محاولةً غير ناجحة) |
 
-قفل تضمين إقامة**كامل**عملية: أولا إلحاق `compaction/start`، لكن بعد تنفيذ ملخص توليد، كتابة `compaction/summary` سجل و `user/message` استبدال، الأكثر بعد عندئذ إلحاق `compaction/end`. الأكثر بعد تحرير قفل معنى طعم حال عملية في طريق انهيار انهيار سوف جدول الآن لـ يمكن فحص قياس متروك إبقاء قفل (لديه `compaction/start` بينما بلا مطابقة `compaction/end`) ، بينما غير واحد وهمي زائف صوت تسمية ضغط اكتمل `compaction/end`.
+ويحيط القفلُ بالعملية **كلها**: فيُلحق `compaction/start` أولًا، ثم يحطّ التلخيصُ وسجلُّ `compaction/summary` واستبدالُ `user/message`، وعندئذ فقط يُلحق `compaction/end`. وتحرير القفل أخيرًا يحوّل انهيارًا في منتصف العملية إلى قفل يتيم قابل للكشف (`compaction/start` بلا `compaction/end` مقابل) بدل `compaction/end` يزعم زورًا أن الضغطَ انتهى.
 
-هذه علامة يمثل قفل وقت نقطة، بينما لا هو ترتيب هو حاوية. ملخص انتظار خلال، لا متبادل صلة فارغ خامل حقن يمكن ظهور في مستقل يد حركة start و end بين. يد حركة مسار فقط إعادة تحقق الذي اختيار موضع span، لذلك استبدال فحص نقطة بعد ما زال إبقاء هذا حقن سياق. نشط حركة لم مطابقة start سوف منع سد كل مدخل نقطة؛ مقارنة جديد `session/end-seed` قبل لم مطابقة start هو أولا قبل دورة الحياة إبقاء تحت قديم قديم دليل، سوف يتم تجاهل اختصار.
+والواسمان نقطتا زمن للقفل لا حاويةٌ حصرية. فقد يظهر حقنُ خمول لا صلةَ له بين بداية يدوية مستقلة ونهايتها بينما التلخيصُ معلَّق. ولا يعيد المسارُ اليدوي التحققَ إلا من امتداد مواضعه المنتقى، فيبقى ذلك السياقُ المحقون بعد نقطة تفتيش الاستبدال. والبدايةُ الحية بلا مقابل تحجب كلَّ نقطة دخول؛ أما البدايةُ بلا مقابل قبل `session/end-seed` أحدثَ فدليلٌ قديم من دورة حياة سابقة ويُتجاهل.
 
-هذه تغيير جسم في `declare module '@deepseek-ai/dsh-session/types'` كتلة داخل دمج، لذلك——و أخرى فرعي نظام صفحة فوق قمة طبقة نوع مختلف——هو جمع لا بـ عائم نقل فحص ` ```ts type-equiv ` كتلة لصق لصق (`verify-type-equiv` رفع أخذ جهاز فقط حسب اسم مطابقة قمة طبقة إعلان). فوق جهة تحميل حمل جدول أي لـ دليل بند؛ مرجعي حقل طلب دوران شفرة المصدر رابط عرض.
+وتُدمج هذه الأشكالُ داخل كتلة `declare module '@deepseek-ai/dsh-session/types'`، فهي — خلافًا للأنواع العليا في صفحات الأنظمة الأخرى — لا تُلصق كتلةَ ` ```ts type-equiv ` مفحوصةَ الانحراف (فمستخرِجُ `verify-type-equiv` لا يطابق إلا التصريحاتِ العليا بالاسم). وجدولُ الحمولات أعلاه هو مدخلُ الدليل؛ واتبع رابطَ المصدر للحقول المرجعية.
 
 <a id="image-offload"></a>
-## صورة حذف
+## إزاحة الصور
 
-`compaction-image-offload` يملك `image/offload` إعلان و ذلك صاف رسالة إسقاط. كل هدف إشارة تحديد حالي إدخال عقدة و حسب عميق درجة أولوية حساب عدد تأكيد قطع صورة موضع. حدث إبقاء عقدة و رسالة هوية، لا يحمل `surfaceOp`.[حزمة README](../../packages/compaction/compaction-image-offload/README.ar.md) مسؤول استعادة سياسة، تسجيل و مستقل إعادة تشغيل شرح.
+تملك `compaction-image-offload` تصريحَ `image/offload` وإسقاطَ رسائله النقي. ويحدد كلُّ هدف عقدةَ مُدخَل حالية ومواضعَ صور بعينها بترتيب العمق أولًا. ويحفظ الحدثُ هوياتِ العقد والرسائل ولا يحمل `surfaceOp`. ويملك [README الحزمة](../../packages/compaction/compaction-image-offload/README.ar.md) سياسةَ التعافي والتسجيلَ وإعادةَ التشغيل المنفصلة.
 
 ```ts type-equiv
 /** Exact input-image occurrences selected by one durable offload decision. */
@@ -39,7 +39,7 @@ interface ImageOffloadTarget {
 
 ## `CompactionResult`
 
-نجاح ضغط نحو استدعاء جهة إرجاع: تسجيل حساب حدث seq، أمان ملخص إسقاط، يتم حجب حجب نطاق و seq، و تقدير حساب token عدد.
+ما يعيده ضغطٌ ناجح إلى مستدعيه: أرقامُ تسلسل أحداث مسك الدفاتر، وإسقاطُ الملخص الآمن، والمدى وأرقامُ التسلسل المظلَّلة، وعددُ الرموز المقدَّر.
 
 ```ts type-equiv
 /** Result of a successful compaction operation. */
@@ -72,18 +72,18 @@ interface CompactionResult {
 }
 ```
 
-## خدمة
+## الخدمة
 
-تلقائي استدعاء جهة سوف شرح سياسة لـ أي تشغيل؛ تنفيذ يمكن مقارنة عادي ضغط قوة أكثر تنشيط دخول أرض معالجة قد تأكيد فيض خروج.
+يذكر المستدعون التلقائيون سببَ عمل السياسة؛ وللتنفيذات أن تعامل الطفحَ المؤكد بحزم أشد من الضغط المعتاد.
 
 ```ts type-equiv
 /** Why automatic policy is asking a backend to consider compaction. */
 type CompactionTrigger = 'pressure' | 'context-overflow'
 ```
 
-`CompactionEngine` كشف `compactIfNeeded(agent, trigger, signal)` بـ تنفيذ تلقائي `pressure` أو `context-overflow` سياسة، كشف `compactNow(agent, signal)` بـ سهل أي جعل لم بلوغ إلى ضغط قوة أيضا مقابل فارغ خامل جلسة إجراء مرة صالح تقليص نقص، أيضا إبرة مقابل صريح، اثنان طرف متساو يتضمن surface نطاق كشف `compactRegion(...)`.`compactNow()` بصفة جولة بين agent maintenance تشغيل؛ لا يوجد صالح نطاق وقت إرجاع `null` كما لا كتابة؛ في ملخص قبل سجل مستقل `turn: null` علامة مقابل، و في لاحق ترتيب طابور نص التوجيه قدرة كاف من جديد جدول طبقة إرسال توليد قبل flush قد إغلاق دمج محاولة تجربة. كل خلفية كل استخدام `compactCheckpointSource(compactionId, sourceCommandId?)` إنشاء استبدال استخدام `user/message` مصدر؛client و wire مستهلك من بلا Cordis `@deepseek-ai/dsh-compaction/checkpoint` فرعي مسار استيراد هذا بنية صنع دالة،`CompactionCheckpointSource` و `isCompactCheckpointSource()`، حزمة أصل فإن لـ host مستهلك إعادة تصدير هو جمع. لا بد ملء أمر خدمة هوية سوف صلة ربط استبدال فحص نقطة، بينما هذا حكم تحديد دالة جعل فحص نقطة تعرف آخر لا اعتماد مهمة واحد خاص تحديد خلفية. تنفيذ يجب يأخذ نقل دخول signal تحويل إرسال إعطاء ملخص مسار. هذا seam لا يملك حساب قيمة API: مفرد مثال [`ctx.tokenMeter`](token-meter.ar.md) مباشر يملك تقدير حساب و إعادة تشغيل، بينما `dsh-compaction-basic` يملك إبقاء سياسة، حدث ترتيب، حسب توجيه تنفيذ ملخص استدعاء و ذلك إعداد.
+ويكشف `CompactionEngine` الدالةَ `compactIfNeeded(agent, trigger, signal)` لسياسة `pressure` أو `context-overflow` التلقائية، و`compactNow(agent, signal)` لتقليص واحد مفيد في جلسة خاملة ولو دون الضغط، و`compactRegion(...)` لمدى سطح شامل صريح. ويعمل `compactNow()` صيانةً للوكيل بين الجولات، ويعيد `null` بلا كتابة حين لا يوجد مدًى مفيد، ويسجّل قوسًا مستقلًا بـ`turn: null` قبل التلخيص، ويدفع محاولةً مغلقة قبل أن تشتق مطالباتٌ مصطفّة لاحقة من السطح الجديد. وتنشئ كلُّ خلفية مصدرَ `user/message` البديل بـ`compactCheckpointSource(compactionId, sourceCommandId?)`؛ ويستورد مستهلكو العميل والشبكة ذلك البانيَ و`CompactionCheckpointSource` و`isCompactCheckpointSource()` من المسار الفرعي `@deepseek-ai/dsh-compaction/checkpoint` الخالي من cordis، بينما يعيد جذرُ الحزمة تصديرَها لمستهلكي المضيف. وتربط هويةُ المعاملة المشترَطة نقطةَ تفتيش الاستبدال، بينما يُبقي المسنِدُ التعرفَ مستقلًا عن أي خلفية بعينها. وعلى التنفيذات أن تمرّر الإشارةَ المقدَّمة إلى التلخيص. ولا يملك الـseam واجهةَ تسعير: فـ[`ctx.tokenMeter`](token-meter.ar.md) المفردة تملك التقديرَ وإعادةَ التشغيل مباشرةً، بينما تملك `dsh-compaction-basic` الاحتفاظَ وترتيبَ الأحداث ونداءاتِ التلخيص المسلوكة وضبطَها.
 
-مسبق مدة يد حركة فشل استخدام `ManualCompactionErrorCode`:
+وتستعمل الإخفاقاتُ اليدوية المتوقعة `ManualCompactionErrorCode`:
 
 ```ts type-equiv
 /** Expected failure classes for an explicit idle-session compaction request. */
@@ -96,15 +96,15 @@ type ManualCompactionErrorCode =
   | 'persistence'
 ```
 
-`changed` و `summary` إغلاق دمج فشل محاولة تجربة و سوف ذلك حفظ دائم إلى سجل، لا كتابة ملخص استبدال؛ استعادة مرور مسار في سجل صورة حذف ما زال صالح.`commit` ممكن حدوث في جزء تغيير بعد؛`persistence` يمثل داخل تخزين في علامة مقابل قد إغلاق دمج، لكن flush فشل. إلغاء مستقل في هذه فشل، و في إتمام لا بد يلزم تنظيف بعد رمي خروج أصلي abort سبب.
+وتغلق `changed` و`summary` المحاولةَ الفاشلة وتحفظانها بلا استبدال ملخص؛ وتبقى إغفالاتُ الصور المسجَّلة أثناء التعافي سارية. وقد تأتي `commit` بعد تغيير جزئي؛ وتعني `persistence` أن القوسَ في الذاكرة أُغلق لكن دفعَه فشل. ويبقى الإلغاءُ منفصلًا ويرمي سببَ الإجهاض بعينه بعد التنظيف المشترَط.
 
-ضغط قوة ضغط في `agent/pre-step` waterfall(شلال نشر صيغة حدث) في تشغيل، أولا في طلب دفع توجيه. واحد حالما ضغط قوة أو مواصفة تحويل فيض خروج ممتلئ كاف شرط،compaction-basic سوف في اختيار نطاق قبل استدعاء اختياري [`ctx.toolResultPruner`](../../packages/compaction/compaction-tool-result-pruner/README.ar.md) ، مجددا عبر `ctx.tokenMeter` إعادة قياس كمية، و كما يمكن في لا توليد ملخص حال حال تحت دفع دخول surface. فشل طلب استعادة في فشل خطوة إغلاق بعد عبر `agent/request-error` تشغيل؛ فقط عند surface replacement generation قبل دخول وقت عندئذ إرجاع إعادة محاولة حركة عمل، أي سهل لاحق ملخص عمل في قص غصن بعد رمي استثناء أيضا مثل هذا؛ إلغاء ما زال أولوية. منطقة مجال حد إبقاء استدعاء الأداة/نتيجة إعداد مقابل، لكن لا إبقاء كامل جولة، لذلك واحد مرور كبير جولة في مقارنة مبكر إغلاق خطوة يمكن يتم ضغط.`dsh-compaction-basic` يملك عتبة قيمة، إبقاء ذيل جزء سياسة، فيض خروج حد أعلى و فشل معالجة.
+ويعمل ضغطُ الضغط عند شلال `agent/pre-step` قبل اشتقاق الطلب. وحالما يتأهل الضغطُ أو الطفحُ المعياري، تستدعي compaction-basic الخدمةَ الاختيارية [`ctx.toolResultPruner`](../../packages/compaction/compaction-tool-result-pruner/README.ar.md) قبل انتقاء المدى، وتعيد القياسَ عبر `ctx.tokenMeter`، وتستطيع تقديمَ السطح بلا ملخص. ويعمل التعافي من طلب فاشل عبر `agent/request-error` بعد إغلاق الخطوة الفاشلة، ولا يعيد فعلَ إعادة محاولة إلا حين يتقدم جيلُ استبدال السطح، ولو رمى عملُ التلخيص اللاحق بعد التشذيب؛ ويبقى الإلغاءُ غالبًا. وتحفظ حدودُ المنطقة اقترانَ نداء الأداة بنتيجتها لكنها لا تحفظ الجولاتِ كاملة، فتستطيع خطواتٌ مغلقة مبكرة من جولة ضخمة أن تُضغط. وتملك `dsh-compaction-basic` العتباتِ وسياسةَ الذيل المحفوظ وسقوفَ الطفح ومعالجةَ الإخفاق.
 
-هذا Service Definition تصدير `toolPairingBalancedBefore(session, seq)` و `toolPairingBalancedAfter(session, seq)`، لأجل فحص seq قبل و بعد استدعاء الأداة/نتيجة إعداد مقابل. اثنان من كل سوف تحقق حالي surface عضو علاقة، و رفض ناقص seq و متروك إبقاء نتيجة؛[حزمة اتفاق](../../packages/compaction/compaction/README.ar.md#tool-pairing-boundaries) تعريف ذلك ذاكرة مؤقتة سلوك.
+ويصدّر تعريفُ الخدمة `toolPairingBalancedBefore(session, seq)` و`toolPairingBalancedAfter(session, seq)` لفحوص اقتران نداء الأداة بنتيجتها قبل رقم تسلسل وبعده. ويتحقق الاثنان من عضوية السطح الحالية ويرفضان أرقامَ التسلسل المفقودة والنتائجَ اليتيمة؛ ويعرّف [عقد الحزمة](../../packages/compaction/compaction/README.ar.md#tool-pairing-boundaries) سلوكَ تخزينهما.
 
-## أداة نتيجة قص غصن إنتاج خروج
+## حصائل تشذيب نتائج الأدوات
 
-اختياري أداة نتيجة قص غصن خدمة سوف تقرير إبلاغ كل مرة حمل دائم محتوى استبدال و Unicode code point مجموع نقص قليل كمية. ذلك عام نتيجة نوع يقع في [`compaction-tool-result-pruner/src/types.ts`](../../packages/compaction/compaction-tool-result-pruner/src/types.ts).
+تبلّغ خدمةُ تشذيب نتائج الأدوات الاختيارية عن كل استبدال محتوى دائم وعن مجموع النقص بوحدات Unicode. وتعيش أنواعُ نتائجها العلنية في [`compaction-tool-result-pruner/src/types.ts`](../../packages/compaction/compaction-tool-result-pruner/src/types.ts).
 
 ```ts type-equiv
 /** Cited source event and size accounting for one landed surface replacement. */

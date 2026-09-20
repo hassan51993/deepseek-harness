@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/adding-a-tool.md
 adding-a-tool.md: 9e07eed68c085ed36a770654dd524f5065890789
-adding-a-tool.ar.md: c27437f094584ebc7bdf32782590c08fab966a51
+adding-a-tool.ar.md: 4c6ae30ab195f19f93d2679f1f69f8b72aba1aeb

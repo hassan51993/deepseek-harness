@@ -1,18 +1,18 @@
-# عملية فرعية
+# العمليات الفرعية
 
 [English](subprocess.md) | العربية
 
-عملية فرعية seam قسم لـ Service Definition([dsh-subprocess](../../packages/subprocess/subprocess) ،`ctx.subprocess`) و Service Provider([dsh-subprocess-local](../../packages/subprocess/subprocess-local)) ؛ هو Consumer هو أخرى قدرة seam و عملية خارج خلفية:[bash منفذ بيت عائلة](shell.ar.md) استخدام استلام تجميع نمط دفعة كمية إخراج،LSP استخدام أصلي بروتوكول إدارة طريق،PTY خلفية استخدام طرفية أصل لغة،ACP(Agent Client Protocol)subagent خلفية فإن استخدام عبر إدارة طريق نقل ndjson، و يجعل stderr اعتماد inherit. هذا seam يملك تلقي إدارة `DSH_*` بيئة نطاق الأسماء، مشترك اعتماد صاف حذف (`scrubbedParentEnv`) و `CollectedOutput` شكل حالة؛[dsh-shell](../../packages/shell/shell) إعادة تصدير هذا طقم مفردات، جعل bash مستهلك إبقاء مفرد واحد استيراد مدخل.
+يُقسَم seam العمليات الفرعية على تعريف خدمة ([dsh-subprocess](../../packages/subprocess/subprocess)، `ctx.subprocess`) ومزوّد خدمة ([dsh-subprocess-local](../../packages/subprocess/subprocess-local))؛ ومستهلكوه seams قدرات أخرى وخلفياتٌ خارج العملية: فتستعمل [عائلة منفّذي bash](shell.ar.md) الخرجَ المجموع على دفعات، ويستعمل LSP أنابيبَ بروتوكول خامة، وتستعمل خلفيةُ PTY بدائيةَ الطرفية، وتستعمل خلفيةُ الوكلاء الفرعيين على ACP نسقَ ndjson عبر أنابيب مع stderr موروث. ويملك هذا الـseam فضاءَ أسماء البيئة المدارة `DSH_*`، ومسحَ الاعتمادات المشترك (`scrubbedParentEnv`)، وصيغةَ `CollectedOutput`؛ وتعيد [dsh-shell](../../packages/shell/shell) تصديرَ المفردات فيبقى لمستهلكي bash جذرُ استيراد واحد.
 
-شفرة المصدر:[`packages/subprocess/subprocess/src/types.ts`](../../packages/subprocess/subprocess/src/types.ts) و [`packages/subprocess/subprocess/src/index.ts`](../../packages/subprocess/subprocess/src/index.ts)
+المصدران: [`packages/subprocess/subprocess/src/types.ts`](../../packages/subprocess/subprocess/src/types.ts) و[`packages/subprocess/subprocess/src/index.ts`](../../packages/subprocess/subprocess/src/index.ts)
 
-## يمكن تنفيذ ملف فحص بحث
+## البحث عن التنفيذيات
 
-واحد مزود spawn عمل دليل، يمكن تنفيذ ملف مسار، عادي عملية و طرفية جلسة، و تركيب نظام الملفات مزود موضع في نفس مسار و عملية نطاق الأسماء.`resolveExecutable(command, env?, signal?)` تحقق قطعا مقابل يمكن تنفيذ ملف مسار، أو عبر مزود تنظيف بعد `PATH` إضافة متعمد تغطية قدوم تحليل عار اسم.
+تسكن أدلةُ عمل الإطلاق ومساراتُ التنفيذيات والعملياتُ المعتادة وجلساتُ الطرفية لدى مزوّد واحد فضاءَ المسارات والعمليات نفسَه الذي يسكنه مزوّدُ نظام الملفات المركَّب. وتتحقق `resolveExecutable(command, env?, signal?)` من مسارات التنفيذيات المطلقة أو تحلّ الأسماءَ المجردة عبر `PATH` الممسوح لدى المزوّد مع تجاوزات متعمَّدة.
 
-## تلقي إدارة بيئة نطاق الأسماء و التقاط إخراج
+## فضاء أسماء البيئة المدارة والخرج الملتقَط
 
-`DSH_*` متغير هو عودة Harness كل عملية فرعية واقع؛ تنفيذ سوف في دمج استدعاء جهة صريح `env` قبل إسقاط بيئة في قد لديه `DSH_*` اسم، لذلك حالي واقع فقط سوف بـ متعمد توفير نص بند شكل صيغة وصول، بينما صريح `undefined` tombstone سوف حذف عادي بيئة في قد لديه قيمة. كل بند يتم استلام تجميع تدفق كل عبر `CollectedOutput` تقرير إبلاغ ذاته مقتطع و spill استعادة حالة.
+متغيّراتُ `DSH_*` حقائقُ عمليات أبناء يملكها الحزام؛ وتُهمل التنفيذاتُ أسماءَ `DSH_*` المحيطة قبل دمج `env` الصريحة لدى المستدعي، فلا تصل الحقيقةُ الحالية إلا مدخلًا نصيًّا متعمَّدًا، بينما تزيل شاهدةُ `undefined` الصريحة قيمةً محيطة عادية. ويبلّغ كلُّ مجرى مجموع عن اقتطاعه وعن حالة استرجاع فائضه عبر `CollectedOutput`.
 
 ```ts type-equiv
 /** One environment key inside the managed {@link DSH_ENV_PREFIX} namespace. */
@@ -36,9 +36,9 @@ interface CollectedOutput {
 }
 ```
 
-## Node ريح إطار stdio موضع وضع طريقة (disposition)
+## تصرفات stdio على نسق Node
 
-كل بند تدفق موضع وضع طريقة كل صريح إعطاء خروج، من كل مستهلك ذاتي سطر اختيار: أصلي إدارة طريق لأجل بروتوكول قسم لقطة (LSP JSON-RPC،ACP ndjson) ،inherit لأجل مباشر عبر تشخيص إخراج، استلام تجميع نمط لأجل محدود دفعة كمية إخراج؛ منها spill ملف هو اختياري، لذلك تشخيص ذيل جزء (لغة خادم stderr) يمكن فقط في داخل تخزين في مؤقت اندفاع، لا إبقاء تحت أي ملف.
+تصرُّفُ كل مجرى صريحٌ، يختاره كلُّ مستهلك: أنابيبُ خام لتأطير البروتوكولات (JSON-RPC في LSP، وndjson في ACP)، ووراثةٌ لتمرير التشخيصات، ووضعُ الجمع للخرج المحدود على دفعات — وملفُّ الفائض اختياري، فيتخزّن ذيلٌ تشخيصي (stderr لخادم لغة) بلا ترك ملفات وراءه.
 
 ```ts type-equiv
 /**
@@ -88,9 +88,9 @@ interface SubprocessStdio {
 }
 ```
 
-## تماما صريح spawn spec
+## مواصفة الإطلاق الصريحة كاملًا
 
-هذا seam لا تطبيق أي قيمة افتراضية: كل بند موضع وضع طريقة، حد و دليل كل في spec فوق صريح إعطاء خروج، لذلك من استدعاء جهة ذاتي ذات إعداد قرار هو جمع، بينما لا هو من بعض عدد إخفاء عملية فرعية خدمة قيمة افتراضية قرار.`argv` أبدا مرور مرور shell حل تفسير.
+لا يطبّق الـseam افتراضاتٍ: فكلُّ تصرُّف وحدٍّ ودليل صريحٌ في المواصفة، فيقررها ضبطُ المستدعي نفسِه لا افتراضٌ خفي في خدمة العمليات الفرعية. و`argv` لا تُفسَّر صدفةً قط.
 
 ```ts type-equiv
 /**
@@ -132,9 +132,9 @@ interface SubprocessSpawnSpec {
 }
 ```
 
-## جملة مقبض: تدفق، قراءة جهاز و managed-range إنهاء
+## المقابض: المجاري والقارئون وإنهاء المدى المدار
 
-spawn سوف تزامن إرجاع نشط حركة جملة مقبض، هدف و تلقي إدارة نطاق معرف فإن إبقاء في provider داخلي. استلام تجميع نمط قراءة جهاز قبول كل تدفق بايت انحراف نقل كمية كما من لا إزالة استهلاك، لذلك مستقل قراءة جهاز لن انتزاع مشي ذاك هذا زيادة كمية؛ إدارة طريق تحويل تدفق عودة استدعاء جهة كل.`terminate()` بدء provider سجل إنهاء مرور مسار،`waitForExit()` مراقبة نفس عدد provider-managed range؛ قسم مرحلة مقطع provider يمكن استخدام `graceMs`، قيام أي إنهاء provider لن انتظار. مستهلك يمكن في هذا اثنان بند عملية فوق بناء ذاتي ذات قسم درجة تنظيف مسار؛ACP خلفية أولا إغلاق stdin `disposeAcpChild` هو مشاركة اعتبار تنفيذ.
+يعيد الإطلاقُ مقبضًا حيًّا متزامنًا بينما تبقى هويةُ الهدف وهويةُ المدى المدار خاصةً بالمزوّد. ويأخذ قارئو وضع الجمع إزاحاتِ بايتات على المجرى كله ولا يستهلكون، فلا يستطيع قارئون مستقلون سرقةَ فروق بعضهم؛ أما المجاري الموصولة بأنابيب فتخص المستدعي. ويبدأ `terminate()` الإجراءَ الموثَّق لدى المزوّد، ويراقب `waitForExit()` المدى المدار نفسَه؛ وللمزوّدين المتدرجين استعمالُ `graceMs`، بينما لا يؤخر المزوّدون الفوريون. ويستطيع المستهلكون بناءَ سلالم تفكيكهم فوق هاتين العمليتين (ودالةُ `disposeAcpChild` في خلفية ACP، التي تبدأ بإغلاق stdin، هي القالب).
 
 ```ts type-equiv
 /**
@@ -219,10 +219,9 @@ interface SubprocessCollectedOutputs {
 }
 ```
 
+## الحصائل تحمل حقائق الخروج وحدها
 
-## نتيجة فقط تحمل تحميل خروج واقع
-
-`done` تقرير إبلاغ Node close حدث مفردات، لا يحمل سبب تصنيف: خدمة سوف في في توقف وقت إنهاء عملية، لكن أبدا حكم تحديد سبب (استدعاء جهة قراءة عودة ذاتي ذات كل deadline إشارة، مثال مثل bash منفذ `timedOut`/`aborted` تفكيك قسم). استلام تجميع إلى إخراج في تسوية بعد ما زال يمكن مرور `handle.collected` قراءة، لذلك دفعة كمية و تدفق صيغة استدعاء جهة مشترك استخدام واحد بند وصول مسار.
+يبلّغ `done` بمفردات حدث `close` في Node بلا تصنيف سبب — فالخدمةُ تقتل عند الإجهاض لكنها لا تقرر السببَ قط (فالمستدعي يقرأ إشارةَ المهلة التي يملكها، مثل انقسام `timedOut` و`aborted` في منفّذ bash). ويبقى الخرجُ المجموع قابلًا للقراءة عبر `handle.collected` بعد الاستقرار، فيتشارك مستدعو الدفعات والبث مسارَ وصول واحدًا.
 
 ```ts type-equiv
 /**
@@ -240,19 +239,19 @@ interface SubprocessOutcome {
 }
 ```
 
-## طرفية عملية أصل لغة
+## بدائية عملية الطرفية
 
-`spawnTerminal(spec)` هو غير إدارة طريق عملية أصل لغة. مزود قسم إعداد تحكم طرفية، و مسؤول UTF-8 نص نقل، قبل منصة عملية مجموعة فحص و إشارة إرسال، و واحد بند يجب انتظار TERM→KILL عملية؛ هذا عملية سوف جعل مزود ما زال يمكن مراقبة إلى كل جلسة عضو تماما توقف مستقر، مزود فإن سوف سجل تنفيذ أساس قاع خاص لديه يمكن مراقبة صفة حد.PTY خلفية ما زال مسؤول تلميح رمز فحص قياس، حينئذ خيط دفع قطع،scrollback، صندوق رملي سياسة و حمل دائم جلسة كل حق؛ عادي `spawn()` لا يمكن إعادة بناء تحكم طرفية دلالة.
+`spawnTerminal(spec)` هي بدائيةُ العمليات بلا أنابيب. ويخصص المزوّدُ الطرفيةَ المتحكمة ويملك نقلَ نص UTF-8، وفحصَ مجموعة العمليات الأمامية وإرسالَ الإشارات إليها، وعمليةً واحدة منتظَرة من TERM إلى KILL تبلغ السكونَ لكل عضو جلسة ما زال المزوّدُ يراه؛ ويوثّق المزوّدون حدودَ الرصد الخاصة بأساسهم. وتبقى خلفيةُ PTY مسؤولةً عن كشف المطالبات واستنتاج الجاهزية وسجل التمرير وسياسة العزل وملكية الجلسات الدائمة؛ ولا يستطيع `spawn()` المعتاد إعادةَ بناء دلالات الطرفية المتحكمة.
 
-طرفية spec تماما إشارة تحديد argv،cwd، بيئة تغطية، طرفية نوع، مقياس قياس، تنظيف عرض حد مدة و اختياري قسم إعداد إلغاء و shell نشط حركة مراقبة. ذلك جملة مقبض عام `pid`، لديه ترتيب إخراج،`done`،`write`،`resize`،`inspectForeground`،`inspectActivity`،`signalForeground` و يجب انتظار `terminate`؛[`SubprocessTerminalSpawnSpec` و `SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) تعريف هذه حقل و عملية.`resize(cols, rows)` تحديث جارٍ تشغيل PTY مقياس قياس، عملية خروج بعد رفض استدعاء.
+وتحدد مواصفةُ الطرفية كاملةً الوسائطَ ودليلَ العمل وتجاوزاتِ البيئة ونوعَ الطرفية والأبعادَ ومهلةَ التنظيف وإلغاءَ التخصيص ومراقبةَ نشاط الصدفة اختياريًا. ويكشف مقبضُها `pid` والخرجَ المرتَّب و`done` و`write` و`resize` و`inspectForeground` و`inspectActivity` و`signalForeground` و`terminate` المنتظَرة؛ ويعرّف [`SubprocessTerminalSpawnSpec` و`SubprocessTerminalHandle`](../../packages/subprocess/subprocess/src/types.ts) هذه الحقولَ والعمليات. وتحدّث `resize(cols, rows)` أبعادَ PTY الحية وترفض بعد خروج العملية.
 
-`inspectActivity()` إرجاع `SubprocessTerminalActivity`:`state` لـ `idle`،`busy` أو `unknown`،`revision` مع provider مراقبة إلى نشط حركة أو إدخال تغير. طرفية طلب عبر `shellActivity` تفعيل تلقي دعم حمل shell دورة الحياة مراقبة؛ كل provider دعم حمل نطاق و حفظ حراسة إرجاع unknown حال حال رؤية [subprocess-local](../../packages/subprocess/subprocess-local/README.ar.md#running-terminal-sessions).
+وتعيد `inspectActivity()` قيمةَ `SubprocessTerminalActivity`: فـ`state` هي `idle` أو `busy` أو `unknown`، و`revision` تتغير مع النشاط أو المُدخَل الذي يرصده المزوّد. ويطلب طلبُ الطرفية مراقبةَ دورة حياة الصدفة المدعومة بـ`shellActivity`؛ وتوثّق [subprocess-local](../../packages/subprocess/subprocess-local/README.ar.md#running-terminal-sessions) الدعمَ الخاص بالمزوّد والحالاتِ المجهولة المتحفظة.
 
-`terminalEnvironment(signal?)` إرجاع `SubprocessTerminalEnvironment`: تنفيذ بيئة منصة (`posix` أو `windows`) و اختياري `defaultShell`. هذه واقع قدوم ذاتي مزود، بينما غير Web خادم أو متصفح.`resolveExecutable` تحقق مرشح shell؛`SubprocessExecutableNotFoundError` يمثل يمكن تنفيذ ملف لا وجود، مزود و نقل لذا عائق ما زال بصفة خطأ تقرير إبلاغ.
+وتعيد `terminalEnvironment(signal?)` قيمةَ `SubprocessTerminalEnvironment`: منصةَ بيئة التنفيذ (`posix` أو `windows`) و`defaultShell` اختياريًا. وتأتي هذه الحقائقُ من المزوّد لا من خادم Web ولا من المتصفح. وتتحقق `resolveExecutable` من مرشحي الصدفة؛ ويحدد `SubprocessExecutableNotFoundError` تنفيذيًّا مفقودًا، بينما تبقى إخفاقاتُ المزوّد والنقل أخطاءً.
 
-## خدمة سلوك
+## سلوك الخدمة
 
-سحب كائن [`SubprocessRuntime`](../../packages/subprocess/subprocess/src/index.ts) Service Definition قاعدة تحديد تنفيذ عالم حد جلوس علامة، يمكن تنفيذ ملف فحص بحث، عادي `spawn` و `spawnTerminal`.[`LocalSubprocessRuntime`](../../packages/subprocess/subprocess-local/src/index.ts) بـ منصة اختيار managed range، حسب موضع وضع طريقة وصل خط، اعتماد صاف حذف،`node-pty`، منصة عملية فحص، و أولا إنهاء مجددا انتظار خروج مورد تحرير توفير هذه قدرة.Service Definition اتفاق رؤية [`dsh-subprocess`](../../packages/subprocess/subprocess/README.ar.md) ، محلي آلية رؤية [`dsh-subprocess-local`](../../packages/subprocess/subprocess-local/README.ar.md).
+يحدد تعريفُ الخدمة المجرد [`SubprocessRuntime`](../../packages/subprocess/subprocess/src/index.ts) إحداثياتِ عالم التنفيذ والبحثَ عن التنفيذيات و`spawn` المعتادة و`spawnTerminal`. وتقدّمها [`LocalSubprocessRuntime`](../../packages/subprocess/subprocess-local/src/index.ts) بمديات مدارة تختارها المنصةُ، وبتوصيل لكل تصرُّف، وبمسح الاعتمادات، وبـ`node-pty`، وبفحص عمليات المنصة، وبتخلّص يُنهي وينضم. وانظر [`dsh-subprocess`](../../packages/subprocess/subprocess/README.ar.md) لعقد تعريف الخدمة و[`dsh-subprocess-local`](../../packages/subprocess/subprocess-local/README.ar.md) للآليات المحلية.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

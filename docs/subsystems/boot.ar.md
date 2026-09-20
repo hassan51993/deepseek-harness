@@ -1,20 +1,20 @@
-# Profile إدارة
+# إدارة الملفات التعريفية
 
 [English](boot.md) | العربية
 
-[boot حزمة مجموعة](../../packages/boot/README.ar.md) مسؤول launcher توفير profile وصول و إضافة إدارة جهاز.[إضافة إدارة جهاز](../../packages/boot/plugin-manager/README.ar.md) وثيقة شرح حفظ دائم، إعادة تحميل و حزمة عملية سلوك.
+تملك [مجموعة حزم boot](../../packages/boot/README.ar.md) الوصولَ إلى الملفات التعريفية الذي يوفره المُقلِع، ومديرَ الإضافات. ويوثّق [مدير الإضافات](../../packages/boot/plugin-manager/README.ar.md) سلوكَ الحفظ الدائم وإعادة التحميل وعمليات الحزم.
 
-## إدارة سجل
+## سجلات الإدارة
 
-`PluginEntryId` معرف واحد Loader بند؛ استدعاء جهة من `listPlugins` نيل أخذ، لا ذاتي سطر تجميع وصل patch id.
+يحدد `PluginEntryId` مدخلًا واحدًا في المُحمِّل؛ ويحصل عليه المستدعون من `listPlugins` بدل أن يركّبوا معرّف رقعة بأنفسهم.
 
-`PluginInfo` يتضمن وحدة معرف، فعلي بدء توقف حالة و fiber مرحلة مقطع، و وحيد `patchId` أو `readOnlyReason`.
+ويحمل `PluginInfo` هويةَ الوحدة، والتفعيلَ الساري وطورَ الليف، ومعهما `patchId` فريد أو `readOnlyReason`.
 
-`BundleInfo` يتضمن حزمة اسم، اختياري تثبيت إصدار، تركيب طبقة اختيار حالة، حذف متاح صفة و اختياري تحليل خطأ.
+ويحمل `BundleInfo` اسمَ الحزمة، وإصدارَها المثبَّت اختياريًا، والتفعيلَ المختار، وإتاحةَ الإزالة، وخطأَ الحل اختياريًا.
 
-`InstallBundleOptions.enabled` افتراضي لـ true،false يمثل تثبيت لكن لا اختيار تركيب حزمة طبقة.`approvedBuilds` في تثبيت قبل نحو إشارة تحديد انتظار مراجعة دفعة حزمة اسم منح إعطاء حمل دائم نص برمجي إذن.
+وقيمةُ `InstallBundleOptions.enabled` الافتراضية هي true. وقيمةُ false تثبّت بلا اختيار طبقة الحزمة. ويمنح `approvedBuilds` إذنًا دائمًا بتشغيل السكربتات لأسماء الحزم المعلَّقة المذكورة قبل التثبيت.
 
-`ChangeResult.changed` تقرير إبلاغ مغناطيس قرص تعديل، مستقل في `application`:`applied`،`restart-required`،`overridden` أو `failed`. اختياري `error` يتضمن يمكن محلي تحويل رمز خطأ و خارجي تشخيص.`packageResult` سجل pnpm خروج رمز، محدود إخراج، مقتطع علامة سجل و كامل تشخيص سجل مسار.`pendingBuilds` صف خروج كامل profile بعد لم قرار حزمة؛`approvedBuilds` سجل هذا مرة عملية منح إعطاء إذن حزمة اسم.
+ويبلّغ `ChangeResult.changed` عن تعديل على القرص بمعزل عن `application`، وقيمتُه `applied` أو `restart-required` أو `overridden` أو `failed`. ويحمل `error` الاختياري رمزًا قابلًا للترجمة وتشخيصًا خارجيًا. ويسجّل `packageResult` رمزَ خروج pnpm، والمخرجاتِ المحدودة، ورايةَ الاقتطاع، ومسارَ سجل التشخيص الكامل. ويعدّد `pendingBuilds` الحزمَ التي لم يُبتّ فيها عبر الملف التعريفي كله؛ ويسجّل `approvedBuilds` الأسماءَ التي منحتها هذه العمليةُ إذنًا.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

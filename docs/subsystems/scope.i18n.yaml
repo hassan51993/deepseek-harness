@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/scope.md
 scope.md: 19e0f5c70978151329992d2e40213d5f1f2f676d
-scope.ar.md: 92e13f55f4e49181f0cf32ebb9cf7dd530aa14bb
+scope.ar.md: 2f6c78d118c198b9b5937b7c3bb83b00f40518a2

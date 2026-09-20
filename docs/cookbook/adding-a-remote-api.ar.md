@@ -1,12 +1,12 @@
-# فعلي تشغيل يد سجل: إضافة جديدة واحد Remote API
+# دليل عملي: إضافة واجهة Remote
 
 [English](adding-a-remote-api.md) | العربية
 
-إضافة جديدة أو تعديل واحد `ctx.remote` طرف نقطة حسب هذا صفحة خمسة خطوة مشي: إعلان طريقة، إعلان فشل، في حزمة فوق تسجيل، في Client إزالة استهلاك، كتابة اختبار.decorator دلالة،lookup تحليل، توليد إدارة خط و `/api` توجيه يخص آلية، من [API Gateway مشاركة اعتبار](../api-gateway.ar.md) مسؤول؛ هذا صفحة إعطاء هو كل واحد خطوة حركة عمل و يجب التزام حراسة اتفاق. لـ ماذا هو هذا طقم تحرير مسار وجه، رؤية [Typert Remote طريقة استدعاء Agent Note](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.ar.md) ؛ لـ ماذا فشل وجه هو مفرد عدد `RemoteError` إضافة واحد ورقة رمز جدول، رؤية[فشل مفردات Agent Note](../../.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.ar.md).
+إضافةُ نقطة نهاية في `ctx.remote` أو تغييرُها تأخذ الخطوات الخمس في هذه الصفحة: أعلن الطريقة، وأعلن أعطالها، وسجّلها على الحزمة، واستهلكها في الـ Client، واختبرها. أما دلالةُ المزخرِفات وتحليلُ lookup وخطُّ التوليد والمسار `/api` فهي الآلية، وتخص [مرجع بوابة API](../api-gateway.ar.md)؛ وهذه الصفحة تعطي الفعلَ في كل خطوة والأعرافَ التي عليه استيفاؤها. ولماذا تبدو واجهةُ البرمجة هكذا في [Agent Note عن استدعاءات طرق Typert Remote](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.ar.md)، ولماذا العطلُ صنفُ `RemoteError` واحد مع جدول رموز في [Agent Note عن مفردات الأعطال](../../.agents/notes/implemented/architecture/2026-08-28-ctx-remote-failure-vocabulary.ar.md).
 
-## 1. إعلان API
+## 1. أعلن الواجهة
 
-owner هو واحد Host جانب Cordis خدمة: وراثة `TypertRemoteService` يأخذ service مفتاح و wire namespace واحد بدء ربط، مجددا استخدام `@Remote` علامة ملاحظة مقابل خارج كشف طريقة. عمل خدمة طريقة توقيع إذا قد رمز دمج wire اتفاق حينئذ مباشر علامة ملاحظة هو ذاته؛ فقط لديه شكل حاجة ضبط كامل (تكملة `signal`، تبديل معامل ترتيب، تبديل تصدير اسم) عندئذ كتابة واحد `remoteExport*` adapter، من هو استدعاء لا تعديل اسم عمل خدمة طريقة.lookup كائن (`Agent`،`Session`) فقط قدرة احتلال قمة طبقة معامل موضع، دعم حمل تنسيق عمل صيغة إلغاء طريقة يأخذ `signal: AbortSignal` وضع في الأكثر بعد واحد موضع.
+المالك خدمةُ Cordis على جانب Host: وسّع `TypertRemoteService` ليُربط مفتاحُ الخدمة وفضاءُ أسماء السلك معًا، ثم سِم الطرقَ المكشوفة بـ `@Remote`. وسِم طريقةَ الأعمال نفسها حين يستوفي توقيعُها أعرافَ السلك أصلًا؛ ولا تكتب مهايئ `remoteExport*` إلا حين يجب أن تتغيّر الصيغة (بإضافة `signal`، أو إعادة ترتيب المعاملات، أو تصدير اسم آخر)، ودَع ذلك المهايئ يستدعي طريقةَ الأعمال بلا إعادة تسميتها. وكائناتُ lookup (`Agent` و`Session`) لا تشغل إلا مواضعَ معاملات في المستوى الأعلى، والطريقةُ التي تدعم الإلغاء التعاوني تأخذ `signal: AbortSignal` معاملًا أخيرًا.
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -48,16 +48,16 @@ export class NotesController extends TypertRemoteService {
 }
 ```
 
-## 2. إعلان فشل
+## 2. أعلن الأعطال
 
-Remote فشل فقط لديه واحد صنف `RemoteError`: مجال رمز مرور declaration merging دخول `RemoteErrorDetailsMap`، فشل نقطة مباشر `throw new RemoteError(code, message, details)`. لا يلزم بناء مجال استثناء صنف بيت عائلة، أيضا لا يلزم كتابة خروج فتحة خريطة دالة؛ و هذا طرف نقطة غير متصل استثناء لا مسبق أولا عودة صنف،Gateway سوف التقاط قاع طي صار `gateway/internal`. فقط لديه"يأخذ مهمة معنى provider استثناء عودة لـ واحد مجال رمز"هذا واحد نوع مشهد عندئذ كتابة `catch`، و يأخذ أصلي استثناء تعليق في `cause` فوق.
+عطلُ Remote صنفٌ واحد هو `RemoteError`: ادمج رموزَ المجال في `RemoteErrorDetailsMap` بدمج التصريحات، وارمِ `new RemoteError(code, message, details)` عند موضع العطل. ولا تبنِ عائلةَ أصناف أخطاء للمجال، ولا تكتب دالةَ ربط للخروج؛ فالاستثناء غير المتصل بنقطة النهاية هذه لا يُصنَّف مسبقًا، لأن البوابة تطويه في `gateway/internal`. ولا تكتب `catch` إلا لتصنّف استثناءَ مزوّد اعتباطيًا رمزَ مجال واحدًا، وألحِق الاستثناء الأصلي بـ `cause`.
 
-رمز اسم هو `<مجال>/<إدارة من>`، إعلان سقوط نقطة أربعة بند:
+ويُقرأ الرمز `<domain>/<reason>`، ولتصريحه أربع قواعد موضع:
 
-- فقط لديه واحد إنتاج من: إعلان سقوط إنتاج من حزمة، ضيق ملاصق رمي خروج نقطة.
-- كثير عدد حزمة مشترك نفس إنتاج: سقوط مزدوج جهة مشترك نفس اعتماد الأكثر منخفض طبقة مجال حزمة (`session/not-found` في `core/session`،`workspace/not-found` في `dsh-workspace`).
-- تحميل جسم رمز `gateway/bad-request`،`gateway/cancelled`،`gateway/internal` قد في protocol إعلان،Gateway أساس أساس ضبط تطبيق رمز قد في gateway إعلان——مباشر استخدام، لا يلزم نسخ.
-- لا فوق wire محلي فشل لا دخول رمز جدول، استخدام استدعاء جهة ذاتي ذات نوع جدول بلوغ.
+- منتجٌ واحد فقط: أعلنه في الحزمة المنتِجة بجوار الرمي.
+- عدة حزم تنتجه: أعلنه في أدنى حزمة مجال تعتمد عليها الحزمتان (`session/not-found` في `core/session`، و`workspace/not-found` في `dsh-workspace`).
+- رموزُ الحامل `gateway/bad-request` و`gateway/cancelled` و`gateway/internal` مُعلَنة في protocol، ورموزُ بنية البوابة التحتية في gateway؛ فاستعملها ولا تنسخها أبدًا.
+- والعطلُ المحلي الذي لا يعبر السلك قط يبقى خارج جدول الرموز؛ فعبّر عنه بنوع المستدعي هو.
 
 ```ts
 import { RemoteError } from '@deepseek-ai/dsh-typert-protocol'
@@ -87,9 +87,9 @@ export async function rename(noteId: string, title: string): Promise<void> {
 }
 ```
 
-## 3. في حزمة فوق تسجيل
+## 3. سجّلها على الحزمة
 
-`@Remote` يجب سقوط في واحد Loader entry إضافة حزمة داخل؛owner هو سحب كائن seam وقت يأخذ تحكم جهاز وضع دخول `packages/api/` تحت مقابل حزمة. حزمة بيان يلزم تكملة اثنان عدد توليد مدخل و protocol peer اعتماد،Client جانب فإن من `@deepseek-ai/dsh-api-remotes` assembly تركيب هذا مساهمة و حسب يحتاج تحويل فتحة نوع مفردات. اثنان عدد مدخل قسم آخر إشارة نحو أي عدد توليد ناتج، توليد إدارة خط مثل أي ترتيب، رؤية [API Gateway مشاركة اعتبار](../api-gateway.ar.md).
+يجب أن تسكن `@Remote` في حزمة إضافة لها مدخل في Loader؛ وحين يكون المالك seam مجرّدًا، يذهب المتحكّم إلى الحزمة المقابلة تحت `packages/api/`. ويكتسب البيانُ المدخلين المولَّدين واعتماديةَ protocol النظيرة، بينما يركّب تجميعُ `@deepseek-ai/dsh-api-remotes` على جانب Client المساهمةَ ويعيد تصدير مفردات الأنواع التي يحتاجها المستهلكون. أما الناتج المولَّد الذي يشير إليه كل مدخل وترتيبُ خط التوليد ففي [مرجع بوابة API](../api-gateway.ar.md).
 
 ```json
 {
@@ -102,13 +102,13 @@ export async function rename(noteId: string, title: string): Promise<void> {
 }
 ```
 
-تعديل توقيع، رمز جدول،namespace أو تصدير اسم بعد إعادة ركض `pnpm run build:lib`،Client عندئذ أخذ نيل إلى جديد إعلان و codec؛ فقط تعديل تنفيذ جسم لا حاجة إعادة توليد.
+وأعِد تشغيل `pnpm run build:lib` بعد تغيير توقيع أو جدول الرموز أو فضاء الأسماء أو اسم تصدير، فهو ما يسلّم الـ Client تصريحاتِه وcodecs الجديدة؛ أما تغييرُ جسم تنفيذ وحده فلا يحتاج إعادةَ توليد.
 
-## 4. في Client إزالة استهلاك
+## 4. استهلكها في الـ Client
 
-استدعاء إضافة في `inject` داخل معا إعلان `remote` و `remote.<namespace>`، استدعاء نقطة مباشر كتابة `ctx.remote.<namespace>.<method>(...)`: لا يلزم استخدام `Pick<ClientRemote, …>` ضيق تحويل، لا يلزم يد كتابة طريقة توقيع، لا يلزم صنع wire في تحويل كائن. نتيجة هو `RemoteResult<T>`، حينئذ أرض `if (!result.ok)` فرع، حكم `code` بينما لا هو `instanceof`——code فرع سوف تلقائي ضيق تحويل `details`. استثناء تدفق محطة نقطة كتابة `throw result.error`(هو هو حق Error) ؛ وصل إقامة هو فوق طبقة استخدام `isRemoteFailure` منطقة قسم Remote فشل و محلي نقص وقوع، محلي نقص وقوع متابعة نحو فوق رمي. لا يلزم كتابة منع صد صفة catch:Remote استدعاء لا reject، تركيب إعداد خطأ حينئذ هذا انفجار.
+تعلن الإضافةُ المستدعية `remote` و`remote.<namespace>` معًا في `inject` الخاصة بها، ويكتب موضعُ الاستدعاء `ctx.remote.<namespace>.<method>(...)` مباشرةً: بلا تضييق بـ `Pick<ClientRemote, …>`، وبلا توقيع طريقة مكتوب يدويًا، وبلا كائن تمرير على السلك. والنتيجةُ `RemoteResult<T>`، فتفرّع على `if (!result.ok)` في مكانها ومَيِّز بـ `code` لا بـ `instanceof`، فتفريعُ الرمز يضيّق `details` من تلقائه. وموضعُ تدفق الاستثناءات يكتب `throw result.error` (فهو Error حقيقي)؛ ومن يلتقطه يستعمل `isRemoteFailure` ليميّز عطلَ Remote من خلل محلي، ويعيد رميَ الخلل. ولا تكتب catch دفاعيًا: فاستدعاء Remote لا يُرفَض، وخطأُ التجميع ينبغي أن ينهار.
 
-Host ثابت واقع قراءة `ctx.remote.$host`:`home` و `isLoopback` هو عادي قيمة قراءة، لا يوجد حجز قراءة أيضا لا يوجد generation حساب عدد جهاز،`home` في رقم واحد لقطة ready قبل هو `undefined`؛ إعادة وصل بعد تحديث جديد مشي `ctx.on('connection/reset')` أو كل مجال ذاتي ذات remote حدث. استدعاء جهة abort إسقاط مرة واحد عنصر استدعاء وقت، نتيجة سقوط في خطأ فرع فوق `gateway/cancelled`، بينما لا هو رمي خروج.
+وتأتي وقائعُ Host الثابتة من `ctx.remote.$host`: فـ `home` و`isLoopback` قراءتان عاديتان بلا اشتراك وبلا عدّاد أجيال، و`home` هو `undefined` حتى أول إطار جاهزية. وحدّثها بعد إعادة الاتصال عبر `ctx.on('connection/reset')` أو عبر حدث بعيد يخص المجال. وحين يجهض المستدعي استدعاءً أحاديًا، تكون النتيجةُ `gateway/cancelled` في فرع الخطأ لا رميًا.
 
 ```ts ignore-check
 import type { Context } from '@deepseek-ai/cordis'
@@ -146,9 +146,9 @@ export function hostLabel(): string {
 }
 ```
 
-## 5. اختبار
+## 5. اختبرها
 
-owner جانب تأكيد رمي خروج رمز: التقاط بعد استخدام `remoteErrorOf` أخذ خروج فشل، مجددا استخدام `toMatchObject` مقارنة مقابل `code` و حاجة `details` حقل——لا يلزم استخدام `toEqual` عميق مقارنة مقابل خطأ كائن، أيضا لا يلزم تأكيد `instanceof`.
+على جانب المالك، تحقّق من الرمز الذي رُمي: استرجع العطل بـ `remoteErrorOf` بعد الالتقاط، ثم قارن `code` وحقولَ التفاصيل التي تهمك بـ `toMatchObject`؛ ولا تقارن كائنَ الخطأ مقارنةً عميقة بـ `toEqual` أبدًا، ولا تتحقق بـ `instanceof` أبدًا.
 
 ```ts
 import { remoteErrorOf } from '@deepseek-ai/dsh-typert-protocol'
@@ -166,7 +166,7 @@ it('refuses an unknown note before writing', async () => {
 })
 ```
 
-Client جانب بديل ذات إرجاع حقيقي مثال:`RemoteError` و `TestRemote` قيمة import واحد قاعدة أخذ ذاتي `@deepseek-ai/dsh-client-test-runtime`، لأن من `api-remotes` facade قيمة import سوف سحب بدء بعد لم بناء تركيب إعداد سلسلة.`TestRemote.$host` هو عادي حقل،spec مباشر منح قيمة يكفي.
+والبديلُ على جانب Client يعيد نسخًا حقيقية: خذ الاستيرادين القيميين `RemoteError` و`TestRemote` من `@deepseek-ai/dsh-client-test-runtime`، لأن استيرادًا قيميًا من واجهة `api-remotes` كان سيحمّل سلسلةَ التجميع غير المبنية. و`TestRemote.$host` حقل عادي تسنده المواصفةُ مباشرةً.
 
 ```ts ignore-check
 import { Context } from '@deepseek-ai/cordis'
@@ -189,9 +189,9 @@ it('renders the failure code the Host reported', async () => {
 })
 ```
 
-## تحقق
+## تحقّق
 
-1. `pnpm run build:lib`: توقيع، رمز جدول،namespace أو تصدير اسم تغيير مرور حينئذ يجب إعادة ركض،Client إعلان و codec من هو إنتاج خروج.
-2. `pnpm run typecheck`:Host و Client اثنان عدد program كل مرور واحد مرة، رمز جدول merge سقوط نقطة خطأ سوف في هذا داخل أحمر.
-3. نقطة اسم ركض اثنان جانب spec:`npx vitest run <owner spec> <client spec>`.
-4. طرف نقطة يخص منتج مرئي وجه وقت تكملة واحد بند تسجيل صنع جلسة لقطة، قاعدة رؤية[اختبار سياسة](../testing.ar.md).
+1. `pnpm run build:lib`: إلزامي متى تغيّر توقيع أو جدول الرموز أو فضاء الأسماء أو اسم تصدير، لأنه ينتج تصريحاتِ الـ Client وcodecs.
+2. `pnpm run typecheck`: برنامجا Host وClient معًا، وفيهما يحمرّ رمزٌ دُمج في حزمة لا يمكن الوصول إليها.
+3. شغّل مواصفات الجانبين بالاسم: `npx vitest run <owner spec> <client spec>`.
+4. أضف لقطةَ جلسة مسجَّلة حين تبلغ نقطةُ النهاية سطحًا يراه المستخدم، وفق [سياسة الاختبار](../testing.ar.md).

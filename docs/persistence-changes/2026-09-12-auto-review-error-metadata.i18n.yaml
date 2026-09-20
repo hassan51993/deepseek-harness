@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/persistence-changes/2026-09-12-auto-review-error-metadata.md
 2026-09-12-auto-review-error-metadata.md: 52c468a4468d99453cace1d5517b88ef2558e18d
-2026-09-12-auto-review-error-metadata.ar.md: 70cb347dd1a19437d3095bc51b8d878049fb9f1f
+2026-09-12-auto-review-error-metadata.ar.md: 1e783a3d513bd6222209ccd7c4103bc3de106af1

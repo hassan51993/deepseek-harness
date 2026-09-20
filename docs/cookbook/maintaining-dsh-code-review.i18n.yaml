@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cookbook/maintaining-dsh-code-review.md
 maintaining-dsh-code-review.md: d4438c7adf222e1a8259334a2fbb82a728041347
-maintaining-dsh-code-review.ar.md: 1e0e00b09b404f7117b4c1cb22fb2cb0e50f6fee
+maintaining-dsh-code-review.ar.md: e2cf0e3a0b92b4c505b91d8cf98de146adb39da3

@@ -1,12 +1,12 @@
-# 7. دخول harness
+# 7. إلى الإطار
 
 [English](07-into-the-harness.md) | العربية
 
-هذا فصل سوف نحو harness `tools` خدمة تسجيل واحد يمكن من نموذج استدعاء أداة، عبر harness أداة خط الإنتاج تنفيذ هو، و مراقبة نتيجة حدث. كامل عرض مثال بلا حاجة مفتاح، أيضا لن استدعاء نموذج.
+يسجّل هذا الفصل أداةً يستدعيها النموذج في خدمة `tools` في الإطار، وينفّذها عبر خط معالجة أدوات الإطار، ويراقب حدثَ النتيجة. وهو يبقى بلا مفاتيح ولا يستدعي نموذجًا.
 
-## أداة إضافة
+## إضافة أداة
 
-إنشاء `greet-tool.ts`، سوف هو وضع في `tmp/cordis-tutorial` في:
+أنشئ `greet-tool.ts` في `tmp/cordis-tutorial`:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -47,11 +47,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-هذا داخل كل نمط كل قدوم ذاتي قبل بضعة فصل:`inject: ['tools']`([رقم 3 فصل](03-services.ar.md)) سوف يجعل إضافة انتظار أداة سجل التسجيل حينئذ خيط؛`ctx.tools.register(...)` سوف يأخذ تسجيل disposer مرفق حال إلى إضافة ([رقم 2 فصل](02-lifecycle-and-effects.ar.md)) ، لذلك إزالة وقت سوف ملاحظة إلغاء أداة.`defineTool` سوف `parameters` قاعدة نحو تحويل لـ نحو نموذج عرض JSON Schema، دفع توجيه `args` نوع، و في `execute` تشغيل قبل تحقق نموذج توفير معامل. أداة إرجاع من `output.schema` إعلان مواصفة قيمة؛`output.render` فإن بصفة Native renderer(أصلي مصير) ، آخر سطر توليد يمكن حفظ دائم نتيجة محتوى.
+وكلُّ نمط هنا من الفصول السابقة: فـ `inject: ['tools']` ([الفصل الثالث](03-services.ar.md)) يُبقي الإضافةَ حتى يوجد registry الأدوات؛ و`ctx.tools.register(...)` يلحق محرِّرَ التسجيل بالإضافة ([الفصل الثاني](02-lifecycle-and-effects.ar.md))، فيلغي التفريغُ تسجيلَ الأداة. ويحوّل `defineTool` مواصفةَ `parameters` إلى JSON Schema المعروض للنموذج، ويستنتج نوعَ `args`، ويتحقق من الوسائط التي يوفّرها النموذج قبل تشغيل `execute`. وتعيد الأداةُ القيمةَ المعيارية التي يعلنها `output.schema`؛ وينتج `output.render` منفصلًا المحتوى الأصيل والنتيجةَ الدائمة.
 
-## مراقبة إضافة
+## إضافة مراقِبة
 
-إنشاء `tool-logger.ts`. هذا هو واحد مستقل إضافة، عبر harness `tools/result` حدث مراقبة تطبيق في كل مرة استدعاء الأداة:
+أنشئ `tool-logger.ts`، وهي إضافةٌ منفصلة تراقب كلَّ استدعاء أداة في التطبيق عبر حدث `tools/result` في الإطار:
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -70,9 +70,9 @@ export function apply(ctx: Context) {
 }
 ```
 
-`import type {} from '@deepseek-ai/dsh-tools'` سطر سوف جذب دخول هذا حزمة إعلان دمج، جعل `'tools/result'` و ذلك payload أداة لديه نوع. هذا و رقم 4 فصل استيراد `stats.ts` فعل قاعدة نفسه، فقط هو توسيع إلى حزمة درجة آخر.
+والسطر `import type {} from '@deepseek-ai/dsh-tools'` يجلب دمجَ التصريحات في الحزمة لتصير `'tools/result'` وحمولتُها منمَّطتين، وهي الحركةُ نفسها التي في استيراد `stats.ts` في الفصل الرابع، لكن على مستوى حزمة.
 
-## تركيب و تشغيل
+## ركّب وشغّل
 
 ```yaml
 - name: '@deepseek-ai/dsh-system-prompt'
@@ -81,7 +81,7 @@ export function apply(ctx: Context) {
 - name: './greet-tool.ts'
 ```
 
-`@deepseek-ai/dsh-tools` سوف حقن `systemPrompt` خدمة، لأن أداة حاجة نحو توجيه النظام مساهمة schema، الذي بـ تركيب في أيضا يلزم صف خروج هذا خدمة مزود. نقص قليل مزود وقت، أداة إضافة سوف مثل[رقم 6 فصل](06-composition-and-hmr.ar.md) الذي وصف ذلك مثال إبقاء PENDING.
+وتحقن `@deepseek-ai/dsh-tools` خدمةَ `systemPrompt` لأن الأدوات تسهم بـ schemas في توجيه النظام، فيعدّد التركيبُ مزوّدَها أيضًا. وبدونه تبقى إضافةُ الأدوات في PENDING كما وُصف في [الفصل السادس](06-composition-and-hmr.ar.md).
 
 ```sh
 node --import tsx ../../vendor/cordis/bin.js
@@ -92,17 +92,17 @@ node --import tsx ../../vendor/cordis/bin.js
 tool replied: [{"type":"text","text":"Hello, Cordis!"}]
 ```
 
-logger سوف أولا إطلاق:`tools/result` في نتيجة شيء تحويل مرور مسار في إرسال خروج، حدوث في `execute` نحو استدعاء جهة إرجاع promise صرف الآن قبل. اثنان عدد إضافة كل لا معرفة طريق آخر عدد إضافة وجود، هو جمع من سجل التسجيل خدمة و حدث اتصال.
+وقد أطلق المسجّلُ أولًا: فـ `tools/result` يُرسَل ضمن تجسيد النتيجة، قبل أن يتحلّل وعدُ `execute` للمستدعي. ولا تعرف أيٌّ من إضافتيك أن الأخرى موجودة؛ وإنما توصلهما خدمةُ الـ registry والحدث.
 
-## من هذا داخل مشي نحو كامل agent(ذكي جسم)
+## من هنا إلى وكيل كامل
 
-حقيقي agent حينئذ هو هذا طقم تركيب مجددا إضافة فوق أكثر كثير إضافة:LLM(كبير لغة نموذج) مهايئ،agent loop(ذكي جسم حلقة) ، حفظ دائم و تطبيق مدخل. مقابل وفق [base profile طبقة](../../packages/bundle/base/cordis.patch.yml) و [headless طبقة](../../packages/bundle/headless/cordis.patch.yml) ، أنت الآن قد يمكن قراءة فهم منها كل بند. عبر واحد صغير نوع `--patch` overlay إضافة دخول `greet-tool.ts` يكفي.
+الوكيلُ الحقيقي هذا التركيبُ مع إضافات أكثر: مهايئُ LLM، وagent loop، والحفظُ الدائم، ومدخلُ تطبيق. فقارن [طبقة profile الأساس](../../packages/bundle/base/cordis.patch.yml) و[طبقة headless](../../packages/bundle/headless/cordis.patch.yml)؛ وتستطيع قراءةَ مداخلهما الآن. وأضف `greet-tool.ts` عندك عبر طبقة `--patch` صغيرة.
 
-لاحق يمكن قراءة قراءة:
+وإلى أين بعد ذلك:
 
-- [بناء أداة](../user/develop/basic/tool.ar.md): عميق دخول حل `defineTool`، يشمل عرض و أكثر وفير غني schema.
-- [ثلاثة طبقة قدرة تصميم](../user/develop/practice/index.ar.md):harness مثل أي مجموعة نسج يمكن استبدال قدرة.
-- [فرعي نظام صفحة](../subsystems/core.ar.md) فوق توليد `cordis-surface` منطقة كتلة: يمكن حقن و استماع كل محتوى، كل في ذلك الذي تابع صفحة فوق.
-- [هيكل بنية](../architecture.ar.md): هذه إضافة الذي موضع نظام أرض رسم.
+- [بناء أداة](../user/develop/basic/tool.ar.md): مزيدٌ من `defineTool`، بما فيه العرضُ وschemas الأغنى.
+- [تصميم القدرات ذات الطبقات الثلاث](../user/develop/practice/index.ar.md): كيف يبني الإطارُ القدراتِ القابلة للاستبدال.
+- مناطقُ `cordis-surface` المولَّدة في [صفحات الأنظمة الفرعية](../subsystems/core.ar.md): كلُّ ما تستطيع حقنَه والاستماعَ إليه، كلٌّ في صفحته المالكة.
+- [المعمارية](../architecture.ar.md): خريطةُ النظام التي تسكن فيها هذه الإضافات.
 
 [![](https://img.shields.io/badge/powered_by-dsh-4D6BFE?style=flat-square&logo=deepseek&logoColor=white)](https://github.com/deepseek-ai/deepseek-harness)

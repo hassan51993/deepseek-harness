@@ -1,95 +1,95 @@
-# Web Client هيكل بنية
+# معمار عميل Web
 
 [English](web-client.md) | العربية
 
-Web Client هو من مستقل تحميل إضافة تجميع بينما صار متصفح جانب Cordis تطبيق. هو لديه أربعة عدد يمكن إعادة استخدام قاع مقعد:[Client Modules](client-modules.ar.md) تحميل إضافة رسم،[API Gateway](../api-gateway.ar.md) توفير نوع تحويل Host عبر معلومة،[Slots](slots.ar.md) تركيب React UI،[Conversation](conversation.ar.md) يأخذ Session تاريخ نافذة تغيير صار كل target ذاتي لديه عرض. هذا نص سلسلة ربط هذه نظام، و قاعدة تحديد Client model و وظيفة حزمة كل منها الذي في موضع.
+عميلُ Web تطبيقُ Cordis في جانب المتصفح، مركَّبٌ من إضافات تُحمَّل مستقلةً. ولمعماره أربعةُ أسس قابلة لإعادة الاستعمال: تحمّل [وحداتُ العميل](client-modules.ar.md) رسمَ الإضافات، وتقدّم [بوابةُ الواجهة البرمجية](../api-gateway.ar.md) اتصالًا منوَّعًا بالمضيف، وتركّب [الخانات](slots.ar.md) واجهةَ React، وتحوّل [المحادثة](conversation.ar.md) نافذةَ تاريخ جلسة إلى عروض يملكها الهدف. وتصل هذه الصفحةُ تلك الأنظمةَ وتحدد موضعَ نماذج العميل وحزمِ الميزات.
 
-## قسم طبقة و كل حق
+## الطبقات والملكية
 
-| طبقة | رئيسي يلزم owner | مسؤولية |
+| الطبقة | المالكون الرئيسيون | المسؤولية |
 |---|---|---|
-| Host تطبيق | عمل خدمة service و `packages/api/*-controller` Host entry | يملك مرجعي حالة، حفظ دائم،mutation ترتيب، وصول سياسة و stream إنتاج. |
-| نقل و API assembly | `client/connection`،`api/gateway`،`api/remotes` | بناء قيام Client generation، عام توليد `ctx.remote` method و stream، تحويل إرسال اختيار تحديد Cordis event، و تحمل تحميل إلغاء و نتيجة. |
-| Client model | `api/session-controller/client`،`api/workspace-controller/client` | صيانة لا اعتماد React Host حالة مرآة مثل، معالجة stream/unary تنافس حالة، يملك كائن identity و حجز قراءة، و عام استلام ضيق command service. |
-| UI adapter | `client/ui-session`،`client/ui-workspace` | يأخذ model observable تحويل لـ root أو Provider ربط Session Slot source، و يملك عرض درجة تنقل و حالة سياسة. |
-| Conversation بيانات | `client/ui-conversation`،`ui-chat` و `ui-trajectory` انتظار target package | يأخذ معيار event و ضيق تجميع Assistant تاريخ دفعة مرة تجميع صار متبادل متبادل مستقل target snapshot، و يملك مشترك Conversation shell و إدخال مسار. |
-| تركيب و تصيير | `client/ui-slots`،`client/ui-renderer`،`client/ui-layout`، كل UI وظيفة حزمة | إعلان توسيع موضع، دفع توجيه مكون props، يأخذ observable ربط صار React hook، و تركيب نهائي مكون شجرة. |
+| تطبيق المضيف | خدماتُ العمل ومداخلُ المضيف في `packages/api/*-controller` | امتلاكُ الحالة المرجعية والحفظ الدائم وترتيب التغييرات وسياسة الوصول وإنتاج المجاري. |
+| النقل وتجميع الواجهة البرمجية | `client/connection` و`api/gateway` و`api/remotes` | إرساءُ جيل عميل، وكشفُ طرائق `ctx.remote` والمجاري المولَّدة، وتمريرُ أحداث Cordis المنتقاة، وحملُ الإلغاء والنتائج. |
+| نماذج العميل | `api/session-controller/client` و`api/workspace-controller/client` | صيانةُ مرايا خالية من React لحالة المضيف، وحسمُ سباقات المجاري والنداءات الأحادية، وامتلاكُ هويات الكائنات والاشتراكات، وكشفُ خدمات أوامر ضيقة. |
+| مهايئات الواجهة | `client/ui-session` و`client/ui-workspace` | تحويلُ مرصودات النماذج إلى مصادر خانات جذرية أو مربوطة بمزوّد جلسة، وامتلاكُ التنقل وسياسة الحالة على مستوى العرض. |
+| بيانات المحادثة | `client/ui-conversation` وحزمُ الأهداف مثل `ui-chat` و`ui-trajectory` | تجميعُ الأحداث القياسية ومقاطع المساعد التاريخية المضغوطة في لقطات أهداف مستقلة، وامتلاكُ قشرة المحادثة المشتركة ومسار المُدخَل. |
+| التركيب والعرض | `client/ui-slots` و`client/ui-renderer` و`client/ui-layout` وحزمُ واجهات الميزات | إعلانُ مواضع التوسعة، واشتقاقُ خصائص المكوّنات، وربطُ المرصودات بخطّافات React، وتركيبُ الشجرة النهائية. |
 
-اعتماد جهة نحو هو Host حالة → Remote نقل → Client model → UI adapter → Conversation أو presentation → Slots → React. مستخدم عملية عبر callback عكس نحو دخول حقن Client service أو توليد Remote namespace.Presentation component أبدا استقبال Cordis `ctx`،transport object أو أخرى وظيفة إضافة تنفيذ.
+واتجاهُ التوابع هو: حالةُ المضيف ← نقلُ Remote ← نموذجُ العميل ← مهايئُ الواجهة ← المحادثةُ أو العرض ← الخانات ← React. وتعود أفعالُ المستخدم عبر ردود نداء تُغلق على خدمة عميل محقونة أو على فضاء أسماء Remote مولَّد. ولا يتلقى مكوّنُ عرض `ctx` من Cordis ولا كائنَ نقل ولا تنفيذَ إضافة ميزة أخرى.
 
-## متصفح بدء
+## الإقلاع في المتصفح
 
-Host يأخذ تركيب بعد `WebBootGraph` كتابة `window.__DSH_BOOT__`، و في parser-preloaded script تنفيذ قبل تثبيت متصفح module-loader facade. وحدة نظام هو واحد ورقة lazy CommonJS جدول: تحميل bundle فقط تسجيل factory؛materialize entry وقت عندئذ بـ تزامن `require` تشغيل factory، و تحليل platform module و قد إعلان حركة حالة اعتماد.
+يكتب المضيفُ رسمَ `WebBootGraph` المركَّب في `window.__DSH_BOOT__` ويثبّت واجهةَ محمِّل الوحدات في المتصفح قبل أن تعمل السكربتاتُ التي حمّلها المحلِّلُ مسبقًا. ونظامُ الوحدات جدولُ CommonJS كسول: فتحميلُ حزمة يسجّل مصنعَها، بينما يشغّل تجسيدُ مدخل المصنعَ بـ`require` متزامن فوق وحدات المنصة والتوابع الديناميكية المعلَنة.
 
-Web boot kernel إنشاء وحدة نظام، مسبق أخذ `immediately` entry، تركيب vendored Cordis Loader، مجددا إنشاء رسم في كل entry.Cordis service injection قرار تنشيط ترتيب؛module graph ترتيب فقط قرار تزامن import قدرة لا يتم materialize. كامل roster وصول settled حالة بعد،`ui-renderer` hydrate لا اعتماد إطار هيكل boot DOM، و استدعاء وحيد مرة context درجة `renderSlot('root')`.[Client Modules](client-modules.ar.md) مسؤول graph،bundle route،cache revision و loader دقيق عقدة.
+وتنشئ نواةُ إقلاع Web نظامَ الوحدات، وتجلب مسبقًا مداخلَ `immediately`، وتركّب مُحمِّلَ Cordis الموردَّ، وتنشئ كلَّ مدخل في الرسم. ويحدد حقنُ خدمات Cordis التفعيلَ؛ ولا يحدد ترتيبُ رسم الوحدات إلا أتستطيع الاستيراداتُ المتزامنة التجسّدَ أم لا. وبعد أن تبلغ القائمةُ كاملةً حالةً مستقرة، تُرطّب `ui-renderer` شجرةَ DOM للإقلاع الخالية من الأطر وتنادي عمليةَ `renderSlot('root')` الوحيدة على مستوى السياق. وتملك [وحداتُ العميل](client-modules.ar.md) الرسمَ ومسارَ الحزم ومراجعةَ المخزن وتفاصيلَ المُحمِّل.
 
-## Remote عبر معلومة
+## الاتصال بـRemote
 
-Host عمل خدمة service استخدام Typert Remote decorator علامة يمكن استدعاء method.Host generation إنتاج خروج صارم إطار descriptor،runtime codec،declaration merge و source map.Client جانب `api-remotes` assembly اختيار هذه توليد مساهمة، و يأخذ أداة جسم method تعليق إلى `ctx.remote.<namespace>` و Session scope `agentCtx.remote.<namespace>`. وظيفة حزمة اعتماد توليد service face، بينما لا اعتماد Gateway تنفيذ أو Host حزمة وقت التشغيل entry.
+توسم خدماتُ العمل في المضيف الطرائقَ القابلة للنداء بمزخرفات Typert Remote. ويُصدر توليدُ المضيف واصفاتٍ صارمة ومرمِّزاتٍ لوقت التشغيل ودمجَ تصريحات وخرائطَ مصادر. ويختار تجميعُ `api-remotes` في جانب العميل تلك الإسهاماتِ المولَّدة ويركّب طرائقَ ملموسة تحت `ctx.remote.<namespace>` و`agentCtx.remote.<namespace>` المحدودة بالجلسة. وتعتمد حزمُ الميزات على وجه الخدمة المولَّد، لا على تنفيذ البوابة ولا على مدخل وقت تشغيل في حزمة مضيف.
 
-Connection يملك request correlation،`/api` carrier،trust check، دقيق Fetch توجيه و connection generation.API Gateway يملك Remote dispatch، إلغاء،logical stream و اختيار تحديد Host event تحويل إرسال.Controller عملية ينبغي دخول توليد Remote method أو صريح Remote stream؛ وظيفة ذاتي لديه تحت تحميل فإن تسجيل دقيق Fetch توجيه.[API Gateway مشاركة اعتبار](../api-gateway.ar.md) تعريف generation و استدعاء،[Connection README](../../packages/client/connection/README.ar.md) تعريف شيء إدارة carrier و معلومة مهمة سياسة.
+وتملك الوصلةُ ربطَ الطلبات وناقلَ `/api` وفحوصَ الثقة ومساراتِ Fetch بعينها وأجيالَ الوصلة. وتملك بوابةُ الواجهة البرمجية توزيعَ Remote والإلغاءَ والمجاريَ المنطقية وتمريرَ أحداث المضيف المنتقاة. وتقع عملياتُ المتحكمات على طرائق Remote مولَّدة أو مجارٍ صريحة من Remote؛ وتسجّل التنزيلاتُ التي تملكها الميزاتُ مساراتِ Fetch بعينها. ويعرّف [مرجع بوابة الواجهة البرمجية](../api-gateway.ar.md) التوليدَ والاستدعاء، بينما يعرّف [README الوصلة](../../packages/client/connection/README.ar.md) الناقلَ الفيزيائي وسياسةَ الثقة.
 
-داخلي `$events` logical stream هو Connection generation source. هو opening `ready` frame يحمل لأجل مسار عرض Host home، و في Host listener قد تركيب، أي controller بدء baseline read قبل بناء قيام generation.`ctx.remote.$on()` يأخذ allowlist داخل عادي event تسليم إعطاء root Client Context، و يأخذ scoped waterfall event تسليم إعطاء قد تحليل Session Context؛waterfall listener يمكن إرجاع نتيجة، استدعاء `next()` أو رفض.
+والمجرى المنطقي الداخلي `$events` هو مصدرُ جيل الوصلة. ويحمل إطارُه الافتتاحي `ready` بيتَ المضيف المستعمَل في عرض المسارات، ويرسي الجيلَ بعد ربط مستمعي المضيف وقبل أن يبدأ أيُّ متحكم قراءةَ خط أساس. وتسلّم `ctx.remote.$on()` الأحداثَ العادية المسموح بها إلى سياق العميل الجذري، وأحداثَ الشلال المنطاقية إلى سياق الجلسة المحلول؛ ويعيد مستمعُ الشلال نتيجةً أو ينادي `next()` أو يرفض.
 
-## Client models
+## نماذج العميل
 
-كل API controller حزمة كل يملك إعداد مقابل Host face و Client face.Host جانب يملك مرجعي mutation و stream إنتاج؛Client جانب أساس في نفسه توليد wire type صيانة identity مستقر، و React غير متصل model، و عام observable snapshot و command.UI حزمة إزالة استهلاك هذه Client service، لا في component store في نسخ transport state.
+تملك كلُّ حزمة متحكم في الواجهة البرمجية وجهًا في المضيف ووجهًا في العميل مقترنين. ويملك جانبُ المضيف التغييرَ المرجعي وإنتاجَ المجاري. ويملك جانبُ العميل نموذجًا ثابتَ الهوية خاليًا من React فوق أنواع الشبكة المولَّدة نفسِها، ويكشف لقطاتٍ مرصودة وأوامر. وتستهلك حزمُ الواجهة خدماتِ العميل هذه ولا تعيد إنتاج حالة النقل في مخازن المكوّنات.
 
-### Sessions
+### الجلسات
 
-[`api/session-controller`](../../packages/api/session-controller/README.ar.md) عام Session list،search،creation،prompt،queue،cancellation،pagination و follow/control stream انتظار Host command. ذلك Client جانب حسب `ClientSessions → SessionManager → Session` مجموعة نسج:
+تكشف [`api/session-controller`](../../packages/api/session-controller/README.ar.md) أوامرَ مضيف للتعداد والبحث والإنشاء والمطالبة والاصطفاف والإلغاء والتقسيم إلى صفحات ومجاري المتابعة والتحكم. وينتظم جانبُها في العميل هكذا: `ClientSessions ← SessionManager ← Session`:
 
-- `ClientSessions` توفير `ctx.sessions`، يملك reference،source count،Session scope و مستقر `SessionBinding` object، و إسقاط لا يحتوي عام current Session اختيار catalog state.
-- `SessionManager` يملك list baseline، فوري list/control update، كسول صفة Session instance،queue،projection store،subagent catalog، و pull و بعد إلى update بين اندفاع مفاجئ ترتيب.
-- كل `Session` يملك واحد مقطع من `SessionEventLikeEntry` value يمثل وصل متابعة منطق event window،pagination،follow،prompt/control state و توفير adapter إزالة استهلاك observable snapshot.
+- تقدّم `ClientSessions` الخدمةَ `ctx.sessions`، وتملك المراجعَ وعددَ المصادر ونطاقاتِ الجلسات وكائناتِ `SessionBinding` الثابتة، وتُسقط حالةَ الدليل بلا اختيار جلسة حالية عامة.
+- ويملك `SessionManager` خطَّ أساس القائمة، وتحديثاتِ القائمة والتحكم الحية، ونسخَ الجلسات الكسولة، والطوابيرَ، ومخازنَ الإسقاطات، وأدلةَ الوكلاء الفرعيين، وترتيبَ التعارض بين السحوب والتحديثات اللاحقة.
+- وتملك كلُّ `Session` نافذةَ أحداث منطقية متصلة واحدة تمثّلها قيمُ `SessionEventLikeEntry`، والتقسيمَ إلى صفحات، والمتابعةَ، وحالةَ المطالبة والتحكم، واللقطةَ المرصودة التي تستهلكها المهايئات.
 
-حمل دائم event مسار فتح `follow()`، ذلك أول لقطة يتضمن حالي header،tail page،cursor و كامل projection baseline. تاريخ record حمل لديه صريح `event` أو `chunks` حكم آخر حقل و حقل مقابل متساو داخلي `event`؛journal أولا تحقق كل بند record منطق seq إغلاق منطقة بين،Client مجددا مباشر يأخذ هذه record إبقاء لـ `SessionEventLikeEntry`، بلا حاجة تدريجي record تحويل. كل شيء إدارة generation كل أصل حسب هذا snapshot أصل فرعي استبدال إبقاء نافذة، مع بعد حسب seq append معيار فوري event.`page()` فقط لأجل أكثر مبكر تاريخ و gap repair. لحظة حالة control stream كل بديل بـ كامل baseline بدء، مع بعد تطبيق queue،job و projection update.
+ويفتح مسارُ الأحداث الدائمة الدالةَ `follow()`، ويحتوي إطارُها الأول الترويسةَ الحالية وصفحةَ الذيل والمؤشرَ وخطَّ أساس الإسقاطات كاملًا. ولسجلات التاريخ مميِّزٌ صريح `event` أو `chunks` و`event` داخلي مصطفّ؛ ويتحقق الدفترُ من كل مدى تسلسل منطقي شامل قبل أن يحتفظ العميلُ بالسجلات قيمَ `SessionEventLikeEntry` بلا تحويل لكل سجل. ويستبدل كلُّ جيل فيزيائي النافذةَ المحفوظة ذرّيًّا من تلك اللقطة؛ ثم تُلحق الأحداثُ الحية القياسية بالتسلسل. و`page()` محجوزة للتاريخ الأقدم وإصلاح الفجوات. ويبدأ مجرى التحكم العابر كلَّ جيل بخط أساس كامل ثم يطبّق تحديثاتِ الطوابير والمهام والإسقاطات.
 
-### Workspaces
+### مساحات العمل
 
-[`api/workspace-controller`](../../packages/api/workspace-controller/README.ar.md) يأخذ Workspace mutation policy و مرجعي follow feed إبقاء في Host.`ClientWorkspaceModel` يملك متصفح جانب row،order،archived Session id،command echo، و stream/unary تنافس حالة دمج. كل بديل stream أولا إعطاء خروج كامل baseline، مجددا إعطاء خروج `upsert`،`remove`،`order` و `archived` increment؛ إعادة وصل وقت بـ جديد baseline استبدال model.`WorkspaceController` يأخذ هذا model بصفة `ctx.workspaces` عام، بينما `ui-workspace` نحو UI توفير `useWorkspaces` و navigation callback.archived Session id مرور ترشيح كل واحد قسم مجموعة عرض، و قيادة «قد عودة ملف جلسة» ضبط صفحة؛ هذا صفحة يأخذ هذا تجميع دمج و قد تحميل Session summary دمج، لـ كل سطر توفير واحد إلغاء عودة ملف عملية. استعادة سوف استدعاء `workspace.unarchiveSession` Remote، إرجاع كامل تجميع دمج فإن مرور `archived` increment وصول كل Client.
+تُبقي [`api/workspace-controller`](../../packages/api/workspace-controller/README.ar.md) سياسةَ تغيير مساحات العمل وتغذيةَ المتابعة المرجعية في المضيف. ويملك `ClientWorkspaceModel` صفوفَ المتصفح والترتيبَ ومعرّفاتِ الجلسات المؤرشفة وأصداءَ الأوامر وحسمَ سباق المجاري والنداءات الأحادية. ويبدأ كلُّ جيل مجرى بخط أساس كامل تليه زياداتُ `upsert` و`remove` و`order` و`archived`؛ وتستبدل إعادةُ الاتصال النموذجَ من خط الأساس الجديد. ويكشف `WorkspaceController` ذلك النموذجَ باسم `ctx.workspaces`، بينما تسهم `ui-workspace` بـ`useWorkspaces` وبردود نداء التنقل إلى الواجهة. وترشّح معرّفاتُ الجلسات المؤرشفة كلَّ واجهة تجميع وتغذي صفحةَ إعدادات الجلسات المؤرشفة، التي توصل المجموعةَ بملخصات الجلسات المحمَّلة وتعرض فعلَ «إلغاء الأرشفة» لكل صف؛ وتنادي الاستعادةُ Remote المسماة `workspace.unarchiveSession`، وتبلغ المجموعةُ المعادة كاملةً كلَّ عميل عبر زيادة `archived`.
 
-هذا نوع إعداد مقابل لن إنتاج ثاني نسخة عمل خدمة حق متبادل.Host controller قرار حمل دائم حالة و mutation outcome؛Client model صيانة الأكثر جديد متاح محلي projection، في لديه فائدة في تصيير وقت إبقاء object identity، و واضح delayed response و replacement baseline دمج قاعدة.
+وهذا الاقترانُ ليس مصدرَ حقيقة عمل ثانيًا. فمتحكماتُ المضيف تقرر الحالةَ الدائمة وحصائلَ التغيير؛ وتصون نماذجُ العميل أحدثَ إسقاط محلي صالح، وتحفظ هويةَ الكائنات حيث ينفع العرضَ، وتشفّر كيف تندمج الاستجاباتُ المتأخرة وخطوطُ الأساس البديلة.
 
-## Conversation و presentation
+## المحادثة والعرض
 
-`ui-session` تثبيت Session scope adapter، و توفير `useSessions`،`useSessionStatus`،`useSessionRetainInfo`،`useSession`،`sessionId` و `useProjection`.`SessionProvider` يمكن وراثة خارج محيط binding، أيضا يمكن ربط صريح `SessionReference`، لذلك و تخزين فرعي شجرة يمكن إشارة نحو مختلف Session. مجال adapter يمكن متابعة إضافة معيار source، لكن لن يأخذ React hook وضع دخول model object.
+تثبّت `ui-session` مهايئَ نطاق الجلسة وتنشر `useSessions` و`useSessionStatus` و`useSessionRetainInfo` و`useSession` و`sessionId` و`useProjection`. ويرث `SessionProvider` ربطًا خارجيًا أو يربط `SessionReference` صريحًا، فتستطيع شجرتان فرعيتان متزامنتان استهدافَ جلستين مختلفتين. وتضيف مهايئاتُ المجال مصادرَ قياسية أخرى بلا وضع خطّافات React على كائنات النموذج.
 
-`ui-conversation` مقابل كل `SessionBinding.eventSource` فقط ربط مرة. هو event registry يأخذ حمل دائم Session event و Client-only `assistant/live-chunk` update صلة ربط صار مستقر عمل خدمة Context،view registry فإن materialize target snapshot.Chat Assistant،Trajectory Assistant و Turn Tail معا حل تفسير live chunk و حمل دائم settlement في تضمين دخول ضيق تجميع stream، لذلك إعادة وصل و قسم صفحة تاريخ بلا حاجة حمل دائم token سطر يكفي تكرار الآن نفسه Assistant حالة.`ui-chat` و `ui-trajectory` قسم آخر تسجيل ذاتي ذات Definition و builder: هو جمع يمكن حل تفسير نفس event family، لكن لن استيراد أو مشترك ذاك هذا نهائي display model.Shell اختيار واحد قد تسجيل view، مجددا عبر معيار hook و Slot تسليم ذلك snapshot.[Conversation](conversation.ar.md) تعريف Context identity،replay،Location data،target builder و keyed renderer.
+وتربط `ui-conversation` نفسَها مرةً واحدة بـ`SessionBinding.eventSource` لكل ربط. ويربط سجلُّ أحداثها بين أحداث الجلسة الدائمة وتحديثاتِ `assistant/live-chunk` التي تخص العميلَ وحده في سياقاتِ عمل ثابتة، ويجسّد سجلُّ عروضها لقطاتِ الأهداف. ويفسّر مساعدُ المحادثة ومساعدُ المسار وذيلُ الجولة القطعَ الحية والمجاريَ المضغوطة المضمَّنة في الاستقرارات الدائمة معًا، فتعيد إعادةُ الاتصال والتاريخُ المقسَّم إلى صفحات إنتاجَ حالة المساعد نفسِها بلا صفوف رموز دائمة. وتسجّل `ui-chat` و`ui-trajectory` تعريفاتٍ وبناةً منفصلين: فقد تفسّران عائلةَ الأحداث نفسَها، لكنهما لا تستورد إحداهما نموذجَ العرض النهائي لدى الأخرى ولا تتشاركانه. وتنتقي القشرةُ عرضًا مسجَّلًا وتمرّر لقطتَه عبر الخطّافات القياسية والخانات. وتعرّف [المحادثةُ](conversation.ar.md) هويةَ السياق وإعادةَ التشغيل وبياناتِ المواضع وبناةَ الأهداف والعارضين المفتاحيين.
 
-`ui-slots` توفير نوع تحويل registry و lifecycle ledger؛`ui-renderer` هو وحيد عبر `useSyncExternalStore` ربط عار observable، يملك React context و تصيير root tree حزمة. وظيفة component عبر دفع تصدير props استقبال framework hook،owner prop،store action و صريح injection.[Web Client Slots](slots.ar.md) صف خروج هذه إدخال، توسيع API و حالي Slot طبقة درجة.
+وتقدّم `ui-slots` السجلَّ المنوَّع ودفترَ دورة الحياة؛ و`ui-renderer` هي الحزمةُ الوحيدة التي تربط المرصوداتِ المجردة عبر `useSyncExternalStore`، وتملك سياقاتِ React، وتعرض الشجرةَ الجذرية. وتتلقى مكوّناتُ الميزات خطّافاتِ الإطار وخصائصَ المالك وأفعالَ المخازن والحقنَ الصريح عبر خصائصها المشتقة. وتعدّد [خاناتُ عميل Web](slots.ar.md) تلك المُدخَلاتِ وواجهاتِ التوسعة وتسلسلَ الخانات الحالي.
 
-## بيانات عبر مسار
+## مسارات البيانات
 
-| مسار | ترتيب |
+| المسار | التسلسل |
 |---|---|
-| حمل دائم Session عرض | Host Session log → packed Remote `follow`/`page` تاريخ → Client `SessionEventLikeEntry` window → Conversation Context → target snapshot(`chat`،`trajectory` أو أخرى قد تسجيل target)→ Slot view → React |
-| لحظة حالة Session control | Host control baseline → Remote snapshot stream → `SessionManager` queue/job/projection store → Session و list snapshot → معيار hook → component |
-| Workspace حالة | Host Workspace baseline و increment → `ClientWorkspaceModel` → `ctx.workspaces.list` → `useWorkspaces` → sidebar،hero و navigation entry |
-| scoped interaction | Host Cordis waterfall → API Remotes `$events` → Session Context فوق `ctx.remote.$on()` → الذي تابع UI حزمة → result أو `next()` |
-| مستخدم command | component callback → تسجيل بند inject face أو Slot owner → `ctx.sessions`،`ctx.workspaces` أو توليد scoped Remote → Host Controller → مرجعي update → stream أو event projection عودة إلى Client |
+| عرض الجلسة الدائم | سجلُّ جلسة المضيف ← تاريخُ `follow` و`page` المحزوم عبر Remote ← نافذةُ `SessionEventLikeEntry` في العميل ← سياقاتُ المحادثة ← لقطةُ الهدف (`chat` أو `trajectory` أو هدفٌ مسجَّل آخر) ← عرضُ الخانة ← React |
+| تحكم الجلسة العابر | خطُّ أساس التحكم في المضيف ← مجرى اللقطات عبر Remote ← مخازنُ الطوابير والمهام والإسقاطات في `SessionManager` ← لقطاتُ الجلسة والقائمة ← الخطّافاتُ القياسية ← المكوّنات |
+| حالة مساحة العمل | خطُّ أساس مساحة العمل وزياداتُها في المضيف ← `ClientWorkspaceModel` ← `ctx.workspaces.list` ← `useWorkspaces` ← الشريطُ الجانبي والواجهةُ الافتتاحية ومداخلُ التنقل |
+| التفاعل المنطاقي | شلالُ Cordis في المضيف ← `$events` في API Remotes ← `ctx.remote.$on()` على سياق الجلسة ← حزمةُ الواجهة المالكة ← نتيجةٌ أو `next()` |
+| أمر المستخدم | ردُّ نداء مكوّن ← وجهُ حقن التسجيل أو مالكُ الخانة ← `ctx.sessions` أو `ctx.workspaces` أو Remote منطاقي مولَّد ← متحكمُ المضيف ← تحديثٌ مرجعي ← إسقاطُ مجرى أو حدث عائدًا إلى العميل |
 
-## إعادة وصل
+## إعادة الاتصال
 
-شيء إدارة استعادة و منطق استعادة ذاك هذا مستقل.Gateway mux استعادة شيء إدارة WebSocket؛Connection إصدار متاح generation بعد، كل `RemoteStream` قسم آخر إعادة فتح ذاتي ذات logical source.Carrier failure يمكن إعادة محاولة؛business error، غير قاعدة opening item أو protocol violation سوف أمر الذي تابع logical stream إنهاء.
+التعافي الفيزيائي والمنطقي منفصلان. فيستعيد مضاعِفُ البوابة WebSocket الفيزيائي؛ ويعيد كلُّ `RemoteStream` فتحَ مصدره المنطقي حين تنشر الوصلةُ جيلًا صالحًا. وفشلُ الناقل قابلٌ لإعادة المحاولة، بينما خطأُ العمل أو البندُ الافتتاحي المشوَّه أو انتهاكُ البروتوكول نهائيٌّ للمجرى المنطقي المالك.
 
-استعادة طريقة من بيانات دلالة قرار:
+ويتبع التعافي دلالاتِ البيانات:
 
-- حمل دائم Session journal تحقق منطق seq range، و أصل حسب كل generation opening snapshot استبدال نافذة؛`page()` توفير أكثر مبكر تاريخ و إصلاح لاحق range gap.
-- Session control و Workspace stream في قطع فتح خلال إبقاء الأكثر بعد مرة إصدار قيمة، مجددا استخدام جديد opening baseline أصل فرعي استبدال.
-- عادي forwarded notification لن replay. حاجة يمكن اعتماد استعادة stateful domain يجب توفير baseline،cursor أو صريح query؛scoped waterfall إبقاء ذاته request lifetime.
+- يتحقق دفترُ الجلسة الدائم من مديات التسلسل المنطقية ويستبدل نافذتَه من اللقطة الافتتاحية لكل جيل؛ وتقدّم `page()` التاريخَ الأقدم وتُصلح أيَّ فجوة مدًى لاحقة.
+- ويحتفظ مجرى تحكم الجلسة ومجرى مساحات العمل بآخر قيمة منشورة أثناء الانقطاع، ثم يستبدلانها ذرّيًّا من خط أساس افتتاحي جديد.
+- ولا تُعاد الإشعاراتُ المُمرَّرة العادية. وتحتاج المجالاتُ ذاتُ الحالة إلى خط أساس أو مؤشر أو استعلام صريح؛ وتحتفظ الشلالاتُ المنطاقية بعمر طلبها.
 
-هيكل بنية في لا يوجد موحد واحد Client `Runtime`،`HostFrame`،`events.mux`،`events.host` أو عام `resync()` API.Connection عام generation state،Gateway إدارة logical stream،Client model فإن حسب ذاته بيانات تعريف replacement أو resume دلالة.
+ولا يوجد `Runtime` عميل جامع ولا `HostFrame` ولا `events.mux` ولا `events.host` ولا واجهةُ `resync()` شاملة. فالوصلةُ تكشف حالةَ الجيل، وتملك البوابةُ الإشرافَ على المجاري المنطقية، ويعرّف كلُّ نموذج عميل دلالاتِ الاستبدال أو الاستئناف الملائمة لبياناته.
 
-## حزمة حد
+## حدود الحزم
 
-وظيفة إضافة حزمة يمكن عبر `import type` مشترك إعلان؛ لا نيل وقت التشغيل استيراد أو تحويل إرسال آخر عدد وظيفة إضافة قيمة. عبر حزمة سلوك استخدام حقن Cordis service، عبر حزمة UI استخدام Slots. خاص تحديد target Conversation Definition،projection helper و نهائي view data إبقاء في الذي تابع target حزمة في، أي جعل Chat و Trajectory متعمد تنفيذ مستو سطر منطق.
+تستطيع حزمُ إضافات الميزات تشاركَ التصريحات بـ`import type`؛ ولا تستورد قيمَ إضافة ميزة أخرى في وقت التشغيل ولا تعيد تصديرَها. ويستعمل السلوكُ بين الحزم خدماتِ Cordis محقونةً، وتستعمل الواجهةُ بين الحزم الخانات. وتبقى تعريفاتُ المحادثة الخاصة بالهدف ومساعداتُ الإسقاط وبياناتُ العرض النهائية مع حزمة هدفها ولو نفّذت المحادثةُ والمسارُ منطقًا متوازيًا عمدًا.
 
-مشترك وقت التشغيل قيمة حاجة واحد مسؤولية استلام ضيق، لا يوجد وظيفة دورة الحياة ساكن حالة owner، مثال مثل `client/store`،`ui-primitives` أو متصفح أمان util حزمة.Transport و توليد API assembly يمكن استيراد وقت التشغيل contribution، لأن تجميع نفس عدد protocol صحيح هو هو جمع صريح مسؤولية. وظيفة حزمة لا يستطيع فقط لـ التفاف مرور هذا قاعدة بينما إضافة `dsh.client.external`.
+وتحتاج القيمُ المشتركة في وقت التشغيل إلى مالك ساكن ضيق بلا دورة حياة ميزة، مثل `client/store` أو `ui-primitives` أو حزمة أدوات آمنة في المتصفح. ويستطيع النقلُ وتجميعُ الواجهة البرمجية المولَّدة استيرادَ إسهامات وقت التشغيل لأن تجميعَ بروتوكول واحد مسؤوليتُهما الصريحة. ولا تضيف حزمةُ ميزة `dsh.client.external` لمجرد تجاوز هذه القاعدة.
 
-أصل حسب الذي إضافة توسيع فحص قراءة أربعة مقالة تفصيل دقيق مشاركة اعتبار:
+استعمل المراجعَ الأربعةَ المفصَّلة بحسب التوسعة المضافة:
 
-- [Client Modules](client-modules.ar.md):package discovery،loading، مشترك module identity و boot order.
-- [API Gateway](../api-gateway.ar.md):Host method، توليد Remote contribution،stream و forwarded event.
-- [Web Client Slots](slots.ar.md):component،hook،store،injection و placement.
-- [Conversation](conversation.ar.md): حمل دائم event correlation،target snapshot، و Chat أو Trajectory view contribution.
+- [وحدات العميل](client-modules.ar.md) لاكتشاف الحزم وتحميلها وهويات الوحدات المشتركة وترتيب الإقلاع.
+- [بوابة الواجهة البرمجية](../api-gateway.ar.md) لطرائق المضيف وإسهامات Remote المولَّدة والمجاري والأحداث المُمرَّرة.
+- [خانات عميل Web](slots.ar.md) للمكوّنات والخطّافات والمخازن والحقن والموضع.
+- [المحادثة](conversation.ar.md) لربط الأحداث الدائمة ولقطات الأهداف وإسهامات عرض المحادثة أو المسار.

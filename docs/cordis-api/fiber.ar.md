@@ -1,11 +1,11 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/fiber.md` إعادة سجل إعداد مقابل. -->
+<!-- ملفُّ المصدر الإنجليزي مولَّد من scripts/gen-cordis-catalog.ts؛ وهذا الملف العربي جانبٌ مراجَع يُصان عبر الاقتران الثنائي اللغة.
+     عند التحديث شغّل `pnpm run gen-cordis-catalog` أولًا لتحديث الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/cordis-api/fiber.md` لإعادة تسجيل الاقتران. -->
 
 # Fiber
 
 [English](fiber.md) | العربية
 
-fiber هو واحد قد تحميل إضافة نسخة، يتضمن ذلك دورة الحياة حالة، مرور مرور تحقق إعداد و قد تسجيل أثر.`ctx.fiber` هو حالي fiber،`ctx.effect()` سوف سوف استدعاء تفويض حمل إعطاء هو.
+الـ fiber نسخةُ إضافة محمَّلة واحدة: حالةُ دورة حياتها، وإعدادُها المتحقَّق منه، وآثارُها المسجَّلة. و`ctx.fiber` هو الـ fiber الحالي، و`ctx.effect()` يفوّض إليه.
 
 ### ctx.effect(execute, label?)
 
@@ -27,16 +27,16 @@ effect(execute: () => SyncEffect, label?: string): Disposable<Promise<void>>
 effect(execute: () => Effect, label?: string): AsyncDisposable<Promise<void>>
 ```
 
-في هذا fiber فوق تسجيل واحد دعم حمل تنظيف أثر.
+سجّل أثرًا يراعي التنظيف على هذا الـ fiber.
 
-`execute` سوف قيام أي تشغيل؛ هو إنتاج تنظيف دالة سوف يتم استلام تجميع، و في استدعاء إرجاع تنظيف دالة أو إزالة fiber وقت حسب متبادل عكس ترتيب تشغيل، بـ أولا حدوث من لـ دقيق. تكرار استدعاء تنظيف دالة لن إنتاج أي فاعلية نتيجة. إذا fiber قد dispose(مورد تحرير) ، فإن رمي خروج `CordisError('INACTIVE_EFFECT')`؛ إذا بنية بلا فاعلية، فإن رمي خروج `TypeError`، يمثل `execute` إرجاع لا تلقي دعم حمل نتيجة.
+ويعمل `execute` فورًا؛ وتُجمع المحرِّراتُ التي ينتجها وتعمل (بعكس الترتيب) إما عند استدعاء المحرِّر المعاد وإما عند تفريغ الـ fiber، أيهما أسبق. واستدعاءُ المحرِّر مرتين بلا أثر. ويرمي `CordisError('INACTIVE_EFFECT')` إن كان الـ fiber محرَّرًا أصلًا، و`TypeError` إن أعاد `execute` صيغةً غير صالحة.
 
-- `execute`: أثر رئيسي جسم؛ يمكن قبول بنية رؤية `Effect`.
-- `label`: في `getEffects()` تشخيص معلومة في عرض أثر وسم.
+- `execute`: متنُ الأثر؛ انظر `Effect` للصيغ المقبولة.
+- `label`: وسمُ الأثر الظاهر في تشخيصات `getEffects()`.
 
-**إرجاع**واحد لأجل سحب إلغاء هذا أثر تنظيف دالة، و في تنظيف إتمام بعد تسوية.
+**يعيد** محرِّرًا يفكّ الأثرَ ويستقر متى انتهى.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L415)
+[المصدر](../../vendor/cordis/src/fiber.ts#L415)
 
 ### ctx.fiber
 
@@ -45,17 +45,17 @@ effect(execute: () => Effect, label?: string): AsyncDisposable<Promise<void>>
 fiber: Fiber
 ```
 
-يملك هذا سياق fiber(إضافة وقت التشغيل نسخة).
+الـ fiber (نسخةُ وقت تشغيل الإضافة) الذي يملك هذا السياق.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L12)
+[المصدر](../../vendor/cordis/src/fiber.ts#L12)
 
-## Fiber صنف
+## صنف Fiber
 
-مفرد مرة إضافة تطبيق وقت التشغيل نسخة.
+نسخةُ وقت التشغيل لتطبيق إضافة واحد.
 
-fiber سوف تتبع أثر `ctx.plugin()` إرجاع إضافة سياق الذي مقابل اعتماد حالة، مرور مرور تحقق إعداد، دورة الحياة أثر و تنظيف عملية.
+ويتتبع الـ fiber حالةَ الاعتماديات، والإعدادَ المتحقَّق منه، وآثارَ دورة الحياة، والتنظيفَ لسياق الإضافة الذي يعيده `ctx.plugin()`.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L184)
+[المصدر](../../vendor/cordis/src/fiber.ts#L184)
 
 ### fiber.uid
 
@@ -64,9 +64,9 @@ fiber سوف تتبع أثر `ctx.plugin()` إرجاع إضافة سياق ال�
 public uid: number | null
 ```
 
-في سجل التسجيل في وحيد id؛ أصل fiber id لـ 0،dispose بعد لـ `null`.
+معرّفٌ فريد داخل الـ registry؛ وهو 0 للـ fiber الجذر، و`null` بعد التحرير.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L186)
+[المصدر](../../vendor/cordis/src/fiber.ts#L186)
 
 ### fiber.ctx
 
@@ -75,9 +75,9 @@ public uid: number | null
 public readonly ctx: Context
 ```
 
-هذا fiber إضافة تشغيل الذي في سياق (توسيع ذاتي أب سياق).
+السياقُ الذي تعمل فيه إضافةُ هذا الـ fiber (ويوسّع السياقَ الأب).
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L188)
+[المصدر](../../vendor/cordis/src/fiber.ts#L188)
 
 ### fiber.config
 
@@ -86,9 +86,9 @@ public readonly ctx: Context
 public config: any
 ```
 
-مرور مرور تحقق إضافة إعداد (من `update()` تحديث).
+إعدادُ الإضافة المتحقَّق منه (ويحدّثه `update()`).
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L190)
+[المصدر](../../vendor/cordis/src/fiber.ts#L190)
 
 ### fiber.state
 
@@ -97,9 +97,9 @@ public config: any
 public state
 ```
 
-حالي دورة الحياة حالة؛ حالة تحويل سوف إرسال خروج `internal/status`.
+حالةُ دورة الحياة الراهنة؛ والانتقالاتُ ترسل `internal/status`.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L194)
+[المصدر](../../vendor/cordis/src/fiber.ts#L194)
 
 ### fiber.dispose
 
@@ -108,9 +108,9 @@ public state
 public readonly dispose: () => Promise<void>
 ```
 
-dispose هذا fiber: إزالة إضافة، و في تنظيف إتمام بعد تسوية.
+حرّر هذا الـ fiber: فرّغ الإضافة، ثم استقر متى انتهى التنظيف.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L196)
+[المصدر](../../vendor/cordis/src/fiber.ts#L196)
 
 ### fiber.store
 
@@ -119,9 +119,9 @@ dispose هذا fiber: إزالة إضافة، و في تنظيف إتمام بع
 public store: Dict<Impl> | undefined
 ```
 
-تحميل خلال الذي يحتاج خدمة تنفيذ لقطة؛ أخرى حال حال تحت لـ `undefined`.
+لقطةٌ لتنفيذات الخدمات المطلوبة أثناء التحميل؛ و`undefined` فيما عدا ذلك.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L198)
+[المصدر](../../vendor/cordis/src/fiber.ts#L198)
 
 ### fiber.inertia
 
@@ -130,9 +130,9 @@ public store: Dict<Impl> | undefined
 public inertia: Promise<void> | undefined
 ```
 
-حالي جارٍ إجراء تحميل أو إزالة تحويل؛ إذا لا يوجد هذا صنف تحويل، فإن لـ undefined.
+انتقالُ التحميل أو التفريغ الجاري، إن كان أحدهما يعمل حاليًا.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L200)
+[المصدر](../../vendor/cordis/src/fiber.ts#L200)
 
 ### fiber.name
 
@@ -141,9 +141,9 @@ public inertia: Promise<void> | undefined
 get name()
 ```
 
-إضافة عرض اسم، وراثة ذاتي الأكثر قريب أداة اسم أصل أولا؛ إذا لا وجود، فإن لـ `'root'`.
+اسمُ عرض الإضافة، موروثًا من أقرب سلف مسمًّى، وإلا فـ `'root'`.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L336)
+[المصدر](../../vendor/cordis/src/fiber.ts#L336)
 
 ### fiber.assertActive()
 
@@ -157,11 +157,11 @@ get name()
 assertActive()
 ```
 
-إذا fiber قد dispose، فإن رمي خروج استثناء.
+ارمِ إن كان الـ fiber محرَّرًا أصلًا.
 
-**إرجاع**:fiber ما زال موضع في نشط حركة حالة وقت لا إرجاع أي محتوى.
+**يعيد** لا شيء ما دام الـ fiber نشطًا.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L351)
+[المصدر](../../vendor/cordis/src/fiber.ts#L351)
 
 ### fiber.effect(execute, label?)
 
@@ -183,16 +183,16 @@ effect(execute: () => SyncEffect, label?: string): Disposable<Promise<void>>
 effect(execute: () => Effect, label?: string): AsyncDisposable<Promise<void>>
 ```
 
-في هذا fiber فوق تسجيل واحد دعم حمل تنظيف أثر.
+سجّل أثرًا يراعي التنظيف على هذا الـ fiber.
 
-`execute` سوف قيام أي تشغيل؛ هو إنتاج تنظيف دالة سوف يتم استلام تجميع، و في استدعاء إرجاع تنظيف دالة أو إزالة fiber وقت حسب متبادل عكس ترتيب تشغيل، بـ أولا حدوث من لـ دقيق. تكرار استدعاء تنظيف دالة لن إنتاج أي فاعلية نتيجة. إذا fiber قد dispose، فإن رمي خروج `CordisError('INACTIVE_EFFECT')`؛ إذا بنية بلا فاعلية، فإن رمي خروج `TypeError`، يمثل `execute` إرجاع لا تلقي دعم حمل نتيجة.
+ويعمل `execute` فورًا؛ وتُجمع المحرِّراتُ التي ينتجها وتعمل (بعكس الترتيب) إما عند استدعاء المحرِّر المعاد وإما عند تفريغ الـ fiber، أيهما أسبق. واستدعاءُ المحرِّر مرتين بلا أثر. ويرمي `CordisError('INACTIVE_EFFECT')` إن كان الـ fiber محرَّرًا أصلًا، و`TypeError` إن أعاد `execute` صيغةً غير صالحة.
 
-- `execute`: أثر رئيسي جسم؛ يمكن قبول بنية رؤية `Effect`.
-- `label`: في `getEffects()` تشخيص معلومة في عرض أثر وسم.
+- `execute`: متنُ الأثر؛ انظر `Effect` للصيغ المقبولة.
+- `label`: وسمُ الأثر الظاهر في تشخيصات `getEffects()`.
 
-**إرجاع**واحد لأجل سحب إلغاء هذا أثر تنظيف دالة، و في تنظيف إتمام بعد تسوية.
+**يعيد** محرِّرًا يفكّ الأثرَ ويستقر متى انتهى.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L415)
+[المصدر](../../vendor/cordis/src/fiber.ts#L415)
 
 ### fiber.getEffects()
 
@@ -205,11 +205,11 @@ effect(execute: () => Effect, label?: string): AsyncDisposable<Promise<void>>
 getEffects()
 ```
 
-إرجاع حالي قد تسجيل أثر بيانات وصفية.
+أعِد بياناتِ الآثار المسجَّلة حاليًا الوصفية.
 
-**إرجاع**: كل حمل وسم نشط حركة أثر مقابل واحد شجرة `EffectMeta` شجرة.
+**يعيد** شجرةَ `EffectMeta` واحدة لكل أثر حي موسوم.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L568)
+[المصدر](../../vendor/cordis/src/fiber.ts#L568)
 
 ### fiber.await()
 
@@ -223,11 +223,11 @@ getEffects()
 async await()
 ```
 
-انتظار حالي دورة الحياة عمل إتمام، و إعادة رمي خروج بدء خطأ.
+انتظر عملَ دورة الحياة الحالي وأعِد رميَ أخطاء الإقلاع.
 
-**إرجاع**: دخول مستقر حالة بعد هذا fiber.
+**يعيد** هذا الـ fiber، متى استقر في حالة مستقرة.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L704)
+[المصدر](../../vendor/cordis/src/fiber.ts#L704)
 
 ### fiber.restart()
 
@@ -241,11 +241,11 @@ async await()
 async restart()
 ```
 
-dispose هذا إضافة، و قيام أي استخدام ذلك حالي إعداد إعادة تحميل.
+حرّر هذه الإضافة وأعِد تحميلها فورًا بإعدادها الحالي.
 
-**إرجاع**واحد في إعادة تحميل إتمام بعد صرف الآن promise.
+**يعيد** وعدًا يتحلّل متى استقرت إعادةُ التحميل.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L718)
+[المصدر](../../vendor/cordis/src/fiber.ts#L718)
 
 ### fiber.update(config, noSave?)
 
@@ -264,22 +264,22 @@ dispose هذا إضافة، و قيام أي استخدام ذلك حالي إع
 update(config: any, noSave = false)
 ```
 
-تحقق و تطبيق جديد إعداد، لكن بعد إعادة بدء إضافة.
+تحقّق من إعداد جديد وطبّقه، ثم أعِد إقلاع الإضافة.
 
-أول أولا تشغيل `internal/update` waterfall(شلال نشر صيغة حدث) ، لذلك تحديث خطاف (و HMR(حار وحدة استبدال)) يمكن مرفوض أو يحل محل إعادة بدء عملية.
+ويشغّل waterfall المسمّى `internal/update` أولًا، فتستطيع خطافاتُ التحديث (وHMR) نقضَ إعادة الإقلاع أو استبدالَها.
 
-- `config`: جديد أصلي إعداد؛ في أي محتوى إعادة بدء قبل إجراء تحقق.
-- `noSave`: تلميح حفظ دائم خطاف لا يلزم كتابة عودة هذا تغيير.
+- `config`: الإعدادُ الخام الجديد؛ ويُتحقَّق منه قبل أن يُعاد إقلاعُ أي شيء.
+- `noSave`: تلميحٌ لخطافات الحفظ ألّا تكتب التغييرَ رجوعًا.
 
-**إرجاع**بلا قيمة راجعة؛ إعادة بدء من `internal/update` waterfall تنفيذ.
+**يعيد** لا شيء؛ وإعادةُ الإقلاع تجري خلف waterfall المسمّى `internal/update`.
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L736)
+[المصدر](../../vendor/cordis/src/fiber.ts#L736)
 
 ## Effect
 
-`ctx.effect()` و إضافة بدء الذي قبول أثر رئيسي جسم نتيجة.
+نتيجةُ متن الأثر التي يقبلها `ctx.effect()` وإقلاعُ الإضافة.
 
-يمكن هو مفرد عدد تنظيف دالة، صرف الآن لـ تنظيف دالة promise، أو توليد كثير عدد تنظيف دالة (ممكن لـ مختلف خطوة) يمكن تكرار بديل كائن. توليد جهاز أثر سوف في كل تنظيف دالة إنتاج وقت سوف ذلك تسجيل.
+وهي إما محرِّرٌ واحد، أو وعدٌ بمحرِّر، أو كائنٌ قابل للتكرار (وقد يكون لاتزامنيًا) ينتج عدةَ محرِّرات؛ فآثارُ المولِّدات تسجّل كلَّ محرِّر تنتجه حال إنتاجه.
 
 ```ts cordis-catalog
 /**
@@ -294,13 +294,13 @@ type Effect<T = any> =
   | AsyncEffect<T>
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L83)
+[المصدر](../../vendor/cordis/src/fiber.ts#L83)
 
 ## Disposable
 
-أثر إرجاع دالة، لأجل في مورد تحرير خلال تحرير مورد.
+الدالةُ التي يعيدها الأثرُ لتحرير الموارد أثناء التحرير.
 
-يملك هذا دالة fiber إزالة وقت، تنظيف دالة سوف حسب تسجيل متبادل عكس ترتيب تشغيل؛ تنظيف دالة يمكن هو مختلف خطوة، هذا وقت إزالة مرور مسار سوف انتظار ذلك إتمام.
+وتعمل المحرِّراتُ بعكس ترتيب التسجيل حين يُفرَّغ الـ fiber المالك؛ وقد تكون لاتزامنية، فينتظرها التفريغُ عندئذ.
 
 ```ts cordis-catalog
 /**
@@ -312,11 +312,11 @@ type Effect<T = any> =
 type Disposable<T = any> = () => T
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L74)
+[المصدر](../../vendor/cordis/src/fiber.ts#L74)
 
 ## EffectMeta
 
-لأجل في تشخيص معلومة في عام تضمين طقم أثر وسم شجرة عقدة.
+عقدةُ شجرة تكشف وسومَ الآثار المتداخلة للتشخيص.
 
 ```ts cordis-catalog
 /** Tree node used to expose nested effect labels for diagnostics. */
@@ -328,11 +328,11 @@ interface EffectMeta {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L96)
+[المصدر](../../vendor/cordis/src/fiber.ts#L96)
 
 ## CordisError
 
-أداة لديه مستقر آلة جهاز يمكن قراءة رمز خطأ إطار هيكل خطأ.
+خطأُ الإطار برمز ثابت تقرؤه الآلة.
 
 ```ts cordis-catalog
 /** Framework error with a stable machine-readable code. */
@@ -354,11 +354,11 @@ namespace CordisError {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L157)
+[المصدر](../../vendor/cordis/src/fiber.ts#L157)
 
 ## ValidationError
 
-إضافة إعداد لم عبر standard-schema تحقق وقت رمي خروج خطأ.
+الخطأُ المرفوع حين يسقط إعدادُ الإضافة في تحقق standard-schema.
 
 ```ts cordis-catalog
 /** Error raised when plugin configuration fails standard-schema validation. */
@@ -374,4 +374,4 @@ class ValidationError extends TypeError {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/fiber.ts#L19)
+[المصدر](../../vendor/cordis/src/fiber.ts#L19)

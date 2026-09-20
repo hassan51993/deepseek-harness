@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/sidebar-right.md
 sidebar-right.md: 223e273552469ebb0b36f237a3d933fe55dbf27d
-sidebar-right.ar.md: 34ea64d3266d46b2b48b28e9ab7ccf8b468658e0
+sidebar-right.ar.md: 00f41c0d741770264b22ed5fd42cee5d31a97f96

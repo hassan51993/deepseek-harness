@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/boot.md
 boot.md: e9f8eed1f0c2a4c5607b0a5828859c66b5915cff
-boot.ar.md: 59c1a757ae59371fe95517c7d50c2b9cfebfd465
+boot.ar.md: b2ae2ac78c0e797b72c9a2f5c6d6053dae2f5b2d

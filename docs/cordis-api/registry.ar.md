@@ -1,11 +1,11 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-cordis-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-cordis-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/cordis-api/registry.md` إعادة سجل إعداد مقابل. -->
+<!-- ملفُّ المصدر الإنجليزي مولَّد من scripts/gen-cordis-catalog.ts؛ وهذا الملف العربي جانبٌ مراجَع يُصان عبر الاقتران الثنائي اللغة.
+     عند التحديث شغّل `pnpm run gen-cordis-catalog` أولًا لتحديث الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/cordis-api/registry.md` لإعادة تسجيل الاقتران. -->
 
-# سجل التسجيل
+# Registry
 
 [English](registry.md) | العربية
 
-إضافة تحميل و اعتماد حقن.
+تحميلُ الإضافات وحقنُ الاعتماديات.
 
 ### ctx.inject(deps, callback)
 
@@ -23,16 +23,16 @@
 inject(deps: Inject, callback: Plugin.Function<void>): Fiber & PromiseLike<Fiber>
 ```
 
-طلب خدمة متاح بعد، تشغيل عودة ضبط.
+شغّل استدعاءً راجعًا متى صارت الخدماتُ المطلوبة متاحة.
 
-هذا هو `ctx.plugin({ inject, apply: callback })` بسيط كتابة شكل صيغة: كل عند بعض عدد مطلوب خدمة حدوث تغير وقت، نظام كل سوف إزالة و إعادة تشغيل هذا عودة ضبط.
+اختصارٌ لـ `ctx.plugin({ inject, apply: callback })`: فيُفرَّغ الاستدعاءُ الراجع ويُعاد تشغيله كلما تغيّرت خدمةٌ مطلوبة.
 
-- `deps`: مطلوب خدمة، شكل صيغة يمكن هو عدد مجموعة، أيضا يمكن هو من اسم إلى إعداد خريطة.
-- `callback`: بـ `(ctx, config)` استدعاء إضافة رئيسي جسم.
+- `deps`: الخدماتُ المطلوبة، مصفوفةً أو خريطةَ اسم إلى إعداد.
+- `callback`: متنُ الإضافة يُستدعى بـ `(ctx, config)`.
 
-**إرجاع** fiber؛ مقابل ذلك تنفيذ await سوف في تحميل إتمام بعد انتهاء انتظار.
+**يعيد** الـ fiber؛ وانتظارُه يستقر متى انتهى التحميل.
 
-[شفرة المصدر](../../vendor/cordis/src/registry.ts#L176)
+[المصدر](../../vendor/cordis/src/registry.ts#L176)
 
 ### ctx.plugin(plugin, ...args)
 
@@ -48,18 +48,18 @@ inject(deps: Inject, callback: Plugin.Function<void>): Fiber & PromiseLike<Fiber
 plugin<P extends Plugin>(plugin: P, ...args: Spread<GetPluginConfig<P>>): Fiber & PromiseLike<Fiber>
 ```
 
-في حالي سياق في تحميل إضافة.
+حمّل إضافةً في السياق الحالي.
 
-- `plugin`: دالة، صنف أو `{ apply }` كائن شكل صيغة إضافة.
-- `args`: إضافة إعداد، سوف أصل حسب ذلك `Config` schema إجراء تحقق.
+- `plugin`: دالةٌ أو صنف أو إضافةُ كائن `{ apply }`.
+- `args`: إعدادُ الإضافة، متحقَّقًا منه مقابل schema الخاص بها في `Config`.
 
-**إرجاع** fiber؛ مقابل ذلك تنفيذ await سوف في تحميل إتمام بعد انتهاء انتظار (إذا حدوث إعداد خطأ أو بدء خطأ، فإن سوف يتم رفض).
+**يعيد** الـ fiber؛ وانتظارُه يستقر متى انتهى التحميل (ويُرفَض عند أخطاء الإعداد أو الإقلاع).
 
-[شفرة المصدر](../../vendor/cordis/src/registry.ts#L185)
+[المصدر](../../vendor/cordis/src/registry.ts#L185)
 
 ## Plugin
 
-دعم حمل إضافة مدخل نقطة شكل صيغة.
+صيغُ مداخل الإضافات المدعومة.
 
 ```ts cordis-catalog
 /** Supported plugin entrypoint shapes. */
@@ -120,13 +120,13 @@ namespace Plugin {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/registry.ts#L92)
+[المصدر](../../vendor/cordis/src/registry.ts#L92)
 
 ## Inject
 
-إضافة و `@Inject` تركيب زينة جهاز قبول خدمة اعتماد إعلان.
+تصريحُ اعتماديات الخدمات الذي تقبله الإضافاتُ والمزخرِف `@Inject`.
 
-عدد مجموعة شكل صيغة طلب لا حمل اعتراض قطع إعداد خدمة. كائن شكل صيغة سوف كل خدمة اسم خريطة إلى إضافة سياق في اختياري اعتراض قطع إعداد.
+وصيغةُ المصفوفة تطلب الخدماتِ بلا إعداد اعتراض. وصيغةُ الكائن تربط كل اسم خدمة بإعداد اعتراض اختياري لسياق الإضافة.
 
 ```ts cordis-catalog
 /**
@@ -151,4 +151,4 @@ namespace Inject {
 }
 ```
 
-[شفرة المصدر](../../vendor/cordis/src/registry.ts#L19)
+[المصدر](../../vendor/cordis/src/registry.ts#L19)

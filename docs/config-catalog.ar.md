@@ -1,21 +1,21 @@
-<!-- إنجليزي نص مصدر ملف من scripts/gen-config-catalog.ts توليد؛ هذا العربية ملف هو عبر مزدوج لغة إعداد مقابل صيانة مرور مراجعة مقابل جانب.
-     تحديث وقت أولا تشغيل `pnpm run gen-config-catalog` تحديث إنجليزي نص، مجددا تحديث هذا ملف و تشغيل `pnpm run verify-translation-pairing --write docs/config-catalog.md` إعادة سجل إعداد مقابل. -->
+<!-- النصُّ الإنجليزي مولَّد من scripts/gen-config-catalog.ts؛ وهذا الملف العربي يُصان يدويًا ويُقرن به عبر سجل الاقتران الثنائي اللغة.
+     عند التحديث، شغّل `pnpm run gen-config-catalog` أولًا لتحديث النص الإنجليزي، ثم حدّث هذا الملف وشغّل `pnpm run verify-translation-pairing --write docs/config-catalog.md` لإعادة تسجيل الاقتران. -->
 
-# إضافة إعداد دليل
+# دليل ضبط الإضافات
 
 [English](config-catalog.md) | العربية
 
-كل `config:` كتلة متساو يمكن من `cordis.yml` بند ضبط: إبرة مقابل كل يمكن تحميل harness حزمة، أصل مثال صف خروج ذلك `apply` دالة أو خدمة بنية صنع دالة استقبال إعداد إعلان (يشمل JSDoc) ، و مرفق فوق كل مرجع نوع——حزمة داخل نوع مباشر لصق لصق، أخرى نوع فإن توفير رابط. لصق لصق محتوى هو إضافة إعلان كامل إعداد نوع——وقت التشغيل schema متعمد ترتيب حذف حقل هو فقط توفير وقت التشغيل استخدام seam(ذلك ذاته JSDoc سوف مثل هذا شرح) ، لا يستطيع عبر `cordis.yml` ضبط. هذا هو بـ**نشر**لـ محور مشاركة اعتبار وثيقة——إضافة عمل من الذي اعتماد حسب اتصال طريقة طلب مشاركة قراءة كل[فرعي نظام صفحة](subsystems/core.ar.md) في توليد `cordis-surface` منطقة مجال، موجه إلى نموذج أداة schema طلب مشاركة قراءة[أداة دليل](tool-catalog.ar.md) ، بينما [subsystems/](subsystems/core.ar.md) فإن سجل هذه إعلان الذي مرجع نوع.
+كلُّ كتلة `config:` يستطيع مدخلُ `cordis.yml` ضبطَها: فلكل حزمة حزام قابلة للتحميل، تصريحُ الضبط حرفيًّا (ومعه JSDoc) الذي تتلقاه دالةُ `apply` لديها أو بانيُ خدمتها، وكلُّ نوع مشار إليه ملصوقٌ بجواره (للأنواع المحلية في الحزمة) أو مرتبطٌ به (لما عداها). واللصقُ هو نوعُ ضبط الإضافة المعلَن كاملًا — فالحقلُ الذي يستبعده schema وقت التشغيل عمدًا هو seam خاص بوقت التشغيل (ويقول JSDoc لديه ذلك) ولا يُضبط من `cordis.yml`. وهذا مرجعُ محور **النشر** — أما التوصيلُ الذي يعمل عليه مؤلفُ إضافة فهو منطقةُ واجهة Cordis البرمجية المولَّدة في كل [صفحة نظام](subsystems/core.ar.md)، وschemas الأدوات التي يراها النموذجُ في [دليل الأدوات](tool-catalog.ar.md)، ويوثّق [subsystems/](subsystems/core.ar.md) الأنواعَ التي تشير إليها هذه التصريحات.
 
-إنجليزي نص مصدر ملف من مصدر شفرة (`scripts/gen-config-catalog.ts`) توليد، و عبر `pnpm run verify-config-catalog`(`doc-sync` واحد جزء) تحقق جديد طازج درجة؛ هذا العربية ملف بصفة مرور مراجعة مقابل جانب عبر مزدوج لغة إعداد مقابل صيانة. إعلان كتلة استخدام `ts config-catalog` محيط شريط (doc-typecheck سوف قفز مرور هو، لأن مفرد وحيد مرجع استيراد بند إعلان لا يمكن مستقل تحرير ترجمة). إنجليزي نص توليد جهاز أيضا سوف سوف وقت التشغيل schemastery schema و لصق لصق إعلان إجراء تسليم تقاطع نواة مقابل——كل مرور schema تحقق مفتاح (يشمل تضمين طقم مفتاح) كل يجب قدرة في إعلان إعداد نوع في بحث إلى——لذلك، لصق لصق محتوى لا يمكن إخفاء تحميل جهاز قبول حقل.
+وهذا الملفُّ مولَّد من المصدر (`scripts/gen-config-catalog.ts`) ويُتحقق من طزاجته بـ`pnpm run verify-config-catalog` (وهو جزءٌ من `doc-sync`) — فلا تحرّره يدويًّا. وتستعمل كتلُ التصريح سياجَ `ts config-catalog` (ويتخطاه doc-typecheck، لأن تصريحًا وحيدًا يشير إلى استيرادات غيرُ قابل للترجمة وحده). ويقابل المولِّدُ أيضًا schema schemastery في وقت التشغيل بالتصريح الملصوق — فكلُّ مفتاح يتحقق منه الـschema، ومنه المفاتيحُ المتداخلة، يجب أن يوجد في نوع الضبط المعلَن — فلا يستطيع اللصقُ إخفاءَ حقل يقبله المُحمِّل.
 
-`Requires:` سطر صف خروج إضافة عبر `inject` حقن خدمة مفتاح: ذلك `cordis.yml` شجرة أيضا يجب تحميل هذه خدمة توفير من. نطاق حد تحديد لـ harness طبقة درجة (`packages/`) ؛ إعداد شجرة أيضا ممكن تحميل vendored cordis إضافة (تحكم منصة سجل سجل جهاز انتظار) ثابت لـ فوق تنقل مصدر شفرة (مشاركة رؤية [vendoring policy](../vendor/README.md)) ، لم استلام تسجيل في هذا دليل.
+ويعدّد سطرُ `Requires:` مفاتيحَ الخدمات التي تحقنها الإضافةُ بـ`inject`: فعلى شجرة `cordis.yml` لديها أن تحمّل مزوّدين لتلك الخدمات أيضًا. والنطاقُ هو طبقةُ الحزام (`packages/`)؛ أما إضافاتُ cordis الموردَّة التي قد تحمّلها شجرةُ ضبط (مسجّلُ وحدة التحكم وغيره) فمثبَّتةٌ من مصدر المنبع ([سياسة التوريد](../vendor/README.md)) وليست مفهرسةً هنا.
 
 <a id="deepseek-aidsh-acp"></a>
 
 ## `@deepseek-ai/dsh-acp`
 
-حاجة:`agents` · `llm` · `sessionPersistence` · `sessions`
+يشترط:`agents` · `llm` · `sessionPersistence` · `sessions`
 
 ```ts config-catalog
 /** Plugin config: the provider/model selection used for each ACP-created agent. */
@@ -31,9 +31,9 @@ export interface AcpConfig {
 }
 ```
 
-Depends on: `Stream` (`@agentclientprotocol/sdk`)
+يعتمد على: `Stream` (`@agentclientprotocol/sdk`)
 
-مصدر:[`packages/acp/acp/src/index.ts:75`](../packages/acp/acp/src/index.ts)
+المصدر: [`packages/acp/acp/src/index.ts:75`](../packages/acp/acp/src/index.ts)
 
 <a id="deepseek-aidsh-agent-default-model"></a>
 
@@ -49,13 +49,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/core/agent-default-model/src/index.ts:41`](../packages/core/agent-default-model/src/index.ts)
+المصدر: [`packages/core/agent-default-model/src/index.ts:41`](../packages/core/agent-default-model/src/index.ts)
 
 <a id="deepseek-aidsh-agent-instructions"></a>
 
 ## `@deepseek-ai/dsh-agent-instructions`
 
-حاجة:`sessionProjections`
+يشترط:`sessionProjections`
 
 ```ts config-catalog
 /** User-facing workspace instruction loader configuration. */
@@ -81,13 +81,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/context/agent-instructions/src/config.ts:18`](../packages/context/agent-instructions/src/config.ts)
+المصدر: [`packages/context/agent-instructions/src/config.ts:18`](../packages/context/agent-instructions/src/config.ts)
 
 <a id="deepseek-aidsh-agent-loop"></a>
 
 ## `@deepseek-ai/dsh-agent-loop`
 
-حاجة:`agents` · `sessions` · `llm` · `tools` · `systemPrompt` · `sessionProjections`
+يشترط:`agents` · `sessions` · `llm` · `tools` · `systemPrompt` · `sessionProjections`
 
 ```ts config-catalog
 /** Agent-loop plugin configuration. */
@@ -111,15 +111,15 @@ export interface Config {
 }
 ```
 
-Depends on: [`AgentOptions`](subsystems/core.ar.md) · [`SessionId`](subsystems/core.ar.md)
+يعتمد على: [`AgentOptions`](subsystems/core.ar.md) · [`SessionId`](subsystems/core.ar.md)
 
-مصدر:[`packages/core/agent-loop/src/index.ts:318`](../packages/core/agent-loop/src/index.ts)
+المصدر: [`packages/core/agent-loop/src/index.ts:318`](../packages/core/agent-loop/src/index.ts)
 
 <a id="deepseek-aidsh-agent-presets"></a>
 
 ## `@deepseek-ai/dsh-agent-presets`
 
-حاجة:`loader` · `sessionProjections`
+يشترط:`loader` · `sessionProjections`
 
 ```ts config-catalog
 /** Plugin config: which preset is the default, and where presets live. */
@@ -159,13 +159,13 @@ export interface PresetRoot {
 export type PresetTrust = 'system' | 'user'
 ```
 
-مصدر:[`packages/preset/agent-presets/src/preset.ts:52`](../packages/preset/agent-presets/src/preset.ts)
+المصدر: [`packages/preset/agent-presets/src/preset.ts:52`](../packages/preset/agent-presets/src/preset.ts)
 
 <a id="deepseek-aidsh-agent-tool-presentation"></a>
 
 ## `@deepseek-ai/dsh-agent-tool-presentation`
 
-حاجة:`tools`
+يشترط:`tools`
 
 ```ts config-catalog
 /** Plugin config. */
@@ -181,15 +181,15 @@ export interface Config {
 }
 ```
 
-Depends on: [`ToolPresentationMode`](subsystems/tools.ar.md)
+يعتمد على: [`ToolPresentationMode`](subsystems/tools.ar.md)
 
-مصدر:[`packages/core/agent-tool-presentation/src/index.ts:38`](../packages/core/agent-tool-presentation/src/index.ts)
+المصدر: [`packages/core/agent-tool-presentation/src/index.ts:38`](../packages/core/agent-tool-presentation/src/index.ts)
 
 <a id="deepseek-aidsh-api-gateway"></a>
 
 ## `@deepseek-ai/dsh-api-gateway`
 
-حاجة:`typert`
+يشترط:`typert`
 
 ```ts config-catalog
 /** Gateway transport configuration. */
@@ -199,13 +199,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/api/gateway/src/index.ts:119`](../packages/api/gateway/src/index.ts)
+المصدر: [`packages/api/gateway/src/index.ts:119`](../packages/api/gateway/src/index.ts)
 
 <a id="deepseek-aidsh-api-session-controller"></a>
 
 ## `@deepseek-ai/dsh-api-session-controller`
 
-حاجة:`agentDefaultModel` · `agents` · `attachments` · `fileUploads` · `llm` · `sessions` · `sessionProjections` · `sessionQuery` · `typert` · `workspaceRegistry`
+يشترط:`agentDefaultModel` · `agents` · `attachments` · `fileUploads` · `llm` · `sessions` · `sessionProjections` · `sessionQuery` · `typert` · `workspaceRegistry`
 
 ```ts config-catalog
 /** Session Controller deployment policy. */
@@ -215,7 +215,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/api/session-controller/src/index.ts:71`](../packages/api/session-controller/src/index.ts)
+المصدر: [`packages/api/session-controller/src/index.ts:71`](../packages/api/session-controller/src/index.ts)
 
 <a id="deepseek-aidsh-api-settings-controller"></a>
 
@@ -229,13 +229,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/api/settings-controller/src/index.ts:36`](../packages/api/settings-controller/src/index.ts)
+المصدر: [`packages/api/settings-controller/src/index.ts:36`](../packages/api/settings-controller/src/index.ts)
 
 <a id="deepseek-aidsh-api-terminal-controller"></a>
 
 ## `@deepseek-ai/dsh-api-terminal-controller`
 
-Requires: `subprocess` · `sandboxPolicy` · `typert`
+يشترط: `subprocess` · `sandboxPolicy` · `typert`
 
 ```ts config-catalog
 /** Deployment limits and an optional shell profile. */
@@ -274,13 +274,13 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/api/terminal-controller/src/index.ts:26`](../packages/api/terminal-controller/src/index.ts)
+المصدر:  [`packages/api/terminal-controller/src/index.ts:26`](../packages/api/terminal-controller/src/index.ts)
 
 <a id="deepseek-aidsh-api-workspace-files"></a>
 
 ## `@deepseek-ai/dsh-api-workspace-files`
 
-Requires: `fs` · `sandboxPolicy` · `sessions` · `typert`
+يشترط: `fs` · `sandboxPolicy` · `sessions` · `typert`
 
 ```ts config-catalog
 /** Deployment caps on one page or one listing. */
@@ -302,7 +302,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/api/workspace-files/src/index.ts:69`](../packages/api/workspace-files/src/index.ts)
+المصدر: [`packages/api/workspace-files/src/index.ts:69`](../packages/api/workspace-files/src/index.ts)
 
 <a id="deepseek-aidsh-attachment-local"></a>
 
@@ -337,13 +337,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/attachment/attachment-local/src/index.ts:61`](../packages/attachment/attachment-local/src/index.ts)
+المصدر: [`packages/attachment/attachment-local/src/index.ts:61`](../packages/attachment/attachment-local/src/index.ts)
 
 <a id="deepseek-aidsh-bash-local"></a>
 
 ## `@deepseek-ai/dsh-bash-local`
 
-حاجة:`subprocess`
+يشترط:`subprocess`
 
 ```ts config-catalog
 /** Plugin config (all optional — `static Config` supplies the defaults). */
@@ -363,13 +363,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/bash-local/src/index.ts:41`](../packages/shell/bash-local/src/index.ts)
+المصدر: [`packages/shell/bash-local/src/index.ts:41`](../packages/shell/bash-local/src/index.ts)
 
 <a id="deepseek-aidsh-bash-sandbox"></a>
 
 ## `@deepseek-ai/dsh-bash-sandbox`
 
-حاجة:`subprocess` · `sandbox` · `sandboxPolicy`
+يشترط:`subprocess` · `sandbox` · `sandboxPolicy`
 
 ```ts config-catalog
 /**
@@ -382,15 +382,15 @@ export interface Config {
 export type Config = LocalConfig
 ```
 
-Depends on: [`LocalConfig`](#deepseek-aidsh-bash-local)
+يعتمد على: [`LocalConfig`](#deepseek-aidsh-bash-local)
 
-مصدر:[`packages/shell/bash-sandbox/src/index.ts:36`](../packages/shell/bash-sandbox/src/index.ts)
+المصدر: [`packages/shell/bash-sandbox/src/index.ts:36`](../packages/shell/bash-sandbox/src/index.ts)
 
 <a id="deepseek-aidsh-client-connection"></a>
 
 ## `@deepseek-ai/dsh-client-connection`
 
-حاجة:`credentials`
+يشترط:`credentials`
 
 ```ts config-catalog
 /** Browser authentication, request limits, and connection recovery configuration. */
@@ -430,13 +430,13 @@ export interface ConnectionRecoveryConfig {
 }
 ```
 
-مصدر: [`packages/client/connection/src/index.ts:87`](../packages/client/connection/src/index.ts)
+المصدر:  [`packages/client/connection/src/index.ts:87`](../packages/client/connection/src/index.ts)
 
 <a id="deepseek-aidsh-client-hmr"></a>
 
 ## `@deepseek-ai/dsh-client-hmr`
 
-حاجة:`clientModules` · `webServer`
+يشترط:`clientModules` · `webServer`
 
 ```ts config-catalog
 /** Plugin config, validated by the same-named schemastery schema. */
@@ -446,7 +446,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/client/hmr/src/index.ts:30`](../packages/client/hmr/src/index.ts)
+المصدر: [`packages/client/hmr/src/index.ts:30`](../packages/client/hmr/src/index.ts)
 
 <a id="deepseek-aidsh-client-ui-sidebar-documentpreview"></a>
 
@@ -469,13 +469,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/client/ui-sidebar-documentpreview/src/config.ts:5`](../packages/client/ui-sidebar-documentpreview/src/config.ts)
+المصدر: [`packages/client/ui-sidebar-documentpreview/src/config.ts:5`](../packages/client/ui-sidebar-documentpreview/src/config.ts)
 
 <a id="deepseek-aidsh-compaction-basic"></a>
 
 ## `@deepseek-ai/dsh-compaction-basic`
 
-حاجة:`llm` · `tokenMeter` · `sessions`
+يشترط:`llm` · `tokenMeter` · `sessions`
 
 ```ts config-catalog
 /** Basic compaction configuration with an optional exact-target policy table. */
@@ -515,13 +515,13 @@ export interface ModelCompactPolicyConfig extends CompactionPolicyConfig {
 }
 ```
 
-مصدر:[`packages/compaction/compaction-basic/src/types.ts:38`](../packages/compaction/compaction-basic/src/types.ts)
+المصدر: [`packages/compaction/compaction-basic/src/types.ts:38`](../packages/compaction/compaction-basic/src/types.ts)
 
 <a id="deepseek-aidsh-compaction-tool-result-pruner"></a>
 
 ## `@deepseek-ai/dsh-compaction-tool-result-pruner`
 
-حاجة:`tokenMeter`
+يشترط:`tokenMeter`
 
 ```ts config-catalog
 /** Character-budget policy for deterministic tool-result pruning. */
@@ -535,13 +535,13 @@ export interface ToolResultPruneConfig {
 }
 ```
 
-مصدر:[`packages/compaction/compaction-tool-result-pruner/src/types.ts:5`](../packages/compaction/compaction-tool-result-pruner/src/types.ts)
+المصدر: [`packages/compaction/compaction-tool-result-pruner/src/types.ts:5`](../packages/compaction/compaction-tool-result-pruner/src/types.ts)
 
 <a id="deepseek-aidsh-cordis-host-runner"></a>
 
 ## `@deepseek-ai/dsh-cordis-host-runner`
 
-حاجة:`tools`
+يشترط:`tools`
 
 ```ts config-catalog
 /** Runner configuration. */
@@ -551,7 +551,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/extensions/cordis-host-runner/src/index.ts:88`](../packages/extensions/cordis-host-runner/src/index.ts)
+المصدر: [`packages/extensions/cordis-host-runner/src/index.ts:88`](../packages/extensions/cordis-host-runner/src/index.ts)
 
 <a id="deepseek-aidsh-credentials-local"></a>
 
@@ -571,13 +571,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/credentials/credentials-local/src/index.ts:64`](../packages/credentials/credentials-local/src/index.ts)
+المصدر: [`packages/credentials/credentials-local/src/index.ts:64`](../packages/credentials/credentials-local/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-agent-team"></a>
 
 ## `@deepseek-ai/dsh-experimental-agent-team`
 
-حاجة:`agents` · `sessions` · `sessionPersistence` · `sessionProjections` · `subagents`
+يشترط:`agents` · `sessions` · `sessionPersistence` · `sessionProjections` · `subagents`
 
 ```ts config-catalog
 /** Team-service deployment limits. */
@@ -595,43 +595,43 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/experimental/agent-team/src/types.ts:130`](../packages/experimental/agent-team/src/types.ts)
+المصدر: [`packages/experimental/agent-team/src/types.ts:130`](../packages/experimental/agent-team/src/types.ts)
 
 <a id="deepseek-aidsh-experimental-browser-use-chrome-devtools-mcp"></a>
 
 ## `@deepseek-ai/dsh-experimental-browser-use-chrome-devtools-mcp`
 
-حاجة:`browserUse` · `agents` · `tools` · `systemPrompt`
+يشترط:`browserUse` · `agents` · `tools` · `systemPrompt`
 
 ```ts config-catalog
 /** Fixed Chromium launch or existing-browser attachment settings. */
 export type Config = BrowserMcpConfig
 ```
 
-Depends on: `BrowserMcpConfig` (`@deepseek-ai/dsh-experimental-browser-use-runtime/mcp`)
+يعتمد على: `BrowserMcpConfig` (`@deepseek-ai/dsh-experimental-browser-use-runtime/mcp`)
 
-مصدر:[`packages/experimental/browser-use-chrome-devtools-mcp/src/index.ts:14`](../packages/experimental/browser-use-chrome-devtools-mcp/src/index.ts)
+المصدر: [`packages/experimental/browser-use-chrome-devtools-mcp/src/index.ts:14`](../packages/experimental/browser-use-chrome-devtools-mcp/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-browser-use-playwright-mcp"></a>
 
 ## `@deepseek-ai/dsh-experimental-browser-use-playwright-mcp`
 
-حاجة:`browserUse` · `agents` · `tools` · `systemPrompt`
+يشترط:`browserUse` · `agents` · `tools` · `systemPrompt`
 
 ```ts config-catalog
 /** Fixed Chromium launch or existing-browser attachment settings. */
 export type Config = BrowserMcpConfig
 ```
 
-Depends on: `BrowserMcpConfig` (`@deepseek-ai/dsh-experimental-browser-use-runtime/mcp`)
+يعتمد على: `BrowserMcpConfig` (`@deepseek-ai/dsh-experimental-browser-use-runtime/mcp`)
 
-مصدر:[`packages/experimental/browser-use-playwright-mcp/src/index.ts:15`](../packages/experimental/browser-use-playwright-mcp/src/index.ts)
+المصدر: [`packages/experimental/browser-use-playwright-mcp/src/index.ts:15`](../packages/experimental/browser-use-playwright-mcp/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-browser-use-stagehand-native"></a>
 
 ## `@deepseek-ai/dsh-experimental-browser-use-stagehand-native`
 
-حاجة:`browserUse` · `agents` · `tools` · `systemPrompt`
+يشترط:`browserUse` · `agents` · `tools` · `systemPrompt`
 
 ```ts config-catalog
 /** Profile-owned browser connection and independent Stagehand model credentials. */
@@ -665,15 +665,15 @@ export interface StagehandModelConfig {
 }
 ```
 
-Depends on: `ModelConfig` (`@browserbasehq/stagehand`)
+يعتمد على: `ModelConfig` (`@browserbasehq/stagehand`)
 
-مصدر:[`packages/experimental/browser-use-stagehand-native/src/index.ts:28`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
+المصدر: [`packages/experimental/browser-use-stagehand-native/src/index.ts:28`](../packages/experimental/browser-use-stagehand-native/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-computer-use-cua-driver-mcp"></a>
 
 ## `@deepseek-ai/dsh-experimental-computer-use-cua-driver-mcp`
 
-حاجة:`computerUse` · `tools`
+يشترط:`computerUse` · `tools`
 
 ```ts config-catalog
 /** Installed executable and MCP connection overrides. */
@@ -689,15 +689,15 @@ export interface Config {
 }
 ```
 
-Depends on: [`McpClient`](../packages/mcp/mcp-client/src/index.ts)
+يعتمد على: [`McpClient`](../packages/mcp/mcp-client/src/index.ts)
 
-مصدر:[`packages/experimental/computer-use-cua-driver-mcp/src/index.ts:20`](../packages/experimental/computer-use-cua-driver-mcp/src/index.ts)
+المصدر: [`packages/experimental/computer-use-cua-driver-mcp/src/index.ts:20`](../packages/experimental/computer-use-cua-driver-mcp/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-inspector"></a>
 
 ## `@deepseek-ai/dsh-experimental-inspector`
 
-حاجة:`webServer`
+يشترط:`webServer`
 
 ```ts config-catalog
 /** Host plugin configuration. Fetch capture is enabled by default. */
@@ -759,7 +759,7 @@ export interface InspectorOptions {
 }
 ```
 
-مصدر:[`packages/experimental/inspector/src/index.ts:66`](../packages/experimental/inspector/src/index.ts)
+المصدر: [`packages/experimental/inspector/src/index.ts:66`](../packages/experimental/inspector/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-ptc-runtime-python"></a>
 
@@ -825,13 +825,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/experimental/ptc-runtime-python/src/index.ts:42`](../packages/experimental/ptc-runtime-python/src/index.ts)
+المصدر: [`packages/experimental/ptc-runtime-python/src/index.ts:42`](../packages/experimental/ptc-runtime-python/src/index.ts)
 
 <a id="deepseek-aidsh-experimental-tool-agent-team"></a>
 
 ## `@deepseek-ai/dsh-experimental-tool-agent-team`
 
-حاجة:`agents` · `agentTeams` · `tools` · `systemPrompt`
+يشترط:`agents` · `agentTeams` · `tools` · `systemPrompt`
 
 ```ts config-catalog
 /** Tool routing configuration. */
@@ -843,13 +843,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/experimental/tool-agent-team/src/index.ts:17`](../packages/experimental/tool-agent-team/src/index.ts)
+المصدر: [`packages/experimental/tool-agent-team/src/index.ts:17`](../packages/experimental/tool-agent-team/src/index.ts)
 
 <a id="deepseek-aidsh-file-reference-local"></a>
 
 ## `@deepseek-ai/dsh-file-reference-local`
 
-حاجة:`agents` · `sessionProjections`
+يشترط:`agents` · `sessionProjections`
 
 ```ts config-catalog
 /** Local file-reference discovery configuration. */
@@ -863,7 +863,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/context/file-reference-local/src/index.ts:34`](../packages/context/file-reference-local/src/index.ts)
+المصدر: [`packages/context/file-reference-local/src/index.ts:34`](../packages/context/file-reference-local/src/index.ts)
 
 <a id="deepseek-aidsh-fs-local"></a>
 
@@ -882,13 +882,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/fs/fs-local/src/index.ts:43`](../packages/fs/fs-local/src/index.ts)
+المصدر: [`packages/fs/fs-local/src/index.ts:43`](../packages/fs/fs-local/src/index.ts)
 
 <a id="deepseek-aidsh-fs-sandbox"></a>
 
 ## `@deepseek-ai/dsh-fs-sandbox`
 
-حاجة:`sandboxPolicy`
+يشترط:`sandboxPolicy`
 
 ```ts config-catalog
 /**
@@ -900,15 +900,15 @@ export interface Config {
 export type Config = LocalConfig
 ```
 
-Depends on: [`LocalConfig`](#deepseek-aidsh-fs-local)
+يعتمد على: [`LocalConfig`](#deepseek-aidsh-fs-local)
 
-مصدر:[`packages/fs/fs-sandbox/src/index.ts:45`](../packages/fs/fs-sandbox/src/index.ts)
+المصدر: [`packages/fs/fs-sandbox/src/index.ts:45`](../packages/fs/fs-sandbox/src/index.ts)
 
 <a id="deepseek-aidsh-goal"></a>
 
 ## `@deepseek-ai/dsh-goal`
 
-حاجة:`agents` · `sessionProjections`
+يشترط:`agents` · `sessionProjections`
 
 ```ts config-catalog
 /** Deployment defaults for goal creation. */
@@ -918,13 +918,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/goal/goal/src/index.ts:172`](../packages/goal/goal/src/index.ts)
+المصدر: [`packages/goal/goal/src/index.ts:172`](../packages/goal/goal/src/index.ts)
 
 <a id="deepseek-aidsh-headless"></a>
 
 ## `@deepseek-ai/dsh-headless`
 
-حاجة:`agentDefaultModel` · `agents` · `sessions`
+يشترط:`agentDefaultModel` · `agents` · `sessions`
 
 ```ts config-catalog
 /** Plugin config: the task and run options resolved from this app's injected provider service. */
@@ -938,7 +938,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/bundle/headless/src/index.ts:42`](../packages/bundle/headless/src/index.ts)
+المصدر: [`packages/bundle/headless/src/index.ts:42`](../packages/bundle/headless/src/index.ts)
 
 <a id="deepseek-aidsh-hmr"></a>
 
@@ -958,15 +958,15 @@ export interface HmrConfig extends ChokidarOptions {
 }
 ```
 
-Depends on: `ChokidarOptions` (`chokidar`)
+يعتمد على: `ChokidarOptions` (`chokidar`)
 
-مصدر: [`packages/boot/hmr/src/index.ts:51`](../packages/boot/hmr/src/index.ts)
+المصدر:  [`packages/boot/hmr/src/index.ts:51`](../packages/boot/hmr/src/index.ts)
 
 <a id="deepseek-aidsh-hooks-claude-code"></a>
 
 ## `@deepseek-ai/dsh-hooks-claude-code`
 
-حاجة:`shell` · `sessionProjections`
+يشترط:`shell` · `sessionProjections`
 
 ```ts config-catalog
 /** Plugin config: where the CC hook config lives + substitution roots. */
@@ -998,13 +998,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/hooks/hooks-claude-code/src/index.ts:44`](../packages/hooks/hooks-claude-code/src/index.ts)
+المصدر: [`packages/hooks/hooks-claude-code/src/index.ts:44`](../packages/hooks/hooks-claude-code/src/index.ts)
 
 <a id="deepseek-aidsh-hooks-codex"></a>
 
 ## `@deepseek-ai/dsh-hooks-codex`
 
-حاجة:`shell` · `sessionProjections`
+يشترط:`shell` · `sessionProjections`
 
 ```ts config-catalog
 /** Plugin config: where the Codex hooks.json lives + the model name for payloads. */
@@ -1025,7 +1025,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/hooks/hooks-codex/src/index.ts:43`](../packages/hooks/hooks-codex/src/index.ts)
+المصدر: [`packages/hooks/hooks-codex/src/index.ts:43`](../packages/hooks/hooks-codex/src/index.ts)
 
 <a id="deepseek-aidsh-host-directory-picker-browse"></a>
 
@@ -1039,13 +1039,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/host/directory-picker-browse/src/index.ts:181`](../packages/host/directory-picker-browse/src/index.ts)
+المصدر: [`packages/host/directory-picker-browse/src/index.ts:181`](../packages/host/directory-picker-browse/src/index.ts)
 
 <a id="deepseek-aidsh-host-frontend-static"></a>
 
 ## `@deepseek-ai/dsh-host-frontend-static`
 
-حاجة:`webServer` · `connection`
+يشترط:`webServer` · `connection`
 
 ```ts config-catalog
 /** Plugin config: the dist anchor. */
@@ -1055,13 +1055,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/host/frontend-static/src/index.ts:30`](../packages/host/frontend-static/src/index.ts)
+المصدر: [`packages/host/frontend-static/src/index.ts:30`](../packages/host/frontend-static/src/index.ts)
 
 <a id="deepseek-aidsh-host-open-in-app"></a>
 
 ## `@deepseek-ai/dsh-host-open-in-app`
 
-حاجة:`webServer` · `connection` · `subprocess`
+يشترط:`webServer` · `connection` · `subprocess`
 
 ```ts config-catalog
 /** Open-in-app host configuration. */
@@ -1086,7 +1086,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/host/open-in-app/src/index.ts:50`](../packages/host/open-in-app/src/index.ts)
+المصدر: [`packages/host/open-in-app/src/index.ts:50`](../packages/host/open-in-app/src/index.ts)
 
 <a id="deepseek-aidsh-host-webserver"></a>
 
@@ -1108,7 +1108,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/host/webserver/src/index.ts:59`](../packages/host/webserver/src/index.ts)
+المصدر: [`packages/host/webserver/src/index.ts:59`](../packages/host/webserver/src/index.ts)
 
 <a id="deepseek-aidsh-invariants"></a>
 
@@ -1126,7 +1126,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/runtime-diagnostics/invariants/src/index.ts:15`](../packages/runtime-diagnostics/invariants/src/index.ts)
+المصدر: [`packages/runtime-diagnostics/invariants/src/index.ts:15`](../packages/runtime-diagnostics/invariants/src/index.ts)
 
 <a id="deepseek-aidsh-jobs-local"></a>
 
@@ -1143,13 +1143,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/jobs/jobs-local/src/index.ts:31`](../packages/jobs/jobs-local/src/index.ts)
+المصدر: [`packages/jobs/jobs-local/src/index.ts:31`](../packages/jobs/jobs-local/src/index.ts)
 
 <a id="deepseek-aidsh-llm-deepseek"></a>
 
 ## `@deepseek-ai/dsh-llm-deepseek`
 
-حاجة: `llm`
+يشترط: `llm`
 
 ```ts config-catalog
 /**
@@ -1237,15 +1237,15 @@ export interface DeepSeekCatalogModel {
 }
 ```
 
-Depends on: [`ModelModality`](../packages/llm/llm/src/index.ts) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · [`SystemPromptUpdate`](../packages/llm/llm/src/index.ts)
+يعتمد على: [`ModelModality`](../packages/llm/llm/src/index.ts) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · [`SystemPromptUpdate`](../packages/llm/llm/src/index.ts)
 
-مصدر:[`packages/llm/llm-deepseek/src/config.ts:25`](../packages/llm/llm-deepseek/src/config.ts)
+المصدر: [`packages/llm/llm-deepseek/src/config.ts:25`](../packages/llm/llm-deepseek/src/config.ts)
 
 <a id="deepseek-aidsh-llm-pi-ai"></a>
 
 ## `@deepseek-ai/dsh-llm-pi-ai`
 
-حاجة:`llm`
+يشترط:`llm`
 
 ```ts config-catalog
 /** Plugin configuration: the provider routes this instance owns. */
@@ -1512,15 +1512,15 @@ export type PiAiThinkingFormat = NonNullable<OpenAICompletionsCompat['thinkingFo
 export type PiAiThinkingTokenBudgetField = NonNullable<OpenAICompletionsCompat['thinkingTokenBudgetField']>
 ```
 
-Depends on: `Api` (`@earendil-works/pi-ai`) · `CacheRetention` (`@earendil-works/pi-ai`) · `Model` (`@earendil-works/pi-ai`) · `ModelThinkingLevel` (`@earendil-works/pi-ai`) · `OpenAICompletionsCompat` (`@earendil-works/pi-ai`) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · `ThinkingBudgets` (`@earendil-works/pi-ai`) · `Transport` (`@earendil-works/pi-ai`)
+يعتمد على: `Api` (`@earendil-works/pi-ai`) · `CacheRetention` (`@earendil-works/pi-ai`) · `Model` (`@earendil-works/pi-ai`) · `ModelThinkingLevel` (`@earendil-works/pi-ai`) · `OpenAICompletionsCompat` (`@earendil-works/pi-ai`) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · `ThinkingBudgets` (`@earendil-works/pi-ai`) · `Transport` (`@earendil-works/pi-ai`)
 
-مصدر:[`packages/llm/llm-pi-ai/src/config.ts:221`](../packages/llm/llm-pi-ai/src/config.ts)
+المصدر: [`packages/llm/llm-pi-ai/src/config.ts:221`](../packages/llm/llm-pi-ai/src/config.ts)
 
 <a id="deepseek-aidsh-llm-replay"></a>
 
 ## `@deepseek-ai/dsh-llm-replay`
 
-حاجة:`llm`
+يشترط:`llm`
 
 ```ts config-catalog
 /** Plugin config: the {@link ReplayConfig} inputs, each defaulting to its `DSH_SNAPSHOT_*` env var in `apply`. */
@@ -1591,28 +1591,28 @@ export interface ReplayModelConfig {
 }
 ```
 
-Depends on: [`ModelModality`](../packages/llm/llm/src/index.ts) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · [`SystemPromptUpdate`](../packages/llm/llm/src/index.ts)
+يعتمد على: [`ModelModality`](../packages/llm/llm/src/index.ts) · [`RetryPolicyConfig`](../packages/llm/llm/src/index.ts) · [`SystemPromptUpdate`](../packages/llm/llm/src/index.ts)
 
-مصدر:[`packages/test-support/llm-replay/src/index.ts:1122`](../packages/test-support/llm-replay/src/index.ts)
+المصدر: [`packages/test-support/llm-replay/src/index.ts:1122`](../packages/test-support/llm-replay/src/index.ts)
 
 <a id="deepseek-aidsh-llm-retry"></a>
 
 ## `@deepseek-ai/dsh-llm-retry`
 
-حاجة:`agents` · `sessionProjections`
+يشترط:`agents` · `sessionProjections`
 
 ```ts config-catalog
 /** This policy executor has no config; providers own `retryPolicy`. */
 export type Config = Readonly<Record<string, never>>
 ```
 
-مصدر:[`packages/llm/llm-retry/src/index.ts:25`](../packages/llm/llm-retry/src/index.ts)
+المصدر: [`packages/llm/llm-retry/src/index.ts:25`](../packages/llm/llm-retry/src/index.ts)
 
 <a id="deepseek-aidsh-lsp-stdio"></a>
 
 ## `@deepseek-ai/dsh-lsp-stdio`
 
-حاجة:`fs` · `lsp` · `subprocess`
+يشترط:`fs` · `lsp` · `subprocess`
 
 ```ts config-catalog
 /** Plugin configuration: provider id → local language-server configuration. */
@@ -1648,13 +1648,13 @@ export interface LspLocalServerConfig {
 }
 ```
 
-مصدر:[`packages/lsp/lsp-stdio/src/index.ts:82`](../packages/lsp/lsp-stdio/src/index.ts)
+المصدر: [`packages/lsp/lsp-stdio/src/index.ts:82`](../packages/lsp/lsp-stdio/src/index.ts)
 
 <a id="deepseek-aidsh-mcp-client"></a>
 
 ## `@deepseek-ai/dsh-mcp-client`
 
-حاجة:`tools`
+يشترط:`tools`
 
 ```ts config-catalog
 /** Configuration for one stdio or Streamable HTTP MCP server. */
@@ -1725,13 +1725,13 @@ export interface ReconnectConfig {
 }
 ```
 
-مصدر:[`packages/mcp/mcp-client/src/index.ts:104`](../packages/mcp/mcp-client/src/index.ts)
+المصدر: [`packages/mcp/mcp-client/src/index.ts:104`](../packages/mcp/mcp-client/src/index.ts)
 
 <a id="deepseek-aidsh-message-feedback"></a>
 
 ## `@deepseek-ai/dsh-message-feedback`
 
-حاجة:`sessionPersistence` · `sessions`
+يشترط:`sessionPersistence` · `sessions`
 
 ```ts config-catalog
 /** Required deployment policy for optional notes. */
@@ -1741,7 +1741,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/feedback/message-feedback/src/index.ts:40`](../packages/feedback/message-feedback/src/index.ts)
+المصدر: [`packages/feedback/message-feedback/src/index.ts:40`](../packages/feedback/message-feedback/src/index.ts)
 
 <a id="deepseek-aidsh-office-to-pdf"></a>
 
@@ -1791,13 +1791,13 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/document/office-to-pdf/src/index.ts:31`](../packages/document/office-to-pdf/src/index.ts)
+المصدر:  [`packages/document/office-to-pdf/src/index.ts:31`](../packages/document/office-to-pdf/src/index.ts)
 
 <a id="deepseek-aidsh-permission-presets"></a>
 
 ## `@deepseek-ai/dsh-permission-presets`
 
-حاجة:`shell` · `approval` · `sessions` · `sessionProjections`
+يشترط:`shell` · `approval` · `sessions` · `sessionProjections`
 
 ```ts config-catalog
 /** The {@link PermissionPresetService} config: preset table and composition default. */
@@ -1829,15 +1829,15 @@ export interface PresetSpec {
 }
 ```
 
-Depends on: [`ApprovalPolicy`](subsystems/approval.ar.md) · [`SandboxMode`](subsystems/sandbox.ar.md)
+يعتمد على: [`ApprovalPolicy`](subsystems/approval.ar.md) · [`SandboxMode`](subsystems/sandbox.ar.md)
 
-مصدر:[`packages/interaction/permission-presets/src/index.ts:156`](../packages/interaction/permission-presets/src/index.ts)
+المصدر: [`packages/interaction/permission-presets/src/index.ts:156`](../packages/interaction/permission-presets/src/index.ts)
 
 <a id="deepseek-aidsh-persona"></a>
 
 ## `@deepseek-ai/dsh-persona`
 
-حاجة:`systemPrompt`
+يشترط:`systemPrompt`
 
 ```ts config-catalog
 /** Plugin config: the persona text this composition contributes. */
@@ -1860,13 +1860,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/preset/persona/src/index.ts:30`](../packages/preset/persona/src/index.ts)
+المصدر: [`packages/preset/persona/src/index.ts:30`](../packages/preset/persona/src/index.ts)
 
 <a id="deepseek-aidsh-plan-mode"></a>
 
 ## `@deepseek-ai/dsh-plan-mode`
 
-حاجة:`tools` · `systemPrompt` · `sessionProjections`
+يشترط:`tools` · `systemPrompt` · `sessionProjections`
 
 ```ts config-catalog
 /** Deployment-owned plan guidance. */
@@ -1876,7 +1876,7 @@ export interface PlanModeConfig {
 }
 ```
 
-مصدر:[`packages/plan/plan-mode/src/index.ts:64`](../packages/plan/plan-mode/src/index.ts)
+المصدر: [`packages/plan/plan-mode/src/index.ts:64`](../packages/plan/plan-mode/src/index.ts)
 
 <a id="deepseek-aidsh-plugin-manager"></a>
 
@@ -1898,13 +1898,13 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/boot/plugin-manager/src/index.ts:33`](../packages/boot/plugin-manager/src/index.ts)
+المصدر:  [`packages/boot/plugin-manager/src/index.ts:33`](../packages/boot/plugin-manager/src/index.ts)
 
 <a id="deepseek-aidsh-plugin-package-inventory-deepseek"></a>
 
 ## `@deepseek-ai/dsh-plugin-package-inventory-deepseek`
 
-حاجة:`agents` · `deepseekLlmApiExtensions` · `loader`
+يشترط:`agents` · `deepseekLlmApiExtensions` · `loader`
 
 ```ts config-catalog
 /** Plugin-package request contribution configuration. */
@@ -1914,13 +1914,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/llm/plugin-package-inventory-deepseek/src/index.ts:32`](../packages/llm/plugin-package-inventory-deepseek/src/index.ts)
+المصدر: [`packages/llm/plugin-package-inventory-deepseek/src/index.ts:32`](../packages/llm/plugin-package-inventory-deepseek/src/index.ts)
 
 <a id="deepseek-aidsh-ptc-runtime-node"></a>
 
 ## `@deepseek-ai/dsh-ptc-runtime-node`
 
-حاجة: `fs` · `subprocess` · `sandbox` · `sandboxPolicy`
+يشترط: `fs` · `subprocess` · `sandbox` · `sandboxPolicy`
 
 ```ts config-catalog
 /** Deployment-varying runtime bounds and launch choices. */
@@ -1950,13 +1950,13 @@ export interface LaunchConfig {
 }
 ```
 
-مصدر: [`packages/ptc-runtime/ptc-runtime-node/src/index.ts:26`](../packages/ptc-runtime/ptc-runtime-node/src/index.ts)
+المصدر:  [`packages/ptc-runtime/ptc-runtime-node/src/index.ts:26`](../packages/ptc-runtime/ptc-runtime-node/src/index.ts)
 
 <a id="deepseek-aidsh-pwsh-local"></a>
 
 ## `@deepseek-ai/dsh-pwsh-local`
 
-حاجة:`subprocess`
+يشترط:`subprocess`
 
 ```ts config-catalog
 /** Plugin config (all optional — `static Config` supplies the defaults). */
@@ -1983,13 +1983,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/pwsh-local/src/index.ts:58`](../packages/shell/pwsh-local/src/index.ts)
+المصدر: [`packages/shell/pwsh-local/src/index.ts:58`](../packages/shell/pwsh-local/src/index.ts)
 
 <a id="deepseek-aidsh-pwsh-sandbox"></a>
 
 ## `@deepseek-ai/dsh-pwsh-sandbox`
 
-حاجة:`subprocess` · `sandbox` · `sandboxPolicy`
+يشترط:`subprocess` · `sandbox` · `sandboxPolicy`
 
 ```ts config-catalog
 /**
@@ -2003,9 +2003,9 @@ export interface Config {
 export type Config = LocalConfig
 ```
 
-Depends on: [`LocalConfig`](#deepseek-aidsh-pwsh-local)
+يعتمد على: [`LocalConfig`](#deepseek-aidsh-pwsh-local)
 
-مصدر:[`packages/shell/pwsh-sandbox/src/index.ts:40`](../packages/shell/pwsh-sandbox/src/index.ts)
+المصدر: [`packages/shell/pwsh-sandbox/src/index.ts:40`](../packages/shell/pwsh-sandbox/src/index.ts)
 
 <a id="deepseek-aidsh-repeat-tool-reminder"></a>
 
@@ -2039,7 +2039,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/guard/repeat-tool-reminder/src/index.ts:28`](../packages/guard/repeat-tool-reminder/src/index.ts)
+المصدر: [`packages/guard/repeat-tool-reminder/src/index.ts:28`](../packages/guard/repeat-tool-reminder/src/index.ts)
 
 <a id="deepseek-aidsh-sandbox-local"></a>
 
@@ -2071,13 +2071,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/sandbox/sandbox-local/src/index.ts:44`](../packages/sandbox/sandbox-local/src/index.ts)
+المصدر: [`packages/sandbox/sandbox-local/src/index.ts:44`](../packages/sandbox/sandbox-local/src/index.ts)
 
 <a id="deepseek-aidsh-sandbox-policy"></a>
 
 ## `@deepseek-ai/dsh-sandbox-policy`
 
-حاجة:`sessionProjections`
+يشترط:`sessionProjections`
 
 ```ts config-catalog
 /**
@@ -2098,15 +2098,15 @@ export interface Config {
 }
 ```
 
-Depends on: [`SandboxMode`](subsystems/sandbox.ar.md)
+يعتمد على: [`SandboxMode`](subsystems/sandbox.ar.md)
 
-مصدر:[`packages/sandbox/sandbox-policy/src/index.ts:71`](../packages/sandbox/sandbox-policy/src/index.ts)
+المصدر: [`packages/sandbox/sandbox-policy/src/index.ts:71`](../packages/sandbox/sandbox-policy/src/index.ts)
 
 <a id="deepseek-aidsh-sdk-app"></a>
 
 ## `@deepseek-ai/dsh-sdk-app`
 
-حاجة:`cmdlineArgs`
+يشترط:`cmdlineArgs`
 
 ```ts config-catalog
 /** SDK stdio startup configuration. */
@@ -2116,13 +2116,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/bundle/sdk-app/src/index.ts:23`](../packages/bundle/sdk-app/src/index.ts)
+المصدر: [`packages/bundle/sdk-app/src/index.ts:23`](../packages/bundle/sdk-app/src/index.ts)
 
 <a id="deepseek-aidsh-sdk-jsonrpc-server"></a>
 
 ## `@deepseek-ai/dsh-sdk-jsonrpc-server`
 
-حاجة:`agents`
+يشترط:`agents`
 
 ```ts config-catalog
 /** JSON-RPC deployment config plus runtime-only test hooks. */
@@ -2138,15 +2138,15 @@ export interface JsonRpcConfig {
 }
 ```
 
-Depends on: `Readable` (`node:stream`) · `Writable` (`node:stream`)
+يعتمد على: `Readable` (`node:stream`) · `Writable` (`node:stream`)
 
-مصدر:[`packages/sdk/server/src/index.ts:25`](../packages/sdk/server/src/index.ts)
+المصدر: [`packages/sdk/server/src/index.ts:25`](../packages/sdk/server/src/index.ts)
 
 <a id="deepseek-aidsh-session-log-deepseek"></a>
 
 ## `@deepseek-ai/dsh-session-log-deepseek`
 
-حاجة:`deepseekLlmApiExtensions` · `sessions`
+يشترط:`deepseekLlmApiExtensions` · `sessions`
 
 ```ts config-catalog
 /** Session-log request contribution configuration. */
@@ -2156,13 +2156,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/session/session-log-deepseek/src/index.ts:38`](../packages/session/session-log-deepseek/src/index.ts)
+المصدر: [`packages/session/session-log-deepseek/src/index.ts:38`](../packages/session/session-log-deepseek/src/index.ts)
 
 <a id="deepseek-aidsh-session-log-export"></a>
 
 ## `@deepseek-ai/dsh-session-log-export`
 
-حاجة:`commands` · `connection`
+يشترط:`commands` · `connection`
 
 ```ts config-catalog
 /** Session-log archive policy. */
@@ -2175,7 +2175,7 @@ export interface Config {
 export type SessionLogCompressionLevel = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 ```
 
-مصدر:[`packages/session-query/session-log-export/src/index.ts:46`](../packages/session-query/session-log-export/src/index.ts)
+المصدر: [`packages/session-query/session-log-export/src/index.ts:46`](../packages/session-query/session-log-export/src/index.ts)
 
 <a id="deepseek-aidsh-session-persistence-jsonl"></a>
 
@@ -2200,13 +2200,13 @@ export interface Config {
 export type JsonlCompression = 'zstd' | 'none'
 ```
 
-مصدر:[`packages/session/session-persistence-jsonl/src/index.ts:88`](../packages/session/session-persistence-jsonl/src/index.ts)
+المصدر: [`packages/session/session-persistence-jsonl/src/index.ts:88`](../packages/session/session-persistence-jsonl/src/index.ts)
 
 <a id="deepseek-aidsh-session-projection-cache"></a>
 
 ## `@deepseek-ai/dsh-session-projection-cache`
 
-حاجة:`storageDomain` · `sessionProjections` · `sessions`
+يشترط:`storageDomain` · `sessionProjections` · `sessions`
 
 ```ts config-catalog
 /**
@@ -2224,13 +2224,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/session/session-projection-cache/src/index.ts:63`](../packages/session/session-projection-cache/src/index.ts)
+المصدر: [`packages/session/session-projection-cache/src/index.ts:63`](../packages/session/session-projection-cache/src/index.ts)
 
 <a id="deepseek-aidsh-session-query-sqlite"></a>
 
 ## `@deepseek-ai/dsh-session-query-sqlite`
 
-حاجة:`sessions`
+يشترط:`sessions`
 
 ```ts config-catalog
 /** Combined session-query configuration backed by SQLite full-text search. */
@@ -2270,15 +2270,15 @@ export type OpenAt = 'startup' | 'first-search' | 'never'
 export type JournalMode = 'wal' | 'delete' | 'truncate' | 'persist'
 ```
 
-Depends on: [`SessionQueryConfig`](../packages/session-query/session-query/src/index.ts)
+يعتمد على: [`SessionQueryConfig`](../packages/session-query/session-query/src/index.ts)
 
-مصدر:[`packages/session-query/session-query-sqlite/src/index.ts:92`](../packages/session-query/session-query-sqlite/src/index.ts)
+المصدر: [`packages/session-query/session-query-sqlite/src/index.ts:92`](../packages/session-query/session-query-sqlite/src/index.ts)
 
 <a id="deepseek-aidsh-session-reference"></a>
 
 ## `@deepseek-ai/dsh-session-reference`
 
-حاجة:`sessionQuery`
+يشترط:`sessionQuery`
 
 ```ts config-catalog
 /** Session-reference service configuration. */
@@ -2294,13 +2294,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/context/session-reference/src/config.ts:11`](../packages/context/session-reference/src/config.ts)
+المصدر: [`packages/context/session-reference/src/config.ts:11`](../packages/context/session-reference/src/config.ts)
 
 <a id="deepseek-aidsh-session-telemetry-otel"></a>
 
 ## `@deepseek-ai/dsh-session-telemetry-otel`
 
-حاجة:`sessions`
+يشترط:`sessions`
 
 ```ts config-catalog
 /**
@@ -2337,15 +2337,15 @@ export enum SessionTelemetryMode {
 }
 ```
 
-Depends on: `BatchLogRecordProcessorOptions` (`@opentelemetry/sdk-logs`) · `OTLPExporterNodeConfigBase` (`@opentelemetry/otlp-exporter-base`)
+يعتمد على: `BatchLogRecordProcessorOptions` (`@opentelemetry/sdk-logs`) · `OTLPExporterNodeConfigBase` (`@opentelemetry/otlp-exporter-base`)
 
-مصدر:[`packages/session/session-telemetry-otel/src/index.ts:100`](../packages/session/session-telemetry-otel/src/index.ts)
+المصدر: [`packages/session/session-telemetry-otel/src/index.ts:100`](../packages/session/session-telemetry-otel/src/index.ts)
 
 <a id="deepseek-aidsh-session-title"></a>
 
 ## `@deepseek-ai/dsh-session-title`
 
-حاجة:`sessions`
+يشترط:`sessions`
 
 ```ts config-catalog
 /** Required deterministic fallback and accepted-title limits. */
@@ -2359,37 +2359,37 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/session/session-title/src/index.ts:56`](../packages/session/session-title/src/index.ts)
+المصدر: [`packages/session/session-title/src/index.ts:56`](../packages/session/session-title/src/index.ts)
 
 <a id="deepseek-aidsh-session-title-all-prompts-llm"></a>
 
 ## `@deepseek-ai/dsh-session-title-all-prompts-llm`
 
-حاجة:`sessionTitle` · `llm` · `sessions`
+يشترط:`sessionTitle` · `llm` · `sessions`
 
 ```ts config-catalog
 /** Required LLM policy; this plugin adds no defaults. */
 export type Config = SessionTitleLlmConfig
 ```
 
-Depends on: [`SessionTitleLlmConfig`](../packages/session/session-title-llm/src/index.ts)
+يعتمد على: [`SessionTitleLlmConfig`](../packages/session/session-title-llm/src/index.ts)
 
-مصدر:[`packages/session/session-title-all-prompts-llm/src/index.ts:15`](../packages/session/session-title-all-prompts-llm/src/index.ts)
+المصدر: [`packages/session/session-title-all-prompts-llm/src/index.ts:15`](../packages/session/session-title-all-prompts-llm/src/index.ts)
 
 <a id="deepseek-aidsh-session-title-first-prompt-llm"></a>
 
 ## `@deepseek-ai/dsh-session-title-first-prompt-llm`
 
-حاجة:`sessionTitle` · `llm` · `sessions`
+يشترط:`sessionTitle` · `llm` · `sessions`
 
 ```ts config-catalog
 /** Required LLM policy; this plugin adds no defaults. */
 export type Config = SessionTitleLlmConfig
 ```
 
-Depends on: [`SessionTitleLlmConfig`](../packages/session/session-title-llm/src/index.ts)
+يعتمد على: [`SessionTitleLlmConfig`](../packages/session/session-title-llm/src/index.ts)
 
-مصدر:[`packages/session/session-title-first-prompt-llm/src/index.ts:15`](../packages/session/session-title-first-prompt-llm/src/index.ts)
+المصدر: [`packages/session/session-title-first-prompt-llm/src/index.ts:15`](../packages/session/session-title-first-prompt-llm/src/index.ts)
 
 <a id="deepseek-aidsh-settings-file"></a>
 
@@ -2409,7 +2409,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/settings/settings-file/src/index.ts:22`](../packages/settings/settings-file/src/index.ts)
+المصدر: [`packages/settings/settings-file/src/index.ts:22`](../packages/settings/settings-file/src/index.ts)
 
 <a id="deepseek-aidsh-shell-env"></a>
 
@@ -2423,7 +2423,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/shell-env/src/index.ts:28`](../packages/shell/shell-env/src/index.ts)
+المصدر: [`packages/shell/shell-env/src/index.ts:28`](../packages/shell/shell-env/src/index.ts)
 
 <a id="deepseek-aidsh-skill"></a>
 
@@ -2437,13 +2437,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/skill/skill/src/index.ts:278`](../packages/skill/skill/src/index.ts)
+المصدر: [`packages/skill/skill/src/index.ts:278`](../packages/skill/skill/src/index.ts)
 
 <a id="deepseek-aidsh-skill-filesystem"></a>
 
 ## `@deepseek-ai/dsh-skill-filesystem`
 
-حاجة:`skills`
+يشترط:`skills`
 
 ```ts config-catalog
 /** Local filesystem skill provider configuration. */
@@ -2475,7 +2475,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/skill/skill-filesystem/src/index.ts:49`](../packages/skill/skill-filesystem/src/index.ts)
+المصدر: [`packages/skill/skill-filesystem/src/index.ts:49`](../packages/skill/skill-filesystem/src/index.ts)
 
 <a id="deepseek-aidsh-skill-office"></a>
 
@@ -2491,7 +2491,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/skill/skill-office/src/index.ts:15`](../packages/skill/skill-office/src/index.ts)
+المصدر: [`packages/skill/skill-office/src/index.ts:15`](../packages/skill/skill-office/src/index.ts)
 
 <a id="deepseek-aidsh-spill-local"></a>
 
@@ -2520,13 +2520,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/spill/spill-local/src/index.ts:31`](../packages/spill/spill-local/src/index.ts)
+المصدر: [`packages/spill/spill-local/src/index.ts:31`](../packages/spill/spill-local/src/index.ts)
 
 <a id="deepseek-aidsh-spill-policy"></a>
 
 ## `@deepseek-ai/dsh-spill-policy`
 
-حاجة:`tools` · `sessionProjections`
+يشترط:`tools` · `sessionProjections`
 
 ```ts config-catalog
 /** Plugin config. */
@@ -2540,7 +2540,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/spill/spill-policy/src/index.ts:61`](../packages/spill/spill-policy/src/index.ts)
+المصدر: [`packages/spill/spill-policy/src/index.ts:61`](../packages/spill/spill-policy/src/index.ts)
 
 <a id="deepseek-aidsh-ssh"></a>
 
@@ -2574,13 +2574,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/ssh/ssh/src/index.ts:17`](../packages/ssh/ssh/src/index.ts)
+المصدر: [`packages/ssh/ssh/src/index.ts:17`](../packages/ssh/ssh/src/index.ts)
 
 <a id="deepseek-aidsh-storage-domain"></a>
 
 ## `@deepseek-ai/dsh-storage-domain`
 
-حاجة:`storage`
+يشترط:`storage`
 
 ```ts config-catalog
 /**
@@ -2597,13 +2597,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/storage/storage-domain/src/index.ts:52`](../packages/storage/storage-domain/src/index.ts)
+المصدر: [`packages/storage/storage-domain/src/index.ts:52`](../packages/storage/storage-domain/src/index.ts)
 
 <a id="deepseek-aidsh-storage-json"></a>
 
 ## `@deepseek-ai/dsh-storage-json`
 
-حاجة:`storage`
+يشترط:`storage`
 
 ```ts config-catalog
 /**
@@ -2618,13 +2618,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/storage/storage-json/src/index.ts:28`](../packages/storage/storage-json/src/index.ts)
+المصدر: [`packages/storage/storage-json/src/index.ts:28`](../packages/storage/storage-json/src/index.ts)
 
 <a id="deepseek-aidsh-storage-sqlite"></a>
 
 ## `@deepseek-ai/dsh-storage-sqlite`
 
-حاجة:`storage`
+يشترط:`storage`
 
 ```ts config-catalog
 /** Plugin configuration. */
@@ -2658,7 +2658,7 @@ export interface Config {
 export type JournalMode = 'wal' | 'delete' | 'truncate' | 'persist'
 ```
 
-مصدر:[`packages/storage/storage-sqlite/src/index.ts:24`](../packages/storage/storage-sqlite/src/index.ts)
+المصدر: [`packages/storage/storage-sqlite/src/index.ts:24`](../packages/storage/storage-sqlite/src/index.ts)
 
 <a id="deepseek-aidsh-subagent"></a>
 
@@ -2674,13 +2674,13 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/subagent/subagent/src/index.ts:190`](../packages/subagent/subagent/src/index.ts)
+المصدر:  [`packages/subagent/subagent/src/index.ts:190`](../packages/subagent/subagent/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-acp"></a>
 
 ## `@deepseek-ai/dsh-subagent-acp`
 
-حاجة:`subagents` · `subprocess`
+يشترط:`subagents` · `subprocess`
 
 ```ts config-catalog
 /** Config: how to spawn and drive the child ACP agent process. */
@@ -2727,13 +2727,13 @@ export interface Config {
 export type PermissionPolicy = 'allow' | 'reject'
 ```
 
-مصدر:[`packages/subagent/subagent-acp/src/index.ts:27`](../packages/subagent/subagent-acp/src/index.ts)
+المصدر: [`packages/subagent/subagent-acp/src/index.ts:27`](../packages/subagent/subagent-acp/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-claude-code"></a>
 
 ## `@deepseek-ai/dsh-subagent-claude-code`
 
-حاجة:`subagents` · `subprocess`
+يشترط:`subagents` · `subprocess`
 
 ```ts config-catalog
 /** Deployment-owned model, permission, environment, and process-release settings. */
@@ -2762,13 +2762,13 @@ export interface Config {
 export type ClaudeCodePermissionMode = typeof CLAUDE_CODE_PERMISSION_MODES[number]
 ```
 
-مصدر:[`packages/subagent/subagent-claude-code/src/index.ts:38`](../packages/subagent/subagent-claude-code/src/index.ts)
+المصدر: [`packages/subagent/subagent-claude-code/src/index.ts:38`](../packages/subagent/subagent-claude-code/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-codex"></a>
 
 ## `@deepseek-ai/dsh-subagent-codex`
 
-حاجة:`subagents` · `subprocess`
+يشترط:`subagents` · `subprocess`
 
 ```ts config-catalog
 /** Deployment-owned model, permission, environment, and process-release settings. */
@@ -2795,13 +2795,13 @@ export type CodexPermissionMode =
   | 'dangerously-bypass-approvals-and-sandbox'
 ```
 
-مصدر:[`packages/subagent/subagent-codex/src/index.ts:36`](../packages/subagent/subagent-codex/src/index.ts)
+المصدر: [`packages/subagent/subagent-codex/src/index.ts:36`](../packages/subagent/subagent-codex/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-dsh-sdk"></a>
 
 ## `@deepseek-ai/dsh-subagent-dsh-sdk`
 
-حاجة:`subagents`
+يشترط:`subagents`
 
 ```ts config-catalog
 /** Config: how to spawn and drive the child SDK runtime process. */
@@ -2851,13 +2851,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/subagent/subagent-dsh-sdk/src/index.ts:34`](../packages/subagent/subagent-dsh-sdk/src/index.ts)
+المصدر: [`packages/subagent/subagent-dsh-sdk/src/index.ts:34`](../packages/subagent/subagent-dsh-sdk/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-fork-in-process"></a>
 
 ## `@deepseek-ai/dsh-subagent-fork-in-process`
 
-حاجة:`subagents`
+يشترط:`subagents`
 
 ```ts config-catalog
 /** Config: the registry name to register the provider under. */
@@ -2867,13 +2867,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/subagent/subagent-fork-in-process/src/index.ts:31`](../packages/subagent/subagent-fork-in-process/src/index.ts)
+المصدر: [`packages/subagent/subagent-fork-in-process/src/index.ts:31`](../packages/subagent/subagent-fork-in-process/src/index.ts)
 
 <a id="deepseek-aidsh-subagent-spawn-in-process"></a>
 
 ## `@deepseek-ai/dsh-subagent-spawn-in-process`
 
-حاجة:`subagents`
+يشترط:`subagents`
 
 ```ts config-catalog
 /** Config: the registry name to register the provider under. */
@@ -2883,7 +2883,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/subagent/subagent-spawn-in-process/src/index.ts:25`](../packages/subagent/subagent-spawn-in-process/src/index.ts)
+المصدر: [`packages/subagent/subagent-spawn-in-process/src/index.ts:25`](../packages/subagent/subagent-spawn-in-process/src/index.ts)
 
 <a id="deepseek-aidsh-system-prompt"></a>
 
@@ -2915,13 +2915,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/core/system-prompt/src/index.ts:248`](../packages/core/system-prompt/src/index.ts)
+المصدر: [`packages/core/system-prompt/src/index.ts:248`](../packages/core/system-prompt/src/index.ts)
 
 <a id="deepseek-aidsh-terminal-bash"></a>
 
 ## `@deepseek-ai/dsh-terminal-bash`
 
-حاجة:`terminals` · `sandboxPolicy` · `sessionProjections` · `subprocess`
+يشترط:`terminals` · `sandboxPolicy` · `sessionProjections` · `subprocess`
 
 ```ts config-catalog
 /** Public plugin configuration. */
@@ -2965,13 +2965,13 @@ export interface Config {
 export type ShellDialect = 'bash' | 'pwsh'
 ```
 
-مصدر:[`packages/terminal/terminal-bash/src/config.ts:10`](../packages/terminal/terminal-bash/src/config.ts)
+المصدر: [`packages/terminal/terminal-bash/src/config.ts:10`](../packages/terminal/terminal-bash/src/config.ts)
 
 <a id="deepseek-aidsh-time-context"></a>
 
 ## `@deepseek-ai/dsh-time-context`
 
-حاجة:`agents` · `sessionProjections`
+يشترط:`agents` · `sessionProjections`
 
 ```ts config-catalog
 /** Request-preparation clock formatting and append scheduling. Invalid values fail plugin load. */
@@ -2983,13 +2983,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/context/time-context/src/index.ts:49`](../packages/context/time-context/src/index.ts)
+المصدر: [`packages/context/time-context/src/index.ts:49`](../packages/context/time-context/src/index.ts)
 
 <a id="deepseek-aidsh-tmux-context"></a>
 
 ## `@deepseek-ai/dsh-tmux-context`
 
-حاجة:`agents` · `sessionProjections`
+يشترط:`agents` · `sessionProjections`
 
 ```ts config-catalog
 /** Per-turn tmux-location scheduling. Invalid values fail plugin load. */
@@ -2999,26 +2999,26 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/context/tmux-context/src/index.ts:36`](../packages/context/tmux-context/src/index.ts)
+المصدر: [`packages/context/tmux-context/src/index.ts:36`](../packages/context/tmux-context/src/index.ts)
 
 <a id="deepseek-aidsh-token-meter"></a>
 
 ## `@deepseek-ai/dsh-token-meter`
 
-حاجة:`sessionProjections`
+يشترط:`sessionProjections`
 
 ```ts config-catalog
 /** Token-meter plugin configuration; the fixed estimator has no settings. */
 export type TokenMeterConfig = Record<string, never>
 ```
 
-مصدر:[`packages/llm/token-meter/src/types.ts:13`](../packages/llm/token-meter/src/types.ts)
+المصدر: [`packages/llm/token-meter/src/types.ts:13`](../packages/llm/token-meter/src/types.ts)
 
 <a id="deepseek-aidsh-tool-bash"></a>
 
 ## `@deepseek-ai/dsh-tool-bash`
 
-حاجة:`tools` · `shell` · `systemPrompt` · `shellEnv`
+يشترط:`tools` · `shell` · `systemPrompt` · `shellEnv`
 
 ```ts config-catalog
 /** Configuration for the bash tool. */
@@ -3028,13 +3028,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/tool-bash/src/index.ts:33`](../packages/shell/tool-bash/src/index.ts)
+المصدر: [`packages/shell/tool-bash/src/index.ts:33`](../packages/shell/tool-bash/src/index.ts)
 
 <a id="deepseek-aidsh-tool-bash-persistent"></a>
 
 ## `@deepseek-ai/dsh-tool-bash-persistent`
 
-حاجة:`tools` · `terminals`
+يشترط:`tools` · `terminals`
 
 ```ts config-catalog
 /** Configuration for the persistent Bash tool. */
@@ -3050,13 +3050,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/tool-bash-persistent/src/index.ts:435`](../packages/shell/tool-bash-persistent/src/index.ts)
+المصدر: [`packages/shell/tool-bash-persistent/src/index.ts:435`](../packages/shell/tool-bash-persistent/src/index.ts)
 
 <a id="deepseek-aidsh-tool-fs"></a>
 
 ## `@deepseek-ai/dsh-tool-fs`
 
-حاجة:`tools` · `fs` · `systemPrompt`
+يشترط:`tools` · `fs` · `systemPrompt`
 
 ```ts config-catalog
 /** Plugin config (all optional — `Config` supplies the defaults). */
@@ -3072,13 +3072,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/fs/tool-fs/src/index.ts:25`](../packages/fs/tool-fs/src/index.ts)
+المصدر: [`packages/fs/tool-fs/src/index.ts:25`](../packages/fs/tool-fs/src/index.ts)
 
 <a id="deepseek-aidsh-tool-fs-search"></a>
 
 ## `@deepseek-ai/dsh-tool-fs-search`
 
-حاجة:`tools` · `systemPrompt` · `subprocess`
+يشترط:`tools` · `systemPrompt` · `subprocess`
 
 ```ts config-catalog
 /** Plugin config; over-cap glob sampling is an explicit deployment choice and the remaining fields have defaults. */
@@ -3107,13 +3107,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/fs/tool-fs-search/src/index.ts:73`](../packages/fs/tool-fs-search/src/index.ts)
+المصدر: [`packages/fs/tool-fs-search/src/index.ts:73`](../packages/fs/tool-fs-search/src/index.ts)
 
 <a id="deepseek-aidsh-tool-goal"></a>
 
 ## `@deepseek-ai/dsh-tool-goal`
 
-حاجة:`agents` · `goals` · `tools` · `systemPrompt` · `sessionProjections`
+يشترط:`agents` · `goals` · `tools` · `systemPrompt` · `sessionProjections`
 
 ```ts config-catalog
 /** Model policy and hard lower bounds for goal-state updates. */
@@ -3123,13 +3123,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/goal/tool-goal/src/index.ts:25`](../packages/goal/tool-goal/src/index.ts)
+المصدر: [`packages/goal/tool-goal/src/index.ts:25`](../packages/goal/tool-goal/src/index.ts)
 
 <a id="deepseek-aidsh-tool-jobs"></a>
 
 ## `@deepseek-ai/dsh-tool-jobs`
 
-حاجة:`tools` · `jobs` · `systemPrompt`
+يشترط:`tools` · `jobs` · `systemPrompt`
 
 ```ts config-catalog
 /** Configures bounded `job_output` waits and completion-notice delivery. */
@@ -3157,13 +3157,13 @@ export interface Config {
 export type CompletionDelivery = 'quiet' | 'wakeup'
 ```
 
-مصدر:[`packages/jobs/tool-jobs/src/index.ts:31`](../packages/jobs/tool-jobs/src/index.ts)
+المصدر: [`packages/jobs/tool-jobs/src/index.ts:31`](../packages/jobs/tool-jobs/src/index.ts)
 
 <a id="deepseek-aidsh-tool-lsp"></a>
 
 ## `@deepseek-ai/dsh-tool-lsp`
 
-حاجة:`tools` · `lsp` · `systemPrompt`
+يشترط:`tools` · `lsp` · `systemPrompt`
 
 ```ts config-catalog
 /** Plugin configuration: result caps and the timeout budget. */
@@ -3177,7 +3177,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/lsp/tool-lsp/src/index.ts:57`](../packages/lsp/tool-lsp/src/index.ts)
+المصدر: [`packages/lsp/tool-lsp/src/index.ts:57`](../packages/lsp/tool-lsp/src/index.ts)
 
 <a id="deepseek-aidsh-tool-present"></a>
 
@@ -3193,13 +3193,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/deliverables/tool-present/src/index.ts:15`](../packages/deliverables/tool-present/src/index.ts)
+المصدر: [`packages/deliverables/tool-present/src/index.ts:15`](../packages/deliverables/tool-present/src/index.ts)
 
 <a id="deepseek-aidsh-tool-pwsh"></a>
 
 ## `@deepseek-ai/dsh-tool-pwsh`
 
-حاجة:`tools` · `shell` · `systemPrompt` · `shellEnv`
+يشترط:`tools` · `shell` · `systemPrompt` · `shellEnv`
 
 ```ts config-catalog
 /** Configuration for the pwsh tool. */
@@ -3209,13 +3209,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/tool-pwsh/src/index.ts:51`](../packages/shell/tool-pwsh/src/index.ts)
+المصدر: [`packages/shell/tool-pwsh/src/index.ts:51`](../packages/shell/tool-pwsh/src/index.ts)
 
 <a id="deepseek-aidsh-tool-pwsh-persistent"></a>
 
 ## `@deepseek-ai/dsh-tool-pwsh-persistent`
 
-حاجة:`tools` · `terminals`
+يشترط:`tools` · `terminals`
 
 ```ts config-catalog
 /** Configuration for the persistent pwsh tool. */
@@ -3231,13 +3231,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/shell/tool-pwsh-persistent/src/index.ts:472`](../packages/shell/tool-pwsh-persistent/src/index.ts)
+المصدر: [`packages/shell/tool-pwsh-persistent/src/index.ts:472`](../packages/shell/tool-pwsh-persistent/src/index.ts)
 
 <a id="deepseek-aidsh-tool-ralph"></a>
 
 ## `@deepseek-ai/dsh-tool-ralph`
 
-حاجة:`tools` · `workflowEngine` · `subagents` · `systemPrompt`
+يشترط:`tools` · `workflowEngine` · `subagents` · `systemPrompt`
 
 ```ts config-catalog
 /** Deployment policy for the fixed Ralph workflow. */
@@ -3253,13 +3253,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/workflow/tool-ralph/src/index.ts:21`](../packages/workflow/tool-ralph/src/index.ts)
+المصدر: [`packages/workflow/tool-ralph/src/index.ts:21`](../packages/workflow/tool-ralph/src/index.ts)
 
 <a id="deepseek-aidsh-tool-session-query"></a>
 
 ## `@deepseek-ai/dsh-tool-session-query`
 
-حاجة:`tools` · `systemPrompt` · `sessionQuery` · `sessionProjections`
+يشترط:`tools` · `systemPrompt` · `sessionQuery` · `sessionProjections`
 
 ```ts config-catalog
 /** Deployment-owned search count and timeout bounds. */
@@ -3271,13 +3271,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/session-query/tool-session-query/src/index.ts:28`](../packages/session-query/tool-session-query/src/index.ts)
+المصدر: [`packages/session-query/tool-session-query/src/index.ts:28`](../packages/session-query/tool-session-query/src/index.ts)
 
 <a id="deepseek-aidsh-tool-skill"></a>
 
 ## `@deepseek-ai/dsh-tool-skill`
 
-حاجة:`agents` · `tools` · `skills`
+يشترط:`agents` · `tools` · `skills`
 
 ```ts config-catalog
 /** Model-facing skill catalog configuration. */
@@ -3287,13 +3287,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/skill/tool-skill/src/index.ts:61`](../packages/skill/tool-skill/src/index.ts)
+المصدر: [`packages/skill/tool-skill/src/index.ts:61`](../packages/skill/tool-skill/src/index.ts)
 
 <a id="deepseek-aidsh-tool-str-replace-editor"></a>
 
 ## `@deepseek-ai/dsh-tool-str-replace-editor`
 
-حاجة:`tools` · `fs`
+يشترط:`tools` · `fs`
 
 ```ts config-catalog
 /** Configuration for the string-replacement editor tool. */
@@ -3305,13 +3305,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/fs/tool-str-replace-editor/src/index.ts:505`](../packages/fs/tool-str-replace-editor/src/index.ts)
+المصدر: [`packages/fs/tool-str-replace-editor/src/index.ts:505`](../packages/fs/tool-str-replace-editor/src/index.ts)
 
 <a id="deepseek-aidsh-tool-subagent"></a>
 
 ## `@deepseek-ai/dsh-tool-subagent`
 
-حاجة:`tools` · `subagents` · `systemPrompt` · `sessionProjections`
+يشترط:`tools` · `subagents` · `systemPrompt` · `sessionProjections`
 
 ```ts config-catalog
 /** Config: which registered provider this tool delegates to, plus child defaults. */
@@ -3374,15 +3374,15 @@ export interface Config {
 }
 ```
 
-Depends on: [`AgentOptions`](subsystems/core.ar.md)
+يعتمد على: [`AgentOptions`](subsystems/core.ar.md)
 
-مصدر:[`packages/subagent/tool-subagent/src/index.ts:48`](../packages/subagent/tool-subagent/src/index.ts)
+المصدر: [`packages/subagent/tool-subagent/src/index.ts:48`](../packages/subagent/tool-subagent/src/index.ts)
 
 <a id="deepseek-aidsh-tool-terminal"></a>
 
 ## `@deepseek-ai/dsh-tool-terminal`
 
-حاجة:`terminals` · `tools` · `systemPrompt`
+يشترط:`terminals` · `tools` · `systemPrompt`
 
 ```ts config-catalog
 /** Model-facing terminal tool configuration. */
@@ -3394,13 +3394,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/terminal/tool-terminal/src/index.ts:35`](../packages/terminal/tool-terminal/src/index.ts)
+المصدر: [`packages/terminal/tool-terminal/src/index.ts:35`](../packages/terminal/tool-terminal/src/index.ts)
 
 <a id="deepseek-aidsh-tool-todo"></a>
 
 ## `@deepseek-ai/dsh-tool-todo`
 
-حاجة:`tools`
+يشترط:`tools`
 
 ```ts config-catalog
 /** Model-facing todo tool configuration. */
@@ -3416,13 +3416,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/todo/tool-todo/src/index.ts:29`](../packages/todo/tool-todo/src/index.ts)
+المصدر: [`packages/todo/tool-todo/src/index.ts:29`](../packages/todo/tool-todo/src/index.ts)
 
 <a id="deepseek-aidsh-tool-web"></a>
 
 ## `@deepseek-ai/dsh-tool-web`
 
-حاجة:`tools` · `web` · `systemPrompt`
+يشترط:`tools` · `web` · `systemPrompt`
 
 ```ts config-catalog
 /** Plugin config: which web tools to register, search bounds, per-tool budgets, and the fetch output cap. */
@@ -3444,13 +3444,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/web/tool-web/src/index.ts:37`](../packages/web/tool-web/src/index.ts)
+المصدر: [`packages/web/tool-web/src/index.ts:37`](../packages/web/tool-web/src/index.ts)
 
 <a id="deepseek-aidsh-tool-workflow"></a>
 
 ## `@deepseek-ai/dsh-tool-workflow`
 
-حاجة:`tools` · `workflowEngine` · `systemPrompt`
+يشترط:`tools` · `workflowEngine` · `systemPrompt`
 
 ```ts config-catalog
 /** Config: the model-facing tool name plus result rendering caps. */
@@ -3462,13 +3462,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/workflow/tool-workflow/src/index.ts:32`](../packages/workflow/tool-workflow/src/index.ts)
+المصدر: [`packages/workflow/tool-workflow/src/index.ts:32`](../packages/workflow/tool-workflow/src/index.ts)
 
 <a id="deepseek-aidsh-tools"></a>
 
 ## `@deepseek-ai/dsh-tools`
 
-حاجة:`systemPrompt`
+يشترط:`systemPrompt`
 
 ```ts config-catalog
 /** Plugin config: how the registered tools are presented to the model. */
@@ -3498,13 +3498,13 @@ export interface Config {
 export type ToolPresentationMode = 'native' | 'ptc' | 'both'
 ```
 
-مصدر:[`packages/core/tools/src/index.ts:656`](../packages/core/tools/src/index.ts)
+المصدر: [`packages/core/tools/src/index.ts:656`](../packages/core/tools/src/index.ts)
 
 <a id="deepseek-aidsh-typert-loader"></a>
 
 ## `@deepseek-ai/dsh-typert-loader`
 
-حاجة:`typert` · `loader`
+يشترط:`typert` · `loader`
 
 ```ts config-catalog
 /** Additional package artifacts whose owning plugins are nested behind another Loader entry. */
@@ -3514,7 +3514,7 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/typert/loader/src/index.ts:48`](../packages/typert/loader/src/index.ts)
+المصدر: [`packages/typert/loader/src/index.ts:48`](../packages/typert/loader/src/index.ts)
 
 <a id="deepseek-aidsh-user-approval"></a>
 
@@ -3545,7 +3545,7 @@ export interface Config {
 export type ApprovalPolicy = 'ask' | 'never'
 ```
 
-مصدر:[`packages/interaction/user-approval/src/index.ts:128`](../packages/interaction/user-approval/src/index.ts)
+المصدر: [`packages/interaction/user-approval/src/index.ts:128`](../packages/interaction/user-approval/src/index.ts)
 
 <a id="deepseek-aidsh-web"></a>
 
@@ -3566,13 +3566,13 @@ export interface WebRuntimeConfig {
 }
 ```
 
-مصدر:[`packages/web/web/src/index.ts:55`](../packages/web/web/src/index.ts)
+المصدر: [`packages/web/web/src/index.ts:55`](../packages/web/web/src/index.ts)
 
 <a id="deepseek-aidsh-web-app"></a>
 
 ## `@deepseek-ai/dsh-web-app`
 
-حاجة:`webServer`
+يشترط:`webServer`
 
 ```ts config-catalog
 /** Plugin config: composed deployment settings plus per-invocation command-line values. */
@@ -3593,13 +3593,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/bundle/web-app/src/index.ts:44`](../packages/bundle/web-app/src/index.ts)
+المصدر: [`packages/bundle/web-app/src/index.ts:44`](../packages/bundle/web-app/src/index.ts)
 
 <a id="deepseek-aidsh-web-fetch-http"></a>
 
 ## `@deepseek-ai/dsh-web-fetch-http`
 
-حاجة:`web`
+يشترط:`web`
 
 ```ts config-catalog
 /** Plugin config: the provider's transport and size limits plus its `User-Agent` (all defaulted). */
@@ -3617,13 +3617,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/web/web-fetch-http/src/index.ts:32`](../packages/web/web-fetch-http/src/index.ts)
+المصدر: [`packages/web/web-fetch-http/src/index.ts:32`](../packages/web/web-fetch-http/src/index.ts)
 
 <a id="deepseek-aidsh-web-search-deepseek"></a>
 
 ## `@deepseek-ai/dsh-web-search-deepseek`
 
-حاجة:`web`
+يشترط:`web`
 
 ```ts config-catalog
 /** Plugin config (all optional — `apply` fills env-var and constant defaults). */
@@ -3645,13 +3645,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/web/web-search-deepseek/src/index.ts:46`](../packages/web/web-search-deepseek/src/index.ts)
+المصدر: [`packages/web/web-search-deepseek/src/index.ts:46`](../packages/web/web-search-deepseek/src/index.ts)
 
 <a id="deepseek-aidsh-web-search-exa"></a>
 
 ## `@deepseek-ai/dsh-web-search-exa`
 
-حاجة:`web`
+يشترط:`web`
 
 ```ts config-catalog
 /** Plugin config (all optional — `apply` fills env-var and constant defaults). */
@@ -3669,13 +3669,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/web/web-search-exa/src/index.ts:35`](../packages/web/web-search-exa/src/index.ts)
+المصدر: [`packages/web/web-search-exa/src/index.ts:35`](../packages/web/web-search-exa/src/index.ts)
 
 <a id="deepseek-aidsh-web-search-perplexity"></a>
 
 ## `@deepseek-ai/dsh-web-search-perplexity`
 
-حاجة:`web`
+يشترط:`web`
 
 ```ts config-catalog
 /** Plugin config (all optional — `apply` fills env-var and constant defaults). */
@@ -3693,13 +3693,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/web/web-search-perplexity/src/index.ts:30`](../packages/web/web-search-perplexity/src/index.ts)
+المصدر: [`packages/web/web-search-perplexity/src/index.ts:30`](../packages/web/web-search-perplexity/src/index.ts)
 
 <a id="deepseek-aidsh-webhook-github"></a>
 
 ## `@deepseek-ai/dsh-webhook-github`
 
-حاجة:`webServer` · `webhookRuntime` · `credentials`
+يشترط:`webServer` · `webhookRuntime` · `credentials`
 
 ```ts config-catalog
 /** Required GitHub ingress configuration. */
@@ -3715,13 +3715,13 @@ export interface Config {
 }
 ```
 
-مصدر:[`packages/webhook/webhook-github/src/index.ts:17`](../packages/webhook/webhook-github/src/index.ts)
+المصدر: [`packages/webhook/webhook-github/src/index.ts:17`](../packages/webhook/webhook-github/src/index.ts)
 
 <a id="deepseek-aidsh-workflow-ptc"></a>
 
 ## `@deepseek-ai/dsh-workflow-ptc`
 
-حاجة: `subagents` · `ptcRuntime` · `sandboxPolicy`
+يشترط: `subagents` · `ptcRuntime` · `sandboxPolicy`
 
 ```ts config-catalog
 /** Plugin config (all optional — `static Config` supplies the defaults). */
@@ -3739,7 +3739,7 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/workflow/workflow-ptc/src/index.ts:32`](../packages/workflow/workflow-ptc/src/index.ts)
+المصدر:  [`packages/workflow/workflow-ptc/src/index.ts:32`](../packages/workflow/workflow-ptc/src/index.ts)
 
 <a id="deepseek-aidsh-workspace-changes"></a>
 
@@ -3766,21 +3766,21 @@ export interface Config {
 }
 ```
 
-مصدر: [`packages/deliverables/workspace-changes/src/index.ts:36`](../packages/deliverables/workspace-changes/src/index.ts)
+المصدر:  [`packages/deliverables/workspace-changes/src/index.ts:36`](../packages/deliverables/workspace-changes/src/index.ts)
 
-## بلا إعداد يمكن تحميل إضافة
+## إضافات قابلة للتحميل بلا ضبط
 
-هذه إضافة عبر `cordis.yml` في لا يحتوي `config:` كتلة بند تحميل؛ هو جمع لم إعلان أي إعداد واجهة.
+تُحمَّل هذه من مدخل `cordis.yml` بلا كتلة `config:`؛ وهي لا تعلن واجهةَ ضبط.
 
-- `@deepseek-ai/dsh-acp-app` — حاجة `cmdlineArgs`([`packages/bundle/acp-app/src/index.ts`](../packages/bundle/acp-app/src/index.ts))
+- `@deepseek-ai/dsh-acp-app` — يشترط `cmdlineArgs`([`packages/bundle/acp-app/src/index.ts`](../packages/bundle/acp-app/src/index.ts))
 - `@deepseek-ai/dsh-agent`([`packages/core/agent/src/index.ts`](../packages/core/agent/src/index.ts))
-- `@deepseek-ai/dsh-api-remotes` — حاجة `typertGateway`([`packages/api/remotes/src/index.ts`](../packages/api/remotes/src/index.ts))
-- `@deepseek-ai/dsh-api-workspace-controller` — حاجة `typert` · `workspaceRegistry`([`packages/api/workspace-controller/src/index.ts`](../packages/api/workspace-controller/src/index.ts))
-- `@deepseek-ai/dsh-authorization` — حاجة `credentials`([`packages/credentials/authorization/src/index.ts`](../packages/credentials/authorization/src/index.ts))
+- `@deepseek-ai/dsh-api-remotes` — يشترط `typertGateway`([`packages/api/remotes/src/index.ts`](../packages/api/remotes/src/index.ts))
+- `@deepseek-ai/dsh-api-workspace-controller` — يشترط `typert` · `workspaceRegistry`([`packages/api/workspace-controller/src/index.ts`](../packages/api/workspace-controller/src/index.ts))
+- `@deepseek-ai/dsh-authorization` — يشترط `credentials`([`packages/credentials/authorization/src/index.ts`](../packages/credentials/authorization/src/index.ts))
 - `@deepseek-ai/dsh-browser-use` ([`packages/browser-use/browser-use/src/index.ts`](../packages/browser-use/browser-use/src/index.ts))
-- `@deepseek-ai/dsh-client-file-upload` — حاجة `agents` · `attachments` · `commands` · `connection`([`packages/client/file-upload/src/index.ts`](../packages/client/file-upload/src/index.ts))
+- `@deepseek-ai/dsh-client-file-upload` — يشترط `agents` · `attachments` · `commands` · `connection`([`packages/client/file-upload/src/index.ts`](../packages/client/file-upload/src/index.ts))
 - `@deepseek-ai/dsh-client-locale`([`packages/client/locale/src/index.ts`](../packages/client/locale/src/index.ts))
-- `@deepseek-ai/dsh-client-modules` — حاجة `loader`([`packages/client/modules/src/index.ts`](../packages/client/modules/src/index.ts))
+- `@deepseek-ai/dsh-client-modules` — يشترط `loader`([`packages/client/modules/src/index.ts`](../packages/client/modules/src/index.ts))
 - `@deepseek-ai/dsh-client-resources`([`packages/client/resources/src/index.ts`](../packages/client/resources/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-agent-preset`([`packages/client/ui-agent-preset/src/index.ts`](../packages/client/ui-agent-preset/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-approval`([`packages/client/ui-approval/src/index.ts`](../packages/client/ui-approval/src/index.ts))
@@ -3790,7 +3790,7 @@ export interface Config {
 - `@deepseek-ai/dsh-client-ui-commands`([`packages/client/ui-commands/src/index.ts`](../packages/client/ui-commands/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-conversation`([`packages/client/ui-conversation/src/index.ts`](../packages/client/ui-conversation/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-cordis`([`packages/extensions/ui-cordis/src/index.ts`](../packages/extensions/ui-cordis/src/index.ts))
-- `@deepseek-ai/dsh-client-ui-deliverables` — حاجة `systemPrompt` · `connection` · `sessionQuery` · `sessionController`([`packages/client/ui-deliverables/src/index.ts`](../packages/client/ui-deliverables/src/index.ts))
+- `@deepseek-ai/dsh-client-ui-deliverables` — يشترط `systemPrompt` · `connection` · `sessionQuery` · `sessionController`([`packages/client/ui-deliverables/src/index.ts`](../packages/client/ui-deliverables/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-directory-picker-browse`([`packages/client/ui-directory-picker-browse/src/index.ts`](../packages/client/ui-directory-picker-browse/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-directory-picker-native`([`packages/client/ui-directory-picker-native/src/index.ts`](../packages/client/ui-directory-picker-native/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-goal`([`packages/client/ui-goal/src/index.ts`](../packages/client/ui-goal/src/index.ts))
@@ -3826,69 +3826,69 @@ export interface Config {
 - `@deepseek-ai/dsh-client-ui-user-questions`([`packages/client/ui-user-questions/src/index.ts`](../packages/client/ui-user-questions/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-workflow-run`([`packages/client/ui-workflow-run/src/index.ts`](../packages/client/ui-workflow-run/src/index.ts))
 - `@deepseek-ai/dsh-client-ui-workspace`([`packages/client/ui-workspace/src/index.ts`](../packages/client/ui-workspace/src/index.ts))
-- `@deepseek-ai/dsh-command-compact` — حاجة `commands` · `compact`([`packages/compaction/command-compact/src/index.ts`](../packages/compaction/command-compact/src/index.ts))
-- `@deepseek-ai/dsh-command-feedback` — حاجة `commands`([`packages/feedback/command-feedback/src/index.ts`](../packages/feedback/command-feedback/src/index.ts))
-- `@deepseek-ai/dsh-command-goal` — حاجة `commands` · `goals`([`packages/goal/command-goal/src/index.ts`](../packages/goal/command-goal/src/index.ts))
+- `@deepseek-ai/dsh-command-compact` — يشترط `commands` · `compact`([`packages/compaction/command-compact/src/index.ts`](../packages/compaction/command-compact/src/index.ts))
+- `@deepseek-ai/dsh-command-feedback` — يشترط `commands`([`packages/feedback/command-feedback/src/index.ts`](../packages/feedback/command-feedback/src/index.ts))
+- `@deepseek-ai/dsh-command-goal` — يشترط `commands` · `goals`([`packages/goal/command-goal/src/index.ts`](../packages/goal/command-goal/src/index.ts))
 - `@deepseek-ai/dsh-commands`([`packages/interaction/commands/src/index.ts`](../packages/interaction/commands/src/index.ts))
 - `@deepseek-ai/dsh-compaction-image-offload`، حاجة `agents` و `sessions`([`packages/compaction/compaction-image-offload/src/index.ts`](../packages/compaction/compaction-image-offload/src/index.ts))
 - `@deepseek-ai/dsh-computer-use` ([`packages/computer-use/computer-use/src/index.ts`](../packages/computer-use/computer-use/src/index.ts))
 - `@deepseek-ai/dsh-cordis-client-runner`([`packages/extensions/cordis-client-runner/src/index.ts`](../packages/extensions/cordis-client-runner/src/index.ts))
 - `@deepseek-ai/dsh-deepseek-llm-api-extensions`([`packages/llm/deepseek-llm-api-extensions/src/index.ts`](../packages/llm/deepseek-llm-api-extensions/src/index.ts))
-- `@deepseek-ai/dsh-experimental-auto-review` — حاجة `llm` · `permissionPresets` · `sessions` · `tools`([`packages/experimental/auto-review/src/index.ts`](../packages/experimental/auto-review/src/index.ts))
+- `@deepseek-ai/dsh-experimental-auto-review` — يشترط `llm` · `permissionPresets` · `sessions` · `tools`([`packages/experimental/auto-review/src/index.ts`](../packages/experimental/auto-review/src/index.ts))
 - `@deepseek-ai/dsh-experimental-client-ui-agent-team`([`packages/experimental/client-ui-agent-team/src/index.ts`](../packages/experimental/client-ui-agent-team/src/index.ts))
 - `@deepseek-ai/dsh-experimental-computer-use-cua-driver-native` — requires `computerUse` · `tools` · `systemPrompt` ([`packages/experimental/computer-use-cua-driver-native/src/index.ts`](../packages/experimental/computer-use-cua-driver-native/src/index.ts))
 - `@deepseek-ai/dsh-fs-observation-policy`([`packages/fs/fs-observation-policy/src/index.ts`](../packages/fs/fs-observation-policy/src/index.ts))
-- `@deepseek-ai/dsh-fs-ssh` — حاجة `ssh` · `sandboxPolicy`([`packages/ssh/fs-ssh/src/index.ts`](../packages/ssh/fs-ssh/src/index.ts))
-- `@deepseek-ai/dsh-goal-round-driver` — حاجة `agents` · `goals` · `sessions`([`packages/goal/goal-round-driver/src/index.ts`](../packages/goal/goal-round-driver/src/index.ts))
-- `@deepseek-ai/dsh-host-directory-picker-auto` — حاجة `webServer` · `loader`([`packages/host/directory-picker-auto/src/index.ts`](../packages/host/directory-picker-auto/src/index.ts))
+- `@deepseek-ai/dsh-fs-ssh` — يشترط `ssh` · `sandboxPolicy`([`packages/ssh/fs-ssh/src/index.ts`](../packages/ssh/fs-ssh/src/index.ts))
+- `@deepseek-ai/dsh-goal-round-driver` — يشترط `agents` · `goals` · `sessions`([`packages/goal/goal-round-driver/src/index.ts`](../packages/goal/goal-round-driver/src/index.ts))
+- `@deepseek-ai/dsh-host-directory-picker-auto` — يشترط `webServer` · `loader`([`packages/host/directory-picker-auto/src/index.ts`](../packages/host/directory-picker-auto/src/index.ts))
 - `@deepseek-ai/dsh-host-directory-picker-native`([`packages/host/directory-picker-native/src/index.ts`](../packages/host/directory-picker-native/src/index.ts))
-- `@deepseek-ai/dsh-host-plugin-inventory` — حاجة `loader`([`packages/host/plugin-inventory/src/index.ts`](../packages/host/plugin-inventory/src/index.ts))
+- `@deepseek-ai/dsh-host-plugin-inventory` — يشترط `loader`([`packages/host/plugin-inventory/src/index.ts`](../packages/host/plugin-inventory/src/index.ts))
 - `@deepseek-ai/dsh-llm`([`packages/llm/llm/src/index.ts`](../packages/llm/llm/src/index.ts))
 - `@deepseek-ai/dsh-lsp`([`packages/lsp/lsp/src/index.ts`](../packages/lsp/lsp/src/index.ts))
-- `@deepseek-ai/dsh-mcp-resources` — حاجة `tools`([`packages/mcp/mcp-resources/src/index.ts`](../packages/mcp/mcp-resources/src/index.ts))
-- `@deepseek-ai/dsh-sandbox-ssh` — حاجة `ssh`([`packages/ssh/sandbox-ssh/src/index.ts`](../packages/ssh/sandbox-ssh/src/index.ts))
-- `@deepseek-ai/dsh-schedule` — حاجة `agents` · `sessions` · `tools` · `sessionPersistence`([`packages/schedule/schedule/src/index.ts`](../packages/schedule/schedule/src/index.ts))
+- `@deepseek-ai/dsh-mcp-resources` — يشترط `tools`([`packages/mcp/mcp-resources/src/index.ts`](../packages/mcp/mcp-resources/src/index.ts))
+- `@deepseek-ai/dsh-sandbox-ssh` — يشترط `ssh`([`packages/ssh/sandbox-ssh/src/index.ts`](../packages/ssh/sandbox-ssh/src/index.ts))
+- `@deepseek-ai/dsh-schedule` — يشترط `agents` · `sessions` · `tools` · `sessionPersistence`([`packages/schedule/schedule/src/index.ts`](../packages/schedule/schedule/src/index.ts))
 - `@deepseek-ai/dsh-session`([`packages/core/session/src/index.ts`](../packages/core/session/src/index.ts))
-- `@deepseek-ai/dsh-session-checkpoint-policy` — حاجة `llm` · `sessionPersistence` · `sessions` · `tools`([`packages/session/session-checkpoint-policy/src/index.ts`](../packages/session/session-checkpoint-policy/src/index.ts))
+- `@deepseek-ai/dsh-session-checkpoint-policy` — يشترط `llm` · `sessionPersistence` · `sessions` · `tools`([`packages/session/session-checkpoint-policy/src/index.ts`](../packages/session/session-checkpoint-policy/src/index.ts))
 - `@deepseek-ai/dsh-session-projection`([`packages/session/session-projection/src/index.ts`](../packages/session/session-projection/src/index.ts))
-- `@deepseek-ai/dsh-session-stats` — حاجة `sessionProjections`([`packages/session/session-stats/src/index.ts`](../packages/session/session-stats/src/index.ts))
-- `@deepseek-ai/dsh-session-turn-outline` — حاجة `sessionProjections`([`packages/session/session-turn-outline/src/index.ts`](../packages/session/session-turn-outline/src/index.ts))
-- `@deepseek-ai/dsh-skill-badge` — حاجة `skills`([`packages/skill/skill-badge/src/index.ts`](../packages/skill/skill-badge/src/index.ts))
+- `@deepseek-ai/dsh-session-stats` — يشترط `sessionProjections`([`packages/session/session-stats/src/index.ts`](../packages/session/session-stats/src/index.ts))
+- `@deepseek-ai/dsh-session-turn-outline` — يشترط `sessionProjections`([`packages/session/session-turn-outline/src/index.ts`](../packages/session/session-turn-outline/src/index.ts))
+- `@deepseek-ai/dsh-skill-badge` — يشترط `skills`([`packages/skill/skill-badge/src/index.ts`](../packages/skill/skill-badge/src/index.ts))
 - `@deepseek-ai/dsh-storage`([`packages/storage/storage/src/index.ts`](../packages/storage/storage/src/index.ts))
 - `@deepseek-ai/dsh-subprocess-local`([`packages/subprocess/subprocess-local/src/index.ts`](../packages/subprocess/subprocess-local/src/index.ts))
-- `@deepseek-ai/dsh-subprocess-ssh` — حاجة `ssh`([`packages/ssh/subprocess-ssh/src/index.ts`](../packages/ssh/subprocess-ssh/src/index.ts))
+- `@deepseek-ai/dsh-subprocess-ssh` — يشترط `ssh`([`packages/ssh/subprocess-ssh/src/index.ts`](../packages/ssh/subprocess-ssh/src/index.ts))
 - `@deepseek-ai/dsh-terminal`([`packages/terminal/terminal/src/index.ts`](../packages/terminal/terminal/src/index.ts))
-- `@deepseek-ai/dsh-tool-ask-user` — حاجة `tools` · `userInteraction`([`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts))
-- `@deepseek-ai/dsh-tool-call-timeout-policy` — حاجة `tools`([`packages/guard/timeout-policy/src/index.ts`](../packages/guard/timeout-policy/src/index.ts))
-- `@deepseek-ai/dsh-tool-cordis` — حاجة `tools` · `systemPrompt` · `cordisInspect`([`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts))
-- `@deepseek-ai/dsh-tool-subagent-control` — حاجة `tools` · `subagents`([`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts))
+- `@deepseek-ai/dsh-tool-ask-user` — يشترط `tools` · `userInteraction`([`packages/interaction/tool-ask-user/src/index.ts`](../packages/interaction/tool-ask-user/src/index.ts))
+- `@deepseek-ai/dsh-tool-call-timeout-policy` — يشترط `tools`([`packages/guard/timeout-policy/src/index.ts`](../packages/guard/timeout-policy/src/index.ts))
+- `@deepseek-ai/dsh-tool-cordis` — يشترط `tools` · `systemPrompt` · `cordisInspect`([`packages/extensions/tool-cordis/src/index.ts`](../packages/extensions/tool-cordis/src/index.ts))
+- `@deepseek-ai/dsh-tool-subagent-control` — يشترط `tools` · `subagents`([`packages/subagent/tool-subagent-control/src/index.ts`](../packages/subagent/tool-subagent-control/src/index.ts))
 - `@deepseek-ai/dsh-user-questions`([`packages/interaction/user-questions/src/index.ts`](../packages/interaction/user-questions/src/index.ts))
-- `@deepseek-ai/dsh-webhook` — حاجة `agents` · `agentDefaultModel` · `agentPresets` · `permissionPresets` · `sessionTitle` · `workspaceRegistry`([`packages/webhook/webhook/src/index.ts`](../packages/webhook/webhook/src/index.ts))
-- `@deepseek-ai/dsh-workspace` — حاجة `storageDomain` · `sessionPersistence`([`packages/workspace/workspace/src/index.ts`](../packages/workspace/workspace/src/index.ts))
+- `@deepseek-ai/dsh-webhook` — يشترط `agents` · `agentDefaultModel` · `agentPresets` · `permissionPresets` · `sessionTitle` · `workspaceRegistry`([`packages/webhook/webhook/src/index.ts`](../packages/webhook/webhook/src/index.ts))
+- `@deepseek-ai/dsh-workspace` — يشترط `storageDomain` · `sessionPersistence`([`packages/workspace/workspace/src/index.ts`](../packages/workspace/workspace/src/index.ts))
 
-## Seam حزمة (غير ممكن مباشر تحميل)
+## حزم seam (غير قابلة للتحميل مباشرةً)
 
-سحب كائن خدمة صنف——نشر وقت ينبغي تعديل لـ تحميل أداة جسم تنفيذ حزمة (مشاركة رؤية[قدرة seam](../.agents/notes/implemented/architecture/2026-06-13-capability-seams.ar.md)).
+أصنافُ خدمات مجردة — فيحمّل النشرُ حزمةَ تنفيذ ملموسة بدلًا منها ([seams القدرات](../.agents/notes/implemented/architecture/2026-06-13-capability-seams.ar.md)).
 
-- `@deepseek-ai/dsh-attachment` — سحب كائن `AttachmentStore`([`packages/attachment/attachment/src/index.ts`](../packages/attachment/attachment/src/index.ts))
-- `@deepseek-ai/dsh-compaction` — سحب كائن `CompactionEngine`([`packages/compaction/compaction/src/index.ts`](../packages/compaction/compaction/src/index.ts))
-- `@deepseek-ai/dsh-credentials` — سحب كائن `Credentials`([`packages/credentials/credentials/src/index.ts`](../packages/credentials/credentials/src/index.ts))
-- `@deepseek-ai/dsh-file-reference` — سحب كائن `FileReferenceService`([`packages/context/file-reference/src/index.ts`](../packages/context/file-reference/src/index.ts))
-- `@deepseek-ai/dsh-fs` — سحب كائن `FileSystem`([`packages/fs/fs/src/index.ts`](../packages/fs/fs/src/index.ts))
-- `@deepseek-ai/dsh-host-directory-picker` — سحب كائن `DirectoryPicker`([`packages/host/directory-picker/src/index.ts`](../packages/host/directory-picker/src/index.ts))
-- `@deepseek-ai/dsh-jobs` — سحب كائن `JobRegistry`([`packages/jobs/jobs/src/index.ts`](../packages/jobs/jobs/src/index.ts))
-- `@deepseek-ai/dsh-ptc-runtime` — سحب كائن `PtcRuntime`([`packages/ptc-runtime/ptc-runtime/src/index.ts`](../packages/ptc-runtime/ptc-runtime/src/index.ts))
-- `@deepseek-ai/dsh-sandbox` — سحب كائن `SandboxProvider`([`packages/sandbox/sandbox/src/index.ts`](../packages/sandbox/sandbox/src/index.ts))
-- `@deepseek-ai/dsh-session-persistence` — سحب كائن `SessionPersistence`([`packages/session/session-persistence/src/index.ts`](../packages/session/session-persistence/src/index.ts))
-- `@deepseek-ai/dsh-session-query` — سحب كائن `SessionQueryEngine`([`packages/session-query/session-query/src/index.ts`](../packages/session-query/session-query/src/index.ts))
-- `@deepseek-ai/dsh-settings` — سحب كائن `Settings`([`packages/settings/settings/src/index.ts`](../packages/settings/settings/src/index.ts))
-- `@deepseek-ai/dsh-shell` — سحب كائن `ShellExecutor`([`packages/shell/shell/src/index.ts`](../packages/shell/shell/src/index.ts))
-- `@deepseek-ai/dsh-spill` — سحب كائن `SpillStore`([`packages/spill/spill/src/index.ts`](../packages/spill/spill/src/index.ts))
-- `@deepseek-ai/dsh-subprocess` — سحب كائن `SubprocessRuntime`([`packages/subprocess/subprocess/src/index.ts`](../packages/subprocess/subprocess/src/index.ts))
-- `@deepseek-ai/dsh-workflow` — سحب كائن `WorkflowEngine`([`packages/workflow/workflow/src/index.ts`](../packages/workflow/workflow/src/index.ts))
-## مكتبة حزمة (بلا إضافة مدخل)
+- `@deepseek-ai/dsh-attachment` — مجرد `AttachmentStore`([`packages/attachment/attachment/src/index.ts`](../packages/attachment/attachment/src/index.ts))
+- `@deepseek-ai/dsh-compaction` — مجرد `CompactionEngine`([`packages/compaction/compaction/src/index.ts`](../packages/compaction/compaction/src/index.ts))
+- `@deepseek-ai/dsh-credentials` — مجرد `Credentials`([`packages/credentials/credentials/src/index.ts`](../packages/credentials/credentials/src/index.ts))
+- `@deepseek-ai/dsh-file-reference` — مجرد `FileReferenceService`([`packages/context/file-reference/src/index.ts`](../packages/context/file-reference/src/index.ts))
+- `@deepseek-ai/dsh-fs` — مجرد `FileSystem`([`packages/fs/fs/src/index.ts`](../packages/fs/fs/src/index.ts))
+- `@deepseek-ai/dsh-host-directory-picker` — مجرد `DirectoryPicker`([`packages/host/directory-picker/src/index.ts`](../packages/host/directory-picker/src/index.ts))
+- `@deepseek-ai/dsh-jobs` — مجرد `JobRegistry`([`packages/jobs/jobs/src/index.ts`](../packages/jobs/jobs/src/index.ts))
+- `@deepseek-ai/dsh-ptc-runtime` — مجرد `PtcRuntime`([`packages/ptc-runtime/ptc-runtime/src/index.ts`](../packages/ptc-runtime/ptc-runtime/src/index.ts))
+- `@deepseek-ai/dsh-sandbox` — مجرد `SandboxProvider`([`packages/sandbox/sandbox/src/index.ts`](../packages/sandbox/sandbox/src/index.ts))
+- `@deepseek-ai/dsh-session-persistence` — مجرد `SessionPersistence`([`packages/session/session-persistence/src/index.ts`](../packages/session/session-persistence/src/index.ts))
+- `@deepseek-ai/dsh-session-query` — مجرد `SessionQueryEngine`([`packages/session-query/session-query/src/index.ts`](../packages/session-query/session-query/src/index.ts))
+- `@deepseek-ai/dsh-settings` — مجرد `Settings`([`packages/settings/settings/src/index.ts`](../packages/settings/settings/src/index.ts))
+- `@deepseek-ai/dsh-shell` — مجرد `ShellExecutor`([`packages/shell/shell/src/index.ts`](../packages/shell/shell/src/index.ts))
+- `@deepseek-ai/dsh-spill` — مجرد `SpillStore`([`packages/spill/spill/src/index.ts`](../packages/spill/spill/src/index.ts))
+- `@deepseek-ai/dsh-subprocess` — مجرد `SubprocessRuntime`([`packages/subprocess/subprocess/src/index.ts`](../packages/subprocess/subprocess/src/index.ts))
+- `@deepseek-ai/dsh-workflow` — مجرد `WorkflowEngine`([`packages/workflow/workflow/src/index.ts`](../packages/workflow/workflow/src/index.ts))
+## حزم مكتبية (بلا مدخل إضافة)
 
-من أخرى حزمة بصفة مكتبة استيراد؛`cordis.yml` لا يمكن تحميل هو جمع.
+تستوردها حزمٌ أخرى مكتباتٍ؛ ولا يستطيع `cordis.yml` تحميلَها.
 
 - `@deepseek-ai/dsh-agent-loop-testkit`([`packages/test-support/agent-loop-testkit/src/index.ts`](../packages/test-support/agent-loop-testkit/src/index.ts))
 - `@deepseek-ai/dsh-anonymous-user-id`([`packages/identity/anonymous-user-id/src/index.ts`](../packages/identity/anonymous-user-id/src/index.ts))

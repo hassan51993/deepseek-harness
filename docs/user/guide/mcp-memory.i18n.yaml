@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/guide/mcp-memory.md
 mcp-memory.md: aa14f83388b8e43574f5da86a0c191dd02e382bf
-mcp-memory.ar.md: 18f241e1c155d7a8f192e96b95746b9cda8ec76e
+mcp-memory.ar.md: 557b01df825a73dc51f06cb538734cbcd5c8a143

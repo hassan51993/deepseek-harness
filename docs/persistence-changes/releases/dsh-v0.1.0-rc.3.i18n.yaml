@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/persistence-changes/releases/dsh-v0.1.0-rc.3.md
 dsh-v0.1.0-rc.3.md: a22409ce1223f06d51aef14719d33b87f70d21e8
-dsh-v0.1.0-rc.3.ar.md: 8462f6af5f7e852536fcd2e8cc54d9f9afc7e1b4
+dsh-v0.1.0-rc.3.ar.md: 2eafef5e3ed80d6200fda4be7bfb616531546d85

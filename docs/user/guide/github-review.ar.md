@@ -1,47 +1,47 @@
-# عبر GitHub Webhook إنشاء مراجعة جلسة
+# إنشاء جلسات مراجعة من webhooks في GitHub
 
 [English](github-review.md) | العربية
 
-هذا اختياري overlay سوف لـ `dsh web` زيادة واحد توقيع GitHub طرف نقطة. عند قد إعداد مستودع في pull request من draft تغيير لـ ready for review وقت، قاعدة سوف في هذا مستودع Web Workspace تحت إنشاء حمل عنوان أصل Session، و بدء فقط قراءة مراجعة نص التوجيه.
+تضيف هذه الطبقةُ الاختيارية نقطةَ نهاية موقَّعة من GitHub إلى `dsh web`. وحين ينتقل طلبُ سحب في المستودع المضبوط من مسودة إلى جاهز للمراجعة، تنشئ القاعدةُ جلسةً جذرًا معنونة تحت مساحة عمل Web الخاصة بالمستودع وتبدأ توجيهَ مراجعة للقراءة فقط.
 
-## قبل وضع شرط
+## المتطلبات
 
-- واحد يمكن من DSH تسجيل لـ Web Workspace محلي checkout.
-- واحد يمكن عبر `DSH_GITHUB_WEBHOOK_SECRET` اعتماد مرجع وصول عال عشوائية GitHub webhook مفتاح.
-- واحد يمكن يأخذ مفرد عدد عام مشترك URL تحويل إرسال إلى loopback مستمع TLS عكس نحو بديل إدارة أو tunnel.
-- GitHub webhook حجز قراءة Pull requests حدث، كما content type لـ `application/json`.
+- نسخةُ عمل محلية يجوز لـ DSH تسجيلُها مساحةَ عمل في Web.
+- سرُّ webhook في GitHub عالي العشوائية متاحٌ عبر مرجع الاعتماد `DSH_GITHUB_WEBHOOK_SECRET`.
+- وكيلٌ عكسي بـ TLS أو نفق يستطيع تمرير رابط عام واحد إلى المستمع على الحلقة المحلية.
+- اشتراكُ webhook في GitHub بحدث Pull requests بنوع محتوى `application/json`.
 
-overlay افتراضي استخدام بدء دليل بصفة Workspace، و استماع `127.0.0.1:3081`. يمكن عبر `DSH_GITHUB_REVIEW_WORKSPACE` و `DSH_GITHUB_WEBHOOK_PORT` تغطية هو جمع.
+وتجعل الطبقةُ مساحةَ العمل افتراضيًا دليلَ الإقلاع، والمستمعَ `127.0.0.1:3081`. وتجاوَزهما بـ `DSH_GITHUB_REVIEW_WORKSPACE` و`DSH_GITHUB_WEBHOOK_PORT`.
 
-## بدء DSH
+## أقلع DSH
 
-توليد مفتاح، و في إعادة بدء بعد متابعة استخدام نفس قيمة:
+ولّد سرًّا واحتفظ بالقيمة نفسها عبر إعادات التشغيل:
 
 ```sh
 export DSH_GITHUB_WEBHOOK_SECRET="$(openssl rand -hex 32)"
 printf '%s\n' "$DSH_GITHUB_WEBHOOK_SECRET"
 ```
 
-في تطوير checkout في تشغيل:
+من نسخة عمل للتطوير:
 
 ```sh
 export DSH_GITHUB_REVIEW_WORKSPACE=/path/to/deepseek-harness
 pnpm dsh web --patch apps/cli/config/examples/github-review/cordis.yml
 ```
 
-تثبيت إصدار DSH عبر قطعا مقابل مسار استخدام نفس overlay:
+ويستعمل DSH المثبَّت الطبقةَ نفسها عبر مسار مطلق:
 
 ```sh
 dsh web --patch /absolute/path/to/github-review/cordis.yml
 ```
 
-مقابل في دائم دائم profile، يأخذ `github-ready-review-rule.mjs` وضع في `$DSH_HOME/profiles/web/cordis.patch.yml` جانب حافة، يأخذ `cordis.yml` في سطر إلحاق إلى هذا patch، لكن بعد تشغيل `dsh web`. مع مرفق CLI قد يتضمن اثنان عدد webhook حزمة؛ فقط يحتاج overlay يكفي تنشيط هو جمع.
+ولـ profile دائم، ضع `github-ready-review-rule.mjs` بجوار `$DSH_HOME/profiles/web/cordis.patch.yml`، وألحِق صفوفَ `cordis.yml` بذلك الـ patch، وأقلع بـ `dsh web`. وواجهةُ CLI المشحونة تحتوي حزمتَي webhook أصلًا؛ والطبقةُ وحدها هي ما يفعّلهما.
 
-## كشف مخصص استخدام طرف نقطة
+## اكشف نقطة النهاية المخصصة
 
-رئيسي Web UI و `/api` متابعة يقع في طرف فتحة 3080.overlay سوف في عزل realm في تركيب ثاني عدد WebServer؛ منها فقط تسجيل `POST /github`، أخرى مسار متساو إرجاع `404`.
+تبقى واجهةُ Web الرئيسة و`/api` على المنفذ 3080. وتركّب الطبقةُ خادمَ WebServer ثانيًا في مجال معزول؛ ولا يُسجَّل فيه إلا `POST /github`، وكلُّ مسار آخر يعيد `404`.
 
-Caddy إعداد يمكن فقط كشف هذا مستمع:
+ويستطيع إعدادُ Caddy كشفَ ذلك المستمع وحده:
 
 ```caddyfile
 hooks.example.com {
@@ -53,7 +53,7 @@ hooks.example.com {
 }
 ```
 
-GitHub إعداد مثل تحت:
+اضبط GitHub بما يلي:
 
 ```text
 Payload URL:  https://hooks.example.com/github
@@ -63,17 +63,17 @@ Events:       Pull requests
 Active:       yes
 ```
 
-## قاعدة سلوك
+## سلوك القاعدة
 
-قاعدة فقط قبول مصدر `primary-github`، مستودع `deepseek-harness/deepseek-harness`، حدث `pull_request` و حركة عمل `ready_for_review`. هو سوف يأخذ دقيق head SHA و اختيار تحديد PR حقل نقل إعطاء مراجعة نص التوجيه، يأخذ JSON علامة لـ لا تلقي معلومة مهمة بيانات وصفية، و منع توقف تعديل ملف، فرع،PR أو GitHub حالة.
+لا تقبل القاعدةُ إلا المصدرَ `primary-github`، والمستودعَ `deepseek-harness/deepseek-harness`، والحدثَ `pull_request`، والفعلَ `ready_for_review`. وهي تمرّر قيمةَ SHA للرأس بعينها مع حقول مختارة من الـ PR إلى توجيه المراجعة، وتسم الـ JSON بيانًا وصفيًا غير موثوق، وتمنع تغييرَ أي ملف أو فرع أو PR أو شيء في GitHub.
 
-Session طلب اختيار `standard` agent preset و `read-only` permission preset.`workspacePath` عبر `WorkspaceRegistry.create()` مواصفة تحويل، لذلك رقم مرة مطابقة تسليم سوف في Workspace لا وجود وقت إنشاء هو، لاحق تسليم سوف إعادة استخدام هو.
+ويختار طلبُ الجلسة agent preset باسم `standard` وإعدادَ الأذونات `read-only`. ويُعيَّر `workspacePath` عبر `WorkspaceRegistry.create()`، فينشئ أولُ تسليم مطابق مساحةَ عمل Web إن غابت، وتعيد التسليماتُ اللاحقة استعمالَها.
 
-HTTP استجابة لحظة معنى ضعيف في Agent نتيجة:`202` يمثل توقيع و JSON قد يتم قبول، قاعدة استدعاء قد في داخل تخزين في ضبط درجة. هو لا يمثل هذا قاعدة قد مطابقة، أيضا لا يمثل قد إنشاء Session.
+واستجابةُ HTTP أضعف عمدًا من نتيجة الوكيل: فـ `202` تعني أن التوقيع والـ JSON قُبلا وأن استدعاءات القاعدة جُدولت في الذاكرة. ولا تعني أن هذه القاعدة طابقت ولا أن جلسةً أُنشئت.
 
-## برنامج تحويل توسيع
+## التوسعات البرمجية
 
-`run()` هو عادي تلقي معلومة مهمة JavaScript. نشر يمكن في إرجاع Session طلب قبل استعلام داخلي سياسة خدمة:
+`run()` هي JavaScript موثوقة عادية. ويستطيع النشرُ استعلامَ خدمة سياسة داخلية قبل إعادة طلب جلسة:
 
 ```js
 const response = await fetch('https://policy.internal/pr-review', {
@@ -85,7 +85,7 @@ const response = await fetch('https://policy.internal/pr-review', {
 if (!response.ok || (await response.json()).automaticReview !== true) return null
 ```
 
-هو أيضا يمكن يأخذ مستودع خريطة إلى مختلف محلي مسار:
+ويستطيع أيضًا ربطَ المستودعات بمسارات محلية مختلفة:
 
 ```js
 const workspacePath = {
@@ -95,8 +95,8 @@ const workspacePath = {
 if (workspacePath === undefined) return null
 ```
 
-## تسليم دلالة
+## دلالة التسليم
 
-webhook runtime لا تخزين تسليم أو تنفيذ حالة. تكرار تسليم سوف تشغيل قاعدة، و ممكن إنشاء آخر عدد Session. انهيار انهيار سوف فقد فقد بعد لم وصل قبول نص التوجيه قاعدة استدعاء. نص التوجيه وصل قبول بعد، عمل من عادي Session سجل،persistence،Workspace و Agent دورة الحياة يملك.
+لا يخزّن وقتُ تشغيل webhook حالةَ تسليم ولا تنفيذ. والتسليمُ المتكرر يشغّل القاعدةَ وقد ينشئ جلسةً أخرى. والانهيارُ يفقد استدعاءاتِ القاعدة التي لم تقبل توجيهَها بعد. وبعد قبول التوجيه يملك العملَ سجلُّ الجلسة المعتاد وحفظُها الدائم ومساحةُ العمل ودورةُ حياة الوكيل.
 
-webhook مفتاح فقط تحقق دخول محطة GitHub بيانات. هو لن نحو قاعدة شفرة أو الذي إنشاء Agent منح إعطاء خروج محطة GitHub وصول حق؛ قاعدة أو Agent حاجة وقت ينبغي مفرد وحيد إعداد هذا إذن.
+وسرُّ webhook يوثّق بيانات GitHub الواردة وحدها. وهو لا يمنح شفرةَ القاعدة ولا الوكيلَ المُنشأ وصولًا صادرًا إلى GitHub؛ فاضبط تلك الصلاحية منفصلةً حين تحتاجها قاعدةٌ أو وكيل.

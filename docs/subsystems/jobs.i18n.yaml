@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/jobs.md
 jobs.md: 16b0ca827717504da94f73efef280908affc5f64
-jobs.ar.md: 8794131489979260be8910ff049e17f7548590ea
+jobs.ar.md: 19b0c3aeaa875e6af3a06358ee69e042e3153159

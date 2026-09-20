@@ -1,5 +1,5 @@
 ---
-description: "سجل حفظ دائم نوع أكثر تعديل و ذلك توافق صفة تأكيد."
+description: "يسجّل انتقالَ نوع حفظ دائم وتأكيدَ توافقه."
 kind: persistence-change
 ---
 
@@ -7,19 +7,19 @@ kind: persistence-change
 
 [English](2026-09-14-workspace-changes-event.md) | العربية
 
-## عام وصف
+## الملخص
 
-إضافة جديدة فقط كتابة سجل workspace/changes حدث، سجل قمة طبقة جولة تعديل ملف.
+يضيف حدثَ `workspace/changes` الذي يُسجَّل فقط ويسجّل الملفاتِ التي غيّرتها جولةٌ من المستوى الأعلى.
 
-## دليل
+## المحتويات
 
-- [إعلان](#declaration)
-- [توافق صفة](#compatibility)
-- [تحقق](#verification)
-- [ملاحظة تطوير](#dev-note)
+- [التصريح](#declaration)
+- [التوافق](#compatibility)
+- [التحقق](#verification)
+- [ملاحظة التطوير](#dev-note)
 
 <a id="declaration"></a>
-## إعلان
+## التصريح
 
 ```yaml persistence-change
 schemaVersion: 1
@@ -33,16 +33,16 @@ changes:
 ```
 
 <a id="compatibility"></a>
-## توافق صفة
+## التوافق
 
-نفس Session صيغة إصدار داخل جديد أصل نوع. قد لديه سجل لا يوجد هذا حدث، إبقاء صالح؛ مبكر في هو قراءة جهة لقاء إلى هو سوف رفض هذا سجل، و كل قراءة وقت مطلوب حدث متسق. هذا حدث فقط من Web bundle workspace-changes إضافة إلحاق، نموذج دائم بعيد نظر لا إلى؛Web تعديل ملف بطاقة هو وحيد إزالة استهلاك من، قراءة كل جولة الأكثر جديد واحد بند.
+جذرٌ جديد في إصدار صيغة الجلسة نفسه. ولا تحتوي السجلاتُ القائمة حدثًا كهذا وتبقى صالحة؛ ويرفض القرّاءُ الأسبق منه سجلًّا يحمله، كما في كل حدث مطلوب عند القراءة. ولا يُلحق الحدثَ إلا إضافةُ workspace-changes في حزمة Web، ولا يراه النموذج قط؛ وبطاقةُ الملفات المتغيّرة في Web مستهلكُه الوحيد وتقرأ أحدثَ حدث في كل جولة.
 
 <a id="verification"></a>
-## تحقق
+## التحقق
 
-pnpm exec vitest run packages/deliverables/workspace-changes packages/client/ui-deliverables:165 عدد اختبار عبر؛snapshots/web/changed-files-turn عبر Web profile إعادة تشغيل سجل حدث.
+نجح `pnpm exec vitest run packages/deliverables/workspace-changes packages/client/ui-deliverables` بـ 165 اختبارًا؛ ويعيد `snapshots/web/changed-files-turn` تشغيلَ الحدث المسجَّل عبر profile الـ Web.
 
 <a id="dev-note"></a>
-## ملاحظة تطوير
+## ملاحظة التطوير
 
-بلا.
+لا شيء.

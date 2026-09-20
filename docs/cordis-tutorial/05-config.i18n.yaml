@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-tutorial/05-config.md
 05-config.md: cdf1f81deb76a4a3638ad2025cace422a433072f
-05-config.ar.md: 8717aa28d30c4c25b397e84d21ea8422d77108ac
+05-config.ar.md: c58652ded07cdd18ffb9c3fa0416e2225c185453

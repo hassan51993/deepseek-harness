@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/workspace.md
 workspace.md: 06873c8da3c6f77f8bc52c1da382cb0e89695a14
-workspace.ar.md: b3eef0433053a44fa12b79bfef233900856051ad
+workspace.ar.md: b72ef2175d4e038b245761da71d4fe5bbfd956b0

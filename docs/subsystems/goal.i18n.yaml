@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/goal.md
 goal.md: 30274df62434a5481b2997fc062a6920e01e33e0
-goal.ar.md: feb1aa85ca8d4063e8dd6d4ea2fbb99bbe9a5909
+goal.ar.md: b3f8507573471d13813fbbbe5dcd30fea7c0c08b

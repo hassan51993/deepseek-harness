@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/cordis-tutorial/index.md
 index.md: 9d174a1f655cf7098baeb5558509c7ea46c8e043
-index.ar.md: 69a3424066ead45b21fe39ca2f7f67aa0fafee39
+index.ar.md: fec35b1120090104d41678eeed7aafd31bf37266

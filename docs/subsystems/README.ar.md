@@ -1,70 +1,70 @@
-# فرعي نظام
+# الأنظمة الفرعية
 
 [English](README.md) | العربية
 
-كل فرعي نظام واحد صفحة، تغطية DeepSeek Harness الكل فرعي نظام: هو هو ماذا، هو عملية أي بعض بيانات بنية، و——عند هو من بعض عدد `ctx` خدمة أو حدث أثر مجال دعم دعم وقت——واحد مقطع توليد **Cordis API** صغير عقدة، تحمل تحميل ذلك خدمة و حدث مشاركة اعتبار. هذا دليل و [architecture.md](../architecture.ar.md) متبادل تكملة: بعد من وصف عبر فرعي نظام*سلوك*(خدمة خريطة، جلسة/جولة/خطوة دورة الحياة، حدث تصنيف جسم نظام) ؛ هذا داخل كل واحد صفحة هو مفرد عدد فرعي نظام مفردات و وصل خط مشاركة اعتبار.
+صفحةٌ لكل نظام فرعي في DeepSeek Harness: ما هو، وبنى البيانات التي يحرّكها، وحيث تسنده خدمةُ `ctx` أو نطاقُ أحداث، قسمُ **واجهة Cordis** المولَّد الذي يحمل مرجعَ خدماته وأحداثه. ويكمّل هذا الدليلُ [architecture.md](../architecture.ar.md) الذي يصف *السلوك* عبر الأنظمة الفرعية (خريطةَ الخدمات، ودورةَ حياة الجلسة والجولة والخطوة، وتصنيفَ الأحداث)؛ وكلُّ صفحة هنا مرجعُ مفردات نظام فرعي واحد وتوصيلِه.
 
-| صفحة | مسؤول محتوى |
+| الصفحة | تملك |
 |---|---|
-| [boot.md](boot.ar.md) | حالي profile إضافة إدارة و launcher إعادة تحميل تنسيق ضبط |
-| [core.md](core.ar.md) | `packages/core` مثل أي تحكم agent loop(ذكي جسم حلقة): تدريجي حزمة حلقة شرح،agent إنشاء و كل حق (`AgentHandle`) ،`Agent` جملة مقبض إلقاء تمرير/إلغاء/اعتراض قطع اتفاق، و كل مستودع عام نوع نمط (`…Map → derived-union`، صنف لوحة تحويل id) |
-| [llm-streaming.md](llm-streaming.ar.md) | `packages/llm` محادثة نوع——`Message`/`ContentBlock`، تجميع إتمام نموذج طلب،`StreamChunk` wire protocol و مهايئ اتفاق (adapter contract) ،`BlockAssembler`، و `LlmAdapter` مزود اتفاق |
-| [token-meter.md](token-meter.ar.md) | غير ممكن تغيير علامة كمية و موضع إعادة تشغيل درجة كمية، مرفق حمل قد إزالة استهلاك سجل إصلاح حجز رقم |
-| [scope.md](scope.ar.md) | أثر مجال تسجيل معرف،dispatch تحميل جسم، و يملك `Scope` سياق |
-| [typert.md](typert.ar.md) | بعيد مسار استدعاء وصف رمز،lookup/Context إعلان،Typert سجل التسجيل، و Host Gateway/Client API حد |
-| [goal.md](goal.ar.md) | حمل دائم goal معرف، دورة الحياة لقطة، تنشيط، تغيير سجل و Round ملكية |
-| [schedule.md](schedule.ar.md) | فقط حد جلسة داخل رفع تنبيه سجل، حمل دائم تحويل، نشط حركة عرض و عادي محادثة تسليم |
-| [todo.md](todo.ar.md) | todo حزمة كامل قائمة بند نوع، حمل دائم حدث كل حق، إسقاط و لم انتهاء جولة ثابت صيغة |
-| [deliverables.md](deliverables.ar.md) | واحد جولة تسليم إعطاء مستخدم شرق غرب:`present` إعلان `PresentedFile` تسليم، و من git لقطة نيل خروج، من Host توفير `WorkspaceChangesSummary` تعديل ملخص |
-| [commands.md](commands.ar.md) | شخص صنف أمر سجل التسجيل خدمة: تعريف، مهايئ اكتشاف، مباشر استدعاء، نتيجة و تحليل عرض |
-| [session.md](session.ar.md) | كامل `SessionEventMap` تغيير جسم دليل،`TurnEndReason`،`deriveMessages()`، تنفيذ غلاف إغلاق و مستقل حدث |
-| [persistence.md](persistence.ar.md) | حمل دائم صفة seam:`SessionPersistence`،JSONL مزود،`session/flush`، انهيار انهيار استعادة،`SessionHeader` |
-| [settings.md](settings.ar.md) | مستخدم ضبط seam:`SettingsNamespace` تسجيل، قسم طبقة تحليل (قيمة افتراضية → تركيب `base` → مستخدم وثيقة) ،owner scope، حار إيداع |
-| [credentials.md](credentials.ar.md) | اعتماد seam: إعداد في `CredentialRef` مرجع (أبدا يحتوي قيمة) ، حسب عملية تحليل، مقابل UI أمان `CredentialInfo`، مزود مصدر طبقة |
-| [session-query.md](session-query.ar.md) | منطق سجل، محدود دقيق حدث قراءة، علاقة تتبع أثر، دلالة غربلة اختيار جهاز/وثيقة و كل نص فحص بحث نتيجة صفحة |
-| [feedback.md](feedback.ar.md) | ربط دورة الحياة تدريجي رسالة ملاحظات سجل، مرح مراقبة إصدار، مرافق مع سجل حفظ دائم و Host Remote اتفاق |
-| [session-title.md](session-title.ar.md) | حمل دائم عنوان لقطة، يتم مرجع مصدر رسالة seq و مختلف خطوة مزود اتفاق |
-| [session-reference.md](session-reference.ar.md) | بنية تحويل عبر جلسة مرجع:`SessionReferenceInput`/`Candidate`،prepared رسالة سياق، مستقر خطأ تصنيف |
-| [system-prompt.md](system-prompt.ar.md) | تدريجي مرة تجميع سياق، أداة مزود نتيجة، نص التوجيه مقطع سقوط و تنسيق عمل صيغة تجميع |
-| [tools.md](tools.ar.md) | `ToolDefinition` كامل حقل،schema DSL،`ToolExecution`/`ToolResult`، أداة عرض UI نوع، و تلقي حفظ حماية تنفيذ خط الإنتاج |
-| [mcp.md](mcp.ar.md) | خارجي MCP اتصال، أثر مجال أداة و مورد، خادم إشارة أمر، بروتوكول نتيجة و إعداد ملكية |
-| [user-questions.md](user-questions.ar.md) | UI دعم حمل شخص عمل سؤال جواب seam:`AskUserQuestionRequest`،answer/options مفردات، مزود API، خطأ تصنيف جسم نظام |
-| [approval.md](approval.ar.md) | مرة صفة مستخدم مراجعة دفعة seam:`ApprovalRequest`،`ApprovalOutcome`، تدريجي جلسة سياسة، مراجعة حساب حدث و answerer اتفاق |
-| [office-to-pdf.md](office-to-pdf.ar.md) | قد تخويل Office إلى PDF تحويل، أصلي/WASM جذب محرك و محدود مشترك إعادة استخدام |
-| [attachment.md](attachment.ar.md) | حمل دائم صورة معرف و بيانات وصفية، تحقق إدخال، مرور تحقق قراءة، و `AttachmentStore` seam |
-| [shell.md](shell.ar.md) | shell منفذ seam:`ShellExecRequest`/`Spec`،`ShellRunResult`، خلفية `ShellProcess` جملة مقبض |
-| [subprocess.md](subprocess.ar.md) | عملية فرعية seam: تماما صريح `SubprocessSpawnSpec`، أساس في انحراف نقل إخراج قراءة جهاز، لا يحتوي تصنيف `SubprocessOutcome`، و تلقي إدارة `DSH_*` بيئة مفردات |
-| [ssh.md](ssh.ar.md) | POSIX SSH اتصال و بعيد مسار نظام الملفات، عملية فرعية و صندوق رملي مزود |
-| [terminal.md](terminal.ar.md) | حفظ دائم طرفية ID، خلفية/جلسة اتفاق، إرسال حينئذ خيط حالة، محدود قراءة و owner مرئي لقطة |
-| [sandbox.md](sandbox.ar.md) | كل جلسة سياسة تحليل و عملية قيد seam: ملف فاعلية نتيجة نمط، تنفيذ/مزود سياسة،`ConfinedArgv`، قوي صنع تنفيذ و لذا عائق إغلاق خطأ |
-| [ptc-runtime.md](ptc-runtime.ar.md) | PTC تنفيذ seam:`PtcRunRequest`/`Result`، ربط نطاق الأسماء، التقاط سجل،`PtcRunFailure` تصنيف جسم نظام |
-| [computer-use.md](computer-use.ar.md) | حسب اسم وحيد احتلال تسجيل حساب حساب آلة عملية مزود، و Cua Driver تجميع صار خيار |
-| [browser-use.md](browser-use.ar.md) | حسب اسم وحيد احتلال تسجيل متصفح عملية مزود، مزود خيار و حسب Session إدارة متصفح كل حق |
-| [extensions.md](extensions.ar.md) | حمل إصدار حركة حالة Cordis إضافة و حزمة،Host/Client تنشيط، مراجعة دفعة، وقت التشغيل فحص و دورة الحياة تنظيف |
-| [filesystem.md](filesystem.ar.md) | نظام الملفات seam:`FsTarget`، قراءة/كتابة/تحرير نتيجة، مراقبة قياس إلى ملف حالة،`FsErrorCode` |
-| [lsp.md](lsp.ar.md) | LSP تنقل seam:`LspQueryRequest`/`Result`،`LspProvider`/`Service`، أربعة نوع عملية،`LspError` |
-| [skills.md](skills.ar.md) | skill(تقنية قدرة) خدمة: اكتشاف أولوية درجة،`SkillSummary`/`SkillDefinition`، جلسة بادئة دليل، موجه إلى نموذج `skill` تحميل |
-| [compaction.md](compaction.ar.md) | ضغط (compaction)seam:`compaction/*` جلسة حدث،`CompactionResult`،`CompactionEngine` واجهة |
-| [subagent.md](subagent.ar.md) | subagent seam: تسمية مزود سجل التسجيل،`SubagentStartRequest`/`Result`/`Run`، بدء وقت و وقت التشغيل قدرة تفكيك قسم |
-| [agent-team.md](agent-team.ar.md) | Agent Teams: خفي صيغة Lead هوية، أداة اسم continuable teammate، حمل دائم peer mailbox و مشترك مهمة DAG |
-| [web.md](web.ar.md) | Web وصول seam:`WebSearchRequest`/`Result`،`WebFetchRequest`/`Result`،`WebFetchBody`، مزود متاح صفة،`WebError` |
-| [spill.md](spill.ar.md) | spill تخزين seam:`SaveTextSpill`،`SpillOwner`/`SpillSource`،`SpillRef`، صنف لوحة نوع `SpillLocator` |
-| [workflow.md](workflow.ar.md) | سير العمل seam:`WorkflowStartRequest`،`WorkflowMeta`،`WorkflowRun`/`Result`،`workflow/*` حدث تحميل حمل،`WorkflowError` يؤدي أمر صفة |
-| [jobs.md](jobs.ar.md) | خلفية مهمة وقت التشغيل: صنف لوحة تحويل `JobId`،producer اتفاق، مستهلك عرض و `ctx.jobs` خدمة سلوك |
-| [permission-presets.md](permission-presets.ar.md) | إذن مسبق ضبط طبقة:`PresetSpec`/`PresetOption`، إرسال توليد `custom` حالة، فقط تسجيل سجل `permission/preset` حدث |
-| [plan.md](plan.ar.md) | خطة نمط: فقط تسجيل سجل `plan/mode` حالة، انتظار تحديد اختيار اندفاع تحديث،`PlanModeConfig`،`exit_plan_mode` مراجعة قراءة مسار |
-| [invariants.md](invariants.ar.md) | وقت التشغيل ثابت صيغة سجل التسجيل: اختيار إعداد `Config`،`InvariantInstaller`/`InvariantFailure`، فارغ إعداد طقم إضافة اتفاق |
-| [web-server.md](web-server.ar.md) | HTTP تحميل جسم:`WebRouteKind`/`WebRoute`، مطابقة ترتيب، يمكن إقرار قيادة رجوع مقعد موضع،index تصيير تعليق وصل نقطة |
-| [webhook.md](webhook.ar.md) | عبر هوية تحقق مزود تسليم، مهمة معنى برنامج تحويل قاعدة، و إرسال بدء Workspace جلسة إنشاء بعد لا انتظار نتيجة |
-| [storage.md](storage.ar.md) | تخزين فرعي نظام: خلفية اتفاق (`StorageBackend`) ،`StorageForms`،`DomainSpec`/`Domain`،`domain/changed` |
-| [workspace.md](workspace.ar.md) | مساحة العمل سجل التسجيل:`Workspace`/`WorkspaceId`، تسجيل و تحليل، و جلسة `cwd` علاقة |
-| [web-client.md](web-client.ar.md) | متصفح هيكل بنية: بدء،Remote عبر معلومة، إعداد مقابل Client model،UI مهايئ،Conversation تجميع،slot و إعادة وصل دلالة |
-| [client-modules.md](client-modules.ar.md) | Web إضافة جدول:`dsh.client` إعلان،`WebBootGraph` بروتوكول صيغة تركيب،bundle توجيه و index تعليق وصل نقطة |
-| [slots.md](slots.ar.md) | نوع تحويل Web UI تركيب: إعلان كل حق،cardinality و scope، إطار هيكل و وظيفة حقن،props دفع توجيه و قد تسليم طبقة درجة بنية |
-| [client-resources.md](client-resources.ar.md) | عميل مورد نموذج:`dsh-resource://<type>/…` عنوان، بروتوكول مزود و `ResourceProtocolMap`،`useResource` عام خطاف و ذلك حالة، تثبيت إقامة و تحرير |
-| [sidebar-right.md](sidebar-right.ar.md) | يمين جانب Sidebar: مورد عنوان و تنقل عنوان،tab نوع تسجيل و توجيه،`ctx.sidebarRight` تنقل خدمة،pane-tab slot و owner props، مورد نموذج و Workspace Files خدمة |
-| [conversation.md](conversation.ar.md) | هدف غير متصل جلسة حدث تجميع: سياق معرف، موضع بيانات، إعادة تشغيل مسار، عرض بناء جهاز و هدف ذاتي لديه تصيير عقدة |
-| [session-projection.md](session-projection.ar.md) | إسقاط seam:`SessionProjectionMap`، صاف دالة `ProjectionDefinition` وحدة،`ProjectionSnapshot` متسق قطع وجه، تغيير تغذية إرسال |
-| [session-telemetry.md](session-telemetry.ar.md) | مقابل خارج جلسة فوق تقرير قدرة seam:`SessionTelemetryRecord`/`SessionTelemetrySeverity`،`SessionTelemetrySink` اتفاق و `session-telemetry/record` انفصال حساس waterfall(شلال نشر صيغة حدث) |
+| [boot.md](boot.ar.md) | إدارة إضافات الـ profile الحالي وتنسيق إعادة تحميل المُقلِع |
+| [core.md](core.ar.md) | كيف تتحكم `packages/core` في agent loop: وصفُ الحلقة حزمةً حزمة، وإنشاءُ الوكلاء وملكيتُهم (`AgentHandle`)، وعقودُ التسليم والإلغاء والاعتراض في مقبض `Agent`، وأنماطُ الأنواع في المستودع كله (`…Map` إلى اتحاد مشتق، والمعرّفات الموسومة) |
+| [llm-streaming.md](llm-streaming.ar.md) | أنواعُ المحادثة في `packages/llm`: `Message` و`ContentBlock`، وطلبُ النموذج المجمَّع، وبروتوكولُ السلك `StreamChunk` وعقدُ المهايئ، و`BlockAssembler`، وعقدُ مزوّد `LlmAdapter` |
+| [token-meter.md](token-meter.ar.md) | قياساتُ إعادة التشغيل المفردة والموضعية غير القابلة للتغيير، بمراجعات السجل المستهلَك |
+| [scope.md](scope.ar.md) | هويةُ التسجيل ذي النطاق، وحواملُ التوزيع، وسياقُ `Scope` المملوك |
+| [typert.md](typert.ar.md) | واصفاتُ استدعاء Remote، وتصريحاتُ lookup والسياقات، وسجلاتُ Typert، وحدودُ بوابة Host وواجهة Client |
+| [goal.md](goal.ar.md) | هويةُ الهدف المحفوظة، ولقطاتُ دورة الحياة، والتنشيط، وسجلاتُ التغيير، وإسنادُ الجولات |
+| [schedule.md](schedule.ar.md) | سجلاتُ التذكيرات المحلية للجلسة، والانتقالاتُ الدائمة، والعروضُ النشطة، والتسليمُ في المحادثة العادية |
+| [todo.md](todo.ar.md) | نوعُ بند القائمة كاملةً في حزمة todo، وملكيةُ الأحداث الدائمة، والإسقاط، وثابتُ الجولة المفتوحة |
+| [deliverables.md](deliverables.ar.md) | ما تسلّمه الجولة إلى المستخدم: تسليماتُ `PresentedFile` من `present`، و`WorkspaceChangesSummary` الذي يخدمه المضيف للملفات المتغيّرة من لقطات git |
+| [commands.md](commands.ar.md) | registry أوامر الإنسان: التعريفاتُ، واكتشافُ المهايئات، والاستدعاءُ المباشر، والنتائجُ، وعروضُ التحليل |
+| [session.md](session.ar.md) | دليلُ بدائل `SessionEventMap` كاملًا، و`TurnEndReason`، و`deriveMessages()`، وغلافُ التنفيذ، والأحداثُ المستقلة |
+| [persistence.md](persistence.ar.md) | seam المتانة: `SessionPersistence`، ومزوّد JSONL، و`session/flush`، والتعافي من الانهيار، و`SessionHeader` |
+| [settings.md](settings.ar.md) | seam إعدادات المستخدم: تسجيلُ `SettingsNamespace`، والتحليلُ الطبقي (الافتراضات ثم `base` في التركيب ثم وثيقة المستخدم)، ونطاقاتُ المالكين، والإيداعُ الحارّ |
+| [credentials.md](credentials.ar.md) | seam الاعتمادات: مراجعُ `CredentialRef` (لا القيم) في الإعداد، والتحليلُ لكل عملية، و`CredentialInfo` الآمن للواجهة، وطبقاتُ مصادر المزوّدين |
+| [session-query.md](session-query.ar.md) | السجلاتُ المنطقية، وقراءاتُ الأحداث المضبوطة المحدودة، وآثارُ العلاقات، والمرشِّحاتُ والوثائقُ الدلالية، وصفحاتُ نتائج البحث الكامل |
+| [feedback.md](feedback.ar.md) | سجلاتُ الملاحظات لكل رسالة مربوطةً بدورة الحياة، والإصداراتُ المتفائلة، والحفظُ في ملف مرافق، وعقدُ Remote في المضيف |
+| [session-title.md](session-title.ar.md) | لقطاتُ العناوين الدائمة، وتسلسلاتُ رسائل المصدر المستشهَد بها، وعقدُ المزوّد اللاتزامني |
+| [session-reference.md](session-reference.ar.md) | المراجعُ المبنيَنة عبر الجلسات: `SessionReferenceInput` و`Candidate`، وسياقاتُ الرسائل المحضَّرة، وتصنيفُ الأخطاء الثابت |
+| [system-prompt.md](system-prompt.ar.md) | سياقُ كل تجميع، ونتائجُ مزوّدي الأدوات، ومقاطعُ التوجيه، والتجميعُ التعاوني |
+| [tools.md](tools.ar.md) | حقولُ `ToolDefinition` كاملةً، واللغةُ الوصفية لـ schemas، و`ToolExecution` و`ToolResult`، وأنواعُ عرض الأدوات في الواجهة، وخطُّ التنفيذ المحروس |
+| [mcp.md](mcp.ar.md) | اتصالاتُ MCP الخارجية، والأدواتُ والمواردُ ذاتُ النطاق، وتعليماتُ الخادم، ونتائجُ البروتوكول، وملكيةُ الإعداد |
+| [user-questions.md](user-questions.ar.md) | seam السؤال والجواب البشري المسنَد بالواجهة: `AskUserQuestionRequest`، ومفرداتُ الأجوبة والخيارات، وواجهةُ المزوّد، وتصنيفُ الأخطاء |
+| [approval.md](approval.ar.md) | seam موافقة المستخدم لمرة واحدة: `ApprovalRequest` و`ApprovalOutcome`، والسياسةُ لكل جلسة، وأحداثُ التدقيق، وعقودُ المجيبين |
+| [office-to-pdf.md](office-to-pdf.ar.md) | تحويلُ Office إلى PDF المأذون، والمحرّكان الأصيل وWASM، وإعادةُ الاستعمال المشتركة المحدودة |
+| [attachment.md](attachment.ar.md) | هويةُ الصور الدائمة وبياناتُها الوصفية، ومدخلاتُ التحقق، والقراءاتُ المتحقَّق منها، وseam الخاص بـ `AttachmentStore` |
+| [shell.md](shell.ar.md) | seam منفّذ الغلاف: `ShellExecRequest` و`Spec`، و`ShellRunResult`، ومقابضُ `ShellProcess` الخلفية |
+| [subprocess.md](subprocess.ar.md) | seam العمليات الفرعية: `SubprocessSpawnSpec` الصريح كاملًا، وقرّاءُ الخرج المعتمدون على الإزاحة، و`SubprocessOutcome` غيرُ المصنَّف، ومفرداتُ بيئة `DSH_*` المُدارة |
+| [ssh.md](ssh.ar.md) | اتصالُ SSH على POSIX ونظامُ الملفات البعيد، ومزوّدا العمليات الفرعية والبيئة المعزولة |
+| [terminal.md](terminal.ar.md) | معرّفاتُ الطرفيات الدائمة، وعقودُ الخلفية والجلسة، وجاهزيةُ الإرسال، والقراءاتُ المحدودة، واللقطاتُ التي يراها المالك |
+| [sandbox.md](sandbox.ar.md) | تحليلُ السياسة لكل جلسة وseam حصر العمليات: أوضاعُ أثر الملفات، وسياساتُ التنفيذ والمزوّدين، و`ConfinedArgv`، والإلزامُ وأخطاءُ الإغلاق على الفشل |
+| [ptc-runtime.md](ptc-runtime.ar.md) | seam تنفيذ PTC: `PtcRunRequest` و`Result`، وفضاءاتُ أسماء الربط، والسجلاتُ الملتقَطة، وتصنيفُ `PtcRunFailure` |
+| [computer-use.md](computer-use.ar.md) | التسجيلُ الحصري المسمّى لمزوّدي استعمال الحاسوب، وخياراتُ تكامل Cua Driver |
+| [browser-use.md](browser-use.ar.md) | التسجيلُ الحصري المسمّى لاستعمال المتصفح، وخياراتُ المزوّدين، وملكيةُ المتصفح لكل جلسة |
+| [extensions.md](extensions.ar.md) | إضافاتُ Cordis وحزمُها الديناميكية المرقَّمة، والتفعيلُ في Host وClient، والموافقةُ، وفحصُ وقت التشغيل، وتفكيكُ دورة الحياة |
+| [filesystem.md](filesystem.ar.md) | seam نظام الملفات: `FsTarget`، ونتائجُ القراءة والكتابة والتحرير، وحالةُ الملفات المرصودة، و`FsErrorCode` |
+| [lsp.md](lsp.ar.md) | seam التنقل بـ LSP: `LspQueryRequest` و`Result`، و`LspProvider` و`Service`، والعملياتُ الأربع، و`LspError` |
+| [skills.md](skills.ar.md) | خدمةُ المهارات: أولويةُ الاكتشاف، و`SkillSummary` و`SkillDefinition`، ودليلُ بادئة الجلسة، وتحميلُ `skill` الموجَّه إلى النموذج |
+| [compaction.md](compaction.ar.md) | seam الضغط: أحداثُ `compaction/*` في الجلسة، و`CompactionResult`، وواجهةُ `CompactionEngine` |
+| [subagent.md](subagent.ar.md) | seam الوكلاء الفرعيين: registry المزوّدين المسمّين، و`SubagentStartRequest` و`Result` و`Run`، والفصلُ بين قدرات وقت البدء وقدرات وقت التشغيل |
+| [agent-team.md](agent-team.ar.md) | فرقُ الوكلاء: هويةُ القائد الضمنية، والزملاءُ المسمّون القابلون للمتابعة، وصندوقُ بريد الأقران الدائم، ورسمُ المهام المشترك |
+| [web.md](web.ar.md) | seam الوصول إلى الويب: `WebSearchRequest` و`Result`، و`WebFetchRequest` و`Result`، و`WebFetchBody`، وتوفّرُ المزوّدين، و`WebError` |
+| [spill.md](spill.ar.md) | seam تخزين الانسكاب: `SaveTextSpill`، و`SpillOwner` و`SpillSource`، و`SpillRef`، و`SpillLocator` الموسوم |
+| [workflow.md](workflow.ar.md) | seam سير العمل: `WorkflowStartRequest`، و`WorkflowMeta`، و`WorkflowRun` و`Result`، وحمولاتُ أحداث `workflow/*`، وقاتليةُ `WorkflowError` |
+| [jobs.md](jobs.ar.md) | وقتُ تشغيل المهام الخلفية: معرّفاتُ `JobId` الموسومة، وعقدُ المنتج، وعروضُ المستهلك، وسلوكُ خدمة `ctx.jobs` |
+| [permission-presets.md](permission-presets.ar.md) | طبقةُ إعدادات الأذونات الجاهزة: `PresetSpec` و`PresetOption`، والحالةُ المشتقّة `custom`، وحدثُ `permission/preset` الذي يُسجَّل فقط |
+| [plan.md](plan.ar.md) | وضعُ التخطيط: حالةُ `plan/mode` التي تُسجَّل فقط، وتفريغُ الاختيار المعلَّق، و`PlanModeConfig`، وقوسُ مراجعة `exit_plan_mode` |
+| [invariants.md](invariants.ar.md) | registry ثوابت وقت التشغيل: اختيارُ `Config`، و`InvariantInstaller` و`InvariantFailure`، وعقدُ المرافق الفارغ |
+| [web-server.md](web-server.ar.md) | حاملُ HTTP: `WebRouteKind` و`WebRoute`، وترتيبُ المطابقة، ومقعدُ الرجوع القابل للمطالبة، ومقابسُ الفهرس |
+| [webhook.md](webhook.ar.md) | تسليماتُ المزوّدين المستوثَقة، والقواعدُ البرمجية الحرة، وإنشاءُ جلسات مساحة العمل بلا انتظار |
+| [storage.md](storage.ar.md) | نظامُ التخزين الفرعي: عقدُ الخلفية (`StorageBackend`)، و`StorageForms`، و`DomainSpec` و`Domain`، و`domain/changed` |
+| [workspace.md](workspace.ar.md) | registry مساحات العمل: `Workspace` و`WorkspaceId`، والتسجيلُ والتحليل، وعلاقةُ `cwd` بالجلسة |
+| [web-client.md](web-client.ar.md) | معماريةُ المتصفح: الإقلاعُ، والتواصلُ عبر Remote، ونماذجُ Client المقترنة، ومهايئاتُ الواجهة، وتجميعُ المحادثة، والفتحاتُ، ودلالةُ إعادة الاتصال |
+| [client-modules.md](client-modules.ar.md) | جدولُ إضافات الويب: تصريحاتُ `dsh.client`، وتركيبُ `WebBootGraph` على السلك، ومسارُ الحزمة ومقبسُ الفهرس |
+| [slots.md](slots.ar.md) | تركيبُ واجهة Web المنمَّط: ملكيةُ التصريح، والعدديةُ والنطاق، وحقنُ الإطار والميزات، واشتقاقُ الخصائص، والتراتبُ المشحون |
+| [client-resources.md](client-resources.ar.md) | نموذجُ موارد العميل: عناوينُ `dsh-resource://<type>/…`، ومزوّدو البروتوكولات و`ResourceProtocolMap`، وخطّافُ `useResource` العام وحالاتُه، والتثبيتُ والتحرير |
+| [sidebar-right.md](sidebar-right.ar.md) | الشريطُ الجانبي الأيمن: عناوينُ الموارد والتنقل، وتسجيلُ أنواع التبويبات وتوجيهُها، وخدمةُ التنقل `ctx.sidebarRight`، وفتحاتُ تبويبات اللوحة وخصائصُ مالكها، ونموذجُ الموارد، وخدمةُ ملفات مساحة العمل |
+| [conversation.md](conversation.ar.md) | تجميعُ أحداث الجلسة محايدًا تجاه الهدف: هويةُ السياق، وبياناتُ الموضع، ومساراتُ إعادة التشغيل، وبناةُ العروض، وعُقدُ التصيير التي يملكها الهدف |
+| [session-projection.md](session-projection.ar.md) | seam الإسقاط: `SessionProjectionMap`، ووحدةُ `ProjectionDefinition` الخالصة، والقطعُ المتسق في `ProjectionSnapshot`، وتغذيةُ التغييرات |
+| [session-telemetry.md](session-telemetry.ar.md) | seam قدرة التبليغ الصادر عن الجلسات: `SessionTelemetryRecord` و`SessionTelemetrySeverity`، وعقدُ `SessionTelemetrySink`، وwaterfall الحجب `session-telemetry/record` |
 
-> هذه صفحة فوق نوع إعلان و ذلك JSDoc و شفرة المصدر انتظار قيمة، و من `pnpm run verify-type-equiv` فحص عائم نقل (رؤية [development.md](../development.ar.md#documenting-types-verbatim-ts-type-equiv)). عادي كتلة إبقاء كامل إعلان؛`public-api` كتلة إبقاء ذهاب حذف تنفيذ جسم عام class إعلان.Cordis خدمة و حدث استخدام كل صفحة توليد **Cordis API** صغير عقدة.
+> تصريحاتُ الأنواع وJSDoc الخاص بها في هذه الصفحات مكافئةٌ للمصدر ويفحص انحرافَها `pnpm run verify-type-equiv` (انظر [development.md](../development.ar.md#documenting-types-verbatim-ts-type-equiv)). وتحفظ الكتلُ العادية التصريحاتِ كاملةً؛ وتحفظ كتلُ `public-api` تصريحاتِ الأصناف العامة منزوعةَ الأجسام. وتستعمل خدماتُ Cordis وأحداثُه قسمَ **واجهة Cordis** المولَّد في كل صفحة.

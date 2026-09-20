@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/guide/network-proxy.md
 network-proxy.md: 64220f7cffc536dea2c7cc4937e08625ea9ceebf
-network-proxy.ar.md: 14800b6686e95e48a3329cfec15764375815b65a
+network-proxy.ar.md: 1e6c98721aeee6bcdd9f96fd9691a45eb2c325ee

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/ptc-runtime.md
 ptc-runtime.md: d2c913386ddca03ed4b539702d81a006efb66f20
-ptc-runtime.ar.md: 6d7dafb524da7f179a8a66db3d2211be1af3fe8d
+ptc-runtime.ar.md: bc8787373850d35b7f2e2a171da1c1deb32eb80a

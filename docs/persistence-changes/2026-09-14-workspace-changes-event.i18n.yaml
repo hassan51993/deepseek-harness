@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/persistence-changes/2026-09-14-workspace-changes-event.md
 2026-09-14-workspace-changes-event.md: 29ec160bf23d89ae2a02f2463fe72e38146980ec
-2026-09-14-workspace-changes-event.ar.md: 829203de36374d8b4f00a390312fccea39ae4af7
+2026-09-14-workspace-changes-event.ar.md: 7fd67fffe923ab067896cb366025ac57fb914893

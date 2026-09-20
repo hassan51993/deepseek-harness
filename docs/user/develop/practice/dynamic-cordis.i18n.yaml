@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/user/develop/practice/dynamic-cordis.md
 dynamic-cordis.md: 5d1a5b3e88d1ad5f07ac8b6ddb5e14546c31a308
-dynamic-cordis.ar.md: 0721a414bf4c1b11a1489837e89aca231005b3fb
+dynamic-cordis.ar.md: c6694fcdbebf7e6f919f1a79f498a18b8ae13447

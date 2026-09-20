@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/postmortem/0002-js-expression-disabled-filesystem-tools.md
 0002-js-expression-disabled-filesystem-tools.md: 5e90c85585922db6b50877854bca104a7c4b3a32
-0002-js-expression-disabled-filesystem-tools.ar.md: 9438746d8dd2c6d0c1c685ea3ea381d336e8fe14
+0002-js-expression-disabled-filesystem-tools.ar.md: dc0c03daf4186f224f9aa91cafee808857a7cabd

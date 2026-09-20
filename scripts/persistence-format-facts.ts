@@ -22,16 +22,16 @@ function historicalSchema(entry: PersistenceFormatEntry, language: Language): st
   const schema = basename(entry.schemaPath)
   const introduction = language === 'en'
     ? `The [complete machine inventory](${schema}) contains ${entry.inventory.roots.length} roots and ${entry.inventory.types.length} reachable types. Digests include all referenced fields; source names and paths describe the selected historical tree.`
-    : `[كامل آلة جهاز دليل](${schema}) يتضمن ${entry.inventory.roots.length} عدد أصل نوع و ${entry.inventory.types.length} نوع يمكن بلوغ نوع. ملخص يتضمن كل مرجع حقل؛ شفرة المصدر اسم و مسار وصف الذي اختيار تاريخ شفرة المصدر شجرة.`
+    : `يحتوي [الجرد الآلي الكامل](${schema}) ${entry.inventory.roots.length} جذرًا و${entry.inventory.types.length} نوعًا قابلًا للوصول. وتشمل البصماتُ كلَّ حقل مشار إليه؛ وأسماءُ المصدر ومساراتُه تصف الشجرةَ التاريخية المختارة.`
   return [
     '<a id="schema"></a>',
-    language === 'en' ? '## Complete schemas' : '## كامل schema',
+    language === 'en' ? '## Complete schemas' : '## schemas الكاملة',
     '',
     introduction,
     '',
     renderPersistenceSchemaIndex(entry.inventory, language, [], 3),
     '<details>',
-    language === 'en' ? '<summary>Complete resolved types</summary>' : '<summary>كامل تحليل نوع</summary>',
+    language === 'en' ? '<summary>Complete resolved types</summary>' : '<summary>الأنواع المحلولة كاملةً</summary>',
     '',
     renderPersistenceSchemaDefinitions(entry.inventory, language, () => undefined, 3),
     '</details>',
@@ -42,12 +42,12 @@ function formatIndex(formats: PersistenceFormats, language: Language): string {
   const path = (target: string): string => posix.relative('docs/persistence-changes/historical-formats',
     language === 'ar' && target.endsWith('.md') ? target.replace(/\.md$/u, '.ar.md') : target)
   return [
-    language === 'en' ? '| Format | Source | Reference | Machine schema | Roots / types |' : '| صيغة | مصدر | مشاركة اعتبار وثيقة | آلة جهاز schema | أصل نوع / نوع |',
+    language === 'en' ? '| Format | Source | Reference | Machine schema | Roots / types |' : '| الصيغة | المصدر | المرجع | schema الآلي | الجذور / الأنواع |',
     '|---|---|---|---|---|',
     ...formats.entries.map((entry) => {
-      const source = entry.source === undefined ? language === 'en' ? 'Current checkout' : 'حالي عمل شجرة'
+      const source = entry.source === undefined ? language === 'en' ? 'Current checkout' : 'نسخة العمل الحالية'
         : 'tag' in entry.source ? `\`${entry.source.tag}\`` : `PR #${entry.source.pullRequest}`
-      const label = entry.version === formats.currentVersion ? language === 'en' ? 'Current catalog' : 'حالي دليل' : `V${entry.version}`
+      const label = entry.version === formats.currentVersion ? language === 'en' ? 'Current catalog' : 'الدليل الحالي' : `V${entry.version}`
       return `| ${entry.version} | ${source} | [${label}](${path(entry.document)}) | [JSON](${path(entry.schemaPath)}) | ${entry.inventory.roots.length} / ${entry.inventory.types.length} |`
     }),
   ].join('\n')

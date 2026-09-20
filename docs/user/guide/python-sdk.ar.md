@@ -1,21 +1,21 @@
-# Python SDK دخول باب
+# البدء مع Python SDK
 
 [English](python-sdk.md) | العربية
 
-هذا تعليم مسار تثبيت قد إصدار Python SDK، تشغيل مع مرفق مستقل أقصى بسيط profile، و شرح مثل أي من ذاتي ذات برنامج ذاتي تعريف نفس عدد `dsh` profile.
+يثبّت هذا الدرس حزمةَ Python SDK المنشورة، ويشغّل الـ profile الأدنى المستقل المشحون، ويعرض كيف تخصّص الـ profile نفسه من `dsh` من برنامجك أنت.
 
-## قبل وضع شرط
+## المتطلبات
 
-- Python 3.10 أو أكثر عال إصدار
+- Python 3.10 أو أحدث
 - Git
-- Linux x64،Linux arm64،arm64 فوق macOS 14 أو أكثر عال إصدار، أو Windows x64
-- DeepSeek توافق API endpoint و اعتماد
-- عزل workspace و عزل Harness home
+- Linux x64، أو Linux arm64، أو macOS 14 فما فوق على arm64، أو Windows x64
+- نقطةُ نهاية واجهة متوافقة مع DeepSeek واعتمادٌ لها
+- مساحةُ عمل معزولة ودليلٌ منزلي معزول للإطار
 
-## تثبيت SDK
+## ثبّت الـ SDK
 
 <div>
-<a id="linux-و-macos"></a>
+<a id="linux-and-macos"></a>
 <a id="windows-powershell"></a>
 </div>
 
@@ -39,14 +39,14 @@ python -m pip install deepseek-harness-sdk
 
 :::
 
-تثبيت محتوى يتضمن مطابقة أصلي وقت التشغيل wheel و `dsh` أمر. عادي SDK تشغيل لا حاجة نظام Node.js. حاجة بناء ناتج مستودع مساهمة من ينبغي استخدام [Python مساهمة من سير العمل](../../../python/development.ar.md).
+ويتضمن التثبيتُ عجلةَ وقت تشغيل أصيلة مطابقة والأمرَ `dsh`. ولا يحتاج تشغيلُ SDK المعتاد Node.js في النظام. وعلى مساهمي المستودع الذين يبنون النواتج استعمالُ [مسار عمل مساهمي Python](../../../python/development.ar.md).
 
-## تشغيل فحص دخول عرض مثال
+## شغّل المثال المودَع
 
-تصدير اعتماد؛ استخدام توافق بديل إدارة وقت مجددا ضبط endpoint:
+صدّر الاعتماد، وعند الحاجة نقطةَ نهاية وكيل متوافقة:
 
 <div>
-<a id="linux-و-macos-1"></a>
+<a id="linux-and-macos-1"></a>
 <a id="windows-powershell-1"></a>
 </div>
 
@@ -64,10 +64,10 @@ $env:DEEPSEEK_API_KEY = "sk-your-key-here"
 
 :::
 
-استخدام صريح workspace و home مسار تشغيل واحد مهمة:
+شغّل مهمةً واحدة بمساري مساحة العمل والدليل المنزلي صريحَين:
 
 <div>
-<a id="linux-و-macos-2"></a>
+<a id="linux-and-macos-2"></a>
 <a id="windows-powershell-2"></a>
 </div>
 
@@ -91,9 +91,9 @@ python python/sdk/examples/minimal.py `
 
 :::
 
-نص برمجي سوف ضرب طبع نهائي assistant استجابة. الذي اختيار home سوف حفظ توليد `sdk-minimal` profile، قد تثبيت إضافة، و `sessions/` تحت لم ضغط JSONL جلسة سجل. عرض مثال و SDK أبدا سوف ساكن صامت قراءة `~/.dsh`.
+ويطبع النصُّ استجابةَ المساعد النهائية. ويتلقى الدليلُ المنزلي المختار الـ profile المولَّد `sdk-minimal`، والإضافاتِ المثبَّتة، وسجلاتِ الجلسات بصيغة JSONL غير المضغوطة تحت `sessions/`. ولا يقرأ المثالُ ولا الـ SDK دليلَ `~/.dsh` في صمت أبدًا.
 
-## في برنامج في استخدام SDK
+## استعمل الـ SDK في برنامجك
 
 ```python
 from pathlib import Path
@@ -118,14 +118,14 @@ with DeepSeekHarness(
 print(result.final_response)
 ```
 
-SDK سوف تأخير متأخر بدء داخل وضع `dsh --profile sdk-minimal` عملية، و إعادة استخدام إلى سياق إدارة جهاز خروج.Profile، ذلك حمل دائم patch،home patch و أي لديه ترتيب `patches` tuple مشترك نفس مجموعة صار تطبيق إعداد. لا وجود مستقل Python وقت التشغيل bin أو كامل إعداد خيار.
+ويُقلع الـ SDK عمليةَ `dsh --profile sdk-minimal` المحزومة كسولًا ويعيد استعمالها حتى الخروج من مدير السياق. ويؤلّف الـ profile وpatch الدائم الخاص به وpatch الدليل المنزلي وأيُّ صفّ `patches` مرتَّب إعدادَ التطبيق. ولا يوجد ملفُّ وقت تشغيل Python منفصل ولا خيارُ إعداد كامل.
 
-## تثبيت أو تعريف إضافة
+## ثبّت الإضافات أو عرّفها
 
-حاجة في هذا home في حمل دائم حفظ اعتماد و bundle طبقة وقت، استخدام `dsh plugin`:
+استعمل `dsh plugin` للاعتماديات ولطبقات حزم التركيب التي ينبغي أن تدوم في هذا الدليل المنزلي:
 
 <div>
-<a id="linux-و-macos-3"></a>
+<a id="linux-and-macos-3"></a>
 <a id="windows-powershell-3"></a>
 </div>
 
@@ -145,14 +145,14 @@ dsh plugin --profile sdk-minimal add file:C:/work/my-plugin-bundle
 
 :::
 
-رقم واحد أمر ابتدائي تحويل مع مرفق مستقل profile. ثاني عدد أمر يأخذ حزمة إدارة تحويل إرسال إعطاء `pnpm`، لكن بعد سجل كل تصدير `dsh.bundle` طبقة قد تثبيت حزمة. فقط لديه تنفيذ هذا إدارة أمر وقت عندئذ حاجة تثبيت `pnpm`؛ بدء قد تثبيت SDK لا حاجة هو. حمل دائم بند إعداد تغيير ينبغي تحرير `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml`؛ مفرد مرة بدء تغيير فإن من Python نقل دخول patch ملف.
+ويهيّئ الأمرُ الأول الـ profile المستقل المشحون. ويمرّر الثاني إدارةَ الحزم إلى `pnpm`، ثم يسجّل كلَّ حزمة مثبَّتة تصدّر طبقةَ `dsh.bundle`. وثبّت `pnpm` لأجل أمر الإدارة هذا وحده؛ فإقلاعُ الـ SDK المثبَّت لا يحتاجه. وعدّل `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` لتغييرات صفوف دائمة، أو مرّر ملفاتِ patch من Python لتغييرات عند كل إقلاع.
 
-آخر عدد `profile` فقط لديه يتضمن `@deepseek-ai/dsh-sdk-app` أو آخر عدد JSON-RPC server بند إعداد وقت عندئذ صالح. ناقص server بند إعداد، لا يمكن تحليل إضافة و غير قاعدة patch سوف في بدء وقت فشل، لن رجوع إلى أخرى تركيب.
+ويصح `profile` آخر حين يتضمن `@deepseek-ai/dsh-sdk-app` أو صفَّ خادم JSON-RPC آخر. وصفوفُ الخادم المفقودة والإضافاتُ التي لا تتحلّل وpatches غير الصالحة تفشل أثناء الإقلاع بدل الرجوع إلى تركيب آخر.
 
 <a id="opt-in-to-str_replace_editor"></a>
-### صريح تفعيل `str_replace_editor`
+### فعّل `str_replace_editor`
 
-مع مرفق وقت التشغيل يتضمن `str_replace_editor`، لكن `sdk-minimal` افتراضي Cordis tree لا تركيب هو. يلزم استخدام هذا أداة، طلب سوف التالي إعداد حفظ لـ `editor.patch.yml`؛`insert` سوف إضافة editor، و أقصى بسيط profile نقص قليل نظام الملفات خلفية:
+يتضمن وقتُ التشغيل المحزوم الأداةَ `str_replace_editor`، لكن `sdk-minimal` يحذفها من شجرة Cordis الافتراضية. ولاستعمالها احفظ هذا الإعداد باسم `editor.patch.yml`؛ فـ `insert` يضيف المحرّرَ ومزوّدَ نظام الملفات الذي يفتقده الـ profile الأدنى معًا:
 
 ```yaml
 - insert:
@@ -164,23 +164,23 @@ dsh plugin --profile sdk-minimal add file:C:/work/my-plugin-bundle
       name: '@deepseek-ai/dsh-tool-str-replace-editor'
 ```
 
-بنية صنع `DeepSeekHarness(profile="sdk-minimal", ...)` وقت نقل دخول `patches=("/absolute/path/to/editor.patch.yml",)`، أو سوف patch كتابة `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` بـ حمل دائم حفظ إعداد. تحت مرة وقت التشغيل بدء بعد، نموذج طلب سوف في حمل دائم shell خارج يتضمن `str_replace_editor`. محلي نظام الملفات خلفية بـ وقت التشغيل عمل دليل تحليل متبادل مقابل مسار؛ و أقصى بسيط shell واحد مثال، هو لن سوف وصول حد في هذا دليل داخل. مقابل في معيار `sdk` profile، فقط إدراج دخول editor بند إعداد، يجعل هو استخدام قد لديه نظام الملفات خلفية و سياسة.
+ومرّر `patches=("/absolute/path/to/editor.patch.yml",)` عند بناء `DeepSeekHarness(profile="sdk-minimal", ...)`، أو ضع الـ patch في `$DSH_HOME/profiles/sdk-minimal/cordis.patch.yml` لإعداد دائم. وفي إقلاع وقت التشغيل التالي، تتضمن طلباتُ النموذج `str_replace_editor` بجوار الغلاف الدائم. ويستعمل مزوّدُ نظام الملفات المحلي دليلَ عمل وقت التشغيل للمسارات النسبية؛ وهو، مثل الغلاف الأدنى، لا يحصر الوصولَ في ذلك الدليل. وفي الـ profile المعياري `sdk`، أدرِج صفَّ المحرّر وحده ليستعمل مزوّدَ نظام الملفات والسياساتِ القائمة.
 
-## إدارة حل أقصى بسيط profile
+## افهم الـ profile الأدنى
 
-| خاصية | قيمة |
+| الخاصية | القيمة |
 |---|---|
-| توجيه النظام | `DSH_SYSTEM_PROMPT`، لم ضبط وقت لـ `You are a helpful software engineer assistant.` |
-| `minimal.py` نموذج | `--model`، لكن بعد هو `DSH_MODEL`، الأكثر بعد هو `deepseek-v4-flash` |
-| موجه إلى نموذج أداة | Linux/macOS فوق حمل دائم `bash` أو Windows فوق `pwsh` |
-| Shell مهلة | 300 ثانية |
-| وقت التشغيل سياق و compaction | لا وجود |
-| جلسة حفظ دائم | `<dsh_home>/sessions` تحت لم ضغط JSONL |
+| توجيه النظام | `DSH_SYSTEM_PROMPT`، وإلا `You are a helpful software engineer assistant.` |
+| النموذج في `minimal.py` | `--model`، ثم `DSH_MODEL`، ثم `deepseek-v4-flash` |
+| الأداة الموجَّهة إلى النموذج | `bash` دائمة على Linux وmacOS أو `pwsh` على Windows |
+| مهلة الغلاف | 300 ثانية |
+| سياق وقت التشغيل والضغط | غائبان |
+| حفظ الجلسات الدائم | JSONL غير مضغوط تحت `<dsh_home>/sessions` |
 
-هذا profile وحيد تركيب حزمة سوف في فارغ أصل لـ فوق إدراج دخول كامل إعداد شجرة، كما لا يتضمن `dsh-base`، لذلك أساس أساس profile بـ بعد إضافة جديدة أداة لن خفي صيغة ظهور. هو يتضمن SDK بروتوكول، واحد من بيئة إعداد DeepSeek مهايئ، محلي تنفيذ و حفظ دائم؛ نظام الملفات أداة،settings، حمل إدارة اعتماد،OTel بعيد قياس،Web أداة،subagent، محلي إشارة أمر اكتشاف و compaction متساو لا وجود.[DeepSeek جلسة سجل مساهمة جهاز](../../../packages/session/session-log-deepseek/README.ar.md) افتراضي مع DeepSeek طلب فوق نقل كامل لم قبول سجل بعد لاحقة؛ في profile patch في ضبط `session-log-deepseek.enabled: false` يمكن سوف ذلك إغلاق. هو ثابت استخدام `danger-full-access`، لذلك حسب منصة اختيار حمل دائم shell يمكن تعديل وقت التشغيل مرئي أي مسار؛ ينبغي استخدام مرة صفة checkout أو حاوية.
+وحزمةُ التركيب الوحيدة في الـ profile تدرج الشجرةَ كاملةً فوق جذر فارغ ولا تتضمن `dsh-base`؛ فلا تستطيع أدواتُ profile الأساس اللاحقة الظهورَ ضمنًا. وهي تحتوي بروتوكولَ الـ SDK، ومهايئَ DeepSeek واحدًا مضبوطًا من البيئة، والتنفيذَ المحلي، والحفظَ الدائم؛ بينما تغيب أدواتُ نظام الملفات والإعداداتُ والاعتماداتُ المُدارة وقياسُ OTel عن بُعد وأدواتُ Web والوكلاءُ الفرعيون واكتشافُ التعليمات المحلية والضغط. ويرفع [مساهم سجل جلسات DeepSeek](../../../packages/session/session-log-deepseek/README.ar.md) لواحقَ السجل غير المقبولة كاملةً مع طلبات DeepSeek افتراضيًا؛ فاضبط `session-log-deepseek.enabled: false` في patch الـ profile لتعطيله. وهو يثبّت `danger-full-access`، فيستطيع الغلافُ الدائم الذي تختاره المنصةُ تعديلَ أي مسار يراه وقتُ التشغيل؛ فاستعمل نسخةَ عمل قابلة للإسقاط أو حاوية.
 
-قد تثبيت wheel ما زال سوف تحزيم كامل `web` profile و قبل طرف ناتج. إذا Python SDK نشر أيضا حاجة متصفح تطبيق، طلب إبرة مقابل صريح `DSH_HOME` تشغيل `dsh web`؛`web` هو مستقل CLI تطبيق، لا يستطيع لـ Python SDK client توفير خدمة.
+ولا تزال العجلةُ المثبَّتة تحزم profile الـ `web` كاملًا وأصولَ الواجهة. فشغّل `dsh web` مقابل `DSH_HOME` صريح حين يحتاج نشرُ Python SDK تطبيقَ المتصفح أيضًا؛ فـ `web` تطبيقُ CLI منفصل ولا يستطيع خدمةَ عميل Python SDK.
 
-حاجة عزل profile، إضافة، اعتماد، ضبط و جلسة وقت، ينبغي استخدام جديد home. مستقل عمل ينبغي استخدام جديد session id؛ فقط لديه متابعة نفس مقطع حمل دائم محادثة و جلسة مورد وقت، عندئذ معا إعادة استخدام harness،home و id.
+واستعمل دليلًا منزليًا جديدًا حين يجب عزلُ الـ profiles والإضافات والاعتمادات والإعدادات والجلسات. واستعمل معرّفَ جلسة جديدًا للعمل المستقل؛ ولا تعِد استعمال إطار ودليل منزلي ومعرّف إلا لمتابعة المحادثة الدائمة نفسها والموارد التي تملكها الجلسة.
 
-[تركيب حزمة مشاركة اعتبار](../../../packages/bundle/sdk-minimal/README.ar.md) تعريف تأكيد قطع إعداد شجرة،[عرض مثال مشاركة اعتبار](../../../python/sdk/examples/README.ar.md) تعريف يمكن تشغيل برنامج.[Python SDK مشاركة اعتبار](../../../python/sdk/README.ar.md) وسيط تعريف دورة الحياة، نتيجة، إشعار و قاع طبقة سلوك؛[dsh CLI مشاركة اعتبار](../../../apps/cli/reference/README.ar.md) وسيط تعريف profile قسم طبقة.
+ويملك [مرجع حزمة التركيب](../../../packages/bundle/sdk-minimal/README.ar.md) الشجرةَ بعينها، ويملك [مرجع المثال](../../../python/sdk/examples/README.ar.md) البرنامجَ القابل للتشغيل. ويغطي [مرجع Python SDK](../../../python/sdk/README.ar.md) دورةَ الحياة والنتائجَ والإشعاراتِ والسلوكَ منخفض المستوى؛ ويغطي [مرجع واجهة dsh](../../../apps/cli/reference/README.ar.md) طبقاتِ الـ profiles.

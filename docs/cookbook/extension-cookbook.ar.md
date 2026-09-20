@@ -1,18 +1,18 @@
-# فعلي تشغيل يد سجل: توسيع إضافة شكل
+# دليل عملي: صيغ إضافات التوسعة
 
 [English](extension-cookbook.md) | العربية
 
-harness توسيع مشاركة اعتبار نمط. شفرة قطعة مقطع حذف import و مساعد مساعدة تنفيذ، لا يمكن مباشر نسخ تشغيل. أداة جسم تحرير كتابة مسار رؤية[حزمة فحص بيان](adding-a-package.ar.md) ،[رقم واحد أداة تعليم مسار](../user/develop/basic/tool.ar.md) ،[أداة مشاركة اعتبار](adding-a-tool.ar.md) ،[LLM(كبير لغة نموذج) مهايئ إشارة جنوب](adding-an-llm-adapter.ar.md) و [Session صيغة إصدار تعليم مسار](adding-a-session-format-version.ar.md) ؛ نظام و نقطة توسيع خريطة من[هيكل بنية وثيقة](../architecture.ar.md) مسؤول.
+أنماط مرجعية لتوسعات الإطار. والمقتطفات تحذف الاستيرادات وتنفيذاتِ المساعدات، وليست كاملةً للنسخ واللصق. ولمسارات التأليف الملموسة انظر [قائمة تحقق الحزمة](adding-a-package.ar.md)، و[درس الأداة الأولى](../user/develop/basic/tool.ar.md)، و[مرجع الأدوات](adding-a-tool.ar.md)، و[دليل مهايئ LLM](adding-an-llm-adapter.ar.md)، و[درس إصدار صيغة الجلسة](adding-a-session-format-version.ar.md)؛ وتملك [المعمارية](../architecture.ar.md) خريطةَ النظام ونقاط الامتداد.
 
-## أداة إضافة
+## إضافة أداة
 
-أداة في `ctx.tools` فوق تسجيل. حمل ملاحظة حل `defineTool` عرض مثال (نوع تحويل `execute` معامل، نتيجة بنية صنع،`run_in_background` نمط) رؤية [adding-a-tool.md](adding-a-tool.ar.md)——هذا إشارة جنوب هو أداة تعريف حق مصدر.`ctx.tools.register()` أيضا مباشر قبول أصلي JSON Schema `ToolDefinition`(MCP مصدر أداة حينئذ هو هذا مثال وصول) ؛`defineTool` هو رقم واحد جهة أداة استخدام نوع تحويل مساعد مساعدة دالة.
+تسجَّل الأداة على `ctx.tools`. ويسكن مثالُ `defineTool` المشروح (بوسائط `execute` المنمَّطة، وبناءِ النتيجة، ونمطِ `run_in_background`) في [adding-a-tool.md](adding-a-tool.ar.md)، وذلك الدليل هو مرجع تعريفات الأدوات. ويقبل `ctx.tools.register()` أيضًا تعريفاتِ `ToolDefinition` بصيغة JSON-Schema خامًا مباشرةً (وهكذا تصل الأدوات الآتية من MCP)؛ أما `defineTool` فهو المساعد المنمَّط لأدوات الطرف الأول.
 
 <a id="a-hook-plugin-permission-gate-example"></a>
 
-## خطاف إضافة (بـ إذن بوابة لـ مثال)
+## إضافة خطاف (مثال بوابة الأذونات)
 
-هذا عدد إذن بوابة هو خطاف إضافة واحد عرض مثال. هو من `tools/pre-execute` بوابة إرجاع واحد نوع تحويل قرار، لأجل سماح أو رفض مرة استدعاء؛ صندوق رملي، إذن و plan-mode إضافة كل يمكن استخدام هذا نقطة توسيع. خطاف إضافة أيضا يمكن اعتراض قطع أخرى نقطة توسيع، ذاته و لا انتظار نفس في إذن بوابة.«أصلي خطاف» هو في اعتراض قطع نقطة فوق تشغيل عادي Cordis إضافة، لا حاجة خارجي بروتوكول.
+بوابةُ الأذونات هذه مثالٌ واحد على إضافة خطاف. وهي ترجع قرارًا منمَّطًا من بوابة `tools/pre-execute` لتسمح بالاستدعاء أو تمنعه؛ وتستطيع إضافاتُ البيئة المعزولة والأذونات ووضع التخطيط استعمالَ نقطة الامتداد هذه. وإضافاتُ الخطاف تستطيع اعتراضَ نقاط امتداد أخرى وليست بوابات أذونات بطبيعتها. و«الخطاف الأصيل» إضافةُ Cordis عادية على نقطة اعتراض؛ ولا يحتاج بروتوكولًا خارجيًا.
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -32,11 +32,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-هذا عدد waterfall(شلال نشر صيغة حدث) هو يمكن إعادة ترتيب سياسة طبقة. عند ثابت صيغة حاجة مفرد ضبط نهائي رفض وقت استخدام `ctx.tools.guard()`؛ عند إضافة حاجة حزمة لف توزيع دورة الحياة وقت (مهلة/إعادة محاولة/إشارة علامة؛ فقط `exec.signal` يمكن استبدال) استخدام `tools/execute`؛ صريح نتيجة تغيير تبديل استخدام `tools/post-execute`؛ مقابل غير ممكن تغيير نهائي نتيجة تلقي حد مراقبة استخدام `tools/result`. اختيار قاعدة رؤية[إضافة أداة إشارة جنوب](adding-a-tool.ar.md#execution-policy-and-observation).
+وهذا الـ waterfall هو طبقة السياسة القابلة لإعادة الترتيب. استعمل `ctx.tools.guard()` حين يحتاج ثابتٌ منعًا نهائيًا رتيبًا، و`tools/execute` حين يجب أن تلفّ إضافةٌ عمرَ التوزيع (المهل وإعادة المحاولة والقياسات؛ ولا يُستبدل سوى `exec.signal`)، و`tools/post-execute` لتحويل النتيجة صراحةً، و`tools/result` للمراقبة المحتواة للنتيجة النهائية غير القابلة للتغيير. ويعطي [دليل إضافة أداة](adding-a-tool.ar.md#execution-policy-and-observation) قاعدةَ الاختيار.
 
-## UI إضافة
+## إضافة واجهة مستخدم
 
-UI إضافة يأخذ حمل دائم `session/event` record(Assistant settlement، جولة/خطوة حد و أداة نشط حركة) و لأجل فوري token عرض لحظة حالة `agent/assistant-stream` frame تركيب بدء قدوم، و عبر `agent.followup()` / `agent.steer()` سوف إدخال قيادة عودة ذهاب. إذا متصفح إضافة يلزم نحو داخل بناء Web Client مساهمة عمل خدمة سطر، فإن ينبغي تسجيل `ConversationNodeDefinition` و keyed Chat renderer؛ أداة جسم اتفاق رؤية [Conversation فرعي نظام مشاركة اعتبار](../subsystems/conversation.ar.md).
+تجمع إضافةُ الواجهة بين سجلات `session/event` الدائمة (تسويات Assistant، وحدود الجولات والخطوات، ونشاط الأدوات) وإطارات `agent/assistant-stream` العابرة لعرض الرموز حيًّا، وتعيد قيادةَ المدخلات عبر `agent.followup()` و`agent.steer()`. أما إضافةُ المتصفح التي تسهم بصف أعمال في عميل Web المدمج فتسجّل `ConversationNodeDefinition` ومصيّرَ محادثة مفهرسًا؛ فاتبع [مرجع نظام المحادثة الفرعي](../subsystems/conversation.ar.md).
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -63,11 +63,11 @@ export function apply(ctx: Context) {
 }
 ```
 
-## خارجي بروتوكول قيادة
+## مشغّل بروتوكول خارجي
 
-*بروتوكول قيادة*سوف بروتوكول مقابل طرف وصل دخول `ctx.agents`؛ هو يمكن خدمة في UI أو تلقائي تحويل عميل.stdio قيادة يملك stdout، عبر عمل مصنع إنشاء أو استعادة agent(ذكي جسم) ، و سوف بروتوكول طلب خريطة لـ `followup()` أو `cancel()`. قاع طبقة نص التوجيه طلب إرجاع ذلك حمل دائم دخول طابور عودة تنفيذ؛ هو لن عبر صلة ربط `MessageId` و `turn/end` نيل نيل نتيجة. كامل agent حالة ينبغي مفرد وحيد إصدار. تلقائي تحويل طريقة يمكن من عودة تنفيذ انتظار إلى تحت مرة idle، و عام تضمين هذا واحد صريح يملك منطقة بين؛UI عبر معتاد فإن سوف حمل متابعة مراقبة فتح وضع صيغة حدث تدفق. عبر `AgentHandle.dispose()` تفكيك حذف agent، بـ جعل dispose(مورد تحرير) بلوغ إلى تماما توقف مستقر.
+*مشغّل البروتوكول* يهايئ نظيرًا على السلك مع `ctx.agents`؛ وقد يخدم واجهةَ مستخدم أو عميلَ أتمتة. ومشغّلُ stdio يملك الخرجَ القياسي، وينشئ الوكلاء أو يستأنفهم عبر المصنع، ويربط طلباتِ البروتوكول بـ `followup()` أو `cancel()`. وطلبُ التوجيه منخفض المستوى يعيد إيصالَ إدراجه الدائم في الطابور؛ ولا يحصل على نتيجة بربط `MessageId` بـ `turn/end`. وانشر حالةَ الوكيل كله منفصلةً. وقد تنتظر طريقةُ أتمتة من إيصالها إلى الخمول التالي وتلخّص تلك الفترةَ التي تملكها صراحةً، بينما تواصل الواجهةُ عادةً مراقبةَ تدفق الأحداث المفتوح. وفكّك الوكلاء بـ `AgentHandle.dispose()` ليبلغ التفكيكُ السكون.
 
-[`packages/acp/acp`](../../packages/acp/acp) هو فقط موجه إلى تلقائي تحويل كامل عرض مثال: هو عبر ACP(Agent Client Protocol)JSON-RPC stdio توفير كل جديد نص جلسة، إرسال خروج قد إيداع مساعدة يد نص، و لـ ذلك يملك agent تسجيل مرة صفة آلة جهاز إذن ينبغي جواب جهاز. ذلك [README](../../packages/acp/acp/README.ar.md) تعريف تأكيد قطع طريقة، حدث ترتيب و دورة الحياة اتفاق.
+و[`packages/acp/acp`](../../packages/acp/acp) هو المثال العملي المخصص للأتمتة: فهو يكشف جلساتٍ نصية جديدة عبر stdio بـ JSON-RPC من Agent Client Protocol، ويرسل نصَّ Assistant المودَع، ويسجّل مجيبَ أذونات آليًّا لمرة واحدة للوكلاء الذين يملكهم. ويعرّف [README الخاص به](../../packages/acp/acp/README.ar.md) الطرقَ بعينها وترتيبَ الأحداث وعقدَ دورة الحياة.
 
 ```ts
 import type { Context } from '@deepseek-ai/cordis'
@@ -93,44 +93,44 @@ export function apply(ctx: Context) {
 }
 ```
 
-## يمكن تشغيل تجميع عرض مثال
+## التوصيلات القابلة للتشغيل
 
-تسليم تطبيق عبر `packages/bundle/*/cordis.patch.yml` توفير profile طبقة، منتج `dsh` بدء جهاز عبر أداة اسم profile مسؤول Web،ACP،SDK و مرة صفة headless تنفيذ. اختياري مستخدم overlay يقع في `apps/cli/config/examples/`؛profile اختبار تكامل يقع في `apps/cli/tests/profiles/`، حزمة مخصص تابع Loader تركيب فإن إبقاء في مقابل حزمة اختبار دليل في.
+تسهم التطبيقات المشحونة بطبقات الـ profile عبر `packages/bundle/*/cordis.patch.yml`، ويملك مُقلِع المنتج `dsh` تنفيذَ Web وACP وSDK والتشغيلةِ الواحدة الخالية من الواجهة عبر profiles مسمّاة. وتسكن الطبقاتُ الاختيارية الموجَّهة إلى المستخدم تحت `apps/cli/config/examples/`؛ وتسكن اختباراتُ تكامل الـ profiles تحت `apps/cli/tests/profiles/`، بينما تبقى تركيباتُ Loader الخاصة بحزمة بعينها مع اختبارات حزمتها.
 
 <a id="the-feature--mechanism-map"></a>
 
-## وظيفة→آلية خريطة
+## خريطة الميزة إلى الآلية
 
-كل منتج وظيفة كل خريطة إلى واحد وثيقة تحويل نقطة توسيع فوق مستمع——دقيق داخل نواة إعلان من هذا يمكن تحقق ([دقيق داخل نواة Agent Note](../../.agents/notes/implemented/architecture/2026-06-11-microkernel-event-taxonomy.ar.md)). لا يوجد أي واحد سطر تعديل حلقة ذاته.
+كل ميزة في المنتج تقابل مستمعًا على نقطة امتداد موثَّقة، وهذه هي دعوى النواة المصغّرة وقد صارت قابلة للفحص ([Agent Note عن النواة المصغّرة](../../.agents/notes/implemented/architecture/2026-06-11-microkernel-event-taxonomy.ar.md)). ولا يعدّل أي صف الحلقةَ.
 
-`system-prompt/assemble` هو واحد مخصص بيت تنسيق عمل صيغة كامل جسم تركيب إعداد تغيير تبديل: ذلك إرجاع تركيب إعداد نتيجة أداة لديه مرجعي صفة، لذلك مستمع عمل من لديه مسؤولية مهمة إبقاء نشط وثب PTC mode و بنية تحويل إخراج بروتوكول مساهمة. مقابل في حاجة في عرض، فحص بحث و تنفيذ بين إبقاء مقابل متساو أداة مرور ترشيح، أولوية استخدام `ctx.tools.restrict()`.
+و`system-prompt/assemble` تحويلٌ تعاوني خبير للتجميع كله: فالتجميع الذي يعيده مرجعي، وعلى كاتبي المستمعين أن يحفظوا وضعَ PTC النشط ومساهماتِ بروتوكول الخرج المبنيَن. وفضّل `ctx.tools.restrict()` في ترشيح الأدوات الذي يجب أن يبقى متسقًا بين العرض والبحث والتنفيذ.
 
-| منتج وظيفة | إضافة آلية |
+| ميزة المنتج | آلية الإضافة |
 |---|---|
-| خطاف نظام (مستخدم درجة + مشروع درجة) | `agent/created`،`agent/pre-step`،`agent/request`،`tools/pre-execute`،`tools/post-execute` و `agent/turn-stopping` فوق مستمع؛waterfall إرجاع نوع تحويل قرار،`agent/turn-stopping` فإن يمكن عبر steering(في طريق جذب توجيه) إطلاق تحت واحد خطوة؛`dsh-hooks-claude-code` / `dsh-hooks-codex` جسر وصل جهاز سوف خطاف ملف إعداد خريطة إلى هذه نقطة توسيع فوق |
-| `/goal` | `ctx.goals` إدارة حمل دائم حالة،`dsh-goal-round-driver` عبر عام مشترك `Agent` ضبط درجة نفس جلسة Round، مستقل أمر/أداة إنتاج جهة قسم آخر توفير شخص صنف/نموذج تحكم |
-| `/loop` | في `turn/end` جلسة حدث فوق `followup()` تحت مرة تكرار بديل؛ أو قوي صنع متابعة |
-| حركة حالة سير العمل | `ctx.workflowEngine` + PTC سير العمل جذب محرك + `workflow` أداة؛ بنية تحويل عملية داخل فرعي مهمة عبر أثر مجال تحويل نص التوجيه/أداة تسجيل، مفرد ضبط أداة حراسة حماية، نهائي `tools/result` إيداع (يشمل خارج طبقة `run_code`) و بنية تحويل إخراج تنفيذ مفرد ضبط `concludeTurn()` علامة قدوم قوي صنع إخراج |
-| ترتيب طابور رسالة + steering | نواة قلب `Agent.followup()` / `Agent.steer()` |
-| سياق ضغط (context compaction)(تلقائي + يد حركة) | `ctx.compaction` seam + `dsh-compaction-basic`؛ تلقائي ضغط قوة فحص تشغيل في سلسلة سطر `agent/pre-step`، معيار فيض خروج استعادة آلية تشغيل في `agent/request-error`، يد حركة استدعاء جهة استخدام نفس عدد ضغط خدمة ([ضغط Agent Note](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md)) |
-| توجيه النظام يمكن إعداد صفة | `ctx.systemPrompt.section()`، دعم حمل ترتيب و أثر مجال نطاق جزء تغطية |
-| AGENTS.md(أصل دليل) | واحد قراءة هذا ملف section مزود |
-| AGENTS.md(فرعي دليل، حسب يحتاج إطلاق)+ ملف تغيير إشعار | من watcher / أداة نتيجة مستمع استدعاء `agent.inject()` |
-| داخل وضع أداة | `ctx.tools.register()`؛schema تلقائي تدفق دخول تركيب إعداد——`dsh-tool-*` نظام صف (bash،fs،web،subagent،todo) هو قد تسليم عرض مثال |
-| ToolSearch / تدريجي دخول صيغة كشف كشف | عند مرئي تجميع تغير وقت استبدال واحد أثر مجال تحويل `ctx.tools.restrict()` تسجيل؛ سجل التسجيل إبقاء عرض، فحص بحث و تنفيذ ثلاثة من مقابل متساو |
-| أداة قطع توقف وقت / إعادة محاولة / إشارة علامة | استخدام `tools/execute` حزمة لف نواة قلب توزيع؛ حزمة تركيب طبقة يمكن استبدال `exec.signal`، تفويض حمل تنفيذ، و في نفس كلمة قاعدة دورة الحياة داخل عرض مواصفة تحويل نتيجة |
-| نهائي أداة نتيجة إشارة علامة / مراجعة حساب / التقاط | استخدام `tools/result` مراقبة غير ممكن تغيير مرجعي نتيجة؛ فقط عند إضافة حاجة تغيير تبديل نتيجة أو مرفق إضافة سياق وقت عندئذ استخدام `tools/post-execute` |
-| مفرد ضبط طرفية جولة سياسة | من نجاح طرفية استدعاء الأداة `ToolExecution.concludeTurn()`؛ نفس استجابة في لاحق استدعاء الأداة ما زال يمكن من حراسة حماية منع توقف، حلقة في هذا خطوة بعد إيقاف |
-| عملية فرعية صندوق رملي (landlock / sandbox-exec) | عبر `dsh-bash-sandbox` استخدام `ctx.sandbox` خلفية؛ قدرة درجة آخر رفض استخدام `tools/pre-execute` |
-| إذن نظام / AskUserQuestion | من `tools/pre-execute` إرجاع `ask` و عبر `ctx.approval` ينبغي جواب؛ لـ عادي مستخدم رفع سؤال تسجيل واحد مستقل موجه إلى نموذج ask أداة |
-| Plan mode | [`@deepseek-ai/dsh-plan-mode`](../../packages/plan/plan-mode/README.ar.md): سقوط سجل `plan/mode` حالة،`plan:policy` جذب توجيه مقطع،`/plan [message]` مدخل،`/plan off` مباشر خروج، و مرور مستخدم مراجعة `exit_plan_mode` خروج فتحة؛ قوي صنع قيد إبقاء في مستقل صندوق رملي/مراجعة دفعة محور فوق |
-| subagent تفويض إرسال | `ctx.subagents` مزود سجل التسجيل (`dsh-subagent-spawn-in-process`/`dsh-subagent-fork-in-process`/`dsh-subagent-acp`/`dsh-subagent-codex`/`dsh-subagent-claude-code`/`dsh-subagent-dsh-sdk`)+ `dsh-tool-subagent` نحو نموذج كشف واحد قد إعداد مزود |
-| MCP | كل خادم واحد إضافة: اكتشاف أداة → `ctx.tools.register()` |
-| skill(تقنية قدرة) | section + أداة تسجيل؛ استدعاء وقت عبر `inject()` حقن skill محتوى |
-| تسجيل ذاكرة | section مزود + أداة |
-| تحديد وقت مهمة (cron) | إضافة تسجيل موجه إلى نموذج ضبط درجة أداة؛ تحديد وقت جهاز إطلاق → فارغ خامل وقت `followup(…, {source: {kind: 'plugin', plugin: 'schedule'}})`/مشغول مشغول وقت `inject()` إشعار |
-| UI(GUI؛CLI(أمر سطر واجهة) إخراج JSONL) | استماع `agent/assistant-stream` فوري chunk، و استماع `session/event` حمل دائم settlement، حد و أداة نشط حركة؛ إدخال → `followup()` |
-| Web Client Chat عمل خدمة عقدة | تسجيل `ConversationNodeDefinition` و `conversation.chat.node` keyed renderer |
-| بعيد قياس / يمكن إعادة تشغيل trace | `session/event` → JSONL؛ إعادة تشغيل = `sessions.create(id, { seed })` |
-| نموذج مهايئ | عبر `registerAdapter` تسجيل `LlmAdapter` فرعي صنف (`dsh-llm-deepseek`،`dsh-llm-pi-ai`) |
-| إضافة حار إعادة تحميل | كل تسجيل كل هو واحد `ctx.effect` → مع مستودع توفير HMR(حار وحدة استبدال) مباشر توليد فاعلية |
+| نظام الخطافات (على مستوى المستخدم والمشروع) | مستمعون على `agent/created` و`agent/pre-step` و`agent/request` و`tools/pre-execute` و`tools/post-execute` و`agent/turn-stopping`؛ وترجع الـ waterfalls قراراتٍ منمَّطة، بينما قد يوجّه `agent/turn-stopping` خطوةً أخرى؛ وتربط جسور `dsh-hooks-claude-code` و`dsh-hooks-codex` ملفاتِ إعداد الخطافات بنقاط الامتداد هذه |
+| `/goal` | يملك `ctx.goals` الحالةَ الدائمة، ويجدوِل `dsh-goal-round-driver` جولاتِ الهدف داخل الجلسة نفسها عبر `Agent` العام، ويكشف منتجو الأوامر والأدوات المنفصلون تحكّمَ الإنسان والنموذج |
+| `/loop` | على حدث الجلسة `turn/end`، استدعِ `followup()` للتكرار التالي؛ أو افرض المتابعة |
+| سير العمل الديناميكي | `ctx.workflowEngine` مع محرّك سير عمل PTC وأداة `workflow`؛ ويُلزم الأبناءُ المبنيَنون داخل العملية بالخرج عبر تسجيلات توجيه وأدوات ذات نطاق، وحارسِ أدوات رتيب، وإيداعِ `tools/result` نهائي (بما فيه `run_code` المحيط)، وعلامةِ `concludeTurn()` الرتيبة في تنفيذ الخرج المبنيَن |
+| الرسائل المصطفّة والتوجيه أثناء التشغيل | `Agent.followup()` و`Agent.steer()` في النواة |
+| ضغط السياق (التلقائي واليدوي) | seam الخاص بـ `ctx.compaction` مع `dsh-compaction-basic`؛ ويعمل الضغطُ التلقائي على `agent/pre-step` المتسلسل، ويعمل التعافي المعياري من الفيض على `agent/request-error`، ويستعمل المستدعون يدويًا خدمةَ الضغط نفسها ([Agent Note عن الضغط](../../.agents/notes/implemented/feature/2026-06-18-compaction-capability-seam.ar.md)) |
+| قابلية ضبط توجيه النظام | `ctx.systemPrompt.section()` مع الترتيب والتظليل المحلي للنطاق |
+| AGENTS.md (في الجذر) | مزوّد مقطع يقرأ الملف |
+| AGENTS.md (في دليل فرعي، عند اللمس) وإشعارات تغيّر الملفات | `agent.inject()` من مراقب أو من مستمع لنتائج الأدوات |
+| الأدوات المدمجة | `ctx.tools.register()`؛ وتتدفق schemas إلى التجميع تلقائيًا، وعائلات `dsh-tool-*` (bash وfs وweb وsubagent وtodo) هي الأمثلة المشحونة |
+| البحث في الأدوات والكشف التدريجي | استبدل تسجيلَ `ctx.tools.restrict()` ذا النطاق كلما تغيّرت المجموعةُ الظاهرة؛ ويُبقي الـ registry العرضَ والبحثَ والتنفيذ متسقين |
+| مهلة الأداة وإعادة محاولتها وقياساتها | لُفّ توزيعَ النواة بـ `tools/execute`؛ ويجوز للّافّ أن يستبدل `exec.signal` ويفوّض ويفحص النتيجةَ الموحَّدة في عمر لفظي واحد |
+| قياسات نتيجة الأداة النهائية وتدقيقها والتقاطها | راقب النتائجَ المرجعية غير القابلة للتغيير بـ `tools/result`؛ ولا تستعمل `tools/post-execute` بدلًا منه إلا حين يجب أن تحوّل الإضافةُ النتيجة أو تلحق بها سياقًا |
+| سياسة إنهاء الجولة الرتيبة | استدعِ `ToolExecution.concludeTurn()` من الأداة النهائية الناجحة؛ وتبقى استدعاءات الأدوات اللاحقة في الاستجابة نفسها قابلة للحراسة، وتتوقف الحلقة بعد الخطوة |
+| البيئة المعزولة للعمليات الفرعية (landlock أو sandbox-exec) | استعمل خلفيةَ `ctx.sandbox` عبر `dsh-bash-sandbox`؛ واستعمل `tools/pre-execute` للمنع على مستوى القدرة |
+| نظام الأذونات وسؤال المستخدم | أرجِع `ask` من `tools/pre-execute` وأجِب عبر `ctx.approval`؛ وسجّل أداةَ سؤال منفصلة موجَّهة إلى النموذج لأسئلة المستخدم العادية |
+| وضع التخطيط | [`@deepseek-ai/dsh-plan-mode`](../../packages/plan/plan-mode/README.ar.md): حالة `plan/mode` مسجَّلة، ومقطعُ الإرشاد `plan:policy`، ودخولٌ بـ `/plan [message]`، وخروجٌ مباشر بـ `/plan off`، وخروجٌ بـ `exit_plan_mode` يراجعه المستخدم؛ ويبقى الإلزام على محورَي البيئة المعزولة والموافقة المستقلين |
+| التفويض إلى وكيل فرعي | registry مزوّدي `ctx.subagents` (`dsh-subagent-spawn-in-process` و`dsh-subagent-fork-in-process` و`dsh-subagent-acp` و`dsh-subagent-codex` و`dsh-subagent-claude-code` و`dsh-subagent-dsh-sdk`) مع `dsh-tool-subagent` الذي يكشف مزوّدًا مضبوطًا واحدًا للنموذج |
+| MCP | إضافة لكل خادم: اكتشف الأدوات ثم `ctx.tools.register()` |
+| المهارات | تسجيل مقطع وأداة؛ واحقن محتوى المهارة بـ `inject()` عند الاستدعاء |
+| الذاكرة | مزوّد مقطع وأداة |
+| المهام المجدولة (cron) | تسجّل إضافةٌ أدواتِ جدولة يستدعيها النموذج؛ وعند إطلاق المؤقّت: `followup(…, {source: {kind: 'plugin', plugin: 'schedule'}})` عند الخمول، أو إشعار `inject()` عند الانشغال |
+| الواجهة (رسومية؛ وCLI يُخرج JSONL) | استمع إلى `agent/assistant-stream` للقطع الحية وإلى `session/event` للتسويات الدائمة والحدود ونشاط الأدوات؛ والمدخلات إلى `followup()` |
+| عقدة أعمال في محادثة عميل Web | سجّل `ConversationNodeDefinition` ومصيّرًا مفهرسًا لـ `conversation.chat.node` |
+| SessionTelemetryBackend أو أثر قابل لإعادة التشغيل | `session/event` إلى JSONL؛ وإعادةُ التشغيل هي `sessions.create(id, { seed })` |
+| مهايئات النماذج | صنف فرعي من `LlmAdapter` عبر `registerAdapter` (`dsh-llm-deepseek` و`dsh-llm-pi-ai`) |
+| إعادة التحميل الحارّ للإضافات | كل تسجيل هو `ctx.effect`، فيعمل HMR المستنسخ بلا عناء |

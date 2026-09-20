@@ -1,14 +1,14 @@
-# جلسة عنوان
+# عناوين الجلسات
 
 [English](session-title.md) | العربية
 
-[`@deepseek-ai/dsh-session-title`](../../packages/session/session-title) الذي يملك حمل دائم، بعد كتابة تغطية عنوان حالة و اختياري مختلف خطوة مزود مفردات. مشترك LLM(كبير لغة نموذج) مساعد مساعدة مكون مسؤول دقيق مساعد مساعدة طلب سجل. كل حزمة README مسؤول وقت ترتيب، رجوع، فشل و fork سلوك؛ توليد[حفظ دائم سجل حدث دليل](../persistence-catalog.ar.md) مسؤول كامل حدث إعلان.
+حالةُ العنوان الدائمة التي يغلب فيها الأحدث، ومفرداتُ المزوّد اللاتزامني الاختيارية، يملكها [`@deepseek-ai/dsh-session-title`](../../packages/session/session-title). ويملك مساعدُ LLM المشترك سجلَّ الطلب المساعد بعينه. وتملك ملفاتُ README للحزم سلوكَ التوقيت والاحتياطي والفشل والتفريع؛ ويملك [دليلُ الحفظ الدائم](../persistence-catalog.ar.md) المولَّد تصريحاتِ الأحداث كاملةً.
 
-شفرة المصدر:[`packages/session/session-title/src/index.ts`](../../packages/session/session-title/src/index.ts) ،[`packages/session/session-title-llm/src/index.ts`](../../packages/session/session-title-llm/src/index.ts)
+المصدران: [`packages/session/session-title/src/index.ts`](../../packages/session/session-title/src/index.ts) و[`packages/session/session-title-llm/src/index.ts`](../../packages/session/session-title-llm/src/index.ts)
 
-## حمل دائم عنوان حالة
+## حالة العنوان الدائمة
 
-مزود توليد إصلاح حجز وقت سوف سجل `SessionTitleProviderId`.`SessionTitleEventData` صف خروج توليد عنوان وقت استخدام دقيق شخص صنف رسالة seq،`SessionTitleSnapshot` فإن إضافة دخول `ctx.sessionTitle.get()` و `foldSessionTitle()` إرجاع حمل دائم حدث غلاف تركيب معلومة.`title` إسقاط إصدار 1 حالة و عميل عرض كل فقط إبقاء عنوان نص أو `null`، لذلك قائم حفظ دائم ذاكرة مؤقتة سطر ما زال يمكن قراءة.
+يُسجَّل `SessionTitleProviderId` للمراجعات التي ينتجها مزوّد. ويعدّد `SessionTitleEventData` أرقامَ تسلسل رسائل البشر المستعملة في العنوان بعينها، بينما يضيف `SessionTitleSnapshot` حقائقَ مغلّف الحدث الدائم التي يعيدها `ctx.sessionTitle.get()` و`foldSessionTitle()`. ويُبقي إسقاطُ `title` حالتَه في الإصدار 1 وعرضَه للعميل نصَّ العنوان وحده أو `null`، فتبقى صفوفُ التخزين المؤقت المحفوظة قابلةً للقراءة.
 
 ```ts type-equiv
 /** Identifies one session-title provider registration. */
@@ -62,9 +62,9 @@ interface SessionTitleSnapshot extends SessionTitleEventData {
 }
 ```
 
-## مساعد مساعدة طلب سجل
+## سجل الطلب المساعد
 
-مشترك LLM مساعد مساعدة مكون سوف في استدعاء نموذج قبل، سجل كل واحد بند قد مرور تحقق كما يمكن توزيع عنوان طلب. أي جعل لاحق توليد فشل، تحميل حمل ما زال سوف تكرار الآن نموذج مرئي نظام إدخال و رسالة إدخال، توجيه، إخراج حد أعلى، مزود ملكية و مصدر رسالة عودة بسبب.
+يسجّل مساعدُ LLM المشترك كلَّ طلب عنوان متحقَّق منه وقابل للتوزيع قبل نداء النموذج. وتعيد الحمولةُ إنتاجَ مُدخَل النظام والرسائل الذي يراه النموذج، والتوجيهَ، وحدَّ الخرج، وملكيةَ المزوّد، ونسبةَ الرسائل المصدر، ولو فشل التوليدُ بعد ذلك.
 
 ```ts type-equiv
 /** Exact model-visible request recorded before one auxiliary title dispatch. */
@@ -84,9 +84,9 @@ interface SessionTitleLlmRequestEventData {
 }
 ```
 
-## مزود إدخال و إخراج
+## مُدخَل المزوّد ومُخرَجه
 
-خدمة سوف مقابل قطع حتى بعض واحد إصلاح حجز دمج إطار رسالة إنشاء لقطة. مزود إرجاع seq فقط يمكن قدوم ذاتي هذا طلب؛ من خدمة مسؤول وصل قبول مسار سوف تحقق ترتيب، مواصفة تحويل عنوان، قوي صنع تنفيذ بايت حد أعلى، و إلحاق عنوان و ذلك مصدر رسالة seq و مصدر نوع.
+تلتقط الخدمةُ الرسائلَ المؤهَّلة عبر مراجعة واحدة. ويعيد المزوّدُ أرقامَ التسلسل من ذلك الطلب وحده؛ ويتحقق القبولُ الذي تملكه الخدمةُ من الترتيب، ويوحّد العنوان، ويفرض حدَّ البايتات، ويُلحق العنوانَ مع أرقام تسلسل رسائله المصدر وصنفِ مصدره.
 
 ```ts type-equiv
 /** One eligible human text message exposed to title providers. */

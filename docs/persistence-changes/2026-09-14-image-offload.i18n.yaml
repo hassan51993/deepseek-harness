@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/persistence-changes/2026-09-14-image-offload.md
 2026-09-14-image-offload.md: 200285d456da3001c44a943a526c831bb300afe5
-2026-09-14-image-offload.ar.md: b15106f881f0e3fddecf9ebc5dd64c84f38b299c
+2026-09-14-image-offload.ar.md: 69c0f9314c338d9d7fadfd6f7f111cb45f35c742

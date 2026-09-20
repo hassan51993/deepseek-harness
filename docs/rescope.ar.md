@@ -1,47 +1,47 @@
-# Vendored حزمة تعديل اسم
+# إعادة تسمية نطاق الحزم المستنسخة
 
 [English](rescope.md) | العربية
 
-Cordis إطار هيكل و ذلك أساس أساس مكتبة بـ شفرة المصدر شكل صيغة vendored في [`vendor/`](../vendor/README.md) تحت، و بـ `@deepseek-ai` scope إصدار: كل harness حزمة كل يأخذ إطار هيكل إعلان لـ peer dependency، إصدار harness حينئذ سوف وصل حمل إصدار هذا واحد طبقة، استخدام فوق تنقل اسم إصدار انتظار في في registry فوق احتلال استخدام آخر شخص اسم حرف. هذا صفحة هو اسم حرف خريطة جدول؛ قرار و أثر رؤية [تعديل اسم Agent Note](../.agents/notes/archived/process/2026-08-10-vendor-package-rescope.md) ، فوق تنقل commit رؤية [`vendor/README.md`](../vendor/README.md).
+إطار Cordis ومكتباته الأساسية مستنسخة تحت [`vendor/`](../vendor/README.md) ومنشورة تحت النطاق `@deepseek-ai`، لأن كل حزمة في الإطار تعلن الإطارَ اعتماديةً نظيرة: فنشر الإطار ينشر هذه الطبقة معه، ونشرُها بالأسماء الأصلية يستولي عليها في الـ registry. وهذه الصفحة هي خريطة الأسماء؛ أما القرار وأثره ففي [Agent Note عن إعادة التسمية](../.agents/notes/archived/process/2026-08-10-vendor-package-rescope.md)، وأما commits المنبع ففي [`vendor/README.md`](../vendor/README.md).
 
-## اسم حرف خريطة
+## خريطة الأسماء
 
-| دليل | فوق تنقل اسم | إصدار اسم | فوق تنقل إصدار | زاوية لون |
+| الدليل | اسم المنبع | الاسم المنشور | إصدار المنبع | الدور |
 |---|---|---|---|---|
-| `vendor/cordis/` | `cordis` | `@deepseek-ai/cordis` | 4.0.0-rc.7 | إطار هيكل نواة قلب:`Context`،`Service`،`Fiber`، حدث |
-| `vendor/cosmokit/` | `cosmokit` | `@deepseek-ai/cosmokit` | 1.8.1 | إطار هيكل و Schemastery مشترك استخدام أساس أساس أداة |
-| `vendor/schemastery/` | `schemastery` | `@deepseek-ai/schemastery` | 3.18.0 | إعداد schema(`Schema`) ، كل إضافة `Config` كل أساس في هو |
-| `vendor/loader/` | `@cordisjs/plugin-loader` | `@deepseek-ai/cordis-plugin-loader` | 1.0.0-rc.5 | `cordis.yml` تركيب تحميل، إضافة تحليل،repository ذاكرة مؤقتة |
-| `vendor/include/` | `@cordisjs/plugin-include` | `@deepseek-ai/cordis-plugin-include` | 1.0.4 | إعداد يتضمن و patch تراكم إضافة |
-| `vendor/group/` | `@cordisjs/plugin-group` | `@deepseek-ai/cordis-plugin-group` | 1.0.0 | تضمين طقم إضافة قسم مجموعة |
-| `vendor/timer/` | `@cordisjs/plugin-timer` | `@deepseek-ai/cordis-plugin-timer` | 1.1.2 | `ctx` فوق مع disposal عودة استلام تحديد وقت جهاز |
-| `vendor/hmr/` | `@cordisjs/plugin-hmr` | `@deepseek-ai/cordis-plugin-hmr` | 1.0.15 | إضافة و إعداد حار استبدال |
-| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | تحكم منصة سجل تصدير |
+| `vendor/cordis/` | `cordis` | `@deepseek-ai/cordis` | 4.0.0-rc.7 | نواة الإطار: `Context` و`Service` و`Fiber` والأحداث |
+| `vendor/cosmokit/` | `cosmokit` | `@deepseek-ai/cosmokit` | 1.8.1 | أدوات مشتركة يبني عليها الإطار وSchemastery |
+| `vendor/schemastery/` | `schemastery` | `@deepseek-ai/schemastery` | 3.18.0 | schemas الإعداد (`Schema`) خلف `Config` كل إضافة |
+| `vendor/loader/` | `@cordisjs/plugin-loader` | `@deepseek-ai/cordis-plugin-loader` | 1.0.0-rc.5 | تحميل `cordis.yml`، وتحليل الإضافات، وذاكرة المستودع المؤقتة |
+| `vendor/include/` | `@cordisjs/plugin-include` | `@deepseek-ai/cordis-plugin-include` | 1.0.4 | تضمين الإعدادات وطبقات patch |
+| `vendor/group/` | `@cordisjs/plugin-group` | `@deepseek-ai/cordis-plugin-group` | 1.0.0 | مجموعات الإضافات المتداخلة |
+| `vendor/timer/` | `@cordisjs/plugin-timer` | `@deepseek-ai/cordis-plugin-timer` | 1.1.2 | مؤقّتات على `ctx` تراعي تحرير الموارد |
+| `vendor/hmr/` | `@cordisjs/plugin-hmr` | `@deepseek-ai/cordis-plugin-hmr` | 1.0.15 | الاستبدال الحار للإضافات والإعداد |
+| `vendor/logger-console/` | `@cordisjs/plugin-logger-console` | `@deepseek-ai/cordis-plugin-logger-console` | 1.0.0 | مصدّر سجلات إلى لوحة التحكم |
 
-فرعي مسار تصدير إبقاء أصل مسار:`@cordisjs/plugin-loader/repository` تغيير صار `@deepseek-ai/cordis-plugin-loader/repository`.
+تحتفظ تصديرات المسارات الفرعية بمساراتها: فـ `@cordisjs/plugin-loader/repository` يصير `@deepseek-ai/cordis-plugin-loader/repository`.
 
-## تعديل اسم لا اصطدام ماذا
+## ما لا تمسّه إعادة التسمية
 
-- **دليل اسم و فوق تنقل شفرة المصدر إصدار.** `vendor/hmr/` ما زال هو `vendor/hmr/`، بيان جدول سجل هو الذي تثبيت إقامة شفرة المصدر لقطة فوق تنقل إصدار، لذلك بيان قراءة عمل واحد نسخة فوق تنقل لقطة؛ بينما كل vendored حزمة `package.json` ذاته `version` حقل هو harness إصدار بيان إصدار،`pnpm run release:vendor` سوف رفع رفع هو، إعادة sync وقت سوف استعادة صار فوق تنقل إصدار.
-- **اعتماد range.** تعديل اسم فقط تعديل اعتماد مفتاح، لا تغيير نطاق.Workspace بيان مقابل مستودع داخل وقت التشغيل اعتماد استخدام `workspace:^`، لذلك pnpm سوف تحليل إلى ثابت محلي حزمة، و في إصدار وقت استبدال لـ إصدار نطاق.
-- **Loader `cordis:` داخل بناء بادئة.** `cordis:include`،`cordis:group` هو بروتوكول بادئة، لا هو حزمة اسم.
-- **`cordis.yml` ملف إعداد بيت عائلة**، يشمل `*.cordis.yml`،`*.cordis.snapshot.yml`،`cordis.patch.yml`.
-- **اسم حرف داخل حمل هذا عدد كلمة harness حزمة**، مثال مثل `@deepseek-ai/dsh-tool-cordis`.
-- **فوق تنقل وقت التشغيل معرف رمز**، مثال مثل Schemastery `Symbol.for('schemastery')` و ذلك `vendor:` بيانات وصفية حقل.
-- **`docs/` خارج تفرق نص.** `vendor/*/README.md`، كل حزمة README و Agent Note إبقاء كتابة عمل عند وقت اسم حرف؛ ذلك داخل عار `cordis` أيضا ممكن هو Python SDK خيار اسم أو بعض عدد agent-preset id.`docs/` لـ داخل، تفرق نص و كل Markdown محيط شريط كل تتبع حال تعديل.
+- **أسماء الأدلة وإصدارات مصدر المنبع.** يبقى `vendor/hmr/` كما هو، ويسجّل الجدول إصدارَ المنبع للقطة المصدر المثبَّتة، فيُقرأ البيان لقطةً من المنبع؛ أما حقل `version` في `package.json` المستنسخ فهو إصدار بيان الإطار المُصدَر، يرفعه `pnpm run release:vendor` وتعيده مزامنةٌ جديدة إلى إصدار المنبع.
+- **نطاقات الاعتماديات.** إعادة التسمية تغيّر مفاتيح الاعتماديات لا نطاقاتها. وتستعمل بيانات مساحة العمل `workspace:^` لاعتماديات وقت التشغيل التي يملكها المستودع، فيحلّ pnpm الحزم المحلية المثبَّتة ويضع نطاقات الإصدار مكانها عند النشر.
+- **البادئة المدمجة `cordis:` في Loader.** فـ `cordis:include` و`cordis:group` بادئة بروتوكول لا اسم حزمة.
+- **عائلة ملفات إعداد `cordis.yml`**، ومنها `*.cordis.yml` و`*.cordis.snapshot.yml` و`cordis.patch.yml`.
+- **حزم الإطار التي تحمل الكلمة في أسمائها هي**، مثل `@deepseek-ai/dsh-tool-cordis`.
+- **معرّفات وقت التشغيل في المنبع**، مثل `Symbol.for('schemastery')` في Schemastery وحقل بياناتها الوصفية `vendor:`.
+- **النثر خارج `docs/`.** فـ `vendor/*/README.md` وملفات README الخاصة بالحزم وAgent Notes تحتفظ بالأسماء التي كُتبت بها؛ وقد تكون `cordis` المجردة هناك اسمَ خيار في Python SDK أو معرّفَ agent-preset. أما داخل `docs/` فيتبع النثر وكل سور Markdown إعادةَ التسمية.
 
-## أنت شفرة يلزم تعديل ماذا
+## ما يلزم تغييره في شفرتك
 
-| موضع | تعديل قبل | تعديل بعد |
+| الموضع | قبل | بعد |
 |---|---|---|
-| وحدة import | `import { Context } from 'cordis'` | `import { Context } from '@deepseek-ai/cordis'` |
-| نوع حدث إعلان دمج | `declare module 'cordis'` | `declare module '@deepseek-ai/cordis'` |
-| `package.json` اعتماد مفتاح | `"@cordisjs/plugin-hmr": "^1.0.15"` | `"@deepseek-ai/cordis-plugin-hmr": "^1.0.15"` |
-| `cordis.yml` إضافة بند | `name: '@cordisjs/plugin-include'` | `name: '@deepseek-ai/cordis-plugin-include'` |
+| استيراد وحدة | `import { Context } from 'cordis'` | `import { Context } from '@deepseek-ai/cordis'` |
+| دمج الأحداث المنمَّطة | `declare module 'cordis'` | `declare module '@deepseek-ai/cordis'` |
+| مفتاح اعتمادية في `package.json` | `"@cordisjs/plugin-hmr": "^1.0.15"` | `"@deepseek-ai/cordis-plugin-hmr": "^1.0.15"` |
+| مدخل إضافة في `cordis.yml` | `name: '@cordisjs/plugin-include'` | `name: '@deepseek-ai/cordis-plugin-include'` |
 
-## تطبيق إضافة، نواة تحقق و رجوع
+## التطبيق والتحقق والتراجع
 
-فوق وجه هذا نسخة خريطة من [`scripts/rescope-vendor.ts`](../scripts/rescope-vendor.ts) تحمل تحميل و تنفيذ تعديل اسم، أي مرجع كل لا اعتماد يد تعديل:
+يملك [`scripts/rescope-vendor.ts`](../scripts/rescope-vendor.ts) الخريطةَ أعلاه وينفّذ إعادة التسمية، فلا يُعاد تسمية أي مرجع يدويًا:
 
 ```sh
 pnpm run rescope-vendor            # report what would change
@@ -50,4 +50,4 @@ pnpm run rescope-vendor:check      # assert the post-state; runs in the hygiene 
 pnpm run rescope-vendor --apply --reverse   # return to the upstream names
 ```
 
-فوق تنقل sync بعد إعادة ركض هو ([مسار](../vendor/README.md)) ، و وصل فوق هو ضرب طبع إعادة توليد:`pnpm install` إعادة توليد lockfile،`pnpm run gen-third-party-notices`، و مقابل هو لمس و مزدوج لغة مقابل ركض `pnpm run verify-translation-pairing --write`.
+أعِد تشغيله بعد كل مزامنة مع المنبع ([الإجراء](../vendor/README.md))، وأتبِعه بإعادة التوليد التي يطبعها: `pnpm install` لملف القفل، و`pnpm run gen-third-party-notices`، و`pnpm run verify-translation-pairing --write` للاقترانات الثنائية اللغة التي مسّها.

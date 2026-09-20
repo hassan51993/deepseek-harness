@@ -1,12 +1,12 @@
-# Typert بعيد مسار استدعاء
+# نداءات Typert البعيدة
 
 [English](typert.md) | العربية
 
-التالي نوع من توليد Remote ناتج،Host Gateway و مستهلك API assembly مشترك استخدام.[Typert Gateway Agent Note](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.ar.md) مسؤول هيكل بنية و نقل قرار؛ هذا صفحة سجل [`dsh-typert-protocol`](../../packages/typert/protocol/src/types.ts) و [`dsh-api-gateway`](../../packages/api/gateway/src/types.ts) في عام مشترك اتفاق حرف وجه تعريف.
+أنواعٌ تتشاركها آثارُ Remote المولَّدة وبوابةُ المضيف وتجميعاتُ واجهات المستهلكين البرمجية. وتملك [ملاحظةُ الوكيل عن بوابة Typert](../../.agents/notes/implemented/architecture/2026-08-02-typert-remote-method-calls.ar.md) قراراتِ المعمار والنقل؛ وتسجّل هذه الصفحةُ العقودَ العلنية الحرفية من [`dsh-typert-protocol`](../../packages/typert/protocol/src/types.ts) و[`dsh-api-gateway`](../../packages/api/gateway/src/types.ts).
 
-## Lookup و سياق إعلان
+## تصريحات البحث والسياق
 
-عمل خدمة كائن حزمة عبر إعلان دمج توسيع اثنان عدد فارغ map.lookup سوف واحد نوع Host كائن نوع و ذلك wire identity صلة ربط؛ سياق إعلان سوف واحد نوع أثر مجال سياق صنف آخر و ذلك wire identity صلة ربط. توليد descriptor مرجع هذه key، وقت التشغيل مزود فإن توفير نشط كائن تحليل سلوك.
+توسّع حزمُ كائنات العمل خريطتين فارغتين بدمج التصريحات. فالبحثُ يربط نوعَ كائن مضيف واحدًا بهويته على الشبكة؛ وتصريحُ السياق يربط صنفَ سياق منطاقي واحدًا بهويته على الشبكة. وتسمّي الواصفاتُ المولَّدة هذه المفاتيحَ، بينما يقدّم مزوّدو وقت التشغيل سلوكَ الحلّ الحي.
 
 ```ts type-equiv
 /** Merge-extensible Host object lookup declarations. */
@@ -18,7 +18,7 @@ interface TypertLookupMap {}
 interface TypertContextMap {}
 ```
 
-lookup resolver إزالة بعد، سجل التسجيل ما زال سوف إبقاء ذلك wire إعلان. لذلك SRC اكتشاف مرور مسار سوف متابعة يأخذ هذا معامل عودة صنف لـ lookup، و بسبب غير ممكن استخدام بينما فشل، بينما لن يأخذ wire قيمة عند عمل عادي عمل خدمة كائن قبول.
+ويحتفظ السجلُّ بتصريح البحث على الشبكة بعد تفريغ محلِّله. ولذلك يواصل اكتشافُ SRC تصنيفَ المعامل بحثًا، ويفشل بأنه غيرُ متاح بدل أن يقبل قيمةَ الشبكة كائنَ عمل عاديًا.
 
 ```ts type-equiv
 /** Stable wire declaration retained after a lookup provider unloads. */
@@ -36,9 +36,9 @@ interface TypertLookupDefinition {
 }
 ```
 
-## استدعاء descriptor
+## واصفات الاستدعاء
 
-`InvocationDescriptor` هو محلي عكس إطلاق معلومة، لا هو wire message.Host و مستهلك بناء سوف توليد ذاك هذا مقابل descriptor؛ طلب فقط إرسال endpoint و أداة اسم `args`.strict codec يحمل توليد schema factory،SRC codec فإن في لا استعادة بنية نوع قبل رفع تحت قوي صنع اشتراط JSON أمان قيمة. إلغاء عبر حمل خارج carrier signal جدول بلوغ: هو في عمل خدمة معامل بعد حقن، أبدا دخول `args`.
+`InvocationDescriptor` انعكاسٌ محلي لا رسالةَ شبكة. وتولّد بناءاتُ المضيف والمستهلك واصفاتٍ متناظرة؛ ولا يرسل الطلبُ إلا نقطةَ النهاية و`args` المسمّاة. وتحمل المرمِّزاتُ الصارمة مصانعَ schema مولَّدة، بينما تفرض مرمِّزاتُ SRC قيمًا آمنة في JSON بلا استعادة بنيوية للأنواع. والإلغاءُ إشارةُ ناقل خارجَ النطاق تُحقن بعد معاملات العمل ولا تدخل `args` قط.
 
 ```ts type-equiv
 /** Codec attached to one invocation parameter or result. */
@@ -117,9 +117,9 @@ interface InvocationDescriptor {
 }
 ```
 
-## Typert سجل التسجيل
+## سجل Typert
 
-`ctx.typert` قسم فتح حفظ حالي بيئة descriptor، صريح اختيار Remote contribution،lookup مزود و أثر مجال سياق مزود.lookup مزود يملك مستقر wire إعلان و افتراضي resolver؛Host تركيب يمكن لـ نفس عدد key إعداد effect-scoped تزامن أو مختلف خطوة resolver، إعداد إزالة بعد استعادة افتراضي سياسة. كل بند تسجيل كل هو من Cordis يحتفظ effect، و إرجاع يمكن انتظار disposer.
+يفصل `ctx.typert` بين واصفات البيئة الحالية، وإسهامات Remote المختارة صراحةً، ومزوّدي البحث، ومزوّدي السياق المنطاقي. ويملك مزوّدُ البحث تصريحَ الشبكة الثابت والمحلِّلَ الافتراضي؛ ويستطيع تركيبُ المضيف ضبطَ محلِّل متزامن أو لاتزامني محدود بالأثر للمفتاح نفسِه، ويستعيد تفريغُ ذلك الضبط السياسةَ الافتراضية. والتسجيلاتُ آثارٌ تملكها Cordis وتعيد مُفكِّكات قابلة للانتظار.
 
 ```ts type-equiv
 /** Minimal Typert runtime consumed through dependency inversion. */
@@ -131,16 +131,16 @@ interface TypertRegistryContract {
 }
 ```
 
-توليد مستهلك إعلان سوف يأخذ direct namespace دمج إلى `TypertClientRemote` وراثة map في.
+وتدمج تصريحاتُ المستهلك المولَّدة فضاءاتِ الأسماء المباشرة في الخريطة التي يرثها `TypertClientRemote`.
 
 ```ts type-equiv
 /** Merge-extensible direct namespace surface generated for Client Remote services. */
 interface TypertRemoteNamespaceMap {}
 ```
 
-## Host Gateway
+## بوابة المضيف
 
-Connection سوف أولا حل رمز carrier envelope، مجددا استدعاء `ctx.typertGateway`. طلب سوف دقيق أداة اسم wire حقل و carrier إلغاء signal قسم فتح يحمل؛ أساس أساس ضبط تطبيق و حد فشل من `TypertGatewayError` تحمل تحميل، ذلك `gateway/*` رمز حينئذ هو عادي `RemoteError` رمز، لذلك RPC مهايئ سوف يأخذ كل مرور بنية تعرف آخر `RemoteError` وصل نفس ذلك code و details أصل مثال وضع سطر، فقط يأخذ لا يمكن تعرف آخر استثناء عودة و لـ `gateway/internal`.
+تفك الوصلةُ ترميزَ مغلّف ناقلها قبل نداء `ctx.typertGateway`. ويحمل الطلبُ حقولَ الشبكة المسمّاة بعينها وإشارةَ إلغاء الناقل على حدة؛ وتركب إخفاقاتُ البنية والحدود خطأَ `TypertGatewayError`، ورموزُه `gateway/*` رموزُ `RemoteError` عادية، فيمرّر مهايئُ RPC كلَّ `RemoteError` محدَّد بنيويًّا برمزه وتفاصيله سليمةً، ولا يطوي في `gateway/internal` إلا الاستثناءاتِ غيرَ المعروفة.
 
 ```ts type-equiv
 /** One Remote method request after a carrier has decoded its envelope. */
@@ -209,9 +209,9 @@ interface TypertGateway {
 }
 ```
 
-## مستهلك Remote
+## Remote لدى المستهلك
 
-`ctx.remote` فقط كشف من قد استيراد `/remote` ناتج مساهمة namespace.`$mount()` سوف يأخذ توليد descriptor و أداة جسم طريقة بصفة واحد بند من fiber يحتفظ عملية موحد واحد تسجيل. كل namespace كل هو يمكن تتبع أثر `remote.<namespace>` Cordis فرعي خدمة، ذلك دورة الحياة تغطية قد تركيب طريقة؛JavaScript Proxy و Host عمل خدمة خدمة نوع كل لن دخول مستهلك.
+لا يكشف `ctx.remote` إلا فضاءاتِ الأسماء التي تسهم بها آثارُ `/remote` المستورَدة. ويثبّت `$mount()` الواصفاتِ المولَّدة والطرائقَ الملموسة عمليةً واحدة يملكها الليف. وكلُّ فضاء أسماء خدمةُ Cordis ابنة متتبَّعة باسم `remote.<namespace>` يمتد عمرُها على طرائقها المركَّبة؛ ولا يدخل المستهلكَ وسيطُ JavaScript ولا نوعُ خدمة عمل في المضيف.
 
 ```ts type-equiv
 /** Client Remote capability implemented by the Gateway and consumed by Remote assemblies. */

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/agent-team.md
 agent-team.md: 3e751c1c481b2da3369c1ec971503e8f387174b3
-agent-team.ar.md: dc2c86a0343c5593d5ff9a4c342de31322a7c0fd
+agent-team.ar.md: 45f2c2973ccf8adc116dd55f66eadd6e0a7521c5
