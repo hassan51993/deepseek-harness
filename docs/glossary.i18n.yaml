@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/glossary.md
 glossary.md: 09f48528b43c2dd5dc9af1eb79679bea845986a0
-glossary.ar.md: 743b87e9b72cb23375714a374c34894ab4752d44
+glossary.ar.md: 9ae0545165b75597430ab305691d53a14f859114

@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/session-format-status.md
 session-format-status.md: 06143a5c154ae72fc4c54c8e23abbdf304bd2ea2
-session-format-status.ar.md: f89f5064bcdc3f526d5f88c498a39ace41fd2400
+session-format-status.ar.md: 1634ea92c76b3595b31360d73abf3ce53f5f37bc
