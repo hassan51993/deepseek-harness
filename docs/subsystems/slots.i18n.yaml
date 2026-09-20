@@ -3,4 +3,4 @@
 # after editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write docs/subsystems/slots.md
 slots.md: 81457c247b7e2dba2955de4064bacf9c613586af
-slots.ar.md: 9bb37367b40fe7368468444571695036f455dbcd
+slots.ar.md: 323f71889c5a79aa10e3b6a0d6f33483890fd59b
