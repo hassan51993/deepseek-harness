@@ -1,14 +1,14 @@
-# جلسة مرجع
+# مراجع الجلسات
 
 [English](session-reference.md) | العربية
 
-من Host دعم دعم ملف اكتشاف، و بنية تحويل عبر جلسة مرجع طلب و دقيق تجهيز بعد رسالة سياق.[ملف مرجع اتفاق](../../packages/context/file-reference) مسؤول فقط يحتوي مسار تكملة كل سجل و لغة قاعدة؛[جلسة مرجع اتفاق](../../packages/context/session-reference) تعريف مواصفة URI، حالي جدول طبقة إسقاط، وسم أمان JSON و بايت إبقاء، مستقر خطأ و غير ممكن معلومة نموذج نص التوجيه. مضيف مهايئ استخدام هذه نوع، بينما لن يأخذ كل منها UI رفع و لغة قاعدة نقل دخول agent(ذكي جسم) نواة قلب.
+اكتشافُ ملفات مسنَد إلى المضيف، مع طلباتِ مراجع مبنيَنة عبر الجلسات وسياقاتِ رسائل مُعدَّة. ويملك [عقد مرجع الملف](../../packages/context/file-reference) سجلاتِ الإكمال المقتصرة على المسارات ونحوَها؛ ويعرّف [عقد مرجع الجلسة](../../packages/context/session-reference) معرّفاتِ URI المعيارية، وإسقاطَ السطح الحالي، وJSON الآمن مع الوسوم، وحفظَ البايتات، والأخطاءَ الثابتة، ومطالبةَ النموذج غير الموثوقة. وتستعمل مهايئاتُ المضيف هذه الأنواعَ بدل تمرير نحو الإشارة في واجهتها إلى نواة الوكيل.
 
-مصدر:[`packages/context/file-reference/src/types.ts`](../../packages/context/file-reference/src/types.ts) · [`packages/context/session-reference/src/types.ts`](../../packages/context/session-reference/src/types.ts)
+المصدران: [`packages/context/file-reference/src/types.ts`](../../packages/context/file-reference/src/types.ts) · [`packages/context/session-reference/src/types.ts`](../../packages/context/session-reference/src/types.ts)
 
-## ملف مرشح بند
+## مرشّحو الملفات
 
-`FileReferenceCandidate` هو فقط يحتوي مسار اكتشاف نتيجة. يتم بحث عنوان agent توفير عمل دليل نطاق؛ مزود مسؤول ترتيب و نطاق الأسماء وصول، لكن لن قراءة ملف محتوى.
+`FileReferenceCandidate` هو نتيجةُ الاكتشاف المقتصرة على المسار. ويقدّم الوكيلُ المخاطَب نطاقَ دليل العمل؛ ويقرر المزوّدون الترتيبَ والوصولَ إلى فضاء الأسماء بلا قراءة محتوى الملفات.
 
 ```ts type-equiv
 /** One path-only completion candidate inside the target session cwd. */
@@ -20,9 +20,9 @@ interface FileReferenceCandidate {
 }
 ```
 
-## إدخال و مرشح بند
+## المُدخَلات والمرشّحون
 
-`SessionReferenceInput` هو و مضيف غير متصل اختيار.id أداة لديه مرجعي صفة؛label هو مع لقطة يحمل عرض بيانات وصفية.
+`SessionReferenceInput` هو الاختيارُ المستقل عن المضيف. والمعرّفُ هو المرجع؛ أما التسميةُ فبياناتٌ وصفية للعرض تُحمل إلى اللقطة.
 
 ```ts type-equiv
 /** One source session selected by a host. */
@@ -34,7 +34,7 @@ interface SessionReferenceInput {
 }
 ```
 
-`SessionReferenceCandidate` هو موجه إلى مضيف اكتشاف إخراج. وجود الأكثر جديد Session عنوان وقت، هو `label` استخدام هذا عنوان؛ اختياري عرض نص فإن أولوية استخدام subagent حمل دائم إنشاء label. غربلة اختيار سوف معا بحث اثنان من،Session id و cwd، أبدا بحث transcript(نص سجل).Remote مرشح في `displayTitle` وجود وقت استخدام هو علامة مواصفة mention.
+و`SessionReferenceCandidate` هو خرجُ الاكتشاف الذي يراه المضيف. وتستعمل `label` فيه آخرَ عنوان للجلسة إن وُجد، بينما يفضّل نصُّ العرض الاختياري تسميةَ الإنشاء الدائمة لوكيل فرعي؛ ويبحث الترشيحُ في الاثنين إلى جانب معرّف الجلسة ودليل العمل، لا في نص المحادثة. وتستعمل الإشارةُ المعيارية لمرشّح Remote نصَّ العرض إن وُجد.
 
 ```ts type-equiv
 /** One host-facing candidate from exact session metadata. */
@@ -58,7 +58,7 @@ interface SessionReferenceCandidate {
 }
 ```
 
-`sessionReferenceResolver/candidates` Remote طريقة نحو متصفح مستهلك توفير نفس اكتشاف قدرة، و لـ كل مرشح مرفق فوق مواصفة نص التوجيه mention.
+وتقدّم طريقةُ Remote المسماة `sessionReferenceResolver/candidates` الاكتشافَ نفسَه لمستهلكي المتصفح، وتُرفق بكل مرشّح إشارتَه المعيارية في المطالبة.
 
 ```ts type-equiv
 /** One discovery candidate carrying its canonical prompt mention. */
@@ -68,9 +68,9 @@ interface SessionReferenceMentionCandidate extends SessionReferenceCandidate {
 }
 ```
 
-## دقيق تجهيز بعد رسالة
+## الرسائل المُعدَّة
 
-دقيق تجهيز مرور مسار إبقاء يمكن قراءة حالي رسالة محتوى، و الأكثر كثير إرجاع واحد تجمع دمج سياق. ذلك حمل دائم source سجل سوف يأخذ `capturedThroughSeq` إبقاء لـ يتم مرجع Session أصلي generation في جلوس علامة، أبدا سوف يأخذ هو إعادة حل تفسير لـ الذي في Session seq.`capturedFormatVersion` سجل هذا generation؛ ناقص يمثل قد إصدار صيغة v0.
+يحفظ الإعدادُ محتوى الرسالة الحالية المقروء، ويعيد سياقًا مجمَّعًا واحدًا على الأكثر. وتُبقي سجلاتُ مصدره الدائمة `capturedThroughSeq` إحداثيًّا في الجيل الأصلي للجلسة المشار إليها؛ ولا تعيد تفسيرَه قط رقمَ تسلسل في الجلسة الحاوية. ويسجّل `capturedFormatVersion` ذلك الجيل، وغيابُه يعني الصيغةَ المُصدَرة v0.
 
 ```ts type-equiv
 /** Durable source session, cited event seqs, and snapshot facts for prepared cross-session context. */
@@ -106,9 +106,9 @@ interface PreparedReferencedMessage {
 }
 ```
 
-## خطأ
+## الأخطاء
 
-`SessionReferenceError.code` منطقة قسم بلا فاعلية إعداد أو إدخال، ذاتي مرجع، عدد كمية حد، مصدر قراءة فشل، ميزانية فشل و إلغاء. مضيف بروتوكول سوف يأخذ هذه code خريطة إلى كل منها خطأ غلاف تركيب، بلا حاجة فحص نص التوجيه بايت.
+يفصل `SessionReferenceError.code` بين الضبط أو المُدخَل غير الصالح، والإشارةِ إلى الذات، وحدودِ العدد، وفشلِ قراءة المصدر، وفشلِ الميزانية، والإلغاء. وتربط بروتوكولاتُ المضيف هذه الرموزَ بمغلّفات أخطائها بلا فحص بايتات المطالبة.
 
 ```ts type-equiv
 /** Stable failure codes exposed to host adapters. */

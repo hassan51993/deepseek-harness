@@ -1,8 +1,8 @@
-# توسيع
+# الامتدادات
 
 [English](extensions.md) | العربية
 
-extensions فرعي نظام سماح agent(ذكي جسم) تعريف حمل إصدار Cordis حزمة، تشغيل ذلك host و متصفح اثنان نصف، و في تحرير كتابة شفرة قبل استعلام نيل دقيق عام وقت التشغيل بيانات وصفية. حزمة دورة الحياة و صندوق رملي سلوك من [`packages/extensions`](../../packages/extensions/README.ar.md) حزمة مجموعة شرح.
+يتيح نظامُ الامتدادات للوكيل أن يعرّف حزم Cordis موسومةً بإصدارات، وأن يشغّل نصفَيها المضيف والمتصفح، وأن يستعلم عن بيانات وقت التشغيل الوصفية المعتمَدة قبل أن يكتب الشفرة. أما دورةُ حياة الحزمة وسلوكُ العزل فتملكهما [مجموعة الحزم `packages/extensions`](../../packages/extensions/README.ar.md).
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

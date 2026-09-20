@@ -1,12 +1,12 @@
-# Agent Teams
+# فرق الوكلاء
 
 [English](agent-team.md) | العربية
 
-فعلي تحقق صفة خفي صيغة Root Team مجال، نموذج أداة و مضيف مهايئ مشترك نوع.[Agent Teams Agent Note](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.ar.md) مسؤول هوية،mailbox،task و مشترك checkout قرار؛ هذا صفحة سجل [`packages/experimental/agent-team/src/types.ts`](../../packages/experimental/agent-team/src/types.ts) في حرف وجه حمل دائم شكل صيغة.
+أنواعٌ يتشاركها مجالُ الفرق التجريبي ذو الجذر الضمني، وأدواتُ النموذج، ومهايئاتُ المضيف. وتملك [ملاحظةُ الوكيل عن فرق الوكلاء](../../.agents/notes/implemented/feature/2026-08-05-agent-teams.ar.md) قراراتِ الهوية وصندوق البريد والمهمة والسحب المشترك؛ وتسجّل هذه الصفحةُ الصيغَ الدائمة الحرفية من [`packages/experimental/agent-team/src/types.ts`](../../packages/experimental/agent-team/src/types.ts).
 
-## هوية و roster
+## الهوية وقائمة الأعضاء
 
-`TeamId` هو أداة لديه مستقل[صنف لوحة](core.ar.md#branded-ids) Root `SessionId`.`TeamTaskId` في Team داخل حسب `task-<n>` مفرد ضبط قسم إعداد؛`TeamMessageId` هو عام مع آلة قيمة.teammate Session id بداية نهاية هو حمل دائم هوية، بينما `name` هو غير ممكن تغيير نموذج/UI وسم.
+`TeamId` هو `SessionId` الجذر تحت [علامة](core.ar.md#branded-ids) مميزة. و`TeamTaskId` محليٌّ للفريق ويُخصَّص تصاعديًا بالصيغة `task-<n>`؛ و`TeamMessageId` عشوائيٌّ عالميًا. ويبقى معرّفُ جلسة الزميل هويتَه الدائمة، بينما `name` اسمٌ ثابت يراه النموذج والواجهة.
 
 ```ts type-equiv
 /** Whole durable value written on every teammate lifecycle change. */
@@ -21,11 +21,11 @@ interface TeamMemberSnapshot {
 }
 ```
 
-كل member كل من `provisioning` بدء، و كما فقط وصول واحد نهاية حالة roster phase:`active` أو `failed`. وقت التشغيل `running`/`idle`/`inactive` حالة مفرد وحيد إرسال توليد، أبدا سوف إعادة كتابة هذا سجل.
+ويبدأ كلُّ عضو في `provisioning` ويبلغ طورًا نهائيًا واحدًا في القائمة، إما `active` وإما `failed`. أما حالةُ وقت التشغيل `running` أو `idle` أو `inactive` فتُشتق منفصلةً ولا تعيد كتابةَ هذا السجل أبدًا.
 
-## حمل دائم mailbox
+## صندوق البريد الدائم
 
-Lead Session أول أولا تخزين كامل queued message. فقط لديه target pending inbox بند أو قد سجل مستخدم رسالة إتمام حفظ دائم، عندئذ سوف كتابة مستقل acknowledgement event،queued-minus-delivered بسبب بينما بنية صار استعادة mailbox.
+تخزّن جلسةُ القائد أولًا الرسالةَ المصطفّة كاملةً. ولا يُقَرّ باستلام الهدف إلا بعد أن يصير بندُ صندوق وارده المعلَّق أو رسالتُه المسجَّلة للمستخدم دائمًا، فيبقى «المصطفّ ناقصَ المسلَّم» صندوقَ بريد التعافي.
 
 ```ts type-equiv
 /** One peer message retained until its target Session records it. */
@@ -38,9 +38,9 @@ interface TeamMessageSnapshot {
 }
 ```
 
-كل بند رسالة كل سوف محاولة تجربة Steer إلقاء تمرير.running target في الأكثر قريب خطوة حد استلام إلى رسالة،idle target بدء واحد جولة،inactive teammate فإن بارد استعادة. استدعاء جهة لا يستطيع اختيار أخرى نمط، لذلك حمل دائم سجل لا تخزين ضبط درجة طريقة.
+وكلُّ رسالة تحاول التسليمَ بالتوجيه. فالهدفُ العامل يتلقاها عند أقرب حدّ خطوة، والهدفُ الخامل يبدأ جولة، والزميلُ غيرُ النشط يستأنف من البارد. ولا تُخزَّن الجدولةُ في السجل الدائم لأن المستدعين لا يستطيعون اختيارَ وضع آخر.
 
-target Session سوف في pending inbox بند و نهائي مستخدم رسالة فوق إبقاء رسالة هوية و إرسال من عودة بسبب. عبر inbox و تاريخ طي هذا source بنية صار target جانب ذهاب إعادة مفتاح؛ نموذج مرئي framing سوف تكرار id و إرسال من.
+وتحفظ جلسةُ الهدف هويةَ الرسالة ونسبتَها إلى مرسلها على بند صندوق الوارد المعلَّق وعلى رسالة المستخدم في النهاية معًا. وطيُّ ذلك المصدر عبر صندوق الوارد والتاريخ هو مفتاحُ إزالة التكرار عند الهدف؛ ويكرّر التأطيرُ الذي يراه النموذج المعرّفَ والمرسِل.
 
 ```ts type-equiv
 /** Source retained by the target Session for durable mailbox de-duplication. */
@@ -53,9 +53,9 @@ interface TeamMessageSource {
 }
 ```
 
-## مشترك مهمة DAG
+## الرسم الموجَّه للمهام المشترك
 
-كل بند task event كل تخزين كامل لقطة.`revision` هو compare-and-set قيمة، كل مرة تغيير تمرير زيادة 1.`blockedBy` edge يجب إشارة نحو لم حذف مهمة، و صيانة حمل بلا حلقة رسم.`writeScopes` هو مواصفة تحويل تلميح صفة مسار بادئة، لا هو قفل.
+يخزّن كلُّ حدث مهمة لقطةً كاملة. و`revision` هي قيمةُ المقارنة والتعيين وتزيد واحدًا مع كل تغيير. وحوافُّ `blockedBy` يجب أن تسمّي مهامَّ غيرَ محذوفة وأن تبقي الرسمَ خاليًا من الدورات. و`writeScopes` بوادئُ مسارات إرشادية موحَّدة لا أقفال.
 
 ```ts type-equiv
 /** Whole durable task snapshot; every mutation increments {@link revision}. */
@@ -71,11 +71,11 @@ interface TeamTaskSnapshot {
 }
 ```
 
-`pending` يمثل بعد لم بدء أو قد تحرير،`in_progress` يحمل owner،`completed` ممتلئ كاف blocker،`deleted` هو إبقاء tombstone.view سوف إضافة owner name،readiness و write-scope إعادة تراكم تحذير إبلاغ، لكن لن تغيير حمل دائم لقطة.
+و`pending` تعني لم تبدأ أو أُفرج عنها، و`in_progress` تحمل مالكًا، و`completed` تفي بالمعيقات، و`deleted` شاهدةٌ محفوظة. وتضيف العروضُ اسمَ المالك والجاهزيةَ وتحذيراتِ تداخل نطاقات الكتابة بلا تغيير اللقطة الدائمة.
 
-## إعادة تشغيل
+## إعادة التشغيل
 
-`foldTeam()` يأخذ واحد Root Session إعادة تشغيل صار كل Team عملية الذي قراءة roster، مهمة لوح و queued-minus-delivered mailbox. هو حسب `TeamId` اختيار أخذ سجل، لذلك عادي fork وراثة event إبقاء ancestor id، أبدا سوف دخول جديد Root حالة.Session event `seq` و `time` متابعة مسؤول ترتيب و وقت سجل،Team snapshot لم يعد تكرار حفظ هو جمع.roster و task قراءة بـ view شكل صيغة وصول استدعاء جهة، بينما pending بريد عنصر فقط توفير إلقاء تمرير و استعادة داخلي استخدام. حزمة [README](../../packages/experimental/agent-team/README.ar.md) مسؤول operation،authorization،recovery و حد سلوك.
+يعيد `foldTeam()` تشغيلَ جلسة جذر واحدة إلى قائمة الأعضاء ولوحة المهام وصندوق البريد «المصطفّ ناقصَ المسلَّم» الذي تقرؤه كلُّ عملية فريق. وهو ينتقي السجلاتِ بـ`TeamId`، فالأحداثُ التي يرثها تفريعٌ عادي تحتفظ بمعرّف السلف ولا تدخل حالةَ الجذر الجديد. ويبقى `seq` و`time` في حدث الجلسة سجلَّ الترتيب والتوقيت؛ ولا تكرّرهما لقطاتُ الفريق. وتصل قراءاتُ القائمة والمهام إلى المستدعين عروضًا؛ ويبقى البريدُ المعلَّق داخليًا في التسليم والتعافي. ويملك [README](../../packages/experimental/agent-team/README.ar.md) الحزمةِ سلوكَ العمليات والتخويل والتعافي والحدود.
 
 <!-- BEGIN GENERATED cordis-surface (gen-cordis-catalog.ts) — do not edit between markers -->
 

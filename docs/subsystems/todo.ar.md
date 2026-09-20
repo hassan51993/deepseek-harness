@@ -2,11 +2,11 @@
 
 [English](todo.md) | العربية
 
-هذا صفحة سجل [`@deepseek-ai/dsh-tool-todo`](../../packages/todo/tool-todo/README.ar.md) يملك حمل دائم todo مفردات. موجه إلى نموذج أداة سوف كامل جسم استبدال واحد agent(ذكي جسم) جلسة قائمة؛ هذا حزمة أيضا يملك حدث إعلان، إعادة تشغيل إسقاط و ثابت كمية إعداد طقم إضافة. أداة سلوك و إعداد رؤية[حزمة README](../../packages/todo/tool-todo/README.ar.md).
+مفرداتُ todo الدائمة التي تملكها [`@deepseek-ai/dsh-tool-todo`](../../packages/todo/tool-todo/README.ar.md). فالأداةُ التي يراها النموذج تستبدل قائمةَ جلسة وكيل واحدة بأكملها؛ وتملك الحزمةُ أيضًا تصريحَ الحدث، وإسقاطَ إعادة التشغيل، ورفيقَ الثابتة. وسلوكُ الأداة وضبطُها في [README الحزمة](../../packages/todo/tool-todo/README.ar.md).
 
-شفرة المصدر:[`packages/todo/tool-todo/src/types.ts`](../../packages/todo/tool-todo/src/types.ts)
+المصدر: [`packages/todo/tool-todo/src/types.ts`](../../packages/todo/tool-todo/src/types.ts)
 
-## `TodoItem`: واحد بند قائمة بند
+## `TodoItem` — مدخل واحد في القائمة
 
 ```ts type-equiv
 /**
@@ -27,6 +27,6 @@ interface TodoItem {
 }
 ```
 
-## حمل دائم حدث و ثابت كمية
+## الحدث الدائم والثابتة
 
-هذا حزمة عبر إعلان دمج يأخذ `todo/write: { todos: TodoItem[] }` إضافة دخول `SessionEventMap`. هذا حدث فقط كتابة سجل، و يحمل كامل استبدال قائمة؛ توليد[حفظ دائم دليل](../persistence-catalog.ar.md#todowrite--log-only) سوف سجل ذلك إعلان موضع. هذا حزمة ثابت كمية إعداد طقم إضافة سوف مفرد مرة مرة تاريخ تحقق قائم جلسة و جديد إصدار جلسة، مع بعد زيادة كمية تتبع أثر قد إيداع جولة حد، جعل كل فوري `todo/write` كل قدرة في إلحاق قبل نيل إلى تحقق، بينما بلا حاجة إعادة مسح سجل.
+تدمج الحزمةُ تصريحَ `todo/write: { todos: TodoItem[] }` في `SessionEventMap`. والحدثُ للسجل فقط ويحمل قائمةَ الاستبدال كاملةً؛ ويسجّل [دليلُ الحفظ الدائم](../persistence-catalog.ar.md#todowrite--log-only) المولَّد موضعَ تصريحه. ويتحقق رفيقُ الثابتة في الحزمة من الجلسات القائمة والجلسات المعلَن عنها حديثًا في مرور واحد، ثم يتتبع حدودَ الجولات المودَعة تدريجيًا، فيُفحص كلُّ `todo/write` حي قبل الإلحاق بلا إعادة مسح السجل.
